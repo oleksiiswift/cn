@@ -13,6 +13,10 @@
 		04E09477267A06B500A69956 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 04E09475267A06B500A69956 /* Main.storyboard */; };
 		04E09479267A06B900A69956 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 04E09478267A06B900A69956 /* Assets.xcassets */; };
 		04E0947C267A06B900A69956 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 04E0947A267A06B900A69956 /* LaunchScreen.storyboard */; };
+		04E5836F267A47FB00EDC3A3 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04E5836E267A47FB00EDC3A3 /* Utils.swift */; };
+		04E58371267A4A0A00EDC3A3 /* UIDevice+Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04E58370267A4A0A00EDC3A3 /* UIDevice+Model.swift */; };
+		04E58373267A4A2000EDC3A3 /* UIDevice+Enviroment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04E58372267A4A2000EDC3A3 /* UIDevice+Enviroment.swift */; };
+		04E58375267A4EC700EDC3A3 /* TabBarController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 04E58374267A4EC700EDC3A3 /* TabBarController.storyboard */; };
 		2001A0C2915698B9A225961C /* Pods_ECleaner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E6C6CFFC143ABD3817A81249 /* Pods_ECleaner.framework */; };
 /* End PBXBuildFile section */
 
@@ -25,6 +29,10 @@
 		04E09478267A06B900A69956 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		04E0947B267A06B900A69956 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		04E0947D267A06B900A69956 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		04E5836E267A47FB00EDC3A3 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
+		04E58370267A4A0A00EDC3A3 /* UIDevice+Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIDevice+Model.swift"; sourceTree = "<group>"; };
+		04E58372267A4A2000EDC3A3 /* UIDevice+Enviroment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIDevice+Enviroment.swift"; sourceTree = "<group>"; };
+		04E58374267A4EC700EDC3A3 /* TabBarController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = TabBarController.storyboard; sourceTree = "<group>"; };
 		81D1B9EBAF1D92CCA563E435 /* Pods-ECleaner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ECleaner.debug.xcconfig"; path = "Target Support Files/Pods-ECleaner/Pods-ECleaner.debug.xcconfig"; sourceTree = "<group>"; };
 		D5E1E3293C3C186D5078FB52 /* Pods-ECleaner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ECleaner.release.xcconfig"; path = "Target Support Files/Pods-ECleaner/Pods-ECleaner.release.xcconfig"; sourceTree = "<group>"; };
 		E6C6CFFC143ABD3817A81249 /* Pods_ECleaner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ECleaner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -100,6 +108,8 @@
 		04E5835D267A3E6C00EDC3A3 /* Extension */ = {
 			isa = PBXGroup;
 			children = (
+				04E58370267A4A0A00EDC3A3 /* UIDevice+Model.swift */,
+				04E58372267A4A2000EDC3A3 /* UIDevice+Enviroment.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -107,6 +117,7 @@
 		04E5835E267A3E7D00EDC3A3 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				04E5836E267A47FB00EDC3A3 /* Utils.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -137,6 +148,7 @@
 			children = (
 				04E5836B267A414C00EDC3A3 /* Xibs */,
 				04E5836A267A412D00EDC3A3 /* Storyboards */,
+				04E58374267A4EC700EDC3A3 /* TabBarController.storyboard */,
 			);
 			path = "Storyboards & Xibs";
 			sourceTree = "<group>";
@@ -288,6 +300,7 @@
 			files = (
 				04E0947C267A06B900A69956 /* LaunchScreen.storyboard in Resources */,
 				04E09479267A06B900A69956 /* Assets.xcassets in Resources */,
+				04E58375267A4EC700EDC3A3 /* TabBarController.storyboard in Resources */,
 				04E09477267A06B500A69956 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -341,9 +354,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				04E58373267A4A2000EDC3A3 /* UIDevice+Enviroment.swift in Sources */,
 				04E09474267A06B500A69956 /* ViewController.swift in Sources */,
 				04E09470267A06B500A69956 /* AppDelegate.swift in Sources */,
 				04E09472267A06B500A69956 /* SceneDelegate.swift in Sources */,
+				04E5836F267A47FB00EDC3A3 /* Utils.swift in Sources */,
+				04E58371267A4A0A00EDC3A3 /* UIDevice+Model.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
