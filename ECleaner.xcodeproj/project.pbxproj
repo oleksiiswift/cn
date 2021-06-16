@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -63,15 +63,151 @@
 		04E0946E267A06B500A69956 /* ECleaner */ = {
 			isa = PBXGroup;
 			children = (
-				04E0946F267A06B500A69956 /* AppDelegate.swift */,
-				04E09471267A06B500A69956 /* SceneDelegate.swift */,
-				04E09473267A06B500A69956 /* ViewController.swift */,
-				04E09475267A06B500A69956 /* Main.storyboard */,
-				04E09478267A06B900A69956 /* Assets.xcassets */,
-				04E0947A267A06B900A69956 /* LaunchScreen.storyboard */,
+				04E5835C267A3E6200EDC3A3 /* New Group */,
+				04E58369267A3FBE00EDC3A3 /* Application */,
+				04E58365267A3F5E00EDC3A3 /* ViewModel */,
+				04E58360267A3EC000EDC3A3 /* Models */,
+				04E5835B267A3E4700EDC3A3 /* Controllers */,
+				04E58364267A3F1600EDC3A3 /* Views */,
+				04E58362267A3EE900EDC3A3 /* Storyboards & Xibs */,
+				04E5835F267A3EB600EDC3A3 /* Managers */,
+				04E5835E267A3E7D00EDC3A3 /* Helpers */,
+				04E5835D267A3E6C00EDC3A3 /* Extension */,
+				04E58366267A3F7200EDC3A3 /* Listeners */,
+				04E58361267A3ED000EDC3A3 /* Protocols */,
+				04E58363267A3EFA00EDC3A3 /* Supporting Files */,
+				04E58367267A3F8F00EDC3A3 /* Assets */,
 				04E0947D267A06B900A69956 /* Info.plist */,
 			);
 			path = ECleaner;
+			sourceTree = "<group>";
+		};
+		04E5835B267A3E4700EDC3A3 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				04E09473267A06B500A69956 /* ViewController.swift */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		04E5835C267A3E6200EDC3A3 /* New Group */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = "New Group";
+			sourceTree = "<group>";
+		};
+		04E5835D267A3E6C00EDC3A3 /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Extension;
+			sourceTree = "<group>";
+		};
+		04E5835E267A3E7D00EDC3A3 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
+		04E5835F267A3EB600EDC3A3 /* Managers */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Managers;
+			sourceTree = "<group>";
+		};
+		04E58360267A3EC000EDC3A3 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		04E58361267A3ED000EDC3A3 /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Protocols;
+			sourceTree = "<group>";
+		};
+		04E58362267A3EE900EDC3A3 /* Storyboards & Xibs */ = {
+			isa = PBXGroup;
+			children = (
+				04E5836B267A414C00EDC3A3 /* Xibs */,
+				04E5836A267A412D00EDC3A3 /* Storyboards */,
+			);
+			path = "Storyboards & Xibs";
+			sourceTree = "<group>";
+		};
+		04E58363267A3EFA00EDC3A3 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		04E58364267A3F1600EDC3A3 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		04E58365267A3F5E00EDC3A3 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		04E58366267A3F7200EDC3A3 /* Listeners */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Listeners;
+			sourceTree = "<group>";
+		};
+		04E58367267A3F8F00EDC3A3 /* Assets */ = {
+			isa = PBXGroup;
+			children = (
+				04E09478267A06B900A69956 /* Assets.xcassets */,
+				04E58368267A3FA700EDC3A3 /* AppIcon */,
+			);
+			path = Assets;
+			sourceTree = "<group>";
+		};
+		04E58368267A3FA700EDC3A3 /* AppIcon */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = AppIcon;
+			sourceTree = "<group>";
+		};
+		04E58369267A3FBE00EDC3A3 /* Application */ = {
+			isa = PBXGroup;
+			children = (
+				04E0946F267A06B500A69956 /* AppDelegate.swift */,
+				04E09471267A06B500A69956 /* SceneDelegate.swift */,
+			);
+			path = Application;
+			sourceTree = "<group>";
+		};
+		04E5836A267A412D00EDC3A3 /* Storyboards */ = {
+			isa = PBXGroup;
+			children = (
+				04E09475267A06B500A69956 /* Main.storyboard */,
+				04E0947A267A06B900A69956 /* LaunchScreen.storyboard */,
+			);
+			path = Storyboards;
+			sourceTree = "<group>";
+		};
+		04E5836B267A414C00EDC3A3 /* Xibs */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Xibs;
 			sourceTree = "<group>";
 		};
 		78535D8DFC85B5DF1D785ED7 /* Pods */ = {
@@ -80,7 +216,6 @@
 				81D1B9EBAF1D92CCA563E435 /* Pods-ECleaner.debug.xcconfig */,
 				D5E1E3293C3C186D5078FB52 /* Pods-ECleaner.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
