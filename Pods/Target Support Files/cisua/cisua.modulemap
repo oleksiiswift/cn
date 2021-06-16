@@ -1,0 +1,6 @@
+framework module cisua {
+  umbrella header "cisua-umbrella.h"
+
+  export *
+  module * { export * }
+}

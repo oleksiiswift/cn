@@ -1,0 +1,6 @@
+framework module Pods_ECleaner {
+  umbrella header "Pods-ECleaner-umbrella.h"
+
+  export *
+  module * { export * }
+}
