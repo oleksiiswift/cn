@@ -88,14 +88,9 @@ class Utils {
     static let isSimulator = UIDevice.isSimulator
 }
 
+//  MARK: - User Defaults -
 extension Utils {
-    
-    static func openSettings() {
-        DispatchQueue.main.async {
-            U.application.open(URL(string: appSettings)!)
-        }
-    }
-    
+        
     static func contains(_ key: String) -> Bool {
         return U.userDefaults.object(forKey: key) != nil
     }
@@ -106,4 +101,67 @@ extension Utils {
             userDefaults.removeObject(forKey: key)
         }
     }
+}
+
+//      MARK: - Native Settings -
+
+extension Utils {
+    
+    static func openSettings() {
+        DispatchQueue.main.async {
+            U.application.open(URL(string: appSettings)!)
+        }
+    }
+}
+
+//    MARK: - Grand Central Dispatch -
+extension Utils {
+
+    static func delay(_ seconds: Double, completion: @escaping () -> ()) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + seconds) {
+            completion()
+        }
+    }
+    
+    static func UI(_ block: @escaping () -> Void) {
+        DispatchQueue.main.async(execute: block)
+    }
+    
+    static func BG(_ block: @escaping () -> Void) {
+        DispatchQueue.global(qos: .background).async(execute: block)
+    }
+    
+    static func BGD(after: Float,_ block: @escaping () -> Void) {
+        DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + 0.5, execute: block)
+    }
+    
+    static func UI(after: Float, _ block: @escaping ()->Void) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: block)
+    }
+}
+
+//      MARK: get the most top view controller
+func topController() -> UIViewController? {
+    if var controller = U.window?.rootViewController {
+        while let presentedViewController = controller.presentedViewController {
+            controller = presentedViewController
+        }
+        return controller
+    }
+    return nil
+}
+
+func getTheMostTopController(controller: UIViewController? = U.window?.rootViewController) -> UIViewController? {
+    if let navigationController = controller as? UINavigationController {
+        return getTheMostTopController(controller: navigationController.visibleViewController)
+    } else if let presentedViewController = controller?.presentedViewController {
+        return getTheMostTopController(controller: presentedViewController)
+    } else if let tabbarViewController = controller as? UITabBarController, let selectedController = tabbarViewController.selectedViewController {
+        return getTheMostTopController(controller: selectedController)
+    } else if let rootController = U.window?.rootViewController {
+        while let presentedViewController = rootController.presentedViewController {
+            return presentedViewController
+        }
+    }
+    return controller!
 }

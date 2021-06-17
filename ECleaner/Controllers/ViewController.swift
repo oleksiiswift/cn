@@ -11,9 +11,20 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        
+        
+//        PhotoManager.manager.getPhotoLibrary()
+        
+        
+        
+        
     }
-
-
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        U.delay(5) {
+            PhotoManager.manager.getPhotoLibrary()
+        }
+    }
 }
-
