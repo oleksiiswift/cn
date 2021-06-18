@@ -2,7 +2,7 @@
 //  Constants.swift
 //  ECleaner
 //
-//  Created by mac on 17.06.2021.
+//  Created by alexey sorochan on 17.06.2021.
 //
 
 import Foundation

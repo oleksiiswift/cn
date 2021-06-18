@@ -2,7 +2,7 @@
 //  PhotoManager.swift
 //  ECleaner
 //
-//  Created by mac on 17.06.2021.
+//  Created by alexey sorochan on 17.06.2021.
 //
 
 import Foundation
@@ -144,7 +144,7 @@ extension PhotoManager: PHPhotoLibraryChangeObserver {
     func photoLibraryDidChange(_ changeInstance: PHChange) {
         U.UI {
             self.getPhotoLibrary()
-            
+            PhassetFetchManager().getImage(from: <#T##PHAsset#>, complition: <#T##(UIImage) -> Void#>)
         }
     }
 }
@@ -254,7 +254,7 @@ extension PhotoManager: PHPhotoLibraryChangeObserver {
 ////  PHAsset+ImportData.swift
 ////  Photo Safe
 ////
-////  Created by mac on 19.08.2020.
+////  Created by alexey sorochan on 19.08.2020.
 ////  Copyright © 2020 iMac_3. All rights reserved.
 ////
 //
