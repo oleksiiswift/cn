@@ -368,7 +368,6 @@ extension PhotoManager: PHPhotoLibraryChangeObserver {
     func photoLibraryDidChange(_ changeInstance: PHChange) {
         U.UI {
             self.getPhotoLibrary()
-            
         }
     }
 }
