@@ -2,20 +2,22 @@
 //  ViewController.swift
 //  ECleaner
 //
-//  Created by mac on 16.06.2021.
+//  Created by alexey sorochan on 16.06.2021.
 //
 
 import UIKit
+import PhotosUI
 
 class ViewController: UIViewController {
+    
+    var assetCollection: PHAssetCollection!
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
         
-//        PhotoManager.manager.getPhotoLibrary()
-        
-        
+    
+    
         
         
     }
@@ -27,4 +29,6 @@ class ViewController: UIViewController {
             PhotoManager.manager.getPhotoLibrary()
         }
     }
+    
+
 }

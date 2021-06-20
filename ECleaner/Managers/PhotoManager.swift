@@ -2,7 +2,7 @@
 //  PhotoManager.swift
 //  ECleaner
 //
-//  Created by mac on 17.06.2021.
+//  Created by alexey sorochan on 17.06.2021.
 //
 
 import Foundation
@@ -14,13 +14,13 @@ class PhotoManager: NSObject {
     
     private static let shared = PhotoManager()
     
+    public var photos: [PHAsset] = []
+    
     public override init() {
         super.init()
         
         PHPhotoLibrary.shared().register(self)
     }
-    
-    
     
     static var manager: PhotoManager {
         return self.shared
@@ -30,7 +30,125 @@ class PhotoManager: NSObject {
         
         photoLibraryRequestAuth { accessGranted in
             if accessGranted {
-                debugPrint("try fetch photos")
+                
+                let collection = PHAssetFetchManager.shared.fetchImagesFromGallery(collection: nil)
+                debugPrint("all")
+                debugPrint(collection.count)
+                
+                let imageCollection = PHAssetFetchManager.shared.fetchAssets(by: PHAssetMediaType.image.rawValue)
+                debugPrint("images")
+                debugPrint(imageCollection.count)
+                
+                let videoCollection = PHAssetFetchManager.shared.fetchAssets(by: PHAssetMediaType.video.rawValue)
+                debugPrint("video")
+                debugPrint(videoCollection.count)
+                
+                let livePhotosCollection = PHAssetFetchManager.shared.fetchAssetsSubtipe(by: PHAssetMediaSubtype.photoLive.rawValue)
+                debugPrint("live photo cout")
+                debugPrint(livePhotosCollection.count)
+                
+                let screenShots = PHAssetFetchManager.shared.fetchAssetsSubtipe(by: PHAssetMediaSubtype.photoScreenshot.rawValue)
+                debugPrint("screenshots")
+                debugPrint(screenShots.count)
+                
+                let videoStreamed = PHAssetFetchManager.shared.fetchAssetsSubtipe(by: PHAssetMediaSubtype.videoStreamed.rawValue)
+                debugPrint("videoStreamed")
+                debugPrint(videoStreamed.count)
+                
+                let videoTimelapse = PHAssetFetchManager.shared.fetchAssetsSubtipe(by: PHAssetMediaSubtype.videoTimelapse.rawValue)
+                debugPrint("videoTimelapse")
+                debugPrint(videoTimelapse.count)
+                
+         
+                
+                imageCollection.enumerateObjects({(object: AnyObject!, count: Int, stop: UnsafeMutablePointer<ObjCBool>) in
+                    if let fetchObject = object as? PHAsset {
+                        self.photos.append(fetchObject)
+                    }
+                })
+                
+                var simmilar: [[PHAsset]] = []
+                
+                for n in self.photos {
+                    for z in self.photos {
+                        var p: [PHAsset] = []
+                        if z != n {
+                            if z.creationDate == n.creationDate {
+                                debugPrint(z.creationDate)
+                                p.append(n)
+                                p.append(z)
+                            }
+                        }
+                        if !p.isEmpty {
+                            simmilar.append(p)
+                        }
+                    }
+                }
+                
+                
+                debugPrint(simmilar.count)
+                
+                
+                for s in simmilar {
+                    debugPrint("simmirial for date objects")
+                    for someSimm in s {
+                        debugPrint(someSimm.burstIdentifier)
+                        debugPrint(someSimm.localIdentifier)
+                        debugPrint(someSimm.location)
+                    }
+                }
+                
+                
+                debugPrint("end")
+                
+                
+                
+//                for p in self.photos {
+//                    let ass = self.photos.filter {
+//
+//                        $0.creationDate == p.creationDate
+//                    }
+//
+//                    if !ass.isEmpty {
+//                        simmilar.append(ass)
+//                    }
+//                }
+//
+//
+//                for s in simmilar {
+//                    debugPrint(s.count)
+//                }
+                
+//                let z = self.photos.getDuplicates()
+//
+//
+//                for i in z {
+//                    debugPrint(i.creationDate)
+//                }
+                
+//
+//                for s in self.photos {
+//                    let g = s.getSimilarTimeStampAssets(in: imageCollection, comparing: s, interval: 40)
+//
+//                    if !g.isEmpty {
+//                        simmilar.append(g)
+//                    }
+//                }
+//
+//                debugPrint(simmilar.count)
+//                for h in simmilar {
+//
+//                    debugPrint(h.count)
+//
+//                    for p in h {
+//                        debugPrint(p.burstIdentifier)
+//                        debugPrint(p.creationDate)
+//                        debugPrint(p.localIdentifier)
+//                    }
+//                }
+                
+                
+
             } else {
                 AlertManager.showOpenSettingsAlert(.allowPhotoLibrary)
             }
@@ -60,22 +178,23 @@ class PhotoManager: NSObject {
     //        return thumbnail
     //    }
     
-//    private func fetchImagesFromGallery(collection: PHAssetCollection?) {
-//        U.UI {
-//            let fetchOption = PHFetchOptions()
-//            fetchOption.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
-//            fetchOption.predicate = NSPredicate(format: "mediaType == %d || mediaType == %d", PHAssetMediaType.image.rawValue, PHAssetMediaType.video.rawValue)
-//            if let collection = collection {
-//                self.resultPhotos = PHAsset.fetchAssets(in: collection, options: fetchOption)
-//            } else {
-//                self.resultPhotos = PHAsset.fetchAssets(with: fetchOption)
-//                self.collectionTitleTextLabel.text = L.cellTitles.allMedia
-//            }
-//            self.collectionView.reloadData()
-//        }
-//    }
+
+//    func statisticPictureAssetsAllSize(items: PHFetchResult) -> Int64 {
+//         var fileAllSizeB: Int64 = 0
+//         let requestOptions = PHImageRequestOptions.init()
+//         requestOptions.isSynchronous = true
+//             items.fetchResult?.enumerateObjects({ (object, index, isStop) in
+//                 let imageManager = PHImageManager.default()
+//                 imageManager.requestImageData(for: object as! PHAsset, options: requestOptions, resultHandler: { (imageData, dataUTI, orientation, info) in
+//                     if imageData != nil {
+//                                                  fileAllSizeB += Int64(imageData!.count); // image size, unit B
+//                     }
+//                 })
+//             })
+//         }
+//         
+//         return fileAllSizeB
 //}
-  
     
 
     
@@ -138,6 +257,111 @@ class PhotoManager: NSObject {
     }
 }
 
+extension PHAsset {
+    
+    public func getSimilarTimeStampAssets(in assetFetchResult: PHFetchResult<PHAsset>, comparing asset: PHAsset, interval: Double ) -> [PHAsset] {
+           
+           var suffix: [PHAsset] = []
+           var prefix: [PHAsset] = []
+           var assets: [PHAsset] = []
+           
+           let index = assetFetchResult.index(of: asset)
+           
+           for i in 0..<assetFetchResult.count {
+               let asset = assetFetchResult[i]
+               assets.append(asset)
+           }
+           
+           prefix = Array(assets.prefix(upTo: index))
+           suffix = Array(assets.suffix(from: index))
+           
+           let alternateSuffix = getAlternatesIn(suffix: suffix, compare: asset, interval: interval)
+           let alternatePrefix = getAlternatesIn(prefix: prefix, compare: asset, interval: interval)
+           
+           ///Alternate results?
+           return self.mergeFunction(alternateSuffix, alternatePrefix)
+       }
+       
+       /// This needs to live in other place, like an array extension
+       private func mergeFunction<T>(_ one: [T], _ two: [T]) -> [T] {
+           let commonLength = min(one.count, two.count)
+           return zip(one, two).flatMap { [$0, $1] }
+               + one.suffix(from: commonLength)
+               + two.suffix(from: commonLength)
+       }
+    
+    private func getAlternatesIn(prefix: [PHAsset], compare asset: PHAsset, interval: Double) -> [PHAsset] {
+            
+            let staticAssetCreationTime = asset.creationDate?.timeIntervalSince1970
+            var startingTime: TimeInterval = asset.creationDate!.timeIntervalSince1970
+            print("startingTime date - original from asset \(asset.creationDate!)")
+            
+            let _ = prefix.reversed().map {
+                print("prefix date asset \(String(describing: $0.creationDate))")
+            }
+            
+            var filteredAssets: [PHAsset] = []
+            
+            for localAsset in prefix.reversed() {
+                if startingTime - localAsset.creationDate!.timeIntervalSince1970 < interval {
+                    filteredAssets.append(localAsset)
+                    print("added From prefix - \(localAsset.creationDate!)")
+                } else {
+                    print("not added From prefix - \(localAsset.creationDate!)")
+                }
+                startingTime = localAsset.creationDate!.timeIntervalSince1970
+                let minPeriodInterval = staticAssetCreationTime! - startingTime
+                if minPeriodInterval > 40 { //40 seconds window?
+                    print("startingTime is \(localAsset.creationDate!) staticAssetCreationTime is \(String(describing: asset.creationDate)) rest is  \(minPeriodInterval)")
+                    break
+                }
+            }
+            return filteredAssets
+        }
+    
+    private func getAlternatesIn(suffix: [PHAsset], compare asset: PHAsset, interval: Double) -> [PHAsset] {
+         
+         let staticAssetCreationTime = asset.creationDate?.timeIntervalSince1970
+         var startingTime: TimeInterval = asset.creationDate!.timeIntervalSince1970
+         print("startingTime date - original from asset \(asset.creationDate!)")
+         
+         let _ = suffix.map {
+             print("sufix date asset \(String(describing: $0.creationDate))")
+         }
+         var filteredAssets: [PHAsset] = []
+         for asset in suffix {
+             if asset.creationDate!.timeIntervalSince1970 - startingTime < interval {
+                 filteredAssets.append(asset)
+                 print("added From sufix -\(asset.creationDate!)")
+             } else {
+                 print("not added From sufix - \(asset.creationDate!)")
+             }
+             startingTime = asset.creationDate!.timeIntervalSince1970
+             let minPeriodInterval = startingTime - staticAssetCreationTime!
+             if  minPeriodInterval > 40 { // 40 seconds window?
+                 print("startingTime is \(startingTime) staticAssetCreationTime is \(staticAssetCreationTime!) rest is  \(startingTime - staticAssetCreationTime!)")
+                 break
+             }
+         }
+         return filteredAssets
+     }
+    
+    func getAlternatePhotos() -> [PHAsset] {
+          
+          /// get the collection of the asset to avoid fetching all photos in the library
+        let collectionFetchResult = PHAssetCollection.fetchAssetCollectionsContaining(self, with: .smartAlbum, options: nil)
+          
+          let options = PHFetchOptions()
+          options.sortDescriptors = [NSSortDescriptor.init(key: "creationDate", ascending: true)]
+          guard let collection =  collectionFetchResult.firstObject else { return [] }
+          print("Collection Localized title \(String(describing: collection.localizedTitle))")
+          let assetsFetchResult = PHAsset.fetchAssets(in: collection, options: options)
+          let filteredPhotos = getSimilarTimeStampAssets(in: assetsFetchResult, comparing: self, interval: 100)
+          return filteredPhotos
+      }
+      
+}
+
 extension PhotoManager: PHPhotoLibraryChangeObserver {
     
     
@@ -148,6 +372,16 @@ extension PhotoManager: PHPhotoLibraryChangeObserver {
         }
     }
 }
+
+extension PhotoManager {
+    
+
+  
+     
+}
+
+
+
 
 //
 //func photoLibraryDidChange(_ changeInstance: PHChange) {
@@ -254,7 +488,7 @@ extension PhotoManager: PHPhotoLibraryChangeObserver {
 ////  PHAsset+ImportData.swift
 ////  Photo Safe
 ////
-////  Created by mac on 19.08.2020.
+////  Created by alexey sorochan on 19.08.2020.
 ////  Copyright © 2020 iMac_3. All rights reserved.
 ////
 //
