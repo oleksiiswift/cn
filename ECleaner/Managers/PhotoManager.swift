@@ -45,13 +45,12 @@ class PhotoManager: NSObject {
                     debugPrint("selfie count \(selfie.count)")
                 }
                 
-                
                 self.loadScreenShots { screens in
                     debugPrint("screen shots \(screens.count)")
                 }
                 
-                self.loadSimmilarLivePhotos { groups in
-                    debugPrint("simmilar live Phooto groups")
+                self.loadSimilarLivePhotos { groups in
+                    debugPrint("similar live Phooto groups")
                     
                     debugPrint(groups.count)
                     
@@ -61,12 +60,17 @@ class PhotoManager: NSObject {
                     }
                 }
                 
-                self.loadSimmilarPhotos { groups in
-                    debugPrint("simmilar group")
+                self.loadDuplicatePhotos { group in
+                    debugPrint("duplicate grup")
+                    debugPrint(group.count)
+                }
+//
+                self.loadSimilarPhotos { groups in
+                    debugPrint("similar group")
                     debugPrint(groups.count)
                     
                     for i in groups {
-                        debugPrint("simmilar photos")
+                        debugPrint("similar photos")
                         debugPrint(i.assets.count)
                     }
                 }
@@ -116,52 +120,70 @@ class PhotoManager: NSObject {
         }
     }
     
-    public func loadSimmilarPhotos(from dataFrom: String = "01-01-1970", to dateTo: String = "01-01-2666", completionHandler: @escaping ((_ assets: [PhassetGroup]) -> Void)) {
+    public func calculateSpace(completionHandler: @escaping (_ spaceIn: Int64) -> Void) {
+        var fileSize: Int64 = 0
         
-        fetchManager.fetchFromGallery(from: dataFrom, to: dateTo, collectiontype: .smartAlbumUserLibrary, by: PHAssetMediaType.image.rawValue) { photoGallery in
-            U.BG {
-                var photos: [OSTuple<NSString, NSData>] = []
-                
-                if photoGallery.count == 0 {
-                    U.UI {
-                        completionHandler([])
-                    }
-                }
-                
-                for photoPos in 1...photoGallery.count {
-                    debugPrint("loading")
-                    debugPrint("photoposition \(photoPos)")
-                    let image = self.fetchManager.getThumbnail(from: photoGallery[photoPos - 1], size: CGSize(width: 150, height: 150))
-                    if let data = image.jpegData(compressionQuality: 0.8) {
-                        let tuple = OSTuple<NSString, NSData>(first: "image\(photoPos)" as NSString, andSecond: data as NSData)
-                        photos.append(tuple)
-                    }
-                }
-                self.getSimmilarTuples(for: photos, photosInGallery: photoGallery) { simmilarPhotos in
-                    completionHandler(simmilarPhotos)
-                }
+        U.BG {
+            self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumUserLibrary, by: PHAssetMediaType.image.rawValue) { result in
+                fileSize += self.fetchManager.calculateAllAssetsSize(result: result)
+            }
+            
+            self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumVideos, by: PHAssetMediaType.video.rawValue) { result in
+                fileSize += self.fetchManager.calculateAllAssetsSize(result: result)
+            }
+            
+            U.UI {
+                completionHandler(fileSize)
             }
         }
     }
     
-    public func loadSimmilarLivePhotos(from dataFrom: String = "01-01-1970", to dateTo: String = "01-01-2666", completionHandler: @escaping ((_ assets: [PhassetGroup]) -> Void)) {
-        
-        fetchManager.fetchFromGallery(from: dataFrom, to: dateTo, collectiontype: .smartAlbumLivePhotos, by: PHAssetMediaType.image.rawValue) { livePhotoGallery in
+    
+//    MARK: - find duplicates in library -
+    public func loadDuplicatePhotos(from dateFrom: String = "01-01-1970", to dateTo: String = "01-01-2666", completionHandler: @escaping ((_ assets: [PhassetGroup]) -> Void)) {
+        fetchManager.fetchFromGallery(from: dateFrom, to: dateTo, collectiontype: .smartAlbumUserLibrary, by: PHAssetMediaType.image.rawValue) { photosInGallery in
+            
+            var group: [PhassetGroup] = []
+            var containsAdd: [Int] = []
+            var duplicatesPhotos: [(asset: PHAsset, date: Int64, imageSize: Int64)] = []
+            
             U.BG {
-                var livePhotos: [OSTuple<NSString, NSData>] = []
-                
-                if livePhotoGallery.count != 0 {
+                if photosInGallery.count != 0 {
                     
-                    for livePosition in 1...livePhotoGallery.count {
-                        let image = self.fetchManager.getThumbnail(from: livePhotoGallery[livePosition - 1], size: CGSize(width: 150, height: 150))
-                        if let data = image.jpegData(compressionQuality: 0.8) {
-                            let tuple = OSTuple<NSString, NSData>(first: "image\(livePosition)" as NSString, andSecond: data as NSData)
-                            livePhotos.append(tuple)
+                    for index in 1...photosInGallery.count {
+                        debugPrint("index preocessing duplicate")
+                        debugPrint("index \(index)")
+                        duplicatesPhotos.append((asset: photosInGallery[index - 1], date: Int64(photosInGallery[index - 1].creationDate!.timeIntervalSince1970), imageSize: photosInGallery[index - 1].imageSize))
+                    }
+                    
+                    duplicatesPhotos.sort { duplicatePhotoNumberOne, duplicatePhotoNumberTwo in
+                        return duplicatePhotoNumberOne.date > duplicatePhotoNumberTwo.date
+                    }
+                    
+                    for index in 0...duplicatesPhotos.count - 1 {
+                        var duplicateIndex = index + 1
+                        if containsAdd.contains(index) { continue }
+                        var duplicate: [PHAsset] = []
+                        
+                        if (duplicateIndex < duplicatesPhotos.count && abs(duplicatesPhotos[index].date - duplicatesPhotos[duplicateIndex].date) <= 10) {
+                            duplicate.append(duplicatesPhotos[index].asset)
+                            containsAdd.append(index)
+                            repeat {
+                                if containsAdd.contains(duplicateIndex) {
+                                    continue
+                                }
+                                duplicate.append(duplicatesPhotos[duplicateIndex].asset)
+                                containsAdd.append(duplicateIndex)
+                                duplicateIndex += 1
+                            } while duplicateIndex < duplicatesPhotos.count && abs(duplicatesPhotos[index].date - duplicatesPhotos[duplicateIndex].date) <= 10
+                        }
+                        if duplicate.count != 0 {
+                            group.append(PhassetGroup(name: "", assets: duplicate))
                         }
                     }
                     
-                    self.getSimmilarTuples(for: livePhotos, photosInGallery: livePhotoGallery) { simmilarLifePhotos in
-                        completionHandler(simmilarLifePhotos)
+                    U.UI {
+                        completionHandler(group)
                     }
                 } else {
                     U.UI {
@@ -172,49 +194,109 @@ class PhotoManager: NSObject {
         }
     }
     
-    private func getSimmilarTuples(for photos: [OSTuple<NSString, NSData>], photosInGallery: PHFetchResult<PHAsset>, completionHandler: @escaping ([PhassetGroup]) -> Void){
+    
+//    MARK: - simmilar photo check
+    public func loadSimilarPhotos(from dataFrom: String = "01-01-1970", to dateTo: String = "01-01-2666", completionHandler: @escaping ((_ assets: [PhassetGroup]) -> Void)) {
         
-        var simmilarPhotosCount: [Int] = []
-        var simmilarGroup: [PhassetGroup] = []
-        let simmilarIDS = OSImageHashing.sharedInstance().similarImages(with: OSImageHashingQuality.high, forImages: photos)
+        fetchManager.fetchFromGallery(from: dataFrom, to: dateTo, collectiontype: .smartAlbumUserLibrary, by: PHAssetMediaType.image.rawValue) { photoGallery in
+            U.BG {
+                var photos: [OSTuple<NSString, NSData>] = []
+                
+                if photoGallery.count == 0 {
+                    U.UI {
+                        completionHandler([])
+                    }
+                }
+            
+                for photoPos in 1...photoGallery.count {
+                    debugPrint("loading Similar")
+                    debugPrint("photoposition \(photoPos)")
+                    let image = self.fetchManager.getThumbnail(from: photoGallery[photoPos - 1], size: CGSize(width: 150, height: 150))
+                    if let data = image.jpegData(compressionQuality: 0.8) {
+                        let tuple = OSTuple<NSString, NSData>(first: "image\(photoPos)" as NSString, andSecond: data as NSData)
+                        photos.append(tuple)
+                    }
+                }
+                self.getSimilarTuples(for: photos, photosInGallery: photoGallery) { similarPhotos in
+                    completionHandler(similarPhotos)
+                }
+            }
+        }
+    }
+    
+    
+//    MARK: - load simmiliar live photo -
+    public func loadSimilarLivePhotos(from dataFrom: String = "01-01-1970", to dateTo: String = "01-01-2666", completionHandler: @escaping ((_ assets: [PhassetGroup]) -> Void)) {
+        
+        fetchManager.fetchFromGallery(from: dataFrom, to: dateTo, collectiontype: .smartAlbumLivePhotos, by: PHAssetMediaType.image.rawValue) { livePhotoGallery in
+            U.BG {
+                var livePhotos: [OSTuple<NSString, NSData>] = []
+                
+                if livePhotoGallery.count != 0 {
+                    for livePosition in 1...livePhotoGallery.count {
+                        let image = self.fetchManager.getThumbnail(from: livePhotoGallery[livePosition - 1], size: CGSize(width: 150, height: 150))
+                        if let data = image.jpegData(compressionQuality: 0.8) {
+                            let tuple = OSTuple<NSString, NSData>(first: "image\(livePosition)" as NSString, andSecond: data as NSData)
+                            livePhotos.append(tuple)
+                        }
+                    }
+                    
+                    self.getSimilarTuples(for: livePhotos, photosInGallery: livePhotoGallery) { similarLifePhotos in
+                        completionHandler(similarLifePhotos)
+                    }
+                } else {
+                    U.UI {
+                        completionHandler([])
+                    }
+                }
+            }
+        }
+    }
+    
+    
+    private func getSimilarTuples(for photos: [OSTuple<NSString, NSData>], photosInGallery: PHFetchResult<PHAsset>, completionHandler: @escaping ([PhassetGroup]) -> Void){
+        
+        var similarPhotosCount: [Int] = []
+        var similarGroup: [PhassetGroup] = []
+        let similarIDS = OSImageHashing.sharedInstance().similarImages(with: OSImageHashingQuality.high, forImages: photos)
         
         U.UI {
-            guard simmilarIDS.count >= 1 else { completionHandler([])
-                debugPrint("zero simmilar IDS")
+            guard similarIDS.count >= 1 else { completionHandler([])
+                debugPrint("zero similar IDS")
                 return
             }
             
-            for currentPosition in 1...simmilarIDS.count {
-                let simmilarTuple = simmilarIDS[currentPosition - 1]
+            for currentPosition in 1...similarIDS.count {
+                let similarTuple = similarIDS[currentPosition - 1]
                 var group: [PHAsset] = []
                 
-                debugPrint("checkSimmilar")
+                debugPrint("checkSimilar")
                 debugPrint("position \(currentPosition)")
                 
                 
-                if let first = simmilarTuple.first as String?, let second = simmilarTuple.second as String? {
+                if let first = similarTuple.first as String?, let second = similarTuple.second as String? {
                     let firstInteger = first.replacingStringAndConvertToIntegerForImage() - 1
                     let secondInteger = second.replacingStringAndConvertToIntegerForImage() - 1
                     debugPrint(first)
                     debugPrint(second)
                     
                     if abs(secondInteger - firstInteger) >= 10 { continue }
-                    if !simmilarPhotosCount.contains(firstInteger) {
-                        simmilarPhotosCount.append(firstInteger)
+                    if !similarPhotosCount.contains(firstInteger) {
+                        similarPhotosCount.append(firstInteger)
                         group.append(photosInGallery[firstInteger])
                     }
                     
-                    if !simmilarPhotosCount.contains(secondInteger) {
-                        simmilarPhotosCount.append(secondInteger)
+                    if !similarPhotosCount.contains(secondInteger) {
+                        similarPhotosCount.append(secondInteger)
                         group.append(photosInGallery[secondInteger])
                     }
                     
-                    simmilarIDS.filter({
+                    similarIDS.filter({
                                         $0.first != nil && $0.second != nil}).filter({
-                                                                                        $0.first == simmilarTuple.first ||
-                                                                                            $0.second == simmilarTuple.second ||
-                                                                                            $0.second == simmilarTuple.second ||
-                                                                                            $0.second == simmilarTuple.first}).forEach ({ tuple in
+                                                                                        $0.first == similarTuple.first ||
+                                                                                            $0.second == similarTuple.second ||
+                                                                                            $0.second == similarTuple.second ||
+                                                                                            $0.second == similarTuple.first}).forEach ({ tuple in
                                                                                                 if let first = tuple.first as String?, let second = tuple.second as String? {
                                                                                                     let firstInt = first.replacingStringAndConvertToIntegerForImage() - 1
                                                                                                     let socondInt = second.replacingStringAndConvertToIntegerForImage() - 1
@@ -226,13 +308,13 @@ class PhotoManager: NSObject {
                                                                                                     debugPrint(first)
                                                                                                     debugPrint(second)
                                                                                                     
-                                                                                                    if !simmilarPhotosCount.contains(firstInt) {
-                                                                                                        simmilarPhotosCount.append(firstInt)
+                                                                                                    if !similarPhotosCount.contains(firstInt) {
+                                                                                                        similarPhotosCount.append(firstInt)
                                                                                                         group.append(photosInGallery[firstInt])
                                                                                                     }
                                                                                                     
-                                                                                                    if !simmilarPhotosCount.contains(socondInt) {
-                                                                                                        simmilarPhotosCount.append(socondInt)
+                                                                                                    if !similarPhotosCount.contains(socondInt) {
+                                                                                                        similarPhotosCount.append(socondInt)
                                                                                                         group.append(photosInGallery[socondInt])
                                                                                                     }
                                                                                                 } else {
@@ -241,17 +323,15 @@ class PhotoManager: NSObject {
                                                                                                 
                                                                                             })
                     if group.count >= 2 {
-                        simmilarGroup.append(PhassetGroup(name: "", assets: group))
+                        similarGroup.append(PhassetGroup(name: "", assets: group))
                     }
                 }
             }
-            completionHandler(simmilarGroup)
+            completionHandler(similarGroup)
         }
     }
     
-    
-    
-    
+//    MARK: - load selfies -
     public func loadSelfiePhotos(_ completionHandler: @escaping ((_ assets: [PHAsset]) -> Void)) {
         
         fetchManager.fetchFromGallery(collectiontype: .smartAlbumSelfPortraits, by: PHAssetMediaType.image.rawValue) { selfiesInLibrary in
@@ -276,6 +356,7 @@ class PhotoManager: NSObject {
         }
     }
     
+//    MARK: - load screenshots -
     public func loadScreenShots(from dataFrom: String = "01-01-1970", to dateTo: String = "01-01-2666", completionHandler: @escaping ((_ assets: [PHAsset]) -> Void)) {
         
         fetchManager.fetchFromGallery(from: dataFrom, to: dateTo, collectiontype: .smartAlbumScreenshots, by: PHAssetMediaType.image.rawValue) { screensShotsLibrary in
@@ -300,7 +381,6 @@ class PhotoManager: NSObject {
         }
     }
 }
-
 
 
 extension PhotoManager: PHPhotoLibraryChangeObserver {
@@ -399,26 +479,6 @@ extension PhotoManager {
         
     }
 }
-
-
-
-
-//    func statisticPictureAssetsAllSize(items: PHFetchResult) -> Int64 {
-//         var fileAllSizeB: Int64 = 0
-//         let requestOptions = PHImageRequestOptions.init()
-//         requestOptions.isSynchronous = true
-//             items.fetchResult?.enumerateObjects({ (object, index, isStop) in
-//                 let imageManager = PHImageManager.default()
-//                 imageManager.requestImageData(for: object as! PHAsset, options: requestOptions, resultHandler: { (imageData, dataUTI, orientation, info) in
-//                     if imageData != nil {
-//                                                  fileAllSizeB += Int64(imageData!.count); // image size, unit B
-//                     }
-//                 })
-//             })
-//         }
-//
-//         return fileAllSizeB
-//}
 
 
 
