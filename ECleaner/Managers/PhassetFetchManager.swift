@@ -8,9 +8,11 @@
 import Photos
 import UIKit
 
+typealias SDKey = SortingDesriptionKey
 enum SortingDesriptionKey {
     case creationDate
     case modification
+    case mediaType
     case burstIdentifier
     
     var value: String {
@@ -22,24 +24,53 @@ enum SortingDesriptionKey {
                 return "modificationDate"
             case .burstIdentifier:
                 return "burstIdentifier"
+            case .mediaType:
+                return "mediaType"
         }
     }
 }
-
-
 
 class PHAssetFetchManager {
     
     static let shared = PHAssetFetchManager()
     
-    public func fetchAssets(by type: Int) -> PHFetchResult<PHAsset> {
+    
+    public func fetchFromGallery(from dateFrom: String = "01-01-1970", to dateTo: String = "01-01-2666", collectiontype: PHAssetCollectionSubtype, by type: Int, completionHandler: @escaping ((_ result: PHFetchResult<PHAsset>) -> Void)) {
+        let fetchOptions = PHFetchOptions()
+    
+        let albumPhoto: PHFetchResult<PHAssetCollection> = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: collectiontype, options: fetchOptions)
+        
+        fetchOptions.sortDescriptors = [NSSortDescriptor(key: SortingDesriptionKey.creationDate.value, ascending: false)]
+        fetchOptions.predicate = NSPredicate(
+            format: "\(SDKey.mediaType.value) = %d AND (\(SDKey.creationDate.value) >= %@) AND (\(SDKey.creationDate.value) <= %@)",
+            type,
+            dateFrom.NSDateConverter(format: C.dateFormat.dmy),
+            dateTo.NSDateConverter(format: C.dateFormat.dmy)
+        )
+        albumPhoto.enumerateObjects({(collection, index, object) in
+            completionHandler(PHAsset.fetchAssets(in: collection, options: fetchOptions))
+        })
+    }
+    
+    
+    public func fetchPhotoCount(from dateFrom: String = "01-01-1970", to dateTo: String = "01-01-2666", completionHandler: @escaping ((_ photoCount: Int) -> Void)) {
+        fetchFromGallery(from: dateFrom, to: dateTo, collectiontype: .smartAlbumUserLibrary, by: PHAssetMediaType.image.rawValue) { libraryResult in
+            completionHandler(libraryResult.count)
+        }
+    }
+}
+
+extension PHAssetFetchManager {
+    
+    
+    private func fetchAssets(by type: Int) -> PHFetchResult<PHAsset> {
         let fetchOption = PHFetchOptions()
         fetchOption.sortDescriptors = [NSSortDescriptor(key: SortingDesriptionKey.creationDate.value, ascending: false)]
         fetchOption.predicate = NSPredicate(format: "mediaType == %d", type)
         return PHAsset.fetchAssets(with: fetchOption)
     }
     
-    public func fetchAssetsSubtipe(by type: UInt) -> PHFetchResult<PHAsset> {
+    private func fetchAssetsSubtipe(by type: UInt) -> PHFetchResult<PHAsset> {
         let fetchOption = PHFetchOptions()
         fetchOption.sortDescriptors = [NSSortDescriptor(key: SortingDesriptionKey.creationDate.value, ascending: false)]
         fetchOption.predicate = NSPredicate(format: "(mediaSubtype & %d) != 0", type)
@@ -49,7 +80,7 @@ class PHAssetFetchManager {
     
     
 //    MARK: fetch assets from collection
-    public func fetchImagesFromGallery(collection: PHAssetCollection?) -> PHFetchResult<PHAsset> {
+    private func fetchImagesFromGallery(collection: PHAssetCollection?) -> PHFetchResult<PHAsset> {
         let fetchOption = PHFetchOptions()
         fetchOption.sortDescriptors = [NSSortDescriptor(key: SortingDesriptionKey.creationDate.value, ascending: false)]
         fetchOption.predicate = NSPredicate(format: "mediaType == %d || mediaType == %d", PHAssetMediaType.image.rawValue, PHAssetMediaType.video.rawValue)
@@ -72,7 +103,7 @@ class PHAssetFetchManager {
         manager.requestImage(for: asset, targetSize: size, contentMode: .aspectFill, options: option, resultHandler: {(result, info)->Void in
             if let image = result {
             thumbnail = image
-                                }
+            }
             thumbnail = result!
         })
         return thumbnail
@@ -114,3 +145,17 @@ class PHAssetFetchManager {
     }
 }
 
+extension PHAsset {
+    
+    var imageSize: Int64 {
+        let resources = PHAssetResource.assetResources(for: self)
+        var fileDiskSpace: Int64 = 0
+        
+        if let resource = resources.first {
+            if let unsignedInt64 = resource.value(forKey: "fileSize") as? CLong {            
+                fileDiskSpace = Int64(bitPattern: UInt64(unsignedInt64))
+            }
+        }
+        return fileDiskSpace
+    }
+}

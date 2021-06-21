@@ -4,30 +4,46 @@ PODS:
     - cisua/Core (= 0.9.2)
   - cisua/Core (0.9.2):
     - AppsFlyerFramework (~> 5.1)
+  - CocoaImageHashing (1.7.0)
+  - SwiftDate (6.3.1)
   - SwiftMessages (9.0.2):
     - SwiftMessages/App (= 9.0.2)
   - SwiftMessages/App (9.0.2)
+  - SwiftyContacts (3.0.16)
   - SwiftyStoreKit (0.16.1)
+  - SwiftyUserDefaults (5.3.0)
 
 DEPENDENCIES:
   - cisua
+  - CocoaImageHashing
+  - SwiftDate
   - SwiftMessages
+  - SwiftyContacts
   - SwiftyStoreKit
+  - SwiftyUserDefaults
 
 SPEC REPOS:
   "git@bitbucket.org:cisua/specs.git":
     - cisua
   https://github.com/CocoaPods/Specs.git:
     - AppsFlyerFramework
+    - CocoaImageHashing
+    - SwiftDate
     - SwiftMessages
+    - SwiftyContacts
     - SwiftyStoreKit
+    - SwiftyUserDefaults
 
 SPEC CHECKSUMS:
   AppsFlyerFramework: a511099f7bedbb1d5804d733c6152d6f8092c4fa
   cisua: 160dabfffb781d213e98edbda62f256095f549ec
+  CocoaImageHashing: 2c8efd6dd60f9030cd54086b34ffc48e927821c3
+  SwiftDate: 72d28954e8e1c6c1c0f917ccc8005e4f83c7d4b2
   SwiftMessages: 77b847d1405f99046ffbd0d856bc7d73e6892686
+  SwiftyContacts: c02b7908cfd18505c004a43162fd7b63218d2ba0
   SwiftyStoreKit: 6b9c08810269f030586dac1fae8e75871a82e84a
+  SwiftyUserDefaults: 63f80248cf5bfb3458825d9a78f2eb7e1293a040
 
-PODFILE CHECKSUM: 33150feb45450a7df5d49cf15169f1975c69f0c8
+PODFILE CHECKSUM: c608979d6e503372c837ff85332e9f7091e5c2c0
 
 COCOAPODS: 1.10.1

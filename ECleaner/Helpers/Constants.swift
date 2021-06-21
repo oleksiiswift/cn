@@ -7,6 +7,7 @@
 
 import Foundation
 
+typealias C = Constants
 class Constants {
     
     struct gadAdvertisementKey {
@@ -22,4 +23,10 @@ class Constants {
         static let gadTestKey = "ca-app-pub-3940256099942544/2934735716"
     }
     
+    
+    
+    
+    struct dateFormat {
+        static let dmy = "dd-MM-yyy"
+    }
 }

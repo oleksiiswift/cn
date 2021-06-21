@@ -9,9 +9,19 @@ target 'ECleaner' do
   use_modular_headers!
 
   # Pods for ECleaner
+  pod 'CocoaImageHashing'
   pod 'cisua'
   pod 'SwiftyStoreKit'
   pod 'SwiftMessages'
-#  pod 'Google-Mobile-Ads-SDK'
   
+  pod 'SwiftDate'
+  pod 'SwiftyUserDefaults'
+  pod 'SwiftyContacts'
+  
+  
+  
+#  pod 'Google-Mobile-Ads-SDK'
+
+
+
 end

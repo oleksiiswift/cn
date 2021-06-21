@@ -8,214 +8,74 @@
 import Foundation
 import PhotosUI
 import Photos
+import CocoaImageHashing
 
+class PhassetGroup {
+    var name: String
+    var assets: [PHAsset]
+    
+    init(name: String, assets: [PHAsset]) {
+        self.name = name
+        self.assets = assets
+    }
+}
 
 class PhotoManager: NSObject {
     
     private static let shared = PhotoManager()
     
-    public var photos: [PHAsset] = []
+    static var manager: PhotoManager {
+        return self.shared
+    }
+    
+    private var fetchManager = PHAssetFetchManager.shared
     
     public override init() {
         super.init()
         
         PHPhotoLibrary.shared().register(self)
     }
-    
-    static var manager: PhotoManager {
-        return self.shared
-    }
-    
+
     public func getPhotoLibrary() {
         
         photoLibraryRequestAuth { accessGranted in
             if accessGranted {
                 
-                let collection = PHAssetFetchManager.shared.fetchImagesFromGallery(collection: nil)
-                debugPrint("all")
-                debugPrint(collection.count)
-                
-                let imageCollection = PHAssetFetchManager.shared.fetchAssets(by: PHAssetMediaType.image.rawValue)
-                debugPrint("images")
-                debugPrint(imageCollection.count)
-                
-                let videoCollection = PHAssetFetchManager.shared.fetchAssets(by: PHAssetMediaType.video.rawValue)
-                debugPrint("video")
-                debugPrint(videoCollection.count)
-                
-                let livePhotosCollection = PHAssetFetchManager.shared.fetchAssetsSubtipe(by: PHAssetMediaSubtype.photoLive.rawValue)
-                debugPrint("live photo cout")
-                debugPrint(livePhotosCollection.count)
-                
-                let screenShots = PHAssetFetchManager.shared.fetchAssetsSubtipe(by: PHAssetMediaSubtype.photoScreenshot.rawValue)
-                debugPrint("screenshots")
-                debugPrint(screenShots.count)
-                
-                let videoStreamed = PHAssetFetchManager.shared.fetchAssetsSubtipe(by: PHAssetMediaSubtype.videoStreamed.rawValue)
-                debugPrint("videoStreamed")
-                debugPrint(videoStreamed.count)
-                
-                let videoTimelapse = PHAssetFetchManager.shared.fetchAssetsSubtipe(by: PHAssetMediaSubtype.videoTimelapse.rawValue)
-                debugPrint("videoTimelapse")
-                debugPrint(videoTimelapse.count)
-                
-         
-                
-                imageCollection.enumerateObjects({(object: AnyObject!, count: Int, stop: UnsafeMutablePointer<ObjCBool>) in
-                    if let fetchObject = object as? PHAsset {
-                        self.photos.append(fetchObject)
-                    }
-                })
-                
-                var simmilar: [[PHAsset]] = []
-                
-                for n in self.photos {
-                    for z in self.photos {
-                        var p: [PHAsset] = []
-                        if z != n {
-                            if z.creationDate == n.creationDate {
-                                debugPrint(z.creationDate)
-                                p.append(n)
-                                p.append(z)
-                            }
-                        }
-                        if !p.isEmpty {
-                            simmilar.append(p)
-                        }
-                    }
+                self.loadSelfiePhotos { selfie in
+                    debugPrint("selfie count \(selfie.count)")
                 }
                 
                 
-                debugPrint(simmilar.count)
+                self.loadScreenShots { screens in
+                    debugPrint("screen shots \(screens.count)")
+                }
                 
-                
-                for s in simmilar {
-                    debugPrint("simmirial for date objects")
-                    for someSimm in s {
-                        debugPrint(someSimm.burstIdentifier)
-                        debugPrint(someSimm.localIdentifier)
-                        debugPrint(someSimm.location)
+                self.loadSimmilarLivePhotos { groups in
+                    debugPrint("simmilar live Phooto groups")
+                    
+                    debugPrint(groups.count)
+                    
+                    for i in groups {
+                        debugPrint("detect")
+                        debugPrint(i.assets.count)
                     }
                 }
                 
+                self.loadSimmilarPhotos { groups in
+                    debugPrint("simmilar group")
+                    debugPrint(groups.count)
+                    
+                    for i in groups {
+                        debugPrint("simmilar photos")
+                        debugPrint(i.assets.count)
+                    }
+                }
                 
-                debugPrint("end")
-                
-                
-                
-//                for p in self.photos {
-//                    let ass = self.photos.filter {
-//
-//                        $0.creationDate == p.creationDate
-//                    }
-//
-//                    if !ass.isEmpty {
-//                        simmilar.append(ass)
-//                    }
-//                }
-//
-//
-//                for s in simmilar {
-//                    debugPrint(s.count)
-//                }
-                
-//                let z = self.photos.getDuplicates()
-//
-//
-//                for i in z {
-//                    debugPrint(i.creationDate)
-//                }
-                
-//
-//                for s in self.photos {
-//                    let g = s.getSimilarTimeStampAssets(in: imageCollection, comparing: s, interval: 40)
-//
-//                    if !g.isEmpty {
-//                        simmilar.append(g)
-//                    }
-//                }
-//
-//                debugPrint(simmilar.count)
-//                for h in simmilar {
-//
-//                    debugPrint(h.count)
-//
-//                    for p in h {
-//                        debugPrint(p.burstIdentifier)
-//                        debugPrint(p.creationDate)
-//                        debugPrint(p.localIdentifier)
-//                    }
-//                }
-                
-                
-
             } else {
                 AlertManager.showOpenSettingsAlert(.allowPhotoLibrary)
             }
         }
     }
-    
-
-    
-    //extension PHAsset {
-    //
-    ////    MARK: - get thumbnail image from camera roll -
-    //    func getThumbnail(size: CGSize) -> UIImage {
-    //        var thumbnail = UIImage()
-    //        let manager = PHImageManager.default()
-    //        let option = PHImageRequestOptions()
-    //        option.isSynchronous = true
-    //        manager.requestImage(for: self,
-    //                             targetSize: size,
-    //                             contentMode: .aspectFill,
-    //                             options: option,
-    //                             resultHandler: {(result, info)->Void in
-    //                                if let image = result {
-    //                                    thumbnail = image
-    //                                }
-    //            thumbnail = result!
-    //        })
-    //        return thumbnail
-    //    }
-    
-
-//    func statisticPictureAssetsAllSize(items: PHFetchResult) -> Int64 {
-//         var fileAllSizeB: Int64 = 0
-//         let requestOptions = PHImageRequestOptions.init()
-//         requestOptions.isSynchronous = true
-//             items.fetchResult?.enumerateObjects({ (object, index, isStop) in
-//                 let imageManager = PHImageManager.default()
-//                 imageManager.requestImageData(for: object as! PHAsset, options: requestOptions, resultHandler: { (imageData, dataUTI, orientation, info) in
-//                     if imageData != nil {
-//                                                  fileAllSizeB += Int64(imageData!.count); // image size, unit B
-//                     }
-//                 })
-//             })
-//         }
-//         
-//         return fileAllSizeB
-//}
-    
-
-    
-//    /extension PHAssetCollection {
-    //
-    //    func getCoverImageSize(_ size: CGSize) -> UIImage {
-    //        var image = UIImage()
-    //        let assets = PHAsset.fetchAssets(in: self, options: nil)
-    //        let asset = assets.firstObject
-    //        if let thumbImage = asset?.getThumbnail(size: size) {
-    //            image = thumbImage
-    //        }
-    //        return image
-    //    }
-    //
-    //    func hasAssets() -> Bool {
-    //        let assets = PHAsset.fetchAssets(in: self, options: nil)
-    //        return assets.count > 0
-    //    }
-    //}
-    
     
 //    MARK: - authentification
     private func photoLibraryRequestAuth(completion: @escaping (_ status: Bool) -> Void ) {
@@ -255,115 +115,195 @@ class PhotoManager: NSObject {
             }
         }
     }
+    
+    public func loadSimmilarPhotos(from dataFrom: String = "01-01-1970", to dateTo: String = "01-01-2666", completionHandler: @escaping ((_ assets: [PhassetGroup]) -> Void)) {
+        
+        fetchManager.fetchFromGallery(from: dataFrom, to: dateTo, collectiontype: .smartAlbumUserLibrary, by: PHAssetMediaType.image.rawValue) { photoGallery in
+            U.BG {
+                var photos: [OSTuple<NSString, NSData>] = []
+                
+                if photoGallery.count == 0 {
+                    U.UI {
+                        completionHandler([])
+                    }
+                }
+                
+                for photoPos in 1...photoGallery.count {
+                    debugPrint("loading")
+                    debugPrint("photoposition \(photoPos)")
+                    let image = self.fetchManager.getThumbnail(from: photoGallery[photoPos - 1], size: CGSize(width: 150, height: 150))
+                    if let data = image.jpegData(compressionQuality: 0.8) {
+                        let tuple = OSTuple<NSString, NSData>(first: "image\(photoPos)" as NSString, andSecond: data as NSData)
+                        photos.append(tuple)
+                    }
+                }
+                self.getSimmilarTuples(for: photos, photosInGallery: photoGallery) { simmilarPhotos in
+                    completionHandler(simmilarPhotos)
+                }
+            }
+        }
+    }
+    
+    public func loadSimmilarLivePhotos(from dataFrom: String = "01-01-1970", to dateTo: String = "01-01-2666", completionHandler: @escaping ((_ assets: [PhassetGroup]) -> Void)) {
+        
+        fetchManager.fetchFromGallery(from: dataFrom, to: dateTo, collectiontype: .smartAlbumLivePhotos, by: PHAssetMediaType.image.rawValue) { livePhotoGallery in
+            U.BG {
+                var livePhotos: [OSTuple<NSString, NSData>] = []
+                
+                if livePhotoGallery.count != 0 {
+                    
+                    for livePosition in 1...livePhotoGallery.count {
+                        let image = self.fetchManager.getThumbnail(from: livePhotoGallery[livePosition - 1], size: CGSize(width: 150, height: 150))
+                        if let data = image.jpegData(compressionQuality: 0.8) {
+                            let tuple = OSTuple<NSString, NSData>(first: "image\(livePosition)" as NSString, andSecond: data as NSData)
+                            livePhotos.append(tuple)
+                        }
+                    }
+                    
+                    self.getSimmilarTuples(for: livePhotos, photosInGallery: livePhotoGallery) { simmilarLifePhotos in
+                        completionHandler(simmilarLifePhotos)
+                    }
+                } else {
+                    U.UI {
+                        completionHandler([])
+                    }
+                }
+            }
+        }
+    }
+    
+    private func getSimmilarTuples(for photos: [OSTuple<NSString, NSData>], photosInGallery: PHFetchResult<PHAsset>, completionHandler: @escaping ([PhassetGroup]) -> Void){
+        
+        var simmilarPhotosCount: [Int] = []
+        var simmilarGroup: [PhassetGroup] = []
+        let simmilarIDS = OSImageHashing.sharedInstance().similarImages(with: OSImageHashingQuality.high, forImages: photos)
+        
+        U.UI {
+            guard simmilarIDS.count >= 1 else { completionHandler([])
+                debugPrint("zero simmilar IDS")
+                return
+            }
+            
+            for currentPosition in 1...simmilarIDS.count {
+                let simmilarTuple = simmilarIDS[currentPosition - 1]
+                var group: [PHAsset] = []
+                
+                debugPrint("checkSimmilar")
+                debugPrint("position \(currentPosition)")
+                
+                
+                if let first = simmilarTuple.first as String?, let second = simmilarTuple.second as String? {
+                    let firstInteger = first.replacingStringAndConvertToIntegerForImage() - 1
+                    let secondInteger = second.replacingStringAndConvertToIntegerForImage() - 1
+                    debugPrint(first)
+                    debugPrint(second)
+                    
+                    if abs(secondInteger - firstInteger) >= 10 { continue }
+                    if !simmilarPhotosCount.contains(firstInteger) {
+                        simmilarPhotosCount.append(firstInteger)
+                        group.append(photosInGallery[firstInteger])
+                    }
+                    
+                    if !simmilarPhotosCount.contains(secondInteger) {
+                        simmilarPhotosCount.append(secondInteger)
+                        group.append(photosInGallery[secondInteger])
+                    }
+                    
+                    simmilarIDS.filter({
+                                        $0.first != nil && $0.second != nil}).filter({
+                                                                                        $0.first == simmilarTuple.first ||
+                                                                                            $0.second == simmilarTuple.second ||
+                                                                                            $0.second == simmilarTuple.second ||
+                                                                                            $0.second == simmilarTuple.first}).forEach ({ tuple in
+                                                                                                if let first = tuple.first as String?, let second = tuple.second as String? {
+                                                                                                    let firstInt = first.replacingStringAndConvertToIntegerForImage() - 1
+                                                                                                    let socondInt = second.replacingStringAndConvertToIntegerForImage() - 1
+                                                                                                    
+                                                                                                    if abs(secondInteger - firstInteger) >= 10 {
+                                                                                                        return
+                                                                                                    }
+                                                                                                    
+                                                                                                    debugPrint(first)
+                                                                                                    debugPrint(second)
+                                                                                                    
+                                                                                                    if !simmilarPhotosCount.contains(firstInt) {
+                                                                                                        simmilarPhotosCount.append(firstInt)
+                                                                                                        group.append(photosInGallery[firstInt])
+                                                                                                    }
+                                                                                                    
+                                                                                                    if !simmilarPhotosCount.contains(socondInt) {
+                                                                                                        simmilarPhotosCount.append(socondInt)
+                                                                                                        group.append(photosInGallery[socondInt])
+                                                                                                    }
+                                                                                                } else {
+                                                                                                    return
+                                                                                                }
+                                                                                                
+                                                                                            })
+                    if group.count >= 2 {
+                        simmilarGroup.append(PhassetGroup(name: "", assets: group))
+                    }
+                }
+            }
+            completionHandler(simmilarGroup)
+        }
+    }
+    
+    
+    
+    
+    public func loadSelfiePhotos(_ completionHandler: @escaping ((_ assets: [PHAsset]) -> Void)) {
+        
+        fetchManager.fetchFromGallery(collectiontype: .smartAlbumSelfPortraits, by: PHAssetMediaType.image.rawValue) { selfiesInLibrary in
+            
+            U.BG {
+                var selfies: [PHAsset] = []
+                if selfiesInLibrary.count == 0 {
+                    U.UI {
+                        completionHandler([])
+                    }
+                    return
+                }
+                
+                for selfiePos in 1...selfiesInLibrary.count {
+                    selfies.append(selfiesInLibrary[selfiePos - 1])
+                }
+                
+                U.UI {
+                    completionHandler(selfies)
+                }
+            }
+        }
+    }
+    
+    public func loadScreenShots(from dataFrom: String = "01-01-1970", to dateTo: String = "01-01-2666", completionHandler: @escaping ((_ assets: [PHAsset]) -> Void)) {
+        
+        fetchManager.fetchFromGallery(from: dataFrom, to: dateTo, collectiontype: .smartAlbumScreenshots, by: PHAssetMediaType.image.rawValue) { screensShotsLibrary in
+            U.BG {
+                var screens: [PHAsset] = []
+                
+                if screensShotsLibrary.count == 0 {
+                    U.UI {
+                        completionHandler([])
+                    }
+                    return
+                }
+                
+                for screensPos in 1...screensShotsLibrary.count {
+                    screens.append(screensShotsLibrary[screensPos - 1])
+                }
+                
+                U.UI {
+                    completionHandler(screens)
+                }
+            }
+        }
+    }
 }
 
-extension PHAsset {
-    
-    public func getSimilarTimeStampAssets(in assetFetchResult: PHFetchResult<PHAsset>, comparing asset: PHAsset, interval: Double ) -> [PHAsset] {
-           
-           var suffix: [PHAsset] = []
-           var prefix: [PHAsset] = []
-           var assets: [PHAsset] = []
-           
-           let index = assetFetchResult.index(of: asset)
-           
-           for i in 0..<assetFetchResult.count {
-               let asset = assetFetchResult[i]
-               assets.append(asset)
-           }
-           
-           prefix = Array(assets.prefix(upTo: index))
-           suffix = Array(assets.suffix(from: index))
-           
-           let alternateSuffix = getAlternatesIn(suffix: suffix, compare: asset, interval: interval)
-           let alternatePrefix = getAlternatesIn(prefix: prefix, compare: asset, interval: interval)
-           
-           ///Alternate results?
-           return self.mergeFunction(alternateSuffix, alternatePrefix)
-       }
-       
-       /// This needs to live in other place, like an array extension
-       private func mergeFunction<T>(_ one: [T], _ two: [T]) -> [T] {
-           let commonLength = min(one.count, two.count)
-           return zip(one, two).flatMap { [$0, $1] }
-               + one.suffix(from: commonLength)
-               + two.suffix(from: commonLength)
-       }
-    
-    private func getAlternatesIn(prefix: [PHAsset], compare asset: PHAsset, interval: Double) -> [PHAsset] {
-            
-            let staticAssetCreationTime = asset.creationDate?.timeIntervalSince1970
-            var startingTime: TimeInterval = asset.creationDate!.timeIntervalSince1970
-            print("startingTime date - original from asset \(asset.creationDate!)")
-            
-            let _ = prefix.reversed().map {
-                print("prefix date asset \(String(describing: $0.creationDate))")
-            }
-            
-            var filteredAssets: [PHAsset] = []
-            
-            for localAsset in prefix.reversed() {
-                if startingTime - localAsset.creationDate!.timeIntervalSince1970 < interval {
-                    filteredAssets.append(localAsset)
-                    print("added From prefix - \(localAsset.creationDate!)")
-                } else {
-                    print("not added From prefix - \(localAsset.creationDate!)")
-                }
-                startingTime = localAsset.creationDate!.timeIntervalSince1970
-                let minPeriodInterval = staticAssetCreationTime! - startingTime
-                if minPeriodInterval > 40 { //40 seconds window?
-                    print("startingTime is \(localAsset.creationDate!) staticAssetCreationTime is \(String(describing: asset.creationDate)) rest is  \(minPeriodInterval)")
-                    break
-                }
-            }
-            return filteredAssets
-        }
-    
-    private func getAlternatesIn(suffix: [PHAsset], compare asset: PHAsset, interval: Double) -> [PHAsset] {
-         
-         let staticAssetCreationTime = asset.creationDate?.timeIntervalSince1970
-         var startingTime: TimeInterval = asset.creationDate!.timeIntervalSince1970
-         print("startingTime date - original from asset \(asset.creationDate!)")
-         
-         let _ = suffix.map {
-             print("sufix date asset \(String(describing: $0.creationDate))")
-         }
-         var filteredAssets: [PHAsset] = []
-         for asset in suffix {
-             if asset.creationDate!.timeIntervalSince1970 - startingTime < interval {
-                 filteredAssets.append(asset)
-                 print("added From sufix -\(asset.creationDate!)")
-             } else {
-                 print("not added From sufix - \(asset.creationDate!)")
-             }
-             startingTime = asset.creationDate!.timeIntervalSince1970
-             let minPeriodInterval = startingTime - staticAssetCreationTime!
-             if  minPeriodInterval > 40 { // 40 seconds window?
-                 print("startingTime is \(startingTime) staticAssetCreationTime is \(staticAssetCreationTime!) rest is  \(startingTime - staticAssetCreationTime!)")
-                 break
-             }
-         }
-         return filteredAssets
-     }
-    
-    func getAlternatePhotos() -> [PHAsset] {
-          
-          /// get the collection of the asset to avoid fetching all photos in the library
-        let collectionFetchResult = PHAssetCollection.fetchAssetCollectionsContaining(self, with: .smartAlbum, options: nil)
-          
-          let options = PHFetchOptions()
-          options.sortDescriptors = [NSSortDescriptor.init(key: "creationDate", ascending: true)]
-          guard let collection =  collectionFetchResult.firstObject else { return [] }
-          print("Collection Localized title \(String(describing: collection.localizedTitle))")
-          let assetsFetchResult = PHAsset.fetchAssets(in: collection, options: options)
-          let filteredPhotos = getSimilarTimeStampAssets(in: assetsFetchResult, comparing: self, interval: 100)
-          return filteredPhotos
-      }
-      
-}
+
 
 extension PhotoManager: PHPhotoLibraryChangeObserver {
-    
     
     func photoLibraryDidChange(_ changeInstance: PHChange) {
         U.UI {
@@ -372,38 +312,117 @@ extension PhotoManager: PHPhotoLibraryChangeObserver {
     }
 }
 
+
+
+
+
+
+
+
+
+
+
 extension PhotoManager {
     
-
-  
-     
+    private func loadTestingAssets() {
+      
+        let photoCollection = self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumUserLibrary, by: PHAssetMediaType.image.rawValue) { collection in
+            debugPrint("photo collection count")
+            debugPrint(collection.count)
+        }
+        
+        let selfiesCollection = self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumSelfPortraits, by: PHAssetMediaType.image.rawValue) { selfies in
+            debugPrint("some selfies count")
+            debugPrint(selfies.count)
+        }
+        
+        let livePhotoCollection = self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumLivePhotos, by: PHAssetMediaType.image.rawValue) { livePhoto in
+            debugPrint("some live count")
+            debugPrint(livePhoto.count)
+        }
+        
+        let screenShotsCollection = self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumScreenshots, by: PHAssetMediaType.image.rawValue) { screenShots in
+            debugPrint("some screens count")
+            debugPrint(screenShots.count)
+        }
+        
+        
+        let gifsCollection = self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumAnimated, by: PHAssetMediaType.image.rawValue) { gifs in
+            debugPrint("some gifs count")
+            debugPrint(gifs.count)
+        }
+        
+        let videoCollection = self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumVideos, by: PHAssetMediaType.video.rawValue) { video in
+            debugPrint("some video count")
+            debugPrint(video.count)
+        }
+        
+        
+        
+        
+        
+//                let collection = PHAssetFetchManager.shared.fetchImagesFromGallery(collection: nil)
+//                debugPrint("all")
+//                debugPrint(collection.count)
+//
+//                let imageCollection = PHAssetFetchManager.shared.fetchAssets(by: PHAssetMediaType.image.rawValue)
+//                debugPrint("images")
+//                debugPrint(imageCollection.count)
+//
+//                let videoCollection = PHAssetFetchManager.shared.fetchAssets(by: PHAssetMediaType.video.rawValue)
+//                debugPrint("video")
+//                debugPrint(videoCollection.count)
+//
+//                let livePhotosCollection = PHAssetFetchManager.shared.fetchAssetsSubtipe(by: PHAssetMediaSubtype.photoLive.rawValue)
+//                debugPrint("live photo cout")
+//                debugPrint(livePhotosCollection.count)
+//
+//                let screenShots = PHAssetFetchManager.shared.fetchAssetsSubtipe(by: PHAssetMediaSubtype.photoScreenshot.rawValue)
+//                debugPrint("screenshots")
+//                debugPrint(screenShots.count)
+//
+//                let videoStreamed = PHAssetFetchManager.shared.fetchAssetsSubtipe(by: PHAssetMediaSubtype.videoStreamed.rawValue)
+//                debugPrint("videoStreamed")
+//                debugPrint(videoStreamed.count)
+//
+//                let videoTimelapse = PHAssetFetchManager.shared.fetchAssetsSubtipe(by: PHAssetMediaSubtype.videoTimelapse.rawValue)
+//                debugPrint("videoTimelapse")
+//                debugPrint(videoTimelapse.count)
+        
+ 
+        
+//                imageCollection.enumerateObjects({(object: AnyObject!, count: Int, stop: UnsafeMutablePointer<ObjCBool>) in
+//                    if let fetchObject = object as? PHAsset {
+//                        self.photos.append(fetchObject)
+//                    }
+//                })
+        
+    }
 }
 
 
 
 
+//    func statisticPictureAssetsAllSize(items: PHFetchResult) -> Int64 {
+//         var fileAllSizeB: Int64 = 0
+//         let requestOptions = PHImageRequestOptions.init()
+//         requestOptions.isSynchronous = true
+//             items.fetchResult?.enumerateObjects({ (object, index, isStop) in
+//                 let imageManager = PHImageManager.default()
+//                 imageManager.requestImageData(for: object as! PHAsset, options: requestOptions, resultHandler: { (imageData, dataUTI, orientation, info) in
+//                     if imageData != nil {
+//                                                  fileAllSizeB += Int64(imageData!.count); // image size, unit B
+//                     }
+//                 })
+//             })
+//         }
 //
-//func photoLibraryDidChange(_ changeInstance: PHChange) {
-//
-//    ...
-//
-//    DispatchQueue.main.sync {
-//        let originalCount = fetchResult.count
-//        fetchResult = changes.fetchResultAfterChanges
-//        if changes.hasIncrementalChanges {
-//
-//
-//        } else {
-//            collectionView!.reloadData()
-//        }
-//
-//        ...
-//
-//    }
+//         return fileAllSizeB
 //}
 
-//
-//extension PHAssetCollection {
+
+
+//    /extension PHAssetCollection {
 //
 //    func getCoverImageSize(_ size: CGSize) -> UIImage {
 //        var image = UIImage()
@@ -421,136 +440,17 @@ extension PhotoManager {
 //    }
 //}
 
-//
-//extension PHAsset {
-//
-////    MARK: - get thumbnail image from camera roll -
-//    func getThumbnail(size: CGSize) -> UIImage {
-//        var thumbnail = UIImage()
-//        let manager = PHImageManager.default()
-//        let option = PHImageRequestOptions()
-//        option.isSynchronous = true
-//        manager.requestImage(for: self,
-//                             targetSize: size,
-//                             contentMode: .aspectFill,
-//                             options: option,
-//                             resultHandler: {(result, info)->Void in
-//                                if let image = result {
-//                                    thumbnail = image
-//                                }
-//            thumbnail = result!
-//        })
-//        return thumbnail
-//    }
-//
-////    MARK: - get image from camera roll -
-//    func getImage(complition: @escaping (UIImage) -> Void) {
-//        var image = UIImage()
-//        let manager = PHImageManager.default()
-//        let option = PHImageRequestOptions()
-//
-//        manager.requestImage(for: self,
-//                             targetSize: PHImageManagerMaximumSize,
-//                             contentMode: .default,
-//                             options: option,
-//                             resultHandler: {(result, info)->Void in
-//            image = result!
-//            complition(image)
-//        })
-//    }
-//
-////    MARK: - get image from asset
-//    func getImageFromPHAsset() -> UIImage {
-//        var image = UIImage()
-//        let manager = PHImageManager.default()
-//        let requestOptions = PHImageRequestOptions()
-//        requestOptions.resizeMode = PHImageRequestOptionsResizeMode.exact
-//        requestOptions.deliveryMode = PHImageRequestOptionsDeliveryMode.highQualityFormat
-//        requestOptions.isSynchronous = true
-//
-//        if self.mediaType == PHAssetMediaType.image {
-//            manager.requestImage(for: self,
-//                                 targetSize: PHImageManagerMaximumSize,
-//                                 contentMode: .default,
-//                                 options: requestOptions) { (pickerImage, info) in
-//                if let pckrImage = pickerImage {
-//                    image = pckrImage
-//                }
-//            }
-//        }
-//        return image
-//    }
-//}
 
 
-////
-////  PHAsset+ImportData.swift
-////  Photo Safe
-////
-////  Created by alexey sorochan on 19.08.2020.
-////  Copyright © 2020 iMac_3. All rights reserved.
-////
-//
-//import Photos
-//
-//extension PHAsset {
-//
-////    MARK: - import image as Data -
-//    func getImageDataFromAsset(complition: @escaping (_ data: Data?) -> Void) {
-//           let manager = PHImageManager.default()
-//           let requestOptions = PHImageRequestOptions()
-//           requestOptions.resizeMode = PHImageRequestOptionsResizeMode.exact
-//           requestOptions.deliveryMode = PHImageRequestOptionsDeliveryMode.highQualityFormat
-//           requestOptions.isSynchronous = true
-//           manager.requestImageData(for: self, options: requestOptions) { (data, string, orientation, info) in
-//               if let imageData = data {
-//                   complition(imageData as Data)
-//               } else {
-//                   complition(nil)
-//               }
-//           }
-//       }
-//
-////    MARK: - import video as AVAsset -
-//    func getVideoDataFromAsset(complition: @escaping (_ asset: AVAsset?) -> Void) {
-//        let manager = PHImageManager.default()
-//        let requestOptions = PHVideoRequestOptions()
-//        requestOptions.deliveryMode = PHVideoRequestOptionsDeliveryMode.highQualityFormat
-//
-//        manager.requestAVAsset(forVideo: self, options: requestOptions) { (asset, audioMix, info) in
-//            if let videoAsset = asset {
-//                complition(videoAsset as AVAsset)
-//            } else {
-//                complition(nil)
-//            }
-//        }
-//    }
-//}
-////
-//extension PHAsset {
-//
-////    MARK: - select deselct media picker key -
-//    struct RuntimeKey {
-//        static var isSelectedKey = UnsafeRawPointer.init(bitPattern: "isSelectedKey".hashValue)!
-//    }
-//
-//    var isSelectedItem: Bool? {
-//        set {
-//            objc_setAssociatedObject(self, PHAsset.RuntimeKey.isSelectedKey, newValue, .OBJC_ASSOCIATION_COPY_NONATOMIC)
-//        }
-//        get {
-//            return objc_getAssociatedObject(self, PHAsset.RuntimeKey.isSelectedKey) as? Bool
-//        }
-//    }
-//}
-//
-//
-//extension PHAssetCollection {
-//
-//    var mediaCount: Int {
-//        let fetchOptions = PHFetchOptions()
-//        fetchOptions.predicate = NSPredicate(format: "mediaType == %d || mediaType == %d", PHAssetMediaType.image.rawValue, PHAssetMediaType.video.rawValue)
-//        let result = PHAsset.fetchAssets(in: self, options: fetchOptions)
-//        return result.count
-//    }
-//}
+    
+extension String{
+    
+    func replacingStringAndConvertToIntegerForImage() -> Int {
+        if let integer = Int(self.replacingOccurrences(of: "image", with: "")) {
+            return integer
+        } else {
+            return 0
+        }
+    }
+}
+
