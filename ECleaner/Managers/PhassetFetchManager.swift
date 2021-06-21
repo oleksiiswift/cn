@@ -143,6 +143,45 @@ extension PHAssetFetchManager {
         }
         return image
     }
+    
+//    MARK: - all assets size -
+    
+    public func calculateAllAssetsSize(result: PHFetchResult<PHAsset>) -> Int64 {
+        var allSize: Int64 = 0
+        
+        let requestOptions = PHImageRequestOptions.init()
+        requestOptions.isSynchronous = true
+        result.enumerateObjects({ (object, index, stopped) in
+            let manager = PHImageManager.default()
+            manager.requestImageDataAndOrientation(for: object, options: requestOptions) { imageData, _, _, _ in
+                if imageData != nil {
+                    allSize += Int64(imageData!.count)
+                }
+            }
+        })
+        return allSize
+    }
+    
+    
+    
+    //    func statisticPictureAssetsAllSize(items: PHFetchResult) -> Int64 {
+    //         var fileAllSizeB: Int64 = 0
+    //         let requestOptions = PHImageRequestOptions.init()
+    //         requestOptions.isSynchronous = true
+    //             items.fetchResult?.enumerateObjects({ (object, index, isStop) in
+    //                 let imageManager = PHImageManager.default()
+    //                 imageManager.requestImageData(for: object as! PHAsset, options: requestOptions, resultHandler: { (imageData, dataUTI, orientation, info) in
+    //                     if imageData != nil {
+    //                                                  fileAllSizeB += Int64(imageData!.count); // image size, unit B
+    //                     }
+    //                 })
+    //             })
+    //         }
+    //
+    //         return fileAllSizeB
+    //}
+
+    
 }
 
 extension PHAsset {

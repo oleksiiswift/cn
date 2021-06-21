@@ -15,11 +15,11 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
-    
-    
-        
-        
+        PhotoManager.manager.calculateSpace { space in
+            debugPrint("->>>>>>>>")
+            debugPrint(space)
+            debugPrint("<<<<<<<<-")
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
