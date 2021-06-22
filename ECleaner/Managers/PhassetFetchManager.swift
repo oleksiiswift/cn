@@ -34,8 +34,7 @@ class PHAssetFetchManager {
     
     static let shared = PHAssetFetchManager()
     
-    
-    public func fetchFromGallery(from dateFrom: String = "01-01-1970", to dateTo: String = "01-01-2666", collectiontype: PHAssetCollectionSubtype, by type: Int, completionHandler: @escaping ((_ result: PHFetchResult<PHAsset>) -> Void)) {
+    public func fetchFromGallery(from startDate: String = "01-01-1970", to endDate: String = "01-01-2666", collectiontype: PHAssetCollectionSubtype, by type: Int, completionHandler: @escaping ((_ result: PHFetchResult<PHAsset>) -> Void)) {
         let fetchOptions = PHFetchOptions()
     
         let albumPhoto: PHFetchResult<PHAssetCollection> = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: collectiontype, options: fetchOptions)
@@ -44,17 +43,16 @@ class PHAssetFetchManager {
         fetchOptions.predicate = NSPredicate(
             format: "\(SDKey.mediaType.value) = %d AND (\(SDKey.creationDate.value) >= %@) AND (\(SDKey.creationDate.value) <= %@)",
             type,
-            dateFrom.NSDateConverter(format: C.dateFormat.dmy),
-            dateTo.NSDateConverter(format: C.dateFormat.dmy)
+            startDate.NSDateConverter(format: C.dateFormat.dmy),
+            endDate.NSDateConverter(format: C.dateFormat.dmy)
         )
         albumPhoto.enumerateObjects({(collection, index, object) in
             completionHandler(PHAsset.fetchAssets(in: collection, options: fetchOptions))
         })
     }
     
-    
-    public func fetchPhotoCount(from dateFrom: String = "01-01-1970", to dateTo: String = "01-01-2666", completionHandler: @escaping ((_ photoCount: Int) -> Void)) {
-        fetchFromGallery(from: dateFrom, to: dateTo, collectiontype: .smartAlbumUserLibrary, by: PHAssetMediaType.image.rawValue) { libraryResult in
+    public func fetchPhotoCount(from startDate: String = "01-01-1970", to endDate: String = "01-01-2666", completionHandler: @escaping ((_ photoCount: Int) -> Void)) {
+        fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumUserLibrary, by: PHAssetMediaType.image.rawValue) { libraryResult in
             completionHandler(libraryResult.count)
         }
     }

@@ -20,6 +20,10 @@ class PhassetGroup {
     }
 }
 
+//protocol PhotoManagerDelegate: AnyObject {
+//    func filesCountProcessing(count: Int)
+//}
+
 class PhotoManager: NSObject {
     
     private static let shared = PhotoManager()
@@ -29,6 +33,8 @@ class PhotoManager: NSObject {
     }
     
     private var fetchManager = PHAssetFetchManager.shared
+    
+//    weak var delegate: PhotoManagerDelegate?
     
     public override init() {
         super.init()
@@ -40,16 +46,18 @@ class PhotoManager: NSObject {
         
         photoLibraryRequestAuth { accessGranted in
             if accessGranted {
-                
-                self.loadSelfiePhotos { selfie in
+//                MARK: - testing -
+                /// this is testing block
+                /// use only for fetch media for track in testing mode
+                self.getSelfiePhotos { selfie in
                     debugPrint("selfie count \(selfie.count)")
                 }
                 
-                self.loadScreenShots { screens in
+                self.getScreenShots { screens in
                     debugPrint("screen shots \(screens.count)")
                 }
                 
-                self.loadSimilarLivePhotos { groups in
+                self.getSimilarLivePhotos { groups in
                     debugPrint("similar live Phooto groups")
                     
                     debugPrint(groups.count)
@@ -60,15 +68,31 @@ class PhotoManager: NSObject {
                     }
                 }
                 
-                self.loadDuplicatePhotos { group in
+                self.getSimilarVideo { groups in
+                    debugPrint("similar video grops")
+                    debugPrint(groups.count)
+
+                    for i in groups {
+                        debugPrint("detect simmilar video")
+                        debugPrint(i.assets.count)
+
+                        for n in i.assets {
+                            debugPrint("videos")
+                            debugPrint(n.creationDate)
+                            debugPrint(n.duration)
+                        }
+                    }
+                }
+                
+                self.getDuplicatePhotos { group in
                     debugPrint("duplicate grup")
                     debugPrint(group.count)
                 }
-//
-                self.loadSimilarPhotos { groups in
+
+                self.getSimilarPhotos { groups in
                     debugPrint("similar group")
                     debugPrint(groups.count)
-                    
+
                     for i in groups {
                         debugPrint("similar photos")
                         debugPrint(i.assets.count)
@@ -140,8 +164,8 @@ class PhotoManager: NSObject {
     
     
 //    MARK: - find duplicates in library -
-    public func loadDuplicatePhotos(from dateFrom: String = "01-01-1970", to dateTo: String = "01-01-2666", completionHandler: @escaping ((_ assets: [PhassetGroup]) -> Void)) {
-        fetchManager.fetchFromGallery(from: dateFrom, to: dateTo, collectiontype: .smartAlbumUserLibrary, by: PHAssetMediaType.image.rawValue) { photosInGallery in
+    public func getDuplicatePhotos(from startDate: String = "01-01-1970", to endDate: String = "01-01-2666", completionHandler: @escaping ((_ assets: [PhassetGroup]) -> Void)) {
+        fetchManager.fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumUserLibrary, by: PHAssetMediaType.image.rawValue) { photosInGallery in
             
             var group: [PhassetGroup] = []
             var containsAdd: [Int] = []
@@ -153,6 +177,7 @@ class PhotoManager: NSObject {
                     for index in 1...photosInGallery.count {
                         debugPrint("index preocessing duplicate")
                         debugPrint("index \(index)")
+//                        self.delegate?.filesCountProcessing(count: index)
                         duplicatesPhotos.append((asset: photosInGallery[index - 1], date: Int64(photosInGallery[index - 1].creationDate!.timeIntervalSince1970), imageSize: photosInGallery[index - 1].imageSize))
                     }
                     
@@ -194,11 +219,95 @@ class PhotoManager: NSObject {
         }
     }
     
+    public func getSimilarVideo(from startDate: String = "01-01-1970", to endDate: String = "01-01-2666", completionHandler: @escaping ((_ videoAssets: [PhassetGroup]) -> Void)) {
+        
+        fetchManager.fetchFromGallery(from: startDate,
+                                      to: endDate,
+                                      collectiontype: .smartAlbumVideos,
+                                      by: PHAssetMediaType.video.rawValue) { videoCollection in
+            var videos: [OSTuple<NSString, NSData>] = []
+            
+            U.BG {
+                if videoCollection.count != 0 {
+                    for index in 1...videoCollection.count {
+                        let image = self.fetchManager.getThumbnail(from: videoCollection[index - 1], size: CGSize(width: 150, height: 150))
+                        if let data = image.jpegData(compressionQuality: 0.8) {
+                            let imageTuple = OSTuple<NSString, NSData>(first: "image\(index)" as NSString, andSecond: data as NSData)
+                            videos.append(imageTuple)
+                        } else {
+                            return
+                        }
+                    }
+                    
+                    let similarVideoIDasTuples = OSImageHashing.sharedInstance().similarImages(withProvider: .pHash, forImages: videos)
+                    var similarVideoNumbers: [Int] = []
+                    var similarVideoGroups: [PhassetGroup] = []
+                    U.UI {
+                        guard similarVideoIDasTuples.count >= 1 else { completionHandler([])
+                            return
+                        }
+                        
+                        for index in 1...similarVideoIDasTuples.count {
+                            let tuple = similarVideoIDasTuples[index - 1]
+                            var groupAssets: [PHAsset] = []
+                            if let first = tuple.first as String?, let second = tuple.second as String? {
+                                let firstInteger = first.replacingStringAndConvertToIntegerForImage() - 1
+                                let secondInteger = second.replacingStringAndConvertToIntegerForImage() - 1
+                                
+                                if abs(secondInteger - firstInteger) >= 10 { continue }
+                                if !similarVideoNumbers.contains(firstInteger) {
+                                    similarVideoNumbers.append(firstInteger)
+                                    groupAssets.append(videoCollection[firstInteger])
+                                }
+                                
+                                if !similarVideoNumbers.contains(secondInteger) {
+                                    similarVideoNumbers.append(secondInteger)
+                                    groupAssets.append(videoCollection[secondInteger])
+                                }
+                                
+                                similarVideoIDasTuples.filter({$0.first != nil && $0.second != nil}).filter({ $0.first == tuple.first || $0.first == tuple.second || $0.second == tuple.second || $0.second == tuple.first }).forEach({ tuple in
+                                    if let firstTuple = tuple.first as String?, let secondTuple = tuple.second as String? {
+                                        let firstTupleInteger = firstTuple.replacingStringAndConvertToIntegerForImage() - 1
+                                        let secondTupleInteger = secondTuple.replacingStringAndConvertToIntegerForImage() - 1
+                                        
+                                        if abs(secondTupleInteger - firstTupleInteger) >= 10 {
+                                            return
+                                        }
+                                        
+                                        if !similarVideoNumbers.contains(firstTupleInteger) {
+                                            similarVideoNumbers.append(firstTupleInteger)
+                                            groupAssets.append(videoCollection[firstTupleInteger])
+                                        }
+                                        
+                                        if !similarVideoNumbers.contains(secondTupleInteger) {
+                                            similarVideoNumbers.append(secondTupleInteger)
+                                            groupAssets.append(videoCollection[secondInteger])
+                                        }
+                                    }
+                                })
+                                
+                                if groupAssets.count >= 1 {
+                                    similarVideoGroups.append(PhassetGroup(name: "", assets: groupAssets))
+                                }
+                            }
+                            completionHandler(similarVideoGroups)
+                        }
+                    }
+                } else {
+                    U.UI {
+                        completionHandler([])
+                    }
+                    return
+                }
+            }
+        }
+    }
+
     
 //    MARK: - simmilar photo check
-    public func loadSimilarPhotos(from dataFrom: String = "01-01-1970", to dateTo: String = "01-01-2666", completionHandler: @escaping ((_ assets: [PhassetGroup]) -> Void)) {
+    public func getSimilarPhotos(from startDate: String = "01-01-1970", to endDate: String = "01-01-2666", completionHandler: @escaping ((_ assets: [PhassetGroup]) -> Void)) {
         
-        fetchManager.fetchFromGallery(from: dataFrom, to: dateTo, collectiontype: .smartAlbumUserLibrary, by: PHAssetMediaType.image.rawValue) { photoGallery in
+        fetchManager.fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumUserLibrary, by: PHAssetMediaType.image.rawValue) { photoGallery in
             U.BG {
                 var photos: [OSTuple<NSString, NSData>] = []
                 
@@ -226,9 +335,9 @@ class PhotoManager: NSObject {
     
     
 //    MARK: - load simmiliar live photo -
-    public func loadSimilarLivePhotos(from dataFrom: String = "01-01-1970", to dateTo: String = "01-01-2666", completionHandler: @escaping ((_ assets: [PhassetGroup]) -> Void)) {
+    public func getSimilarLivePhotos(from startDate: String = "01-01-1970", to endDate: String = "01-01-2666", completionHandler: @escaping ((_ assets: [PhassetGroup]) -> Void)) {
         
-        fetchManager.fetchFromGallery(from: dataFrom, to: dateTo, collectiontype: .smartAlbumLivePhotos, by: PHAssetMediaType.image.rawValue) { livePhotoGallery in
+        fetchManager.fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumLivePhotos, by: PHAssetMediaType.image.rawValue) { livePhotoGallery in
             U.BG {
                 var livePhotos: [OSTuple<NSString, NSData>] = []
                 
@@ -332,7 +441,7 @@ class PhotoManager: NSObject {
     }
     
 //    MARK: - load selfies -
-    public func loadSelfiePhotos(_ completionHandler: @escaping ((_ assets: [PHAsset]) -> Void)) {
+    public func getSelfiePhotos(_ completionHandler: @escaping ((_ assets: [PHAsset]) -> Void)) {
         
         fetchManager.fetchFromGallery(collectiontype: .smartAlbumSelfPortraits, by: PHAssetMediaType.image.rawValue) { selfiesInLibrary in
             
@@ -357,9 +466,9 @@ class PhotoManager: NSObject {
     }
     
 //    MARK: - load screenshots -
-    public func loadScreenShots(from dataFrom: String = "01-01-1970", to dateTo: String = "01-01-2666", completionHandler: @escaping ((_ assets: [PHAsset]) -> Void)) {
+    public func getScreenShots(from startDate: String = "01-01-1970", to endDate: String = "01-01-2666", completionHandler: @escaping ((_ assets: [PHAsset]) -> Void)) {
         
-        fetchManager.fetchFromGallery(from: dataFrom, to: dateTo, collectiontype: .smartAlbumScreenshots, by: PHAssetMediaType.image.rawValue) { screensShotsLibrary in
+        fetchManager.fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumScreenshots, by: PHAssetMediaType.image.rawValue) { screensShotsLibrary in
             U.BG {
                 var screens: [PHAsset] = []
                 
