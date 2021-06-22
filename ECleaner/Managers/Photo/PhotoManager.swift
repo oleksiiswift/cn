@@ -513,80 +513,80 @@ extension PhotoManager: PHPhotoLibraryChangeObserver {
 
 extension PhotoManager {
     
-    private func loadTestingAssets() {
-      
-        let photoCollection = self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumUserLibrary, by: PHAssetMediaType.image.rawValue) { collection in
-            debugPrint("photo collection count")
-            debugPrint(collection.count)
-        }
-        
-        let selfiesCollection = self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumSelfPortraits, by: PHAssetMediaType.image.rawValue) { selfies in
-            debugPrint("some selfies count")
-            debugPrint(selfies.count)
-        }
-        
-        let livePhotoCollection = self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumLivePhotos, by: PHAssetMediaType.image.rawValue) { livePhoto in
-            debugPrint("some live count")
-            debugPrint(livePhoto.count)
-        }
-        
-        let screenShotsCollection = self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumScreenshots, by: PHAssetMediaType.image.rawValue) { screenShots in
-            debugPrint("some screens count")
-            debugPrint(screenShots.count)
-        }
-        
-        
-        let gifsCollection = self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumAnimated, by: PHAssetMediaType.image.rawValue) { gifs in
-            debugPrint("some gifs count")
-            debugPrint(gifs.count)
-        }
-        
-        let videoCollection = self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumVideos, by: PHAssetMediaType.video.rawValue) { video in
-            debugPrint("some video count")
-            debugPrint(video.count)
-        }
-        
-        
-        
-        
-        
-//                let collection = PHAssetFetchManager.shared.fetchImagesFromGallery(collection: nil)
-//                debugPrint("all")
-//                debugPrint(collection.count)
+//    private func loadTestingAssets() {
 //
-//                let imageCollection = PHAssetFetchManager.shared.fetchAssets(by: PHAssetMediaType.image.rawValue)
-//                debugPrint("images")
-//                debugPrint(imageCollection.count)
+//        let photoCollection = self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumUserLibrary, by: PHAssetMediaType.image.rawValue) { collection in
+//            debugPrint("photo collection count")
+//            debugPrint(collection.count)
+//        }
 //
-//                let videoCollection = PHAssetFetchManager.shared.fetchAssets(by: PHAssetMediaType.video.rawValue)
-//                debugPrint("video")
-//                debugPrint(videoCollection.count)
+//        let selfiesCollection = self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumSelfPortraits, by: PHAssetMediaType.image.rawValue) { selfies in
+//            debugPrint("some selfies count")
+//            debugPrint(selfies.count)
+//        }
 //
-//                let livePhotosCollection = PHAssetFetchManager.shared.fetchAssetsSubtipe(by: PHAssetMediaSubtype.photoLive.rawValue)
-//                debugPrint("live photo cout")
-//                debugPrint(livePhotosCollection.count)
+//        let livePhotoCollection = self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumLivePhotos, by: PHAssetMediaType.image.rawValue) { livePhoto in
+//            debugPrint("some live count")
+//            debugPrint(livePhoto.count)
+//        }
 //
-//                let screenShots = PHAssetFetchManager.shared.fetchAssetsSubtipe(by: PHAssetMediaSubtype.photoScreenshot.rawValue)
-//                debugPrint("screenshots")
-//                debugPrint(screenShots.count)
+//        let screenShotsCollection = self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumScreenshots, by: PHAssetMediaType.image.rawValue) { screenShots in
+//            debugPrint("some screens count")
+//            debugPrint(screenShots.count)
+//        }
 //
-//                let videoStreamed = PHAssetFetchManager.shared.fetchAssetsSubtipe(by: PHAssetMediaSubtype.videoStreamed.rawValue)
-//                debugPrint("videoStreamed")
-//                debugPrint(videoStreamed.count)
 //
-//                let videoTimelapse = PHAssetFetchManager.shared.fetchAssetsSubtipe(by: PHAssetMediaSubtype.videoTimelapse.rawValue)
-//                debugPrint("videoTimelapse")
-//                debugPrint(videoTimelapse.count)
-        
- 
-        
-//                imageCollection.enumerateObjects({(object: AnyObject!, count: Int, stop: UnsafeMutablePointer<ObjCBool>) in
-//                    if let fetchObject = object as? PHAsset {
-//                        self.photos.append(fetchObject)
-//                    }
-//                })
-        
-    }
+//        let gifsCollection = self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumAnimated, by: PHAssetMediaType.image.rawValue) { gifs in
+//            debugPrint("some gifs count")
+//            debugPrint(gifs.count)
+//        }
+//
+//        let videoCollection = self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumVideos, by: PHAssetMediaType.video.rawValue) { video in
+//            debugPrint("some video count")
+//            debugPrint(video.count)
+//        }
+//
+//
+//
+//
+//
+////                let collection = PHAssetFetchManager.shared.fetchImagesFromGallery(collection: nil)
+////                debugPrint("all")
+////                debugPrint(collection.count)
+////
+////                let imageCollection = PHAssetFetchManager.shared.fetchAssets(by: PHAssetMediaType.image.rawValue)
+////                debugPrint("images")
+////                debugPrint(imageCollection.count)
+////
+////                let videoCollection = PHAssetFetchManager.shared.fetchAssets(by: PHAssetMediaType.video.rawValue)
+////                debugPrint("video")
+////                debugPrint(videoCollection.count)
+////
+////                let livePhotosCollection = PHAssetFetchManager.shared.fetchAssetsSubtipe(by: PHAssetMediaSubtype.photoLive.rawValue)
+////                debugPrint("live photo cout")
+////                debugPrint(livePhotosCollection.count)
+////
+////                let screenShots = PHAssetFetchManager.shared.fetchAssetsSubtipe(by: PHAssetMediaSubtype.photoScreenshot.rawValue)
+////                debugPrint("screenshots")
+////                debugPrint(screenShots.count)
+////
+////                let videoStreamed = PHAssetFetchManager.shared.fetchAssetsSubtipe(by: PHAssetMediaSubtype.videoStreamed.rawValue)
+////                debugPrint("videoStreamed")
+////                debugPrint(videoStreamed.count)
+////
+////                let videoTimelapse = PHAssetFetchManager.shared.fetchAssetsSubtipe(by: PHAssetMediaSubtype.videoTimelapse.rawValue)
+////                debugPrint("videoTimelapse")
+////                debugPrint(videoTimelapse.count)
+//
+//
+//
+////                imageCollection.enumerateObjects({(object: AnyObject!, count: Int, stop: UnsafeMutablePointer<ObjCBool>) in
+////                    if let fetchObject = object as? PHAsset {
+////                        self.photos.append(fetchObject)
+////                    }
+////                })
+//
+//    }
 }
 
 
@@ -612,6 +612,8 @@ extension PhotoManager {
 
 
     
+
+
 extension String{
     
     func replacingStringAndConvertToIntegerForImage() -> Int {
@@ -622,4 +624,3 @@ extension String{
         }
     }
 }
-

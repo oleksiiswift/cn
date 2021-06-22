@@ -23,7 +23,34 @@ class Constants {
         static let gadTestKey = "ca-app-pub-3940256099942544/2934735716"
     }
     
+    struct key {
+        
+        struct settings {
+            static let isDarkModeOn = "darkModeIsSetOn"
+            
+            
+            
+            
+            
+        }
+    }
     
+    
+    struct identifiers {
+        
+        struct storyboards {
+            static let main = "Main"
+        }
+        
+        struct viewControllers {
+            static let main = "MainViewController"
+            
+        }
+        
+        struct xibs {
+            
+        }
+    }
     
     
     struct dateFormat {
