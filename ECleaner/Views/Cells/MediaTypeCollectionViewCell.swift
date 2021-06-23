@@ -37,24 +37,8 @@ class MediaTypeCollectionViewCell: UICollectionViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         
-        photoManager.delegate = self
         setupUI()
         updateColors()
-    }
-}
-
-extension MediaTypeCollectionViewCell: PhotoManagerDelegate {
-    
-    func getPhotoLibraryCount(count: Int) {
-        if mediaTypeCell == .userPhoto {
-            mediaContentSubTitleTextLabel.text = String("\(count) photo + size")
-        }
-    }
-    
-    func getVideoCount(count: Int) {
-        if mediaTypeCell == .userVideo {
-            mediaContentSubTitleTextLabel.text = String("\(count) video + size")
-        }
     }
 }
 
@@ -62,29 +46,41 @@ extension MediaTypeCollectionViewCell: Themeble {
 
     private func setupUI() {
         
-        
         mainView.setCorner(12)
         mediaContentTitleTextLabel.font = .systemFont(ofSize: 17, weight: .bold)
         mediaContentSubTitleTextLabel.font = .systemFont(ofSize: 13, weight: .regular)
     }
     
-    public func configureCell(mediaType: MediaContentType) {
+    public func configureCell(mediaType: MediaContentType, contentCount: Int?, diskSpace: Int64?) {
         
         #warning("LOCO add localization in future")
         switch mediaType {
             case .userPhoto:
                 mediaContentThumbnailImageView.image = I.mainMenuThumbItems.photo
                 mediaContentTitleTextLabel.text = "Photo"
-                mediaContentSubTitleTextLabel.text = "calculate count photo and GB"
+                
+                if let photosCount = contentCount, let space = diskSpace {
+                    mediaContentSubTitleTextLabel.text = String("\(photosCount) photos + \(space) sp")
+                } else {
+                    mediaContentSubTitleTextLabel.text = "no content"
+                }
             case .userVideo:
                 mediaContentThumbnailImageView.image = I.mainMenuThumbItems.video
                 mediaContentTitleTextLabel.text = "Video"
-                mediaContentSubTitleTextLabel.text = "calculate video count and GB"
+                if let videosCount = contentCount, let space = diskSpace {
+                mediaContentSubTitleTextLabel.text = String("\(videosCount) videos + \(space) space")
+                } else {
+                    mediaContentSubTitleTextLabel.text = "no content"
+                }
                 
             case .userContacts:
                 mediaContentThumbnailImageView.image = I.mainMenuThumbItems.contacts
                 mediaContentTitleTextLabel.text = "Contacts"
-                mediaContentSubTitleTextLabel.text = "count calculate"
+                if let contactsCount = contentCount {
+                    mediaContentSubTitleTextLabel.text = String("\(contactsCount) contacts")
+                } else {
+                    mediaContentSubTitleTextLabel.text = "no contacts"
+                }
             case .none:
                 debugPrint("none")
         }

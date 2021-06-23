@@ -8,6 +8,7 @@
 import UIKit
 
 class MainViewController: UIViewController {
+   
     
     @IBOutlet weak var mediaCollectionViewContainer: UIView!
     @IBOutlet weak var mediaCollectionView: UICollectionView!
@@ -18,10 +19,13 @@ class MainViewController: UIViewController {
     lazy var settingsButton = UIBarButtonItem(image: I.navigationItems.settings, style: .plain, target: self, action: #selector(settingsButtonPressed))
     
     private var photoMenager = PhotoManager()
+    
+    private var allPhotoCount: Int?
+    private var allVideosCount: Int?
+    private var allContactsCount: Int?
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         
         setupObserversAndDelegates()
         setupNavigation()
@@ -33,11 +37,34 @@ class MainViewController: UIViewController {
 
 extension MainViewController {
     
-    private func getTotalDiskSpace() {
-    }
+    private func getTotalDiskSpace() {}
     
     @objc func settingsButtonPressed() {}
     @objc func premiumButtonPressed() {}
+}
+
+extension MainViewController: UpdateContentDataBaseListener {
+    
+    func getContactsCount(count: Int) {
+        self.allContactsCount = count
+        if let cell = mediaCollectionView.cellForItem(at: IndexPath(item: 2, section: 0)) as? MediaTypeCollectionViewCell {
+            cell.configureCell(mediaType: .userContacts, contentCount: count, diskSpace: 0)
+        }
+    }
+    
+    func getPhotoLibraryCount(count: Int) {
+        self.allPhotoCount = count
+        if let cell = mediaCollectionView.cellForItem(at: IndexPath(item: 0, section: 0)) as? MediaTypeCollectionViewCell {
+            cell.configureCell(mediaType: .userPhoto, contentCount: count, diskSpace: 0)
+        }
+    }
+    
+    func getVideoCount(count: Int) {
+        self.allVideosCount = count
+        if let cell = mediaCollectionView.cellForItem(at: IndexPath(item: 1, section: 0)) as? MediaTypeCollectionViewCell {
+            cell.configureCell(mediaType: .userVideo, contentCount: count, diskSpace: 0)
+        }
+    }
 }
 
 //
@@ -71,13 +98,13 @@ extension MainViewController {
         switch indexPath.item {
             case 0:
                 cell.mediaTypeCell = .userPhoto
-                cell.configureCell(mediaType: .userPhoto)
+                cell.configureCell(mediaType: .userPhoto, contentCount: self.allPhotoCount, diskSpace: 0)
             case 1:
                 cell.mediaTypeCell = .userVideo
-                cell.configureCell(mediaType: .userVideo)
+                cell.configureCell(mediaType: .userVideo, contentCount: self.allVideosCount, diskSpace: 0)
             case 2:
                 cell.mediaTypeCell = .userContacts
-                cell.configureCell(mediaType: .userContacts)
+                cell.configureCell(mediaType: .userContacts, contentCount: self.allContactsCount, diskSpace: 0)
             default:
                 debugPrint("")
         }
@@ -87,8 +114,7 @@ extension MainViewController {
 extension MainViewController: UpdateColorsDelegate {
     
     private func setupObserversAndDelegates() {
-        
-        
+        UpdateContentDataBaseMediator.instance.setListener(listener: self)
     }
     
     private func setupNavigation() {
@@ -113,4 +139,5 @@ extension MainViewController: UpdateColorsDelegate {
         
     }
 }
+
 

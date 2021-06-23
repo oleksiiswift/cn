@@ -20,12 +20,6 @@ class PhassetGroup {
     }
 }
 
-protocol PhotoManagerDelegate: AnyObject {
-//    func filesCountProcessing(count: Int)
-    func getPhotoLibraryCount(count: Int)
-    func getVideoCount(count: Int)
-}
-
 class PhotoManager: NSObject {
     
     private static let shared = PhotoManager()
@@ -35,8 +29,6 @@ class PhotoManager: NSObject {
     }
     
     private var fetchManager = PHAssetFetchManager.shared
-    
-    var delegate: PhotoManagerDelegate?
     
     public override init() {
         super.init()
@@ -49,11 +41,16 @@ class PhotoManager: NSObject {
         photoLibraryRequestAuth { accessGranted in
             if accessGranted {
                 self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumVideos, by: PHAssetMediaType.video.rawValue) { asset in
-                        self.delegate?.getVideoCount(count: asset.count)
+                    debugPrint(asset.count)
+                    U.UI {
+                        UpdateContentDataBaseMediator.instance.updateVideos(asset.count)
+                    }
                 }
                 
                 self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumUserLibrary, by: PHAssetMediaType.image.rawValue) { asset in
-                        self.delegate?.getPhotoLibraryCount(count: asset.count)
+                    U.UI {
+                        UpdateContentDataBaseMediator.instance.updatePhotos(asset.count)
+                    }
                 }
             } else {
                 AlertManager.showOpenSettingsAlert(.allowPhotoLibrary)
