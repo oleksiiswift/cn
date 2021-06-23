@@ -12,6 +12,15 @@
 		049CC219268225500002F988 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 049CC218268225500002F988 /* Colors.swift */; };
 		049CC21B268225E60002F988 /* SettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 049CC21A268225E60002F988 /* SettingsManager.swift */; };
 		049CC21D268225F80002F988 /* ThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 049CC21C268225F80002F988 /* ThemeManager.swift */; };
+		049CC21F268312950002F988 /* UpdateColorsProtocolol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 049CC21E268312950002F988 /* UpdateColorsProtocolol.swift */; };
+		049CC221268314690002F988 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 049CC220268314690002F988 /* NotificationManager.swift */; };
+		049CC22426831B800002F988 /* UIColor+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 049CC22326831B800002F988 /* UIColor+Hex.swift */; };
+		049CC22A26831D630002F988 /* Images.swift in Sources */ = {isa = PBXBuildFile; fileRef = 049CC22926831D630002F988 /* Images.swift */; };
+		049CC22F268337310002F988 /* MediaTypeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 049CC22D268337310002F988 /* MediaTypeCollectionViewCell.swift */; };
+		049CC230268337310002F988 /* MediaTypeCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 049CC22E268337310002F988 /* MediaTypeCollectionViewCell.xib */; };
+		049CC23426833D320002F988 /* UIView+Radius.swift in Sources */ = {isa = PBXBuildFile; fileRef = 049CC23326833D320002F988 /* UIView+Radius.swift */; };
+		049CC2372683730A0002F988 /* BaseCollectionFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 049CC2362683730A0002F988 /* BaseCollectionFlowLayout.swift */; };
+		049CC23A2683761B0002F988 /* String+ConvertInteger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 049CC2392683761B0002F988 /* String+ConvertInteger.swift */; };
 		04E09470267A06B500A69956 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04E0946F267A06B500A69956 /* AppDelegate.swift */; };
 		04E09472267A06B500A69956 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04E09471267A06B500A69956 /* SceneDelegate.swift */; };
 		04E09474267A06B500A69956 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04E09473267A06B500A69956 /* ViewController.swift */; };
@@ -36,6 +45,15 @@
 		049CC218268225500002F988 /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		049CC21A268225E60002F988 /* SettingsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsManager.swift; sourceTree = "<group>"; };
 		049CC21C268225F80002F988 /* ThemeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeManager.swift; sourceTree = "<group>"; };
+		049CC21E268312950002F988 /* UpdateColorsProtocolol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateColorsProtocolol.swift; sourceTree = "<group>"; };
+		049CC220268314690002F988 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
+		049CC22326831B800002F988 /* UIColor+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Hex.swift"; sourceTree = "<group>"; };
+		049CC22926831D630002F988 /* Images.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Images.swift; sourceTree = "<group>"; };
+		049CC22D268337310002F988 /* MediaTypeCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaTypeCollectionViewCell.swift; sourceTree = "<group>"; };
+		049CC22E268337310002F988 /* MediaTypeCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MediaTypeCollectionViewCell.xib; sourceTree = "<group>"; };
+		049CC23326833D320002F988 /* UIView+Radius.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Radius.swift"; sourceTree = "<group>"; };
+		049CC2362683730A0002F988 /* BaseCollectionFlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseCollectionFlowLayout.swift; sourceTree = "<group>"; };
+		049CC2392683761B0002F988 /* String+ConvertInteger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+ConvertInteger.swift"; sourceTree = "<group>"; };
 		04E0946C267A06B500A69956 /* ECleaner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ECleaner.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		04E0946F267A06B500A69956 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		04E09471267A06B500A69956 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -83,6 +101,7 @@
 			isa = PBXGroup;
 			children = (
 				97D0BABC2680AD6E0067A3A6 /* String+NSDate.swift */,
+				049CC2392683761B0002F988 /* String+ConvertInteger.swift */,
 			);
 			path = Strings;
 			sourceTree = "<group>";
@@ -102,6 +121,95 @@
 				04E5837D267B60F600EDC3A3 /* AlertManager.swift */,
 			);
 			path = Alert;
+			sourceTree = "<group>";
+		};
+		049CC2222683179E0002F988 /* ThemeManager */ = {
+			isa = PBXGroup;
+			children = (
+				049CC21C268225F80002F988 /* ThemeManager.swift */,
+			);
+			path = ThemeManager;
+			sourceTree = "<group>";
+		};
+		049CC22526831B840002F988 /* UIColor */ = {
+			isa = PBXGroup;
+			children = (
+				049CC22326831B800002F988 /* UIColor+Hex.swift */,
+			);
+			path = UIColor;
+			sourceTree = "<group>";
+		};
+		049CC22626831CBE0002F988 /* Properties */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Properties;
+			sourceTree = "<group>";
+		};
+		049CC22726831D480002F988 /* Utilites */ = {
+			isa = PBXGroup;
+			children = (
+				04E5836E267A47FB00EDC3A3 /* Utils.swift */,
+			);
+			path = Utilites;
+			sourceTree = "<group>";
+		};
+		049CC22826831D540002F988 /* Constants */ = {
+			isa = PBXGroup;
+			children = (
+				04E58376267B323E00EDC3A3 /* Constants.swift */,
+				049CC218268225500002F988 /* Colors.swift */,
+				049CC22926831D630002F988 /* Images.swift */,
+			);
+			path = Constants;
+			sourceTree = "<group>";
+		};
+		049CC22B268321D30002F988 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				049CC21A268225E60002F988 /* SettingsManager.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		049CC22C268321DC0002F988 /* NotificationManager */ = {
+			isa = PBXGroup;
+			children = (
+				049CC220268314690002F988 /* NotificationManager.swift */,
+			);
+			path = NotificationManager;
+			sourceTree = "<group>";
+		};
+		049CC231268337360002F988 /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				049CC22D268337310002F988 /* MediaTypeCollectionViewCell.swift */,
+			);
+			path = Cells;
+			sourceTree = "<group>";
+		};
+		049CC2322683374C0002F988 /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				049CC22E268337310002F988 /* MediaTypeCollectionViewCell.xib */,
+			);
+			path = Cells;
+			sourceTree = "<group>";
+		};
+		049CC23526833D350002F988 /* UIView */ = {
+			isa = PBXGroup;
+			children = (
+				049CC23326833D320002F988 /* UIView+Radius.swift */,
+			);
+			path = UIView;
+			sourceTree = "<group>";
+		};
+		049CC2382683730E0002F988 /* FlowLayout */ = {
+			isa = PBXGroup;
+			children = (
+				049CC2362683730A0002F988 /* BaseCollectionFlowLayout.swift */,
+			);
+			path = FlowLayout;
 			sourceTree = "<group>";
 		};
 		04E09463267A06B500A69956 = {
@@ -139,6 +247,7 @@
 				04E58361267A3ED000EDC3A3 /* Protocols */,
 				04E58363267A3EFA00EDC3A3 /* Supporting Files */,
 				04E58367267A3F8F00EDC3A3 /* Assets */,
+				049CC22626831CBE0002F988 /* Properties */,
 				04E0947D267A06B900A69956 /* Info.plist */,
 			);
 			path = ECleaner;
@@ -167,6 +276,8 @@
 				049CC20E26821D330002F988 /* UIDevice */,
 				04E5837A267B39C400EDC3A3 /* PhotoLibrary */,
 				049CC20F26821D3F0002F988 /* Strings */,
+				049CC22526831B840002F988 /* UIColor */,
+				049CC23526833D350002F988 /* UIView */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -174,9 +285,9 @@
 		04E5835E267A3E7D00EDC3A3 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
-				04E5836E267A47FB00EDC3A3 /* Utils.swift */,
-				04E58376267B323E00EDC3A3 /* Constants.swift */,
-				049CC218268225500002F988 /* Colors.swift */,
+				049CC22726831D480002F988 /* Utilites */,
+				049CC22826831D540002F988 /* Constants */,
+				049CC2382683730E0002F988 /* FlowLayout */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -186,8 +297,9 @@
 			children = (
 				049CC21026821D560002F988 /* Photo */,
 				049CC21126821D5F0002F988 /* Alert */,
-				049CC21A268225E60002F988 /* SettingsManager.swift */,
-				049CC21C268225F80002F988 /* ThemeManager.swift */,
+				049CC22B268321D30002F988 /* Settings */,
+				049CC2222683179E0002F988 /* ThemeManager */,
+				049CC22C268321DC0002F988 /* NotificationManager */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -202,6 +314,7 @@
 		04E58361267A3ED000EDC3A3 /* Protocols */ = {
 			isa = PBXGroup;
 			children = (
+				049CC21E268312950002F988 /* UpdateColorsProtocolol.swift */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
@@ -225,6 +338,7 @@
 		04E58364267A3F1600EDC3A3 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				049CC231268337360002F988 /* Cells */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -280,6 +394,7 @@
 		04E5836B267A414C00EDC3A3 /* Xibs */ = {
 			isa = PBXGroup;
 			children = (
+				049CC2322683374C0002F988 /* Cells */,
 			);
 			path = Xibs;
 			sourceTree = "<group>";
@@ -369,6 +484,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				04E0947C267A06B900A69956 /* LaunchScreen.storyboard in Resources */,
+				049CC230268337310002F988 /* MediaTypeCollectionViewCell.xib in Resources */,
 				04E09479267A06B900A69956 /* Assets.xcassets in Resources */,
 				04E09477267A06B500A69956 /* Main.storyboard in Resources */,
 			);
@@ -425,18 +541,26 @@
 			files = (
 				04E58379267B39AD00EDC3A3 /* PHPhotoLibrary+Auth.swift in Sources */,
 				049CC219268225500002F988 /* Colors.swift in Sources */,
+				049CC23426833D320002F988 /* UIView+Radius.swift in Sources */,
 				04E58373267A4A2000EDC3A3 /* UIDevice+Enviroment.swift in Sources */,
 				04E5837E267B60F600EDC3A3 /* AlertManager.swift in Sources */,
 				04E09474267A06B500A69956 /* ViewController.swift in Sources */,
+				049CC2372683730A0002F988 /* BaseCollectionFlowLayout.swift in Sources */,
 				04E5837C267B3E2A00EDC3A3 /* PhotoManager.swift in Sources */,
 				04E09470267A06B500A69956 /* AppDelegate.swift in Sources */,
+				049CC22A26831D630002F988 /* Images.swift in Sources */,
 				04E09472267A06B500A69956 /* SceneDelegate.swift in Sources */,
 				049CC217268221DE0002F988 /* MainViewController.swift in Sources */,
+				049CC22426831B800002F988 /* UIColor+Hex.swift in Sources */,
 				97D0BABD2680AD6E0067A3A6 /* String+NSDate.swift in Sources */,
+				049CC21F268312950002F988 /* UpdateColorsProtocolol.swift in Sources */,
+				049CC22F268337310002F988 /* MediaTypeCollectionViewCell.swift in Sources */,
 				049CC21D268225F80002F988 /* ThemeManager.swift in Sources */,
 				04E58377267B323E00EDC3A3 /* Constants.swift in Sources */,
 				049CC215268221D40002F988 /* AdvertisementViewController.swift in Sources */,
 				049CC21B268225E60002F988 /* SettingsManager.swift in Sources */,
+				049CC221268314690002F988 /* NotificationManager.swift in Sources */,
+				049CC23A2683761B0002F988 /* String+ConvertInteger.swift in Sources */,
 				04E5836F267A47FB00EDC3A3 /* Utils.swift in Sources */,
 				04E58371267A4A0A00EDC3A3 /* UIDevice+Model.swift in Sources */,
 				04E58380267B9F6B00EDC3A3 /* PhassetFetchManager.swift in Sources */,

@@ -27,15 +27,10 @@ class Constants {
         
         struct settings {
             static let isDarkModeOn = "darkModeIsSetOn"
-            
-            
-            
-            
-            
         }
     }
     
-    
+//    MARK: - public identifiers -
     struct identifiers {
         
         struct storyboards {
@@ -43,12 +38,16 @@ class Constants {
         }
         
         struct viewControllers {
+            static let advertise = "AdvertisementViewController"
             static let main = "MainViewController"
-            
+        }
+        
+        struct cells {
+            static let mediaTypeCell = "MediaTypeCollectionViewCell"
         }
         
         struct xibs {
-            
+            static let mediaTypeCell = "MediaTypeCollectionViewCell"
         }
     }
     

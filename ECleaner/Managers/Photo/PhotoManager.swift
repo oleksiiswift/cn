@@ -20,9 +20,11 @@ class PhassetGroup {
     }
 }
 
-//protocol PhotoManagerDelegate: AnyObject {
+protocol PhotoManagerDelegate: AnyObject {
 //    func filesCountProcessing(count: Int)
-//}
+    func getPhotoLibraryCount(count: Int)
+    func getVideoCount(count: Int)
+}
 
 class PhotoManager: NSObject {
     
@@ -34,14 +36,31 @@ class PhotoManager: NSObject {
     
     private var fetchManager = PHAssetFetchManager.shared
     
-//    weak var delegate: PhotoManagerDelegate?
+    var delegate: PhotoManagerDelegate?
     
     public override init() {
         super.init()
         
         PHPhotoLibrary.shared().register(self)
     }
-
+    
+    public func getPhotoLibraryAccess() {
+        
+        photoLibraryRequestAuth { accessGranted in
+            if accessGranted {
+                self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumVideos, by: PHAssetMediaType.video.rawValue) { asset in
+                        self.delegate?.getVideoCount(count: asset.count)
+                }
+                
+                self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumUserLibrary, by: PHAssetMediaType.image.rawValue) { asset in
+                        self.delegate?.getPhotoLibraryCount(count: asset.count)
+                }
+            } else {
+                AlertManager.showOpenSettingsAlert(.allowPhotoLibrary)
+            }
+        }
+    }
+    
     public func getPhotoLibrary() {
         
         photoLibraryRequestAuth { accessGranted in
@@ -614,13 +633,4 @@ extension PhotoManager {
     
 
 
-extension String{
-    
-    func replacingStringAndConvertToIntegerForImage() -> Int {
-        if let integer = Int(self.replacingOccurrences(of: "image", with: "")) {
-            return integer
-        } else {
-            return 0
-        }
-    }
-}
+
