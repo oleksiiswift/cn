@@ -106,9 +106,36 @@
                                         <subviews>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="EFP-vX-09K">
                                                 <rect key="frame" x="0.0" y="0.0" width="414" height="180"/>
+                                                <subviews>
+                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="eyl-Wg-j1C" customClass="MKMagneticProgress" customModule="ECleaner" customModuleProvider="target">
+                                                        <rect key="frame" x="143" y="26" width="128" height="128"/>
+                                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="height" constant="128" id="Gso-ge-jFD"/>
+                                                            <constraint firstAttribute="width" constant="128" id="wN7-Kf-eQf"/>
+                                                        </constraints>
+                                                        <userDefinedRuntimeAttributes>
+                                                            <userDefinedRuntimeAttribute type="color" keyPath="backgroundShapeColor">
+                                                                <color key="value" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                            </userDefinedRuntimeAttribute>
+                                                            <userDefinedRuntimeAttribute type="color" keyPath="progressShapeColor">
+                                                                <color key="value" systemColor="systemYellowColor"/>
+                                                            </userDefinedRuntimeAttribute>
+                                                            <userDefinedRuntimeAttribute type="number" keyPath="lineWidth">
+                                                                <real key="value" value="10"/>
+                                                            </userDefinedRuntimeAttribute>
+                                                            <userDefinedRuntimeAttribute type="number" keyPath="spaceDegree">
+                                                                <real key="value" value="45"/>
+                                                            </userDefinedRuntimeAttribute>
+                                                            <userDefinedRuntimeAttribute type="boolean" keyPath="clockwise" value="NO"/>
+                                                        </userDefinedRuntimeAttributes>
+                                                    </view>
+                                                </subviews>
                                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                 <constraints>
+                                                    <constraint firstItem="eyl-Wg-j1C" firstAttribute="centerX" secondItem="EFP-vX-09K" secondAttribute="centerX" id="E4N-Bm-C7k"/>
                                                     <constraint firstAttribute="height" constant="180" id="Q5W-T0-QcG"/>
+                                                    <constraint firstItem="eyl-Wg-j1C" firstAttribute="centerY" secondItem="EFP-vX-09K" secondAttribute="centerY" id="h0x-G6-IoS"/>
                                                 </constraints>
                                             </view>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9Zu-Nv-jnl">
@@ -223,6 +250,7 @@
                         <outlet property="deepCleaningButtonView" destination="70r-WS-60s" id="1Qf-mB-dyU"/>
                         <outlet property="mediaCollectionView" destination="Dg3-qT-o61" id="p6Y-t8-dtI"/>
                         <outlet property="mediaCollectionViewContainer" destination="9Zu-Nv-jnl" id="HYr-oe-vfO"/>
+                        <outlet property="progressBarview" destination="eyl-Wg-j1C" id="Ffv-zA-mZe"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5cm-wL-82y" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -254,6 +282,9 @@
         </systemColor>
         <systemColor name="systemPurpleColor">
             <color red="0.68627450980392157" green="0.32156862745098042" blue="0.87058823529411766" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="systemYellowColor">
+            <color red="1" green="0.80000000000000004" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>
