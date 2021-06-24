@@ -10,14 +10,16 @@ import UIKit
 class BaseCarouselFlowLayout: UICollectionViewLayout {
 
     private var chacheIndexPathAttributes: [IndexPath: UICollectionViewLayoutAttributes] = [:]
-    private let itemSize: CGSize = CGSize(width: 163, height: 290)
+    
+    public var itemSize: CGSize = CGSize(width: 163, height: 290)
+    
     private let spacing: CGFloat = 6
-    private let focusedSpacing: CGFloat = 6
+    private let focusedSpacing: CGFloat = 10
     
     private var focusIndex: CGFloat {
         guard let collectionView = collectionView else { return 0}
         let contentCollectionOffset: CGFloat = collectionView.bounds.width / 2 + collectionView.contentOffset.x - itemSize.width / 2
-        return contentCollectionOffset / (itemSize.width + spacing)
+        return contentCollectionOffset / (itemSize.width)
     }
     
     override var collectionViewContentSize: CGSize {
@@ -82,7 +84,7 @@ class BaseCarouselFlowLayout: UICollectionViewLayout {
     }
     
     override func layoutAttributesForItem(at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
-        
+
         guard let attributes = chacheIndexPathAttributes[indexPath] else {
             fatalError()
         }
@@ -124,13 +126,14 @@ class BaseCarouselFlowLayout: UICollectionViewLayout {
     }
     
     override func targetContentOffset(forProposedContentOffset proposedContentOffset: CGPoint, withScrollingVelocity velocity: CGPoint) -> CGPoint {
-        
+
         guard let collectionView = collectionView else {
             return
                 super.targetContentOffset(forProposedContentOffset: proposedContentOffset)
         }
         
-        let midX: CGFloat = collectionView.bounds.size.width / 2
+        /// - parameter midX is detect auto focus and centered cell
+        let midX: CGFloat = collectionView.bounds.size.width / 4
         
         guard let closeAttribute = closeAttributes(position: proposedContentOffset.x + midX) else {
             return

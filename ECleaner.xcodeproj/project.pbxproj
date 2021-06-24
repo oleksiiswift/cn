@@ -21,6 +21,10 @@
 		049CC23426833D320002F988 /* UIView+Radius.swift in Sources */ = {isa = PBXBuildFile; fileRef = 049CC23326833D320002F988 /* UIView+Radius.swift */; };
 		049CC2372683730A0002F988 /* BaseCollectionFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 049CC2362683730A0002F988 /* BaseCollectionFlowLayout.swift */; };
 		049CC23A2683761B0002F988 /* String+ConvertInteger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 049CC2392683761B0002F988 /* String+ConvertInteger.swift */; };
+		04CFFFE726846A23000CA850 /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CFFFE626846A23000CA850 /* Device.swift */; };
+		04CFFFE926846A38000CA850 /* Screen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CFFFE826846A38000CA850 /* Screen.swift */; };
+		04CFFFEC2684725F000CA850 /* Device+DiskSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CFFFEB2684725F000CA850 /* Device+DiskSpace.swift */; };
+		04CFFFEF268479CE000CA850 /* CircleProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CFFFEE268479CE000CA850 /* CircleProgressView.swift */; };
 		04E09470267A06B500A69956 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04E0946F267A06B500A69956 /* AppDelegate.swift */; };
 		04E09472267A06B500A69956 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04E09471267A06B500A69956 /* SceneDelegate.swift */; };
 		04E09474267A06B500A69956 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04E09473267A06B500A69956 /* ViewController.swift */; };
@@ -56,6 +60,10 @@
 		049CC23326833D320002F988 /* UIView+Radius.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Radius.swift"; sourceTree = "<group>"; };
 		049CC2362683730A0002F988 /* BaseCollectionFlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseCollectionFlowLayout.swift; sourceTree = "<group>"; };
 		049CC2392683761B0002F988 /* String+ConvertInteger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+ConvertInteger.swift"; sourceTree = "<group>"; };
+		04CFFFE626846A23000CA850 /* Device.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Device.swift; sourceTree = "<group>"; };
+		04CFFFE826846A38000CA850 /* Screen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Screen.swift; sourceTree = "<group>"; };
+		04CFFFEB2684725F000CA850 /* Device+DiskSpace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Device+DiskSpace.swift"; sourceTree = "<group>"; };
+		04CFFFEE268479CE000CA850 /* CircleProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleProgressView.swift; sourceTree = "<group>"; };
 		04E0946C267A06B500A69956 /* ECleaner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ECleaner.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		04E0946F267A06B500A69956 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		04E09471267A06B500A69956 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -95,6 +103,7 @@
 		049CC20E26821D330002F988 /* UIDevice */ = {
 			isa = PBXGroup;
 			children = (
+				04CFFFEB2684725F000CA850 /* Device+DiskSpace.swift */,
 				04E58370267A4A0A00EDC3A3 /* UIDevice+Model.swift */,
 				04E58372267A4A2000EDC3A3 /* UIDevice+Enviroment.swift */,
 			);
@@ -216,6 +225,23 @@
 			path = FlowLayout;
 			sourceTree = "<group>";
 		};
+		04CFFFEA26846A3E000CA850 /* Device */ = {
+			isa = PBXGroup;
+			children = (
+				04CFFFE626846A23000CA850 /* Device.swift */,
+				04CFFFE826846A38000CA850 /* Screen.swift */,
+			);
+			path = Device;
+			sourceTree = "<group>";
+		};
+		04CFFFF0268479D3000CA850 /* UIHelpersViews */ = {
+			isa = PBXGroup;
+			children = (
+				04CFFFEE268479CE000CA850 /* CircleProgressView.swift */,
+			);
+			path = UIHelpersViews;
+			sourceTree = "<group>";
+		};
 		04E09463267A06B500A69956 = {
 			isa = PBXGroup;
 			children = (
@@ -292,6 +318,7 @@
 				049CC22726831D480002F988 /* Utilites */,
 				049CC22826831D540002F988 /* Constants */,
 				049CC2382683730E0002F988 /* FlowLayout */,
+				04CFFFEA26846A3E000CA850 /* Device */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -344,6 +371,7 @@
 			isa = PBXGroup;
 			children = (
 				049CC231268337360002F988 /* Cells */,
+				04CFFFF0268479D3000CA850 /* UIHelpersViews */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -554,16 +582,19 @@
 				04E09474267A06B500A69956 /* ViewController.swift in Sources */,
 				049CC2372683730A0002F988 /* BaseCollectionFlowLayout.swift in Sources */,
 				04E5837C267B3E2A00EDC3A3 /* PhotoManager.swift in Sources */,
+				04CFFFEC2684725F000CA850 /* Device+DiskSpace.swift in Sources */,
 				04E09470267A06B500A69956 /* AppDelegate.swift in Sources */,
 				049CC22A26831D630002F988 /* Images.swift in Sources */,
 				04E09472267A06B500A69956 /* SceneDelegate.swift in Sources */,
 				049CC217268221DE0002F988 /* MainViewController.swift in Sources */,
+				04CFFFE926846A38000CA850 /* Screen.swift in Sources */,
 				049CC22426831B800002F988 /* UIColor+Hex.swift in Sources */,
 				97D0BABD2680AD6E0067A3A6 /* String+NSDate.swift in Sources */,
 				049CC21F268312950002F988 /* UpdateColorsProtocolol.swift in Sources */,
 				049CC22F268337310002F988 /* MediaTypeCollectionViewCell.swift in Sources */,
 				049CC21D268225F80002F988 /* ThemeManager.swift in Sources */,
 				04E58377267B323E00EDC3A3 /* Constants.swift in Sources */,
+				04CFFFE726846A23000CA850 /* Device.swift in Sources */,
 				049CC215268221D40002F988 /* AdvertisementViewController.swift in Sources */,
 				049CC21B268225E60002F988 /* SettingsManager.swift in Sources */,
 				97CC2F3A2683D00F0072EF8C /* UpdateContentDataBaseListener.swift in Sources */,
@@ -571,6 +602,7 @@
 				049CC23A2683761B0002F988 /* String+ConvertInteger.swift in Sources */,
 				04E5836F267A47FB00EDC3A3 /* Utils.swift in Sources */,
 				04E58371267A4A0A00EDC3A3 /* UIDevice+Model.swift in Sources */,
+				04CFFFEF268479CE000CA850 /* CircleProgressView.swift in Sources */,
 				04E58380267B9F6B00EDC3A3 /* PhassetFetchManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
