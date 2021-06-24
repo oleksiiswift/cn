@@ -50,24 +50,30 @@ extension MainViewController {
 
 extension MainViewController: UpdateContentDataBaseListener {
     
+    func getPhotoLibraryCount(count: Int, calculatedSpace: Int64) {
+        U.UI {
+        self.allPhotoCount = count
+            if let cell = self.mediaCollectionView.cellForItem(at: IndexPath(item: 0, section: 0)) as? MediaTypeCollectionViewCell {
+            cell.configureCell(mediaType: .userPhoto, contentCount: count, diskSpace: calculatedSpace)
+        }
+        }
+    }
+    
+    func getVideoCount(count: Int, calculatedSpace: Int64) {
+        U.UI {
+        self.allVideosCount = count
+            if let cell = self.mediaCollectionView.cellForItem(at: IndexPath(item: 1, section: 0)) as? MediaTypeCollectionViewCell {
+            cell.configureCell(mediaType: .userVideo, contentCount: count, diskSpace: calculatedSpace)
+        }
+        }
+    }
+    
+    
     func getContactsCount(count: Int) {
+        
         self.allContactsCount = count
         if let cell = mediaCollectionView.cellForItem(at: IndexPath(item: 2, section: 0)) as? MediaTypeCollectionViewCell {
             cell.configureCell(mediaType: .userContacts, contentCount: count, diskSpace: 0)
-        }
-    }
-    
-    func getPhotoLibraryCount(count: Int) {
-        self.allPhotoCount = count
-        if let cell = mediaCollectionView.cellForItem(at: IndexPath(item: 0, section: 0)) as? MediaTypeCollectionViewCell {
-            cell.configureCell(mediaType: .userPhoto, contentCount: count, diskSpace: 0)
-        }
-    }
-    
-    func getVideoCount(count: Int) {
-        self.allVideosCount = count
-        if let cell = mediaCollectionView.cellForItem(at: IndexPath(item: 1, section: 0)) as? MediaTypeCollectionViewCell {
-            cell.configureCell(mediaType: .userVideo, contentCount: count, diskSpace: 0)
         }
     }
 }
@@ -153,18 +159,17 @@ extension MainViewController: UpdateColorsDelegate {
         switch Screen.size {
             case .small:
                 
-                circleProgressBarViewHeightConstraint.constant = 130
+                circleProgressBarViewHeightConstraint.constant = 140
                 circleTotlaSpaceView.lineWidth = 10
-                circleTotlaSpaceView.titleLabelBottomInset = 70
+                circleTotlaSpaceView.titleLabelBottomInset = (circleTotlaSpaceView.frame.height / 2) - 10
                 circleTotlaSpaceView.percentLabelCenterInset = 25
-                circleTotlaSpaceView.titleLabel.font = .systemFont(ofSize: 12, weight: .regular)
+                circleTotlaSpaceView.titleLabel.font = .systemFont(ofSize: 11, weight: .regular)
                 circleTotlaSpaceView.percentLabel.font = .systemFont(ofSize: 18, weight: .bold)
                 
                 circleTotlaSpaceView.layoutIfNeeded()
                 self.view.layoutIfNeeded()
                 
                 baseCarouselLayout.itemSize = CGSize(width: 138, height: mediaCollectionView.frame.height)
-                
                 
             case .medium:
                 debugPrint("")
@@ -195,7 +200,7 @@ extension MainViewController: UpdateColorsDelegate {
         circleTotlaSpaceView.lineCap = .round
         circleTotlaSpaceView.clockwise = true
 
-        circleTotlaSpaceView.title = "\(Device.usedDiskSpaceInGB) out of \(Device.totalDiskSpaceInGB)"
+        circleTotlaSpaceView.title = "\(Device.usedDiskSpaceInGB.removeWhitespace()) out of \(Device.totalDiskSpaceInGB.removeWhitespace())"
         circleTotlaSpaceView.percentLabelFormat = "%.f%%"
     }
 }

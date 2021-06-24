@@ -8,7 +8,7 @@
 import Foundation
 
 protocol UpdateContentDataBaseListener {
-    func getPhotoLibraryCount(count: Int)
-    func getVideoCount(count: Int)
+    func getPhotoLibraryCount(count: Int, calculatedSpace: Int64)
+    func getVideoCount(count: Int, calculatedSpace: Int64)
     func getContactsCount(count: Int)
 }

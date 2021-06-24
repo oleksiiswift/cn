@@ -96,7 +96,7 @@ extension PHAssetFetchManager {
         let manager = PHImageManager.default()
         let option = PHImageRequestOptions()
         
-        option.isSynchronous = true
+        option.isSynchronous = false
         
         manager.requestImage(for: asset, targetSize: size, contentMode: .aspectFill, options: option, resultHandler: {(result, info)->Void in
             if let image = result {
@@ -129,7 +129,7 @@ extension PHAssetFetchManager {
         
             requestOptions.resizeMode = PHImageRequestOptionsResizeMode.exact
             requestOptions.deliveryMode = PHImageRequestOptionsDeliveryMode.highQualityFormat
-            requestOptions.isSynchronous = true
+            requestOptions.isSynchronous = false
             
         if asset.mediaType == PHAssetMediaType.image {
             manager.requestImage(for: asset,
@@ -146,18 +146,26 @@ extension PHAssetFetchManager {
     
     public func calculateAllAssetsSize(result: PHFetchResult<PHAsset>) -> Int64 {
         var allSize: Int64 = 0
-        
+
         let requestOptions = PHImageRequestOptions.init()
-        requestOptions.isSynchronous = true
+        
+        requestOptions.isSynchronous = false
+        
+        var numbers = 0
         result.enumerateObjects({ (object, index, stopped) in
             let manager = PHImageManager.default()
             manager.requestImageDataAndOrientation(for: object, options: requestOptions) { imageData, _, _, _ in
+                numbers += 1
+                
                 if imageData != nil {
-                    allSize += Int64(imageData!.count)
+                    allSize += object.imageSize
+                    debugPrint(String("\(numbers) -> \(allSize)"))
+//                         Int64(imageData!.count)
                 }
             }
         })
         return allSize
+            
     }
     
     

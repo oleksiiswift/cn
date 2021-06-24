@@ -60,7 +60,8 @@ extension MediaTypeCollectionViewCell: Themeble {
                 mediaContentTitleTextLabel.text = "Photo"
                 
                 if let photosCount = contentCount, let space = diskSpace {
-                    mediaContentSubTitleTextLabel.text = String("\(photosCount) photos + \(space) sp")
+                    let spaceMessage = space != 0 ? String("• \(U.getSpaceFromInt(space))") : "• calculated"
+                    mediaContentSubTitleTextLabel.text = String("\(photosCount) photos \(spaceMessage)")
                 } else {
                     mediaContentSubTitleTextLabel.text = "no content"
                 }
@@ -68,7 +69,8 @@ extension MediaTypeCollectionViewCell: Themeble {
                 mediaContentThumbnailImageView.image = I.mainMenuThumbItems.video
                 mediaContentTitleTextLabel.text = "Video"
                 if let videosCount = contentCount, let space = diskSpace {
-                mediaContentSubTitleTextLabel.text = String("\(videosCount) videos + \(space) space")
+                    let spaceMessage = space != 0 ? String("• \(U.getSpaceFromInt(space))") : "• calculated"
+                    mediaContentSubTitleTextLabel.text = String("\(videosCount) videos\(spaceMessage)")
                 } else {
                     mediaContentSubTitleTextLabel.text = "no content"
                 }

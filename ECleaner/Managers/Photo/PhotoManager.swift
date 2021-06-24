@@ -41,16 +41,30 @@ class PhotoManager: NSObject {
         photoLibraryRequestAuth { accessGranted in
             if accessGranted {
                 self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumVideos, by: PHAssetMediaType.video.rawValue) { asset in
-                    debugPrint(asset.count)
                     U.UI {
-                        UpdateContentDataBaseMediator.instance.updateVideos(asset.count)
+                        UpdateContentDataBaseMediator.instance.updateVideos(asset.count, calculatedSpace: 0)
+                    }
+                    
+                        let diskSpace = self.fetchManager.calculateAllAssetsSize(result: asset)
+                        if diskSpace != 0 {
+                    
+                                UpdateContentDataBaseMediator.instance.updateVideos(asset.count, calculatedSpace: diskSpace)
+                    
+                    
                     }
                 }
                 
                 self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumUserLibrary, by: PHAssetMediaType.image.rawValue) { asset in
                     U.UI {
-                        UpdateContentDataBaseMediator.instance.updatePhotos(asset.count)
+                        UpdateContentDataBaseMediator.instance.updatePhotos(asset.count, calculatedSpace: 0)
                     }
+                    
+                    
+                        let space = self.fetchManager.calculateAllAssetsSize(result: asset)
+                        if space != 0 {
+                                UpdateContentDataBaseMediator.instance.updatePhotos(asset.count, calculatedSpace: space)
+                        }
+                    
                 }
             } else {
                 AlertManager.showOpenSettingsAlert(.allowPhotoLibrary)
@@ -162,16 +176,16 @@ class PhotoManager: NSObject {
     
     public func calculateSpace(completionHandler: @escaping (_ spaceIn: Int64) -> Void) {
         var fileSize: Int64 = 0
-        
+
         U.BG {
             self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumUserLibrary, by: PHAssetMediaType.image.rawValue) { result in
                 fileSize += self.fetchManager.calculateAllAssetsSize(result: result)
             }
-            
+
             self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumVideos, by: PHAssetMediaType.video.rawValue) { result in
                 fileSize += self.fetchManager.calculateAllAssetsSize(result: result)
             }
-            
+
             U.UI {
                 completionHandler(fileSize)
             }

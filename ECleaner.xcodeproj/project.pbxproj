@@ -25,6 +25,8 @@
 		04CFFFE926846A38000CA850 /* Screen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CFFFE826846A38000CA850 /* Screen.swift */; };
 		04CFFFEC2684725F000CA850 /* Device+DiskSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CFFFEB2684725F000CA850 /* Device+DiskSpace.swift */; };
 		04CFFFEF268479CE000CA850 /* CircleProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CFFFEE268479CE000CA850 /* CircleProgressView.swift */; };
+		04CFFFF22684B1ED000CA850 /* String+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CFFFF12684B1ED000CA850 /* String+Extension.swift */; };
+		04CFFFF42684B23D000CA850 /* String+Whitespaces.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CFFFF32684B23D000CA850 /* String+Whitespaces.swift */; };
 		04E09470267A06B500A69956 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04E0946F267A06B500A69956 /* AppDelegate.swift */; };
 		04E09472267A06B500A69956 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04E09471267A06B500A69956 /* SceneDelegate.swift */; };
 		04E09474267A06B500A69956 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04E09473267A06B500A69956 /* ViewController.swift */; };
@@ -64,6 +66,8 @@
 		04CFFFE826846A38000CA850 /* Screen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Screen.swift; sourceTree = "<group>"; };
 		04CFFFEB2684725F000CA850 /* Device+DiskSpace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Device+DiskSpace.swift"; sourceTree = "<group>"; };
 		04CFFFEE268479CE000CA850 /* CircleProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleProgressView.swift; sourceTree = "<group>"; };
+		04CFFFF12684B1ED000CA850 /* String+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extension.swift"; sourceTree = "<group>"; };
+		04CFFFF32684B23D000CA850 /* String+Whitespaces.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Whitespaces.swift"; sourceTree = "<group>"; };
 		04E0946C267A06B500A69956 /* ECleaner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ECleaner.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		04E0946F267A06B500A69956 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		04E09471267A06B500A69956 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -115,6 +119,8 @@
 			children = (
 				97D0BABC2680AD6E0067A3A6 /* String+NSDate.swift */,
 				049CC2392683761B0002F988 /* String+ConvertInteger.swift */,
+				04CFFFF12684B1ED000CA850 /* String+Extension.swift */,
+				04CFFFF32684B23D000CA850 /* String+Whitespaces.swift */,
 			);
 			path = Strings;
 			sourceTree = "<group>";
@@ -580,6 +586,7 @@
 				04E58373267A4A2000EDC3A3 /* UIDevice+Enviroment.swift in Sources */,
 				04E5837E267B60F600EDC3A3 /* AlertManager.swift in Sources */,
 				04E09474267A06B500A69956 /* ViewController.swift in Sources */,
+				04CFFFF42684B23D000CA850 /* String+Whitespaces.swift in Sources */,
 				049CC2372683730A0002F988 /* BaseCollectionFlowLayout.swift in Sources */,
 				04E5837C267B3E2A00EDC3A3 /* PhotoManager.swift in Sources */,
 				04CFFFEC2684725F000CA850 /* Device+DiskSpace.swift in Sources */,
@@ -589,6 +596,7 @@
 				049CC217268221DE0002F988 /* MainViewController.swift in Sources */,
 				04CFFFE926846A38000CA850 /* Screen.swift in Sources */,
 				049CC22426831B800002F988 /* UIColor+Hex.swift in Sources */,
+				04CFFFF22684B1ED000CA850 /* String+Extension.swift in Sources */,
 				97D0BABD2680AD6E0067A3A6 /* String+NSDate.swift in Sources */,
 				049CC21F268312950002F988 /* UpdateColorsProtocolol.swift in Sources */,
 				049CC22F268337310002F988 /* MediaTypeCollectionViewCell.swift in Sources */,

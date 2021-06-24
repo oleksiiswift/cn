@@ -24,12 +24,12 @@ class UpdateContentDataBaseMediator {
         self.listener = listener
     }
     
-    func updatePhotos(_ count: Int) {
-        listener?.getPhotoLibraryCount(count: count)
+    func updatePhotos(_ count: Int, calculatedSpace: Int64) {
+        listener?.getPhotoLibraryCount(count: count, calculatedSpace: calculatedSpace)
     }
     
-    func updateVideos(_ count: Int) {
-        listener?.getVideoCount(count: count)
+    func updateVideos(_ count: Int, calculatedSpace: Int64) {
+        listener?.getVideoCount(count: count, calculatedSpace: calculatedSpace)
     }
     
     func updateContacts(_ count: Int) {

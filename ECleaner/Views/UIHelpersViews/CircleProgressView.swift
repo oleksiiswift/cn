@@ -35,7 +35,7 @@ class CircleProgressView: UIView {
 
     // MARK: - Variables
     
-    public var titleLabelWidth: CGFloat = 100
+    public var titleLabelWidth: CGFloat = 120
     public let percentLabel = UILabel(frame: .zero)
     
     public var titleLabel = UILabel(frame: .zero)
