@@ -37,7 +37,7 @@ class ViewController: UIViewController {
         super.viewWillAppear(animated)
         
         U.delay(5) {
-            PhotoManager.manager.getPhotoLibrary()
+//            PhotoManager.manager.getPhotoLibrary()
         }
     }
 }

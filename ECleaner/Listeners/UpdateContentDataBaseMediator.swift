@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Photos
 
 
 class UpdateContentDataBaseMediator {
@@ -34,5 +35,17 @@ class UpdateContentDataBaseMediator {
     
     func updateContacts(_ count: Int) {
         listener?.getContactsCount(count: count)
+    }
+    
+    func getFrontCameraAsset(_ assets: [PHAsset]) {
+        listener?.getFrontCameraAsset(assets)
+    }
+    
+    func getScreenshots(_ assets: [PHAsset]) {
+        listener?.getScreenAsset(assets)
+    }
+    
+    func getLivePhotosAsset(_ assets: [PHAsset]) {
+        listener?.getLivePhotosAsset(assets)
     }
 }

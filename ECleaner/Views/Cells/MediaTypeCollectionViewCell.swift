@@ -7,13 +7,6 @@
 
 import UIKit
 
-enum MediaContentType {
-    case userPhoto
-    case userVideo
-    case userContacts
-    case none
-}
-
 class MediaTypeCollectionViewCell: UICollectionViewCell {
 
     @IBOutlet weak var mainView: UIView!
@@ -61,7 +54,7 @@ extension MediaTypeCollectionViewCell: Themeble {
                 
                 if let photosCount = contentCount, let space = diskSpace {
                     let spaceMessage = space != 0 ? String("• \(U.getSpaceFromInt(space))") : "• calculated"
-                    mediaContentSubTitleTextLabel.text = String("\(photosCount) photos \(spaceMessage)")
+                    mediaContentSubTitleTextLabel.text = String("\(photosCount) files \(spaceMessage)")
                 } else {
                     mediaContentSubTitleTextLabel.text = "no content"
                 }
@@ -70,7 +63,7 @@ extension MediaTypeCollectionViewCell: Themeble {
                 mediaContentTitleTextLabel.text = "Video"
                 if let videosCount = contentCount, let space = diskSpace {
                     let spaceMessage = space != 0 ? String("• \(U.getSpaceFromInt(space))") : "• calculated"
-                    mediaContentSubTitleTextLabel.text = String("\(videosCount) videos\(spaceMessage)")
+                    mediaContentSubTitleTextLabel.text = String("\(videosCount) files \(spaceMessage)")
                 } else {
                     mediaContentSubTitleTextLabel.text = "no content"
                 }

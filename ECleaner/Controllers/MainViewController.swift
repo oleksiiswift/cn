@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import Photos
+
 
 class MainViewController: UIViewController {
     
@@ -26,7 +28,11 @@ class MainViewController: UIViewController {
     private var allPhotoCount: Int?
     private var allVideosCount: Int?
     private var allContactsCount: Int?
-
+    
+    private var allScreenShots: [PHAsset] = []
+    private var allSelfies: [PHAsset] = []
+    private var allLiveFotos: [PHAsset] = []
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -37,12 +43,16 @@ class MainViewController: UIViewController {
         setupCollectionView()
         setupCircleProgressView()
         updateColors()
+        
+        
     }
 }
 
 extension MainViewController {
     
-    private func getTotalDiskSpace() {}
+    private func getMediaContent() {
+        
+    }
     
     @objc func settingsButtonPressed() {}
     @objc func premiumButtonPressed() {}
@@ -50,24 +60,35 @@ extension MainViewController {
 
 extension MainViewController: UpdateContentDataBaseListener {
     
+    func getScreenAsset(_ assets: [PHAsset]) {
+        self.allScreenShots = assets
+    }
+    
+    func getFrontCameraAsset(_ assets: [PHAsset]) {
+        self.allSelfies = assets
+    }
+    
+    func getLivePhotosAsset(_ assets: [PHAsset]) {
+        self.allLiveFotos = assets
+    }
+    
+    
     func getPhotoLibraryCount(count: Int, calculatedSpace: Int64) {
         U.UI {
-        self.allPhotoCount = count
+            self.allPhotoCount = count
             if let cell = self.mediaCollectionView.cellForItem(at: IndexPath(item: 0, section: 0)) as? MediaTypeCollectionViewCell {
-            cell.configureCell(mediaType: .userPhoto, contentCount: count, diskSpace: calculatedSpace)
-        }
+                cell.configureCell(mediaType: .userPhoto, contentCount: count, diskSpace: calculatedSpace)
+            }
         }
     }
     
     func getVideoCount(count: Int, calculatedSpace: Int64) {
-        U.UI {
+        
         self.allVideosCount = count
             if let cell = self.mediaCollectionView.cellForItem(at: IndexPath(item: 1, section: 0)) as? MediaTypeCollectionViewCell {
             cell.configureCell(mediaType: .userVideo, contentCount: count, diskSpace: calculatedSpace)
         }
-        }
     }
-    
     
     func getContactsCount(count: Int) {
         
@@ -75,6 +96,13 @@ extension MainViewController: UpdateContentDataBaseListener {
         if let cell = mediaCollectionView.cellForItem(at: IndexPath(item: 2, section: 0)) as? MediaTypeCollectionViewCell {
             cell.configureCell(mediaType: .userContacts, contentCount: count, diskSpace: 0)
         }
+    }
+
+    private func openMediaController(type: MediaContentType) {
+        let storyboard = UIStoryboard(name: C.identifiers.storyboards.media, bundle: nil)
+        let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.content) as! MediaContentViewController
+        viewController.contentType = type
+        self.navigationController?.pushViewController(viewController, animated: true)
     }
 }
 
@@ -89,6 +117,19 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: C.identifiers.cells.mediaTypeCell, for: indexPath) as! MediaTypeCollectionViewCell
         configure(cell, at: indexPath)
         return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        switch indexPath.item {
+            case 0:
+                self.openMediaController(type: .userPhoto)
+            case 1:
+                self.openMediaController(type: .userVideo)
+            case 2:
+                self.openMediaController(type: .userContacts)
+            default:
+                return
+        }
     }
 }
 
@@ -133,6 +174,7 @@ extension MainViewController: UpdateColorsDelegate {
         self.navigationController?.updateNavigationColors()
         self.navigationItem.leftBarButtonItem = premiumButton
         self.navigationItem.rightBarButtonItem = settingsButton
+        self.navigationItem.backButtonTitle = ""
     }
     
     #warning("LOCO add loco")

@@ -7,6 +7,7 @@
 
 import Foundation
 
+typealias S = SettingsManager
 class SettingsManager {
     
     private static let shared = SettingsManager()
@@ -20,6 +21,14 @@ class SettingsManager {
             U.userDefaults.bool(forKey: C.key.settings.isDarkModeOn)
         } set {
             U.userDefaults.setValue(newValue, forKey: C.key.settings.isDarkModeOn)
+        }
+    }
+    
+    static var isLibraryAccessGranted: Bool {
+        get {
+            U.userDefaults.bool(forKey: C.key.settings.photoLibraryAccessGranted)
+        } set {
+            U.userDefaults.setValue(newValue, forKey: C.key.settings.photoLibraryAccessGranted)
         }
     }
 }

@@ -40,100 +40,115 @@ class PhotoManager: NSObject {
         
         photoLibraryRequestAuth { accessGranted in
             if accessGranted {
-                self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumVideos, by: PHAssetMediaType.video.rawValue) { asset in
-                    U.UI {
-                        UpdateContentDataBaseMediator.instance.updateVideos(asset.count, calculatedSpace: 0)
-                    }
-                    
-                        let diskSpace = self.fetchManager.calculateAllAssetsSize(result: asset)
-                        if diskSpace != 0 {
-                    
-                                UpdateContentDataBaseMediator.instance.updateVideos(asset.count, calculatedSpace: diskSpace)
-                    
-                    
-                    }
-                }
-                
-                self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumUserLibrary, by: PHAssetMediaType.image.rawValue) { asset in
-                    U.UI {
-                        UpdateContentDataBaseMediator.instance.updatePhotos(asset.count, calculatedSpace: 0)
-                    }
-                    
-                    
-                        let space = self.fetchManager.calculateAllAssetsSize(result: asset)
-                        if space != 0 {
-                                UpdateContentDataBaseMediator.instance.updatePhotos(asset.count, calculatedSpace: space)
-                        }
-                    
-                }
+                S.isLibraryAccessGranted = true
+                self.getPhotoLibrary()
             } else {
+                S.isLibraryAccessGranted = false
+                
                 AlertManager.showOpenSettingsAlert(.allowPhotoLibrary)
             }
         }
     }
     
-    public func getPhotoLibrary() {
+    private func getPhotoLibrary() {
         
-        photoLibraryRequestAuth { accessGranted in
-            if accessGranted {
-//                MARK: - testing -
-                /// this is testing block
-                /// use only for fetch media for track in testing mode
-                self.getSelfiePhotos { selfie in
-                    debugPrint("selfie count \(selfie.count)")
+        U.BG {
+            self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumVideos, by: PHAssetMediaType.video.rawValue) { assets in
+                U.UI {
+                    UpdateContentDataBaseMediator.instance.updateVideos(assets.count, calculatedSpace: 0)
                 }
-                
-                self.getScreenShots { screens in
-                    debugPrint("screen shots \(screens.count)")
+            }
+            
+            self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumUserLibrary, by: PHAssetMediaType.image.rawValue) { assets in
+                U.UI {
+                    UpdateContentDataBaseMediator.instance.updatePhotos(assets.count, calculatedSpace: 0)
                 }
-                
-                self.getSimilarLivePhotos { groups in
-                    debugPrint("similar live Phooto groups")
-                    
-                    debugPrint(groups.count)
-                    
-                    for i in groups {
-                        debugPrint("detect")
-                        debugPrint(i.assets.count)
-                    }
+            }
+            
+            self.getScreenShots { assets in
+                U.UI {
+                    UpdateContentDataBaseMediator.instance.getScreenshots(assets)
                 }
-                
-                self.getSimilarVideo { groups in
-                    debugPrint("similar video grops")
-                    debugPrint(groups.count)
-
-                    for i in groups {
-                        debugPrint("detect simmilar video")
-                        debugPrint(i.assets.count)
-
-                        for n in i.assets {
-                            debugPrint("videos")
-                            debugPrint(n.creationDate)
-                            debugPrint(n.duration)
-                        }
-                    }
+            }
+            
+            self.getLivePhotos { assets in
+                U.UI {
+                    UpdateContentDataBaseMediator.instance.getLivePhotosAsset(assets)
                 }
-                
-                self.getDuplicatePhotos { group in
-                    debugPrint("duplicate grup")
-                    debugPrint(group.count)
+            }
+            
+            self.getSelfiePhotos { assets in
+                U.UI {
+                    UpdateContentDataBaseMediator.instance.getFrontCameraAsset(assets)
                 }
-
-                self.getSimilarPhotos { groups in
-                    debugPrint("similar group")
-                    debugPrint(groups.count)
-
-                    for i in groups {
-                        debugPrint("similar photos")
-                        debugPrint(i.assets.count)
-                    }
-                }
-                
-            } else {
-                AlertManager.showOpenSettingsAlert(.allowPhotoLibrary)
             }
         }
     }
+    
+    
+//    public func getPhotoLibrary() {
+//
+//        photoLibraryRequestAuth { accessGranted in
+//            if accessGranted {
+//
+////                MARK: - testing -
+//                /// this is testing block
+//                /// use only for fetch media for track in testing mode
+//                self.getSelfiePhotos { selfie in
+//                    debugPrint("selfie count \(selfie.count)")
+//                }
+//
+//                self.getScreenShots { screens in
+//                    debugPrint("screen shots \(screens.count)")
+//                }
+//
+//                self.getSimilarLivePhotos { groups in
+//                    debugPrint("similar live Phooto groups")
+//
+//                    debugPrint(groups.count)
+//
+//                    for i in groups {
+//                        debugPrint("detect")
+//                        debugPrint(i.assets.count)
+//                    }
+//                }
+//
+//                self.getSimilarVideo { groups in
+//                    debugPrint("similar video grops")
+//                    debugPrint(groups.count)
+//
+//                    for i in groups {
+//                        debugPrint("detect simmilar video")
+//                        debugPrint(i.assets.count)
+//
+//                        for n in i.assets {
+//                            debugPrint("videos")
+//                            debugPrint(n.creationDate)
+//                            debugPrint(n.duration)
+//                        }
+//                    }
+//                }
+//
+//                self.getDuplicatePhotos { group in
+//                    debugPrint("duplicate grup")
+//                    debugPrint(group.count)
+//                }
+//
+//                self.getSimilarPhotos { groups in
+//                    debugPrint("similar group")
+//                    debugPrint(groups.count)
+//
+//                    for i in groups {
+//                        debugPrint("similar photos")
+//                        debugPrint(i.assets.count)
+//                    }
+//                }
+//
+//            } else {
+//                AlertManager.showOpenSettingsAlert(.allowPhotoLibrary)
+//            }
+//        }
+//    }
     
 //    MARK: - authentification
     private func photoLibraryRequestAuth(completion: @escaping (_ status: Bool) -> Void ) {
@@ -490,6 +505,30 @@ class PhotoManager: NSObject {
                 
                 U.UI {
                     completionHandler(selfies)
+                }
+            }
+        }
+    }
+//    MARK: - load life photo -
+    public func getLivePhotos(_ completionHandler: @escaping ((_ assets: [PHAsset]) -> Void)) {
+        
+        fetchManager.fetchFromGallery(collectiontype: .smartAlbumLivePhotos, by: PHAssetMediaType.image.rawValue) { livePhotosLibrary in
+            
+            U.BG {
+                var livePhotos: [PHAsset] = []
+                if livePhotosLibrary.count == 0 {
+                    U.UI {
+                        completionHandler([])
+                    }
+                    return
+                }
+                
+                for livePhoto in 1...livePhotosLibrary.count {
+                    livePhotos.append(livePhotosLibrary[livePhoto - 1])
+                }
+                
+                U.UI {
+                    completionHandler(livePhotos)
                 }
             }
         }

@@ -27,6 +27,8 @@ class Constants {
         
         struct settings {
             static let isDarkModeOn = "darkModeIsSetOn"
+            static let photoLibraryAccessGranted = "photoLibraryAccessGranted"
+            static let contactStoreAccessGranted = "contactStoreAccessGranted"
         }
     }
     
@@ -35,19 +37,23 @@ class Constants {
         
         struct storyboards {
             static let main = "Main"
+            static let media = "MediaContent"
         }
         
         struct viewControllers {
             static let advertise = "AdvertisementViewController"
             static let main = "MainViewController"
+            static let content = "MediaContentViewController"
         }
         
         struct cells {
             static let mediaTypeCell = "MediaTypeCollectionViewCell"
+            static let contentTypeCell = "ContentTypeTableViewCell"
         }
         
         struct xibs {
             static let mediaTypeCell = "MediaTypeCollectionViewCell"
+            static let contentTypeCell = "ContentTypeTableViewCell"
         }
     }
     

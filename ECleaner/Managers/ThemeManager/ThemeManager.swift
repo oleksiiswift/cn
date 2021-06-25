@@ -84,10 +84,11 @@ extension UINavigationBar: UpdateColorsDelegate {
         let customFontSize = UIFont.systemFont(ofSize: 17, weight: .bold)
         
         let navigationBarAppearance = UINavigationBarAppearance()
-        let backButton = navigationBarAppearance.backButtonAppearance.normal
-        let backButtonTitleAttributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14, weight: .bold)]
-        backButton.titleTextAttributes = backButtonTitleAttributes
+        let backButtonItemAppearance = UIBarButtonItem.appearance()
+        let attributes = [NSAttributedString.Key.font:  UIFont(name: "Helvetica-Bold", size: 0.1)!, NSAttributedString.Key.foregroundColor: UIColor.clear]
 
+        backButtonItemAppearance.setTitleTextAttributes(attributes, for: .normal)
+        backButtonItemAppearance.setTitleTextAttributes(attributes, for: .highlighted)
         navigationBarAppearance.configureWithOpaqueBackground()
         navigationBarAppearance.titleTextAttributes = [.foregroundColor: currentTheme.navigationBarTextColor]
         navigationBarAppearance.largeTitleTextAttributes = [.foregroundColor: currentTheme.navigationBarTextColor, .font: customFontSize]

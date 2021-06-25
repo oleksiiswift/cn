@@ -21,12 +21,19 @@
 		049CC23426833D320002F988 /* UIView+Radius.swift in Sources */ = {isa = PBXBuildFile; fileRef = 049CC23326833D320002F988 /* UIView+Radius.swift */; };
 		049CC2372683730A0002F988 /* BaseCollectionFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 049CC2362683730A0002F988 /* BaseCollectionFlowLayout.swift */; };
 		049CC23A2683761B0002F988 /* String+ConvertInteger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 049CC2392683761B0002F988 /* String+ConvertInteger.swift */; };
+		04CF00002685F0C3000CA850 /* ContentTypeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CFFFFE2685F0C3000CA850 /* ContentTypeTableViewCell.swift */; };
+		04CF00012685F0C3000CA850 /* ContentTypeTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04CFFFFF2685F0C3000CA850 /* ContentTypeTableViewCell.xib */; };
+		04CF0003268602DE000CA850 /* MediaContentType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CF0002268602DE000CA850 /* MediaContentType.swift */; };
 		04CFFFE726846A23000CA850 /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CFFFE626846A23000CA850 /* Device.swift */; };
 		04CFFFE926846A38000CA850 /* Screen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CFFFE826846A38000CA850 /* Screen.swift */; };
 		04CFFFEC2684725F000CA850 /* Device+DiskSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CFFFEB2684725F000CA850 /* Device+DiskSpace.swift */; };
 		04CFFFEF268479CE000CA850 /* CircleProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CFFFEE268479CE000CA850 /* CircleProgressView.swift */; };
 		04CFFFF22684B1ED000CA850 /* String+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CFFFF12684B1ED000CA850 /* String+Extension.swift */; };
 		04CFFFF42684B23D000CA850 /* String+Whitespaces.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CFFFF32684B23D000CA850 /* String+Whitespaces.swift */; };
+		04CFFFF72685BEAD000CA850 /* MediaContent.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 04CFFFF62685BEAD000CA850 /* MediaContent.storyboard */; };
+		04CFFFF92685BF01000CA850 /* MediaContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CFFFF82685BF01000CA850 /* MediaContentViewController.swift */; };
+		04CFFFFB2685E546000CA850 /* UIView+SelectedCornerRadius.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CFFFFA2685E546000CA850 /* UIView+SelectedCornerRadius.swift */; };
+		04CFFFFD2685E571000CA850 /* UIView+Borders.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CFFFFC2685E571000CA850 /* UIView+Borders.swift */; };
 		04E09470267A06B500A69956 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04E0946F267A06B500A69956 /* AppDelegate.swift */; };
 		04E09472267A06B500A69956 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04E09471267A06B500A69956 /* SceneDelegate.swift */; };
 		04E09474267A06B500A69956 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04E09473267A06B500A69956 /* ViewController.swift */; };
@@ -62,12 +69,19 @@
 		049CC23326833D320002F988 /* UIView+Radius.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Radius.swift"; sourceTree = "<group>"; };
 		049CC2362683730A0002F988 /* BaseCollectionFlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseCollectionFlowLayout.swift; sourceTree = "<group>"; };
 		049CC2392683761B0002F988 /* String+ConvertInteger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+ConvertInteger.swift"; sourceTree = "<group>"; };
+		04CF0002268602DE000CA850 /* MediaContentType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaContentType.swift; sourceTree = "<group>"; };
 		04CFFFE626846A23000CA850 /* Device.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Device.swift; sourceTree = "<group>"; };
 		04CFFFE826846A38000CA850 /* Screen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Screen.swift; sourceTree = "<group>"; };
 		04CFFFEB2684725F000CA850 /* Device+DiskSpace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Device+DiskSpace.swift"; sourceTree = "<group>"; };
 		04CFFFEE268479CE000CA850 /* CircleProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleProgressView.swift; sourceTree = "<group>"; };
 		04CFFFF12684B1ED000CA850 /* String+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extension.swift"; sourceTree = "<group>"; };
 		04CFFFF32684B23D000CA850 /* String+Whitespaces.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Whitespaces.swift"; sourceTree = "<group>"; };
+		04CFFFF62685BEAD000CA850 /* MediaContent.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = MediaContent.storyboard; sourceTree = "<group>"; };
+		04CFFFF82685BF01000CA850 /* MediaContentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaContentViewController.swift; sourceTree = "<group>"; };
+		04CFFFFA2685E546000CA850 /* UIView+SelectedCornerRadius.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+SelectedCornerRadius.swift"; sourceTree = "<group>"; };
+		04CFFFFC2685E571000CA850 /* UIView+Borders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Borders.swift"; sourceTree = "<group>"; };
+		04CFFFFE2685F0C3000CA850 /* ContentTypeTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentTypeTableViewCell.swift; sourceTree = "<group>"; };
+		04CFFFFF2685F0C3000CA850 /* ContentTypeTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ContentTypeTableViewCell.xib; sourceTree = "<group>"; };
 		04E0946C267A06B500A69956 /* ECleaner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ECleaner.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		04E0946F267A06B500A69956 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		04E09471267A06B500A69956 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -203,6 +217,8 @@
 			isa = PBXGroup;
 			children = (
 				049CC22D268337310002F988 /* MediaTypeCollectionViewCell.swift */,
+				04CF0002268602DE000CA850 /* MediaContentType.swift */,
+				04CFFFFE2685F0C3000CA850 /* ContentTypeTableViewCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -211,6 +227,7 @@
 			isa = PBXGroup;
 			children = (
 				049CC22E268337310002F988 /* MediaTypeCollectionViewCell.xib */,
+				04CFFFFF2685F0C3000CA850 /* ContentTypeTableViewCell.xib */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -219,6 +236,8 @@
 			isa = PBXGroup;
 			children = (
 				049CC23326833D320002F988 /* UIView+Radius.swift */,
+				04CFFFFA2685E546000CA850 /* UIView+SelectedCornerRadius.swift */,
+				04CFFFFC2685E571000CA850 /* UIView+Borders.swift */,
 			);
 			path = UIView;
 			sourceTree = "<group>";
@@ -295,6 +314,7 @@
 				04E09473267A06B500A69956 /* ViewController.swift */,
 				049CC214268221D40002F988 /* AdvertisementViewController.swift */,
 				049CC216268221DE0002F988 /* MainViewController.swift */,
+				04CFFFF82685BF01000CA850 /* MediaContentViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -426,6 +446,7 @@
 			isa = PBXGroup;
 			children = (
 				04E09475267A06B500A69956 /* Main.storyboard */,
+				04CFFFF62685BEAD000CA850 /* MediaContent.storyboard */,
 				04E0947A267A06B900A69956 /* LaunchScreen.storyboard */,
 			);
 			path = Storyboards;
@@ -524,9 +545,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				04E0947C267A06B900A69956 /* LaunchScreen.storyboard in Resources */,
+				04CF00012685F0C3000CA850 /* ContentTypeTableViewCell.xib in Resources */,
 				049CC230268337310002F988 /* MediaTypeCollectionViewCell.xib in Resources */,
 				04E09479267A06B900A69956 /* Assets.xcassets in Resources */,
 				04E09477267A06B500A69956 /* Main.storyboard in Resources */,
+				04CFFFF72685BEAD000CA850 /* MediaContent.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -587,7 +610,9 @@
 				04E5837E267B60F600EDC3A3 /* AlertManager.swift in Sources */,
 				04E09474267A06B500A69956 /* ViewController.swift in Sources */,
 				04CFFFF42684B23D000CA850 /* String+Whitespaces.swift in Sources */,
+				04CFFFFD2685E571000CA850 /* UIView+Borders.swift in Sources */,
 				049CC2372683730A0002F988 /* BaseCollectionFlowLayout.swift in Sources */,
+				04CF0003268602DE000CA850 /* MediaContentType.swift in Sources */,
 				04E5837C267B3E2A00EDC3A3 /* PhotoManager.swift in Sources */,
 				04CFFFEC2684725F000CA850 /* Device+DiskSpace.swift in Sources */,
 				04E09470267A06B500A69956 /* AppDelegate.swift in Sources */,
@@ -603,13 +628,16 @@
 				049CC21D268225F80002F988 /* ThemeManager.swift in Sources */,
 				04E58377267B323E00EDC3A3 /* Constants.swift in Sources */,
 				04CFFFE726846A23000CA850 /* Device.swift in Sources */,
+				04CFFFF92685BF01000CA850 /* MediaContentViewController.swift in Sources */,
 				049CC215268221D40002F988 /* AdvertisementViewController.swift in Sources */,
 				049CC21B268225E60002F988 /* SettingsManager.swift in Sources */,
 				97CC2F3A2683D00F0072EF8C /* UpdateContentDataBaseListener.swift in Sources */,
+				04CF00002685F0C3000CA850 /* ContentTypeTableViewCell.swift in Sources */,
 				049CC221268314690002F988 /* NotificationManager.swift in Sources */,
 				049CC23A2683761B0002F988 /* String+ConvertInteger.swift in Sources */,
 				04E5836F267A47FB00EDC3A3 /* Utils.swift in Sources */,
 				04E58371267A4A0A00EDC3A3 /* UIDevice+Model.swift in Sources */,
+				04CFFFFB2685E546000CA850 /* UIView+SelectedCornerRadius.swift in Sources */,
 				04CFFFEF268479CE000CA850 /* CircleProgressView.swift in Sources */,
 				04E58380267B9F6B00EDC3A3 /* PhassetFetchManager.swift in Sources */,
 			);

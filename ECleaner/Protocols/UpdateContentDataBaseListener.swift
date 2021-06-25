@@ -6,9 +6,14 @@
 //
 
 import Foundation
+import Photos
 
 protocol UpdateContentDataBaseListener {
     func getPhotoLibraryCount(count: Int, calculatedSpace: Int64)
     func getVideoCount(count: Int, calculatedSpace: Int64)
     func getContactsCount(count: Int)
+    
+    func getScreenAsset(_ assets: [PHAsset])
+    func getFrontCameraAsset(_ assets: [PHAsset])
+    func getLivePhotosAsset(_ assets: [PHAsset])
 }
