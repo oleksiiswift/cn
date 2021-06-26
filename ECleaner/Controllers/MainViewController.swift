@@ -7,6 +7,7 @@
 
 import UIKit
 import Photos
+import SwiftMessages
 
 
 class MainViewController: UIViewController {
@@ -43,9 +44,19 @@ class MainViewController: UIViewController {
         setupCollectionView()
         setupCircleProgressView()
         updateColors()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         
+        setupNavigation()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         
     }
+    
 }
 
 extension MainViewController {
@@ -58,6 +69,7 @@ extension MainViewController {
     @objc func premiumButtonPressed() {}
 }
 
+//      MARK: updating elements
 extension MainViewController: UpdateContentDataBaseListener {
     
     func getScreenAsset(_ assets: [PHAsset]) {
@@ -101,6 +113,9 @@ extension MainViewController: UpdateContentDataBaseListener {
     private func openMediaController(type: MediaContentType) {
         let storyboard = UIStoryboard(name: C.identifiers.storyboards.media, bundle: nil)
         let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.content) as! MediaContentViewController
+        viewController.allScreenShots = self.allScreenShots
+        viewController.allSelfies = self.allSelfies
+        viewController.allLiveFotos = self.allLiveFotos
         viewController.contentType = type
         self.navigationController?.pushViewController(viewController, animated: true)
     }
@@ -212,11 +227,16 @@ extension MainViewController: UpdateColorsDelegate {
                 self.view.layoutIfNeeded()
                 
                 baseCarouselLayout.itemSize = CGSize(width: 138, height: mediaCollectionView.frame.height)
-                
+    
             case .medium:
                 debugPrint("")
             case .plus:
                 debugPrint("")
+                circleTotlaSpaceView.lineWidth = 20
+                circleTotlaSpaceView.titleLabelBottomInset = (circleTotlaSpaceView.frame.height / 2) + 10
+                circleTotlaSpaceView.titleLabel.font = .systemFont(ofSize: 13, weight: .regular)
+                circleTotlaSpaceView.percentLabel.font = .systemFont(ofSize: 25, weight: .black)
+                circleTotlaSpaceView.percentLabelCenterInset = 25
             case .large:
                 debugPrint("")
             case .modern:
@@ -245,4 +265,5 @@ extension MainViewController: UpdateColorsDelegate {
         circleTotlaSpaceView.title = "\(Device.usedDiskSpaceInGB.removeWhitespace()) out of \(Device.totalDiskSpaceInGB.removeWhitespace())"
         circleTotlaSpaceView.percentLabelFormat = "%.f%%"
     }
+
 }

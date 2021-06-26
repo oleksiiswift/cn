@@ -19,6 +19,13 @@ class AdvertisementViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        updateColors()
+        setupNavigation()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
         
     }
 }
@@ -27,6 +34,11 @@ extension AdvertisementViewController: UpdateColorsDelegate {
     
     func updateColors() {
         self.view.backgroundColor = currentTheme.backgroundColor
+    }
+    
+    func setupNavigation() {
+        
+        self.navigationController?.updateNavigationColors()
     }
 }
 

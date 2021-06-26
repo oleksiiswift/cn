@@ -76,6 +76,27 @@ extension PHAssetFetchManager {
     }
     
     
+    public func someFetch() {
+        let fetchOption = PHFetchOptions()
+        fetchOption.sortDescriptors = [NSSortDescriptor(key: SortingDesriptionKey.creationDate.value, ascending: false)]
+//        fetchOption.predicate = NSPredicate(format: "mediaType == %d || mediaType == %d", PHAssetMediaType.image.rawValue, PHAssetMediaType.video.rawValue)
+        let stre = "People".localized()
+        fetchOption.predicate = NSPredicate(format: "title = %@", stre, PHAssetMediaType.image.rawValue, PHAssetMediaType.video.rawValue)
+//        "title = %@", "People"
+        
+    
+        let albumsPhoto:PHFetchResult<PHAssetCollection> = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .albumSyncedFaces, options: nil)
+
+          albumsPhoto.enumerateObjects({(collection, index, object) in
+              let photoInAlbum = PHAsset.fetchAssets(in: collection, options: nil)
+                  print(photoInAlbum.count)
+                  print(collection.localizedTitle)
+
+          })
+        
+    }
+    
+    
     
 //    MARK: fetch assets from collection
     private func fetchImagesFromGallery(collection: PHAssetCollection?) -> PHFetchResult<PHAsset> {

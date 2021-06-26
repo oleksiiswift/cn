@@ -44,6 +44,7 @@ class Constants {
             static let advertise = "AdvertisementViewController"
             static let main = "MainViewController"
             static let content = "MediaContentViewController"
+            static let datePicker = "DateSelectorViewController"
         }
         
         struct cells {
@@ -54,6 +55,10 @@ class Constants {
         struct xibs {
             static let mediaTypeCell = "MediaTypeCollectionViewCell"
             static let contentTypeCell = "ContentTypeTableViewCell"
+        }
+        
+        struct segue {
+            static let showDatePicker = "ShowDatePickerSelectorViewControllerSegue"
         }
     }
     

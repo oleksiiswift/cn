@@ -407,7 +407,7 @@ class PhotoManager: NSObject {
         }
     }
     
-    
+    /// `private` need for service compare
     private func getSimilarTuples(for photos: [OSTuple<NSString, NSData>], photosInGallery: PHFetchResult<PHAsset>, completionHandler: @escaping ([PhassetGroup]) -> Void){
         
         var similarPhotosCount: [Int] = []

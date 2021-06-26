@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import Photos
+import SwiftMessages
 
 class MediaContentViewController: UIViewController {
 
@@ -21,11 +23,13 @@ class MediaContentViewController: UIViewController {
     @IBOutlet weak var dateSelectContainerHeigntConstraint: NSLayoutConstraint!
     
     @IBOutlet weak var startingDateStackView: UIStackView!
-    
     @IBOutlet weak var endingDateStackView: UIStackView!
     
     public var contentType: MediaContentType = .none
     
+    public var allScreenShots: [PHAsset] = []
+    public var allSelfies: [PHAsset] = []
+    public var allLiveFotos: [PHAsset] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,10 +46,22 @@ class MediaContentViewController: UIViewController {
         self.navigationItem.backButtonTitle = ""
     }
     
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        switch segue.identifier {
+            case C.identifiers.segue.showDatePicker:
+                self.setupShowDatePickerSelectorController(segue: segue)
+            default:
+                break
+        }
+    }
+
     @IBAction func didTapSelectStartDateActionButton(_ sender: Any) {
+        performSegue(withIdentifier: C.identifiers.segue.showDatePicker, sender: self)
     }
     
     @IBAction func didTapSelectEndDateActionButton(_ sender: Any) {
+        performSegue(withIdentifier: C.identifiers.segue.showDatePicker, sender: self)
     }
 }
 
@@ -59,6 +75,34 @@ extension MediaContentViewController: UITableViewDelegate, UITableViewDataSource
         tableView.register(UINib(nibName: C.identifiers.xibs.contentTypeCell, bundle: nil), forCellReuseIdentifier: C.identifiers.cells.contentTypeCell)
         tableView.contentInset = UIEdgeInsets(top: 8, left: 0, bottom: 0, right: 0)
     }
+    
+    func configure(_ cell: ContentTypeTableViewCell, at indexPath: IndexPath) {
+        
+        var assetContentCount: Int = 0
+    
+        switch self.contentType {
+            case .userPhoto:
+                switch indexPath.row {
+                    case 2:
+                        assetContentCount = self.allScreenShots.count
+                    case 3:
+                        assetContentCount = self.allSelfies.count
+                    case 5:
+                        assetContentCount = self.allLiveFotos.count
+                    default:
+                        debugPrint("")
+                }
+            case .userVideo:
+                debugPrint("")
+            case .userContacts:
+                debugPrint("")
+            default:
+                return
+        }
+        
+        cell.cellConfig(contentType: contentType, indexPath: indexPath, phasetCount: assetContentCount)
+        
+    }
         
     func numberOfSections(in tableView: UITableView) -> Int {
         return contentType.numberOfSection
@@ -66,7 +110,7 @@ extension MediaContentViewController: UITableViewDelegate, UITableViewDataSource
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: C.identifiers.cells.contentTypeCell, for: indexPath) as! ContentTypeTableViewCell
-        cell.cellConfig(contentType: contentType, indexPath: indexPath)
+        configure(cell, at: indexPath)
         return cell
     }
     
@@ -132,5 +176,20 @@ extension MediaContentViewController: Themeble {
         
         startingDateTitileTextLabel.textColor = currentTheme.subTitleTextColor
         endingDateTitleTextLabel.textColor = currentTheme.subTitleTextColor
+    }
+    
+    private func setupShowDatePickerSelectorController(segue: UIStoryboardSegue) {
+        
+        if let segue = segue as? SwiftMessagesSegue {
+            segue.configure(layout: .bottomMessage)
+            segue.dimMode = .gray(interactive: false)
+            segue.interactiveHide = false
+            segue.messageView.configureNoDropShadow()
+            segue.messageView.backgroundHeight = Device.isSafeAreaiPhone ? 458 : 438
+            
+            if let dateSelectorController = segue.destination as? DateSelectorViewController {
+                
+            }
+        }
     }
 }

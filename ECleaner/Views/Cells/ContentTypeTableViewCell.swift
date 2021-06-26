@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Photos
 
 class ContentTypeTableViewCell: UITableViewCell {
     
@@ -14,7 +15,7 @@ class ContentTypeTableViewCell: UITableViewCell {
     
     @IBOutlet weak var contentTypeTextLabel: UILabel!
     @IBOutlet weak var contentSubtitleTextLabel: UILabel!
-    
+        
     override func prepareForReuse() {
         super.prepareForReuse()
         
@@ -37,14 +38,14 @@ class ContentTypeTableViewCell: UITableViewCell {
 
 extension ContentTypeTableViewCell {
     
-    public func cellConfig(contentType: MediaContentType, indexPath: IndexPath) {
+    public func cellConfig(contentType: MediaContentType, indexPath: IndexPath, phasetCount: Int) {
         
         contentTypeTextLabel.text = contentType.getCellTitle(index: indexPath.row)
         
-    
         switch contentType {
             case .userPhoto:
-                contentSubtitleTextLabel.text = ""
+                
+                contentSubtitleTextLabel.text = phasetCount != 0 ? String("\(phasetCount) files") : ""
             case .userVideo:
                 contentSubtitleTextLabel.text = ""
             case .userContacts:
@@ -53,6 +54,7 @@ extension ContentTypeTableViewCell {
                 contentSubtitleTextLabel.text = ""
         }
     }
+
 }
 
 extension ContentTypeTableViewCell: Themeble {

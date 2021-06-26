@@ -35,9 +35,9 @@ class Utils {
     
     static let screenBounds: CGRect = mainScreen.bounds
     
-    static let screenHeight = screenBounds.height
+    static let screenHeight: CGFloat = screenBounds.height
     
-    static let screenWidth = screenBounds.width
+    static let screenWidth: CGFloat = screenBounds.width
     
     static let ratio: CGFloat = U.screenWidth / U.screenHeight
     

@@ -80,6 +80,7 @@ extension UINavigationBar: UpdateColorsDelegate {
     func updateColors() {
         
         tintColor = currentTheme.navigationBarTextColor
+        barTintColor = .red
         
         let customFontSize = UIFont.systemFont(ofSize: 17, weight: .bold)
         
@@ -93,6 +94,7 @@ extension UINavigationBar: UpdateColorsDelegate {
         navigationBarAppearance.titleTextAttributes = [.foregroundColor: currentTheme.navigationBarTextColor]
         navigationBarAppearance.largeTitleTextAttributes = [.foregroundColor: currentTheme.navigationBarTextColor, .font: customFontSize]
         navigationBarAppearance.backgroundColor = currentTheme.backgroundColor
+        
         navigationBarAppearance.shadowColor = .clear
         standardAppearance = navigationBarAppearance
         scrollEdgeAppearance = navigationBarAppearance

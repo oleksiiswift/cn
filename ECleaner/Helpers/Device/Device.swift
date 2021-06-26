@@ -64,6 +64,14 @@ extension Device {
         return "\(Int(Double(gbString)!.rounded())) GB"
     }
     
+    static public var usedIntDiskSpace: Double {
+        var gbString = ByteCountFormatter.string(fromByteCount: usedDiskSpaceInBytes, countStyle: ByteCountFormatter.CountStyle.decimal)
+        gbString = gbString.replacingOccurrences(of: " GB", with: "").replacingOccurrences(of: ",", with: ".")
+        return Double(gbString)!.rounded()
+    }
+    
+    
+    
     static public var freeDiskSpaceInGB: String {
         return ByteCountFormatter.string(fromByteCount: freeDiskSpaceInBytes, countStyle: ByteCountFormatter.CountStyle.decimal)
         

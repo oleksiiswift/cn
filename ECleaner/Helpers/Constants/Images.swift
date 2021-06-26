@@ -23,4 +23,10 @@ class Images {
         static let video = UIImage(systemName: "video.fill")
         static let contacts = UIImage(systemName: "person.fill")
     }
+    
+    struct systemElementsItems {
+        static let crissCross = UIImage(systemName: "xmark.circle.fill")
+        static let checkBox = UIImage(systemName: "stop")
+        static let checkBoxIsChecked = UIImage(systemName: "checkmark.square")
+    }
 }
