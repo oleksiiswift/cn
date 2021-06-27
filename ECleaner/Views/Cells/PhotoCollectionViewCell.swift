@@ -13,15 +13,14 @@ class PhotoCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var baseView: UIView!
     @IBOutlet weak var photoThumbnailImageView: UIImageView!
     @IBOutlet weak var photoCheckmarkImageView: UIImageView!
-    
-
-    public var cellSelected: Bool = false {
+        
+    override var isSelected: Bool {
         didSet {
-            
+            U.animate(0.2) {
+                self.photoCheckmarkImageView.image = self.isSelected ? I.systemElementsItems.circleCheckBox : I.systemElementsItems.circleBox
+            }
         }
     }
-    
-    
     
     override func prepareForReuse() {
         super.prepareForReuse()
@@ -32,8 +31,8 @@ class PhotoCollectionViewCell: UICollectionViewCell {
         super.awakeFromNib()
         
         setupUI()
+        updateColors()
     }
-
 }
 
 extension PhotoCollectionViewCell: Themeble {
@@ -41,17 +40,20 @@ extension PhotoCollectionViewCell: Themeble {
     private func setupUI() {
         
         baseView.setCorner(12)
+        self.photoCheckmarkImageView.image = I.systemElementsItems.circleBox
     }
     
     func updateColors() {
         
         baseView.backgroundColor = currentTheme.sectionBackgroundColor
+        photoCheckmarkImageView.tintColor = currentTheme.accentBackgroundColor
     }
     
     public func loadCellThumbnail(_ asset: PHAsset, size: CGSize) {
 
         let thumbnail = PHAssetFetchManager.shared.getThumbnail(from: asset, size: size)
         photoThumbnailImageView.image = thumbnail
+        
         
     }
 }

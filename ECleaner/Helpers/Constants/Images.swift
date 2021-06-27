@@ -28,5 +28,8 @@ class Images {
         static let crissCross = UIImage(systemName: "xmark.circle.fill")
         static let checkBox = UIImage(systemName: "stop")
         static let checkBoxIsChecked = UIImage(systemName: "checkmark.square")
+        static let circleBox = UIImage(systemName: "circle")
+        static let circleCheckBox = UIImage(systemName: "checkmark.circle.fill")
+        
     }
 }

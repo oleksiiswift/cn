@@ -238,8 +238,6 @@
 			children = (
 				049CC22D268337310002F988 /* MediaTypeCollectionViewCell.swift */,
 				97FC789F2688E5E8000D7F26 /* PhotoCollectionViewCell.swift */,
-				97FC78A02688E5E8000D7F26 /* PhotoCollectionViewCell.xib */,
-				04CF0002268602DE000CA850 /* MediaContentType.swift */,
 				04CFFFFE2685F0C3000CA850 /* ContentTypeTableViewCell.swift */,
 			);
 			path = Cells;
@@ -250,6 +248,7 @@
 			children = (
 				049CC22E268337310002F988 /* MediaTypeCollectionViewCell.xib */,
 				04CFFFFF2685F0C3000CA850 /* ContentTypeTableViewCell.xib */,
+				97FC78A02688E5E8000D7F26 /* PhotoCollectionViewCell.xib */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -315,6 +314,7 @@
 				04E58369267A3FBE00EDC3A3 /* Application */,
 				04E58365267A3F5E00EDC3A3 /* ViewModel */,
 				04E58360267A3EC000EDC3A3 /* Models */,
+				97FC78A32689144D000D7F26 /* ContentType */,
 				04E5835B267A3E4700EDC3A3 /* Controllers */,
 				04E58364267A3F1600EDC3A3 /* Views */,
 				04E58362267A3EE900EDC3A3 /* Storyboards & Xibs */,
@@ -505,6 +505,14 @@
 				D5E1E3293C3C186D5078FB52 /* Pods-ECleaner.release.xcconfig */,
 			);
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		97FC78A32689144D000D7F26 /* ContentType */ = {
+			isa = PBXGroup;
+			children = (
+				04CF0002268602DE000CA850 /* MediaContentType.swift */,
+			);
+			path = ContentType;
 			sourceTree = "<group>";
 		};
 		9C660DF0569619D661857567 /* Frameworks */ = {

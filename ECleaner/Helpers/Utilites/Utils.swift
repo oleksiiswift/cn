@@ -94,8 +94,6 @@ class Utils {
 //    MARK: - DATE and TIME
     
     static let currentDate = Date.getCurrentDate()
-    
-    
 }
 
 //  MARK: - User Defaults -
@@ -149,6 +147,19 @@ extension Utils {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: block)
     }
 }
+
+extension Utils {
+    
+    static func animate(_ duration: TimeInterval, delay: TimeInterval = 0.0, animation: @escaping () -> Void, completion: (() -> Void)? = nil) {
+        
+        UIView.animate(withDuration: duration, delay: delay) {
+            animation()
+        } completion: { (_) in
+            completion?()
+        }
+    }
+}
+
 
 //      MARK: get the most top view controller
 func topController() -> UIViewController? {
