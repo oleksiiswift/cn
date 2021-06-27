@@ -26,6 +26,7 @@ class MediaContentViewController: UIViewController {
     @IBOutlet weak var endingDateStackView: UIStackView!
     
     public var contentType: MediaContentType = .none
+    private var photoManager = PhotoManager()
     private var startingDate: String {
         get {
             return S.startingSavedDate
@@ -140,6 +141,58 @@ extension MediaContentViewController: UITableViewDelegate, UITableViewDataSource
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 67
     }
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        self.showMediaContent(by: contentType, selected: indexPath.row)
+    }
+}
+
+extension MediaContentViewController {
+    
+    private func showMediaContent(by selectedType: MediaContentType, selected index: Int) {
+        switch selectedType {
+            case .userPhoto:
+                switch index {
+                    case 0:
+                        return
+                    case 1:
+                        return
+                    case 2:
+                        self.showScreenshots()
+                    case 3:
+                        return
+                    case 4:
+                        return
+                    case 5:
+                        return
+                    case 6:
+                        return
+                    default:
+                        return
+                }
+            case .userVideo:
+                debugPrint("show video")
+                
+            case .userContacts:
+                debugPrint("show contacts")
+            case .none:
+                return
+        }
+    }
+    
+    private func showScreenshots() {
+        photoManager.getScreenShots(from: startingDate, to: endingDate) { screenshots in
+            if screenshots.count != 0 {
+                let storyboard = UIStoryboard(name: C.identifiers.storyboards.media, bundle: nil)
+                let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.assetsList) as! SimpleAssetsListViewController
+                viewController.title = "screenshots"
+                viewController.assetCollection = screenshots
+                
+                self.navigationController?.pushViewController(viewController, animated: true)
+            } else {
+                return
+            }
+        }
+    }
 }
 
 extension MediaContentViewController: Themeble {
@@ -182,11 +235,6 @@ extension MediaContentViewController: Themeble {
     private func setupNavigation() {
         self.navigationController?.updateNavigationColors()
         self.navigationItem.backButtonTitle = ""
-    }
-    
-    
-    public func setDate() {
-        
     }
     
     func updateColors() {

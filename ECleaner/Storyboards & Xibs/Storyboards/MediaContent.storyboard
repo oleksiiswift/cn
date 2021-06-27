@@ -6,6 +6,7 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="collection view cell content view" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -149,6 +150,77 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ief-a0-LHa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1047.8260869565217" y="45.535714285714285"/>
+        </scene>
+        <!--Simple Assets List View Controller-->
+        <scene sceneID="fRq-kb-hQ4">
+            <objects>
+                <viewController storyboardIdentifier="SimpleAssetsListViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Wpn-50-5c4" customClass="SimpleAssetsListViewController" customModule="ECleaner" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="SWG-G4-3H8">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="UHg-uZ-vmZ">
+                                <rect key="frame" x="0.0" y="44" width="414" height="742"/>
+                                <subviews>
+                                    <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="qrX-u6-Im9">
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="742"/>
+                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                        <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="VJG-xX-e8T">
+                                            <size key="itemSize" width="128" height="128"/>
+                                            <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                            <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                            <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                        </collectionViewFlowLayout>
+                                        <cells>
+                                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="G1l-jF-7l1">
+                                                <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="SE3-IW-kH1">
+                                                    <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                </collectionViewCellContentView>
+                                            </collectionViewCell>
+                                        </cells>
+                                    </collectionView>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="qrX-u6-Im9" secondAttribute="trailing" id="2IL-Jb-Byx"/>
+                                    <constraint firstItem="qrX-u6-Im9" firstAttribute="leading" secondItem="UHg-uZ-vmZ" secondAttribute="leading" id="RrP-HC-cek"/>
+                                    <constraint firstAttribute="bottom" secondItem="qrX-u6-Im9" secondAttribute="bottom" id="Yjx-vg-Zmf"/>
+                                    <constraint firstItem="qrX-u6-Im9" firstAttribute="top" secondItem="UHg-uZ-vmZ" secondAttribute="top" id="rA7-8L-XLZ"/>
+                                </constraints>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZQk-j7-UIW">
+                                <rect key="frame" x="0.0" y="786" width="414" height="110"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="110" id="K5o-gg-FbR"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="YNe-GM-yhH"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="ZQk-j7-UIW" firstAttribute="top" secondItem="UHg-uZ-vmZ" secondAttribute="bottom" id="0NF-8b-EYB"/>
+                            <constraint firstItem="ZQk-j7-UIW" firstAttribute="top" secondItem="UHg-uZ-vmZ" secondAttribute="bottom" id="48v-Cp-6To"/>
+                            <constraint firstItem="UHg-uZ-vmZ" firstAttribute="leading" secondItem="YNe-GM-yhH" secondAttribute="leading" id="QaK-E0-ZuA"/>
+                            <constraint firstItem="ZQk-j7-UIW" firstAttribute="leading" secondItem="YNe-GM-yhH" secondAttribute="leading" id="XWW-es-fgd"/>
+                            <constraint firstItem="YNe-GM-yhH" firstAttribute="trailing" secondItem="UHg-uZ-vmZ" secondAttribute="trailing" id="akF-ms-8ck"/>
+                            <constraint firstAttribute="bottom" secondItem="ZQk-j7-UIW" secondAttribute="bottom" id="au0-iv-A7u"/>
+                            <constraint firstItem="UHg-uZ-vmZ" firstAttribute="top" secondItem="YNe-GM-yhH" secondAttribute="top" id="xwV-vD-8na"/>
+                            <constraint firstItem="YNe-GM-yhH" firstAttribute="trailing" secondItem="ZQk-j7-UIW" secondAttribute="trailing" id="ypv-QY-1ub"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="bottomMenuHeightConstraint" destination="K5o-gg-FbR" id="Ti5-Ud-5dr"/>
+                        <outlet property="bottomMenuView" destination="ZQk-j7-UIW" id="kRn-51-KQ7"/>
+                        <outlet property="collectionView" destination="qrX-u6-Im9" id="DvB-dn-Ev9"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="eh2-31-QPm" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2147.826086956522" y="266.51785714285711"/>
         </scene>
         <!--Date Selector View Controller-->
         <scene sceneID="56m-Re-eKu">
@@ -368,7 +440,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="38D-aR-cQK" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1586.9565217391305" y="693.75"/>
+            <point key="canvasLocation" x="1049" y="690"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="Cjz-bl-EEG">

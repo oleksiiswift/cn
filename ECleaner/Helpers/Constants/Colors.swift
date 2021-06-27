@@ -96,5 +96,14 @@ enum CurrentTheme: Int {
                 return UIColor().colorFromHexString("FFFFFF")
         }
     }
+    
+    var sectionBackgroundColor: UIColor {
+        switch self {
+            case .light:
+                return UIColor().colorFromHexString("C4C4C4")
+            case .dark:
+                return UIColor().colorFromHexString("C4C4C4")
+        }
+    }
 }
 

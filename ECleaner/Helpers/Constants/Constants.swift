@@ -48,16 +48,19 @@ class Constants {
             static let main = "MainViewController"
             static let content = "MediaContentViewController"
             static let datePicker = "DateSelectorViewController"
+            static let assetsList = "SimpleAssetsListViewController"
         }
         
         struct cells {
             static let mediaTypeCell = "MediaTypeCollectionViewCell"
             static let contentTypeCell = "ContentTypeTableViewCell"
+            static let photoSimpleCell = "PhotoCollectionViewCell"
         }
         
         struct xibs {
             static let mediaTypeCell = "MediaTypeCollectionViewCell"
             static let contentTypeCell = "ContentTypeTableViewCell"
+            static let photoSimpleCell = "PhotoCollectionViewCell"
         }
         
         struct segue {

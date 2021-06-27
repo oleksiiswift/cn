@@ -117,9 +117,9 @@ extension PHAssetFetchManager {
         let manager = PHImageManager.default()
         let option = PHImageRequestOptions()
         
-        option.isSynchronous = false
+        option.isSynchronous = true
         
-        manager.requestImage(for: asset, targetSize: size, contentMode: .aspectFill, options: option, resultHandler: {(result, info)->Void in
+        manager.requestImage(for: asset, targetSize: size, contentMode: .aspectFit, options: option, resultHandler: {(result, info) -> Void in
             if let image = result {
             thumbnail = image
             }
@@ -135,7 +135,7 @@ extension PHAssetFetchManager {
         let manager = PHImageManager.default()
         let option = PHImageRequestOptions()
         
-        manager.requestImage(for: asset, targetSize: PHImageManagerMaximumSize, contentMode: .default, options: option, resultHandler: {(result, info)->Void in
+        manager.requestImage(for: asset, targetSize: PHImageManagerMaximumSize, contentMode: .default, options: option, resultHandler: {(result, info) -> Void in
             image = result!
             complition(image)
         })

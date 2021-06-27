@@ -58,6 +58,10 @@
 		97FC789226888120000D7F26 /* Date+CurrentDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97FC789126888120000D7F26 /* Date+CurrentDate.swift */; };
 		97FC7894268882C9000D7F26 /* Date+DateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97FC7893268882C9000D7F26 /* Date+DateFormatter.swift */; };
 		97FC789626889541000D7F26 /* TimeIInterval.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97FC789526889541000D7F26 /* TimeIInterval.swift */; };
+		97FC78982688CC06000D7F26 /* SimpleAssetsListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97FC78972688CC06000D7F26 /* SimpleAssetsListViewController.swift */; };
+		97FC789A2688D907000D7F26 /* SimpleColumnFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97FC78992688D907000D7F26 /* SimpleColumnFlowLayout.swift */; };
+		97FC78A12688E5E8000D7F26 /* PhotoCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97FC789F2688E5E8000D7F26 /* PhotoCollectionViewCell.swift */; };
+		97FC78A22688E5E8000D7F26 /* PhotoCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 97FC78A02688E5E8000D7F26 /* PhotoCollectionViewCell.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -114,6 +118,10 @@
 		97FC789126888120000D7F26 /* Date+CurrentDate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+CurrentDate.swift"; sourceTree = "<group>"; };
 		97FC7893268882C9000D7F26 /* Date+DateFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+DateFormatter.swift"; sourceTree = "<group>"; };
 		97FC789526889541000D7F26 /* TimeIInterval.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeIInterval.swift; sourceTree = "<group>"; };
+		97FC78972688CC06000D7F26 /* SimpleAssetsListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleAssetsListViewController.swift; sourceTree = "<group>"; };
+		97FC78992688D907000D7F26 /* SimpleColumnFlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleColumnFlowLayout.swift; sourceTree = "<group>"; };
+		97FC789F2688E5E8000D7F26 /* PhotoCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCollectionViewCell.swift; sourceTree = "<group>"; };
+		97FC78A02688E5E8000D7F26 /* PhotoCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PhotoCollectionViewCell.xib; sourceTree = "<group>"; };
 		D5E1E3293C3C186D5078FB52 /* Pods-ECleaner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ECleaner.release.xcconfig"; path = "Target Support Files/Pods-ECleaner/Pods-ECleaner.release.xcconfig"; sourceTree = "<group>"; };
 		E6C6CFFC143ABD3817A81249 /* Pods_ECleaner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ECleaner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -229,6 +237,8 @@
 			isa = PBXGroup;
 			children = (
 				049CC22D268337310002F988 /* MediaTypeCollectionViewCell.swift */,
+				97FC789F2688E5E8000D7F26 /* PhotoCollectionViewCell.swift */,
+				97FC78A02688E5E8000D7F26 /* PhotoCollectionViewCell.xib */,
 				04CF0002268602DE000CA850 /* MediaContentType.swift */,
 				04CFFFFE2685F0C3000CA850 /* ContentTypeTableViewCell.swift */,
 			);
@@ -258,6 +268,7 @@
 			isa = PBXGroup;
 			children = (
 				049CC2362683730A0002F988 /* BaseCollectionFlowLayout.swift */,
+				97FC78992688D907000D7F26 /* SimpleColumnFlowLayout.swift */,
 			);
 			path = FlowLayout;
 			sourceTree = "<group>";
@@ -328,6 +339,7 @@
 				049CC216268221DE0002F988 /* MainViewController.swift */,
 				04CFFFF82685BF01000CA850 /* MediaContentViewController.swift */,
 				97CC2F3B26873A7D0072EF8C /* DateSelectorViewController.swift */,
+				97FC78972688CC06000D7F26 /* SimpleAssetsListViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -566,6 +578,7 @@
 				04CF00012685F0C3000CA850 /* ContentTypeTableViewCell.xib in Resources */,
 				049CC230268337310002F988 /* MediaTypeCollectionViewCell.xib in Resources */,
 				04E09479267A06B900A69956 /* Assets.xcassets in Resources */,
+				97FC78A22688E5E8000D7F26 /* PhotoCollectionViewCell.xib in Resources */,
 				04E09477267A06B500A69956 /* Main.storyboard in Resources */,
 				04CFFFF72685BEAD000CA850 /* MediaContent.storyboard in Resources */,
 			);
@@ -625,10 +638,12 @@
 				049CC219268225500002F988 /* Colors.swift in Sources */,
 				97FC789626889541000D7F26 /* TimeIInterval.swift in Sources */,
 				97FC789226888120000D7F26 /* Date+CurrentDate.swift in Sources */,
+				97FC78A12688E5E8000D7F26 /* PhotoCollectionViewCell.swift in Sources */,
 				049CC23426833D320002F988 /* UIView+Radius.swift in Sources */,
 				04E58373267A4A2000EDC3A3 /* UIDevice+Enviroment.swift in Sources */,
 				04E5837E267B60F600EDC3A3 /* AlertManager.swift in Sources */,
 				04E09474267A06B500A69956 /* ViewController.swift in Sources */,
+				97FC789A2688D907000D7F26 /* SimpleColumnFlowLayout.swift in Sources */,
 				04CFFFF42684B23D000CA850 /* String+Whitespaces.swift in Sources */,
 				04CFFFFD2685E571000CA850 /* UIView+Borders.swift in Sources */,
 				049CC2372683730A0002F988 /* BaseCollectionFlowLayout.swift in Sources */,
@@ -653,6 +668,7 @@
 				97FC7894268882C9000D7F26 /* Date+DateFormatter.swift in Sources */,
 				04CFFFF92685BF01000CA850 /* MediaContentViewController.swift in Sources */,
 				049CC215268221D40002F988 /* AdvertisementViewController.swift in Sources */,
+				97FC78982688CC06000D7F26 /* SimpleAssetsListViewController.swift in Sources */,
 				049CC21B268225E60002F988 /* SettingsManager.swift in Sources */,
 				97CC2F3A2683D00F0072EF8C /* UpdateContentDataBaseListener.swift in Sources */,
 				04CF00002685F0C3000CA850 /* ContentTypeTableViewCell.swift in Sources */,

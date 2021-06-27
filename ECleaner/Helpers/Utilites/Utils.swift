@@ -85,6 +85,10 @@ class Utils {
         return window?.safeAreaInsets.top ?? 0 > 20
     }
     
+    static public var bottomSafeAreaHeight: CGFloat {
+        return window?.safeAreaInsets.bottom ?? 0
+    }
+    
     static let isSimulator = UIDevice.isSimulator
     
 //    MARK: - DATE and TIME

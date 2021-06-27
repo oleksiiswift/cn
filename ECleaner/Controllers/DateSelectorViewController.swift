@@ -9,23 +9,15 @@ import UIKit
 
 class DateSelectorViewController: UIViewController {
     
-    
     @IBOutlet weak var periodDatePicker: UIDatePicker!
     @IBOutlet weak var mainContainerView: UIView!
     @IBOutlet weak var titleTextLabel: UILabel!
-    
     @IBOutlet weak var dissmissButtonImageView: UIImageView!
-    
     @IBOutlet weak var lastCleanButton: UIButton!
     @IBOutlet weak var lastCleanImageView: UIImageView!
-    
     @IBOutlet weak var lastCleanTextLabel: UILabel!
-    
-    
     @IBOutlet weak var submitButtonView: UIView!
-    
     @IBOutlet weak var submitButton: UIButton!
-
     @IBOutlet weak var mainContainerViewHeightConstraint: NSLayoutConstraint!
     
     private var lastCleanCheckIsOn: Bool = false
@@ -65,30 +57,7 @@ class DateSelectorViewController: UIViewController {
     }
     
     @IBAction func didTapSubmitActionButton(_ sender: Any) {
-        if self.isStartingDateSelected {
-            if let date = Date().getDateFromString(stringDate: self.selectedDate, format: C.dateFormat.dmy), let heightDate = Date().getDateFromString(stringDate: S.endingSavedDate, format: C.dateFormat.dmy) {
-                if date >  heightDate {
-                    #warning("NEED LOCO")
-                    AlertManager.showAlert("alarm", message: "loco from is bigger", actions: []) {
-                        self.setPicker(S.timeMachine)
-                    }
-                } else {
-                    self.closeDatePicker()
-                }
-            }
-        } else {
-            if let date = Date().getDateFromString(stringDate: self.selectedDate, format: C.dateFormat.dmy), let heightDate = Date().getDateFromString(stringDate: S.startingSavedDate, format: C.dateFormat.dmy) {
-                if date < heightDate {
-                    #warning("NEED LOCO")
-                    AlertManager.showAlert("alarm", message: "loco from is lower", actions: []) {
-                        let currentStringDate = Date().convertDateFormatterFromDate(date: Date(), format: C.dateFormat.dmy)
-                        self.setPicker(currentStringDate)
-                    }
-                } else {
-                    self.closeDatePicker()
-                }
-            }
-        }
+        self.checkTheDate()
     }
     
     @IBAction func didPickUpActionPicker(_ sender: Any) {
@@ -143,6 +112,22 @@ extension DateSelectorViewController {
             U.UI {
                 self.periodDatePicker.setDate(date, animated: true)
             }
+        }
+    }
+    
+    public func checkTheDate() {
+        
+        if let date = Date().getDateFromString(stringDate: self.selectedDate, format: C.dateFormat.dmy),
+           let highBoundDate = Date().getDateFromString(stringDate: self.isStartingDateSelected ? S.endingSavedDate : S.startingSavedDate, format: C.dateFormat.dmy) {
+            if isStartingDateSelected ? date > highBoundDate : date < highBoundDate {
+                AlertManager.showAlert("alarm", message:  isStartingDateSelected ? "loco date is bigger" : "loco date is lower", actions: []) {
+                    self.setPicker(self.isStartingDateSelected ? S.timeMachine : Date().convertDateFormatterFromDate(date: Date(), format: C.dateFormat.dmy))
+                }
+            } else {
+                self.closeDatePicker()
+            }
+        } else {
+            self.dismiss(animated: true, completion: nil)
         }
     }
 }
