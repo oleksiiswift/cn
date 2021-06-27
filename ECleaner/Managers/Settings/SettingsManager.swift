@@ -31,4 +31,34 @@ class SettingsManager {
             U.userDefaults.setValue(newValue, forKey: C.key.settings.photoLibraryAccessGranted)
         }
     }
+    
+    static var startingSavedDate: String {
+        get {
+            if let savedDate = U.userDefaults.string(forKey: C.key.settings.startingSavedDate) {
+                return savedDate
+            } else {
+                self.startingSavedDate = timeMachine
+                return timeMachine
+            }
+        } set {
+            U.userDefaults.setValue(newValue, forKey: C.key.settings.startingSavedDate)
+        }
+    }
+    
+    static var endingSavedDate: String {
+        get {
+            if let endingDate = U.userDefaults.string(forKey: C.key.settings.endingSavedDate) {
+                return endingDate
+            } else {
+                
+                let currentDate = Date().convertDateFormatterFromDate(date: Date(), format: C.dateFormat.dmy)
+                self.endingSavedDate = currentDate
+                return currentDate
+            }
+        } set {
+            U.userDefaults.setValue(newValue, forKey: C.key.settings.endingSavedDate)
+        }
+    }
+    
+    static var timeMachine = "01-01-1970"
 }

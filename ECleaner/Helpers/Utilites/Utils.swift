@@ -86,6 +86,12 @@ class Utils {
     }
     
     static let isSimulator = UIDevice.isSimulator
+    
+//    MARK: - DATE and TIME
+    
+    static let currentDate = Date.getCurrentDate()
+    
+    
 }
 
 //  MARK: - User Defaults -

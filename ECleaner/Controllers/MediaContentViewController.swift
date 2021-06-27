@@ -26,6 +26,23 @@ class MediaContentViewController: UIViewController {
     @IBOutlet weak var endingDateStackView: UIStackView!
     
     public var contentType: MediaContentType = .none
+    private var startingDate: String {
+        get {
+            return S.startingSavedDate
+        } set {
+            S.startingSavedDate = newValue
+        }
+    }
+
+    private var endingDate: String {
+        get {
+            return S.endingSavedDate
+        } set {
+            S.endingSavedDate = newValue
+        }
+    }
+    
+    private var isStartingDateSelected: Bool = false
     
     public var allScreenShots: [PHAsset] = []
     public var allSelfies: [PHAsset] = []
@@ -57,10 +74,12 @@ class MediaContentViewController: UIViewController {
     }
 
     @IBAction func didTapSelectStartDateActionButton(_ sender: Any) {
+        self.isStartingDateSelected = true
         performSegue(withIdentifier: C.identifiers.segue.showDatePicker, sender: self)
     }
     
     @IBAction func didTapSelectEndDateActionButton(_ sender: Any) {
+        self.isStartingDateSelected = false
         performSegue(withIdentifier: C.identifiers.segue.showDatePicker, sender: self)
     }
 }
@@ -151,9 +170,8 @@ extension MediaContentViewController: Themeble {
         startingDateTitileTextLabel.text = "from"
         endingDateTitleTextLabel.text = "to"
         
-        startingDateTextLabel.text = "date from"
-        endingDateTextLabel.text = "date to"
-        
+        startingDateTextLabel.text = Date().convertDateFormatterToDisplayString(stringDate: startingDate)
+        endingDateTextLabel.text = Date().convertDateFormatterToDisplayString(stringDate: endingDate)
         
         startingDateTextLabel.font = .systemFont(ofSize: 15, weight: .regular)
         endingDateTextLabel.font = .systemFont(ofSize: 15, weight: .regular)
@@ -164,6 +182,11 @@ extension MediaContentViewController: Themeble {
     private func setupNavigation() {
         self.navigationController?.updateNavigationColors()
         self.navigationItem.backButtonTitle = ""
+    }
+    
+    
+    public func setDate() {
+        
     }
     
     func updateColors() {
@@ -188,7 +211,18 @@ extension MediaContentViewController: Themeble {
             segue.messageView.backgroundHeight = Device.isSafeAreaiPhone ? 458 : 438
             
             if let dateSelectorController = segue.destination as? DateSelectorViewController {
+                dateSelectorController.isStartingDateSelected = self.isStartingDateSelected
+                dateSelectorController.setPicker(self.isStartingDateSelected ? self.startingDate : self.endingDate)
                 
+                dateSelectorController.selectedDateCompletion = { selectedDate in
+                    if self.isStartingDateSelected {
+                        self.startingDate = selectedDate
+                        self.startingDateTextLabel.text = Date().convertDateFormatterToDisplayString(stringDate: selectedDate)
+                    } else {
+                        self.endingDate = selectedDate
+                        self.endingDateTextLabel.text = Date().convertDateFormatterToDisplayString(stringDate: selectedDate)
+                    }
+                }
             }
         }
     }

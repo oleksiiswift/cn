@@ -29,6 +29,9 @@ class Constants {
             static let isDarkModeOn = "darkModeIsSetOn"
             static let photoLibraryAccessGranted = "photoLibraryAccessGranted"
             static let contactStoreAccessGranted = "contactStoreAccessGranted"
+            static let startingSavedDate = "startingSavedDate"
+            static let endingSavedDate = "endingSavedDate"
+            
         }
     }
     
@@ -65,5 +68,9 @@ class Constants {
     
     struct dateFormat {
         static let dmy = "dd-MM-yyy"
+        static let dateFormat = "dd MMM, yyyy"
+        static let fullDateFormat = "yyyy-MM-dd HH:mm:ss"
+        static let expiredDateFormat = "dd\\MM\\yyyy"
+        
     }
 }

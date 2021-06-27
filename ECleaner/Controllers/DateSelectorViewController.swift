@@ -17,6 +17,11 @@ class DateSelectorViewController: UIViewController {
     @IBOutlet weak var dissmissButtonImageView: UIImageView!
     
     @IBOutlet weak var lastCleanButton: UIButton!
+    @IBOutlet weak var lastCleanImageView: UIImageView!
+    
+    @IBOutlet weak var lastCleanTextLabel: UILabel!
+    
+    
     @IBOutlet weak var submitButtonView: UIView!
     
     @IBOutlet weak var submitButton: UIButton!
@@ -24,6 +29,15 @@ class DateSelectorViewController: UIViewController {
     @IBOutlet weak var mainContainerViewHeightConstraint: NSLayoutConstraint!
     
     private var lastCleanCheckIsOn: Bool = false
+    public var isStartingDateSelected: Bool = false
+    
+    private var selectedDate: String {
+        get {
+            Date().convertDateFormatterFromDate(date: periodDatePicker.date, format: C.dateFormat.dmy)
+        }
+    }
+    
+    public var selectedDateCompletion: ((_ selectedDate: String) -> Void)?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,10 +56,7 @@ class DateSelectorViewController: UIViewController {
     @IBAction func didTapCalculateLastCleaningActionButton(_ sender: Any) {
         
         lastCleanCheckIsOn = !lastCleanCheckIsOn
-        debugPrint(lastCleanCheckIsOn)
-        let checkImage = lastCleanCheckIsOn ? I.systemElementsItems.checkBoxIsChecked : I.systemElementsItems.checkBox
-        lastCleanButton.addLeftImage(image: checkImage!, size: CGSize(width: 30, height: 30), spacing: 10)
-        lastCleanButton.addLeftImage(image: checkImage!, size: CGSize(width: 30, height: 30), spacing: 10)
+        lastCleanImageView.image = lastCleanCheckIsOn ? I.systemElementsItems.checkBoxIsChecked : I.systemElementsItems.checkBox
     }
     
 
@@ -54,19 +65,39 @@ class DateSelectorViewController: UIViewController {
     }
     
     @IBAction func didTapSubmitActionButton(_ sender: Any) {
-        
+        if self.isStartingDateSelected {
+            if let date = Date().getDateFromString(stringDate: self.selectedDate, format: C.dateFormat.dmy), let heightDate = Date().getDateFromString(stringDate: S.endingSavedDate, format: C.dateFormat.dmy) {
+                if date >  heightDate {
+                    #warning("NEED LOCO")
+                    AlertManager.showAlert("alarm", message: "loco from is bigger", actions: []) {
+                        self.setPicker(S.timeMachine)
+                    }
+                } else {
+                    self.closeDatePicker()
+                }
+            }
+        } else {
+            if let date = Date().getDateFromString(stringDate: self.selectedDate, format: C.dateFormat.dmy), let heightDate = Date().getDateFromString(stringDate: S.startingSavedDate, format: C.dateFormat.dmy) {
+                if date < heightDate {
+                    #warning("NEED LOCO")
+                    AlertManager.showAlert("alarm", message: "loco from is lower", actions: []) {
+                        let currentStringDate = Date().convertDateFormatterFromDate(date: Date(), format: C.dateFormat.dmy)
+                        self.setPicker(currentStringDate)
+                    }
+                } else {
+                    self.closeDatePicker()
+                }
+            }
+        }
     }
-    
     
     @IBAction func didPickUpActionPicker(_ sender: Any) {
+        debugPrint(selectedDate)
     }
-    
-
 }
 
 extension DateSelectorViewController: Themeble {
-    
-    
+
     private func setupUI() {
         
         mainContainerView.cornerSelectRadiusView(corners: [.topLeft, .topRight], radius: 20)
@@ -81,9 +112,10 @@ extension DateSelectorViewController: Themeble {
         
         titleTextLabel.text = "select period"
         
-        lastCleanButton.setTitle("since the last cleaning", for: .normal)
-        lastCleanButton.addLeftImage(image: I.systemElementsItems.checkBox!, size: CGSize(width: 30, height: 30), spacing: 10)
-        
+        lastCleanTextLabel.text = "since the last cleaning"
+        lastCleanTextLabel.font = .systemFont(ofSize: 17, weight: .regular)
+        lastCleanImageView.image = I.systemElementsItems.checkBox
+        periodDatePicker.maximumDate = Date()
     }
     
     func updateColors() {
@@ -93,7 +125,24 @@ extension DateSelectorViewController: Themeble {
         submitButtonView.backgroundColor = currentTheme.accentBackgroundColor
         submitButton.setTitleColor(currentTheme.backgroundColor, for: .normal)
         dissmissButtonImageView.tintColor = currentTheme.tintColor
-        lastCleanButton.setTitleColor(currentTheme.titleTextColor, for: .normal)
-        lastCleanButton.tintColor = currentTheme.titleTextColor
+        lastCleanTextLabel.textColor = currentTheme.titleTextColor
+        lastCleanImageView.tintColor = currentTheme.titleTextColor
+    }
+}
+
+extension DateSelectorViewController {
+    
+    private func closeDatePicker() {
+        self.dismiss(animated: true) {
+            self.selectedDateCompletion?(self.selectedDate)
+        }
+    }
+    
+    public func setPicker(_ value: String) {
+        if let date = Date().getDateFromString(stringDate: value, format: C.dateFormat.dmy) {
+            U.UI {
+                self.periodDatePicker.setDate(date, animated: true)
+            }
+        }
     }
 }
