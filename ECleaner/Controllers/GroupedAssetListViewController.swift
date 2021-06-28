@@ -35,6 +35,40 @@ class GroupedAssetListViewController: UIViewController {
         inset: UIEdgeInsets(top: 0.5, left: 0.5, bottom: 0.5, right: 0.5)
     )
     
+    let circularLayoutObject = CustomCircularCollectionViewLayout()
+    
+    
+    let compositionalLayout: UICollectionViewCompositionalLayout = {
+        let inset: CGFloat = 2.5
+        
+        // Items
+        let largeItemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.5), heightDimension: .fractionalHeight(1))
+        let largeItem = NSCollectionLayoutItem(layoutSize: largeItemSize)
+        largeItem.contentInsets = NSDirectionalEdgeInsets(top: inset, leading: inset, bottom: inset, trailing: inset)
+        
+        let smallItemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(0.5))
+        let smallItem = NSCollectionLayoutItem(layoutSize: smallItemSize)
+        smallItem.contentInsets = NSDirectionalEdgeInsets(top: inset, leading: inset, bottom: inset, trailing: inset)
+        
+        // Nested Group
+        let nestedGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.25), heightDimension: .fractionalHeight(1))
+        let nestedGroup = NSCollectionLayoutGroup.vertical(layoutSize: nestedGroupSize, subitems: [smallItem])
+        
+        // Outer Group
+        let outerGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalWidth(0.5))
+        let outerGroup = NSCollectionLayoutGroup.horizontal(layoutSize: outerGroupSize, subitems: [largeItem, nestedGroup, nestedGroup])
+        
+        // Section
+        let section = NSCollectionLayoutSection(group: outerGroup)
+        section.contentInsets = NSDirectionalEdgeInsets(top: inset, leading: inset, bottom: inset, trailing: inset)
+        
+        // Supplementary Item
+        let headerItemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(100))
+        let headerItem = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerItemSize, elementKind: "header", alignment: .top)
+        section.boundarySupplementaryItems = [headerItem]
+         
+        return UICollectionViewCompositionalLayout(section: section)
+    }()
     
     
     override func viewDidLoad() {
@@ -65,9 +99,11 @@ extension GroupedAssetListViewController: UICollectionViewDelegate, UICollection
         self.collectionView.delegate = self
         self.collectionView.register(UINib(nibName: C.identifiers.xibs.photoSimpleCell, bundle: nil), forCellWithReuseIdentifier: C.identifiers.cells.photoSimpleCell)
         
-        columnLayout.headerReferenceSize = CGSize(width: self.view.frame.width, height: 40.0)
+//        columnLayout.headerReferenceSize = CGSize(width: self.view.frame.width, height: 40.0)
         
-        self.collectionView.collectionViewLayout = columnLayout
+//        self.collectionView.collectionViewLayout = columnLayout
+//        self.collectionView.collectionViewLayout = circularLayoutObject
+        self.collectionView.collectionViewLayout = compositionalLayout
         self.collectionView.allowsMultipleSelection = true
         self.collectionView.reloadData()
     }

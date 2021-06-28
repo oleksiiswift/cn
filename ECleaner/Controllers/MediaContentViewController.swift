@@ -171,9 +171,9 @@ extension MediaContentViewController {
                     case 3:
                         self.showSelfies()
                     case 4:
-                        self.showLivePhotos()
-                    case 5:
                         return
+                    case 5:
+                        self.showLivePhotos()
                     case 6:
                         return
                     default:
