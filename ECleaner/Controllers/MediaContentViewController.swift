@@ -146,22 +146,32 @@ extension MediaContentViewController: UITableViewDelegate, UITableViewDataSource
     }
 }
 
+//      MARK: - show content controller -
 extension MediaContentViewController {
     
+    /// `0` - simmilar photos
+    /// `1` -duplicates
+    /// `2` - screenshots
+    /// `3` - selfies
+    /// `4` - detecting face???
+    /// `5` -live photos
+    /// `6` -location
+    
     private func showMediaContent(by selectedType: MediaContentType, selected index: Int) {
+        
         switch selectedType {
             case .userPhoto:
                 switch index {
                     case 0:
-                        return
+                        self.showSimilarPhotos()
                     case 1:
-                        return
+                        self.showDuplicatePhotos()
                     case 2:
                         self.showScreenshots()
                     case 3:
-                        return
+                        self.showSelfies()
                     case 4:
-                        return
+                        self.showLivePhotos()
                     case 5:
                         return
                     case 6:
@@ -179,19 +189,76 @@ extension MediaContentViewController {
         }
     }
     
-    private func showScreenshots() {
-        photoManager.getScreenShots(from: startingDate, to: endingDate) { screenshots in
-            if screenshots.count != 0 {
-                let storyboard = UIStoryboard(name: C.identifiers.storyboards.media, bundle: nil)
-                let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.assetsList) as! SimpleAssetsListViewController
-                viewController.title = "screenshots"
-                viewController.assetCollection = screenshots
-                
-                self.navigationController?.pushViewController(viewController, animated: true)
+    /**
+     - parameter
+     - parameter
+    */
+    
+    private func showSimilarPhotos() {
+        photoManager.getSimilarPhotos(from: startingDate, to: endingDate) { similarGroup in
+            if !similarGroup.isEmpty {
+                self.showGropedContoller(assets: "similar photo", grouped: similarGroup, photoContent: .similarPhotos)
             } else {
                 return
             }
         }
+    }
+    
+    private func showLivePhotos() {
+        
+        photoManager.getLivePhotos { asset in
+            if !asset.isEmpty {
+                self.showAssetViewController(assets: "love photos", collection: asset, photoContent: .livephotos)
+            }
+        }
+    }
+    
+    private func showDuplicatePhotos() {
+        photoManager.getDuplicatePhotos(from: startingDate, to: endingDate) { duplicateGroup in
+            if !duplicateGroup.isEmpty {
+                self.showGropedContoller(assets: "duplicate photo", grouped: duplicateGroup, photoContent: .similarPhotos)
+            }
+        }
+    }
+    
+    private func showSelfies() {
+        photoManager.getSelfiePhotos(from: startingDate, to: endingDate) { selfies in
+            if selfies.count != 0 {
+                self.showAssetViewController(assets: "selfies", collection: selfies, photoContent: .selfies)
+            } else {
+                return
+            }
+        }
+    }
+    
+    
+    private func showScreenshots() {
+        photoManager.getScreenShots(from: startingDate, to: endingDate) { screenshots in
+            if screenshots.count != 0 {
+                self.showAssetViewController(assets: "screenshots", collection: screenshots, photoContent: .screenshots)
+            } else {
+                return
+            }
+        }
+    }
+    
+    private func showGropedContoller(assets title: String, grouped collection: [PhassetGroup], photoContent type: GropedAsset) {
+        let storyboard = UIStoryboard(name: C.identifiers.storyboards.media, bundle: nil)
+        let viewController  = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.groupedList) as! GroupedAssetListViewController
+        viewController.assetGroups = collection
+        viewController.title = title
+        viewController.grouped = type
+        self.navigationController?.pushViewController(viewController, animated: true)
+    }
+    
+    
+    private func showAssetViewController(assets title: String, collection: [PHAsset], photoContent type: PhotoMediaType) {
+        let storyboard = UIStoryboard(name: C.identifiers.storyboards.media, bundle: nil)
+        let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.assetsList) as! SimpleAssetsListViewController
+        viewController.title = title
+        viewController.assetCollection = collection
+        viewController.photoMediaType = type
+        self.navigationController?.pushViewController(viewController, animated: true)
     }
 }
 

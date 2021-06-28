@@ -8,6 +8,7 @@
 import UIKit
 
 enum MediaContentType {
+    
     case userPhoto
     case userVideo
     case userContacts

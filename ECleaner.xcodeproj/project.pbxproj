@@ -49,6 +49,13 @@
 		04E5837E267B60F600EDC3A3 /* AlertManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04E5837D267B60F600EDC3A3 /* AlertManager.swift */; };
 		04E58380267B9F6B00EDC3A3 /* PhassetFetchManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04E5837F267B9F6B00EDC3A3 /* PhassetFetchManager.swift */; };
 		2001A0C2915698B9A225961C /* Pods_ECleaner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E6C6CFFC143ABD3817A81249 /* Pods_ECleaner.framework */; };
+		97238A072689BD8000C523DC /* PhotoMediaType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97238A062689BD8000C523DC /* PhotoMediaType.swift */; };
+		97238A092689D01E00C523DC /* GroupedAssetListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97238A082689D01E00C523DC /* GroupedAssetListViewController.swift */; };
+		97238A0B2689EDD200C523DC /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97238A0A2689EDD200C523DC /* Toast.swift */; };
+		97238A0D2689EDFF00C523DC /* CustomActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97238A0C2689EDFF00C523DC /* CustomActivityIndicator.swift */; };
+		97238A0F2689EE2700C523DC /* CustomDoneHud.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97238A0E2689EE2700C523DC /* CustomDoneHud.swift */; };
+		97238A112689EECE00C523DC /* UIView+BlurView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97238A102689EECE00C523DC /* UIView+BlurView.swift */; };
+		97238A132689EF6E00C523DC /* Presenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97238A122689EF6E00C523DC /* Presenter.swift */; };
 		97CC2F382683CF740072EF8C /* UpdateContentDataBaseMediator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CC2F372683CF740072EF8C /* UpdateContentDataBaseMediator.swift */; };
 		97CC2F3A2683D00F0072EF8C /* UpdateContentDataBaseListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CC2F392683D00F0072EF8C /* UpdateContentDataBaseListener.swift */; };
 		97CC2F3C26873A7D0072EF8C /* DateSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CC2F3B26873A7D0072EF8C /* DateSelectorViewController.swift */; };
@@ -109,6 +116,13 @@
 		04E5837D267B60F600EDC3A3 /* AlertManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertManager.swift; sourceTree = "<group>"; };
 		04E5837F267B9F6B00EDC3A3 /* PhassetFetchManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhassetFetchManager.swift; sourceTree = "<group>"; };
 		81D1B9EBAF1D92CCA563E435 /* Pods-ECleaner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ECleaner.debug.xcconfig"; path = "Target Support Files/Pods-ECleaner/Pods-ECleaner.debug.xcconfig"; sourceTree = "<group>"; };
+		97238A062689BD8000C523DC /* PhotoMediaType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoMediaType.swift; sourceTree = "<group>"; };
+		97238A082689D01E00C523DC /* GroupedAssetListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupedAssetListViewController.swift; sourceTree = "<group>"; };
+		97238A0A2689EDD200C523DC /* Toast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
+		97238A0C2689EDFF00C523DC /* CustomActivityIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomActivityIndicator.swift; sourceTree = "<group>"; };
+		97238A0E2689EE2700C523DC /* CustomDoneHud.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomDoneHud.swift; sourceTree = "<group>"; };
+		97238A102689EECE00C523DC /* UIView+BlurView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+BlurView.swift"; sourceTree = "<group>"; };
+		97238A122689EF6E00C523DC /* Presenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Presenter.swift; sourceTree = "<group>"; };
 		97CC2F372683CF740072EF8C /* UpdateContentDataBaseMediator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateContentDataBaseMediator.swift; sourceTree = "<group>"; };
 		97CC2F392683D00F0072EF8C /* UpdateContentDataBaseListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateContentDataBaseListener.swift; sourceTree = "<group>"; };
 		97CC2F3B26873A7D0072EF8C /* DateSelectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateSelectorViewController.swift; sourceTree = "<group>"; };
@@ -203,6 +217,7 @@
 			isa = PBXGroup;
 			children = (
 				04E5836E267A47FB00EDC3A3 /* Utils.swift */,
+				97238A122689EF6E00C523DC /* Presenter.swift */,
 			);
 			path = Utilites;
 			sourceTree = "<group>";
@@ -340,6 +355,7 @@
 				04CFFFF82685BF01000CA850 /* MediaContentViewController.swift */,
 				97CC2F3B26873A7D0072EF8C /* DateSelectorViewController.swift */,
 				97FC78972688CC06000D7F26 /* SimpleAssetsListViewController.swift */,
+				97238A082689D01E00C523DC /* GroupedAssetListViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -363,6 +379,7 @@
 				97FC789126888120000D7F26 /* Date+CurrentDate.swift */,
 				97FC789526889541000D7F26 /* TimeIInterval.swift */,
 				97FC7893268882C9000D7F26 /* Date+DateFormatter.swift */,
+				97238A102689EECE00C523DC /* UIView+BlurView.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -428,6 +445,7 @@
 			children = (
 				049CC231268337360002F988 /* Cells */,
 				04CFFFF0268479D3000CA850 /* UIHelpersViews */,
+				97238A142689F30500C523DC /* Presenters */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -507,10 +525,21 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
+		97238A142689F30500C523DC /* Presenters */ = {
+			isa = PBXGroup;
+			children = (
+				97238A0A2689EDD200C523DC /* Toast.swift */,
+				97238A0C2689EDFF00C523DC /* CustomActivityIndicator.swift */,
+				97238A0E2689EE2700C523DC /* CustomDoneHud.swift */,
+			);
+			path = Presenters;
+			sourceTree = "<group>";
+		};
 		97FC78A32689144D000D7F26 /* ContentType */ = {
 			isa = PBXGroup;
 			children = (
 				04CF0002268602DE000CA850 /* MediaContentType.swift */,
+				97238A062689BD8000C523DC /* PhotoMediaType.swift */,
 			);
 			path = ContentType;
 			sourceTree = "<group>";
@@ -649,9 +678,11 @@
 				97FC78A12688E5E8000D7F26 /* PhotoCollectionViewCell.swift in Sources */,
 				049CC23426833D320002F988 /* UIView+Radius.swift in Sources */,
 				04E58373267A4A2000EDC3A3 /* UIDevice+Enviroment.swift in Sources */,
+				97238A0F2689EE2700C523DC /* CustomDoneHud.swift in Sources */,
 				04E5837E267B60F600EDC3A3 /* AlertManager.swift in Sources */,
 				04E09474267A06B500A69956 /* ViewController.swift in Sources */,
 				97FC789A2688D907000D7F26 /* SimpleColumnFlowLayout.swift in Sources */,
+				97238A072689BD8000C523DC /* PhotoMediaType.swift in Sources */,
 				04CFFFF42684B23D000CA850 /* String+Whitespaces.swift in Sources */,
 				04CFFFFD2685E571000CA850 /* UIView+Borders.swift in Sources */,
 				049CC2372683730A0002F988 /* BaseCollectionFlowLayout.swift in Sources */,
@@ -665,15 +696,19 @@
 				97CC2F3E268743A80072EF8C /* SegueManager.swift in Sources */,
 				049CC217268221DE0002F988 /* MainViewController.swift in Sources */,
 				04CFFFE926846A38000CA850 /* Screen.swift in Sources */,
+				97238A092689D01E00C523DC /* GroupedAssetListViewController.swift in Sources */,
 				049CC22426831B800002F988 /* UIColor+Hex.swift in Sources */,
 				04CFFFF22684B1ED000CA850 /* String+Extension.swift in Sources */,
 				97D0BABD2680AD6E0067A3A6 /* String+NSDate.swift in Sources */,
 				049CC21F268312950002F988 /* UpdateColorsProtocolol.swift in Sources */,
 				049CC22F268337310002F988 /* MediaTypeCollectionViewCell.swift in Sources */,
 				049CC21D268225F80002F988 /* ThemeManager.swift in Sources */,
+				97238A0D2689EDFF00C523DC /* CustomActivityIndicator.swift in Sources */,
 				04E58377267B323E00EDC3A3 /* Constants.swift in Sources */,
 				04CFFFE726846A23000CA850 /* Device.swift in Sources */,
+				97238A132689EF6E00C523DC /* Presenter.swift in Sources */,
 				97FC7894268882C9000D7F26 /* Date+DateFormatter.swift in Sources */,
+				97238A112689EECE00C523DC /* UIView+BlurView.swift in Sources */,
 				04CFFFF92685BF01000CA850 /* MediaContentViewController.swift in Sources */,
 				049CC215268221D40002F988 /* AdvertisementViewController.swift in Sources */,
 				97FC78982688CC06000D7F26 /* SimpleAssetsListViewController.swift in Sources */,
@@ -686,6 +721,7 @@
 				04E58371267A4A0A00EDC3A3 /* UIDevice+Model.swift in Sources */,
 				04CFFFFB2685E546000CA850 /* UIView+SelectedCornerRadius.swift in Sources */,
 				04CFFFEF268479CE000CA850 /* CircleProgressView.swift in Sources */,
+				97238A0B2689EDD200C523DC /* Toast.swift in Sources */,
 				04E58380267B9F6B00EDC3A3 /* PhassetFetchManager.swift in Sources */,
 				97CC2F40268749CF0072EF8C /* UIButton+ImageAlign.swift in Sources */,
 			);

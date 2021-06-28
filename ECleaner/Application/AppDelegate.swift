@@ -36,10 +36,6 @@ extension AppDelegate {
     private func configureApplication(with launchOptions: [UIApplication.LaunchOptionsKey: Any]?) {
         
         PhotoManager().getPhotoLibraryAccess()
-        
-        PHAssetFetchManager.shared.someFetch()
-        
-        
     }
 }
 

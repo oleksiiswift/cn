@@ -49,6 +49,7 @@ class Constants {
             static let content = "MediaContentViewController"
             static let datePicker = "DateSelectorViewController"
             static let assetsList = "SimpleAssetsListViewController"
+            static let groupedList = "GroupedAssetListViewController"
         }
         
         struct cells {

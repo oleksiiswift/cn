@@ -12,9 +12,14 @@ class SimpleAssetsListViewController: UIViewController {
 
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var bottomMenuView: UIView!
+    
+    @IBOutlet weak var deleteAssetsButtonView: UIView!
+    @IBOutlet weak var deleteAssetsTexetLabel: UILabel!
+    
     @IBOutlet weak var bottomMenuHeightConstraint: NSLayoutConstraint!
     
     public var assetCollection: [PHAsset] = []
+    public var photoMediaType: PhotoMediaType = .none
     
     private let flowLayout = SimpleColumnFlowLayout(cellsPerRow: 3, minimumInterSpacing: 3, minimumLineSpacing: 3, inset: UIEdgeInsets(top: 10, left: 10, bottom: 0, right: 10))
     private var bottomMenuHeight: CGFloat = 110
@@ -28,12 +33,16 @@ class SimpleAssetsListViewController: UIViewController {
         setupCollectionView()
         setupNavigation()
     }
+    
+    @IBAction func didTapDeleteAssetsActionButton(_ sender: Any) {
+        
+    }
 }
 
 extension SimpleAssetsListViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     
     private func setupCollectionView() {
-    
+        
         flowLayout.itemHieght = ((U.screenWidth - 26) / 3) / U.ratio
         
         self.collectionView.dataSource = self
@@ -46,7 +55,14 @@ extension SimpleAssetsListViewController: UICollectionViewDelegate, UICollection
     
     private func configure(_ cell: PhotoCollectionViewCell, at indexPath: IndexPath) {
         
-        cell.loadCellThumbnail(assetCollection[indexPath.row], size: CGSize(width: ((U.screenWidth - 26) / 3), height: ((U.screenHeight - 26) / 3) / U.ratio ))
+        switch photoMediaType {
+            case .screenshots:
+                cell.loadCellThumbnail(assetCollection[indexPath.row], size: CGSize(width: ((U.screenWidth - 26) / 2), height: ((U.screenHeight - 26) / 2) / U.ratio ))
+            case .selfies:
+                cell.loadCellThumbnail(assetCollection[indexPath.row], size: CGSize(width: U.screenWidth, height: U.screenHeight))
+            default:
+                return
+        }
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -123,20 +139,24 @@ extension SimpleAssetsListViewController {
         }
     }
 }
+
 extension SimpleAssetsListViewController: Themeble {
     
     func setupUI() {
-        
+        deleteAssetsButtonView.setCorner(12)
         bottomMenuHeightConstraint.constant = 0
+        deleteAssetsTexetLabel.font = .systemFont(ofSize: 17, weight: .bold)
+        deleteAssetsTexetLabel.text = "delete photos"
     }
     
     func updateColors() {
         bottomMenuView.backgroundColor = currentTheme.sectionBackgroundColor
+        deleteAssetsButtonView.backgroundColor = currentTheme.accentBackgroundColor
+        deleteAssetsTexetLabel.textColor = currentTheme.activeTitleTextColor
     }
     
     private func setupNavigation() {
         
         self.navigationItem.rightBarButtonItem = selectAllButton
-        
     }
 }
