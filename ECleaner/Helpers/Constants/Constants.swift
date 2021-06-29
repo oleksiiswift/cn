@@ -75,6 +75,6 @@ class Constants {
         static let dateFormat = "dd MMM, yyyy"
         static let fullDateFormat = "yyyy-MM-dd HH:mm:ss"
         static let expiredDateFormat = "dd\\MM\\yyyy"
-        
+        static let fullDmy = "dd-MM-yyyy HH:mm:ss"
     }
 }

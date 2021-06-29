@@ -51,7 +51,7 @@ class SettingsManager {
                 return endingDate
             } else {
                 
-                let currentDate = Date().convertDateFormatterFromDate(date: Date(), format: C.dateFormat.dmy)
+                let currentDate = Date().convertDateFormatterFromDate(date: Date(), format: C.dateFormat.fullDmy)
                 self.endingSavedDate = currentDate
                 return currentDate
             }
@@ -60,5 +60,5 @@ class SettingsManager {
         }
     }
     
-    static var timeMachine = "01-01-1970"
+    static var timeMachine = "01-01-1970 00:00:00"
 }

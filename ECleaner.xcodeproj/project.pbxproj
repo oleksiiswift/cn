@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		04649B24268B2F3900336FE4 /* UpdatingChangesInOpenedScreensListeners.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04649B23268B2F3900336FE4 /* UpdatingChangesInOpenedScreensListeners.swift */; };
+		04649B28268B2F7300336FE4 /* UpdatingChangesInOpenedScreensMediator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04649B27268B2F7300336FE4 /* UpdatingChangesInOpenedScreensMediator.swift */; };
 		049CC215268221D40002F988 /* AdvertisementViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 049CC214268221D40002F988 /* AdvertisementViewController.swift */; };
 		049CC217268221DE0002F988 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 049CC216268221DE0002F988 /* MainViewController.swift */; };
 		049CC219268225500002F988 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 049CC218268225500002F988 /* Colors.swift */; };
@@ -72,6 +74,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		04649B23268B2F3900336FE4 /* UpdatingChangesInOpenedScreensListeners.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdatingChangesInOpenedScreensListeners.swift; sourceTree = "<group>"; };
+		04649B27268B2F7300336FE4 /* UpdatingChangesInOpenedScreensMediator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdatingChangesInOpenedScreensMediator.swift; sourceTree = "<group>"; };
 		049CC214268221D40002F988 /* AdvertisementViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvertisementViewController.swift; sourceTree = "<group>"; };
 		049CC216268221DE0002F988 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		049CC218268225500002F988 /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
@@ -420,6 +424,7 @@
 			children = (
 				049CC21E268312950002F988 /* UpdateColorsProtocolol.swift */,
 				97CC2F392683D00F0072EF8C /* UpdateContentDataBaseListener.swift */,
+				04649B23268B2F3900336FE4 /* UpdatingChangesInOpenedScreensListeners.swift */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
@@ -461,6 +466,7 @@
 			isa = PBXGroup;
 			children = (
 				97CC2F372683CF740072EF8C /* UpdateContentDataBaseMediator.swift */,
+				04649B27268B2F7300336FE4 /* UpdatingChangesInOpenedScreensMediator.swift */,
 			);
 			path = Listeners;
 			sourceTree = "<group>";
@@ -704,6 +710,7 @@
 				049CC22F268337310002F988 /* MediaTypeCollectionViewCell.swift in Sources */,
 				049CC21D268225F80002F988 /* ThemeManager.swift in Sources */,
 				97238A0D2689EDFF00C523DC /* CustomActivityIndicator.swift in Sources */,
+				04649B24268B2F3900336FE4 /* UpdatingChangesInOpenedScreensListeners.swift in Sources */,
 				04E58377267B323E00EDC3A3 /* Constants.swift in Sources */,
 				04CFFFE726846A23000CA850 /* Device.swift in Sources */,
 				97238A132689EF6E00C523DC /* Presenter.swift in Sources */,
@@ -723,6 +730,7 @@
 				04CFFFEF268479CE000CA850 /* CircleProgressView.swift in Sources */,
 				97238A0B2689EDD200C523DC /* Toast.swift in Sources */,
 				04E58380267B9F6B00EDC3A3 /* PhassetFetchManager.swift in Sources */,
+				04649B28268B2F7300336FE4 /* UpdatingChangesInOpenedScreensMediator.swift in Sources */,
 				97CC2F40268749CF0072EF8C /* UIButton+ImageAlign.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

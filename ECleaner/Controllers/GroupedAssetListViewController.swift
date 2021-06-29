@@ -37,6 +37,8 @@ class GroupedAssetListViewController: UIViewController {
     
     let circularLayoutObject = CustomCircularCollectionViewLayout()
     
+//    let fillingFlowLayout = FillingLayout()
+    
     
     let compositionalLayout: UICollectionViewCompositionalLayout = {
         let inset: CGFloat = 2.5
@@ -58,9 +60,11 @@ class GroupedAssetListViewController: UIViewController {
         let outerGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalWidth(0.5))
         let outerGroup = NSCollectionLayoutGroup.horizontal(layoutSize: outerGroupSize, subitems: [largeItem, nestedGroup, nestedGroup])
         
+        
         // Section
         let section = NSCollectionLayoutSection(group: outerGroup)
         section.contentInsets = NSDirectionalEdgeInsets(top: inset, leading: inset, bottom: inset, trailing: inset)
+        section.orthogonalScrollingBehavior = .groupPaging
         
         // Supplementary Item
         let headerItemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(100))
@@ -83,8 +87,6 @@ class GroupedAssetListViewController: UIViewController {
     @IBAction func didTapDeleteAssetsActionButton(_ sender: Any) {
         
     }
-
-
 }
 
 extension GroupedAssetListViewController: UICollectionViewDelegate, UICollectionViewDataSource {
@@ -99,13 +101,21 @@ extension GroupedAssetListViewController: UICollectionViewDelegate, UICollection
         self.collectionView.delegate = self
         self.collectionView.register(UINib(nibName: C.identifiers.xibs.photoSimpleCell, bundle: nil), forCellWithReuseIdentifier: C.identifiers.cells.photoSimpleCell)
         
-//        columnLayout.headerReferenceSize = CGSize(width: self.view.frame.width, height: 40.0)
-        
+        columnLayout.headerReferenceSize = CGSize(width: self.view.frame.width, height: 40.0)
 //        self.collectionView.collectionViewLayout = columnLayout
 //        self.collectionView.collectionViewLayout = circularLayoutObject
-        self.collectionView.collectionViewLayout = compositionalLayout
+//        self.collectionView.collectionViewLayout = compositionalLayout
         self.collectionView.allowsMultipleSelection = true
+        
+//        collectionView.collectionViewLayout = fillingFlowLayout
+//
+//        if let layout = self.collectionView.collectionViewLayout as? FillingLayout
+//           {
+//               layout.delegate = self
+//           }
+//
         self.collectionView.reloadData()
+
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -130,8 +140,26 @@ extension GroupedAssetListViewController: UICollectionViewDelegate, UICollection
             return CGSize(width: 0, height: 0)
         }
     }
+    
+  
+    
+    
+//    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
+//
+//            let width : CGFloat
+//            let height : CGFloat
+//
+//            if indexPath.row == 0 {
+//                width = U.screenWidth / 2
+//                height = width
+//            } else {
+//                width = (U.screenWidth / 2) / 2
+//                height = (U.screenWidth / 2) / 2
+//            }
+//        return CGSize(width: width, height: height)
+//
+//    }
 }
-
     
     
 extension GroupedAssetListViewController: Themeble {
@@ -252,4 +280,26 @@ extension GroupedAssetListViewController: Themeble {
 //extension SimpleAssetsListViewController: Themeble {
 //
 //
+//}
+
+
+//extension GroupedAssetListViewController: FillingLayoutDelegate{
+//
+//func collectionView(_ collectionView:UICollectionView, sizeForViewAtIndexPath indexPath:IndexPath) -> Int{
+//        if(indexPath.row == 0 )//|| indexPath.row == 4)
+//        {
+//            return 2
+//        }
+//
+////        if(indexPath.row == 5)
+////        {
+////            return 3
+////        }
+//
+//        return 1
+//    }
+//
+//    func numberOfColumnsInCollectionView(collectionView:UICollectionView) ->Int{
+//        return 3
+//    }
 //}

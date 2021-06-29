@@ -25,7 +25,7 @@ class DateSelectorViewController: UIViewController {
     
     private var selectedDate: String {
         get {
-            Date().convertDateFormatterFromDate(date: periodDatePicker.date, format: C.dateFormat.dmy)
+            Date().convertDateFormatterFromDate(date: periodDatePicker.date, format: C.dateFormat.fullDmy)
         }
     }
     
@@ -108,7 +108,7 @@ extension DateSelectorViewController {
     }
     
     public func setPicker(_ value: String) {
-        if let date = Date().getDateFromString(stringDate: value, format: C.dateFormat.dmy) {
+        if let date = Date().getDateFromString(stringDate: value, format: C.dateFormat.fullDmy) {
             U.UI {
                 self.periodDatePicker.setDate(date, animated: true)
             }
@@ -117,11 +117,11 @@ extension DateSelectorViewController {
     
     public func checkTheDate() {
         
-        if let date = Date().getDateFromString(stringDate: self.selectedDate, format: C.dateFormat.dmy),
-           let highBoundDate = Date().getDateFromString(stringDate: self.isStartingDateSelected ? S.endingSavedDate : S.startingSavedDate, format: C.dateFormat.dmy) {
+        if let date = Date().getDateFromString(stringDate: self.selectedDate, format: C.dateFormat.fullDmy),
+           let highBoundDate = Date().getDateFromString(stringDate: self.isStartingDateSelected ? S.endingSavedDate : S.startingSavedDate, format: C.dateFormat.fullDmy) {
             if isStartingDateSelected ? date > highBoundDate : date < highBoundDate {
                 AlertManager.showAlert("alarm", message:  isStartingDateSelected ? "loco date is bigger" : "loco date is lower", actions: []) {
-                    self.setPicker(self.isStartingDateSelected ? S.timeMachine : Date().convertDateFormatterFromDate(date: Date(), format: C.dateFormat.dmy))
+                    self.setPicker(self.isStartingDateSelected ? S.timeMachine : Date().convertDateFormatterFromDate(date: Date(), format: C.dateFormat.fullDmy))
                 }
             } else {
                 self.closeDatePicker()

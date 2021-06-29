@@ -21,6 +21,8 @@ class SimpleAssetsListViewController: UIViewController {
     public var assetCollection: [PHAsset] = []
     public var photoMediaType: PhotoMediaType = .none
     
+    private var photoManager = PhotoManager()
+    
     private let flowLayout = SimpleColumnFlowLayout(cellsPerRow: 3, minimumInterSpacing: 3, minimumLineSpacing: 3, inset: UIEdgeInsets(top: 10, left: 10, bottom: 0, right: 10))
     private var bottomMenuHeight: CGFloat = 110
     private lazy var selectAllButton = UIBarButtonItem(title: "select all", style: .plain, target: self, action: #selector(handleSelectAllButtonTapped))
@@ -32,12 +34,15 @@ class SimpleAssetsListViewController: UIViewController {
         updateColors()
         setupCollectionView()
         setupNavigation()
+        setupListenersAndObservers()
     }
     
     @IBAction func didTapDeleteAssetsActionButton(_ sender: Any) {
         
     }
 }
+
+//  MARK: - collection view setup -
 
 extension SimpleAssetsListViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     
@@ -59,7 +64,7 @@ extension SimpleAssetsListViewController: UICollectionViewDelegate, UICollection
             case .screenshots:
                 cell.loadCellThumbnail(assetCollection[indexPath.row], size: CGSize(width: ((U.screenWidth - 26) / 2), height: ((U.screenHeight - 26) / 2) / U.ratio ))
             case .selfies:
-                cell.loadCellThumbnail(assetCollection[indexPath.row], size: CGSize(width: U.screenWidth, height: U.screenHeight))
+                cell.loadCellThumbnail(assetCollection[indexPath.row], size: CGSize(width: (U.screenWidth - 26) / 2, height: ((U.screenHeight - 26) / 2) / U.ratio))
             default:
                 return
         }
@@ -97,6 +102,7 @@ extension SimpleAssetsListViewController: UICollectionViewDelegate, UICollection
         handleBottomButtonMenu()
     }
 }
+
 
 extension SimpleAssetsListViewController {
     
@@ -140,6 +146,8 @@ extension SimpleAssetsListViewController {
     }
 }
 
+//      MARK: - setup UI -
+
 extension SimpleAssetsListViewController: Themeble {
     
     func setupUI() {
@@ -158,5 +166,40 @@ extension SimpleAssetsListViewController: Themeble {
     private func setupNavigation() {
         
         self.navigationItem.rightBarButtonItem = selectAllButton
+    }
+    
+    private func setupListenersAndObservers() {
+        
+        UpdatingChangesInOpenedScreensMediator.instance.setListener(listener: self)
+    }
+}
+
+//      MARK: - updating screen if photolibrary did change it content
+extension SimpleAssetsListViewController: UpdatingChangesInOpenedScreensListeners {
+    
+    /// updating screenshots
+    func getUpdatingScreenShots() {
+        
+        if photoMediaType == .screenshots {
+            photoManager.getScreenShots(from: S.startingSavedDate, to: S.endingSavedDate) { screenShots in
+                if self.assetCollection.count != screenShots.count {
+                    self.assetCollection = screenShots
+                    self.collectionView.reloadData()
+                }
+            }
+        }
+    }
+    
+    /// updating selfies
+    func getUpdatingSelfies() {
+        
+        if photoMediaType == .selfies {
+            photoManager.getSelfiePhotos(from: S.startingSavedDate, to: S.endingSavedDate) { selfies in
+                if self.assetCollection.count != selfies.count {
+                    self.assetCollection = selfies
+                    self.collectionView.reloadData()
+                }
+            }
+        }
     }
 }

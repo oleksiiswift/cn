@@ -209,7 +209,7 @@ class PhotoManager: NSObject {
     
     
 //    MARK: - find duplicates in library -
-    public func getDuplicatePhotos(from startDate: String = "01-01-1970", to endDate: String = "01-01-2666", completionHandler: @escaping ((_ assets: [PhassetGroup]) -> Void)) {
+    public func getDuplicatePhotos(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", completionHandler: @escaping ((_ assets: [PhassetGroup]) -> Void)) {
         
         P.showIndicator()
         
@@ -269,7 +269,7 @@ class PhotoManager: NSObject {
         }
     }
     
-    public func getSimilarVideo(from startDate: String = "01-01-1970", to endDate: String = "01-01-2666", completionHandler: @escaping ((_ videoAssets: [PhassetGroup]) -> Void)) {
+    public func getSimilarVideo(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", completionHandler: @escaping ((_ videoAssets: [PhassetGroup]) -> Void)) {
         
         fetchManager.fetchFromGallery(from: startDate,
                                       to: endDate,
@@ -355,7 +355,7 @@ class PhotoManager: NSObject {
 
     
 //    MARK: - simmilar photo check
-    public func getSimilarPhotos(from startDate: String = "01-01-1970", to endDate: String = "01-01-2666", completionHandler: @escaping ((_ assets: [PhassetGroup]) -> Void)) {
+    public func getSimilarPhotos(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", completionHandler: @escaping ((_ assets: [PhassetGroup]) -> Void)) {
         
         P.showIndicator()
         
@@ -388,7 +388,7 @@ class PhotoManager: NSObject {
     
     
 //    MARK: - load simmiliar live photo -
-    public func getSimilarLivePhotos(from startDate: String = "01-01-1970", to endDate: String = "01-01-2666", completionHandler: @escaping ((_ assets: [PhassetGroup]) -> Void)) {
+    public func getSimilarLivePhotos(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", completionHandler: @escaping ((_ assets: [PhassetGroup]) -> Void)) {
         
         fetchManager.fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumLivePhotos, by: PHAssetMediaType.image.rawValue) { livePhotoGallery in
             U.BG {
@@ -494,7 +494,7 @@ class PhotoManager: NSObject {
     }
     
 //    MARK: - load selfies -
-    public func getSelfiePhotos(from startDate: String = "01-01-1970", to endDate: String = "01-01-2666", completionHandler: @escaping ((_ assets: [PHAsset]) -> Void)) {
+    public func getSelfiePhotos(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", completionHandler: @escaping ((_ assets: [PHAsset]) -> Void)) {
         
         fetchManager.fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumSelfPortraits, by: PHAssetMediaType.image.rawValue) { selfiesInLibrary in
             
@@ -543,7 +543,7 @@ class PhotoManager: NSObject {
     }
     
 //    MARK: - load screenshots -
-    public func getScreenShots(from startDate: String = "01-01-1970", to endDate: String = "01-01-2666", completionHandler: @escaping ((_ assets: [PHAsset]) -> Void)) {
+    public func getScreenShots(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", completionHandler: @escaping ((_ assets: [PHAsset]) -> Void)) {
         
         fetchManager.fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumScreenshots, by: PHAssetMediaType.image.rawValue) { screensShotsLibrary in
             U.BG {
@@ -574,6 +574,8 @@ extension PhotoManager: PHPhotoLibraryChangeObserver {
     func photoLibraryDidChange(_ changeInstance: PHChange) {
         U.UI {
             self.getPhotoLibrary()
+            UpdatingChangesInOpenedScreensMediator.instance.updatingChangedScreenShots()
+            UpdatingChangesInOpenedScreensMediator.instance.updatingChangedSelfies()
         }
     }
 }
