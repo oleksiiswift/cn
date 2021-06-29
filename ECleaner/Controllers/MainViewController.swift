@@ -56,20 +56,16 @@ class MainViewController: UIViewController {
         super.viewDidAppear(animated)
         
     }
-    
 }
 
 extension MainViewController {
     
-    private func getMediaContent() {
-        
-    }
-    
+    private func getMediaContent() {}
     @objc func settingsButtonPressed() {}
     @objc func premiumButtonPressed() {}
 }
 
-//      MARK: updating elements
+//      MARK: - updating elements -
 extension MainViewController: UpdateContentDataBaseListener {
     
     func getScreenAsset(_ assets: [PHAsset]) {
@@ -204,7 +200,6 @@ extension MainViewController: UpdateColorsDelegate {
         self.view.backgroundColor = currentTheme.backgroundColor
         deepCleaningButtonView.backgroundColor = currentTheme.accentBackgroundColor
         deepCleaningButtonTextLabel.textColor = currentTheme.activeTitleTextColor
-        
     }
     
     private func setupProgressAndCollectionSize() {
@@ -265,5 +260,4 @@ extension MainViewController: UpdateColorsDelegate {
         circleTotlaSpaceView.title = "\(Device.usedDiskSpaceInGB.removeWhitespace()) out of \(Device.totalDiskSpaceInGB.removeWhitespace())"
         circleTotlaSpaceView.percentLabelFormat = "%.f%%"
     }
-
 }

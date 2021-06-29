@@ -9,13 +9,10 @@ import UIKit
 
 class AdvertisementViewController: UIViewController {
     
-    
     @IBOutlet weak var advertisementView: UIView!
     @IBOutlet weak var advertisementHightConstraint: NSLayoutConstraint!
     @IBOutlet weak var advertisementBottomConstraint: NSLayoutConstraint!
     
-    
-
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -25,8 +22,6 @@ class AdvertisementViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-        
     }
 }
 

@@ -12,10 +12,8 @@ class SimpleAssetsListViewController: UIViewController {
 
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var bottomMenuView: UIView!
-    
     @IBOutlet weak var deleteAssetsButtonView: UIView!
     @IBOutlet weak var deleteAssetsTexetLabel: UILabel!
-    
     @IBOutlet weak var bottomMenuHeightConstraint: NSLayoutConstraint!
     
     public var assetCollection: [PHAsset] = []
@@ -37,9 +35,7 @@ class SimpleAssetsListViewController: UIViewController {
         setupListenersAndObservers()
     }
     
-    @IBAction func didTapDeleteAssetsActionButton(_ sender: Any) {
-        
-    }
+    @IBAction func didTapDeleteAssetsActionButton(_ sender: Any) {}
 }
 
 //  MARK: - collection view setup -
@@ -62,9 +58,13 @@ extension SimpleAssetsListViewController: UICollectionViewDelegate, UICollection
         
         switch photoMediaType {
             case .screenshots:
-                cell.loadCellThumbnail(assetCollection[indexPath.row], size: CGSize(width: ((U.screenWidth - 26) / 2), height: ((U.screenHeight - 26) / 2) / U.ratio ))
+                cell.loadCellThumbnail(assetCollection[indexPath.row],
+                                       size: CGSize(width: ((U.screenWidth - 26) / 2),
+                                                    height: ((U.screenHeight - 26) / 2) / U.ratio ))
             case .selfies:
-                cell.loadCellThumbnail(assetCollection[indexPath.row], size: CGSize(width: (U.screenWidth - 26) / 2, height: ((U.screenHeight - 26) / 2) / U.ratio))
+                cell.loadCellThumbnail(assetCollection[indexPath.row],
+                                       size: CGSize(width: (U.screenWidth - 26) / 2,
+                                                    height: ((U.screenHeight - 26) / 2) / U.ratio))
             default:
                 return
         }
@@ -174,7 +174,8 @@ extension SimpleAssetsListViewController: Themeble {
     }
 }
 
-//      MARK: - updating screen if photolibrary did change it content
+//      MARK: - updating screen if photolibrary did change it content -
+
 extension SimpleAssetsListViewController: UpdatingChangesInOpenedScreensListeners {
     
     /// updating screenshots

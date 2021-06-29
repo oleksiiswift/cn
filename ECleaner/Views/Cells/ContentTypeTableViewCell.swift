@@ -54,7 +54,6 @@ extension ContentTypeTableViewCell {
                 contentSubtitleTextLabel.text = ""
         }
     }
-
 }
 
 extension ContentTypeTableViewCell: Themeble {

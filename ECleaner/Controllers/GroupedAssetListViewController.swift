@@ -18,62 +18,14 @@ class GroupedAssetListViewController: UIViewController {
     
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var bottomMenuView: UIView!
-    
     @IBOutlet weak var deleteAssetsButtonView: UIView!
     @IBOutlet weak var deleteAssetsTexetLabel: UILabel!
-    
     @IBOutlet weak var bottomMenuHeightConstraint: NSLayoutConstraint!
     
     public var grouped: GropedAsset?
-    
     public var assetGroups: [PhassetGroup] = []
     
-    let columnLayout = SimpleColumnFlowLayout(
-        cellsPerRow: 4,
-        minimumInterSpacing: 1,
-        minimumLineSpacing: 1,
-        inset: UIEdgeInsets(top: 0.5, left: 0.5, bottom: 0.5, right: 0.5)
-    )
-    
-    let circularLayoutObject = CustomCircularCollectionViewLayout()
-    
-//    let fillingFlowLayout = FillingLayout()
-    
-    
-    let compositionalLayout: UICollectionViewCompositionalLayout = {
-        let inset: CGFloat = 2.5
-        
-        // Items
-        let largeItemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.5), heightDimension: .fractionalHeight(1))
-        let largeItem = NSCollectionLayoutItem(layoutSize: largeItemSize)
-        largeItem.contentInsets = NSDirectionalEdgeInsets(top: inset, leading: inset, bottom: inset, trailing: inset)
-        
-        let smallItemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(0.5))
-        let smallItem = NSCollectionLayoutItem(layoutSize: smallItemSize)
-        smallItem.contentInsets = NSDirectionalEdgeInsets(top: inset, leading: inset, bottom: inset, trailing: inset)
-        
-        // Nested Group
-        let nestedGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.25), heightDimension: .fractionalHeight(1))
-        let nestedGroup = NSCollectionLayoutGroup.vertical(layoutSize: nestedGroupSize, subitems: [smallItem])
-        
-        // Outer Group
-        let outerGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalWidth(0.5))
-        let outerGroup = NSCollectionLayoutGroup.horizontal(layoutSize: outerGroupSize, subitems: [largeItem, nestedGroup, nestedGroup])
-        
-        
-        // Section
-        let section = NSCollectionLayoutSection(group: outerGroup)
-        section.contentInsets = NSDirectionalEdgeInsets(top: inset, leading: inset, bottom: inset, trailing: inset)
-        section.orthogonalScrollingBehavior = .groupPaging
-        
-        // Supplementary Item
-        let headerItemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(100))
-        let headerItem = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerItemSize, elementKind: "header", alignment: .top)
-        section.boundarySupplementaryItems = [headerItem]
-         
-        return UICollectionViewCompositionalLayout(section: section)
-    }()
-    
+    let collectionViewFlowLayout = SNCollectionViewLayout()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -84,38 +36,31 @@ class GroupedAssetListViewController: UIViewController {
         setupNavigation()
     }
     
-    @IBAction func didTapDeleteAssetsActionButton(_ sender: Any) {
-        
-    }
+    @IBAction func didTapDeleteAssetsActionButton(_ sender: Any) {}
 }
+
+//      MARK: - setup collection view with flow layout -
 
 extension GroupedAssetListViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     
-    
-  
     private func setupCollectionView() {
         
-//        flowLayout.itemHieght = ((U.screenWidth - 26) / 3) / U.ratio
-        
+        /// delegates
+        collectionViewFlowLayout.delegate = self
         self.collectionView.dataSource = self
         self.collectionView.delegate = self
+        
         self.collectionView.register(UINib(nibName: C.identifiers.xibs.photoSimpleCell, bundle: nil), forCellWithReuseIdentifier: C.identifiers.cells.photoSimpleCell)
         
-        columnLayout.headerReferenceSize = CGSize(width: self.view.frame.width, height: 40.0)
-//        self.collectionView.collectionViewLayout = columnLayout
-//        self.collectionView.collectionViewLayout = circularLayoutObject
-//        self.collectionView.collectionViewLayout = compositionalLayout
+        /// collection view setup
+        self.collectionView.contentInset = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
+        collectionViewFlowLayout.fixedDivisionCount = 4
+        collectionViewFlowLayout.itemSpacing = 5
+        
+        self.collectionView.collectionViewLayout = collectionViewFlowLayout
         self.collectionView.allowsMultipleSelection = true
         
-//        collectionView.collectionViewLayout = fillingFlowLayout
-//
-//        if let layout = self.collectionView.collectionViewLayout as? FillingLayout
-//           {
-//               layout.delegate = self
-//           }
-//
         self.collectionView.reloadData()
-
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -140,28 +85,20 @@ extension GroupedAssetListViewController: UICollectionViewDelegate, UICollection
             return CGSize(width: 0, height: 0)
         }
     }
-    
-  
-    
-    
-//    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
-//
-//            let width : CGFloat
-//            let height : CGFloat
-//
-//            if indexPath.row == 0 {
-//                width = U.screenWidth / 2
-//                height = width
-//            } else {
-//                width = (U.screenWidth / 2) / 2
-//                height = (U.screenWidth / 2) / 2
-//            }
-//        return CGSize(width: width, height: height)
-//
-//    }
+}
+
+extension GroupedAssetListViewController: SNCollectionViewLayoutDelegate {
+//    MARK: TODO: set if 3 asset 
+    func scaleForItem(inCollectionView collectionView: UICollectionView, withLayout layout: UICollectionViewLayout, atIndexPath indexPath: IndexPath) -> UInt {
+        if indexPath.row == 0 { //|| indexPath.row == 3 || indexPath.row == 10 || indexPath.row == 70 {
+            return 2
+        }
+        return 1
+    }
 }
     
-    
+//      MARK: - setup UI -
+
 extension GroupedAssetListViewController: Themeble {
 
     func setupUI() {
@@ -177,129 +114,6 @@ extension GroupedAssetListViewController: Themeble {
         deleteAssetsTexetLabel.textColor = currentTheme.activeTitleTextColor
     }
 
-    private func setupNavigation() {
-
-
-    }
+    private func setupNavigation() {}
 }
 
-//
-//}
-//
-//extension SimpleAssetsListViewController: UICollectionViewDelegate, UICollectionViewDataSource {
-//
-//
-//
-//    private func configure(_ cell: PhotoCollectionViewCell, at indexPath: IndexPath) {
-//
-//        switch photoMediaType {
-//            case .screenshots:
-//                cell.loadCellThumbnail(assetCollection[indexPath.row], size: CGSize(width: ((U.screenWidth - 26) / 2), height: ((U.screenHeight - 26) / 2) / U.ratio ))
-//            case .selfies:
-//                cell.loadCellThumbnail(assetCollection[indexPath.row], size: CGSize(width: U.screenWidth, height: U.screenHeight))
-//            default:
-//                return
-//        }
-//    }
-//
-//    func numberOfSections(in collectionView: UICollectionView) -> Int {
-//        return 1
-//    }
-//
-//    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-//        return assetCollection.count
-//    }
-//
-//    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-//        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: C.identifiers.cells.photoSimpleCell, for: indexPath) as! PhotoCollectionViewCell
-//        configure(cell, at: indexPath)
-//        return cell
-//    }
-//
-//    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-//        collectionView.selectItem(at: indexPath, animated: true, scrollPosition: .left)
-//        if let cell = collectionView.cellForItem(at: indexPath) {
-//            cell.isSelected = true
-//        }
-//        handleSelectAllButtonState()
-//        handleBottomButtonMenu()
-//    }
-//
-//    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-//        collectionView.deselectItem(at: indexPath, animated: true)
-//        if let cell = collectionView.cellForItem(at: indexPath) {
-//            cell.isSelected = false
-//        }
-//        handleSelectAllButtonState()
-//        handleBottomButtonMenu()
-//    }
-//}
-//
-//extension SimpleAssetsListViewController {
-//
-//    @objc func handleSelectAllButtonTapped() {
-//
-//        let selected = collectionView.indexPathsForSelectedItems?.count == assetCollection.count
-//        selectAllButton.title = selected ? "select all" : "deselect"
-//        setCollection(selected: selected)
-//        handleBottomButtonMenu()
-//    }
-//
-//    private func setCollection(selected: Bool) {
-//
-//        let numbersOfItemsInSection = collectionView.numberOfItems(inSection: 0)
-//
-//        for indexPath in (0..<numbersOfItemsInSection).map({IndexPath(item: $0, section: 0)}) {
-//            if selected {
-//                collectionView.deselectItem(at: indexPath, animated: true)
-//            } else {
-//                collectionView.selectItem(at: indexPath, animated: true, scrollPosition: .left)
-//            }
-//
-//            if let cell = collectionView.cellForItem(at: indexPath) {
-//                cell.isSelected = !selected
-//            }
-//        }
-//    }
-//
-//    private func handleSelectAllButtonState() {
-//
-//        selectAllButton.title = collectionView.indexPathsForSelectedItems?.count != assetCollection.count ? "select all" : "deselect"
-//    }
-//
-//    private func handleBottomButtonMenu() {
-//        if let selectedItems = collectionView.indexPathsForSelectedItems {
-//                bottomMenuHeightConstraint.constant = selectedItems.count > 0 ? bottomMenuHeight + U.bottomSafeAreaHeight : 0
-//            U.animate(0.5) {
-//                self.view.layoutIfNeeded()
-//            }
-//        }
-//    }
-//}
-//
-//extension SimpleAssetsListViewController: Themeble {
-//
-//
-//}
-
-
-//extension GroupedAssetListViewController: FillingLayoutDelegate{
-//
-//func collectionView(_ collectionView:UICollectionView, sizeForViewAtIndexPath indexPath:IndexPath) -> Int{
-//        if(indexPath.row == 0 )//|| indexPath.row == 4)
-//        {
-//            return 2
-//        }
-//
-////        if(indexPath.row == 5)
-////        {
-////            return 3
-////        }
-//
-//        return 1
-//    }
-//
-//    func numberOfColumnsInCollectionView(collectionView:UICollectionView) ->Int{
-//        return 3
-//    }
-//}
