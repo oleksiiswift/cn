@@ -73,6 +73,8 @@ open class SNCollectionViewLayout: UICollectionViewLayout, SNCollectionViewLayou
     /// A convenient tuple for working with items
     private typealias ItemFrame = (section: Int, flexibleIndex: Int, fixedIndex: Int, scale: Int)
     
+    
+    
     // MARK: - UICollectionView Layout
     override open func prepare() {
         

@@ -9,6 +9,12 @@
 /* Begin PBXBuildFile section */
 		04649B24268B2F3900336FE4 /* UpdatingChangesInOpenedScreensListeners.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04649B23268B2F3900336FE4 /* UpdatingChangesInOpenedScreensListeners.swift */; };
 		04649B28268B2F7300336FE4 /* UpdatingChangesInOpenedScreensMediator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04649B27268B2F7300336FE4 /* UpdatingChangesInOpenedScreensMediator.swift */; };
+		04649B31268C507F00336FE4 /* GroupedAssetsReusableHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04649B2F268C507F00336FE4 /* GroupedAssetsReusableHeaderView.swift */; };
+		04649B32268C507F00336FE4 /* GroupedAssetsReusableHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04649B30268C507F00336FE4 /* GroupedAssetsReusableHeaderView.xib */; };
+		04649B35268C52B100336FE4 /* GroupedAssetsReusableFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04649B33268C52B100336FE4 /* GroupedAssetsReusableFooterView.swift */; };
+		04649B36268C52B100336FE4 /* GroupedAssetsReusableFooterView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04649B34268C52B100336FE4 /* GroupedAssetsReusableFooterView.xib */; };
+		04649B3A268C6FEC00336FE4 /* Array+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04649B39268C6FEC00336FE4 /* Array+Extension.swift */; };
+		04649B3C268C98A900336FE4 /* UIButton+RemoveAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04649B3B268C98A900336FE4 /* UIButton+RemoveAnimation.swift */; };
 		049CC215268221D40002F988 /* AdvertisementViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 049CC214268221D40002F988 /* AdvertisementViewController.swift */; };
 		049CC217268221DE0002F988 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 049CC216268221DE0002F988 /* MainViewController.swift */; };
 		049CC219268225500002F988 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 049CC218268225500002F988 /* Colors.swift */; };
@@ -76,6 +82,12 @@
 /* Begin PBXFileReference section */
 		04649B23268B2F3900336FE4 /* UpdatingChangesInOpenedScreensListeners.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdatingChangesInOpenedScreensListeners.swift; sourceTree = "<group>"; };
 		04649B27268B2F7300336FE4 /* UpdatingChangesInOpenedScreensMediator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdatingChangesInOpenedScreensMediator.swift; sourceTree = "<group>"; };
+		04649B2F268C507F00336FE4 /* GroupedAssetsReusableHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupedAssetsReusableHeaderView.swift; sourceTree = "<group>"; };
+		04649B30268C507F00336FE4 /* GroupedAssetsReusableHeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GroupedAssetsReusableHeaderView.xib; sourceTree = "<group>"; };
+		04649B33268C52B100336FE4 /* GroupedAssetsReusableFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupedAssetsReusableFooterView.swift; sourceTree = "<group>"; };
+		04649B34268C52B100336FE4 /* GroupedAssetsReusableFooterView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GroupedAssetsReusableFooterView.xib; sourceTree = "<group>"; };
+		04649B39268C6FEC00336FE4 /* Array+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Extension.swift"; sourceTree = "<group>"; };
+		04649B3B268C98A900336FE4 /* UIButton+RemoveAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton+RemoveAnimation.swift"; sourceTree = "<group>"; };
 		049CC214268221D40002F988 /* AdvertisementViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvertisementViewController.swift; sourceTree = "<group>"; };
 		049CC216268221DE0002F988 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		049CC218268225500002F988 /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
@@ -156,6 +168,24 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		04649B37268C624F00336FE4 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				04649B30268C507F00336FE4 /* GroupedAssetsReusableHeaderView.xib */,
+				04649B34268C52B100336FE4 /* GroupedAssetsReusableFooterView.xib */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		04649B38268C626C00336FE4 /* HeadersFootes */ = {
+			isa = PBXGroup;
+			children = (
+				04649B33268C52B100336FE4 /* GroupedAssetsReusableFooterView.swift */,
+				04649B2F268C507F00336FE4 /* GroupedAssetsReusableHeaderView.swift */,
+			);
+			path = HeadersFootes;
+			sourceTree = "<group>";
+		};
 		049CC20E26821D330002F988 /* UIDevice */ = {
 			isa = PBXGroup;
 			children = (
@@ -384,6 +414,8 @@
 				97FC789526889541000D7F26 /* TimeIInterval.swift */,
 				97FC7893268882C9000D7F26 /* Date+DateFormatter.swift */,
 				97238A102689EECE00C523DC /* UIView+BlurView.swift */,
+				04649B39268C6FEC00336FE4 /* Array+Extension.swift */,
+				04649B3B268C98A900336FE4 /* UIButton+RemoveAnimation.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -451,6 +483,7 @@
 				049CC231268337360002F988 /* Cells */,
 				04CFFFF0268479D3000CA850 /* UIHelpersViews */,
 				97238A142689F30500C523DC /* Presenters */,
+				04649B38268C626C00336FE4 /* HeadersFootes */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -509,6 +542,7 @@
 		04E5836B267A414C00EDC3A3 /* Xibs */ = {
 			isa = PBXGroup;
 			children = (
+				04649B37268C624F00336FE4 /* Views */,
 				049CC2322683374C0002F988 /* Cells */,
 			);
 			path = Xibs;
@@ -618,9 +652,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				04E0947C267A06B900A69956 /* LaunchScreen.storyboard in Resources */,
+				04649B36268C52B100336FE4 /* GroupedAssetsReusableFooterView.xib in Resources */,
 				04CF00012685F0C3000CA850 /* ContentTypeTableViewCell.xib in Resources */,
 				049CC230268337310002F988 /* MediaTypeCollectionViewCell.xib in Resources */,
 				04E09479267A06B900A69956 /* Assets.xcassets in Resources */,
+				04649B32268C507F00336FE4 /* GroupedAssetsReusableHeaderView.xib in Resources */,
 				97FC78A22688E5E8000D7F26 /* PhotoCollectionViewCell.xib in Resources */,
 				04E09477267A06B500A69956 /* Main.storyboard in Resources */,
 				04CFFFF72685BEAD000CA850 /* MediaContent.storyboard in Resources */,
@@ -700,6 +736,7 @@
 				049CC22A26831D630002F988 /* Images.swift in Sources */,
 				04E09472267A06B500A69956 /* SceneDelegate.swift in Sources */,
 				97CC2F3E268743A80072EF8C /* SegueManager.swift in Sources */,
+				04649B35268C52B100336FE4 /* GroupedAssetsReusableFooterView.swift in Sources */,
 				049CC217268221DE0002F988 /* MainViewController.swift in Sources */,
 				04CFFFE926846A38000CA850 /* Screen.swift in Sources */,
 				97238A092689D01E00C523DC /* GroupedAssetListViewController.swift in Sources */,
@@ -715,6 +752,8 @@
 				04CFFFE726846A23000CA850 /* Device.swift in Sources */,
 				97238A132689EF6E00C523DC /* Presenter.swift in Sources */,
 				97FC7894268882C9000D7F26 /* Date+DateFormatter.swift in Sources */,
+				04649B3C268C98A900336FE4 /* UIButton+RemoveAnimation.swift in Sources */,
+				04649B31268C507F00336FE4 /* GroupedAssetsReusableHeaderView.swift in Sources */,
 				97238A112689EECE00C523DC /* UIView+BlurView.swift in Sources */,
 				04CFFFF92685BF01000CA850 /* MediaContentViewController.swift in Sources */,
 				049CC215268221D40002F988 /* AdvertisementViewController.swift in Sources */,
@@ -729,6 +768,7 @@
 				04CFFFFB2685E546000CA850 /* UIView+SelectedCornerRadius.swift in Sources */,
 				04CFFFEF268479CE000CA850 /* CircleProgressView.swift in Sources */,
 				97238A0B2689EDD200C523DC /* Toast.swift in Sources */,
+				04649B3A268C6FEC00336FE4 /* Array+Extension.swift in Sources */,
 				04E58380267B9F6B00EDC3A3 /* PhassetFetchManager.swift in Sources */,
 				04649B28268B2F7300336FE4 /* UpdatingChangesInOpenedScreensMediator.swift in Sources */,
 				97CC2F40268749CF0072EF8C /* UIButton+ImageAlign.swift in Sources */,

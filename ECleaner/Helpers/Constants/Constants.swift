@@ -58,10 +58,17 @@ class Constants {
             static let photoSimpleCell = "PhotoCollectionViewCell"
         }
         
+        struct views {
+            static let groupHeaderView = "GroupedAssetsReusableHeaderView"
+            static let groupFooterView = "GroupedAssetsReusableFooterView"
+        }
+        
         struct xibs {
             static let mediaTypeCell = "MediaTypeCollectionViewCell"
             static let contentTypeCell = "ContentTypeTableViewCell"
             static let photoSimpleCell = "PhotoCollectionViewCell"
+            static let groupHeader = "GroupedAssetsReusableHeaderView"
+            static let groupFooter = "GroupedAssetsReusableFooterView"
         }
         
         struct segue {
