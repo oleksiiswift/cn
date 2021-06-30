@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol GroupedReusableHeaderDelegate {
+    func setSelectAllButtonState(index: Int, isSelectAll: Bool)
+}
+
 class GroupedAssetsReusableHeaderView: UICollectionReusableView {
     
     @IBOutlet weak var baseView: UIView!
@@ -27,6 +31,7 @@ class GroupedAssetsReusableHeaderView: UICollectionReusableView {
         
         setupUI()
         updateColors()
+        
     }
     
     @IBAction func didTapSelectAllActionButton(_ sender: Any) {
@@ -48,3 +53,4 @@ extension GroupedAssetsReusableHeaderView: Themeble {
         selectAllButtonTextLabel.textColor = currentTheme.titleTextColor
     }
 }
+
