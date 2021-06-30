@@ -16,9 +16,7 @@ class PhotoCollectionViewCell: UICollectionViewCell {
         
     override var isSelected: Bool {
         didSet {
-            U.animate(0.2) {
-                self.photoCheckmarkImageView.image = self.isSelected ? I.systemElementsItems.circleCheckBox : I.systemElementsItems.circleBox
-            }
+            checkIsSelected()
         }
     }
     
@@ -40,7 +38,6 @@ extension PhotoCollectionViewCell: Themeble {
     private func setupUI() {
         
         baseView.setCorner(12)
-        self.photoCheckmarkImageView.image = I.systemElementsItems.circleBox
     }
     
     func updateColors() {
@@ -54,5 +51,9 @@ extension PhotoCollectionViewCell: Themeble {
         let thumbnail = PHAssetFetchManager.shared.getThumbnail(from: asset, size: size)
         photoThumbnailImageView.contentMode = .scaleAspectFill
         photoThumbnailImageView.image = thumbnail
+    }
+    
+    private func checkIsSelected() {
+        self.photoCheckmarkImageView.image = self.isSelected ? I.systemElementsItems.circleCheckBox : I.systemElementsItems.circleBox
     }
 }
