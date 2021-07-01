@@ -15,6 +15,9 @@
 		04649B36268C52B100336FE4 /* GroupedAssetsReusableFooterView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04649B34268C52B100336FE4 /* GroupedAssetsReusableFooterView.xib */; };
 		04649B3A268C6FEC00336FE4 /* Array+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04649B39268C6FEC00336FE4 /* Array+Extension.swift */; };
 		04649B3C268C98A900336FE4 /* UIButton+RemoveAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04649B3B268C98A900336FE4 /* UIButton+RemoveAnimation.swift */; };
+		04649B3E268DDDE700336FE4 /* UICollectionView+SelectAll.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04649B3D268DDDE600336FE4 /* UICollectionView+SelectAll.swift */; };
+		04649B40268E093000336FE4 /* GroupedReusebleListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04649B3F268E093000336FE4 /* GroupedReusebleListener.swift */; };
+		04649B42268E098C00336FE4 /* GroupedReusebleMediator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04649B41268E098C00336FE4 /* GroupedReusebleMediator.swift */; };
 		049CC215268221D40002F988 /* AdvertisementViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 049CC214268221D40002F988 /* AdvertisementViewController.swift */; };
 		049CC217268221DE0002F988 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 049CC216268221DE0002F988 /* MainViewController.swift */; };
 		049CC219268225500002F988 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 049CC218268225500002F988 /* Colors.swift */; };
@@ -88,6 +91,9 @@
 		04649B34268C52B100336FE4 /* GroupedAssetsReusableFooterView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GroupedAssetsReusableFooterView.xib; sourceTree = "<group>"; };
 		04649B39268C6FEC00336FE4 /* Array+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Extension.swift"; sourceTree = "<group>"; };
 		04649B3B268C98A900336FE4 /* UIButton+RemoveAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton+RemoveAnimation.swift"; sourceTree = "<group>"; };
+		04649B3D268DDDE600336FE4 /* UICollectionView+SelectAll.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UICollectionView+SelectAll.swift"; sourceTree = "<group>"; };
+		04649B3F268E093000336FE4 /* GroupedReusebleListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupedReusebleListener.swift; sourceTree = "<group>"; };
+		04649B41268E098C00336FE4 /* GroupedReusebleMediator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupedReusebleMediator.swift; sourceTree = "<group>"; };
 		049CC214268221D40002F988 /* AdvertisementViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvertisementViewController.swift; sourceTree = "<group>"; };
 		049CC216268221DE0002F988 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		049CC218268225500002F988 /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
@@ -404,6 +410,7 @@
 		04E5835D267A3E6C00EDC3A3 /* Extension */ = {
 			isa = PBXGroup;
 			children = (
+				04649B3D268DDDE600336FE4 /* UICollectionView+SelectAll.swift */,
 				049CC20E26821D330002F988 /* UIDevice */,
 				04E5837A267B39C400EDC3A3 /* PhotoLibrary */,
 				049CC20F26821D3F0002F988 /* Strings */,
@@ -457,6 +464,7 @@
 				049CC21E268312950002F988 /* UpdateColorsProtocolol.swift */,
 				97CC2F392683D00F0072EF8C /* UpdateContentDataBaseListener.swift */,
 				04649B23268B2F3900336FE4 /* UpdatingChangesInOpenedScreensListeners.swift */,
+				04649B3F268E093000336FE4 /* GroupedReusebleListener.swift */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
@@ -499,6 +507,7 @@
 			isa = PBXGroup;
 			children = (
 				97CC2F372683CF740072EF8C /* UpdateContentDataBaseMediator.swift */,
+				04649B41268E098C00336FE4 /* GroupedReusebleMediator.swift */,
 				04649B27268B2F7300336FE4 /* UpdatingChangesInOpenedScreensMediator.swift */,
 			);
 			path = Listeners;
@@ -721,6 +730,7 @@
 				049CC23426833D320002F988 /* UIView+Radius.swift in Sources */,
 				04E58373267A4A2000EDC3A3 /* UIDevice+Enviroment.swift in Sources */,
 				97238A0F2689EE2700C523DC /* CustomDoneHud.swift in Sources */,
+				04649B40268E093000336FE4 /* GroupedReusebleListener.swift in Sources */,
 				04E5837E267B60F600EDC3A3 /* AlertManager.swift in Sources */,
 				97FC789A2688D907000D7F26 /* SimpleColumnFlowLayout.swift in Sources */,
 				97238A072689BD8000C523DC /* PhotoMediaType.swift in Sources */,
@@ -729,6 +739,7 @@
 				049CC2372683730A0002F988 /* BaseCollectionFlowLayout.swift in Sources */,
 				04CF0003268602DE000CA850 /* MediaContentType.swift in Sources */,
 				04E5837C267B3E2A00EDC3A3 /* PhotoManager.swift in Sources */,
+				04649B42268E098C00336FE4 /* GroupedReusebleMediator.swift in Sources */,
 				04CFFFEC2684725F000CA850 /* Device+DiskSpace.swift in Sources */,
 				97CC2F3C26873A7D0072EF8C /* DateSelectorViewController.swift in Sources */,
 				04E09470267A06B500A69956 /* AppDelegate.swift in Sources */,
@@ -763,6 +774,7 @@
 				04CF00002685F0C3000CA850 /* ContentTypeTableViewCell.swift in Sources */,
 				049CC221268314690002F988 /* NotificationManager.swift in Sources */,
 				049CC23A2683761B0002F988 /* String+ConvertInteger.swift in Sources */,
+				04649B3E268DDDE700336FE4 /* UICollectionView+SelectAll.swift in Sources */,
 				04E5836F267A47FB00EDC3A3 /* Utils.swift in Sources */,
 				04E58371267A4A0A00EDC3A3 /* UIDevice+Model.swift in Sources */,
 				04CFFFFB2685E546000CA850 /* UIView+SelectedCornerRadius.swift in Sources */,

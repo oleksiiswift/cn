@@ -22,9 +22,8 @@ class PhotoCollectionViewCell: UICollectionViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        
-        photoThumbnailImageView.image = nil
     }
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         
@@ -53,7 +52,7 @@ extension PhotoCollectionViewCell: Themeble {
         photoThumbnailImageView.image = thumbnail
     }
     
-    private func checkIsSelected() {
+    public func checkIsSelected() {
         self.photoCheckmarkImageView.image = self.isSelected ? I.systemElementsItems.circleCheckBox : I.systemElementsItems.circleBox
     }
 }

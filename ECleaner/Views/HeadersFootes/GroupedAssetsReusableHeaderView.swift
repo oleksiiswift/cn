@@ -7,9 +7,7 @@
 
 import UIKit
 
-protocol GroupedReusableHeaderDelegate {
-    func setSelectAllButtonState(index: Int, isSelectAll: Bool)
-}
+
 
 class GroupedAssetsReusableHeaderView: UICollectionReusableView {
     
@@ -30,8 +28,7 @@ class GroupedAssetsReusableHeaderView: UICollectionReusableView {
         super.awakeFromNib()
         
         setupUI()
-        updateColors()
-        
+        updateColors()   
     }
     
     @IBAction func didTapSelectAllActionButton(_ sender: Any) {
@@ -41,7 +38,10 @@ class GroupedAssetsReusableHeaderView: UICollectionReusableView {
 
 extension GroupedAssetsReusableHeaderView: Themeble {
     
-    private func setupUI() {}
+    private func setupUI() {
+        
+        GroupedReusebleMediator.instance.setListener(listener: self)
+    }
     
     public func setSelectDeselectButton(_ isSelectAll: Bool) {
         selectAllButtonTextLabel.text = isSelectAll ? "select all" : "deselect all"
@@ -54,3 +54,13 @@ extension GroupedAssetsReusableHeaderView: Themeble {
     }
 }
 
+extension GroupedAssetsReusableHeaderView: GroupedReusebleListener {
+    
+    func setSelectAllButtonState(index: Int, isSelectAllState: Bool) {
+        
+        if self.tag == index {
+            
+            self.setSelectDeselectButton(isSelectAllState)
+        }
+    }
+}

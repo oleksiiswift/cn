@@ -28,6 +28,7 @@ class GroupedAssetListViewController: UIViewController {
     private var selectedAssets: [PHAsset] = []
     
     let collectionViewFlowLayout = SNCollectionViewLayout()
+    private var bottomMenuHeight: CGFloat = 110
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -86,13 +87,14 @@ extension GroupedAssetListViewController: UICollectionViewDelegate, UICollection
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: C.identifiers.cells.photoSimpleCell, for: indexPath) as! PhotoCollectionViewCell
         cell.loadCellThumbnail(assetGroups[indexPath.section].assets[indexPath.row], size: CGSize(width: 300, height: 300))
-        self.checkSelected(cell, at: indexPath)
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         
         if let sectionHeader = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: C.identifiers.views.groupHeaderView, for: indexPath) as? GroupedAssetsReusableHeaderView {
+            
+            sectionHeader.tag = indexPath.section
             
             sectionHeader.assetsSelectedCountTextLabel.text = "\(assetGroups[indexPath.section].assets.count) itmes"
             let isSelectSection = self.isSelectedSection(self.getIndexPathInSectionWithoutFirst(section: indexPath.section))
@@ -102,13 +104,16 @@ extension GroupedAssetListViewController: UICollectionViewDelegate, UICollection
             sectionHeader.onSelectAll = {
                 let indexPaths = self.getIndexPathInSectionWithoutFirst(section: indexPath.section)
                 let sectionsCells = self.getSectionsCells(at: indexPaths)
-                
+    
                 if !sectionsCells.isEmpty {
-                    let selectedCell = sectionsCells.filter({ $0.isSelected })
                     
+                    /// check if section contains selected cells
+                    
+                    let selectedCell = sectionsCells.filter({ $0.isSelected })
                     if !selectedCell.isEmpty {
                         
                         let cells = sectionsCells.filter({ !$0.isSelected })
+                        /// check if section contains selected and not selected cells
                         if !cells.isEmpty {
                             cells.forEach { cell in
                                 if let cellIndexPath = self.collectionView.indexPath(for: cell), cellIndexPath != IndexPath(row: 0, section: indexPath.section) {
@@ -120,6 +125,8 @@ extension GroupedAssetListViewController: UICollectionViewDelegate, UICollection
                             }
                             self.checkSelectedSection(indexPath)
                         } else {
+                            /// select - deselect all section withoit first cell
+                            /// section are full selected or deselected
                             self.didSelectAllAssets(at: indexPath, in: sectionHeader)
                         }
                     } else {
@@ -133,27 +140,42 @@ extension GroupedAssetListViewController: UICollectionViewDelegate, UICollection
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        
+        self.collectionView.selectItem(at: indexPath, animated: true, scrollPosition: [])
         if !self.selectedAssets.contains(self.assetGroups[indexPath.section].assets[indexPath.row]) {
             self.selectedAssets.append(self.assetGroups[indexPath.section].assets[indexPath.row])
-            collectionView.selectItem(at: indexPath, animated: false, scrollPosition: .right)
         }
         self.checkSelectedSection(indexPath)
+        self.handleDeleteAssetsButton()
     }
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+        self.collectionView.deselectItem(at: indexPath, animated: true)
         if self.selectedAssets.contains(self.assetGroups[indexPath.section].assets[indexPath.row]) {
             self.selectedAssets = self.selectedAssets.filter({ $0 != self.assetGroups[indexPath.section].assets[indexPath.row]})
-            collectionView.deselectItem(at: indexPath, animated: false)
         }
         self.checkSelectedSection(indexPath)
+        self.handleDeleteAssetsButton()
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        self.lazyHardcoreCheckForSelectedItemsAndAssets()
+        self.checkSelectedIndexPath(self.getIndexPathInSectionWithoutFirst(section: indexPath.section))
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, willDisplaySupplementaryView view: UICollectionReusableView, forElementKind elementKind: String, at indexPath: IndexPath) {
+        checkSelectedSection(indexPath)
+        if let headerView = view as? GroupedAssetsReusableHeaderView {
+            headerView.setSelectDeselectButton(!self.isSelectedSection(self.getIndexPathInSectionWithoutFirst(section: indexPath.section)))
+        } else {
+            debugPrint("header view cant find")
+        }
     }
 }
 
 extension GroupedAssetListViewController: SNCollectionViewLayoutDelegate {
 //    MARK: TODO: set if 3 asset
     func scaleForItem(inCollectionView collectionView: UICollectionView, withLayout layout: UICollectionViewLayout, atIndexPath indexPath: IndexPath) -> UInt {
-        if indexPath.row == 0 { //|| indexPath.row == 3 || indexPath.row == 10 || indexPath.row == 70 {
+        if indexPath.row == 0 {
             return 2
         }
         return 1
@@ -163,7 +185,6 @@ extension GroupedAssetListViewController: SNCollectionViewLayoutDelegate {
         return 44
     }
 }
-
 
 //      MARK: - check selected index path cell
 
@@ -181,16 +202,17 @@ extension GroupedAssetListViewController {
             if self.selectedAssets.contains(asset) {
                 self.selectedAssets.removeAll(asset)
                 sectionHeader.setSelectDeselectButton(true)
+                self.collectionView.deselectAllItems(in: indexPath.section, first: 0, animated: true)
             } else if !self.selectedAssets.contains(asset) {
                 let index = self.assetGroups[indexPath.section].assets.indexes(of: asset)
                 if index != [0] {
                     sectionHeader.setSelectDeselectButton(false)
                     self.selectedAssets.append(asset)
                 }
+                self.collectionView.selectAllItems(in: indexPath.section, first: 1, animated: true)
             }
         }
-        
-        self.checkSelectedIndexPath(self.getIndexPathInSectionWithoutFirst(section: indexPath.section))
+        self.handleDeleteAssetsButton()
     }
     
     private func getIndexPathInSectionWithoutFirst(section: Int) -> [IndexPath] {
@@ -208,19 +230,17 @@ extension GroupedAssetListViewController {
     
     private func checkSelected(_ cell: PhotoCollectionViewCell, at indexPath: IndexPath) {
         
-        let selected = self.selectedAssets.contains(assetGroups[indexPath.section].assets[indexPath.row])
-        
-        if selected {
-            self.collectionView.selectItem(at: indexPath, animated: false, scrollPosition: .right)
-            
+        if self.selectedAssets.contains(assetGroups[indexPath.section].assets[indexPath.row]) {
+            self.collectionView.selectItem(at: indexPath, animated: true, scrollPosition: [])
         } else {
-            self.collectionView.deselectItem(at: indexPath, animated: false)
+            self.collectionView.deselectItem(at: indexPath, animated: true)
         }
     }
     
     private func isSelectedSection(_ indexPaths: [IndexPath]) -> Bool {
         var isCellsSelectedCount: Int = 0
         indexPaths.forEach { indexPath in
+            
             if let cell = self.collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell {
                 if cell.isSelected {
                     isCellsSelectedCount += 1
@@ -231,11 +251,35 @@ extension GroupedAssetListViewController {
     }
     
     private func checkSelectedSection(_ indexPath: IndexPath) {
+        debugPrint(indexPath.section)
+        debugPrint("selected section")
         
-        let indexPathOfSection = IndexPath(item: 0, section: indexPath.section)
-        if let headerView = self.collectionView.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPathOfSection) as? GroupedAssetsReusableHeaderView {
-            let isSelectSection = self.isSelectedSection(self.getIndexPathInSectionWithoutFirst(section: indexPath.section))
-            headerView.setSelectDeselectButton(!isSelectSection)
+        debugPrint(self.isSelectedSection(self.getIndexPathInSectionWithoutFirst(section: indexPath.section)))
+        
+        GroupedReusebleMediator.instance.updateSeleAllButtonState(index: indexPath.section,
+                                                                  selectAllState: !self.isSelectedSection(self.getIndexPathInSectionWithoutFirst(section: indexPath.section)))
+    }
+    
+    private func lazyHardcoreCheckForSelectedItemsAndAssets() {
+        
+        guard let selectedItems = self.collectionView.indexPathsForSelectedItems else { return }
+        
+        if selectedItems.isEmpty, !self.selectedAssets.isEmpty {
+            self.selectedAssets.removeAll()
+        } else if !selectedItems.isEmpty, self.selectedAssets.isEmpty {
+            selectedItems.forEach { indexPath in
+                if !self.selectedAssets.contains(self.assetGroups[indexPath.section].assets[indexPath.row]) {
+                    self.selectedAssets.append(self.assetGroups[indexPath.section].assets[indexPath.row])
+                }
+            }
+        } else if !selectedItems.isEmpty, !self.selectedAssets.isEmpty {
+            self.selectedAssets.removeAll()
+            
+            selectedItems.forEach { indexPath in
+                if !self.selectedAssets.contains(self.assetGroups[indexPath.section].assets[indexPath.row]) {
+                    self.selectedAssets.append(self.assetGroups[indexPath.section].assets[indexPath.row])
+                }
+            }
         }
     }
     
@@ -248,6 +292,17 @@ extension GroupedAssetListViewController {
             }
         }
         return cells
+    }
+}
+
+extension GroupedAssetListViewController {
+    
+    private func handleDeleteAssetsButton() {
+        
+        bottomMenuHeightConstraint.constant = !selectedAssets.isEmpty ? bottomMenuHeight + U.bottomSafeAreaHeight : 0
+        U.animate(0.5) {
+            self.view.layoutIfNeeded()
+        }
     }
 }
     
@@ -270,5 +325,4 @@ extension GroupedAssetListViewController: Themeble {
 
     private func setupNavigation() {}
 }
-
 
