@@ -7,8 +7,6 @@
 
 import UIKit
 
-
-
 class GroupedAssetsReusableHeaderView: UICollectionReusableView {
     
     @IBOutlet weak var baseView: UIView!
@@ -16,12 +14,11 @@ class GroupedAssetsReusableHeaderView: UICollectionReusableView {
     @IBOutlet weak var selectAllButtonTextLabel: UILabel!
     
     public var onSelectAll: (() -> Void)?
-    
+
     override func prepareForReuse() {
         super.prepareForReuse()
         
         assetsSelectedCountTextLabel.text = ""
-        selectAllButtonTextLabel.text = ""
     }
     
     override func awakeFromNib() {
@@ -44,7 +41,8 @@ extension GroupedAssetsReusableHeaderView: Themeble {
     }
     
     public func setSelectDeselectButton(_ isSelectAll: Bool) {
-        selectAllButtonTextLabel.text = isSelectAll ? "select all" : "deselect all"
+        self.selectAllButtonTextLabel.text = isSelectAll ? "deselect all" : "select all"
+        self.baseView.backgroundColor = isSelectAll ? .red : .black
     }
     
     public func updateColors() {
@@ -57,10 +55,7 @@ extension GroupedAssetsReusableHeaderView: Themeble {
 extension GroupedAssetsReusableHeaderView: GroupedReusebleListener {
     
     func setSelectAllButtonState(index: Int, isSelectAllState: Bool) {
-        
-        if self.tag == index {
-            
-            self.setSelectDeselectButton(isSelectAllState)
-        }
+        debugPrint(index)
+        self.setSelectDeselectButton(isSelectAllState)
     }
 }
