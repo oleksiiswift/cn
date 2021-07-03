@@ -21,8 +21,8 @@ enum MediaContentType {
                             1: "dublicate",
                             2: "screenshots",
                             3: "selfie",
-                            4: "face?",
-                            5: "live",
+                            4: "live",
+                            5: "face",
                             6: "location"]]
             case .userVideo:
                 return [0: [0: "large",
@@ -52,9 +52,9 @@ enum MediaContentType {
                     case 3:
                         return "selfie"
                     case 4:
-                        return "face?"
-                    case 5:
                         return "live photos"
+                    case 5:
+                        return "face?"
                     case 6:
                         return "location"
                     default:
@@ -98,7 +98,7 @@ enum MediaContentType {
     var numberOfRows: Int {
         switch self {
             case .userPhoto:
-                return 7
+                return 5
             case .userVideo:
                 return 5
             case .userContacts:

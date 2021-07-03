@@ -307,6 +307,7 @@
 		049CC23526833D350002F988 /* UIView */ = {
 			isa = PBXGroup;
 			children = (
+				97238A102689EECE00C523DC /* UIView+BlurView.swift */,
 				049CC23326833D320002F988 /* UIView+Radius.swift */,
 				04CFFFFA2685E546000CA850 /* UIView+SelectedCornerRadius.swift */,
 				04CFFFFC2685E571000CA850 /* UIView+Borders.swift */,
@@ -406,19 +407,15 @@
 		04E5835D267A3E6C00EDC3A3 /* Extension */ = {
 			isa = PBXGroup;
 			children = (
-				04649B3D268DDDE600336FE4 /* UICollectionView+SelectAll.swift */,
+				97E54A892690A9A100C7FD54 /* UICollectionView */,
 				049CC20E26821D330002F988 /* UIDevice */,
 				04E5837A267B39C400EDC3A3 /* PhotoLibrary */,
 				049CC20F26821D3F0002F988 /* Strings */,
 				049CC22526831B840002F988 /* UIColor */,
 				049CC23526833D350002F988 /* UIView */,
-				97CC2F3F268749CF0072EF8C /* UIButton+ImageAlign.swift */,
-				97FC789126888120000D7F26 /* Date+CurrentDate.swift */,
-				97FC789526889541000D7F26 /* TimeIInterval.swift */,
-				97FC7893268882C9000D7F26 /* Date+DateFormatter.swift */,
-				97238A102689EECE00C523DC /* UIView+BlurView.swift */,
-				04649B39268C6FEC00336FE4 /* Array+Extension.swift */,
-				04649B3B268C98A900336FE4 /* UIButton+RemoveAnimation.swift */,
+				97E54A8A2690A9B100C7FD54 /* UIButton */,
+				97E54A8B2690A9BD00C7FD54 /* Date */,
+				97E54A8C2690A9CE00C7FD54 /* ArrayAndCollection */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -442,7 +439,7 @@
 				049CC22B268321D30002F988 /* Settings */,
 				049CC2222683179E0002F988 /* ThemeManager */,
 				049CC22C268321DC0002F988 /* NotificationManager */,
-				97CC2F3D268743A80072EF8C /* SegueManager.swift */,
+				97E54A8D2690AA0E00C7FD54 /* SegueManager */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -576,6 +573,49 @@
 				97238A0E2689EE2700C523DC /* CustomDoneHud.swift */,
 			);
 			path = Presenters;
+			sourceTree = "<group>";
+		};
+		97E54A892690A9A100C7FD54 /* UICollectionView */ = {
+			isa = PBXGroup;
+			children = (
+				04649B3D268DDDE600336FE4 /* UICollectionView+SelectAll.swift */,
+			);
+			path = UICollectionView;
+			sourceTree = "<group>";
+		};
+		97E54A8A2690A9B100C7FD54 /* UIButton */ = {
+			isa = PBXGroup;
+			children = (
+				97CC2F3F268749CF0072EF8C /* UIButton+ImageAlign.swift */,
+				04649B3B268C98A900336FE4 /* UIButton+RemoveAnimation.swift */,
+			);
+			path = UIButton;
+			sourceTree = "<group>";
+		};
+		97E54A8B2690A9BD00C7FD54 /* Date */ = {
+			isa = PBXGroup;
+			children = (
+				97FC789126888120000D7F26 /* Date+CurrentDate.swift */,
+				97FC789526889541000D7F26 /* TimeIInterval.swift */,
+				97FC7893268882C9000D7F26 /* Date+DateFormatter.swift */,
+			);
+			path = Date;
+			sourceTree = "<group>";
+		};
+		97E54A8C2690A9CE00C7FD54 /* ArrayAndCollection */ = {
+			isa = PBXGroup;
+			children = (
+				04649B39268C6FEC00336FE4 /* Array+Extension.swift */,
+			);
+			path = ArrayAndCollection;
+			sourceTree = "<group>";
+		};
+		97E54A8D2690AA0E00C7FD54 /* SegueManager */ = {
+			isa = PBXGroup;
+			children = (
+				97CC2F3D268743A80072EF8C /* SegueManager.swift */,
+			);
+			name = SegueManager;
 			sourceTree = "<group>";
 		};
 		97FC78A32689144D000D7F26 /* ContentType */ = {

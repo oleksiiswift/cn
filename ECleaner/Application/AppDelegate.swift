@@ -13,6 +13,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
         configureApplication(with: launchOptions)
+        setDefaults()
         return true
     }
 
@@ -37,5 +38,11 @@ extension AppDelegate {
         
         PhotoManager().getPhotoLibraryAccess()
     }
+    
+    private func setDefaults() {
+        
+        S.endingSavedDate = U.getString(from: Date(), format: C.dateFormat.fullDmy)
+    }
 }
+
 

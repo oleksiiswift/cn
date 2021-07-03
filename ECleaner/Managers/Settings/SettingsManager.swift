@@ -51,12 +51,20 @@ class SettingsManager {
                 return endingDate
             } else {
                 
-                let currentDate = Date().convertDateFormatterFromDate(date: Date(), format: C.dateFormat.fullDmy)
+                let currentDate = U.getString(from: Date(), format: C.dateFormat.fullDmy)
                 self.endingSavedDate = currentDate
                 return currentDate
             }
         } set {
             U.userDefaults.setValue(newValue, forKey: C.key.settings.endingSavedDate)
+        }
+    }
+    
+    static var lastSmartCleanDate: String? {
+        get {
+            return U.userDefaults.string(forKey: C.key.settings.lastSmartClean)
+        } set {
+            U.userDefaults.set(newValue, forKey: C.key.settings.lastSmartClean)
         }
     }
     

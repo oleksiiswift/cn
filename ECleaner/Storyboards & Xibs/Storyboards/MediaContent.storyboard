@@ -458,14 +458,14 @@
                                                         <rect key="frame" x="0.0" y="0.0" width="414" height="75"/>
                                                         <subviews>
                                                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="gVo-3E-rM4">
-                                                                <rect key="frame" x="144" y="22.5" width="30" height="30"/>
+                                                                <rect key="frame" x="174" y="22.5" width="30" height="30"/>
                                                                 <constraints>
                                                                     <constraint firstAttribute="height" constant="30" id="X2u-Zv-jOZ"/>
                                                                     <constraint firstAttribute="width" constant="30" id="x67-lg-m0U"/>
                                                                 </constraints>
                                                             </imageView>
                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Mxq-pu-28u">
-                                                                <rect key="frame" x="186" y="27" width="42" height="21"/>
+                                                                <rect key="frame" x="216" y="27" width="42" height="21"/>
                                                                 <constraints>
                                                                     <constraint firstAttribute="height" constant="21" id="gGr-vV-bgt"/>
                                                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="42" id="xnm-iw-EgD"/>
@@ -477,7 +477,7 @@
                                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mL2-As-qve">
                                                                 <rect key="frame" x="30" y="10" width="354" height="55"/>
                                                                 <connections>
-                                                                    <action selector="didTapCalculateLastCleaningActionButton:" destination="em5-eY-WfM" eventType="touchUpInside" id="UyD-Uo-imU"/>
+                                                                    <action selector="didTapSetPickerAutoSettingsActionButton:" destination="em5-eY-WfM" eventType="touchUpInside" id="UyD-Uo-imU"/>
                                                                 </connections>
                                                             </button>
                                                         </subviews>
@@ -489,7 +489,7 @@
                                                             <constraint firstItem="Mxq-pu-28u" firstAttribute="centerY" secondItem="Gy1-7n-qZk" secondAttribute="centerY" id="b5z-nz-Uum"/>
                                                             <constraint firstAttribute="bottom" secondItem="mL2-As-qve" secondAttribute="bottom" constant="10" id="ci6-Ql-eeK"/>
                                                             <constraint firstItem="mL2-As-qve" firstAttribute="leading" secondItem="Gy1-7n-qZk" secondAttribute="leading" constant="30" id="jiZ-RQ-qqw"/>
-                                                            <constraint firstItem="Mxq-pu-28u" firstAttribute="centerX" secondItem="Gy1-7n-qZk" secondAttribute="centerX" id="wQg-9q-PJf"/>
+                                                            <constraint firstItem="Mxq-pu-28u" firstAttribute="centerX" secondItem="Gy1-7n-qZk" secondAttribute="centerX" constant="30" id="wQg-9q-PJf"/>
                                                             <constraint firstItem="gVo-3E-rM4" firstAttribute="centerY" secondItem="Mxq-pu-28u" secondAttribute="centerY" id="wq4-CQ-9ue"/>
                                                         </constraints>
                                                     </view>
@@ -565,10 +565,10 @@
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <size key="freeformSize" width="414" height="438"/>
                     <connections>
+                        <outlet property="autoDatePickButton" destination="mL2-As-qve" id="ThQ-KT-M5e"/>
+                        <outlet property="autoDatePickImageView" destination="gVo-3E-rM4" id="wKE-fZ-GLo"/>
+                        <outlet property="autoDatePickTextLabel" destination="Mxq-pu-28u" id="rWF-m9-kAK"/>
                         <outlet property="dissmissButtonImageView" destination="umP-ic-HQN" id="FZD-Df-nav"/>
-                        <outlet property="lastCleanButton" destination="mL2-As-qve" id="ThQ-KT-M5e"/>
-                        <outlet property="lastCleanImageView" destination="gVo-3E-rM4" id="wKE-fZ-GLo"/>
-                        <outlet property="lastCleanTextLabel" destination="Mxq-pu-28u" id="rWF-m9-kAK"/>
                         <outlet property="mainContainerView" destination="wgQ-06-8CR" id="32n-et-WGL"/>
                         <outlet property="mainContainerViewHeightConstraint" destination="BcZ-oF-299" id="dqS-H3-3Vd"/>
                         <outlet property="periodDatePicker" destination="uzh-o4-e3L" id="O5x-PV-ql7"/>

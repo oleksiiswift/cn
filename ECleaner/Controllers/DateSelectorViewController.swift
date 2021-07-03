@@ -13,19 +13,19 @@ class DateSelectorViewController: UIViewController {
     @IBOutlet weak var mainContainerView: UIView!
     @IBOutlet weak var titleTextLabel: UILabel!
     @IBOutlet weak var dissmissButtonImageView: UIImageView!
-    @IBOutlet weak var lastCleanButton: UIButton!
-    @IBOutlet weak var lastCleanImageView: UIImageView!
-    @IBOutlet weak var lastCleanTextLabel: UILabel!
+    @IBOutlet weak var autoDatePickButton: UIButton!
+    @IBOutlet weak var autoDatePickImageView: UIImageView!
+    @IBOutlet weak var autoDatePickTextLabel: UILabel!
     @IBOutlet weak var submitButtonView: UIView!
     @IBOutlet weak var submitButton: UIButton!
     @IBOutlet weak var mainContainerViewHeightConstraint: NSLayoutConstraint!
     
-    private var lastCleanCheckIsOn: Bool = false
+    private var autoPickCheckIsOn: Bool = false
     public var isStartingDateSelected: Bool = false
     
     private var selectedDate: String {
         get {
-            Date().convertDateFormatterFromDate(date: periodDatePicker.date, format: C.dateFormat.fullDmy)
+            U.getString(from: periodDatePicker.date, format: C.dateFormat.fullDmy)
         }
     }
     
@@ -45,10 +45,20 @@ class DateSelectorViewController: UIViewController {
     }
     
     
-    @IBAction func didTapCalculateLastCleaningActionButton(_ sender: Any) {
+    @IBAction func didTapSetPickerAutoSettingsActionButton(_ sender: Any) {
         
-        lastCleanCheckIsOn = !lastCleanCheckIsOn
-        lastCleanImageView.image = lastCleanCheckIsOn ? I.systemElementsItems.checkBoxIsChecked : I.systemElementsItems.checkBox
+            autoPickCheckIsOn = !autoPickCheckIsOn
+            autoDatePickImageView.image = autoPickCheckIsOn ? I.systemElementsItems.checkBoxIsChecked : I.systemElementsItems.checkBox
+        
+        if isStartingDateSelected {
+            if let lastPickDate = S.lastSmartCleanDate, let date = U.getDateFrom(string: lastPickDate, format: C.dateFormat.fullDmy) {
+                periodDatePicker.setDate(date, animated: true)
+            }
+        } else {
+            if autoPickCheckIsOn {
+                periodDatePicker.setDate(Date(), animated: true)
+            }
+        }
     }
     
 
@@ -62,6 +72,39 @@ class DateSelectorViewController: UIViewController {
     
     @IBAction func didPickUpActionPicker(_ sender: Any) {
         debugPrint(selectedDate)
+    }
+}
+
+extension DateSelectorViewController {
+    
+    private func closeDatePicker() {
+        self.dismiss(animated: true) {
+            self.selectedDateCompletion?(self.selectedDate)
+        }
+    }
+    
+    public func setPicker(_ value: String) {
+        if let date = U.getDateFrom(string: value, format: C.dateFormat.fullDmy) {
+            U.UI {
+                self.periodDatePicker.setDate(date, animated: true)
+            }
+        }
+    }
+    
+    public func checkTheDate() {
+        
+        if let date = U.getDateFrom(string: self.selectedDate, format: C.dateFormat.fullDmy),
+           let highBoundDate = U.getDateFrom(string: self.isStartingDateSelected ? S.endingSavedDate : S.startingSavedDate, format: C.dateFormat.fullDmy) {
+            if isStartingDateSelected ? date > highBoundDate : date < highBoundDate {
+                AlertManager.showAlert("alarm", message:  isStartingDateSelected ? "loco date is bigger" : "loco date is lower", actions: []) {
+                    self.setPicker(self.isStartingDateSelected ? S.timeMachine : U.getString(from: Date(), format: C.dateFormat.fullDmy))
+                }
+            } else {
+                self.closeDatePicker()
+            }
+        } else {
+            self.dismiss(animated: true, completion: nil)
+        }
     }
 }
 
@@ -81,9 +124,9 @@ extension DateSelectorViewController: Themeble {
         
         titleTextLabel.text = "select period"
         
-        lastCleanTextLabel.text = "since the last cleaning"
-        lastCleanTextLabel.font = .systemFont(ofSize: 17, weight: .regular)
-        lastCleanImageView.image = I.systemElementsItems.checkBox
+        autoDatePickTextLabel.text = isStartingDateSelected ? "since the last cleaning" : "now is the time for"
+        autoDatePickTextLabel.font = .systemFont(ofSize: 17, weight: .regular)
+        autoDatePickImageView.image = I.systemElementsItems.checkBox
         periodDatePicker.maximumDate = Date()
     }
     
@@ -94,40 +137,7 @@ extension DateSelectorViewController: Themeble {
         submitButtonView.backgroundColor = currentTheme.accentBackgroundColor
         submitButton.setTitleColor(currentTheme.backgroundColor, for: .normal)
         dissmissButtonImageView.tintColor = currentTheme.tintColor
-        lastCleanTextLabel.textColor = currentTheme.titleTextColor
-        lastCleanImageView.tintColor = currentTheme.titleTextColor
-    }
-}
-
-extension DateSelectorViewController {
-    
-    private func closeDatePicker() {
-        self.dismiss(animated: true) {
-            self.selectedDateCompletion?(self.selectedDate)
-        }
-    }
-    
-    public func setPicker(_ value: String) {
-        if let date = Date().getDateFromString(stringDate: value, format: C.dateFormat.fullDmy) {
-            U.UI {
-                self.periodDatePicker.setDate(date, animated: true)
-            }
-        }
-    }
-    
-    public func checkTheDate() {
-        
-        if let date = Date().getDateFromString(stringDate: self.selectedDate, format: C.dateFormat.fullDmy),
-           let highBoundDate = Date().getDateFromString(stringDate: self.isStartingDateSelected ? S.endingSavedDate : S.startingSavedDate, format: C.dateFormat.fullDmy) {
-            if isStartingDateSelected ? date > highBoundDate : date < highBoundDate {
-                AlertManager.showAlert("alarm", message:  isStartingDateSelected ? "loco date is bigger" : "loco date is lower", actions: []) {
-                    self.setPicker(self.isStartingDateSelected ? S.timeMachine : Date().convertDateFormatterFromDate(date: Date(), format: C.dateFormat.fullDmy))
-                }
-            } else {
-                self.closeDatePicker()
-            }
-        } else {
-            self.dismiss(animated: true, completion: nil)
-        }
+        autoDatePickTextLabel.textColor = currentTheme.titleTextColor
+        autoDatePickImageView.tintColor = currentTheme.titleTextColor
     }
 }

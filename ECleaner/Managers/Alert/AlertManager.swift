@@ -12,6 +12,7 @@ enum AlertType {
     case allowNotification
     case allowConstacStore
     case allowPhotoLibrary
+    case allowDeleteSelectedPhotos
     case withCancel
     case none
     
@@ -29,6 +30,8 @@ enum AlertType {
                 return ""
             case .none:
                 return ""
+            case .allowDeleteSelectedPhotos:
+                return "locomark delete assets?"
         }
     }
     
@@ -46,6 +49,8 @@ enum AlertType {
                 return "cancel"
             case .none:
                 return "none"
+            case .allowDeleteSelectedPhotos:
+                return "delete selecteds assets are you shure????"
         }
     }
     
@@ -56,47 +61,23 @@ enum AlertType {
         } else {
             return .alert
         }
-
-//        TODO:
-//        switch self {
-//            case .selectNumber, .support:
-//                return .actionSheet
-//            default:
-//                return .alert
-//        }
     }
-    
-//    var alertWithTextField: Bool {
-//        switch self {
-//            case .createFolder, .renameFolder, .renameRecord:
-//                return true
-//            default:
-//                return false
-//        }
-//    }
-//
-//    var alertTextFieldPlaceHolder: String {
-//        switch self {
-//            case .createFolder:
-//                return L.message.alertMessage.folderPlaceHolder
-//            case .renameRecord, .renameFolder:
-//                return L.message.alertMessage.setNewNamePlaceholder
-//            default:
-//                return ""
-//        }
-//    }
 }
-
-
-
-
 
 class AlertManager: NSObject {
     
+    private static func showAlert(type: AlertType, actions: [UIAlertAction], withCance: Bool = true, cancelCompletion: (() -> Void)? = nil) {
+        
+        showAlert(type.alertTitle, message: type.alertMessage, actions: actions, withCancel: withCance) {
+            cancelCompletion?()
+        }
+    }
+    
     /// default alert
-    static func showAlert(_ title: String? = nil, message: String? = nil, actions: [UIAlertAction] = [], completion: (() -> Void)? = nil) {
+    static func showAlert(_ title: String? = nil, message: String? = nil, actions: [UIAlertAction] = [], withCancel: Bool = true, completion: (() -> Void)? = nil) {
     
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        
         let cancelAction = UIAlertAction(title: "loco cancel", style: .cancel) { action in
             completion?()
         }
@@ -105,7 +86,9 @@ class AlertManager: NSObject {
             alert.addAction(action)
         }
         
-        alert.addAction(cancelAction)
+        if withCancel {
+            alert.addAction(cancelAction)
+        }
         topController()?.present(alert, animated: true, completion: nil)
     }
     
@@ -144,5 +127,17 @@ extension AlertManager {
         if let url = URL(string: UIApplication.openSettingsURLString) {
             UIApplication.shared.open(url, options: [:], completionHandler: nil)
         }
+    }
+}
+
+extension AlertManager {
+    
+    static func showDeletePhotoAssetsAlert(completion: @escaping () -> Void) {
+      
+        let allowDeleteAction = UIAlertAction(title: "loco delete?", style: .default) { _ in
+            completion()
+        }
+        
+        showAlert(type: .allowDeleteSelectedPhotos, actions: [allowDeleteAction], withCance: true) {}
     }
 }

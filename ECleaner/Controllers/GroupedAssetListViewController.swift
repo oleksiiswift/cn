@@ -31,6 +31,8 @@ class GroupedAssetListViewController: UIViewController {
     let collectionViewFlowLayout = SNCollectionViewLayout()
     private var bottomMenuHeight: CGFloat = 110
     
+    private var photoManager = PhotoManager()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -40,7 +42,9 @@ class GroupedAssetListViewController: UIViewController {
         setupNavigation()
     }
     
-    @IBAction func didTapDeleteAssetsActionButton(_ sender: Any) {}
+    @IBAction func didTapDeleteAssetsActionButton(_ sender: Any) {
+        showDeleteConfirmAlert()
+    }
 }
 
 //      MARK: - setup collection view with flow layout -
@@ -342,6 +346,7 @@ extension GroupedAssetListViewController {
     }
 }
 
+//      MARK: - delete assets - 
 extension GroupedAssetListViewController {
     
     private func handleDeleteAssetsButton() {
@@ -349,6 +354,29 @@ extension GroupedAssetListViewController {
         bottomMenuHeightConstraint.constant = !selectedAssets.isEmpty ? bottomMenuHeight + U.bottomSafeAreaHeight : 0
         U.animate(0.5) {
             self.view.layoutIfNeeded()
+        }
+    }
+    
+    private func showDeleteConfirmAlert() {
+        
+        AlertManager.showDeletePhotoAssetsAlert {
+            self.deleteSelectedAssets()
+        }
+    }
+    
+    private func deleteSelectedAssets() {
+        
+        let identifiers = selectedAssets.map({$0.localIdentifier})
+        
+        photoManager.deleteSelected(assets: selectedAssets) { success in
+            if success {
+                for group in self.assetGroups {
+                    group.assets = group.assets.filter({!identifiers.contains($0.localIdentifier)})
+                }
+                self.assetGroups = self.assetGroups.filter({$0.assets.count != 1})
+            }
+            self.selectedAssets = []
+            self.collectionView.reloadData()
         }
     }
 }

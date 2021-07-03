@@ -27,6 +27,7 @@ class MediaContentViewController: UIViewController {
     
     public var contentType: MediaContentType = .none
     private var photoManager = PhotoManager()
+    
     private var startingDate: String {
         get {
             return S.startingSavedDate
@@ -107,7 +108,7 @@ extension MediaContentViewController: UITableViewDelegate, UITableViewDataSource
                         assetContentCount = self.allScreenShots.count
                     case 3:
                         assetContentCount = self.allSelfies.count
-                    case 5:
+                    case 4:
                         assetContentCount = self.allLiveFotos.count
                     default:
                         debugPrint("")
@@ -121,7 +122,6 @@ extension MediaContentViewController: UITableViewDelegate, UITableViewDataSource
         }
         
         cell.cellConfig(contentType: contentType, indexPath: indexPath, phasetCount: assetContentCount)
-        
     }
         
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -172,9 +172,9 @@ extension MediaContentViewController {
                     case 3:
                         self.showSelfies()
                     case 4:
-                        return
-                    case 5:
                         self.showLivePhotos()
+                    case 5:
+                        return
                     case 6:
                         return
                     default:
@@ -209,7 +209,7 @@ extension MediaContentViewController {
         
         photoManager.getLivePhotos { asset in
             if !asset.isEmpty {
-                self.showAssetViewController(assets: "love photos", collection: asset, photoContent: .livephotos)
+                self.showAssetViewController(assets: "live photos", collection: asset, photoContent: .livephotos)
             }
         }
     }
@@ -231,7 +231,6 @@ extension MediaContentViewController {
             }
         }
     }
-    
     
     private func showScreenshots() {
         photoManager.getScreenShots(from: startingDate, to: endingDate) { screenshots in
@@ -291,8 +290,8 @@ extension MediaContentViewController: Themeble {
         startingDateTitileTextLabel.text = "from"
         endingDateTitleTextLabel.text = "to"
         
-        startingDateTextLabel.text = Date().convertDateFormatterToDisplayString(stringDate: startingDate)
-        endingDateTextLabel.text = Date().convertDateFormatterToDisplayString(stringDate: endingDate)
+        startingDateTextLabel.text = U.displayDate(from: startingDate)
+        endingDateTextLabel.text = U.displayDate(from: endingDate)
         
         startingDateTextLabel.font = .systemFont(ofSize: 15, weight: .regular)
         endingDateTextLabel.font = .systemFont(ofSize: 15, weight: .regular)
@@ -333,10 +332,10 @@ extension MediaContentViewController: Themeble {
                 dateSelectorController.selectedDateCompletion = { selectedDate in
                     if self.isStartingDateSelected {
                         self.startingDate = selectedDate
-                        self.startingDateTextLabel.text = Date().convertDateFormatterToDisplayString(stringDate: selectedDate)
+                        self.startingDateTextLabel.text = U.displayDate(from: selectedDate)
                     } else {
                         self.endingDate = selectedDate
-                        self.endingDateTextLabel.text = Date().convertDateFormatterToDisplayString(stringDate: selectedDate)
+                        self.endingDateTextLabel.text = U.displayDate(from: selectedDate)
                     }
                 }
             }

@@ -20,6 +20,14 @@ class PhassetGroup {
     }
 }
 
+/// `getPhotoLibraryAccess` - use for access photo library alert and open settings
+/// `getPhotoLibrary` - fetch all photo assets in the user photo library and update values
+/// `getDuplicatePhotos`- finds duplicate photos in user photo library
+/// `getSimilarVideo` - load duplicated videos
+/// `getSimilarPhotos` load simmilar photos
+/// `getSimilarLivePhotos` - load simmilar live photos
+/// `getScreenShots` `getSelfiePhotos` `getLivePhotos` -  fetch photos by type
+
 class PhotoManager: NSObject {
     
     private static let shared = PhotoManager()
@@ -84,71 +92,6 @@ class PhotoManager: NSObject {
             }
         }
     }
-    
-    
-//    public func getPhotoLibrary() {
-//
-//        photoLibraryRequestAuth { accessGranted in
-//            if accessGranted {
-//
-////                MARK: - testing -
-//                /// this is testing block
-//                /// use only for fetch media for track in testing mode
-//                self.getSelfiePhotos { selfie in
-//                    debugPrint("selfie count \(selfie.count)")
-//                }
-//
-//                self.getScreenShots { screens in
-//                    debugPrint("screen shots \(screens.count)")
-//                }
-//
-//                self.getSimilarLivePhotos { groups in
-//                    debugPrint("similar live Phooto groups")
-//
-//                    debugPrint(groups.count)
-//
-//                    for i in groups {
-//                        debugPrint("detect")
-//                        debugPrint(i.assets.count)
-//                    }
-//                }
-//
-//                self.getSimilarVideo { groups in
-//                    debugPrint("similar video grops")
-//                    debugPrint(groups.count)
-//
-//                    for i in groups {
-//                        debugPrint("detect simmilar video")
-//                        debugPrint(i.assets.count)
-//
-//                        for n in i.assets {
-//                            debugPrint("videos")
-//                            debugPrint(n.creationDate)
-//                            debugPrint(n.duration)
-//                        }
-//                    }
-//                }
-//
-//                self.getDuplicatePhotos { group in
-//                    debugPrint("duplicate grup")
-//                    debugPrint(group.count)
-//                }
-//
-//                self.getSimilarPhotos { groups in
-//                    debugPrint("similar group")
-//                    debugPrint(groups.count)
-//
-//                    for i in groups {
-//                        debugPrint("similar photos")
-//                        debugPrint(i.assets.count)
-//                    }
-//                }
-//
-//            } else {
-//                AlertManager.showOpenSettingsAlert(.allowPhotoLibrary)
-//            }
-//        }
-//    }
     
 //    MARK: - authentification
     private func photoLibraryRequestAuth(completion: @escaping (_ status: Bool) -> Void ) {
@@ -568,6 +511,7 @@ class PhotoManager: NSObject {
     }
 }
 
+//      MARK: - change assets observer -
 
 extension PhotoManager: PHPhotoLibraryChangeObserver {
     
@@ -580,13 +524,25 @@ extension PhotoManager: PHPhotoLibraryChangeObserver {
     }
 }
 
+//      MARK: - delete selected assets -
 
-
-
-
-
-
-
+extension PhotoManager {
+    
+    public func deleteSelected(assets: [PHAsset], completion: @escaping ((Bool) -> Void)) {
+        
+        let assetsSelectedIdentifiers = assets.map({ $0.localIdentifier})
+        
+        let deletedAssets = PHAsset.fetchAssets(withLocalIdentifiers: assetsSelectedIdentifiers, options: nil)
+        
+        PHPhotoLibrary.shared().performChanges {
+            PHAssetChangeRequest.deleteAssets(deletedAssets)
+        } completionHandler: { success, error in
+            U.UI {
+                    completion(success)
+            }
+        }
+    }
+}
 
 
 

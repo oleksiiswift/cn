@@ -211,3 +211,24 @@ extension Utils {
     }
     
 }
+
+//      MARK: - Date time manager
+
+extension Utils {
+        
+    static func getString(from date: Date, format: String) -> String {
+        return Date().convertDateFormatterFromDate(date: date, format: format)
+    }
+    
+    static func convertStringDateFormated(date: String) -> String {
+        return Date().convertDateFormatterFromSrting(stringDate: date)
+    }
+    
+    static func displayDate(from stringDate: String) -> String {
+        return Date().convertDateFormatterToDisplayString(stringDate: stringDate)
+    }
+    
+    static func getDateFrom(string date: String, format: String) -> Date? {
+        return Date().getDateFromString(stringDate: date, format: format)
+    }
+}

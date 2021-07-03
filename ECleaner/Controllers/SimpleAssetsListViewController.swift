@@ -22,7 +22,7 @@ class SimpleAssetsListViewController: UIViewController {
     private var photoManager = PhotoManager()
     
     private let flowLayout = SimpleColumnFlowLayout(cellsPerRow: 3, minimumInterSpacing: 3, minimumLineSpacing: 3, inset: UIEdgeInsets(top: 10, left: 10, bottom: 0, right: 10))
-    private var bottomMenuHeight: CGFloat = 110
+    private var bottomMenuHeight: CGFloat = 80
     
     private lazy var selectAllButton = UIBarButtonItem(title: "select all", style: .plain, target: self, action: #selector(handleSelectAllButtonTapped))
     
@@ -36,7 +36,9 @@ class SimpleAssetsListViewController: UIViewController {
         setupListenersAndObservers()
     }
     
-    @IBAction func didTapDeleteAssetsActionButton(_ sender: Any) {}
+    @IBAction func didTapDeleteAssetsActionButton(_ sender: Any) {
+        showDeleteSelectedAssetsAlert()
+    }
 }
 
 //  MARK: - collection view setup -
@@ -66,6 +68,10 @@ extension SimpleAssetsListViewController: UICollectionViewDelegate, UICollection
                 cell.loadCellThumbnail(assetCollection[indexPath.row],
                                        size: CGSize(width: (U.screenWidth - 26) / 2,
                                                     height: ((U.screenHeight - 26) / 2) / U.ratio))
+            case .livephotos:
+                cell.loadCellThumbnail(assetCollection[indexPath.row],
+                                       size: CGSize(width: (U.screenWidth - 26) / 2,
+                                                    height: ((U.screenWidth - 26) / 2) / U.ratio))
             default:
                 return
         }
@@ -142,6 +148,34 @@ extension SimpleAssetsListViewController {
                 bottomMenuHeightConstraint.constant = selectedItems.count > 0 ? bottomMenuHeight + U.bottomSafeAreaHeight : 0
             U.animate(0.5) {
                 self.view.layoutIfNeeded()
+            }
+        }
+    }
+    
+    private func showDeleteSelectedAssetsAlert() {
+        
+        AlertManager.showDeletePhotoAssetsAlert {
+            self.deleteSelectedAssets()
+        }
+    }
+    
+//    MARK: - delete assets - 
+    private func deleteSelectedAssets() {
+        
+        guard let selectedIndexPath = self.collectionView.indexPathsForSelectedItems else { return }
+        
+        var assetsToDelete: [PHAsset] = []
+        
+        selectedIndexPath.forEach { indexPath in
+            let assetInCollection = self.assetCollection[indexPath.row]
+                assetsToDelete.append(assetInCollection)
+        }
+            
+        photoManager.deleteSelected(assets: assetsToDelete) { success in
+            if success {
+                let assetIdentifiers = assetsToDelete.map({ $0.localIdentifier})                
+                self.assetCollection = self.assetCollection.filter({!assetIdentifiers.contains($0.localIdentifier)})
+                self.collectionView.reloadData()
             }
         }
     }
