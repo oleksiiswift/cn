@@ -15,10 +15,13 @@ class GroupedAssetsReusableHeaderView: UICollectionReusableView {
     
     public var onSelectAll: (() -> Void)?
 
+    public var indexPath: IndexPath?
+    
     override func prepareForReuse() {
         super.prepareForReuse()
         
         assetsSelectedCountTextLabel.text = ""
+        selectAllButtonTextLabel.text = "select all"
     }
     
     override func awakeFromNib() {
@@ -29,33 +32,23 @@ class GroupedAssetsReusableHeaderView: UICollectionReusableView {
     }
     
     @IBAction func didTapSelectAllActionButton(_ sender: Any) {
+        
         onSelectAll?()
     }
 }
 
 extension GroupedAssetsReusableHeaderView: Themeble {
     
-    private func setupUI() {
-        
-        GroupedReusebleMediator.instance.setListener(listener: self)
-    }
+    private func setupUI() {}
     
     public func setSelectDeselectButton(_ isSelectAll: Bool) {
+        
         self.selectAllButtonTextLabel.text = isSelectAll ? "deselect all" : "select all"
-        self.baseView.backgroundColor = isSelectAll ? .red : .black
     }
     
     public func updateColors() {
         
         assetsSelectedCountTextLabel.textColor = currentTheme.titleTextColor
         selectAllButtonTextLabel.textColor = currentTheme.titleTextColor
-    }
-}
-
-extension GroupedAssetsReusableHeaderView: GroupedReusebleListener {
-    
-    func setSelectAllButtonState(index: Int, isSelectAllState: Bool) {
-        debugPrint(index)
-        self.setSelectDeselectButton(isSelectAllState)
     }
 }
