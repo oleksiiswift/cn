@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		044281FC2692F95A00B6B47C /* DropDownMenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 044281FB2692F95A00B6B47C /* DropDownMenuViewController.swift */; };
+		044281FE2692F9B800B6B47C /* SelectDropDownMenuDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 044281FD2692F9B800B6B47C /* SelectDropDownMenuDelegate.swift */; };
+		044282012693034600B6B47C /* DropDownMenuTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 044281FF2693034600B6B47C /* DropDownMenuTableViewCell.swift */; };
+		044282022693034600B6B47C /* DropDownMenuTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 044282002693034600B6B47C /* DropDownMenuTableViewCell.xib */; };
+		04428204269313AD00B6B47C /* DropDownMenuItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04428203269313AD00B6B47C /* DropDownMenuItems.swift */; };
 		04649B24268B2F3900336FE4 /* UpdatingChangesInOpenedScreensListeners.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04649B23268B2F3900336FE4 /* UpdatingChangesInOpenedScreensListeners.swift */; };
 		04649B28268B2F7300336FE4 /* UpdatingChangesInOpenedScreensMediator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04649B27268B2F7300336FE4 /* UpdatingChangesInOpenedScreensMediator.swift */; };
 		04649B31268C507F00336FE4 /* GroupedAssetsReusableHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04649B2F268C507F00336FE4 /* GroupedAssetsReusableHeaderView.swift */; };
@@ -81,6 +86,11 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		044281FB2692F95A00B6B47C /* DropDownMenuViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropDownMenuViewController.swift; sourceTree = "<group>"; };
+		044281FD2692F9B800B6B47C /* SelectDropDownMenuDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectDropDownMenuDelegate.swift; sourceTree = "<group>"; };
+		044281FF2693034600B6B47C /* DropDownMenuTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropDownMenuTableViewCell.swift; sourceTree = "<group>"; };
+		044282002693034600B6B47C /* DropDownMenuTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DropDownMenuTableViewCell.xib; sourceTree = "<group>"; };
+		04428203269313AD00B6B47C /* DropDownMenuItems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropDownMenuItems.swift; sourceTree = "<group>"; };
 		04649B23268B2F3900336FE4 /* UpdatingChangesInOpenedScreensListeners.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdatingChangesInOpenedScreensListeners.swift; sourceTree = "<group>"; };
 		04649B27268B2F7300336FE4 /* UpdatingChangesInOpenedScreensMediator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdatingChangesInOpenedScreensMediator.swift; sourceTree = "<group>"; };
 		04649B2F268C507F00336FE4 /* GroupedAssetsReusableHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupedAssetsReusableHeaderView.swift; sourceTree = "<group>"; };
@@ -290,6 +300,7 @@
 				049CC22D268337310002F988 /* MediaTypeCollectionViewCell.swift */,
 				97FC789F2688E5E8000D7F26 /* PhotoCollectionViewCell.swift */,
 				04CFFFFE2685F0C3000CA850 /* ContentTypeTableViewCell.swift */,
+				044281FF2693034600B6B47C /* DropDownMenuTableViewCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -300,6 +311,7 @@
 				049CC22E268337310002F988 /* MediaTypeCollectionViewCell.xib */,
 				04CFFFFF2685F0C3000CA850 /* ContentTypeTableViewCell.xib */,
 				97FC78A02688E5E8000D7F26 /* PhotoCollectionViewCell.xib */,
+				044282002693034600B6B47C /* DropDownMenuTableViewCell.xib */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -393,6 +405,7 @@
 				97CC2F3B26873A7D0072EF8C /* DateSelectorViewController.swift */,
 				97FC78972688CC06000D7F26 /* SimpleAssetsListViewController.swift */,
 				97238A082689D01E00C523DC /* GroupedAssetListViewController.swift */,
+				044281FB2692F95A00B6B47C /* DropDownMenuViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -457,6 +470,7 @@
 				049CC21E268312950002F988 /* UpdateColorsProtocolol.swift */,
 				97CC2F392683D00F0072EF8C /* UpdateContentDataBaseListener.swift */,
 				04649B23268B2F3900336FE4 /* UpdatingChangesInOpenedScreensListeners.swift */,
+				044281FD2692F9B800B6B47C /* SelectDropDownMenuDelegate.swift */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
@@ -623,6 +637,7 @@
 			children = (
 				04CF0002268602DE000CA850 /* MediaContentType.swift */,
 				97238A062689BD8000C523DC /* PhotoMediaType.swift */,
+				04428203269313AD00B6B47C /* DropDownMenuItems.swift */,
 			);
 			path = ContentType;
 			sourceTree = "<group>";
@@ -699,6 +714,7 @@
 				04CF00012685F0C3000CA850 /* ContentTypeTableViewCell.xib in Resources */,
 				049CC230268337310002F988 /* MediaTypeCollectionViewCell.xib in Resources */,
 				04E09479267A06B900A69956 /* Assets.xcassets in Resources */,
+				044282022693034600B6B47C /* DropDownMenuTableViewCell.xib in Resources */,
 				04649B32268C507F00336FE4 /* GroupedAssetsReusableHeaderView.xib in Resources */,
 				97FC78A22688E5E8000D7F26 /* PhotoCollectionViewCell.xib in Resources */,
 				04E09477267A06B500A69956 /* Main.storyboard in Resources */,
@@ -763,6 +779,7 @@
 				97FC78A12688E5E8000D7F26 /* PhotoCollectionViewCell.swift in Sources */,
 				049CC23426833D320002F988 /* UIView+Radius.swift in Sources */,
 				04E58373267A4A2000EDC3A3 /* UIDevice+Enviroment.swift in Sources */,
+				044281FC2692F95A00B6B47C /* DropDownMenuViewController.swift in Sources */,
 				97238A0F2689EE2700C523DC /* CustomDoneHud.swift in Sources */,
 				04E5837E267B60F600EDC3A3 /* AlertManager.swift in Sources */,
 				97FC789A2688D907000D7F26 /* SimpleColumnFlowLayout.swift in Sources */,
@@ -772,6 +789,7 @@
 				049CC2372683730A0002F988 /* BaseCollectionFlowLayout.swift in Sources */,
 				04CF0003268602DE000CA850 /* MediaContentType.swift in Sources */,
 				04E5837C267B3E2A00EDC3A3 /* PhotoManager.swift in Sources */,
+				044281FE2692F9B800B6B47C /* SelectDropDownMenuDelegate.swift in Sources */,
 				04CFFFEC2684725F000CA850 /* Device+DiskSpace.swift in Sources */,
 				97CC2F3C26873A7D0072EF8C /* DateSelectorViewController.swift in Sources */,
 				04E09470267A06B500A69956 /* AppDelegate.swift in Sources */,
@@ -789,6 +807,7 @@
 				049CC21F268312950002F988 /* UpdateColorsProtocolol.swift in Sources */,
 				049CC22F268337310002F988 /* MediaTypeCollectionViewCell.swift in Sources */,
 				049CC21D268225F80002F988 /* ThemeManager.swift in Sources */,
+				04428204269313AD00B6B47C /* DropDownMenuItems.swift in Sources */,
 				97238A0D2689EDFF00C523DC /* CustomActivityIndicator.swift in Sources */,
 				04649B24268B2F3900336FE4 /* UpdatingChangesInOpenedScreensListeners.swift in Sources */,
 				04E58377267B323E00EDC3A3 /* Constants.swift in Sources */,
@@ -816,6 +835,7 @@
 				04E58380267B9F6B00EDC3A3 /* PhassetFetchManager.swift in Sources */,
 				04649B28268B2F7300336FE4 /* UpdatingChangesInOpenedScreensMediator.swift in Sources */,
 				97CC2F40268749CF0072EF8C /* UIButton+ImageAlign.swift in Sources */,
+				044282012693034600B6B47C /* DropDownMenuTableViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -15,12 +15,19 @@ enum GropedAsset {
 }
 
 class GroupedAssetListViewController: UIViewController {
-    
+
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var bottomMenuView: UIView!
     @IBOutlet weak var deleteAssetsButtonView: UIView!
     @IBOutlet weak var deleteAssetsTexetLabel: UILabel!
     @IBOutlet weak var bottomMenuHeightConstraint: NSLayoutConstraint!
+    
+    lazy var burgerOptionSettingButton = UIBarButtonItem(image: I.navigationItems.elipseBurger, style: .plain, target: self, action: #selector(openOptionsBurgerMenu))
+    
+    private let sliderMenuOptionItem = DropDownOptionsMenuItem(titleMenu: "slider", itemThumbnail: I.systemElementsItems.sliderView, isSelected: false, menuItem: .changeLayout)
+    private let tileMenuOptionItem = DropDownOptionsMenuItem(titleMenu: "tile", itemThumbnail: I.systemElementsItems.tileView, isSelected: false, menuItem: .changeLayout)
+    private let selectAllOptionItem = DropDownOptionsMenuItem(titleMenu: "select all", itemThumbnail: I.systemElementsItems.circleBox!, isSelected: false, menuItem: .unselectAll)
+    private let deselectAllOptionItem = DropDownOptionsMenuItem(titleMenu: "deselect all", itemThumbnail: I.systemElementsItems.circleCheckBox!, isSelected: false, menuItem: .unselectAll)
     
     public var grouped: GropedAsset?
     public var assetGroups: [PhassetGroup] = []
@@ -29,9 +36,14 @@ class GroupedAssetListViewController: UIViewController {
     private var selectedSection: [Int] = []
     
     let collectionViewFlowLayout = SNCollectionViewLayout()
+    private var isSliderFlowLayout: Bool = true
+    private var isSelectAllAssetsMode: Bool = false
+
     private var bottomMenuHeight: CGFloat = 110
     
     private var photoManager = PhotoManager()
+
+    private var dropDownMenuViewController: DropDownMenuViewController?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -40,6 +52,7 @@ class GroupedAssetListViewController: UIViewController {
         updateColors()
         setupCollectionView()
         setupNavigation()
+        setupListenersAndObservers()
     }
     
     @IBAction func didTapDeleteAssetsActionButton(_ sender: Any) {
@@ -74,8 +87,9 @@ extension GroupedAssetListViewController: UICollectionViewDelegate, UICollection
         self.collectionView.contentInset = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
         collectionViewFlowLayout.fixedDivisionCount = 4
         collectionViewFlowLayout.itemSpacing = 5
+
+        self.collectionView.collectionViewLayout = isSliderFlowLayout ? collectionViewFlowLayout : collectionViewFlowLayout
         
-        self.collectionView.collectionViewLayout = collectionViewFlowLayout
         self.collectionView.allowsMultipleSelection = true
     
         self.collectionView.reloadData()
@@ -206,8 +220,8 @@ extension GroupedAssetListViewController {
     /// `didSelectAllAssets` select deselect all assets in section
     /// `getIndexPathInSectionWithoutFirst` - get all index path in section without first index
     /// `checkSelectedHeaderView` - check header for selected items when load and reuse
-    /// `isSelectedSection` check if contanse selected cell ind current section
-    /// `getSectionsCells` get all cell ind current section
+    /// `isSelectedSection` check if contains selected cell and current section
+    /// `getSectionsCells` get all cell and current section
     /// `lazyHardcoreCheckForSelectedItemsAndAssets` hardcore check for lost index pathes and elements of array if they lost
     
     private func didSelectAllAssets(at indexPath: IndexPath, in sectionHeader: GroupedAssetsReusableHeaderView) {
@@ -380,7 +394,37 @@ extension GroupedAssetListViewController {
         }
     }
 }
+
+//      MARK: - Popup viewController drop down menu setup -
+extension GroupedAssetListViewController {
     
+    @objc func openOptionsBurgerMenu() {
+        
+        let firstRowMenuItem = isSelectAllAssetsMode ? deselectAllOptionItem : selectAllOptionItem
+        let secondRowMenuItem = isSliderFlowLayout ? tileMenuOptionItem : sliderMenuOptionItem
+        presentingDropDownBurgerMenu(with: [[firstRowMenuItem, secondRowMenuItem]], from: burgerOptionSettingButton)
+    }
+    
+    private func presentingDropDownBurgerMenu(with items: [[DropDownOptionsMenuItem]], from barButtonItem: UIBarButtonItem) {
+        
+        let drobDownViewController = DropDownMenuViewController()
+        drobDownViewController.menuSectionItems = items
+        
+        guard let popoverPresentationController = drobDownViewController.popoverPresentationController else { fatalError("Error modal presentation style")}
+        
+        popoverPresentationController.barButtonItem = barButtonItem
+        popoverPresentationController.delegate = self
+        self.present(drobDownViewController, animated: true, completion: nil)
+    }
+}
+
+extension GroupedAssetListViewController: UIPopoverPresentationControllerDelegate {
+    
+    func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
+        return .none
+    }
+}
+
 //      MARK: - setup UI -
 
 extension GroupedAssetListViewController: Themeble {
@@ -398,6 +442,25 @@ extension GroupedAssetListViewController: Themeble {
         deleteAssetsTexetLabel.textColor = currentTheme.activeTitleTextColor
     }
 
-    private func setupNavigation() {}
+    private func setupNavigation() {
+        
+        self.navigationItem.rightBarButtonItem = burgerOptionSettingButton
+    }
+    
+    private func setupListenersAndObservers() {
+        
+        dropDownMenuViewController?.delegate = self
+    }
 }
 
+extension GroupedAssetListViewController: SelectDropDownMenuDelegate {
+    
+    func selectedItemListViewController(_ controller: DropDownMenuViewController, didSelectItem: DropDownMenuItems) {
+        switch didSelectItem {
+            case .changeLayout:
+                debugPrint("change layout")
+            case .unselectAll:
+                debugPrint("select deselect all")
+        }
+    }
+}

@@ -56,6 +56,7 @@ class Constants {
             static let mediaTypeCell = "MediaTypeCollectionViewCell"
             static let contentTypeCell = "ContentTypeTableViewCell"
             static let photoSimpleCell = "PhotoCollectionViewCell"
+            static let dropDownCell = "DropDownMenuTableViewCell"
         }
         
         struct views {
@@ -69,13 +70,13 @@ class Constants {
             static let photoSimpleCell = "PhotoCollectionViewCell"
             static let groupHeader = "GroupedAssetsReusableHeaderView"
             static let groupFooter = "GroupedAssetsReusableFooterView"
+            static let dropDownCell = "DropDownMenuTableViewCell"
         }
         
         struct segue {
             static let showDatePicker = "ShowDatePickerSelectorViewControllerSegue"
         }
     }
-    
     
     struct dateFormat {
         static let dmy = "dd-MM-yyy"

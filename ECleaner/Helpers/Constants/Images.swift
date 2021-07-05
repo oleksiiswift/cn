@@ -12,10 +12,10 @@ class Images {
 
     static let blank = UIImage(named: "")
     
-
     struct navigationItems {
         static let premium = UIImage(systemName: "crown.fill")
         static let settings = UIImage(systemName: "gear")
+        static let elipseBurger = UIImage(systemName: "ellipsis.circle.fill")
     }
     
     struct mainMenuThumbItems {
@@ -30,6 +30,7 @@ class Images {
         static let checkBoxIsChecked = UIImage(systemName: "checkmark.square")
         static let circleBox = UIImage(systemName: "circle")
         static let circleCheckBox = UIImage(systemName: "checkmark.circle.fill")
-        
+        static let tileView = UIImage(systemName: "square.grid.2x2.fill")
+        static let sliderView = UIImage(named: "sliderItem")
     }
 }
