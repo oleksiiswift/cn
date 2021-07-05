@@ -36,14 +36,13 @@ class GroupedAssetListViewController: UIViewController {
     private var selectedSection: [Int] = []
     
     let collectionViewFlowLayout = SNCollectionViewLayout()
-    private var isSliderFlowLayout: Bool = true
+    
+    private var isSliderFlowLayout: Bool = false
     private var isSelectAllAssetsMode: Bool = false
 
     private var bottomMenuHeight: CGFloat = 110
     
     private var photoManager = PhotoManager()
-
-    private var dropDownMenuViewController: DropDownMenuViewController?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -88,10 +87,8 @@ extension GroupedAssetListViewController: UICollectionViewDelegate, UICollection
         collectionViewFlowLayout.fixedDivisionCount = 4
         collectionViewFlowLayout.itemSpacing = 5
 
-        self.collectionView.collectionViewLayout = isSliderFlowLayout ? collectionViewFlowLayout : collectionViewFlowLayout
-        
+        self.collectionView.collectionViewLayout = collectionViewFlowLayout
         self.collectionView.allowsMultipleSelection = true
-    
         self.collectionView.reloadData()
     }
     
@@ -165,6 +162,7 @@ extension GroupedAssetListViewController: UICollectionViewDelegate, UICollection
                 
             default:
                 assert(false, "Invalid element type")
+//            debugPrint("invalid")
         }
         return UICollectionReusableView()
     }
@@ -393,6 +391,28 @@ extension GroupedAssetListViewController {
             self.collectionView.reloadData()
         }
     }
+    
+    private func shouldSelectAllAssetsInSections(_ isSelect: Bool) {
+       
+        var collectionIndexPaths: [IndexPath] = []
+        
+        for section in 0..<collectionView.numberOfSections {
+            collectionIndexPaths.append(IndexPath(item: 0, section: section))
+//            for item in 0..<collectionView.numberOfItems(inSection: section) {
+//                collectionIndexPaths.append(IndexPath(item: item, section: section))
+//            }
+        }
+        
+        for indexPath in collectionIndexPaths {
+            
+            if let sectionHeader = self.collectionView.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: IndexPath(row: 0, section: indexPath.section)) {
+                let headerView = sectionHeader as! GroupedAssetsReusableHeaderView
+                
+                self.didSelectAllAssets(at: indexPath, in: headerView)
+        
+            }
+        }
+    }
 }
 
 //      MARK: - Popup viewController drop down menu setup -
@@ -409,7 +429,7 @@ extension GroupedAssetListViewController {
         
         let drobDownViewController = DropDownMenuViewController()
         drobDownViewController.menuSectionItems = items
-        
+        drobDownViewController.delegate = self
         guard let popoverPresentationController = drobDownViewController.popoverPresentationController else { fatalError("Error modal presentation style")}
         
         popoverPresentationController.barButtonItem = barButtonItem
@@ -449,7 +469,7 @@ extension GroupedAssetListViewController: Themeble {
     
     private func setupListenersAndObservers() {
         
-        dropDownMenuViewController?.delegate = self
+
     }
 }
 
@@ -458,9 +478,14 @@ extension GroupedAssetListViewController: SelectDropDownMenuDelegate {
     func selectedItemListViewController(_ controller: DropDownMenuViewController, didSelectItem: DropDownMenuItems) {
         switch didSelectItem {
             case .changeLayout:
-                debugPrint("change layout")
+                debugPrint("later")
+//                isSliderFlowLayout = !isSliderFlowLayout
+//                collectionView.reloadData()
             case .unselectAll:
-                debugPrint("select deselect all")
+            
+                
+                self.shouldSelectAllAssetsInSections(isSelectAllAssetsMode)
+                isSelectAllAssetsMode = !isSelectAllAssetsMode
         }
     }
 }

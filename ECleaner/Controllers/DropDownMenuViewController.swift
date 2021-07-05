@@ -89,6 +89,8 @@ extension DropDownMenuViewController: UITableViewDataSource, UITableViewDelegate
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selectedItem = menuSectionItems[indexPath.section][indexPath.row]
-        delegate?.selectedItemListViewController(self, didSelectItem: selectedItem.menuItem)
+        self.dismiss(animated: true) {
+            self.delegate?.selectedItemListViewController(self, didSelectItem: selectedItem.menuItem)
+        }
     }
 }
