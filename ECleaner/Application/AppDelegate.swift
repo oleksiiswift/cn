@@ -2,7 +2,7 @@
 //  AppDelegate.swift
 //  ECleaner
 //
-//  Created by mac on 16.06.2021.
+//  Created by alexey sorochan on 16.06.2021.
 //
 
 import UIKit
@@ -10,10 +10,10 @@ import UIKit
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        
+        configureApplication(with: launchOptions)
+        setDefaults()
         return true
     }
 
@@ -30,7 +30,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // If any sessions were discarded while the application was not running, this will be called shortly after application:didFinishLaunchingWithOptions.
         // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
     }
-
-
 }
+
+extension AppDelegate {
+    
+    private func configureApplication(with launchOptions: [UIApplication.LaunchOptionsKey: Any]?) {
+        
+        PhotoManager().getPhotoLibraryAccess()
+    }
+    
+    private func setDefaults() {
+        
+        S.endingSavedDate = U.getString(from: Date(), format: C.dateFormat.fullDmy)
+    }
+}
+
 

@@ -7,11 +7,19 @@ target 'ECleaner' do
   # Comment the next line if you don't want to use dynamic frameworks
   use_frameworks!
   use_modular_headers!
+  inhibit_all_warnings!
 
   # Pods for ECleaner
+  pod 'CocoaImageHashing'
   pod 'cisua'
   pod 'SwiftyStoreKit'
   pod 'SwiftMessages'
-  pod 'Google-Mobile-Ads-SDK'
   
+  pod 'SwiftDate'
+  pod 'SwiftyUserDefaults'
+  pod 'SwiftyContacts'
+  
+  
+  
+#  pod 'Google-Mobile-Ads-SDK'
 end
