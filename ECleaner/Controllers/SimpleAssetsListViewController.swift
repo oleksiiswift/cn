@@ -47,7 +47,12 @@ extension SimpleAssetsListViewController: UICollectionViewDelegate, UICollection
     
     private func setupCollectionView() {
         
-        flowLayout.itemHieght = ((U.screenWidth - 26) / 3) / U.ratio
+        switch photoMediaType {
+            case .largeVideos:
+                flowLayout.isSquare = true
+            default:
+                flowLayout.itemHieght = ((U.screenWidth - 26) / 3) / U.ratio
+        }
         
         self.collectionView.dataSource = self
         self.collectionView.delegate = self
@@ -69,6 +74,11 @@ extension SimpleAssetsListViewController: UICollectionViewDelegate, UICollection
                                        size: CGSize(width: (U.screenWidth - 26) / 2,
                                                     height: ((U.screenHeight - 26) / 2) / U.ratio))
             case .livephotos:
+                cell.loadCellThumbnail(assetCollection[indexPath.row],
+                                       size: CGSize(width: (U.screenWidth - 26) / 2,
+                                                    height: ((U.screenWidth - 26) / 2) / U.ratio))
+                
+            case .largeVideos:
                 cell.loadCellThumbnail(assetCollection[indexPath.row],
                                        size: CGSize(width: (U.screenWidth - 26) / 2,
                                                     height: ((U.screenWidth - 26) / 2) / U.ratio))

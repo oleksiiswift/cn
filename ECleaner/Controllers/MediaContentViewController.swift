@@ -50,6 +50,9 @@ class MediaContentViewController: UIViewController {
     public var allSelfies: [PHAsset] = []
     public var allLiveFotos: [PHAsset] = []
     
+    public var allLargeVideos: [PHAsset] = []
+    public var allScreenRecords: [PHAsset] = []
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -114,7 +117,12 @@ extension MediaContentViewController: UITableViewDelegate, UITableViewDataSource
                         debugPrint("")
                 }
             case .userVideo:
-                debugPrint("")
+                switch indexPath.row {
+                    case 0:
+                        assetContentCount = self.allLargeVideos.count
+                    default:
+                        debugPrint("")
+                }
             case .userContacts:
                 debugPrint("")
             default:
@@ -181,8 +189,12 @@ extension MediaContentViewController {
                         return
                 }
             case .userVideo:
-                debugPrint("show video")
-                
+                switch index {
+                    case 0:
+                        self.showLargeVideoFiles()
+                    default:
+                        return
+                }
             case .userContacts:
                 debugPrint("show contacts")
             case .none:
@@ -190,6 +202,27 @@ extension MediaContentViewController {
         }
     }
     
+    private func showGropedContoller(assets title: String, grouped collection: [PhassetGroup], photoContent type: GropedAsset) {
+        let storyboard = UIStoryboard(name: C.identifiers.storyboards.media, bundle: nil)
+        let viewController  = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.groupedList) as! GroupedAssetListViewController
+        viewController.assetGroups = collection
+        viewController.title = title
+        viewController.grouped = type
+        self.navigationController?.pushViewController(viewController, animated: true)
+    }
+    
+    private func showAssetViewController(assets title: String, collection: [PHAsset], photoContent type: PhotoMediaType) {
+        let storyboard = UIStoryboard(name: C.identifiers.storyboards.media, bundle: nil)
+        let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.assetsList) as! SimpleAssetsListViewController
+        viewController.title = title
+        viewController.assetCollection = collection
+        viewController.photoMediaType = type
+        self.navigationController?.pushViewController(viewController, animated: true)
+    }
+}
+
+//      MARK: - photo content -
+extension MediaContentViewController {
     /**
      - parameter
      - parameter
@@ -241,24 +274,20 @@ extension MediaContentViewController {
             }
         }
     }
+}
+
+//      MARK: - video content -
+extension MediaContentViewController {
     
-    private func showGropedContoller(assets title: String, grouped collection: [PhassetGroup], photoContent type: GropedAsset) {
-        let storyboard = UIStoryboard(name: C.identifiers.storyboards.media, bundle: nil)
-        let viewController  = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.groupedList) as! GroupedAssetListViewController
-        viewController.assetGroups = collection
-        viewController.title = title
-        viewController.grouped = type
-        self.navigationController?.pushViewController(viewController, animated: true)
-    }
-    
-    
-    private func showAssetViewController(assets title: String, collection: [PHAsset], photoContent type: PhotoMediaType) {
-        let storyboard = UIStoryboard(name: C.identifiers.storyboards.media, bundle: nil)
-        let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.assetsList) as! SimpleAssetsListViewController
-        viewController.title = title
-        viewController.assetCollection = collection
-        viewController.photoMediaType = type
-        self.navigationController?.pushViewController(viewController, animated: true)
+    private func showLargeVideoFiles() {
+        
+        photoManager.getLargevideoContent(from: startingDate, to: endingDate) { videos in
+            if videos.count != 0 {
+                self.showAssetViewController(assets: "large videos", collection: videos, photoContent: .largeVideos)
+            } else {
+                return
+            }
+        }
     }
 }
 

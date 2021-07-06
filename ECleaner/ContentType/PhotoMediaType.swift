@@ -15,5 +15,6 @@ enum PhotoMediaType {
     case livephotos
     case screenRecording
     case video
+    case largeVideos
     case none
 }

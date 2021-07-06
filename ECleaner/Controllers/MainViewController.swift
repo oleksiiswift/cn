@@ -33,6 +33,7 @@ class MainViewController: UIViewController {
     private var allScreenShots: [PHAsset] = []
     private var allSelfies: [PHAsset] = []
     private var allLiveFotos: [PHAsset] = []
+    private var allLargeVidoes: [PHAsset] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -98,6 +99,11 @@ extension MainViewController: UpdateContentDataBaseListener {
         }
     }
     
+    func getLargeVideosAsset(_ assets: [PHAsset]) {
+        self.allLargeVidoes = assets
+    }
+    
+    
     func getContactsCount(count: Int) {
         
         self.allContactsCount = count
@@ -109,9 +115,18 @@ extension MainViewController: UpdateContentDataBaseListener {
     private func openMediaController(type: MediaContentType) {
         let storyboard = UIStoryboard(name: C.identifiers.storyboards.media, bundle: nil)
         let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.content) as! MediaContentViewController
-        viewController.allScreenShots = self.allScreenShots
-        viewController.allSelfies = self.allSelfies
-        viewController.allLiveFotos = self.allLiveFotos
+  
+        switch type {
+            case .userPhoto:
+                viewController.allScreenShots = self.allScreenShots
+                viewController.allSelfies = self.allSelfies
+                viewController.allLiveFotos = self.allLiveFotos
+            case .userVideo:
+                viewController.allLargeVideos = self.allLargeVidoes
+            default:
+                return
+        }
+        
         viewController.contentType = type
         self.navigationController?.pushViewController(viewController, animated: true)
     }

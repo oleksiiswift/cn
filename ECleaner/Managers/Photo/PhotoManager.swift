@@ -90,6 +90,12 @@ class PhotoManager: NSObject {
                     UpdateContentDataBaseMediator.instance.getFrontCameraAsset(assets)
                 }
             }
+            
+            self.getLargevideoContent { assets in
+                U.UI {
+                    UpdateContentDataBaseMediator.instance.getLargeVideosAsset(assets)
+                }
+            }
         }
     }
     
@@ -539,6 +545,34 @@ extension PhotoManager {
         } completionHandler: { success, error in
             U.UI {
                     completion(success)
+            }
+        }
+    }
+}
+
+extension PhotoManager {
+    
+    public func getLargevideoContent(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", completionHandler: @escaping ((_ assets: [PHAsset]) -> Void)) {
+        
+        fetchManager.fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumVideos, by: PHAssetMediaType.video.rawValue) { videoContent in
+            U.BG {
+                var videos: [PHAsset] = []
+                
+                if videoContent.count == 0 {
+                    U.UI {
+                        completionHandler([])
+                    }
+                    return
+                }
+                
+                for videosPosition in 1...videoContent.count {
+                    if videoContent[videosPosition - 1].imageSize > 15000000 { //550000000 
+                        videos.append(videoContent[videosPosition - 1])
+                    }
+                }
+                U.UI {
+                    completionHandler(videos)
+                }
             }
         }
     }

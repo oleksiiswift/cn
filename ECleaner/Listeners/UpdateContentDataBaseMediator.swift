@@ -48,4 +48,8 @@ class UpdateContentDataBaseMediator {
     func getLivePhotosAsset(_ assets: [PHAsset]) {
         listener?.getLivePhotosAsset(assets)
     }
+    
+    func getLargeVideosAsset(_ assets: [PHAsset]) {
+        listener?.getLargeVideosAsset(assets)
+    }
 }

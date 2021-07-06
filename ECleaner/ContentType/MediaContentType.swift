@@ -25,7 +25,7 @@ enum MediaContentType {
                             5: "face",
                             6: "location"]]
             case .userVideo:
-                return [0: [0: "large",
+                return [0: [0: "large video",
                             1: "duplicate",
                             2: "similart",
                             3: "screen rec",

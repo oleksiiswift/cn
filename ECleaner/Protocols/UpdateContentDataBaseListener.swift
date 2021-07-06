@@ -16,4 +16,6 @@ protocol UpdateContentDataBaseListener {
     func getScreenAsset(_ assets: [PHAsset])
     func getFrontCameraAsset(_ assets: [PHAsset])
     func getLivePhotosAsset(_ assets: [PHAsset])
+    
+    func getLargeVideosAsset(_ assets: [PHAsset])
 }
