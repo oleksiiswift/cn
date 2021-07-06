@@ -23,7 +23,7 @@ class PhotoCollectionViewCell: UICollectionViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         
-        self.photoCheckmarkImageView.image = self.isSelected ? I.systemElementsItems.circleCheckBox : I.systemElementsItems.circleBox
+        photoCheckmarkImageView.image = I.systemElementsItems.circleBox
     }
     
     override func awakeFromNib() {
@@ -39,6 +39,7 @@ extension PhotoCollectionViewCell: Themeble {
     private func setupUI() {
         
         baseView.setCorner(12)
+        photoCheckmarkImageView.image = I.systemElementsItems.circleBox
     }
     
     func updateColors() {

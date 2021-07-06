@@ -40,8 +40,7 @@ class GroupedAssetListViewController: UIViewController {
     private var isSliderFlowLayout: Bool = false
     private var isSelectAllAssetsMode: Bool = false
 
-    private var bottomMenuHeight: CGFloat = 110
-    
+    private var bottomMenuHeight: CGFloat = 80
     private var photoManager = PhotoManager()
     
     override func viewDidLoad() {
@@ -358,7 +357,7 @@ extension GroupedAssetListViewController {
     }
 }
 
-//      MARK: - delete assets - 
+//      MARK: - assets processing -
 extension GroupedAssetListViewController {
     
     private func handleDeleteAssetsButton() {
@@ -393,24 +392,38 @@ extension GroupedAssetListViewController {
     }
     
     private func shouldSelectAllAssetsInSections(_ isSelect: Bool) {
-       
-        var collectionIndexPaths: [IndexPath] = []
         
         for section in 0..<collectionView.numberOfSections {
-            collectionIndexPaths.append(IndexPath(item: 0, section: section))
-//            for item in 0..<collectionView.numberOfItems(inSection: section) {
-//                collectionIndexPaths.append(IndexPath(item: item, section: section))
-//            }
-        }
-        
-        for indexPath in collectionIndexPaths {
-            
-            if let sectionHeader = self.collectionView.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: IndexPath(row: 0, section: indexPath.section)) {
-                let headerView = sectionHeader as! GroupedAssetsReusableHeaderView
-                
-                self.didSelectAllAssets(at: indexPath, in: headerView)
-        
+            if isSelect {
+                self.collectionView.deselectAllItems(in: section, animated: true)
+            } else {
+                self.collectionView.selectAllItems(in: section, first: 1, animated: true)
             }
+            
+            for item in 1..<self.collectionView.numberOfItems(inSection: section) {
+                if isSelect {
+                    self.selectedAssets.removeAll()
+                } else {
+                    if !self.selectedAssets.contains(self.assetGroups[section].assets[item]) {
+                        self.selectedAssets.append(self.assetGroups[section].assets[item])
+                    }
+                }
+            }
+            self.handleSelectAllButtonSection(IndexPath(item: 0, section: section))
+        }
+        self.handleDeleteAssetsButton()
+    }
+}
+
+extension GroupedAssetListViewController: SelectDropDownMenuDelegate {
+    
+    func selectedItemListViewController(_ controller: DropDownMenuViewController, didSelectItem: DropDownMenuItems) {
+        switch didSelectItem {
+            case .changeLayout:
+                debugPrint("later")
+            case .unselectAll:
+                self.shouldSelectAllAssetsInSections(isSelectAllAssetsMode)
+                isSelectAllAssetsMode = !isSelectAllAssetsMode
         }
     }
 }
@@ -467,25 +480,7 @@ extension GroupedAssetListViewController: Themeble {
         self.navigationItem.rightBarButtonItem = burgerOptionSettingButton
     }
     
-    private func setupListenersAndObservers() {
-        
-
-    }
+    private func setupListenersAndObservers() {}
 }
 
-extension GroupedAssetListViewController: SelectDropDownMenuDelegate {
-    
-    func selectedItemListViewController(_ controller: DropDownMenuViewController, didSelectItem: DropDownMenuItems) {
-        switch didSelectItem {
-            case .changeLayout:
-                debugPrint("later")
-//                isSliderFlowLayout = !isSliderFlowLayout
-//                collectionView.reloadData()
-            case .unselectAll:
-            
-                
-                self.shouldSelectAllAssetsInSections(isSelectAllAssetsMode)
-                isSelectAllAssetsMode = !isSelectAllAssetsMode
-        }
-    }
-}
+
