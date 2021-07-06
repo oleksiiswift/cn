@@ -20,9 +20,13 @@ class PhassetGroup {
     }
 }
 
-//protocol PhotoManagerDelegate: AnyObject {
-//    func filesCountProcessing(count: Int)
-//}
+/// `getPhotoLibraryAccess` - use for access photo library alert and open settings
+/// `getPhotoLibrary` - fetch all photo assets in the user photo library and update values
+/// `getDuplicatePhotos`- finds duplicate photos in user photo library
+/// `getSimilarVideo` - load duplicated videos
+/// `getSimilarPhotos` load simmilar photos
+/// `getSimilarLivePhotos` - load simmilar live photos
+/// `getScreenShots` `getSelfiePhotos` `getLivePhotos` -  fetch photos by type
 
 class PhotoManager: NSObject {
     
@@ -34,73 +38,57 @@ class PhotoManager: NSObject {
     
     private var fetchManager = PHAssetFetchManager.shared
     
-//    weak var delegate: PhotoManagerDelegate?
-    
     public override init() {
         super.init()
         
         PHPhotoLibrary.shared().register(self)
     }
-
-    public func getPhotoLibrary() {
+    
+    public func getPhotoLibraryAccess() {
         
         photoLibraryRequestAuth { accessGranted in
             if accessGranted {
-//                MARK: - testing -
-                /// this is testing block
-                /// use only for fetch media for track in testing mode
-                self.getSelfiePhotos { selfie in
-                    debugPrint("selfie count \(selfie.count)")
-                }
-                
-                self.getScreenShots { screens in
-                    debugPrint("screen shots \(screens.count)")
-                }
-                
-                self.getSimilarLivePhotos { groups in
-                    debugPrint("similar live Phooto groups")
-                    
-                    debugPrint(groups.count)
-                    
-                    for i in groups {
-                        debugPrint("detect")
-                        debugPrint(i.assets.count)
-                    }
-                }
-                
-                self.getSimilarVideo { groups in
-                    debugPrint("similar video grops")
-                    debugPrint(groups.count)
-
-                    for i in groups {
-                        debugPrint("detect simmilar video")
-                        debugPrint(i.assets.count)
-
-                        for n in i.assets {
-                            debugPrint("videos")
-                            debugPrint(n.creationDate)
-                            debugPrint(n.duration)
-                        }
-                    }
-                }
-                
-                self.getDuplicatePhotos { group in
-                    debugPrint("duplicate grup")
-                    debugPrint(group.count)
-                }
-
-                self.getSimilarPhotos { groups in
-                    debugPrint("similar group")
-                    debugPrint(groups.count)
-
-                    for i in groups {
-                        debugPrint("similar photos")
-                        debugPrint(i.assets.count)
-                    }
-                }
-                
+                S.isLibraryAccessGranted = true
+                self.getPhotoLibrary()
             } else {
+                S.isLibraryAccessGranted = false
+                
                 AlertManager.showOpenSettingsAlert(.allowPhotoLibrary)
+            }
+        }
+    }
+    
+    private func getPhotoLibrary() {
+        
+        U.BG {
+            self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumVideos, by: PHAssetMediaType.video.rawValue) { assets in
+                U.UI {
+                    UpdateContentDataBaseMediator.instance.updateVideos(assets.count, calculatedSpace: 0)
+                }
+            }
+            
+            self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumUserLibrary, by: PHAssetMediaType.image.rawValue) { assets in
+                U.UI {
+                    UpdateContentDataBaseMediator.instance.updatePhotos(assets.count, calculatedSpace: 0)
+                }
+            }
+            
+            self.getScreenShots { assets in
+                U.UI {
+                    UpdateContentDataBaseMediator.instance.getScreenshots(assets)
+                }
+            }
+            
+            self.getLivePhotos { assets in
+                U.UI {
+                    UpdateContentDataBaseMediator.instance.getLivePhotosAsset(assets)
+                }
+            }
+            
+            self.getSelfiePhotos { assets in
+                U.UI {
+                    UpdateContentDataBaseMediator.instance.getFrontCameraAsset(assets)
+                }
             }
         }
     }
@@ -146,16 +134,16 @@ class PhotoManager: NSObject {
     
     public func calculateSpace(completionHandler: @escaping (_ spaceIn: Int64) -> Void) {
         var fileSize: Int64 = 0
-        
+
         U.BG {
             self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumUserLibrary, by: PHAssetMediaType.image.rawValue) { result in
                 fileSize += self.fetchManager.calculateAllAssetsSize(result: result)
             }
-            
+
             self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumVideos, by: PHAssetMediaType.video.rawValue) { result in
                 fileSize += self.fetchManager.calculateAllAssetsSize(result: result)
             }
-            
+
             U.UI {
                 completionHandler(fileSize)
             }
@@ -164,7 +152,10 @@ class PhotoManager: NSObject {
     
     
 //    MARK: - find duplicates in library -
-    public func getDuplicatePhotos(from startDate: String = "01-01-1970", to endDate: String = "01-01-2666", completionHandler: @escaping ((_ assets: [PhassetGroup]) -> Void)) {
+    public func getDuplicatePhotos(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", completionHandler: @escaping ((_ assets: [PhassetGroup]) -> Void)) {
+        
+        P.showIndicator()
+        
         fetchManager.fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumUserLibrary, by: PHAssetMediaType.image.rawValue) { photosInGallery in
             
             var group: [PhassetGroup] = []
@@ -203,14 +194,16 @@ class PhotoManager: NSObject {
                             } while duplicateIndex < duplicatesPhotos.count && abs(duplicatesPhotos[index].date - duplicatesPhotos[duplicateIndex].date) <= 10
                         }
                         if duplicate.count != 0 {
+                            debugPrint("apend new group")
                             group.append(PhassetGroup(name: "", assets: duplicate))
                         }
                     }
-                    
+                    P.hideIndicator()
                     U.UI {
                         completionHandler(group)
                     }
                 } else {
+                    P.hideIndicator()
                     U.UI {
                         completionHandler([])
                     }
@@ -219,7 +212,7 @@ class PhotoManager: NSObject {
         }
     }
     
-    public func getSimilarVideo(from startDate: String = "01-01-1970", to endDate: String = "01-01-2666", completionHandler: @escaping ((_ videoAssets: [PhassetGroup]) -> Void)) {
+    public func getSimilarVideo(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", completionHandler: @escaping ((_ videoAssets: [PhassetGroup]) -> Void)) {
         
         fetchManager.fetchFromGallery(from: startDate,
                                       to: endDate,
@@ -305,7 +298,9 @@ class PhotoManager: NSObject {
 
     
 //    MARK: - simmilar photo check
-    public func getSimilarPhotos(from startDate: String = "01-01-1970", to endDate: String = "01-01-2666", completionHandler: @escaping ((_ assets: [PhassetGroup]) -> Void)) {
+    public func getSimilarPhotos(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", completionHandler: @escaping ((_ assets: [PhassetGroup]) -> Void)) {
+        
+        P.showIndicator()
         
         fetchManager.fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumUserLibrary, by: PHAssetMediaType.image.rawValue) { photoGallery in
             U.BG {
@@ -327,6 +322,7 @@ class PhotoManager: NSObject {
                     }
                 }
                 self.getSimilarTuples(for: photos, photosInGallery: photoGallery) { similarPhotos in
+                    P.hideIndicator()
                     completionHandler(similarPhotos)
                 }
             }
@@ -335,7 +331,7 @@ class PhotoManager: NSObject {
     
     
 //    MARK: - load simmiliar live photo -
-    public func getSimilarLivePhotos(from startDate: String = "01-01-1970", to endDate: String = "01-01-2666", completionHandler: @escaping ((_ assets: [PhassetGroup]) -> Void)) {
+    public func getSimilarLivePhotos(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", completionHandler: @escaping ((_ assets: [PhassetGroup]) -> Void)) {
         
         fetchManager.fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumLivePhotos, by: PHAssetMediaType.image.rawValue) { livePhotoGallery in
             U.BG {
@@ -362,7 +358,7 @@ class PhotoManager: NSObject {
         }
     }
     
-    
+    /// `private` need for service compare
     private func getSimilarTuples(for photos: [OSTuple<NSString, NSData>], photosInGallery: PHFetchResult<PHAsset>, completionHandler: @escaping ([PhassetGroup]) -> Void){
         
         var similarPhotosCount: [Int] = []
@@ -441,9 +437,9 @@ class PhotoManager: NSObject {
     }
     
 //    MARK: - load selfies -
-    public func getSelfiePhotos(_ completionHandler: @escaping ((_ assets: [PHAsset]) -> Void)) {
+    public func getSelfiePhotos(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", completionHandler: @escaping ((_ assets: [PHAsset]) -> Void)) {
         
-        fetchManager.fetchFromGallery(collectiontype: .smartAlbumSelfPortraits, by: PHAssetMediaType.image.rawValue) { selfiesInLibrary in
+        fetchManager.fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumSelfPortraits, by: PHAssetMediaType.image.rawValue) { selfiesInLibrary in
             
             U.BG {
                 var selfies: [PHAsset] = []
@@ -464,9 +460,33 @@ class PhotoManager: NSObject {
             }
         }
     }
+//    MARK: - load life photo -
+    public func getLivePhotos(_ completionHandler: @escaping ((_ assets: [PHAsset]) -> Void)) {
+        
+        fetchManager.fetchFromGallery(collectiontype: .smartAlbumLivePhotos, by: PHAssetMediaType.image.rawValue) { livePhotosLibrary in
+            
+            U.BG {
+                var livePhotos: [PHAsset] = []
+                if livePhotosLibrary.count == 0 {
+                    U.UI {
+                        completionHandler([])
+                    }
+                    return
+                }
+                
+                for livePhoto in 1...livePhotosLibrary.count {
+                    livePhotos.append(livePhotosLibrary[livePhoto - 1])
+                }
+                
+                U.UI {
+                    completionHandler(livePhotos)
+                }
+            }
+        }
+    }
     
 //    MARK: - load screenshots -
-    public func getScreenShots(from startDate: String = "01-01-1970", to endDate: String = "01-01-2666", completionHandler: @escaping ((_ assets: [PHAsset]) -> Void)) {
+    public func getScreenShots(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", completionHandler: @escaping ((_ assets: [PHAsset]) -> Void)) {
         
         fetchManager.fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumScreenshots, by: PHAssetMediaType.image.rawValue) { screensShotsLibrary in
             U.BG {
@@ -491,102 +511,117 @@ class PhotoManager: NSObject {
     }
 }
 
+//      MARK: - change assets observer -
 
 extension PhotoManager: PHPhotoLibraryChangeObserver {
     
     func photoLibraryDidChange(_ changeInstance: PHChange) {
         U.UI {
             self.getPhotoLibrary()
+            UpdatingChangesInOpenedScreensMediator.instance.updatingChangedScreenShots()
+            UpdatingChangesInOpenedScreensMediator.instance.updatingChangedSelfies()
+        }
+    }
+}
+
+//      MARK: - delete selected assets -
+
+extension PhotoManager {
+    
+    public func deleteSelected(assets: [PHAsset], completion: @escaping ((Bool) -> Void)) {
+        
+        let assetsSelectedIdentifiers = assets.map({ $0.localIdentifier})
+        
+        let deletedAssets = PHAsset.fetchAssets(withLocalIdentifiers: assetsSelectedIdentifiers, options: nil)
+        
+        PHPhotoLibrary.shared().performChanges {
+            PHAssetChangeRequest.deleteAssets(deletedAssets)
+        } completionHandler: { success, error in
+            U.UI {
+                    completion(success)
+            }
         }
     }
 }
 
 
 
-
-
-
-
-
-
-
-
 extension PhotoManager {
     
-    private func loadTestingAssets() {
-      
-        let photoCollection = self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumUserLibrary, by: PHAssetMediaType.image.rawValue) { collection in
-            debugPrint("photo collection count")
-            debugPrint(collection.count)
-        }
-        
-        let selfiesCollection = self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumSelfPortraits, by: PHAssetMediaType.image.rawValue) { selfies in
-            debugPrint("some selfies count")
-            debugPrint(selfies.count)
-        }
-        
-        let livePhotoCollection = self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumLivePhotos, by: PHAssetMediaType.image.rawValue) { livePhoto in
-            debugPrint("some live count")
-            debugPrint(livePhoto.count)
-        }
-        
-        let screenShotsCollection = self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumScreenshots, by: PHAssetMediaType.image.rawValue) { screenShots in
-            debugPrint("some screens count")
-            debugPrint(screenShots.count)
-        }
-        
-        
-        let gifsCollection = self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumAnimated, by: PHAssetMediaType.image.rawValue) { gifs in
-            debugPrint("some gifs count")
-            debugPrint(gifs.count)
-        }
-        
-        let videoCollection = self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumVideos, by: PHAssetMediaType.video.rawValue) { video in
-            debugPrint("some video count")
-            debugPrint(video.count)
-        }
-        
-        
-        
-        
-        
-//                let collection = PHAssetFetchManager.shared.fetchImagesFromGallery(collection: nil)
-//                debugPrint("all")
-//                debugPrint(collection.count)
+//    private func loadTestingAssets() {
 //
-//                let imageCollection = PHAssetFetchManager.shared.fetchAssets(by: PHAssetMediaType.image.rawValue)
-//                debugPrint("images")
-//                debugPrint(imageCollection.count)
+//        let photoCollection = self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumUserLibrary, by: PHAssetMediaType.image.rawValue) { collection in
+//            debugPrint("photo collection count")
+//            debugPrint(collection.count)
+//        }
 //
-//                let videoCollection = PHAssetFetchManager.shared.fetchAssets(by: PHAssetMediaType.video.rawValue)
-//                debugPrint("video")
-//                debugPrint(videoCollection.count)
+//        let selfiesCollection = self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumSelfPortraits, by: PHAssetMediaType.image.rawValue) { selfies in
+//            debugPrint("some selfies count")
+//            debugPrint(selfies.count)
+//        }
 //
-//                let livePhotosCollection = PHAssetFetchManager.shared.fetchAssetsSubtipe(by: PHAssetMediaSubtype.photoLive.rawValue)
-//                debugPrint("live photo cout")
-//                debugPrint(livePhotosCollection.count)
+//        let livePhotoCollection = self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumLivePhotos, by: PHAssetMediaType.image.rawValue) { livePhoto in
+//            debugPrint("some live count")
+//            debugPrint(livePhoto.count)
+//        }
 //
-//                let screenShots = PHAssetFetchManager.shared.fetchAssetsSubtipe(by: PHAssetMediaSubtype.photoScreenshot.rawValue)
-//                debugPrint("screenshots")
-//                debugPrint(screenShots.count)
+//        let screenShotsCollection = self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumScreenshots, by: PHAssetMediaType.image.rawValue) { screenShots in
+//            debugPrint("some screens count")
+//            debugPrint(screenShots.count)
+//        }
 //
-//                let videoStreamed = PHAssetFetchManager.shared.fetchAssetsSubtipe(by: PHAssetMediaSubtype.videoStreamed.rawValue)
-//                debugPrint("videoStreamed")
-//                debugPrint(videoStreamed.count)
 //
-//                let videoTimelapse = PHAssetFetchManager.shared.fetchAssetsSubtipe(by: PHAssetMediaSubtype.videoTimelapse.rawValue)
-//                debugPrint("videoTimelapse")
-//                debugPrint(videoTimelapse.count)
-        
- 
-        
-//                imageCollection.enumerateObjects({(object: AnyObject!, count: Int, stop: UnsafeMutablePointer<ObjCBool>) in
-//                    if let fetchObject = object as? PHAsset {
-//                        self.photos.append(fetchObject)
-//                    }
-//                })
-        
-    }
+//        let gifsCollection = self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumAnimated, by: PHAssetMediaType.image.rawValue) { gifs in
+//            debugPrint("some gifs count")
+//            debugPrint(gifs.count)
+//        }
+//
+//        let videoCollection = self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumVideos, by: PHAssetMediaType.video.rawValue) { video in
+//            debugPrint("some video count")
+//            debugPrint(video.count)
+//        }
+//
+//
+//
+//
+//
+////                let collection = PHAssetFetchManager.shared.fetchImagesFromGallery(collection: nil)
+////                debugPrint("all")
+////                debugPrint(collection.count)
+////
+////                let imageCollection = PHAssetFetchManager.shared.fetchAssets(by: PHAssetMediaType.image.rawValue)
+////                debugPrint("images")
+////                debugPrint(imageCollection.count)
+////
+////                let videoCollection = PHAssetFetchManager.shared.fetchAssets(by: PHAssetMediaType.video.rawValue)
+////                debugPrint("video")
+////                debugPrint(videoCollection.count)
+////
+////                let livePhotosCollection = PHAssetFetchManager.shared.fetchAssetsSubtipe(by: PHAssetMediaSubtype.photoLive.rawValue)
+////                debugPrint("live photo cout")
+////                debugPrint(livePhotosCollection.count)
+////
+////                let screenShots = PHAssetFetchManager.shared.fetchAssetsSubtipe(by: PHAssetMediaSubtype.photoScreenshot.rawValue)
+////                debugPrint("screenshots")
+////                debugPrint(screenShots.count)
+////
+////                let videoStreamed = PHAssetFetchManager.shared.fetchAssetsSubtipe(by: PHAssetMediaSubtype.videoStreamed.rawValue)
+////                debugPrint("videoStreamed")
+////                debugPrint(videoStreamed.count)
+////
+////                let videoTimelapse = PHAssetFetchManager.shared.fetchAssetsSubtipe(by: PHAssetMediaSubtype.videoTimelapse.rawValue)
+////                debugPrint("videoTimelapse")
+////                debugPrint(videoTimelapse.count)
+//
+//
+//
+////                imageCollection.enumerateObjects({(object: AnyObject!, count: Int, stop: UnsafeMutablePointer<ObjCBool>) in
+////                    if let fetchObject = object as? PHAsset {
+////                        self.photos.append(fetchObject)
+////                    }
+////                })
+//
+//    }
 }
 
 
@@ -612,14 +647,6 @@ extension PhotoManager {
 
 
     
-extension String{
-    
-    func replacingStringAndConvertToIntegerForImage() -> Int {
-        if let integer = Int(self.replacingOccurrences(of: "image", with: "")) {
-            return integer
-        } else {
-            return 0
-        }
-    }
-}
+
+
 

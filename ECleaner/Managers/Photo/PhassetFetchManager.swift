@@ -34,7 +34,7 @@ class PHAssetFetchManager {
     
     static let shared = PHAssetFetchManager()
     
-    public func fetchFromGallery(from startDate: String = "01-01-1970", to endDate: String = "01-01-2666", collectiontype: PHAssetCollectionSubtype, by type: Int, completionHandler: @escaping ((_ result: PHFetchResult<PHAsset>) -> Void)) {
+    public func fetchFromGallery(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", collectiontype: PHAssetCollectionSubtype, by type: Int, completionHandler: @escaping ((_ result: PHFetchResult<PHAsset>) -> Void)) {
         let fetchOptions = PHFetchOptions()
     
         let albumPhoto: PHFetchResult<PHAssetCollection> = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: collectiontype, options: fetchOptions)
@@ -43,15 +43,15 @@ class PHAssetFetchManager {
         fetchOptions.predicate = NSPredicate(
             format: "\(SDKey.mediaType.value) = %d AND (\(SDKey.creationDate.value) >= %@) AND (\(SDKey.creationDate.value) <= %@)",
             type,
-            startDate.NSDateConverter(format: C.dateFormat.dmy),
-            endDate.NSDateConverter(format: C.dateFormat.dmy)
+            startDate.NSDateConverter(format: C.dateFormat.fullDmy),
+            endDate.NSDateConverter(format: C.dateFormat.fullDmy)
         )
         albumPhoto.enumerateObjects({(collection, index, object) in
             completionHandler(PHAsset.fetchAssets(in: collection, options: fetchOptions))
         })
     }
     
-    public func fetchPhotoCount(from startDate: String = "01-01-1970", to endDate: String = "01-01-2666", completionHandler: @escaping ((_ photoCount: Int) -> Void)) {
+    public func fetchPhotoCount(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", completionHandler: @escaping ((_ photoCount: Int) -> Void)) {
         fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumUserLibrary, by: PHAssetMediaType.image.rawValue) { libraryResult in
             completionHandler(libraryResult.count)
         }
@@ -75,10 +75,8 @@ extension PHAssetFetchManager {
         return PHAsset.fetchAssets(with: fetchOption)
     }
     
-    
-    
 //    MARK: fetch assets from collection
-    private func fetchImagesFromGallery(collection: PHAssetCollection?) -> PHFetchResult<PHAsset> {
+    public func fetchImagesFromGallery(collection: PHAssetCollection?) -> PHFetchResult<PHAsset> {
         let fetchOption = PHFetchOptions()
         fetchOption.sortDescriptors = [NSSortDescriptor(key: SortingDesriptionKey.creationDate.value, ascending: false)]
         fetchOption.predicate = NSPredicate(format: "mediaType == %d || mediaType == %d", PHAssetMediaType.image.rawValue, PHAssetMediaType.video.rawValue)
@@ -98,7 +96,7 @@ extension PHAssetFetchManager {
         
         option.isSynchronous = true
         
-        manager.requestImage(for: asset, targetSize: size, contentMode: .aspectFill, options: option, resultHandler: {(result, info)->Void in
+        manager.requestImage(for: asset, targetSize: size, contentMode: .aspectFit, options: option, resultHandler: {(result, info) -> Void in
             if let image = result {
             thumbnail = image
             }
@@ -114,7 +112,7 @@ extension PHAssetFetchManager {
         let manager = PHImageManager.default()
         let option = PHImageRequestOptions()
         
-        manager.requestImage(for: asset, targetSize: PHImageManagerMaximumSize, contentMode: .default, options: option, resultHandler: {(result, info)->Void in
+        manager.requestImage(for: asset, targetSize: PHImageManagerMaximumSize, contentMode: .default, options: option, resultHandler: {(result, info) -> Void in
             image = result!
             complition(image)
         })
@@ -129,7 +127,7 @@ extension PHAssetFetchManager {
         
             requestOptions.resizeMode = PHImageRequestOptionsResizeMode.exact
             requestOptions.deliveryMode = PHImageRequestOptionsDeliveryMode.highQualityFormat
-            requestOptions.isSynchronous = true
+            requestOptions.isSynchronous = false
             
         if asset.mediaType == PHAssetMediaType.image {
             manager.requestImage(for: asset,
@@ -146,14 +144,21 @@ extension PHAssetFetchManager {
     
     public func calculateAllAssetsSize(result: PHFetchResult<PHAsset>) -> Int64 {
         var allSize: Int64 = 0
-        
+
         let requestOptions = PHImageRequestOptions.init()
-        requestOptions.isSynchronous = true
+        
+        requestOptions.isSynchronous = false
+        
+        var numbers = 0
         result.enumerateObjects({ (object, index, stopped) in
             let manager = PHImageManager.default()
             manager.requestImageDataAndOrientation(for: object, options: requestOptions) { imageData, _, _, _ in
+                numbers += 1
+                
                 if imageData != nil {
-                    allSize += Int64(imageData!.count)
+                    allSize += object.imageSize
+                    debugPrint(String("\(numbers) -> \(allSize)"))
+//                         Int64(imageData!.count)
                 }
             }
         })

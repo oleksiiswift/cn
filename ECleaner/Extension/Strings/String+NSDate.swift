@@ -8,6 +8,7 @@
 import Foundation
 
 extension String {
+    
     func NSDateConverter(format: String) -> NSDate {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = format

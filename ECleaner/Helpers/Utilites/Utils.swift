@@ -35,9 +35,9 @@ class Utils {
     
     static let screenBounds: CGRect = mainScreen.bounds
     
-    static let screenHeight = screenBounds.height
+    static let screenHeight: CGFloat = screenBounds.height
     
-    static let screenWidth = screenBounds.width
+    static let screenWidth: CGFloat = screenBounds.width
     
     static let ratio: CGFloat = U.screenWidth / U.screenHeight
     
@@ -85,7 +85,15 @@ class Utils {
         return window?.safeAreaInsets.top ?? 0 > 20
     }
     
+    static public var bottomSafeAreaHeight: CGFloat {
+        return window?.safeAreaInsets.bottom ?? 0
+    }
+    
     static let isSimulator = UIDevice.isSimulator
+    
+//    MARK: - DATE and TIME
+    
+    static let currentDate = Date.getCurrentDate()
 }
 
 //  MARK: - User Defaults -
@@ -140,7 +148,20 @@ extension Utils {
     }
 }
 
-//      MARK: get the most top view controller
+extension Utils {
+    
+    static func animate(_ duration: TimeInterval, delay: TimeInterval = 0.0, animation: @escaping () -> Void, completion: (() -> Void)? = nil) {
+        
+        UIView.animate(withDuration: duration, delay: delay) {
+            animation()
+        } completion: { (_) in
+            completion?()
+        }
+    }
+}
+
+
+//      MARK: - get the most top view controller - 
 func topController() -> UIViewController? {
     if var controller = U.window?.rootViewController {
         while let presentedViewController = controller.presentedViewController {
@@ -164,4 +185,50 @@ func getTheMostTopController(controller: UIViewController? = U.window?.rootViewC
         }
     }
     return controller!
+}
+
+extension Utils {
+
+    static func getSpaceFromInt(_ count: Int64) -> String {
+        
+        let bytes = Int(truncatingIfNeeded: count)
+        
+        if (bytes < 1000) {
+            return "\(bytes) B"
+        }
+        let exp = Int(log2(Double(bytes)) / log2(1000.0))
+        
+        let unit = ["KB", "MB", "GB", "TB", "PB", "EB"][exp - 1]
+        
+        let number = Double(bytes) / pow(1000, Double(exp))
+        
+        if exp <= 1 || number >= 100 {
+            return String(format: "%.0f %@", number, unit)
+        } else {
+            return String(format: "%.1f %@", number, unit)
+                .replacingOccurrences(of: ".0", with: "")
+        }
+    }
+    
+}
+
+//      MARK: - Date time manager
+
+extension Utils {
+        
+    static func getString(from date: Date, format: String) -> String {
+        return Date().convertDateFormatterFromDate(date: date, format: format)
+    }
+    
+    static func convertStringDateFormated(date: String) -> String {
+        return Date().convertDateFormatterFromSrting(stringDate: date)
+    }
+    
+    static func displayDate(from stringDate: String) -> String {
+        return Date().convertDateFormatterToDisplayString(stringDate: stringDate)
+    }
+    
+    static func getDateFrom(string date: String, format: String) -> Date? {
+        return Date().getDateFromString(stringDate: date, format: format)
+    }
 }
