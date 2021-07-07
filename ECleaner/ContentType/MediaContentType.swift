@@ -44,9 +44,9 @@ enum MediaContentType {
             case .userPhoto:
                 switch index {
                     case 0:
-                        return "simmilar"
+                        return "simmilar photo"
                     case 1:
-                        return "dublicates"
+                        return "dublicates photo"
                     case 2:
                         return "screenshots"
                     case 3:
@@ -63,15 +63,15 @@ enum MediaContentType {
             case .userVideo:
                 switch index {
                     case 0:
-                        return "large"
+                        return "large video"
                     case 1:
-                        return "duplicate"
+                        return "duplicate video"
                     case 2:
-                        return "similart"
+                        return "similar video"
                     case 3:
-                        return "screen rec"
+                        return "screen recording"
                     case 4:
-                        return "comoress?"
+                        return "compress video?"
                     default:
                         return ""
                 }

@@ -33,7 +33,7 @@ class GroupedAssetListViewController: UIViewController {
     public var assetGroups: [PhassetGroup] = []
     
     private var selectedAssets: [PHAsset] = []
-    private var selectedSection: [Int] = []
+    private var selectedSection: Set<Int> = []
     
     let collectionViewFlowLayout = SNCollectionViewLayout()
     
@@ -142,7 +142,7 @@ extension GroupedAssetListViewController: UICollectionViewDelegate, UICollection
                                 }
                                 
                                 if !self.selectedSection.contains(indexPath.section) {
-                                    self.selectedSection.append(indexPath.section)
+                                    self.selectedSection.insert(indexPath.section)
                                 }
                             
                                 sectionHeader.setSelectDeselectButton(true)
@@ -185,7 +185,7 @@ extension GroupedAssetListViewController: UICollectionViewDelegate, UICollection
     }
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        self.lazyHardcoreCheckForSelectedItemsAndAssets()
+//        self.lazyHardcoreCheckForSelectedItemsAndAssets()
     }
     
     func collectionView(_ collectionView: UICollectionView, willDisplaySupplementaryView view: UICollectionReusableView, forElementKind elementKind: String, at indexPath: IndexPath) {
@@ -225,10 +225,12 @@ extension GroupedAssetListViewController {
         
         var addingSection: Bool = false
         
-        for asset in self.assetGroups[indexPath.section].assets {
-            if self.selectedAssets.contains(asset) {
+        if selectedSection.contains(indexPath.section) {
+            for asset in self.assetGroups[indexPath.section].assets {
                 self.selectedAssets.removeAll(asset)
-            } else if !self.selectedAssets.contains(asset) {
+            }
+        } else {
+            for asset in self.assetGroups[indexPath.section].assets {
                 let index = self.assetGroups[indexPath.section].assets.indexes(of: asset)
                 if index != [0] {
                     self.selectedAssets.append(asset)
@@ -238,11 +240,11 @@ extension GroupedAssetListViewController {
         }
         
         if addingSection {
-            selectedSection.append(indexPath.section)
+            selectedSection.insert(indexPath.section)
             self.collectionView.selectAllItems(in: indexPath.section, first: 1, animated: true)
             sectionHeader.setSelectDeselectButton(true)
         } else {
-            selectedSection.removeAll(indexPath.section)
+            selectedSection.remove(indexPath.section)
             self.collectionView.deselectAllItems(in: indexPath.section, first: 0, animated: true)
             sectionHeader.setSelectDeselectButton(false)
         }
@@ -305,12 +307,12 @@ extension GroupedAssetListViewController {
                     let numbersOfItems = self.collectionView.numberOfItems(inSection: indexPath.section)
                     if numbersOfItems - 1 == sectionFilters.count || numbersOfItems == sectionFilters.count{
                         if !selectedSection.contains(indexPath.section) {
-                            selectedSection.append(indexPath.section)
+                            selectedSection.insert(indexPath.section)
                         }
                         headerView.setSelectDeselectButton(true)
                     } else {
                         if selectedSection.contains(indexPath.section) {
-                            selectedSection.removeAll(indexPath.section)
+                            selectedSection.remove(indexPath.section)
                         }
                         headerView.setSelectDeselectButton(false)
                     }

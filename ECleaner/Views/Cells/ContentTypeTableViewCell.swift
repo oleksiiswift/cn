@@ -44,7 +44,6 @@ extension ContentTypeTableViewCell {
         
         switch contentType {
             case .userPhoto:
-                
                 contentSubtitleTextLabel.text = phasetCount != 0 ? String("\(phasetCount) files") : ""
             case .userVideo:
                 contentSubtitleTextLabel.text = phasetCount != 0 ? String("\(phasetCount) files") : ""

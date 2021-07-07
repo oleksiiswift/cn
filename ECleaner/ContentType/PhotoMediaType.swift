@@ -13,8 +13,10 @@ enum PhotoMediaType {
     case selfies
     case screenshots
     case livephotos
-    case screenRecording
     case video
     case largeVideos
+    case duplicateVideos
+    case similarVideos
+    case screenRecording
     case none
 }

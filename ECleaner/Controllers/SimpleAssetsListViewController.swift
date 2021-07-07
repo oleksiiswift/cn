@@ -64,6 +64,7 @@ extension SimpleAssetsListViewController: UICollectionViewDelegate, UICollection
     
     private func configure(_ cell: PhotoCollectionViewCell, at indexPath: IndexPath) {
         
+        /// config thumbnail according screen type
         switch photoMediaType {
             case .screenshots:
                 cell.loadCellThumbnail(assetCollection[indexPath.row],
@@ -77,8 +78,19 @@ extension SimpleAssetsListViewController: UICollectionViewDelegate, UICollection
                 cell.loadCellThumbnail(assetCollection[indexPath.row],
                                        size: CGSize(width: (U.screenWidth - 26) / 2,
                                                     height: ((U.screenWidth - 26) / 2) / U.ratio))
-                
             case .largeVideos:
+                cell.loadCellThumbnail(assetCollection[indexPath.row],
+                                       size: CGSize(width: (U.screenWidth - 26) / 2,
+                                                    height: ((U.screenWidth - 26) / 2) / U.ratio))
+            case .similarVideos:
+                cell.loadCellThumbnail(assetCollection[indexPath.row],
+                                       size: CGSize(width: (U.screenWidth - 26) / 2,
+                                                    height: ((U.screenWidth - 26) / 2) / U.ratio))
+            case .duplicateVideos:
+                cell.loadCellThumbnail(assetCollection[indexPath.row],
+                                       size: CGSize(width: (U.screenWidth - 26) / 2,
+                                                    height: ((U.screenWidth - 26) / 2) / U.ratio))
+            case .screenRecording:
                 cell.loadCellThumbnail(assetCollection[indexPath.row],
                                        size: CGSize(width: (U.screenWidth - 26) / 2,
                                                     height: ((U.screenWidth - 26) / 2) / U.ratio))

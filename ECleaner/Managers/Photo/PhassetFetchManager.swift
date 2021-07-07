@@ -60,7 +60,7 @@ class PHAssetFetchManager {
 
 extension PHAssetFetchManager {
     
-    
+//    MARK: fetch asseets 
     private func fetchAssets(by type: Int) -> PHFetchResult<PHAsset> {
         let fetchOption = PHFetchOptions()
         fetchOption.sortDescriptors = [NSSortDescriptor(key: SortingDesriptionKey.creationDate.value, ascending: false)]
@@ -68,6 +68,7 @@ extension PHAssetFetchManager {
         return PHAsset.fetchAssets(with: fetchOption)
     }
     
+//    MARK: fetch assets by title
     private func fetchAssetsSubtipe(by type: UInt) -> PHFetchResult<PHAsset> {
         let fetchOption = PHFetchOptions()
         fetchOption.sortDescriptors = [NSSortDescriptor(key: SortingDesriptionKey.creationDate.value, ascending: false)]

@@ -33,11 +33,14 @@ class MainViewController: UIViewController {
     private var allScreenShots: [PHAsset] = []
     private var allSelfies: [PHAsset] = []
     private var allLiveFotos: [PHAsset] = []
+    
     private var allLargeVidoes: [PHAsset] = []
+    private var allScreenRecordsVideos: [PHAsset] = []
+    private var allSimilarRecordingsVideos: [PhassetGroup] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+    
         setupObserversAndDelegates()
         setupNavigation()
         setupUI()
@@ -69,19 +72,18 @@ extension MainViewController {
 //      MARK: - updating elements -
 extension MainViewController: UpdateContentDataBaseListener {
     
-    func getScreenAsset(_ assets: [PHAsset]) {
+    func getScreenAssets(_ assets: [PHAsset]) {
         self.allScreenShots = assets
     }
     
-    func getFrontCameraAsset(_ assets: [PHAsset]) {
-        self.allSelfies = assets
-    }
-    
-    func getLivePhotosAsset(_ assets: [PHAsset]) {
+    func getLivePhotosAssets(_ assets: [PHAsset]) {
         self.allLiveFotos = assets
     }
     
-    
+    func getFrontCameraAssets(_ assets: [PHAsset]) {
+        self.allSelfies = assets
+    }
+            
     func getPhotoLibraryCount(count: Int, calculatedSpace: Int64) {
         U.UI {
             self.allPhotoCount = count
@@ -99,10 +101,21 @@ extension MainViewController: UpdateContentDataBaseListener {
         }
     }
     
-    func getLargeVideosAsset(_ assets: [PHAsset]) {
+    func getLargeVideosAssets(_ assets: [PHAsset]) {
         self.allLargeVidoes = assets
     }
     
+    func getSimmilarVideosAssets(_ assets: [PhassetGroup]) {
+        self.allSimilarRecordingsVideos = assets
+    }
+    
+    func getDuplicateVideosAssets(_ assets: [PhassetGroup]) {
+        debugPrint(assets.count)
+    }
+    
+    func getScreenRecordsVideosAssets(_ assets: [PHAsset]) {
+        self.allScreenRecordsVideos = assets
+    }
     
     func getContactsCount(count: Int) {
         
@@ -111,7 +124,10 @@ extension MainViewController: UpdateContentDataBaseListener {
             cell.configureCell(mediaType: .userContacts, contentCount: count, diskSpace: 0)
         }
     }
+}
 
+extension MainViewController {
+    
     private func openMediaController(type: MediaContentType) {
         let storyboard = UIStoryboard(name: C.identifiers.storyboards.media, bundle: nil)
         let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.content) as! MediaContentViewController
@@ -123,6 +139,7 @@ extension MainViewController: UpdateContentDataBaseListener {
                 viewController.allLiveFotos = self.allLiveFotos
             case .userVideo:
                 viewController.allLargeVideos = self.allLargeVidoes
+                viewController.allScreenRecords = self.allScreenRecordsVideos
             default:
                 return
         }

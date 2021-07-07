@@ -51,11 +51,14 @@ class MediaContentViewController: UIViewController {
     public var allLiveFotos: [PHAsset] = []
     
     public var allLargeVideos: [PHAsset] = []
+    public var allSimmilarVideos: [PHAsset] = []
+    public var allDuplicatesVideos: [PHAsset] = []
     public var allScreenRecords: [PHAsset] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        checkForAssetsCount()
         setupUI()
         updateColors()
         setupNavigation()
@@ -120,6 +123,12 @@ extension MediaContentViewController: UITableViewDelegate, UITableViewDataSource
                 switch indexPath.row {
                     case 0:
                         assetContentCount = self.allLargeVideos.count
+                    case 1:
+                        assetContentCount = self.allDuplicatesVideos.count
+                    case 2:
+                        assetContentCount = self.allSimmilarVideos.count
+                    case 3:
+                        assetContentCount = self.allScreenRecords.count
                     default:
                         debugPrint("")
                 }
@@ -192,6 +201,12 @@ extension MediaContentViewController {
                 switch index {
                     case 0:
                         self.showLargeVideoFiles()
+                    case 1:
+                        self.showDuplicateVideoFiles()
+                    case 2:
+                        self.showSimilarVideoFiles()
+                    case 3:
+                        self.showScreenRecordsVideoFiles()
                     default:
                         return
                 }
@@ -274,16 +289,64 @@ extension MediaContentViewController {
             }
         }
     }
+    
+    private func checkForAssetsCount() {
+        
+        if self.allScreenRecords.isEmpty {
+            photoManager.getScreenRecordsVideos(from: S.startingSavedDate, to: S.endingSavedDate) { videoAssets in
+                if videoAssets.count != 0 {
+                    self.allScreenRecords = videoAssets
+                }
+            }
+        }
+        
+        if self.allLargeVideos.isEmpty {
+            photoManager.getLargevideoContent(from: S.startingSavedDate, to: S.endingSavedDate) { videoAssets in
+                if videoAssets.count != 0 {
+                    self.allLargeVideos = videoAssets
+                }
+            }
+        }
+    }
 }
 
 //      MARK: - video content -
 extension MediaContentViewController {
     
     private func showLargeVideoFiles() {
-        
+        P.showIndicator()
         photoManager.getLargevideoContent(from: startingDate, to: endingDate) { videos in
+            P.hideIndicator()
             if videos.count != 0 {
                 self.showAssetViewController(assets: "large videos", collection: videos, photoContent: .largeVideos)
+            } else {
+                return
+            }
+        }
+    }
+    
+    private func showDuplicateVideoFiles() {
+        
+    }
+    
+    private func showSimilarVideoFiles() {
+        P.showIndicator()
+        photoManager.getSimilarVideo(from: startingDate, to: endingDate) { videosGrouped in
+            P.hideIndicator()
+            if videosGrouped.count != 0 {
+                self.showGropedContoller(assets: "similar video", grouped: videosGrouped, photoContent: .similarVideo)
+            } else {
+                return
+            }
+        }
+    }
+    
+    private func showScreenRecordsVideoFiles() {
+        P.showIndicator()
+        photoManager.getScreenRecordsVideos(from: startingDate, to: endingDate) { videos in
+            P.hideIndicator()
+            if videos.count != 0 {
+                self.showAssetViewController(assets: "screen records", collection: videos, photoContent: .screenRecording)
             } else {
                 return
             }
