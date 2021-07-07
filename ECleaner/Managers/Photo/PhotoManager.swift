@@ -9,6 +9,7 @@ import Foundation
 import PhotosUI
 import Photos
 import CocoaImageHashing
+import AVKit
 
 class PhassetGroup {
     var name: String
@@ -63,13 +64,13 @@ class PhotoManager: NSObject {
         let operationQueue: OperationQueue = {
             
             let operation = OperationQueue()
-            operation.qualityOfService = .userInitiated
+            operation.qualityOfService = .background
             operation.maxConcurrentOperationCount = 10
             
             return operation
         }()
-    
-        U.BG {
+        
+        operationQueue.addOperation {
             debugPrint("start video count")
             self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumVideos, by: PHAssetMediaType.video.rawValue) { assets in
                 U.UI {
@@ -77,6 +78,8 @@ class PhotoManager: NSObject {
                     UpdateContentDataBaseMediator.instance.updateVideos(assets.count, calculatedSpace: 0)
                 }
             }
+        }
+        operationQueue.addOperation {
             debugPrint("start photo count")
             self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumUserLibrary, by: PHAssetMediaType.image.rawValue) { assets in
                 U.UI {
@@ -84,46 +87,46 @@ class PhotoManager: NSObject {
                     UpdateContentDataBaseMediator.instance.updatePhotos(assets.count, calculatedSpace: 0)
                 }
             }
-            
-            operationQueue.addOperation {
-                debugPrint("start screen records")
-                self.getScreenRecordsVideos { assets in
-                    debugPrint("done with screenrecords")
-                    UpdateContentDataBaseMediator.instance.getScreenRecordsVideosAssets(assets)
-                }
+        }
+        
+        operationQueue.addOperation {
+            debugPrint("start screen records")
+            self.getScreenRecordsVideos { assets in
+                debugPrint("done with screenrecords")
+                UpdateContentDataBaseMediator.instance.getScreenRecordsVideosAssets(assets)
             }
+        }
+        
+        operationQueue.addOperation {
             
-            operationQueue.addOperation {
-                
-                debugPrint("start get screenshots")
-                self.getScreenShots { assets in
-                    debugPrint("done with screenshots")
-                    UpdateContentDataBaseMediator.instance.getScreenshots(assets)
-                }
+            debugPrint("start get screenshots")
+            self.getScreenShots { assets in
+                debugPrint("done with screenshots")
+                UpdateContentDataBaseMediator.instance.getScreenshots(assets)
             }
-            
-            operationQueue.addOperation {
-                debugPrint("start live photos")
-                self.getLivePhotos { assets in
-                    debugPrint("done with livephoto")
-                    UpdateContentDataBaseMediator.instance.getLivePhotosAssets(assets)
-                }
+        }
+        
+        operationQueue.addOperation {
+            debugPrint("start live photos")
+            self.getLivePhotos { assets in
+                debugPrint("done with livephoto")
+                UpdateContentDataBaseMediator.instance.getLivePhotosAssets(assets)
             }
-            
-            operationQueue.addOperation {
-                debugPrint("start selfie")
-                self.getSelfiePhotos { assets in
-                    debugPrint("done with selfies")
-                    UpdateContentDataBaseMediator.instance.getFrontCameraAssets(assets)
-                }
+        }
+        
+        operationQueue.addOperation {
+            debugPrint("start selfie")
+            self.getSelfiePhotos { assets in
+                debugPrint("done with selfies")
+                UpdateContentDataBaseMediator.instance.getFrontCameraAssets(assets)
             }
-            
-            operationQueue.addOperation {
-                debugPrint("start large")
-                self.getLargevideoContent { assets in
-                    debugPrint("done with large videos")
-                    UpdateContentDataBaseMediator.instance.getLargeVideosAssets(assets)
-                }
+        }
+        
+        operationQueue.addOperation {
+            debugPrint("start large")
+            self.getLargevideoContent { assets in
+                debugPrint("done with large videos")
+                UpdateContentDataBaseMediator.instance.getLargeVideosAssets(assets)
             }
         }
     }
@@ -649,81 +652,6 @@ extension PhotoManager: PHPhotoLibraryChangeObserver {
     }
 }
 
-
-extension PhotoManager {
-    
-//    private func loadTestingAssets() {
-//
-//        let photoCollection = self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumUserLibrary, by: PHAssetMediaType.image.rawValue) { collection in
-//            debugPrint("photo collection count")
-//            debugPrint(collection.count)
-//        }
-//
-//        let selfiesCollection = self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumSelfPortraits, by: PHAssetMediaType.image.rawValue) { selfies in
-//            debugPrint("some selfies count")
-//            debugPrint(selfies.count)
-//        }
-//
-//        let livePhotoCollection = self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumLivePhotos, by: PHAssetMediaType.image.rawValue) { livePhoto in
-//            debugPrint("some live count")
-//            debugPrint(livePhoto.count)
-//        }
-//
-//        let screenShotsCollection = self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumScreenshots, by: PHAssetMediaType.image.rawValue) { screenShots in
-//            debugPrint("some screens count")
-//            debugPrint(screenShots.count)
-//        }
-//
-//
-//        let gifsCollection = self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumAnimated, by: PHAssetMediaType.image.rawValue) { gifs in
-//            debugPrint("some gifs count")
-//            debugPrint(gifs.count)
-//        }
-//
-//        let videoCollection = self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumVideos, by: PHAssetMediaType.video.rawValue) { video in
-//            debugPrint("some video count")
-//            debugPrint(video.count)
-//        }
-
-////                let collection = PHAssetFetchManager.shared.fetchImagesFromGallery(collection: nil)
-////                debugPrint("all")
-////                debugPrint(collection.count)
-////
-////                let imageCollection = PHAssetFetchManager.shared.fetchAssets(by: PHAssetMediaType.image.rawValue)
-////                debugPrint("images")
-////                debugPrint(imageCollection.count)
-////
-////                let videoCollection = PHAssetFetchManager.shared.fetchAssets(by: PHAssetMediaType.video.rawValue)
-////                debugPrint("video")
-////                debugPrint(videoCollection.count)
-////
-////                let livePhotosCollection = PHAssetFetchManager.shared.fetchAssetsSubtipe(by: PHAssetMediaSubtype.photoLive.rawValue)
-////                debugPrint("live photo cout")
-////                debugPrint(livePhotosCollection.count)
-////
-////                let screenShots = PHAssetFetchManager.shared.fetchAssetsSubtipe(by: PHAssetMediaSubtype.photoScreenshot.rawValue)
-////                debugPrint("screenshots")
-////                debugPrint(screenShots.count)
-////
-////                let videoStreamed = PHAssetFetchManager.shared.fetchAssetsSubtipe(by: PHAssetMediaSubtype.videoStreamed.rawValue)
-////                debugPrint("videoStreamed")
-////                debugPrint(videoStreamed.count)
-////
-////                let videoTimelapse = PHAssetFetchManager.shared.fetchAssetsSubtipe(by: PHAssetMediaSubtype.videoTimelapse.rawValue)
-////                debugPrint("videoTimelapse")
-////                debugPrint(videoTimelapse.count)
-//
-//
-//
-////                imageCollection.enumerateObjects({(object: AnyObject!, count: Int, stop: UnsafeMutablePointer<ObjCBool>) in
-////                    if let fetchObject = object as? PHAsset {
-////                        self.photos.append(fetchObject)
-////                    }
-////                })
-//
-//    }
-}
-
 //    /extension PHAssetCollection {
 //
 //    func getCoverImageSize(_ size: CGSize) -> UIImage {
@@ -741,10 +669,3 @@ extension PhotoManager {
 //        return assets.count > 0
 //    }
 //}
-
-
-
-    
-
-
-

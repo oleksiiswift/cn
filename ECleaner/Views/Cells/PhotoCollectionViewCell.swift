@@ -49,7 +49,8 @@ extension PhotoCollectionViewCell: Themeble {
     }
     
     public func loadCellThumbnail(_ asset: PHAsset, size: CGSize) {
-
+        
+        
         let thumbnail = PHAssetFetchManager.shared.getThumbnail(from: asset, size: size)
         photoThumbnailImageView.contentMode = .scaleAspectFill
         photoThumbnailImageView.image = thumbnail
