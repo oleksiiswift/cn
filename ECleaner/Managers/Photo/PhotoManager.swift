@@ -193,7 +193,7 @@ class PhotoManager: NSObject {
 extension PhotoManager {
     
     /// `simmilar photo algoritm`
-    public func getSimilarPhotosAssets(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", completionHandler: @escaping ((_ assets: [PhassetGroup]) -> Void)) {
+    public func getSimilarPhotosAssets(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", fileSizeCheck: Bool = false, completionHandler: @escaping ((_ assets: [PhassetGroup]) -> Void)) {
         
         P.showIndicator()
         
@@ -203,14 +203,15 @@ extension PhotoManager {
             var containsAdd: [Int] = []
             var similarPhotos: [(asset: PHAsset, date: Int64, imageSize: Int64)] = []
             
+            similarPhotos.reserveCapacity(photosInGallery.count)
+            
             U.BG {
                 if photosInGallery.count != 0 {
                     
-                    for index in 1...photosInGallery.count {
+                    photosInGallery.enumerateObjects { asset, index, stop in
                         debugPrint("index preocessing duplicate")
                         debugPrint("index \(index)")
-//                        self.delegate?.filesCountProcessing(count: index)
-                        similarPhotos.append((asset: photosInGallery[index - 1], date: Int64(photosInGallery[index - 1].creationDate!.timeIntervalSince1970), imageSize: photosInGallery[index - 1].imageSize))
+                        similarPhotos.append((asset: asset, date: Int64(asset.creationDate!.timeIntervalSince1970), imageSize: fileSizeCheck ? asset.imageSize : 0))
                     }
                     
                     similarPhotos.sort { similarPhotoNumberOne, similarPhotoNumberTwo in
@@ -234,7 +235,7 @@ extension PhotoManager {
                                 similarIndex += 1
                             } while similarIndex < similarPhotos.count && abs(similarPhotos[index].date - similarPhotos[similarIndex].date) <= 10
                         }
-                        if similar.count != 1 {
+                        if similar.count != 0 {
                             debugPrint("apend new group")
                             group.append(PhassetGroup(name: "", assets: similar))
                         }
@@ -263,16 +264,17 @@ extension PhotoManager {
                 var photos: [OSTuple<NSString, NSData>] = []
                 
                 if photoGallery.count != 0 {
-                    
-                    for photoPos in 1...photoGallery.count {
+     
+                    photoGallery.enumerateObjects { asset, index, stop in
                         debugPrint("loading duplicate")
-                        debugPrint("photoposition \(photoPos)")
-                        let image = self.fetchManager.getThumbnail(from: photoGallery[photoPos - 1], size: CGSize(width: 150, height: 150))
+                        debugPrint("photoposition \(index)")
+                        let image = self.fetchManager.getThumbnail(from: asset, size: CGSize(width: 150, height: 150))
                         if let data = image.jpegData(compressionQuality: 0.8) {
-                            let tuple = OSTuple<NSString, NSData>(first: "image\(photoPos)" as NSString, andSecond: data as NSData)
+                            let tuple = OSTuple<NSString, NSData>(first: "image\(index)" as NSString, andSecond: data as NSData)
                             photos.append(tuple)
                         }
                     }
+                    
                     self.getDuplicatedTuples(for: photos, photosInGallery: photoGallery) { duplicatedPhotoAssetsGroup in
                         P.hideIndicator()
                         completionHandler(duplicatedPhotoAssetsGroup)
@@ -510,7 +512,7 @@ extension PhotoManager {
                     }
                     return
                 }
-                
+                                
                 for videosPosition in 1...videoAssets.count {
                     let asset = videoAssets[videosPosition - 1]
                     if let assetResource = PHAssetResource.assetResources(for: asset).first {
@@ -640,7 +642,7 @@ extension PhotoManager: PHPhotoLibraryChangeObserver {
     
     func photoLibraryDidChange(_ changeInstance: PHChange) {
         U.UI {
-            self.getPhotoLibrary()
+//            self.getPhotoLibrary()
             UpdatingChangesInOpenedScreensMediator.instance.updatingChangedScreenShots()
             UpdatingChangesInOpenedScreensMediator.instance.updatingChangedSelfies()
         }

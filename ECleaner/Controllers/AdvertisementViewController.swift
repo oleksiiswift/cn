@@ -12,10 +12,12 @@ class AdvertisementViewController: UIViewController {
     @IBOutlet weak var advertisementView: UIView!
     @IBOutlet weak var advertisementHightConstraint: NSLayoutConstraint!
     @IBOutlet weak var advertisementBottomConstraint: NSLayoutConstraint!
+    @IBOutlet weak var containerViewBottomConstraint: NSLayoutConstraint!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        setupUI()
         updateColors()
         setupNavigation()
     }
@@ -26,6 +28,20 @@ class AdvertisementViewController: UIViewController {
 }
 
 extension AdvertisementViewController: UpdateColorsDelegate {
+    
+    private func setupUI() {
+        
+//        TODO:
+        
+        // if device has top notch and no premium users
+        containerViewBottomConstraint.constant = -U.bottomSafeAreaHeight
+        self.view.layoutIfNeeded()
+        // else {
+//      advertisementBottomConstraint.constant = 0
+//
+//        if not premium  with advetisement
+//        need show container advertisment higer than other
+    }
     
     func updateColors() {
         self.view.backgroundColor = currentTheme.backgroundColor

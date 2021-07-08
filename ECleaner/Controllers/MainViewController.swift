@@ -12,6 +12,7 @@ import SwiftMessages
 
 class MainViewController: UIViewController {
     
+    @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var circleTotlaSpaceView: CircleProgressView!
     @IBOutlet weak var mediaCollectionViewContainer: UIView!
     @IBOutlet weak var mediaCollectionView: UICollectionView!
@@ -223,6 +224,7 @@ extension MainViewController: UpdateColorsDelegate {
     #warning("LOCO add loco")
     private func setupUI() {
                 
+        scrollView.alwaysBounceVertical = true
         deepCleaningButtonView.setCorner(12)
         deepCleaningButtonTextLabel.font = .systemFont(ofSize: 17, weight: .bold)
         deepCleaningButtonTextLabel.text = "Deep Cleaning"

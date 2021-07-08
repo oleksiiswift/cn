@@ -167,7 +167,7 @@ extension SimpleAssetsListViewController {
     
     private func handleBottomButtonMenu() {
         if let selectedItems = collectionView.indexPathsForSelectedItems {
-                bottomMenuHeightConstraint.constant = selectedItems.count > 0 ? bottomMenuHeight + U.bottomSafeAreaHeight : 0
+            bottomMenuHeightConstraint.constant = selectedItems.count > 0 ? (bottomMenuHeight + U.bottomSafeAreaHeight - 5) : 0
             U.animate(0.5) {
                 self.view.layoutIfNeeded()
             }

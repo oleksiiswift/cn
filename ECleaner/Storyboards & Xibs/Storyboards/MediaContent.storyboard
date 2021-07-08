@@ -265,10 +265,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="T18-Zm-Mxt">
-                                <rect key="frame" x="0.0" y="44" width="414" height="742"/>
+                                <rect key="frame" x="0.0" y="44" width="414" height="852"/>
                                 <subviews>
                                     <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="sWN-49-wwQ">
-                                        <rect key="frame" x="0.0" y="0.0" width="414" height="742"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="852"/>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                         <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="rXS-lT-hBK">
                                             <size key="itemSize" width="128" height="128"/>
@@ -290,10 +290,10 @@
                                 </subviews>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <constraints>
+                                    <constraint firstAttribute="bottom" secondItem="sWN-49-wwQ" secondAttribute="bottom" id="An9-Fo-YTC"/>
                                     <constraint firstAttribute="trailing" secondItem="sWN-49-wwQ" secondAttribute="trailing" id="Lb5-cZ-p8A"/>
                                     <constraint firstItem="sWN-49-wwQ" firstAttribute="leading" secondItem="T18-Zm-Mxt" secondAttribute="leading" id="PBo-hg-cEe"/>
                                     <constraint firstItem="sWN-49-wwQ" firstAttribute="top" secondItem="T18-Zm-Mxt" secondAttribute="top" id="Ro4-Ic-4mD"/>
-                                    <constraint firstAttribute="bottom" secondItem="sWN-49-wwQ" secondAttribute="bottom" id="foH-n4-MZq"/>
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FZg-aO-yfu">
@@ -339,8 +339,7 @@
                         <viewLayoutGuide key="safeArea" id="4cq-tk-vZp"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="FZg-aO-yfu" firstAttribute="top" secondItem="T18-Zm-Mxt" secondAttribute="bottom" id="4A6-wX-qyK"/>
-                            <constraint firstItem="FZg-aO-yfu" firstAttribute="top" secondItem="T18-Zm-Mxt" secondAttribute="bottom" id="5Z9-pb-arb"/>
+                            <constraint firstAttribute="bottom" secondItem="T18-Zm-Mxt" secondAttribute="bottom" id="2hk-6N-F92"/>
                             <constraint firstItem="T18-Zm-Mxt" firstAttribute="top" secondItem="4cq-tk-vZp" secondAttribute="top" id="HcT-1a-JiG"/>
                             <constraint firstItem="FZg-aO-yfu" firstAttribute="leading" secondItem="4cq-tk-vZp" secondAttribute="leading" id="Lte-6P-ov8"/>
                             <constraint firstAttribute="bottom" secondItem="FZg-aO-yfu" secondAttribute="bottom" id="jRT-QT-9yY"/>
@@ -359,7 +358,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="w3y-Ft-b1X" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2130" y="-277"/>
+            <point key="canvasLocation" x="2128.985507246377" y="-277.23214285714283"/>
         </scene>
         <!--Date Selector View Controller-->
         <scene sceneID="56m-Re-eKu">

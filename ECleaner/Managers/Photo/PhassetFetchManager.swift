@@ -165,9 +165,7 @@ extension PHAssetFetchManager {
         })
         return allSize
     }
-    
-    
-    
+
     //    func statisticPictureAssetsAllSize(items: PHFetchResult) -> Int64 {
     //         var fileAllSizeB: Int64 = 0
     //         let requestOptions = PHImageRequestOptions.init()
@@ -184,13 +182,12 @@ extension PHAssetFetchManager {
     //
     //         return fileAllSizeB
     //}
-
-    
 }
 
 extension PHAsset {
     
     var imageSize: Int64 {
+        
         let resources = PHAssetResource.assetResources(for: self)
         var fileDiskSpace: Int64 = 0
         
