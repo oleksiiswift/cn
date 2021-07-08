@@ -244,11 +244,11 @@ extension MediaContentViewController {
     */
     
     private func showSimilarPhotos() {
-        photoManager.getSimilarPhotos(from: startingDate, to: endingDate) { similarGroup in
+        photoManager.getSimilarPhotosAssets(from: startingDate, to: endingDate) { similarGroup in
             if !similarGroup.isEmpty {
                 self.showGropedContoller(assets: "similar photo", grouped: similarGroup, photoContent: .similarPhotos)
             } else {
-                return
+                AlertManager.showCantFindMediaContent(by: .noSimiliarPhoto)
             }
         }
     }
@@ -258,14 +258,18 @@ extension MediaContentViewController {
         photoManager.getLivePhotos { asset in
             if !asset.isEmpty {
                 self.showAssetViewController(assets: "live photos", collection: asset, photoContent: .livephotos)
+            } else {
+                AlertManager.showCantFindMediaContent(by: .noLivePhoto)
             }
         }
     }
     
     private func showDuplicatePhotos() {
-        photoManager.getDuplicatePhotos(from: startingDate, to: endingDate) { duplicateGroup in
+        photoManager.getDuplicatedPhotosAsset(from: startingDate, to: endingDate) { duplicateGroup in
             if !duplicateGroup.isEmpty {
-                self.showGropedContoller(assets: "duplicate photo", grouped: duplicateGroup, photoContent: .similarPhotos)
+                self.showGropedContoller(assets: "duplicate photo", grouped: duplicateGroup, photoContent: .duplicatePhotos)
+            } else {
+                AlertManager.showCantFindMediaContent(by: .noDuplicatesPhoto)
             }
         }
     }
@@ -275,7 +279,7 @@ extension MediaContentViewController {
             if selfies.count != 0 {
                 self.showAssetViewController(assets: "selfies", collection: selfies, photoContent: .selfies)
             } else {
-                return
+                AlertManager.showCantFindMediaContent(by: .noSelfie)
             }
         }
     }
@@ -285,7 +289,7 @@ extension MediaContentViewController {
             if screenshots.count != 0 {
                 self.showAssetViewController(assets: "screenshots", collection: screenshots, photoContent: .screenshots)
             } else {
-                return
+                AlertManager.showCantFindMediaContent(by: .noScreenShots)
             }
         }
     }
@@ -296,6 +300,8 @@ extension MediaContentViewController {
             photoManager.getScreenRecordsVideos(from: S.startingSavedDate, to: S.endingSavedDate) { videoAssets in
                 if videoAssets.count != 0 {
                     self.allScreenRecords = videoAssets
+                } else {
+                    return
                 }
             }
         }
@@ -304,6 +310,8 @@ extension MediaContentViewController {
             photoManager.getLargevideoContent(from: S.startingSavedDate, to: S.endingSavedDate) { videoAssets in
                 if videoAssets.count != 0 {
                     self.allLargeVideos = videoAssets
+                } else {
+                    return
                 }
             }
         }
@@ -320,25 +328,26 @@ extension MediaContentViewController {
             if videos.count != 0 {
                 self.showAssetViewController(assets: "large videos", collection: videos, photoContent: .largeVideos)
             } else {
-                return
+                AlertManager.showCantFindMediaContent(by: .noLargeVideo)
             }
         }
     }
     
     private func showDuplicateVideoFiles() {
-        
+        P.showIndicator()
+        photoManager.getDuplicatesVideos(from: startingDate, to: endingDate) { videoGrouped in
+            P.hideIndicator()
+            if videoGrouped.count != 0 {
+                self.showGropedContoller(assets: "duplicated video", grouped: videoGrouped, photoContent: .duplicatePhotos)
+            } else {
+                AlertManager.showCantFindMediaContent(by: .noDuplicatesVideo)
+            }
+        }
     }
     
     private func showSimilarVideoFiles() {
-        P.showIndicator()
-        photoManager.getSimilarVideo(from: startingDate, to: endingDate) { videosGrouped in
-            P.hideIndicator()
-            if videosGrouped.count != 0 {
-                self.showGropedContoller(assets: "similar video", grouped: videosGrouped, photoContent: .similarVideo)
-            } else {
-                return
-            }
-        }
+        
+        AlertManager.showCantFindMediaContent(by: .noSimilarVideo)
     }
     
     private func showScreenRecordsVideoFiles() {
@@ -348,7 +357,7 @@ extension MediaContentViewController {
             if videos.count != 0 {
                 self.showAssetViewController(assets: "screen records", collection: videos, photoContent: .screenRecording)
             } else {
-                return
+                AlertManager.showCantFindMediaContent(by: .noScreenRecording)
             }
         }
     }

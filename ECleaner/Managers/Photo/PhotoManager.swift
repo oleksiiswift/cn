@@ -23,9 +23,9 @@ class PhassetGroup {
 
 /// `getPhotoLibraryAccess` - use for access photo library alert and open settings
 /// `getPhotoLibrary` - fetch all photo assets in the user photo library and update values
-/// `getDuplicatePhotos`- finds duplicate photos in user photo library
-/// `getSimilarVideo` - load duplicated videos
-/// `getSimilarPhotos` load simmilar photos
+/// `getDuplicatedPhotosAsset`- finds duplicate photos in user photo library
+/// `getDuplicateVideoAsset` - load duplicated videos
+/// `getSimilarPhotosAsset` load simmilar photos
 /// `getSimilarLivePhotos` - load simmilar live photos
 /// `getScreenShots` `getSelfiePhotos` `getLivePhotos` -  fetch photos by type
 
@@ -192,8 +192,8 @@ class PhotoManager: NSObject {
 //      MARK: - photo part -
 extension PhotoManager {
     
-    /// `duplicate photo algoritm`
-    public func getDuplicatePhotos(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", completionHandler: @escaping ((_ assets: [PhassetGroup]) -> Void)) {
+    /// `simmilar photo algoritm`
+    public func getSimilarPhotosAssets(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", completionHandler: @escaping ((_ assets: [PhassetGroup]) -> Void)) {
         
         P.showIndicator()
         
@@ -201,7 +201,7 @@ extension PhotoManager {
             
             var group: [PhassetGroup] = []
             var containsAdd: [Int] = []
-            var duplicatesPhotos: [(asset: PHAsset, date: Int64, imageSize: Int64)] = []
+            var similarPhotos: [(asset: PHAsset, date: Int64, imageSize: Int64)] = []
             
             U.BG {
                 if photosInGallery.count != 0 {
@@ -210,33 +210,33 @@ extension PhotoManager {
                         debugPrint("index preocessing duplicate")
                         debugPrint("index \(index)")
 //                        self.delegate?.filesCountProcessing(count: index)
-                        duplicatesPhotos.append((asset: photosInGallery[index - 1], date: Int64(photosInGallery[index - 1].creationDate!.timeIntervalSince1970), imageSize: photosInGallery[index - 1].imageSize))
+                        similarPhotos.append((asset: photosInGallery[index - 1], date: Int64(photosInGallery[index - 1].creationDate!.timeIntervalSince1970), imageSize: photosInGallery[index - 1].imageSize))
                     }
                     
-                    duplicatesPhotos.sort { duplicatePhotoNumberOne, duplicatePhotoNumberTwo in
-                        return duplicatePhotoNumberOne.date > duplicatePhotoNumberTwo.date
+                    similarPhotos.sort { similarPhotoNumberOne, similarPhotoNumberTwo in
+                        return similarPhotoNumberOne.date > similarPhotoNumberTwo.date
                     }
                     
-                    for index in 0...duplicatesPhotos.count - 1 {
-                        var duplicateIndex = index + 1
+                    for index in 0...similarPhotos.count - 1 {
+                        var similarIndex = index + 1
                         if containsAdd.contains(index) { continue }
-                        var duplicate: [PHAsset] = []
+                        var similar: [PHAsset] = []
                         
-                        if (duplicateIndex < duplicatesPhotos.count && abs(duplicatesPhotos[index].date - duplicatesPhotos[duplicateIndex].date) <= 10) {
-                            duplicate.append(duplicatesPhotos[index].asset)
+                        if (similarIndex < similarPhotos.count && abs(similarPhotos[index].date - similarPhotos[similarIndex].date) <= 10) {
+                            similar.append(similarPhotos[index].asset)
                             containsAdd.append(index)
                             repeat {
-                                if containsAdd.contains(duplicateIndex) {
+                                if containsAdd.contains(similarIndex) {
                                     continue
                                 }
-                                duplicate.append(duplicatesPhotos[duplicateIndex].asset)
-                                containsAdd.append(duplicateIndex)
-                                duplicateIndex += 1
-                            } while duplicateIndex < duplicatesPhotos.count && abs(duplicatesPhotos[index].date - duplicatesPhotos[duplicateIndex].date) <= 10
+                                similar.append(similarPhotos[similarIndex].asset)
+                                containsAdd.append(similarIndex)
+                                similarIndex += 1
+                            } while similarIndex < similarPhotos.count && abs(similarPhotos[index].date - similarPhotos[similarIndex].date) <= 10
                         }
-                        if duplicate.count != 1 {
+                        if similar.count != 1 {
                             debugPrint("apend new group")
-                            group.append(PhassetGroup(name: "", assets: duplicate))
+                            group.append(PhassetGroup(name: "", assets: similar))
                         }
                     }
                     P.hideIndicator()
@@ -253,8 +253,8 @@ extension PhotoManager {
         }
     }
     
-    /// `similar photo algorithm`
-    public func getSimilarPhotos(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", completionHandler: @escaping ((_ assets: [PhassetGroup]) -> Void)) {
+    /// `duplicate photo algorithm`
+    public func getDuplicatedPhotosAsset(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", completionHandler: @escaping ((_ assets: [PhassetGroup]) -> Void)) {
         
         P.showIndicator()
         
@@ -262,24 +262,26 @@ extension PhotoManager {
             U.BG {
                 var photos: [OSTuple<NSString, NSData>] = []
                 
-                if photoGallery.count == 0 {
+                if photoGallery.count != 0 {
+                    
+                    for photoPos in 1...photoGallery.count {
+                        debugPrint("loading duplicate")
+                        debugPrint("photoposition \(photoPos)")
+                        let image = self.fetchManager.getThumbnail(from: photoGallery[photoPos - 1], size: CGSize(width: 150, height: 150))
+                        if let data = image.jpegData(compressionQuality: 0.8) {
+                            let tuple = OSTuple<NSString, NSData>(first: "image\(photoPos)" as NSString, andSecond: data as NSData)
+                            photos.append(tuple)
+                        }
+                    }
+                    self.getDuplicatedTuples(for: photos, photosInGallery: photoGallery) { duplicatedPhotoAssetsGroup in
+                        P.hideIndicator()
+                        completionHandler(duplicatedPhotoAssetsGroup)
+                    }
+                } else {
                     U.UI {
+                        P.hideIndicator()
                         completionHandler([])
                     }
-                }
-            
-                for photoPos in 1...photoGallery.count {
-                    debugPrint("loading Similar")
-                    debugPrint("photoposition \(photoPos)")
-                    let image = self.fetchManager.getThumbnail(from: photoGallery[photoPos - 1], size: CGSize(width: 150, height: 150))
-                    if let data = image.jpegData(compressionQuality: 0.8) {
-                        let tuple = OSTuple<NSString, NSData>(first: "image\(photoPos)" as NSString, andSecond: data as NSData)
-                        photos.append(tuple)
-                    }
-                }
-                self.getSimilarTuples(for: photos, photosInGallery: photoGallery) { similarPhotos in
-                    P.hideIndicator()
-                    completionHandler(similarPhotos)
                 }
             }
         }
@@ -301,8 +303,8 @@ extension PhotoManager {
                         }
                     }
                     
-                    self.getSimilarTuples(for: livePhotos, photosInGallery: livePhotoGallery) { similarLifePhotos in
-                        completionHandler(similarLifePhotos)
+                    self.getDuplicatedTuples(for: livePhotos, photosInGallery: livePhotoGallery) { similarLivePhotoGroup in
+                        completionHandler(similarLivePhotoGroup)
                     }
                 } else {
                     U.UI {
@@ -313,81 +315,74 @@ extension PhotoManager {
         }
     }
     
-    /// `private similar tuples` need for service compare
-    private func getSimilarTuples(for photos: [OSTuple<NSString, NSData>], photosInGallery: PHFetchResult<PHAsset>, completionHandler: @escaping ([PhassetGroup]) -> Void){
+    /// `private duplicated tuples` need for service compare
+    private func getDuplicatedTuples(for photos: [OSTuple<NSString, NSData>], photosInGallery: PHFetchResult<PHAsset>, completionHandler: @escaping ([PhassetGroup]) -> Void){
         
-        var similarPhotosCount: [Int] = []
-        var similarGroup: [PhassetGroup] = []
-        let similarIDS = OSImageHashing.sharedInstance().similarImages(with: OSImageHashingQuality.high, forImages: photos)
+        var duplicatedPhotosCount: [Int] = []
+        var duplicatedGroup: [PhassetGroup] = []
+        let duplicatedIDS = OSImageHashing.sharedInstance().similarImages(with: OSImageHashingQuality.high, forImages: photos)
         
         U.UI {
-            guard similarIDS.count >= 1 else { completionHandler([])
-                debugPrint("zero similar IDS")
+            guard duplicatedIDS.count >= 1 else {
+                completionHandler([])
                 return
             }
             
-            for currentPosition in 1...similarIDS.count {
-                let similarTuple = similarIDS[currentPosition - 1]
+            for currentPosition in 1...duplicatedIDS.count {
+                let duplicatedTuple = duplicatedIDS[currentPosition - 1]
                 var group: [PHAsset] = []
                 
-                debugPrint("checkSimilar")
+                debugPrint("checkDuplicated")
                 debugPrint("position \(currentPosition)")
                 
-                
-                if let first = similarTuple.first as String?, let second = similarTuple.second as String? {
+                if let first = duplicatedTuple.first as String?, let second = duplicatedTuple.second as String? {
                     let firstInteger = first.replacingStringAndConvertToIntegerForImage() - 1
                     let secondInteger = second.replacingStringAndConvertToIntegerForImage() - 1
                     debugPrint(first)
                     debugPrint(second)
                     
                     if abs(secondInteger - firstInteger) >= 10 { continue }
-                    if !similarPhotosCount.contains(firstInteger) {
-                        similarPhotosCount.append(firstInteger)
+                    if !duplicatedPhotosCount.contains(firstInteger) {
+                        duplicatedPhotosCount.append(firstInteger)
                         group.append(photosInGallery[firstInteger])
                     }
                     
-                    if !similarPhotosCount.contains(secondInteger) {
-                        similarPhotosCount.append(secondInteger)
+                    if !duplicatedPhotosCount.contains(secondInteger) {
+                        duplicatedPhotosCount.append(secondInteger)
                         group.append(photosInGallery[secondInteger])
                     }
                     
-                    similarIDS.filter({
-                                        $0.first != nil && $0.second != nil}).filter({
-                                                                                        $0.first == similarTuple.first ||
-                                                                                            $0.second == similarTuple.second ||
-                                                                                            $0.second == similarTuple.second ||
-                                                                                            $0.second == similarTuple.first}).forEach ({ tuple in
-                                                                                                if let first = tuple.first as String?, let second = tuple.second as String? {
-                                                                                                    let firstInt = first.replacingStringAndConvertToIntegerForImage() - 1
-                                                                                                    let socondInt = second.replacingStringAndConvertToIntegerForImage() - 1
-                                                                                                    
-                                                                                                    if abs(secondInteger - firstInteger) >= 10 {
-                                                                                                        return
-                                                                                                    }
-                                                                                                    
-                                                                                                    debugPrint(first)
-                                                                                                    debugPrint(second)
-                                                                                                    
-                                                                                                    if !similarPhotosCount.contains(firstInt) {
-                                                                                                        similarPhotosCount.append(firstInt)
-                                                                                                        group.append(photosInGallery[firstInt])
-                                                                                                    }
-                                                                                                    
-                                                                                                    if !similarPhotosCount.contains(socondInt) {
-                                                                                                        similarPhotosCount.append(socondInt)
-                                                                                                        group.append(photosInGallery[socondInt])
-                                                                                                    }
-                                                                                                } else {
-                                                                                                    return
-                                                                                                }
-                                                                                                
-                                                                                            })
+                    duplicatedIDS.filter({ $0.first != nil && $0.second != nil}).filter({ $0.first == duplicatedTuple.first || $0.second == duplicatedTuple.second || $0.second == duplicatedTuple.second || $0.second == duplicatedTuple.first}).forEach ({ tuple in
+                        if let first = tuple.first as String?, let second = tuple.second as String? {
+                            let firstInt = first.replacingStringAndConvertToIntegerForImage() - 1
+                            let socondInt = second.replacingStringAndConvertToIntegerForImage() - 1
+                            
+                            if abs(secondInteger - firstInteger) >= 10 {
+                                return
+                            }
+                            
+                            debugPrint(first)
+                            debugPrint(second)
+                            
+                            if !duplicatedPhotosCount.contains(firstInt) {
+                                duplicatedPhotosCount.append(firstInt)
+                                group.append(photosInGallery[firstInt])
+                            }
+                            
+                            if !duplicatedPhotosCount.contains(socondInt) {
+                                duplicatedPhotosCount.append(socondInt)
+                                group.append(photosInGallery[socondInt])
+                            }
+                        } else {
+                            return
+                        }
+                    })
                     if group.count >= 2 {
-                        similarGroup.append(PhassetGroup(name: "", assets: group))
+                        duplicatedGroup.append(PhassetGroup(name: "", assets: group))
                     }
                 }
             }
-            completionHandler(similarGroup)
+            completionHandler(duplicatedGroup)
         }
     }
     
@@ -498,7 +493,8 @@ extension PhotoManager {
     
     /// `duplicated Videos` from gallery
     public func getDuplicatesVideos(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", completionHandler: @escaping ((_ videoAssets: [PhassetGroup]) -> Void)) {
-        
+//        MARK: TODO adding 
+        completionHandler([])
     }
     
     /// `screen recordings` from gallery
@@ -530,8 +526,8 @@ extension PhotoManager {
         }
     }
 
-    /// `simmilar videos compare algorithm`
-    public func getSimilarVideo(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", completionHandler: @escaping ((_ videoAssets: [PhassetGroup]) -> Void)) {
+    /// `duplicated videos compare algorithm`
+    public func getDuplicatedVideoAsset(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", completionHandler: @escaping ((_ videoAssets: [PhassetGroup]) -> Void)) {
         
         fetchManager.fetchFromGallery(from: startDate,
                                       to: endDate,
@@ -551,33 +547,33 @@ extension PhotoManager {
                         }
                     }
                     
-                    let similarVideoIDasTuples = OSImageHashing.sharedInstance().similarImages(withProvider: .pHash, forImages: videos)
-                    var similarVideoNumbers: [Int] = []
-                    var similarVideoGroups: [PhassetGroup] = []
+                    let duplicateVideoIDasTuples = OSImageHashing.sharedInstance().similarImages(withProvider: .pHash, forImages: videos)
+                    var duplicateVideoNumbers: [Int] = []
+                    var duplicateVideoGroups: [PhassetGroup] = []
                     U.UI {
-                        guard similarVideoIDasTuples.count >= 1 else { completionHandler([])
+                        guard duplicateVideoIDasTuples.count >= 1 else { completionHandler([])
                             return
                         }
                         
-                        for index in 1...similarVideoIDasTuples.count {
-                            let tuple = similarVideoIDasTuples[index - 1]
+                        for index in 1...duplicateVideoIDasTuples.count {
+                            let tuple = duplicateVideoIDasTuples[index - 1]
                             var groupAssets: [PHAsset] = []
                             if let first = tuple.first as String?, let second = tuple.second as String? {
                                 let firstInteger = first.replacingStringAndConvertToIntegerForImage() - 1
                                 let secondInteger = second.replacingStringAndConvertToIntegerForImage() - 1
                                 
                                 if abs(secondInteger - firstInteger) >= 10 { continue }
-                                if !similarVideoNumbers.contains(firstInteger) {
-                                    similarVideoNumbers.append(firstInteger)
+                                if !duplicateVideoNumbers.contains(firstInteger) {
+                                    duplicateVideoNumbers.append(firstInteger)
                                     groupAssets.append(videoCollection[firstInteger])
                                 }
                                 
-                                if !similarVideoNumbers.contains(secondInteger) {
-                                    similarVideoNumbers.append(secondInteger)
+                                if !duplicateVideoNumbers.contains(secondInteger) {
+                                    duplicateVideoNumbers.append(secondInteger)
                                     groupAssets.append(videoCollection[secondInteger])
                                 }
                                 
-                                similarVideoIDasTuples.filter({$0.first != nil && $0.second != nil}).filter({ $0.first == tuple.first || $0.first == tuple.second || $0.second == tuple.second || $0.second == tuple.first }).forEach({ tuple in
+                                duplicateVideoIDasTuples.filter({$0.first != nil && $0.second != nil}).filter({ $0.first == tuple.first || $0.first == tuple.second || $0.second == tuple.second || $0.second == tuple.first }).forEach({ tuple in
                                     if let firstTuple = tuple.first as String?, let secondTuple = tuple.second as String? {
                                         let firstTupleInteger = firstTuple.replacingStringAndConvertToIntegerForImage() - 1
                                         let secondTupleInteger = secondTuple.replacingStringAndConvertToIntegerForImage() - 1
@@ -586,26 +582,25 @@ extension PhotoManager {
                                             return
                                         }
                                         
-                                        if !similarVideoNumbers.contains(firstTupleInteger) {
-                                            similarVideoNumbers.append(firstTupleInteger)
+                                        if !duplicateVideoNumbers.contains(firstTupleInteger) {
+                                            duplicateVideoNumbers.append(firstTupleInteger)
                                             groupAssets.append(videoCollection[firstTupleInteger])
                                         }
                                         
-                                        if !similarVideoNumbers.contains(secondTupleInteger) {
-                                            similarVideoNumbers.append(secondTupleInteger)
+                                        if !duplicateVideoNumbers.contains(secondTupleInteger) {
+                                            duplicateVideoNumbers.append(secondTupleInteger)
                                             groupAssets.append(videoCollection[secondInteger])
                                         }
                                     }
                                 })
                                 
                                 if groupAssets.count >= 2 {
-                                    similarVideoGroups.append(PhassetGroup(name: "", assets: groupAssets))
+                                    duplicateVideoGroups.append(PhassetGroup(name: "", assets: groupAssets))
                                 }
                             }
                         }
                         U.UI {
-                            
-                            completionHandler(similarVideoGroups)
+                            completionHandler(duplicateVideoGroups)
                         }
                     }
                 } else {
