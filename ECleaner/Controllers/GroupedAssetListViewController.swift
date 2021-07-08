@@ -9,8 +9,10 @@ import UIKit
 import Photos
 
 enum GropedAsset {
+    case duplicatePhotos
     case similarPhotos
     case similarLivePhotos
+    case duplicatedVideo
     case similarVideo
 }
 
