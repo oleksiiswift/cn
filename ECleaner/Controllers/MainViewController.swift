@@ -231,7 +231,8 @@ extension MainViewController: UpdateColorsDelegate {
     }
     
     func updateColors() {
-        self.view.backgroundColor = currentTheme.backgroundColor
+        
+        self.view.backgroundColor = .clear
         deepCleaningButtonView.backgroundColor = currentTheme.accentBackgroundColor
         deepCleaningButtonTextLabel.textColor = currentTheme.activeTitleTextColor
     }

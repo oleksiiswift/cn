@@ -60,6 +60,10 @@ extension SimpleAssetsListViewController: UICollectionViewDelegate, UICollection
         self.collectionView.collectionViewLayout = flowLayout
         self.collectionView.allowsMultipleSelection = true
         self.collectionView.reloadData()
+        
+        if U.hasTopNotch {
+//            self.collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: U.bottomSafeAreaHeight * 2, right: 0)
+        }
     }
     
     private func configure(_ cell: PhotoCollectionViewCell, at indexPath: IndexPath) {
@@ -138,7 +142,14 @@ extension SimpleAssetsListViewController {
     @objc func handleSelectAllButtonTapped() {
     
         let selected = collectionView.indexPathsForSelectedItems?.count == assetCollection.count
-        selectAllButton.title = selected ? "select all" : "deselect"
+        if selected {
+            let button = UIBarButtonItem(title: "select all", style: .plain, target: self, action: #selector(handleSelectAllButtonTapped))
+            self.navigationItem.rightBarButtonItem = button
+        } else {
+            let button = UIBarButtonItem(title: "deselect all", style: .plain, target: self, action: #selector(handleSelectAllButtonTapped))
+            self.navigationItem.rightBarButtonItem = button
+        }
+        
         setCollection(selected: selected)
         handleBottomButtonMenu()
     }
@@ -168,7 +179,9 @@ extension SimpleAssetsListViewController {
     private func handleBottomButtonMenu() {
         if let selectedItems = collectionView.indexPathsForSelectedItems {
             bottomMenuHeightConstraint.constant = selectedItems.count > 0 ? (bottomMenuHeight + U.bottomSafeAreaHeight - 5) : 0
+            self.collectionView.contentInset.bottom = selectedItems.count > 0 ? 10 : 5
             U.animate(0.5) {
+                self.collectionView.layoutIfNeeded()
                 self.view.layoutIfNeeded()
             }
         }

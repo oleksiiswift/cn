@@ -335,10 +335,10 @@ extension MediaContentViewController {
     
     private func showDuplicateVideoFiles() {
         P.showIndicator()
-        photoManager.getDuplicatesVideos(from: startingDate, to: endingDate) { videoGrouped in
+        photoManager.getDuplicatedVideoAsset(from: startingDate, to: endingDate) { videoGrouped in
             P.hideIndicator()
             if videoGrouped.count != 0 {
-                self.showGropedContoller(assets: "duplicated video", grouped: videoGrouped, photoContent: .duplicatePhotos)
+                self.showGropedContoller(assets: "duplicated video", grouped: videoGrouped, photoContent: .duplicatedVideo)
             } else {
                 AlertManager.showCantFindMediaContent(by: .noDuplicatesVideo)
             }
@@ -346,8 +346,15 @@ extension MediaContentViewController {
     }
     
     private func showSimilarVideoFiles() {
-        
-        AlertManager.showCantFindMediaContent(by: .noSimilarVideo)
+        P.showIndicator()
+        photoManager.getSimilarVideoAssets(from: startingDate, to: endingDate) { videos in
+            P.hideIndicator()
+            if videos.count != 0 {
+                self.showGropedContoller(assets: "similar videos", grouped: videos, photoContent: .similarVideo)
+            } else {
+                AlertManager.showCantFindMediaContent(by: .noSimilarVideo)
+            }
+        }
     }
     
     private func showScreenRecordsVideoFiles() {

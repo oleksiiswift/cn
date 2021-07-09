@@ -33,7 +33,7 @@ class GroupedAssetListViewController: UIViewController {
     
     public var grouped: GropedAsset?
     public var assetGroups: [PhassetGroup] = []
-    
+
     private var selectedAssets: [PHAsset] = []
     private var selectedSection: Set<Int> = []
     
@@ -93,6 +93,29 @@ extension GroupedAssetListViewController: UICollectionViewDelegate, UICollection
         self.collectionView.reloadData()
     }
     
+    private func configure(_ cell: PhotoCollectionViewCell, at indexPath: IndexPath) {
+        
+        if indexPath.row == 0 {
+            var size = CGSize.zero
+            let asset = assetGroups[indexPath.section].assets[indexPath.row]
+            
+            switch grouped {
+                case .duplicatedVideo, .similarVideo:
+                    size = CGSize(width: asset.pixelWidth, height: asset.pixelHeight)
+                default:
+                    if asset.pixelWidth > asset.pixelHeight {
+                        size = CGSize(width: U.screenWidth / 2 / U.ratio, height: U.screenWidth / 2)
+                    } else {
+                        size = CGSize(width: U.screenWidth / 2, height: U.screenHeight / 2)
+                    }
+            }
+            
+            cell.loadCellThumbnail(asset, size: size)
+        } else {
+            cell.loadCellThumbnail(assetGroups[indexPath.section].assets[indexPath.row], size: CGSize(width: 300, height: 300))
+        }
+    }
+    
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return assetGroups.count
     }
@@ -103,7 +126,7 @@ extension GroupedAssetListViewController: UICollectionViewDelegate, UICollection
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: C.identifiers.cells.photoSimpleCell, for: indexPath) as! PhotoCollectionViewCell
-        cell.loadCellThumbnail(assetGroups[indexPath.section].assets[indexPath.row], size: CGSize(width: 300, height: 300))
+        configure(cell, at: indexPath)
         return cell
     }
     
@@ -365,9 +388,10 @@ extension GroupedAssetListViewController {
 extension GroupedAssetListViewController {
     
     private func handleDeleteAssetsButton() {
-        
         bottomMenuHeightConstraint.constant = !selectedAssets.isEmpty ? (bottomMenuHeight + U.bottomSafeAreaHeight - 5): 0
+        self.collectionView.contentInset.bottom = !selectedAssets.isEmpty ? 10 : 5
         U.animate(0.5) {
+            self.collectionView.layoutIfNeeded()
             self.view.layoutIfNeeded()
         }
     }

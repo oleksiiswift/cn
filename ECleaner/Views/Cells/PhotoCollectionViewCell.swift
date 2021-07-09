@@ -13,6 +13,8 @@ class PhotoCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var baseView: UIView!
     @IBOutlet weak var photoThumbnailImageView: UIImageView!
     @IBOutlet weak var photoCheckmarkImageView: UIImageView!
+    
+    public var indexPath: IndexPath?
         
     override var isSelected: Bool {
         didSet {
@@ -49,13 +51,11 @@ extension PhotoCollectionViewCell: Themeble {
     }
     
     public func loadCellThumbnail(_ asset: PHAsset, size: CGSize) {
-        
-        
         let thumbnail = PHAssetFetchManager.shared.getThumbnail(from: asset, size: size)
         photoThumbnailImageView.contentMode = .scaleAspectFill
         photoThumbnailImageView.image = thumbnail
     }
-    
+
     public func checkIsSelected() {
         self.photoCheckmarkImageView.image = self.isSelected ? I.systemElementsItems.circleCheckBox : I.systemElementsItems.circleBox
     }

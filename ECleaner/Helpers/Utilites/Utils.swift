@@ -43,7 +43,18 @@ class Utils {
     
     static let window = U.application.windows.filter { $0.isKeyWindow}.first
     
-    static let statusBarHeight: CGFloat = window?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0
+    static let windowScene = UIApplication.shared.connectedScenes
+                    .filter { $0.activationState == .foregroundActive }
+        .compactMap { $0 as? UIWindowScene }
+    
+    static let keyWindow = UIApplication.shared.connectedScenes
+            .filter({$0.activationState == .foregroundActive})
+            .map({$0 as? UIWindowScene})
+            .compactMap({$0})
+            .first?.windows
+            .filter({$0.isKeyWindow}).first
+    
+    static let statusBarHeight: CGFloat = UIApplication.shared.windows.first?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0
     
     static let topSafeAreaInset: CGFloat = U.screenHeight < 600 ? 5 : 10
     
@@ -82,11 +93,11 @@ class Utils {
     static let isLandscapeOrientation = device.orientation.isLandscape
     
     static public var hasTopNotch: Bool {
-        return window?.safeAreaInsets.top ?? 0 > 20
+        return UIApplication.shared.windows.first?.safeAreaInsets.top ?? 0 > 20
     }
     
     static public var bottomSafeAreaHeight: CGFloat {
-        return window?.safeAreaInsets.bottom ?? 0
+        return UIApplication.shared.windows.first?.safeAreaInsets.bottom ?? 0
     }
     
     static let isSimulator = UIDevice.isSimulator
@@ -160,10 +171,9 @@ extension Utils {
     }
 }
 
-
 //      MARK: - get the most top view controller - 
 func topController() -> UIViewController? {
-    if var controller = U.window?.rootViewController {
+    if var controller = UIApplication.shared.windows.first?.rootViewController {
         while let presentedViewController = controller.presentedViewController {
             controller = presentedViewController
         }
@@ -172,7 +182,7 @@ func topController() -> UIViewController? {
     return nil
 }
 
-func getTheMostTopController(controller: UIViewController? = U.window?.rootViewController) -> UIViewController? {
+func getTheMostTopController(controller: UIViewController? = UIApplication.shared.windows.first?.rootViewController) -> UIViewController? {
     if let navigationController = controller as? UINavigationController {
         return getTheMostTopController(controller: navigationController.visibleViewController)
     } else if let presentedViewController = controller?.presentedViewController {
@@ -209,7 +219,6 @@ extension Utils {
                 .replacingOccurrences(of: ".0", with: "")
         }
     }
-    
 }
 
 //      MARK: - Date time manager

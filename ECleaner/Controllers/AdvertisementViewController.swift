@@ -34,7 +34,7 @@ extension AdvertisementViewController: UpdateColorsDelegate {
 //        TODO:
         
         // if device has top notch and no premium users
-        containerViewBottomConstraint.constant = -U.bottomSafeAreaHeight
+//        containerViewBottomConstraint.constant = -U.bottomSafeAreaHeight ???
         self.view.layoutIfNeeded()
         // else {
 //      advertisementBottomConstraint.constant = 0
@@ -44,7 +44,7 @@ extension AdvertisementViewController: UpdateColorsDelegate {
     }
     
     func updateColors() {
-        self.view.backgroundColor = currentTheme.backgroundColor
+//        self.view.backgroundColor = .clear
     }
     
     func setupNavigation() {
@@ -52,6 +52,5 @@ extension AdvertisementViewController: UpdateColorsDelegate {
         self.navigationController?.updateNavigationColors()
     }
 }
-
 
 
