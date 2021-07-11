@@ -389,7 +389,7 @@ extension GroupedAssetListViewController {
     
     private func handleDeleteAssetsButton() {
         bottomMenuHeightConstraint.constant = !selectedAssets.isEmpty ? (bottomMenuHeight + U.bottomSafeAreaHeight - 5): 0
-        self.collectionView.contentInset.bottom = !selectedAssets.isEmpty ? 10 : 5
+        self.collectionView.contentInset.bottom = !selectedAssets.isEmpty ? 20 : 10
         U.animate(0.5) {
             self.collectionView.layoutIfNeeded()
             self.view.layoutIfNeeded()

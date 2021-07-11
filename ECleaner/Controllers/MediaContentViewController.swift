@@ -204,6 +204,7 @@ extension MediaContentViewController {
                     case 1:
                         self.showDuplicateVideoFiles()
                     case 2:
+//                        self.showSimmilarVideoFilesByTimeStamp()
                         self.showSimilarVideoFiles()
                     case 3:
                         self.showScreenRecordsVideoFiles()
@@ -365,6 +366,16 @@ extension MediaContentViewController {
                 self.showAssetViewController(assets: "screen records", collection: videos, photoContent: .screenRecording)
             } else {
                 AlertManager.showCantFindMediaContent(by: .noScreenRecording)
+            }
+        }
+    }
+    
+    private func showSimmilarVideoFilesByTimeStamp() {
+        P.showIndicator()
+        photoManager.getSimilarVideosByTimeStamp(from: startingDate, to: endingDate) { videos in
+            P.hideIndicator()
+            if videos.count != 0 {
+                self.showGropedContoller(assets: "similar by time stam", grouped: videos, photoContent: .similarVideo)
             }
         }
     }

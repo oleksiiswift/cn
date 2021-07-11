@@ -33,6 +33,8 @@ class PhotoManager: NSObject {
     
     private static let shared = PhotoManager()
     
+    var assetCollection: PHAssetCollection?
+    
     static var manager: PhotoManager {
         return self.shared
     }
@@ -334,9 +336,11 @@ extension PhotoManager {
         var duplicatedGroup: [PhassetGroup] = []
         let duplicatedIDS = OSImageHashing.sharedInstance().similarImages(with: OSImageHashingQuality.high, forImages: photos)
         
-        U.UI {
+        U.BG {
             guard duplicatedIDS.count >= 1 else {
-                completionHandler([])
+                U.UI {
+                    completionHandler([])
+                }
                 return
             }
             
@@ -394,7 +398,9 @@ extension PhotoManager {
                     }
                 }
             }
-            completionHandler(duplicatedGroup)
+            U.UI {            
+                completionHandler(duplicatedGroup)
+            }
         }
     }
     
@@ -522,13 +528,65 @@ extension PhotoManager {
                     assets.append(asset)
                 }
                 
-                let z = FindDuplicatesUsingThumbnail.findDupes(assets: assets, strictness: .similar)
+                let z = FindDuplicatesUsingThumbnail.findDupes(assets: assets, strictness: .closeToIdentical)
                 U.UI {
                     completionHandler(z)
                 }
             }
         }
     }
+    
+    /// `similar videos by time stamp`
+    public func getSimilarVideosByTimeStamp(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", completionHandler: @escaping ((_ videoAssets: [PhassetGroup]) -> Void)) {
+        
+        fetchManager.fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumVideos, by: PHAssetMediaType.video.rawValue) { videoContent in
+            U.BG {
+                var assets: [PHAsset] = []
+                var grouped: [PhassetGroup] = []
+                
+                if videoContent.count == 0 {
+                    U.UI {
+                        completionHandler([])
+                    }
+                    return
+                }
+                
+                for videoPosition in 1...videoContent.count {
+                    assets.append(videoContent[videoPosition - 1])
+                }
+                
+                for video in assets {
+                    var compareAsset: [PHAsset] = []
+                    debugPrint("->>>>>>>>>>")
+                    debugPrint(video.localIdentifier)
+                    
+                    for check in assets {
+                        debugPrint("........")
+                        debugPrint(check.localIdentifier)
+                        if video.localIdentifier != check.localIdentifier {
+                            if video.duration == check.duration && video.creationDate == check.creationDate {
+                                compareAsset.append(video)
+                                compareAsset.append(check)
+                            } else {
+                                
+                            }
+                        }
+                    }
+                    
+                    if compareAsset.count != 0 {
+                        grouped.append(PhassetGroup.init(name: "", assets: compareAsset))
+                    }
+                
+                }
+                
+                U.UI {
+                    completionHandler(grouped.isEmpty ? [] : grouped)
+                }
+            }
+        }
+    }
+    
+    
     
     /// `screen recordings` from gallery
     public func getScreenRecordsVideos(from startDate: String = "01-01-1917 00:00:00", to endDate: String = "01-01-2666 00:00:00", completionHandler: @escaping ((_ screenRecordsAssets: [PHAsset]) -> Void)) {
@@ -680,6 +738,7 @@ extension PhotoManager: PHPhotoLibraryChangeObserver {
     }
 }
 
+//      MARK:  find duplicates close to similar
 class FindDuplicatesUsingThumbnail {
     enum Strictness {
         case similar
@@ -728,7 +787,6 @@ class FindDuplicatesUsingThumbnail {
                 phassetGroup[groupIndex2!].assets.append(asset1)
                 assetToGroupIndex[asset1] = groupIndex2!
             } else if groupIndex1 != nil && groupIndex2 == nil {
-                // add 2 to 1's group
                 phassetGroup[groupIndex1!].assets.append(asset2)
                 assetToGroupIndex[asset2] = groupIndex1!
             }
