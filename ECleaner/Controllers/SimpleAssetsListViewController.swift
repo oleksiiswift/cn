@@ -20,11 +20,13 @@ class SimpleAssetsListViewController: UIViewController {
     public var photoMediaType: PhotoMediaType = .none
     
     private var photoManager = PhotoManager()
-    
+//        let zoomAndSnap = ZoomAndSnapFlowLayout()
+
     private let flowLayout = SimpleColumnFlowLayout(cellsPerRow: 3, minimumInterSpacing: 3, minimumLineSpacing: 3, inset: UIEdgeInsets(top: 10, left: 10, bottom: 0, right: 10))
     private var bottomMenuHeight: CGFloat = 80
     
     private lazy var selectAllButton = UIBarButtonItem(title: "select all", style: .plain, target: self, action: #selector(handleSelectAllButtonTapped))
+    private lazy var deselectAllButton = UIBarButtonItem(title: "deselect all", style: .plain, target: self, action: #selector(handleSelectAllButtonTapped))
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -68,6 +70,9 @@ extension SimpleAssetsListViewController: UICollectionViewDelegate, UICollection
     
     private func configure(_ cell: PhotoCollectionViewCell, at indexPath: IndexPath) {
         
+        cell.delegate = self
+        cell.indexPath = indexPath
+        
         /// config thumbnail according screen type
         switch photoMediaType {
             case .screenshots:
@@ -99,7 +104,9 @@ extension SimpleAssetsListViewController: UICollectionViewDelegate, UICollection
                                        size: CGSize(width: (U.screenWidth - 26) / 2,
                                                     height: ((U.screenWidth - 26) / 2) / U.ratio))
             default:
-                return
+                cell.loadCellThumbnail(assetCollection[indexPath.row],
+                                       size: CGSize(width: (U.screenWidth - 26) / 2,
+                                                    height: ((U.screenWidth - 26) / 2) / U.ratio))
         }
     }
     
@@ -117,39 +124,50 @@ extension SimpleAssetsListViewController: UICollectionViewDelegate, UICollection
         return cell
     }
     
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        collectionView.selectItem(at: indexPath, animated: true, scrollPosition: .left)
-        if let cell = collectionView.cellForItem(at: indexPath) {
-            cell.isSelected = true
-        }
-        handleSelectAllButtonState()
-        handleBottomButtonMenu()
+    func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
+        debugPrint("some other func ")
+        return false
     }
-    
-    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-        collectionView.deselectItem(at: indexPath, animated: true)
-        if let cell = collectionView.cellForItem(at: indexPath) {
-            cell.isSelected = false
+        
+    func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+        let asset = self.assetCollection[indexPath.row]
+        return UIContextMenuConfiguration(identifier: nil) {
+            return AssetContextPreviewViewController(asset: asset)
+        } actionProvider: { _ in
+            return self.createCellContextMenu(for: asset, at: indexPath)
         }
+    }
+}
+
+extension SimpleAssetsListViewController: PhotoCollectionViewCellDelegate {
+    
+    /// custom select deselect button for selected cells
+    /// did select item need for preview photo
+    /// need handle select button state and check cell.isSelected for checkmark image
+    /// for celected cell use cell delegate and indexPath
+    
+    func didSelectCell(at indexPath: IndexPath) {
+        if let cell = self.collectionView.cellForItem(at: indexPath) {
+            if cell.isSelected {
+                self.collectionView.deselectItem(at: indexPath, animated: true)
+                cell.isSelected = false
+            } else {
+                self.collectionView.selectItem(at: indexPath, animated: true, scrollPosition: [])
+                cell.isSelected = true
+            }
+        }
+        
         handleSelectAllButtonState()
         handleBottomButtonMenu()
     }
 }
-
 
 extension SimpleAssetsListViewController {
     
     @objc func handleSelectAllButtonTapped() {
     
         let selected = collectionView.indexPathsForSelectedItems?.count == assetCollection.count
-        if selected {
-            let button = UIBarButtonItem(title: "select all", style: .plain, target: self, action: #selector(handleSelectAllButtonTapped))
-            self.navigationItem.rightBarButtonItem = button
-        } else {
-            let button = UIBarButtonItem(title: "deselect all", style: .plain, target: self, action: #selector(handleSelectAllButtonTapped))
-            self.navigationItem.rightBarButtonItem = button
-        }
-        
+        self.navigationItem.rightBarButtonItem = selected ? selectAllButton : deselectAllButton
         setCollection(selected: selected)
         handleBottomButtonMenu()
     }
@@ -165,15 +183,16 @@ extension SimpleAssetsListViewController {
                 collectionView.selectItem(at: indexPath, animated: true, scrollPosition: .left)
             }
             
-            if let cell = collectionView.cellForItem(at: indexPath) {
+            if let cell = collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell {
                 cell.isSelected = !selected
+                cell.checkIsSelected()
             }
         }
     }
     
     private func handleSelectAllButtonState() {
         
-        selectAllButton.title = collectionView.indexPathsForSelectedItems?.count != assetCollection.count ? "select all" : "deselect"
+        self.navigationItem.rightBarButtonItem = self.collectionView.indexPathsForSelectedItems?.count != assetCollection.count ? selectAllButton : deselectAllButton
     }
     
     private func handleBottomButtonMenu() {
@@ -211,8 +230,25 @@ extension SimpleAssetsListViewController {
                 let assetIdentifiers = assetsToDelete.map({ $0.localIdentifier})                
                 self.assetCollection = self.assetCollection.filter({!assetIdentifiers.contains($0.localIdentifier)})
                 self.collectionView.reloadData()
+                self.handleSelectAllButtonState()
+                self.handleBottomButtonMenu()
             }
         }
+    }
+    
+    private func createCellContextMenu(for asset: PHAsset, at indexPath: IndexPath) -> UIMenu {
+        
+        let fullScreenPreviewAction = UIAction(title: "full screen preview", image: I.cellElementsItems.fullScreen) { _ in
+            debugPrint("show full screen preview at :\(asset.imageSize)")
+            debugPrint(indexPath)
+        }
+        
+        let deleteAssetAction = UIAction(title: "delete", image: I.cellElementsItems.trashBin) { _ in
+            debugPrint("delete action at :\(asset.imageSize)")
+            debugPrint(indexPath)
+        }
+        
+        return UIMenu(title: "", children: [fullScreenPreviewAction, deleteAssetAction])
     }
 }
 

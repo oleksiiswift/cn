@@ -33,4 +33,10 @@ class Images {
         static let tileView = UIImage(systemName: "square.grid.2x2.fill")
         static let sliderView = UIImage(named: "sliderItem")
     }
+    
+    struct cellElementsItems {
+        static let fullScreen = UIImage(systemName: "arrow.up.backward.and.arrow.down.forward")
+        static let trashBin = UIImage(systemName: "trash")
+        
+    }
 }

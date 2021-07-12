@@ -22,4 +22,18 @@ extension PHAsset {
         }
         return result
     }
+    
+    var getImage: UIImage? {
+        var result: UIImage?
+        let manager = PHImageManager.default()
+        let options = PHImageRequestOptions()
+        options.version = .current
+        options.isSynchronous = true
+        manager.requestImageDataAndOrientation(for: self, options: options) { data, _, _, _ in
+            if let data = data {
+                result = UIImage(data: data)
+            }
+        }
+        return result
+    }
 }

@@ -95,6 +95,9 @@ extension GroupedAssetListViewController: UICollectionViewDelegate, UICollection
     
     private func configure(_ cell: PhotoCollectionViewCell, at indexPath: IndexPath) {
         
+        cell.delegate = self
+        cell.indexPath = indexPath
+        
         if indexPath.row == 0 {
             var size = CGSize.zero
             let asset = assetGroups[indexPath.section].assets[indexPath.row]
@@ -186,27 +189,13 @@ extension GroupedAssetListViewController: UICollectionViewDelegate, UICollection
                 
             default:
                 assert(false, "Invalid element type")
-//            debugPrint("invalid")
         }
         return UICollectionReusableView()
     }
     
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        self.collectionView.selectItem(at: indexPath, animated: true, scrollPosition: [])
-        if !self.selectedAssets.contains(self.assetGroups[indexPath.section].assets[indexPath.row]) {
-            self.selectedAssets.append(self.assetGroups[indexPath.section].assets[indexPath.row])
-        }
-        self.handleSelectAllButtonSection(indexPath)
-        self.handleDeleteAssetsButton()
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-        self.collectionView.deselectItem(at: indexPath, animated: true)
-        if self.selectedAssets.contains(self.assetGroups[indexPath.section].assets[indexPath.row]) {
-            self.selectedAssets = self.selectedAssets.filter({ $0 != self.assetGroups[indexPath.section].assets[indexPath.row]})
-        }
-        self.handleSelectAllButtonSection(indexPath)
-        self.handleDeleteAssetsButton()
+    func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
+        debugPrint("tap on \(indexPath)")
+        return false
     }
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
@@ -219,7 +208,40 @@ extension GroupedAssetListViewController: UICollectionViewDelegate, UICollection
         
         checkSelectedHeaderView(for: indexPath, headerView: headerview)
     }
+    
+    func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+        let asset = self.assetGroups[indexPath.section].assets[indexPath.row]
+        return UIContextMenuConfiguration(identifier: nil) {
+            return AssetContextPreviewViewController(asset: asset)
+        } actionProvider: { _ in
+            return self.createCellContextMenu(for: asset, at: indexPath)
+        }
+    }
 }
+
+extension GroupedAssetListViewController: PhotoCollectionViewCellDelegate {
+    
+    func didSelectCell(at indexPath: IndexPath) {
+        if let cell = self.collectionView.cellForItem(at: indexPath) {
+            if cell.isSelected {
+                self.collectionView.deselectItem(at: indexPath, animated: true)
+                cell.isSelected = false
+                if self.selectedAssets.contains(self.assetGroups[indexPath.section].assets[indexPath.row]) {
+                    self.selectedAssets = self.selectedAssets.filter({ $0 != self.assetGroups[indexPath.section].assets[indexPath.row]})
+                }
+            } else {
+                self.collectionView.selectItem(at: indexPath, animated: true, scrollPosition: [])
+                cell.isSelected = true
+                if !self.selectedAssets.contains(self.assetGroups[indexPath.section].assets[indexPath.row]) {
+                    self.selectedAssets.append(self.assetGroups[indexPath.section].assets[indexPath.row])
+                }
+            }
+            self.handleSelectAllButtonSection(indexPath)
+            self.handleDeleteAssetsButton()
+        }
+    }
+}
+
 
 extension GroupedAssetListViewController: SNCollectionViewLayoutDelegate {
 //    MARK: TODO: set if 3 asset
@@ -245,11 +267,13 @@ extension GroupedAssetListViewController {
     /// `isSelectedSection` check if contains selected cell and current section
     /// `getSectionsCells` get all cell and current section
     /// `lazyHardcoreCheckForSelectedItemsAndAssets` hardcore check for lost index pathes and elements of array if they lost
+    /// `handleSelected` set selected cells in section
     
     private func didSelectAllAssets(at indexPath: IndexPath, in sectionHeader: GroupedAssetsReusableHeaderView) {
         
         var addingSection: Bool = false
         
+        /// work with assets
         if selectedSection.contains(indexPath.section) {
             for asset in self.assetGroups[indexPath.section].assets {
                 self.selectedAssets.removeAll(asset)
@@ -264,6 +288,7 @@ extension GroupedAssetListViewController {
             }
         }
         
+        /// work with indexes paths
         if addingSection {
             selectedSection.insert(indexPath.section)
             self.collectionView.selectAllItems(in: indexPath.section, first: 1, animated: true)
@@ -276,7 +301,15 @@ extension GroupedAssetListViewController {
     
         self.handleDeleteAssetsButton()
     }
+
     
+//    (itemIndex..<numberOfItems(inSection: section)).compactMap({ (item) -> IndexPath? in
+//        return IndexPath(item: item, section: section)
+//    }).compactMap({ $0}).forEach { (indexPath) in
+//        selectItem(at: indexPath, animated: animated, scrollPosition: [])
+//    }
+    
+
     private func getIndexPathInSectionWithoutFirst(section: Int) -> [IndexPath] {
         let cellsCountInSection = self.collectionView.numberOfItems(inSection: section)
         return (1..<cellsCountInSection).map({IndexPath(item: $0, section: section)})
@@ -441,6 +474,22 @@ extension GroupedAssetListViewController {
         }
         self.handleDeleteAssetsButton()
     }
+    
+    
+    private func createCellContextMenu(for asset: PHAsset, at indexPath: IndexPath) -> UIMenu {
+        
+        let fullScreenPreviewAction = UIAction(title: "full screen preview", image: I.cellElementsItems.fullScreen) { _ in
+            debugPrint("show full screen preview at :\(asset.imageSize)")
+            debugPrint(indexPath)
+        }
+        
+        let deleteAssetAction = UIAction(title: "delete", image: I.cellElementsItems.trashBin) { _ in
+            debugPrint("delete action at :\(asset.imageSize)")
+            debugPrint(indexPath)
+        }
+        
+        return UIMenu(title: "", children: [fullScreenPreviewAction, deleteAssetAction])
+    }
 }
 
 extension GroupedAssetListViewController: SelectDropDownMenuDelegate {
@@ -472,7 +521,6 @@ extension GroupedAssetListViewController {
         drobDownViewController.menuSectionItems = items
         drobDownViewController.delegate = self
         guard let popoverPresentationController = drobDownViewController.popoverPresentationController else { fatalError("Error modal presentation style")}
-        
         popoverPresentationController.barButtonItem = barButtonItem
         popoverPresentationController.delegate = self
         self.present(drobDownViewController, animated: true, completion: nil)

@@ -8,6 +8,10 @@
 import UIKit
 import Photos
 
+protocol PhotoCollectionViewCellDelegate {
+    func didSelectCell(at indexPath: IndexPath)
+}
+
 class PhotoCollectionViewCell: UICollectionViewCell {
     
     @IBOutlet weak var baseView: UIView!
@@ -15,12 +19,14 @@ class PhotoCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var photoCheckmarkImageView: UIImageView!
     
     public var indexPath: IndexPath?
+    
+    var delegate: PhotoCollectionViewCellDelegate?
         
-    override var isSelected: Bool {
-        didSet {
-            checkIsSelected()
-        }
-    }
+//    override var isSelected: Bool {
+//        didSet {
+//            checkIsSelected()
+//        }
+//    }
     
     override func prepareForReuse() {
         super.prepareForReuse()
@@ -33,6 +39,13 @@ class PhotoCollectionViewCell: UICollectionViewCell {
         
         setupUI()
         updateColors()
+    }
+    
+    @IBAction func didTapSetSelectedCellActionButton(_ sender: Any) {
+        if let indexPath = self.indexPath {
+            delegate?.didSelectCell(at: indexPath)
+            checkIsSelected()
+        }
     }
 }
 
