@@ -522,6 +522,7 @@ extension GroupedAssetListViewController {
         guard let popoverPresentationController = drobDownViewController.popoverPresentationController else { fatalError("Error modal presentation style")}
         popoverPresentationController.barButtonItem = barButtonItem
         popoverPresentationController.delegate = self
+        popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirection(rawValue: 0) 
         self.present(drobDownViewController, animated: true, completion: nil)
     }
 }
