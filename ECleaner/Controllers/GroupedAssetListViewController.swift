@@ -8,14 +8,6 @@
 import UIKit
 import Photos
 
-enum GropedAsset {
-    case duplicatePhotos
-    case similarPhotos
-    case similarLivePhotos
-    case duplicatedVideo
-    case similarVideo
-}
-
 class GroupedAssetListViewController: UIViewController {
 
     @IBOutlet weak var collectionView: UICollectionView!
@@ -31,9 +23,9 @@ class GroupedAssetListViewController: UIViewController {
     private let selectAllOptionItem = DropDownOptionsMenuItem(titleMenu: "select all", itemThumbnail: I.systemElementsItems.circleBox!, isSelected: false, menuItem: .unselectAll)
     private let deselectAllOptionItem = DropDownOptionsMenuItem(titleMenu: "deselect all", itemThumbnail: I.systemElementsItems.circleCheckBox!, isSelected: false, menuItem: .unselectAll)
     
-    public var grouped: GropedAsset?
     public var assetGroups: [PhassetGroup] = []
-
+    public var mediaType: PhotoMediaType = .none
+    
     private var selectedAssets: [PHAsset] = []
     private var selectedSection: Set<Int> = []
     
@@ -97,13 +89,23 @@ extension GroupedAssetListViewController: UICollectionViewDelegate, UICollection
         
         cell.delegate = self
         cell.indexPath = indexPath
+        cell.cellContentType = self.mediaType
+        cell.selectButtonSetup(by: self.mediaType)
+        
+        if let path = self.collectionView.indexPathsForSelectedItems, path.contains(indexPath) {
+            cell.isSelected = true
+        } else {
+            cell.isSelected = false
+        }
+        
+        cell.checkIsSelected()
         
         if indexPath.row == 0 {
             var size = CGSize.zero
             let asset = assetGroups[indexPath.section].assets[indexPath.row]
             
-            switch grouped {
-                case .duplicatedVideo, .similarVideo:
+            switch mediaType {
+                case .duplicatedVideos, .similarVideos:
                     size = CGSize(width: asset.pixelWidth, height: asset.pixelHeight)
                 default:
                     if asset.pixelWidth > asset.pixelHeight {
@@ -288,27 +290,19 @@ extension GroupedAssetListViewController {
             }
         }
         
+        sectionHeader.setSelectDeselectButton(addingSection)
+        self.handleDeleteAssetsButton()
+        
         /// work with indexes paths
         if addingSection {
             selectedSection.insert(indexPath.section)
             self.collectionView.selectAllItems(in: indexPath.section, first: 1, animated: true)
-            sectionHeader.setSelectDeselectButton(true)
+            
         } else {
             selectedSection.remove(indexPath.section)
             self.collectionView.deselectAllItems(in: indexPath.section, first: 0, animated: true)
-            sectionHeader.setSelectDeselectButton(false)
         }
-    
-        self.handleDeleteAssetsButton()
     }
-
-    
-//    (itemIndex..<numberOfItems(inSection: section)).compactMap({ (item) -> IndexPath? in
-//        return IndexPath(item: item, section: section)
-//    }).compactMap({ $0}).forEach { (indexPath) in
-//        selectItem(at: indexPath, animated: animated, scrollPosition: [])
-//    }
-    
 
     private func getIndexPathInSectionWithoutFirst(section: Int) -> [IndexPath] {
         let cellsCountInSection = self.collectionView.numberOfItems(inSection: section)
@@ -462,6 +456,11 @@ extension GroupedAssetListViewController {
             }
             
             for item in 1..<self.collectionView.numberOfItems(inSection: section) {
+                if let cell = collectionView.cellForItem(at: IndexPath(item: item, section: section)) as? PhotoCollectionViewCell{
+                    cell.isSelected = !isSelect
+                    cell.checkIsSelected()
+                }
+                
                 if isSelect {
                     self.selectedAssets.removeAll()
                 } else {
@@ -470,11 +469,11 @@ extension GroupedAssetListViewController {
                     }
                 }
             }
+            /// check header button state availible
             self.handleSelectAllButtonSection(IndexPath(item: 0, section: section))
         }
         self.handleDeleteAssetsButton()
     }
-    
     
     private func createCellContextMenu(for asset: PHAsset, at indexPath: IndexPath) -> UIMenu {
         

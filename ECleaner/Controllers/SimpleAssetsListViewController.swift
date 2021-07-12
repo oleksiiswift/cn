@@ -17,10 +17,9 @@ class SimpleAssetsListViewController: UIViewController {
     @IBOutlet weak var bottomMenuHeightConstraint: NSLayoutConstraint!
     
     public var assetCollection: [PHAsset] = []
-    public var photoMediaType: PhotoMediaType = .none
+    public var mediaType: PhotoMediaType = .none
     
     private var photoManager = PhotoManager()
-//        let zoomAndSnap = ZoomAndSnapFlowLayout()
 
     private let flowLayout = SimpleColumnFlowLayout(cellsPerRow: 3, minimumInterSpacing: 3, minimumLineSpacing: 3, inset: UIEdgeInsets(top: 10, left: 10, bottom: 0, right: 10))
     private var bottomMenuHeight: CGFloat = 80
@@ -49,8 +48,8 @@ extension SimpleAssetsListViewController: UICollectionViewDelegate, UICollection
     
     private func setupCollectionView() {
         
-        switch photoMediaType {
-            case .largeVideos:
+        switch mediaType {
+            case .singleLargeVideos:
                 flowLayout.isSquare = true
             default:
                 flowLayout.itemHieght = ((U.screenWidth - 26) / 3) / U.ratio
@@ -72,22 +71,31 @@ extension SimpleAssetsListViewController: UICollectionViewDelegate, UICollection
         
         cell.delegate = self
         cell.indexPath = indexPath
+        cell.cellContentType = self.mediaType
+        
+        if let paths = self.collectionView.indexPathsForSelectedItems, paths.contains([indexPath]) {
+            cell.isSelected = true
+        } else {
+            cell.isSelected = false
+        }
+        
+        cell.checkIsSelected()
         
         /// config thumbnail according screen type
-        switch photoMediaType {
-            case .screenshots:
+        switch mediaType {
+            case .singleScreenShots:
                 cell.loadCellThumbnail(assetCollection[indexPath.row],
                                        size: CGSize(width: ((U.screenWidth - 26) / 2),
                                                     height: ((U.screenHeight - 26) / 2) / U.ratio ))
-            case .selfies:
+            case .singleSelfies:
                 cell.loadCellThumbnail(assetCollection[indexPath.row],
                                        size: CGSize(width: (U.screenWidth - 26) / 2,
                                                     height: ((U.screenHeight - 26) / 2) / U.ratio))
-            case .livephotos:
+            case .singleLivePhotos:
                 cell.loadCellThumbnail(assetCollection[indexPath.row],
                                        size: CGSize(width: (U.screenWidth - 26) / 2,
                                                     height: ((U.screenWidth - 26) / 2) / U.ratio))
-            case .largeVideos:
+            case .singleLargeVideos:
                 cell.loadCellThumbnail(assetCollection[indexPath.row],
                                        size: CGSize(width: (U.screenWidth - 26) / 2,
                                                     height: ((U.screenWidth - 26) / 2) / U.ratio))
@@ -95,11 +103,11 @@ extension SimpleAssetsListViewController: UICollectionViewDelegate, UICollection
                 cell.loadCellThumbnail(assetCollection[indexPath.row],
                                        size: CGSize(width: (U.screenWidth - 26) / 2,
                                                     height: ((U.screenWidth - 26) / 2) / U.ratio))
-            case .duplicateVideos:
+            case .duplicatedVideos:
                 cell.loadCellThumbnail(assetCollection[indexPath.row],
                                        size: CGSize(width: (U.screenWidth - 26) / 2,
                                                     height: ((U.screenWidth - 26) / 2) / U.ratio))
-            case .screenRecording:
+            case .singleScreenRecordings:
                 cell.loadCellThumbnail(assetCollection[indexPath.row],
                                        size: CGSize(width: (U.screenWidth - 26) / 2,
                                                     height: ((U.screenWidth - 26) / 2) / U.ratio))
@@ -174,14 +182,15 @@ extension SimpleAssetsListViewController {
     
     private func setCollection(selected: Bool) {
         
+        if selected {
+            self.collectionView.deselectAllItems(in: 0, animated: true)
+        } else {
+            self.collectionView.selectAllItems(in: 0, animated: true)
+        }
+        
         let numbersOfItemsInSection = collectionView.numberOfItems(inSection: 0)
         
         for indexPath in (0..<numbersOfItemsInSection).map({IndexPath(item: $0, section: 0)}) {
-            if selected {
-                collectionView.deselectItem(at: indexPath, animated: true)
-            } else {
-                collectionView.selectItem(at: indexPath, animated: true, scrollPosition: .left)
-            }
             
             if let cell = collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell {
                 cell.isSelected = !selected
@@ -287,7 +296,7 @@ extension SimpleAssetsListViewController: UpdatingChangesInOpenedScreensListener
     /// updating screenshots
     func getUpdatingScreenShots() {
         
-        if photoMediaType == .screenshots {
+        if mediaType == .singleScreenShots {
             photoManager.getScreenShots(from: S.startingSavedDate, to: S.endingSavedDate) { screenShots in
                 if self.assetCollection.count != screenShots.count {
                     self.assetCollection = screenShots
@@ -300,7 +309,7 @@ extension SimpleAssetsListViewController: UpdatingChangesInOpenedScreensListener
     /// updating selfies
     func getUpdatingSelfies() {
         
-        if photoMediaType == .selfies {
+        if mediaType == .singleSelfies {
             photoManager.getSelfiePhotos(from: S.startingSavedDate, to: S.endingSavedDate) { selfies in
                 if self.assetCollection.count != selfies.count {
                     self.assetCollection = selfies

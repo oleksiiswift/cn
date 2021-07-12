@@ -75,8 +75,11 @@
             <size key="customSize" width="258" height="247"/>
             <connections>
                 <outlet property="baseView" destination="s5I-X3-emN" id="d87-82-h0J"/>
+                <outlet property="buttonView" destination="ZPH-1G-hQC" id="EFb-r9-KgJ"/>
                 <outlet property="photoCheckmarkImageView" destination="13M-k1-GIX" id="55a-Mk-Ia4"/>
                 <outlet property="photoThumbnailImageView" destination="ZPH-1G-hQC" id="PYV-g7-Lg2"/>
+                <outlet property="selectCellButtonHeightConstraint" destination="kyc-uO-zhj" id="oo3-xL-XmB"/>
+                <outlet property="selectCellButtonWidthConstraint" destination="HkE-ib-MoR" id="hYS-rp-LBw"/>
             </connections>
             <point key="canvasLocation" x="281.15942028985512" y="176.45089285714286"/>
         </collectionViewCell>

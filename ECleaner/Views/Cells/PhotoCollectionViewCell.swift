@@ -17,17 +17,15 @@ class PhotoCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var baseView: UIView!
     @IBOutlet weak var photoThumbnailImageView: UIImageView!
     @IBOutlet weak var photoCheckmarkImageView: UIImageView!
+    @IBOutlet weak var buttonView: UIImageView!
+    @IBOutlet weak var selectCellButtonWidthConstraint: NSLayoutConstraint!
+    @IBOutlet weak var selectCellButtonHeightConstraint: NSLayoutConstraint!
     
     public var indexPath: IndexPath?
+    public var cellContentType: PhotoMediaType = .none
     
     var delegate: PhotoCollectionViewCellDelegate?
         
-//    override var isSelected: Bool {
-//        didSet {
-//            checkIsSelected()
-//        }
-//    }
-    
     override func prepareForReuse() {
         super.prepareForReuse()
         
@@ -42,6 +40,7 @@ class PhotoCollectionViewCell: UICollectionViewCell {
     }
     
     @IBAction func didTapSetSelectedCellActionButton(_ sender: Any) {
+        
         if let indexPath = self.indexPath {
             delegate?.didSelectCell(at: indexPath)
             checkIsSelected()
@@ -55,6 +54,21 @@ extension PhotoCollectionViewCell: Themeble {
         
         baseView.setCorner(12)
         photoCheckmarkImageView.image = I.systemElementsItems.circleBox
+    }
+    
+    public func selectButtonSetup(by contentType: PhotoMediaType) {
+        
+        switch contentType {
+            case .duplicatedVideos, .similarVideos, .similarPhotos, .duplicatedPhotos:
+                if indexPath?.row != 0 {
+                    selectCellButtonWidthConstraint.constant = 40
+                    selectCellButtonHeightConstraint.constant = 40
+                    buttonView.layoutIfNeeded()
+                    self.contentView.layoutIfNeeded()
+                }
+            default:
+                debugPrint("")
+        }
     }
     
     func updateColors() {
