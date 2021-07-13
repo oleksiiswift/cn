@@ -73,11 +73,14 @@
                                     <constraint firstAttribute="bottom" secondItem="NkM-6d-qED" secondAttribute="bottom" id="ryj-4C-8rx"/>
                                 </constraints>
                             </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7Dz-ja-sh9">
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7Dz-ja-sh9">
                                 <rect key="frame" x="10" y="10" width="50" height="20"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aPm-5O-pit">
                                         <rect key="frame" x="0.0" y="0.0" width="50" height="20"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="50" id="fNu-tc-IvA"/>
+                                        </constraints>
                                         <fontDescription key="fontDescription" type="system" pointSize="11"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -89,7 +92,6 @@
                                     <constraint firstAttribute="bottom" secondItem="aPm-5O-pit" secondAttribute="bottom" id="Xmx-hH-rBo"/>
                                     <constraint firstAttribute="trailing" secondItem="aPm-5O-pit" secondAttribute="trailing" id="eW9-Qf-KIm"/>
                                     <constraint firstItem="aPm-5O-pit" firstAttribute="leading" secondItem="7Dz-ja-sh9" secondAttribute="leading" id="fno-xO-EUJ"/>
-                                    <constraint firstAttribute="width" constant="50" id="pDz-yO-Pnm"/>
                                     <constraint firstAttribute="height" constant="20" id="sUF-5W-L2g"/>
                                 </constraints>
                             </view>

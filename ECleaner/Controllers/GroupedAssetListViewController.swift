@@ -7,6 +7,7 @@
 
 import UIKit
 import Photos
+import AVKit
 
 class GroupedAssetListViewController: UIViewController {
 
@@ -74,12 +75,12 @@ extension GroupedAssetListViewController: UICollectionViewDelegate, UICollection
                                            bundle: nil),
                                      forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
                                      withReuseIdentifier: C.identifiers.views.groupHeaderView)
-                
+        
         /// collection view `setup`
         self.collectionView.contentInset = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
         collectionViewFlowLayout.fixedDivisionCount = 4
         collectionViewFlowLayout.itemSpacing = 5
-
+        
         self.collectionView.collectionViewLayout = collectionViewFlowLayout
         self.collectionView.allowsMultipleSelection = true
         self.collectionView.reloadData()
@@ -115,8 +116,13 @@ extension GroupedAssetListViewController: UICollectionViewDelegate, UICollection
                     }
             }
             
+            cell.bestView.isHidden = false
+            cell.bestLabel.isHidden = false
+            cell.bestLabel.text = "best"
             cell.loadCellThumbnail(asset, size: size)
         } else {
+            cell.bestLabel.isHidden = true
+            cell.bestView.isHidden = true
             cell.loadCellThumbnail(assetGroups[indexPath.section].assets[indexPath.row], size: CGSize(width: 300, height: 300))
         }
     }
@@ -128,7 +134,7 @@ extension GroupedAssetListViewController: UICollectionViewDelegate, UICollection
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return assetGroups[section].assets.count
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: C.identifiers.cells.photoSimpleCell, for: indexPath) as! PhotoCollectionViewCell
         configure(cell, at: indexPath)
@@ -142,7 +148,7 @@ extension GroupedAssetListViewController: UICollectionViewDelegate, UICollection
             case UICollectionView.elementKindSectionHeader:
                 
                 let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: C.identifiers.views.groupHeaderView, for: indexPath)
-            
+                
                 guard let sectionHeader = headerView as? GroupedAssetsReusableHeaderView else { return headerView }
                 
                 sectionHeader.assetsSelectedCountTextLabel.text = "\(assetGroups[indexPath.section].assets.count) itmes"
@@ -174,9 +180,9 @@ extension GroupedAssetListViewController: UICollectionViewDelegate, UICollection
                                 if !self.selectedSection.contains(indexPath.section) {
                                     self.selectedSection.insert(indexPath.section)
                                 }
-                            
+                                
                                 sectionHeader.setSelectDeselectButton(true)
-                            
+                                
                             } else {
                                 /// select - deselect all section withoit first cell
                                 /// section are full selected or deselected
@@ -201,11 +207,11 @@ extension GroupedAssetListViewController: UICollectionViewDelegate, UICollection
     }
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-//        self.lazyHardcoreCheckForSelectedItemsAndAssets()
+        //        self.lazyHardcoreCheckForSelectedItemsAndAssets()
     }
     
     func collectionView(_ collectionView: UICollectionView, willDisplaySupplementaryView view: UICollectionReusableView, forElementKind elementKind: String, at indexPath: IndexPath) {
-    
+        
         guard let headerview = view as? GroupedAssetsReusableHeaderView else { return }
         
         checkSelectedHeaderView(for: indexPath, headerView: headerview)
@@ -213,10 +219,19 @@ extension GroupedAssetListViewController: UICollectionViewDelegate, UICollection
     
     func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
         let asset = self.assetGroups[indexPath.section].assets[indexPath.row]
-        return UIContextMenuConfiguration(identifier: nil) {
-            return AssetContextPreviewViewController(asset: asset)
-        } actionProvider: { _ in
-            return self.createCellContextMenu(for: asset, at: indexPath)
+        
+        if asset.mediaType == .video {
+            return UIContextMenuConfiguration(identifier: nil) {
+                return PreviewAVController(asset: asset)
+            } actionProvider: { _ in
+                return self.createCellContextMenu(for: asset, at: indexPath)
+            }
+        } else {
+            return UIContextMenuConfiguration(identifier: nil) {
+                return AssetContextPreviewViewController(asset: asset)
+            } actionProvider: { _ in
+                return self.createCellContextMenu(for: asset, at: indexPath)
+            }
         }
     }
 }
@@ -478,8 +493,11 @@ extension GroupedAssetListViewController {
     private func createCellContextMenu(for asset: PHAsset, at indexPath: IndexPath) -> UIMenu {
         
         let fullScreenPreviewAction = UIAction(title: "full screen preview", image: I.cellElementsItems.fullScreen) { _ in
-            debugPrint("show full screen preview at :\(asset.imageSize)")
-            debugPrint(indexPath)
+            if asset.mediaType == .video {
+                self.showVideoPreviewController(asset)
+            } else {
+                self.showFullScreenAssetPreview(asset)
+            }
         }
         
         let deleteAssetAction = UIAction(title: "delete", image: I.cellElementsItems.trashBin) { _ in
@@ -488,6 +506,27 @@ extension GroupedAssetListViewController {
         }
         
         return UIMenu(title: "", children: [fullScreenPreviewAction, deleteAssetAction])
+    }
+    
+    private func showVideoPreviewController(_ asset: PHAsset) {
+        PHCachingImageManager().requestAVAsset(forVideo: asset, options: nil) { (avAsset, _, _) in
+            U.UI {
+                if avAsset != nil {
+                    let playerController = AVPlayerViewController()
+                    let player = AVPlayer(playerItem: AVPlayerItem(asset: avAsset!))
+                    playerController.player = player
+                    self.present(playerController, animated: true) {
+                        playerController.player!.play()
+                    }
+                } else {
+                    return
+                }
+            }
+        }
+    }
+    
+    private func showFullScreenAssetPreview(_ asset: PHAsset) {
+        
     }
 }
 

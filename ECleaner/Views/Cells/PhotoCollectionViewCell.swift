@@ -34,7 +34,6 @@ class PhotoCollectionViewCell: UICollectionViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         
-        self.setBestView(isHiden: true)
         photoCheckmarkImageView.image = I.systemElementsItems.circleBox
     }
     
@@ -60,6 +59,8 @@ extension PhotoCollectionViewCell: Themeble {
         
         baseView.setCorner(12)
         photoCheckmarkImageView.image = I.systemElementsItems.circleBox
+        bestView.setCorner(8)
+        videoAssetDurationView.setCorner(9)
     }
     
     public func selectButtonSetup(by contentType: PhotoMediaType) {
@@ -80,6 +81,8 @@ extension PhotoCollectionViewCell: Themeble {
         
         baseView.backgroundColor = currentTheme.sectionBackgroundColor
         photoCheckmarkImageView.tintColor = currentTheme.accentBackgroundColor
+        bestView.backgroundColor = currentTheme.backgroundColor.withAlphaComponent(0.6)
+        videoAssetDurationView.backgroundColor = currentTheme.backgroundColor.withAlphaComponent(0.6)
     }
     
     public func loadCellThumbnail(_ asset: PHAsset, size: CGSize) {
@@ -93,27 +96,16 @@ extension PhotoCollectionViewCell: Themeble {
                     let duration = CMTime(seconds: asset.duration, preferredTimescale: 1000000)
                     videoAssetDurationTextLabel.text = duration.durationText
                 }
-                
-                self.setBestView(isHiden: indexPath?.row != 0)
             case .duplicatedPhotos, .similarPhotos:
-                
-                self.setBestView(isHiden: indexPath?.row != 0)
                 videoAssetDurationView.isHidden = true
-                
             case .singleScreenRecordings:
                 if asset.mediaType == .video {
                     let duration = CMTime(seconds: asset.duration, preferredTimescale: 1000000)
                     videoAssetDurationTextLabel.text = duration.durationText
                 }
-
             default:
                 videoAssetDurationView.isHidden = true
         }
-    }
-    
-    private func setBestView(isHiden: Bool) {
-        bestView.isHidden = isHidden
-        bestLabel.text = isHidden ? "" : "best"
     }
 
     public func checkIsSelected() {
@@ -122,18 +114,3 @@ extension PhotoCollectionViewCell: Themeble {
 }
 
 
-extension CMTime {
-    
-    var durationText: String {
-        let totalSeconds = CMTimeGetSeconds(self)
-        let hours:Int = Int(totalSeconds / 3600)
-        let minutes:Int = Int(totalSeconds.truncatingRemainder(dividingBy: 3600) / 60)
-        let seconds:Int = Int(totalSeconds.truncatingRemainder(dividingBy: 60))
-        
-        if hours > 0 {
-            return String(format: "%i:%02i:%02i", hours, minutes, seconds)
-        } else {
-            return String(format: "%02i:%02i", minutes, seconds)
-        }
-    }
-}

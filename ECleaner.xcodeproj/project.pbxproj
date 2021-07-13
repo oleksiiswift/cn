@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0405AA59269D77A5004AC07A /* CMtime+StringDuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0405AA58269D77A5004AC07A /* CMtime+StringDuration.swift */; };
+		0405AA5B269D9BD6004AC07A /* PreviewAVController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0405AA5A269D9BD6004AC07A /* PreviewAVController.swift */; };
 		044281FC2692F95A00B6B47C /* DropDownMenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 044281FB2692F95A00B6B47C /* DropDownMenuViewController.swift */; };
 		044281FE2692F9B800B6B47C /* SelectDropDownMenuDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 044281FD2692F9B800B6B47C /* SelectDropDownMenuDelegate.swift */; };
 		044282012693034600B6B47C /* DropDownMenuTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 044281FF2693034600B6B47C /* DropDownMenuTableViewCell.swift */; };
@@ -88,6 +90,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0405AA58269D77A5004AC07A /* CMtime+StringDuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CMtime+StringDuration.swift"; sourceTree = "<group>"; };
+		0405AA5A269D9BD6004AC07A /* PreviewAVController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewAVController.swift; sourceTree = "<group>"; };
 		044281FB2692F95A00B6B47C /* DropDownMenuViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropDownMenuViewController.swift; sourceTree = "<group>"; };
 		044281FD2692F9B800B6B47C /* SelectDropDownMenuDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectDropDownMenuDelegate.swift; sourceTree = "<group>"; };
 		044281FF2693034600B6B47C /* DropDownMenuTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropDownMenuTableViewCell.swift; sourceTree = "<group>"; };
@@ -346,6 +350,7 @@
 			children = (
 				044281FB2692F95A00B6B47C /* DropDownMenuViewController.swift */,
 				04B20F01269C4F6A00C6BC14 /* AssetContextPreviewViewController.swift */,
+				0405AA5A269D9BD6004AC07A /* PreviewAVController.swift */,
 			);
 			path = ModalControllers;
 			sourceTree = "<group>";
@@ -443,6 +448,7 @@
 				97E54A8B2690A9BD00C7FD54 /* Date */,
 				97E54A8C2690A9CE00C7FD54 /* ArrayAndCollection */,
 				04EE29FA269891F30013837D /* PHasset+Thumbnail.swift */,
+				0405AA58269D77A5004AC07A /* CMtime+StringDuration.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -790,7 +796,9 @@
 				049CC219268225500002F988 /* Colors.swift in Sources */,
 				97FC789626889541000D7F26 /* TimeIInterval.swift in Sources */,
 				97FC789226888120000D7F26 /* Date+CurrentDate.swift in Sources */,
+				0405AA59269D77A5004AC07A /* CMtime+StringDuration.swift in Sources */,
 				97FC78A12688E5E8000D7F26 /* PhotoCollectionViewCell.swift in Sources */,
+				0405AA5B269D9BD6004AC07A /* PreviewAVController.swift in Sources */,
 				049CC23426833D320002F988 /* UIView+Radius.swift in Sources */,
 				04E58373267A4A2000EDC3A3 /* UIDevice+Enviroment.swift in Sources */,
 				044281FC2692F95A00B6B47C /* DropDownMenuViewController.swift in Sources */,

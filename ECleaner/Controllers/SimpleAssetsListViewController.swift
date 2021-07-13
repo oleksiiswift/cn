@@ -7,6 +7,7 @@
 
 import UIKit
 import Photos
+import AVKit
 
 class SimpleAssetsListViewController: UIViewController {
 
@@ -139,10 +140,19 @@ extension SimpleAssetsListViewController: UICollectionViewDelegate, UICollection
         
     func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
         let asset = self.assetCollection[indexPath.row]
-        return UIContextMenuConfiguration(identifier: nil) {
-            return AssetContextPreviewViewController(asset: asset)
-        } actionProvider: { _ in
-            return self.createCellContextMenu(for: asset, at: indexPath)
+        
+        if asset.mediaType == .video {
+            return UIContextMenuConfiguration(identifier: nil) {
+                return PreviewAVController(asset: asset)
+            } actionProvider: { _ in
+                return self.createCellContextMenu(for: asset, at: indexPath)
+            }
+        } else {
+            return UIContextMenuConfiguration(identifier: nil) {
+                return AssetContextPreviewViewController(asset: asset)
+            } actionProvider: { _ in
+                return self.createCellContextMenu(for: asset, at: indexPath)
+            }
         }
     }
 }
@@ -248,8 +258,11 @@ extension SimpleAssetsListViewController {
     private func createCellContextMenu(for asset: PHAsset, at indexPath: IndexPath) -> UIMenu {
         
         let fullScreenPreviewAction = UIAction(title: "full screen preview", image: I.cellElementsItems.fullScreen) { _ in
-            debugPrint("show full screen preview at :\(asset.imageSize)")
-            debugPrint(indexPath)
+            if asset.mediaType == .video {
+                self.showVideoPreviewController(asset)
+            } else {
+                self.showFullScreenAssetPreview(asset)
+            }
         }
         
         let deleteAssetAction = UIAction(title: "delete", image: I.cellElementsItems.trashBin) { _ in
@@ -259,6 +272,27 @@ extension SimpleAssetsListViewController {
         
         return UIMenu(title: "", children: [fullScreenPreviewAction, deleteAssetAction])
     }
+    
+    
+    private func showVideoPreviewController(_ asset: PHAsset) {
+        
+        PHCachingImageManager().requestAVAsset(forVideo: asset, options: nil) { (avAsset, _, _) in
+            U.UI {
+                if avAsset != nil {
+                    let playerController = AVPlayerViewController()
+                    let player = AVPlayer(playerItem: AVPlayerItem(asset: avAsset!))
+                    playerController.player = player
+                    self.present(playerController, animated: true) {
+                        playerController.player!.play()
+                    }
+                } else {
+                    return
+                }
+            }
+        }
+    }
+    
+    private func showFullScreenAssetPreview(_ asset: PHAsset) {}
 }
 
 //      MARK: - setup UI -
