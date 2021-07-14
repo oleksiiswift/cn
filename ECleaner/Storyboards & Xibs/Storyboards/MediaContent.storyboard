@@ -287,13 +287,32 @@
                                             </collectionViewCell>
                                         </cells>
                                     </collectionView>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kwX-8u-SCV">
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="0.0"/>
+                                        <subviews>
+                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="lCC-Ci-r2B">
+                                                <rect key="frame" x="0.0" y="0.0" width="414" height="0.0"/>
+                                            </imageView>
+                                        </subviews>
+                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                        <constraints>
+                                            <constraint firstAttribute="trailing" secondItem="lCC-Ci-r2B" secondAttribute="trailing" id="LKO-ON-Zvh"/>
+                                            <constraint firstAttribute="height" id="UIj-ot-DdT"/>
+                                            <constraint firstItem="lCC-Ci-r2B" firstAttribute="leading" secondItem="kwX-8u-SCV" secondAttribute="leading" id="kR2-dj-eDe"/>
+                                            <constraint firstItem="lCC-Ci-r2B" firstAttribute="top" secondItem="kwX-8u-SCV" secondAttribute="top" id="kd0-mR-JPD"/>
+                                            <constraint firstAttribute="bottom" secondItem="lCC-Ci-r2B" secondAttribute="bottom" id="zKD-ov-AX0"/>
+                                        </constraints>
+                                    </view>
                                 </subviews>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <constraints>
+                                    <constraint firstItem="kwX-8u-SCV" firstAttribute="top" secondItem="T18-Zm-Mxt" secondAttribute="top" id="IWb-q3-HNc"/>
                                     <constraint firstAttribute="trailing" secondItem="sWN-49-wwQ" secondAttribute="trailing" id="Lb5-cZ-p8A"/>
+                                    <constraint firstItem="kwX-8u-SCV" firstAttribute="leading" secondItem="T18-Zm-Mxt" secondAttribute="leading" id="LpI-cH-5Wy"/>
                                     <constraint firstItem="sWN-49-wwQ" firstAttribute="leading" secondItem="T18-Zm-Mxt" secondAttribute="leading" id="PBo-hg-cEe"/>
-                                    <constraint firstItem="sWN-49-wwQ" firstAttribute="top" secondItem="T18-Zm-Mxt" secondAttribute="top" id="Ro4-Ic-4mD"/>
+                                    <constraint firstItem="sWN-49-wwQ" firstAttribute="top" secondItem="kwX-8u-SCV" secondAttribute="bottom" id="Zkv-Cz-GHF"/>
                                     <constraint firstAttribute="bottom" secondItem="sWN-49-wwQ" secondAttribute="bottom" id="yUX-uy-QNS"/>
+                                    <constraint firstAttribute="trailing" secondItem="kwX-8u-SCV" secondAttribute="trailing" id="yd7-hD-Dcs"/>
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FZg-aO-yfu">
@@ -340,7 +359,7 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="FZg-aO-yfu" firstAttribute="top" secondItem="T18-Zm-Mxt" secondAttribute="bottom" id="263-5H-dYw"/>
-                            <constraint firstItem="T18-Zm-Mxt" firstAttribute="top" secondItem="4cq-tk-vZp" secondAttribute="top" id="HcT-1a-JiG"/>
+                            <constraint firstItem="T18-Zm-Mxt" firstAttribute="top" secondItem="4cq-tk-vZp" secondAttribute="top" id="2kK-eV-VtY"/>
                             <constraint firstItem="FZg-aO-yfu" firstAttribute="leading" secondItem="4cq-tk-vZp" secondAttribute="leading" id="Lte-6P-ov8"/>
                             <constraint firstAttribute="bottom" secondItem="FZg-aO-yfu" secondAttribute="bottom" id="jRT-QT-9yY"/>
                             <constraint firstItem="4cq-tk-vZp" firstAttribute="trailing" secondItem="FZg-aO-yfu" secondAttribute="trailing" id="u6S-7h-5zJ"/>
@@ -354,6 +373,9 @@
                         <outlet property="collectionView" destination="sWN-49-wwQ" id="q5J-n0-Lri"/>
                         <outlet property="deleteAssetsButtonView" destination="ltl-OA-OWg" id="XSr-VE-QlE"/>
                         <outlet property="deleteAssetsTexetLabel" destination="doS-lq-Xzt" id="QYn-NB-GWK"/>
+                        <outlet property="imageView" destination="lCC-Ci-r2B" id="bm2-Cq-Gok"/>
+                        <outlet property="optionalViewerHeightConstraint" destination="UIj-ot-DdT" id="jMd-fk-4J6"/>
+                        <outlet property="photoContentContainerView" destination="T18-Zm-Mxt" id="93R-oS-ZNB"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="w3y-Ft-b1X" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

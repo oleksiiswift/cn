@@ -17,6 +17,13 @@ class GroupedAssetListViewController: UIViewController {
     @IBOutlet weak var deleteAssetsTexetLabel: UILabel!
     @IBOutlet weak var bottomMenuHeightConstraint: NSLayoutConstraint!
     
+    @IBOutlet weak var imageView: UIImageView!
+    
+    @IBOutlet weak var photoContentContainerView: UIView!
+    @IBOutlet weak var optionalViewerHeightConstraint: NSLayoutConstraint!
+    
+    
+    
     lazy var burgerOptionSettingButton = UIBarButtonItem(image: I.navigationItems.elipseBurger, style: .plain, target: self, action: #selector(openOptionsBurgerMenu))
     
     private let sliderMenuOptionItem = DropDownOptionsMenuItem(titleMenu: "slider", itemThumbnail: I.systemElementsItems.sliderView, isSelected: false, menuItem: .changeLayout)
@@ -31,11 +38,16 @@ class GroupedAssetListViewController: UIViewController {
     private var selectedSection: Set<Int> = []
     
     let collectionViewFlowLayout = SNCollectionViewLayout()
+    let carouselCollectionFlowLayout = ZoomAndSnapFlowLayout()
     
     private var isSliderFlowLayout: Bool = false
     private var isSelectAllAssetsMode: Bool = false
+    private var isCarouselViewMode: Bool = false
 
     private var bottomMenuHeight: CGFloat = 80
+    private var defaultContainerHeight: CGFloat = 0
+    private var carouselPreviewCollectionHeight: CGFloat = 150 + U.bottomSafeAreaHeight
+
     private var photoManager = PhotoManager()
     
     override func viewDidLoad() {
@@ -48,6 +60,12 @@ class GroupedAssetListViewController: UIViewController {
         setupListenersAndObservers()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        self.defaultContainerHeight = self.photoContentContainerView.frame.height
+    }
+
     @IBAction func didTapDeleteAssetsActionButton(_ sender: Any) {
         showDeleteConfirmAlert()
     }
@@ -80,6 +98,16 @@ extension GroupedAssetListViewController: UICollectionViewDelegate, UICollection
         self.collectionView.contentInset = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
         collectionViewFlowLayout.fixedDivisionCount = 4
         collectionViewFlowLayout.itemSpacing = 5
+        
+//        couroselCollectionFlowLayout.itemHeight = 100
+//        couroselCollectionFlowLayout.itemWidth = 100
+        
+        carouselCollectionFlowLayout.itemSize = CGSize(width: 60, height: 60)
+        carouselCollectionFlowLayout.minimumLineSpacing = 10
+        carouselCollectionFlowLayout.minimumInteritemSpacing = 10
+        carouselCollectionFlowLayout.headerReferenceSize = CGSize.zero
+        
+        
         
         self.collectionView.collectionViewLayout = collectionViewFlowLayout
         self.collectionView.allowsMultipleSelection = true
@@ -143,6 +171,10 @@ extension GroupedAssetListViewController: UICollectionViewDelegate, UICollection
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         
+        guard !isCarouselViewMode else {
+            return UICollectionReusableView()
+        }
+        
         switch kind {
             
             case UICollectionView.elementKindSectionHeader:
@@ -201,8 +233,11 @@ extension GroupedAssetListViewController: UICollectionViewDelegate, UICollection
         return UICollectionReusableView()
     }
     
+    /// if need select cell from custom cell-button and tap on cell need - return `false`
+    
     func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
-        debugPrint("tap on \(indexPath)")
+        
+        self.changeFlowLayoutAndFocus(at: indexPath)
         return false
     }
     
@@ -430,10 +465,21 @@ extension GroupedAssetListViewController {
 extension GroupedAssetListViewController {
     
     private func handleDeleteAssetsButton() {
-        bottomMenuHeightConstraint.constant = !selectedAssets.isEmpty ? (bottomMenuHeight + U.bottomSafeAreaHeight - 5): 0
+        
+        let calculatedBottomMenuHeight: CGFloat = bottomMenuHeight + U.bottomSafeAreaHeight - 5
+        
+        /// `collection`
+        if isCarouselViewMode {
+            optionalViewerHeightConstraint.constant = defaultContainerHeight - (carouselPreviewCollectionHeight + (!selectedAssets.isEmpty ?  calculatedBottomMenuHeight : 0))
+        } else {
+            optionalViewerHeightConstraint.constant = 0
+        }
+        
+        /// `bottom menu`
+        bottomMenuHeightConstraint.constant = !selectedAssets.isEmpty ? (calculatedBottomMenuHeight) : 0
         self.collectionView.contentInset.bottom = !selectedAssets.isEmpty ? 20 : 10
         U.animate(0.5) {
-            self.collectionView.layoutIfNeeded()
+            self.photoContentContainerView.layoutIfNeeded()
             self.view.layoutIfNeeded()
         }
     }
@@ -496,7 +542,7 @@ extension GroupedAssetListViewController {
             if asset.mediaType == .video {
                 self.showVideoPreviewController(asset)
             } else {
-                self.showFullScreenAssetPreview(asset)
+                self.showFullScreenAssetPreviewAndFocus(at: indexPath)
             }
         }
         
@@ -525,17 +571,43 @@ extension GroupedAssetListViewController {
         }
     }
     
-    private func showFullScreenAssetPreview(_ asset: PHAsset) {
-        
+    private func showFullScreenAssetPreviewAndFocus(at indexPath: IndexPath) {
+        self.changeFlowLayoutAndFocus(at: indexPath)
     }
-}
+    
+    private func changeFlowLayoutAndFocus(at indexPath: IndexPath) {
+        
+        isCarouselViewMode = !isCarouselViewMode
+        optionalViewerHeightConstraint.constant = isCarouselViewMode ? defaultContainerHeight - carouselPreviewCollectionHeight : 0
+        
+        self.collectionView.collectionViewLayout = isCarouselViewMode ? carouselCollectionFlowLayout : collectionViewFlowLayout
+        
+        let carouselEdgeInsets: UIEdgeInsets = UIEdgeInsets(top: 0, left: self.collectionView.frame.width / 2 - 30, bottom: 0, right: 0)
+        let collectionEdgeInsets: UIEdgeInsets = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
+        
+        collectionView.contentInset = isCarouselViewMode ? carouselEdgeInsets : collectionEdgeInsets
+        self.collectionView.reloadData()
+        self.collectionView.collectionViewLayout.invalidateLayout()
+        self.collectionView.scrollToItem(at: indexPath, at: [.centeredVertically, .centeredHorizontally], animated: true)
+        
+        
+        if isCarouselViewMode {
+            
+            if let image = assetGroups[indexPath.section].assets[indexPath.row].getImage {
+                self.imageView.image = image
+            } else {
+                self.changeFlowLayoutAndFocus(at: indexPath)
+            }
+        }
+    }
+ }
 
 extension GroupedAssetListViewController: SelectDropDownMenuDelegate {
     
     func selectedItemListViewController(_ controller: DropDownMenuViewController, didSelectItem: DropDownMenuItems) {
         switch didSelectItem {
             case .changeLayout:
-                debugPrint("later")
+                self.changeFlowLayoutAndFocus(at: IndexPath(row: 0, section: 0))
             case .unselectAll:
                 self.shouldSelectAllAssetsInSections(isSelectAllAssetsMode)
                 isSelectAllAssetsMode = !isSelectAllAssetsMode
@@ -598,4 +670,79 @@ extension GroupedAssetListViewController: Themeble {
     private func setupListenersAndObservers() {}
 }
 
+class ZoomAndSnapFlowLayout: UICollectionViewFlowLayout {
+
+    let activeDistance: CGFloat = 20
+    let zoomFactor: CGFloat = 0.0
+
+    override init() {
+        super.init()
+
+        scrollDirection = .horizontal
+        minimumLineSpacing = 40
+        itemSize = CGSize(width: 300, height: 160)
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override func prepare() {
+        guard let collectionView = collectionView else { fatalError() }
+        let verticalInsets = (collectionView.frame.height - collectionView.adjustedContentInset.top - collectionView.adjustedContentInset.bottom - itemSize.height) / 2
+        let horizontalInsets = (collectionView.frame.width - collectionView.adjustedContentInset.right - collectionView.adjustedContentInset.left - itemSize.width) / 2
+        sectionInset = UIEdgeInsets(top: verticalInsets, left: 10, bottom: verticalInsets, right: 10)
+        super.prepare()
+    }
+
+    override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
+        guard let collectionView = collectionView else { return nil }
+        let rectAttributes = super.layoutAttributesForElements(in: rect)!.map { $0.copy() as! UICollectionViewLayoutAttributes }
+        let visibleRect = CGRect(origin: collectionView.contentOffset, size: collectionView.frame.size)
+
+        // Make the cells be zoomed when they reach the center of the screen
+        for attributes in rectAttributes where attributes.frame.intersects(visibleRect) {
+            let distance = visibleRect.midX - attributes.center.x
+            let normalizedDistance = distance / activeDistance
+
+            if distance.magnitude < activeDistance {
+                let zoom = 1 + zoomFactor * (1 - normalizedDistance.magnitude)
+                attributes.transform3D = CATransform3DMakeScale(zoom, zoom, 1)
+                attributes.zIndex = Int(zoom.rounded())
+            }
+        }
+
+        return rectAttributes
+    }
+
+    override func targetContentOffset(forProposedContentOffset proposedContentOffset: CGPoint, withScrollingVelocity velocity: CGPoint) -> CGPoint {
+        guard let collectionView = collectionView else { return .zero }
+
+        // Add some snapping behaviour so that the zoomed cell is always centered
+        let targetRect = CGRect(x: proposedContentOffset.x, y: 0, width: collectionView.frame.width, height: collectionView.frame.height)
+        guard let rectAttributes = super.layoutAttributesForElements(in: targetRect) else { return .zero }
+
+        var offsetAdjustment = CGFloat.greatestFiniteMagnitude
+        let horizontalCenter = proposedContentOffset.x + collectionView.frame.width / 2
+
+        for layoutAttributes in rectAttributes {
+            let itemHorizontalCenter = layoutAttributes.center.x
+            if (itemHorizontalCenter - horizontalCenter).magnitude < offsetAdjustment.magnitude {
+                offsetAdjustment = itemHorizontalCenter - horizontalCenter
+            }
+        }
+        return CGPoint(x: proposedContentOffset.x + offsetAdjustment, y: proposedContentOffset.y)
+    }
+
+    override func shouldInvalidateLayout(forBoundsChange newBounds: CGRect) -> Bool {
+        // Invalidate layout so that every cell get a chance to be zoomed when it reaches the center of the screen
+        return true
+    }
+
+    override func invalidationContext(forBoundsChange newBounds: CGRect) -> UICollectionViewLayoutInvalidationContext {
+        let context = super.invalidationContext(forBoundsChange: newBounds) as! UICollectionViewFlowLayoutInvalidationContext
+        context.invalidateFlowLayoutDelegateMetrics = newBounds.size != collectionView?.bounds.size
+        return context
+    }
+}
 
