@@ -22,9 +22,10 @@ class GroupedAssetListViewController: UIViewController {
     @IBOutlet weak var photoContentContainerView: UIView!
     @IBOutlet weak var optionalViewerHeightConstraint: NSLayoutConstraint!
     
-    
-    
+     var scrollView = UIScrollView()
+
     lazy var burgerOptionSettingButton = UIBarButtonItem(image: I.navigationItems.elipseBurger, style: .plain, target: self, action: #selector(openOptionsBurgerMenu))
+    lazy var customBackButton = UIBarButtonItem(image: I.navigationItems.leftShevronBack, style: .plain, target: self, action: #selector(didBackActionChangeLayout))
     
     private let sliderMenuOptionItem = DropDownOptionsMenuItem(titleMenu: "slider", itemThumbnail: I.systemElementsItems.sliderView, isSelected: false, menuItem: .changeLayout)
     private let tileMenuOptionItem = DropDownOptionsMenuItem(titleMenu: "tile", itemThumbnail: I.systemElementsItems.tileView, isSelected: false, menuItem: .changeLayout)
@@ -33,6 +34,9 @@ class GroupedAssetListViewController: UIViewController {
     
     public var assetGroups: [PhassetGroup] = []
     public var mediaType: PhotoMediaType = .none
+    
+    
+    private var imageManager: PHCachingImageManager?
     
     private var selectedAssets: [PHAsset] = []
     private var selectedSection: Set<Int> = []
@@ -43,6 +47,8 @@ class GroupedAssetListViewController: UIViewController {
     private var isSliderFlowLayout: Bool = false
     private var isSelectAllAssetsMode: Bool = false
     private var isCarouselViewMode: Bool = false
+    private var focusedIndexPath: IndexPath?
+    private var previousPreheatRect: CGRect = CGRect()
 
     private var bottomMenuHeight: CGFloat = 80
     private var defaultContainerHeight: CGFloat = 0
@@ -58,6 +64,12 @@ class GroupedAssetListViewController: UIViewController {
         setupCollectionView()
         setupNavigation()
         setupListenersAndObservers()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        updateCachedAssets()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -582,22 +594,39 @@ extension GroupedAssetListViewController {
         
         self.collectionView.collectionViewLayout = isCarouselViewMode ? carouselCollectionFlowLayout : collectionViewFlowLayout
         
-        let carouselEdgeInsets: UIEdgeInsets = UIEdgeInsets(top: 0, left: self.collectionView.frame.width / 2 - 30, bottom: 0, right: 0)
+        let carouselEdgeInsets: UIEdgeInsets = UIEdgeInsets(top: 0, left: self.collectionView.frame.width / 2 - 30, bottom: 0, right: self.collectionView.frame.width / 2 - 30)
         let collectionEdgeInsets: UIEdgeInsets = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
         
         collectionView.contentInset = isCarouselViewMode ? carouselEdgeInsets : collectionEdgeInsets
         self.collectionView.reloadData()
         self.collectionView.collectionViewLayout.invalidateLayout()
-        self.collectionView.scrollToItem(at: indexPath, at: [.centeredVertically, .centeredHorizontally], animated: true)
-        
         
         if isCarouselViewMode {
-            
+            self.collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: false)
+        } else {
+            self.collectionView.scrollToItem(at: IndexPath(row: 0, section: indexPath.section == 0 ? 0 : indexPath.section - 1), at: [.centeredVertically, .centeredHorizontally], animated: false)
+        }
+        
+        if isCarouselViewMode {
             if let image = assetGroups[indexPath.section].assets[indexPath.row].getImage {
+                
                 self.imageView.image = image
             } else {
                 self.changeFlowLayoutAndFocus(at: indexPath)
             }
+        }
+    }
+    
+    @objc func didBackActionChangeLayout() {
+        
+        if isCarouselViewMode {
+            if let indexPath = focusedIndexPath {
+                changeFlowLayoutAndFocus(at: indexPath)
+            } else {
+                changeFlowLayoutAndFocus(at: IndexPath(item: 0, section: 8))
+            }
+        } else {
+            self.navigationController?.popViewController(animated: true)
         }
     }
  }
@@ -665,9 +694,13 @@ extension GroupedAssetListViewController: Themeble {
     private func setupNavigation() {
         
         self.navigationItem.rightBarButtonItem = burgerOptionSettingButton
+        self.navigationItem.leftBarButtonItem = customBackButton
     }
     
-    private func setupListenersAndObservers() {}
+    private func setupListenersAndObservers() {
+        
+        scrollView.delegate = self
+    }
 }
 
 class ZoomAndSnapFlowLayout: UICollectionViewFlowLayout {
@@ -744,5 +777,154 @@ class ZoomAndSnapFlowLayout: UICollectionViewFlowLayout {
         context.invalidateFlowLayoutDelegateMetrics = newBounds.size != collectionView?.bounds.size
         return context
     }
+    
+    
+
 }
 
+
+extension GroupedAssetListViewController: UIScrollViewDelegate {
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+//        self.updateCachedAssets()
+        
+        loadPreviewImageThumb(isScrolling: true)
+    }
+    
+    
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        debugPrint("scrollViewDidEndDecelerating")
+        debugPrint(scrollView.isDecelerating)
+        
+        loadPreviewImageThumb(isScrolling: false)
+    }
+    
+    func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+        debugPrint("hello")
+    }
+    
+    func loadPreviewImageThumb(isScrolling: Bool) {
+        
+        guard isCarouselViewMode else { return }
+        let point = view.convert(self.collectionView.center, to: collectionView)
+        
+        guard let indexPath = self.collectionView.indexPathForItem(at: point) else {return }
+        
+        let asset = self.assetGroups[indexPath.section].assets[indexPath.row]
+        
+        
+     
+        if !isScrolling {
+            self.imageView.image = asset.getImage
+        } else {
+            //            self.imageView.image = asset.getImage
+            
+            
+            self.imageManager!.requestImage(for: asset, targetSize: CGSize(width: U.screenWidth, height: U.screenHeight), contentMode: .aspectFill, options: nil) {result, info in
+                U.UI {
+                debugPrint(result?.accessibilityIdentifier)
+                self.imageView.image = result
+                }
+            }
+        }
+    }
+    
+    
+    private func updateCachedAssets() {
+
+
+        // The preheat window is twice the height of the visible rect.
+        var preheatRect = self.collectionView!.bounds
+        preheatRect = preheatRect.insetBy(dx: 0.0, dy: -0.5 * preheatRect.height)
+
+        /*
+         Check if the collection view is showing an area that is significantly
+         different to the last preheated area.
+         */
+//        let delta = abs(preheatRect.midY - self.previousPreheatRect.midY)
+//        if delta > self.collectionView!.bounds.height / 3.0 {
+//
+//            // Compute the assets to start caching and to stop caching.
+//            var addedIndexPaths: [IndexPath] = []
+//            var removedIndexPaths: [IndexPath] = []
+//
+//            self.computeDifferenceBetweenRect(oldRect: self.previousPreheatRect, andRect: preheatRect, removedHandler: {removedRect in
+//                //                let indexPaths = self.collectionView.aapl_indexPathsForElementsInRect(removedRect)
+//                let indexPath = self.collectionView.indexPathsForVisibleItems
+//
+//
+//
+//                removedIndexPaths += indexPaths
+//            }, addedHandler: {addedRect in
+//                let indexPaths = self.collectionView.aapl_indexPathsForElementsInRect(addedRect)
+//                addedIndexPaths += indexPaths
+//            })
+//
+        
+        var all: [PHAsset] = []
+        for group in assetGroups {
+            
+
+            all.append(contentsOf: group.assets)
+            
+        }
+            
+                
+        
+//
+//
+//            let assetsToStartCaching = self.assetsAtIndexPaths(indexPaths: addedIndexPaths)
+//            let assetsToStopCaching = self.assetsAtIndexPaths(indexPaths: removedIndexPaths)
+
+            // Update the assets the PHCachingImageManager is caching.
+        self.imageManager?.startCachingImages(for: all, targetSize: CGSize(width: U.screenWidth, height: U.screenHeight), contentMode: .aspectFill, options: nil)
+        
+        
+        
+        
+//        self.imageManager?.stopCachingImages(for: all,
+//                                                          targetSize: CGSize(width: U.screenWidth, height: U.screenHeight),
+//                                                          contentMode: .aspectFill,
+//                                                          options: nil)
+
+//        }
+    }
+    
+    private func assetsAtIndexPaths(indexPaths: [NSIndexPath]) -> [PHAsset] {
+        let  assets = indexPaths.map{self.assetGroups[$0.item].assets[$0.row]}
+        return assets
+    }
+    
+    
+    private func computeDifferenceBetweenRect(oldRect: CGRect, andRect newRect: CGRect, removedHandler: (CGRect)->Void, addedHandler: (CGRect)->Void) {
+        if newRect.intersects(oldRect) {
+            let oldMaxY = oldRect.maxY
+            let oldMinY = oldRect.minY
+            let newMaxY = newRect.maxY
+            let newMinY = newRect.minY
+            
+            if newMaxY > oldMaxY {
+                let rectToAdd = CGRect(x: newRect.origin.x, y: oldMaxY, width: newRect.size.width, height: (newMaxY - oldMaxY))
+                addedHandler(rectToAdd)
+            }
+            
+            if oldMinY > newMinY {
+                let rectToAdd = CGRect(x: newRect.origin.x, y: newMinY, width: newRect.size.width, height: (oldMinY - newMinY))
+                addedHandler(rectToAdd)
+            }
+            
+            if newMaxY < oldMaxY {
+                let rectToRemove = CGRect(x: newRect.origin.x, y: newMaxY, width: newRect.size.width, height: (oldMaxY - newMaxY))
+                removedHandler(rectToRemove)
+            }
+            
+            if oldMinY < newMinY {
+                let rectToRemove = CGRect(x: newRect.origin.x, y: oldMinY, width: newRect.size.width, height: (newMinY - oldMinY))
+                removedHandler(rectToRemove)
+            }
+        } else {
+            addedHandler(newRect)
+            removedHandler(oldRect)
+        }
+    }
+}

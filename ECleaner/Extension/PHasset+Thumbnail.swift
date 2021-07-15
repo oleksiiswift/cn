@@ -23,15 +23,30 @@ extension PHAsset {
         return result
     }
     
+    var thumbnail: UIImage? {
+        var result: UIImage?
+        let targetSize = CGSize(width: U.screenWidth / 2, height: U.screenHeight / 2)
+        let options = PHImageRequestOptions()
+//        options.deliveryMode = .fastFormat
+        options.isSynchronous = true
+        options.isNetworkAccessAllowed = true
+        PHImageManager.default().requestImage(for: self, targetSize: targetSize, contentMode: .aspectFit, options: options) { (image, info) in
+            result = image
+        }
+        return result
+    }
+    
+    
+    
     var getImage: UIImage? {
         var result: UIImage?
         let manager = PHImageManager.default()
         let options = PHImageRequestOptions()
         options.version = .current
         options.isSynchronous = true
-        manager.requestImageDataAndOrientation(for: self, options: options) { data, _, _, _ in
-            if let data = data {
-                result = UIImage(data: data)
+        manager.requestImage(for: self, targetSize: CGSize(width: self.pixelWidth, height: self.pixelHeight), contentMode: .aspectFit, options: options) { image, info in
+            if let image = image {
+                result = image
             }
         }
         return result

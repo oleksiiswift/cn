@@ -16,6 +16,7 @@ class Images {
         static let premium = UIImage(systemName: "crown.fill")
         static let settings = UIImage(systemName: "gear")
         static let elipseBurger = UIImage(systemName: "ellipsis.circle.fill")
+        static let leftShevronBack = UIImage(systemName: "chevron.left")
     }
     
     struct mainMenuThumbItems {
