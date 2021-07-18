@@ -44,6 +44,9 @@ class GroupedAssetListViewController: UIViewController {
     let collectionViewFlowLayout = SNCollectionViewLayout()
     let carouselCollectionFlowLayout = ZoomAndSnapFlowLayout()
     
+    private var numbersOfItems: Int = 0
+    var all: [PHAsset] = []
+    
     private var isSliderFlowLayout: Bool = false
     private var isSelectAllAssetsMode: Bool = false
     private var isCarouselViewMode: Bool = false
@@ -58,6 +61,13 @@ class GroupedAssetListViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.imageManager = PHCachingImageManager()
+        
+        for assets in assetGroups {
+            numbersOfItems += assets.assets.count
+            all.append(contentsOf: assets.assets)
+        }
         
         setupUI()
         updateColors()
@@ -94,6 +104,7 @@ extension GroupedAssetListViewController: UICollectionViewDelegate, UICollection
         collectionViewFlowLayout.delegate = self
         self.collectionView.dataSource = self
         self.collectionView.delegate = self
+        self.collectionView.prefetchDataSource = self
         
         /// `register xib`
         
@@ -473,6 +484,31 @@ extension GroupedAssetListViewController {
     }
 }
 
+extension GroupedAssetListViewController: UICollectionViewDataSourcePrefetching {
+    
+    
+    func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
+        
+        DispatchQueue.main.async { [weak self] in
+            guard let `self` = self, let collection = self.collectionView else { return }
+            if indexPaths.count <= self.numbersOfItems, let first = indexPaths.first?.row, let last = indexPaths.last?.row {
+//                guard let assets = collection.getAssets(at: first...last) else { return }
+                guard self.all.count > 0 else { return }
+                
+                let scale = max(UIScreen.main.scale,2)
+                let targetSize = CGSize(width: U.screenWidth * scale, height: U.screenHeight * scale)
+                
+                self.imageManager?.startCachingImages(for: self.all, targetSize: targetSize, contentMode: .aspectFill, options: nil)
+                debugPrint("dss  kkffkfkf")
+            }
+        }
+    }
+    
+//    self.imageManager?.requestImage(for: asset, targetSize: CGSize(width: U.screenWidth, height: U.screenHeight), contentMode: .aspectFill, options: nil) {result, info in
+    
+    
+}
+
 //      MARK: - assets processing -
 extension GroupedAssetListViewController {
     
@@ -811,28 +847,26 @@ extension GroupedAssetListViewController: UIScrollViewDelegate {
         guard let indexPath = self.collectionView.indexPathForItem(at: point) else {return }
         
         let asset = self.assetGroups[indexPath.section].assets[indexPath.row]
-        
-        
-     
+    
         if !isScrolling {
             self.imageView.image = asset.getImage
         } else {
             //            self.imageView.image = asset.getImage
+            debugPrint("try chamge image from chache")
             
-            
-            self.imageManager!.requestImage(for: asset, targetSize: CGSize(width: U.screenWidth, height: U.screenHeight), contentMode: .aspectFill, options: nil) {result, info in
-                U.UI {
-                debugPrint(result?.accessibilityIdentifier)
-                self.imageView.image = result
-                }
-            }
+            self.imageView.image = asset.getImage
+//            self.imageManager?.requestImage(for: asset, targetSize: CGSize(width: U.screenWidth, height: U.screenHeight), contentMode: .aspectFill, options: nil) {result, info in
+//                
+//                debugPrint(result?.accessibilityIdentifier)
+//                self.imageView.image = result
+//                
+//            }
         }
     }
     
     
     private func updateCachedAssets() {
-
-
+        
         // The preheat window is twice the height of the visible rect.
         var preheatRect = self.collectionView!.bounds
         preheatRect = preheatRect.insetBy(dx: 0.0, dy: -0.5 * preheatRect.height)
@@ -861,18 +895,15 @@ extension GroupedAssetListViewController: UIScrollViewDelegate {
 //            })
 //
         
-        var all: [PHAsset] = []
-        for group in assetGroups {
-            
 
-            all.append(contentsOf: group.assets)
+//        for group in assetGroups {
+//            all.append(contentsOf: group.assets)
+//
+//        }
             
-        }
-            
-                
+        self.imageManager?.allowsCachingHighQualityImages = true
         
-//
-//
+
 //            let assetsToStartCaching = self.assetsAtIndexPaths(indexPaths: addedIndexPaths)
 //            let assetsToStopCaching = self.assetsAtIndexPaths(indexPaths: removedIndexPaths)
 

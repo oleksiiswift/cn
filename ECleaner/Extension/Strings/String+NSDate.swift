@@ -12,6 +12,12 @@ extension String {
     func NSDateConverter(format: String) -> NSDate {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = format
-        return dateFormatter.date(from: self)! as NSDate
+        dateFormatter.timeZone = NSTimeZone(name: "GMT") as TimeZone?
+        
+        if let date = dateFormatter.date(from: self) as NSDate? {
+            return date
+        } else {
+            return dateFormatter.date(from: self)! as NSDate
+        }
     }
 }

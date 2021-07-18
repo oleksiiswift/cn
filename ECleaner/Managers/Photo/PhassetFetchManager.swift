@@ -101,7 +101,6 @@ extension PHAssetFetchManager {
             if let image = result {
             thumbnail = image
             }
-            thumbnail = result!
         })
         return thumbnail
     }
@@ -215,5 +214,49 @@ extension PHAsset {
             }
         }
         return fileDiskSpace
+    }
+}
+
+extension PHAssetFetchManager {
+ 
+    public func recentlyDeletedAlbumFetch(completionHandler: @escaping (([PHAsset]) -> Void)) {
+        
+        fetchRecentlyDeletedCollection { collection in
+            guard let albumCollection = collection else {
+                completionHandler([])
+                return
+            }
+            
+            let result = PHAsset.fetchAssets(in: albumCollection, options: nil)
+            var assets = [PHAsset]()
+            
+            if result.count == 0 {
+                U.UI {
+                    completionHandler([])
+                }
+                return
+            }
+           
+            for assetPosition in 1...result.count {
+                assets.append(result[assetPosition - 1])
+            }
+            U.UI {
+                completionHandler(assets)
+            }
+            completionHandler(assets)
+        }
+    }
+    
+    private func fetchRecentlyDeletedCollection(completionHandler: @escaping ((PHAssetCollection?) -> Void)) {
+        
+        let result = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .albumRegular, options: nil)
+        
+        for i in 0..<result.count {
+            let album = result[i]
+            
+            if album.localizedTitle == "Recently Deleted" {
+                 completionHandler(album)
+            }
+        }
     }
 }

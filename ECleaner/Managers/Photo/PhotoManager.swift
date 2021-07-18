@@ -131,6 +131,14 @@ class PhotoManager: NSObject {
                 UpdateContentDataBaseMediator.instance.getLargeVideosAssets(assets)
             }
         }
+        
+        operationQueue.addOperation {
+            debugPrint("try fetch recentle deleted")
+            
+            self.getRecentlyDeletedAssets { assets in
+                debugPrint(assets.count)
+            }
+        }
     }
     
 //    MARK: - authentification
@@ -723,6 +731,15 @@ extension PhotoManager {
             }
         }
     }
+    
+    /// fetch `recently deleted assets`
+    
+    public func getRecentlyDeletedAssets(completion: @escaping ([PHAsset]) -> Void) {
+        
+        fetchManager.recentlyDeletedAlbumFetch { assets in
+            completion(assets)
+        }
+    }
 }
 
 //      MARK: - change assets observer -
@@ -740,6 +757,7 @@ extension PhotoManager: PHPhotoLibraryChangeObserver {
 
 //      MARK:  find duplicates close to similar
 class FindDuplicatesUsingThumbnail {
+    
     enum Strictness {
         case similar
         case closeToIdentical
