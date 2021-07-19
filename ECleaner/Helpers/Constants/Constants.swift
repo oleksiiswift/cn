@@ -57,6 +57,7 @@ class Constants {
             static let contentTypeCell = "ContentTypeTableViewCell"
             static let photoSimpleCell = "PhotoCollectionViewCell"
             static let dropDownCell = "DropDownMenuTableViewCell"
+            static let carouselCell = "CarouselCollectionViewCell"
         }
         
         struct views {
@@ -65,12 +66,16 @@ class Constants {
         }
         
         struct xibs {
+            /// cell xibs
             static let mediaTypeCell = "MediaTypeCollectionViewCell"
             static let contentTypeCell = "ContentTypeTableViewCell"
             static let photoSimpleCell = "PhotoCollectionViewCell"
+            static let dropDownCell = "DropDownMenuTableViewCell"
+            /// views
             static let groupHeader = "GroupedAssetsReusableHeaderView"
             static let groupFooter = "GroupedAssetsReusableFooterView"
-            static let dropDownCell = "DropDownMenuTableViewCell"
+            /// controllers
+            static let photoPreview = "PhotoPreviewViewController"
         }
         
         struct segue {

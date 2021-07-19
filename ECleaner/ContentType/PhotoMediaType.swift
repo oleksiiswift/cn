@@ -21,5 +21,8 @@ enum PhotoMediaType {
     case singleScreenShots
     case singleScreenRecordings
     
+    case singleRecentlyDeletedPhotos
+    case singleRecentlyDeletedVideos
+    
     case none
 }

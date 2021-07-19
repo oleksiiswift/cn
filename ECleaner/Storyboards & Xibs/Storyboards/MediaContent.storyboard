@@ -290,17 +290,20 @@
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kwX-8u-SCV">
                                         <rect key="frame" x="0.0" y="0.0" width="414" height="0.0"/>
                                         <subviews>
-                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="lCC-Ci-r2B">
-                                                <rect key="frame" x="0.0" y="0.0" width="414" height="0.0"/>
-                                            </imageView>
+                                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gYZ-ro-UiV">
+                                                <rect key="frame" x="0.0" y="-200" width="414" height="0.0"/>
+                                                <connections>
+                                                    <segue destination="s4c-JU-iXE" kind="embed" id="n9h-wM-JSa"/>
+                                                </connections>
+                                            </containerView>
                                         </subviews>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                         <constraints>
-                                            <constraint firstAttribute="trailing" secondItem="lCC-Ci-r2B" secondAttribute="trailing" id="LKO-ON-Zvh"/>
+                                            <constraint firstAttribute="bottom" secondItem="gYZ-ro-UiV" secondAttribute="bottom" id="FR1-gF-6qm"/>
                                             <constraint firstAttribute="height" id="UIj-ot-DdT"/>
-                                            <constraint firstItem="lCC-Ci-r2B" firstAttribute="leading" secondItem="kwX-8u-SCV" secondAttribute="leading" id="kR2-dj-eDe"/>
-                                            <constraint firstItem="lCC-Ci-r2B" firstAttribute="top" secondItem="kwX-8u-SCV" secondAttribute="top" id="kd0-mR-JPD"/>
-                                            <constraint firstAttribute="bottom" secondItem="lCC-Ci-r2B" secondAttribute="bottom" id="zKD-ov-AX0"/>
+                                            <constraint firstItem="gYZ-ro-UiV" firstAttribute="leading" secondItem="kwX-8u-SCV" secondAttribute="leading" id="Uxm-sg-etZ"/>
+                                            <constraint firstItem="gYZ-ro-UiV" firstAttribute="top" secondItem="kwX-8u-SCV" secondAttribute="top" id="peG-Dh-eJa"/>
+                                            <constraint firstAttribute="trailing" secondItem="gYZ-ro-UiV" secondAttribute="trailing" id="rOD-sU-BMD"/>
                                         </constraints>
                                     </view>
                                 </subviews>
@@ -373,9 +376,9 @@
                         <outlet property="collectionView" destination="sWN-49-wwQ" id="q5J-n0-Lri"/>
                         <outlet property="deleteAssetsButtonView" destination="ltl-OA-OWg" id="XSr-VE-QlE"/>
                         <outlet property="deleteAssetsTexetLabel" destination="doS-lq-Xzt" id="QYn-NB-GWK"/>
-                        <outlet property="imageView" destination="lCC-Ci-r2B" id="bm2-Cq-Gok"/>
                         <outlet property="optionalViewerHeightConstraint" destination="UIj-ot-DdT" id="jMd-fk-4J6"/>
                         <outlet property="photoContentContainerView" destination="T18-Zm-Mxt" id="93R-oS-ZNB"/>
+                        <outlet property="photoPreviewContainerView" destination="gYZ-ro-UiV" id="Fil-ZA-H0S"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="w3y-Ft-b1X" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -619,6 +622,20 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="VCV-Tt-8xJ" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="137.68115942028987" y="45.535714285714285"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="hAS-YS-8iO">
+            <objects>
+                <viewController id="s4c-JU-iXE" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="NBj-aB-qyU">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="0.0"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="D4M-RM-XHx" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2328" y="-766"/>
         </scene>
     </scenes>
     <resources>

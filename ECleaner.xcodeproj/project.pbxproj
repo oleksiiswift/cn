@@ -14,6 +14,10 @@
 		044282012693034600B6B47C /* DropDownMenuTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 044281FF2693034600B6B47C /* DropDownMenuTableViewCell.swift */; };
 		044282022693034600B6B47C /* DropDownMenuTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 044282002693034600B6B47C /* DropDownMenuTableViewCell.xib */; };
 		04428204269313AD00B6B47C /* DropDownMenuItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04428203269313AD00B6B47C /* DropDownMenuItems.swift */; };
+		0459DF8B26A55F360085EEDF /* CarouselCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0459DF8A26A55F360085EEDF /* CarouselCollectionViewCell.swift */; };
+		0459DF9226A56DB20085EEDF /* PhotoPreviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0459DF9026A56DB20085EEDF /* PhotoPreviewViewController.swift */; };
+		0459DF9326A56DB20085EEDF /* PhotoPreviewViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0459DF9126A56DB20085EEDF /* PhotoPreviewViewController.xib */; };
+		0459DF9526A579950085EEDF /* CarouselPhotoFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0459DF9426A579950085EEDF /* CarouselPhotoFlowLayout.swift */; };
 		04649B24268B2F3900336FE4 /* UpdatingChangesInOpenedScreensListeners.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04649B23268B2F3900336FE4 /* UpdatingChangesInOpenedScreensListeners.swift */; };
 		04649B28268B2F7300336FE4 /* UpdatingChangesInOpenedScreensMediator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04649B27268B2F7300336FE4 /* UpdatingChangesInOpenedScreensMediator.swift */; };
 		04649B31268C507F00336FE4 /* GroupedAssetsReusableHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04649B2F268C507F00336FE4 /* GroupedAssetsReusableHeaderView.swift */; };
@@ -97,6 +101,10 @@
 		044281FF2693034600B6B47C /* DropDownMenuTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropDownMenuTableViewCell.swift; sourceTree = "<group>"; };
 		044282002693034600B6B47C /* DropDownMenuTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DropDownMenuTableViewCell.xib; sourceTree = "<group>"; };
 		04428203269313AD00B6B47C /* DropDownMenuItems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropDownMenuItems.swift; sourceTree = "<group>"; };
+		0459DF8A26A55F360085EEDF /* CarouselCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarouselCollectionViewCell.swift; sourceTree = "<group>"; };
+		0459DF9026A56DB20085EEDF /* PhotoPreviewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoPreviewViewController.swift; sourceTree = "<group>"; };
+		0459DF9126A56DB20085EEDF /* PhotoPreviewViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PhotoPreviewViewController.xib; sourceTree = "<group>"; };
+		0459DF9426A579950085EEDF /* CarouselPhotoFlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarouselPhotoFlowLayout.swift; sourceTree = "<group>"; };
 		04649B23268B2F3900336FE4 /* UpdatingChangesInOpenedScreensListeners.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdatingChangesInOpenedScreensListeners.swift; sourceTree = "<group>"; };
 		04649B27268B2F7300336FE4 /* UpdatingChangesInOpenedScreensMediator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdatingChangesInOpenedScreensMediator.swift; sourceTree = "<group>"; };
 		04649B2F268C507F00336FE4 /* GroupedAssetsReusableHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupedAssetsReusableHeaderView.swift; sourceTree = "<group>"; };
@@ -188,6 +196,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0459DF9626A57A8D0085EEDF /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				0459DF9126A56DB20085EEDF /* PhotoPreviewViewController.xib */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
 		04649B37268C624F00336FE4 /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -309,6 +325,7 @@
 				97FC789F2688E5E8000D7F26 /* PhotoCollectionViewCell.swift */,
 				04CFFFFE2685F0C3000CA850 /* ContentTypeTableViewCell.swift */,
 				044281FF2693034600B6B47C /* DropDownMenuTableViewCell.swift */,
+				0459DF8A26A55F360085EEDF /* CarouselCollectionViewCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -341,6 +358,7 @@
 				049CC2362683730A0002F988 /* BaseCollectionFlowLayout.swift */,
 				97FC78992688D907000D7F26 /* SimpleColumnFlowLayout.swift */,
 				97E54A85268BB16A00C7FD54 /* SNCollectionViewLayout.swift */,
+				0459DF9426A579950085EEDF /* CarouselPhotoFlowLayout.swift */,
 			);
 			path = FlowLayout;
 			sourceTree = "<group>";
@@ -423,6 +441,7 @@
 				97CC2F3B26873A7D0072EF8C /* DateSelectorViewController.swift */,
 				97FC78972688CC06000D7F26 /* SimpleAssetsListViewController.swift */,
 				97238A082689D01E00C523DC /* GroupedAssetListViewController.swift */,
+				0459DF9026A56DB20085EEDF /* PhotoPreviewViewController.swift */,
 				04B20F03269C4F9A00C6BC14 /* ModalControllers */,
 			);
 			path = Controllers;
@@ -576,6 +595,7 @@
 		04E5836B267A414C00EDC3A3 /* Xibs */ = {
 			isa = PBXGroup;
 			children = (
+				0459DF9626A57A8D0085EEDF /* Controllers */,
 				04649B37268C624F00336FE4 /* Views */,
 				049CC2322683374C0002F988 /* Cells */,
 			);
@@ -733,6 +753,7 @@
 				04649B36268C52B100336FE4 /* GroupedAssetsReusableFooterView.xib in Resources */,
 				04CF00012685F0C3000CA850 /* ContentTypeTableViewCell.xib in Resources */,
 				049CC230268337310002F988 /* MediaTypeCollectionViewCell.xib in Resources */,
+				0459DF9326A56DB20085EEDF /* PhotoPreviewViewController.xib in Resources */,
 				04E09479267A06B900A69956 /* Assets.xcassets in Resources */,
 				044282022693034600B6B47C /* DropDownMenuTableViewCell.xib in Resources */,
 				04649B32268C507F00336FE4 /* GroupedAssetsReusableHeaderView.xib in Resources */,
@@ -791,9 +812,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0459DF8B26A55F360085EEDF /* CarouselCollectionViewCell.swift in Sources */,
 				97CC2F382683CF740072EF8C /* UpdateContentDataBaseMediator.swift in Sources */,
 				04E58379267B39AD00EDC3A3 /* PHPhotoLibrary+Auth.swift in Sources */,
 				049CC219268225500002F988 /* Colors.swift in Sources */,
+				0459DF9526A579950085EEDF /* CarouselPhotoFlowLayout.swift in Sources */,
 				97FC789626889541000D7F26 /* TimeIInterval.swift in Sources */,
 				97FC789226888120000D7F26 /* Date+CurrentDate.swift in Sources */,
 				0405AA59269D77A5004AC07A /* CMtime+StringDuration.swift in Sources */,
@@ -802,6 +825,7 @@
 				049CC23426833D320002F988 /* UIView+Radius.swift in Sources */,
 				04E58373267A4A2000EDC3A3 /* UIDevice+Enviroment.swift in Sources */,
 				044281FC2692F95A00B6B47C /* DropDownMenuViewController.swift in Sources */,
+				0459DF9226A56DB20085EEDF /* PhotoPreviewViewController.swift in Sources */,
 				97238A0F2689EE2700C523DC /* CustomDoneHud.swift in Sources */,
 				04E5837E267B60F600EDC3A3 /* AlertManager.swift in Sources */,
 				97FC789A2688D907000D7F26 /* SimpleColumnFlowLayout.swift in Sources */,
