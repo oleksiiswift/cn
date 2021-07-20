@@ -27,7 +27,6 @@ extension PHAsset {
         var result: UIImage?
         let targetSize = CGSize(width: U.screenWidth / 2, height: U.screenHeight / 2)
         let options = PHImageRequestOptions()
-//        options.deliveryMode = .fastFormat
         options.isSynchronous = true
         options.isNetworkAccessAllowed = true
         PHImageManager.default().requestImage(for: self, targetSize: targetSize, contentMode: .aspectFit, options: options) { (image, info) in
@@ -35,8 +34,6 @@ extension PHAsset {
         }
         return result
     }
-    
-    
     
     var getImage: UIImage? {
         var result: UIImage?

@@ -74,8 +74,11 @@ class Constants {
             /// views
             static let groupHeader = "GroupedAssetsReusableHeaderView"
             static let groupFooter = "GroupedAssetsReusableFooterView"
+            
+            static let carouselView = "CarouselItemView"
+            
             /// controllers
-            static let photoPreview = "PhotoPreviewViewController"
+//            static let photoPreview = "PhotoPreviewViewController"
         }
         
         struct segue {

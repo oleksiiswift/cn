@@ -82,7 +82,7 @@ class GroupedAssetListViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        updateCachedAssets()
+//        updateCachedAssets()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -635,7 +635,7 @@ extension GroupedAssetListViewController {
         self.collectionView.reloadData()
         self.collectionView.collectionViewLayout.invalidateLayout()
     
-        photoPreviewController.collectionView.layoutIfNeeded()
+//        photoPreviewController.collectionView.layoutIfNeeded()
         photoPreviewController.view.layoutIfNeeded()
         
         if isCarouselViewMode {
@@ -736,7 +736,7 @@ extension GroupedAssetListViewController: Themeble {
         photoPreviewController.groupAssetsCollection = self.assetGroups
         photoPreviewController.photoMediaContentType = self.mediaType
         photoPreviewController.mediaContentTypeSetup()
-        photoPreviewController.reloadCollectionView()
+        photoPreviewController.loadAssetsCollection()
     }
 
     func updateColors() {
@@ -791,10 +791,10 @@ extension GroupedAssetListViewController: UIScrollViewDelegate {
             
 //            self.imageView.image = asset.getImage
 //            photoPreviewController.collectionView.scrollToItem(at: indexPath, at: [.centeredVertically, .centeredHorizontally], animated: true)
-            photoPreviewController.scrollToImageView(at: indexPath)
+//            photoPreviewController.scrollToImageView(at: indexPath)
         } else {
             //            self.imageView.image = asset.getImage
-            photoPreviewController.scrollToImageView(at: indexPath)
+//            photoPreviewController.scrollToImageView(at: indexPath)
 //            photoPreviewController.collectionView.scrollToItem(at: indexPath, at: [.centeredVertically, .centeredHorizontally], animated: true)
 //            self.imageView.image = asset.getImage
 //            self.imageManager?.requestImage(for: asset, targetSize: CGSize(width: U.screenWidth, height: U.screenHeight), contentMode: .aspectFill, options: nil) {result, info in
@@ -807,61 +807,59 @@ extension GroupedAssetListViewController: UIScrollViewDelegate {
     }
     
     
-    private func updateCachedAssets() {
-        
-        // The preheat window is twice the height of the visible rect.
-        var preheatRect = self.collectionView!.bounds
-        preheatRect = preheatRect.insetBy(dx: 0.0, dy: -0.5 * preheatRect.height)
-
-        /*
-         Check if the collection view is showing an area that is significantly
-         different to the last preheated area.
-         */
-//        let delta = abs(preheatRect.midY - self.previousPreheatRect.midY)
-//        if delta > self.collectionView!.bounds.height / 3.0 {
+//    private func updateCachedAssets() {
 //
-//            // Compute the assets to start caching and to stop caching.
-//            var addedIndexPaths: [IndexPath] = []
-//            var removedIndexPaths: [IndexPath] = []
+//        // The preheat window is twice the height of the visible rect.
+//        var preheatRect = self.collectionView!.bounds
+//        preheatRect = preheatRect.insetBy(dx: 0.0, dy: -0.5 * preheatRect.height)
 //
-//            self.computeDifferenceBetweenRect(oldRect: self.previousPreheatRect, andRect: preheatRect, removedHandler: {removedRect in
-//                //                let indexPaths = self.collectionView.aapl_indexPathsForElementsInRect(removedRect)
-//                let indexPath = self.collectionView.indexPathsForVisibleItems
+//        /*
+//         Check if the collection view is showing an area that is significantly
+//         different to the last preheated area.
+//         */
+////        let delta = abs(preheatRect.midY - self.previousPreheatRect.midY)
+////        if delta > self.collectionView!.bounds.height / 3.0 {
+////
+////            // Compute the assets to start caching and to stop caching.
+////            var addedIndexPaths: [IndexPath] = []
+////            var removedIndexPaths: [IndexPath] = []
+////
+////            self.computeDifferenceBetweenRect(oldRect: self.previousPreheatRect, andRect: preheatRect, removedHandler: {removedRect in
+////                //                let indexPaths = self.collectionView.aapl_indexPathsForElementsInRect(removedRect)
+////                let indexPath = self.collectionView.indexPathsForVisibleItems
+////
+////                removedIndexPaths += indexPaths
+////            }, addedHandler: {addedRect in
+////                let indexPaths = self.collectionView.aapl_indexPathsForElementsInRect(addedRect)
+////                addedIndexPaths += indexPaths
+////            })
+////
+//
+//
+////        for group in assetGroups {
+////            all.append(contentsOf: group.assets)
+////
+////        }
+//
+//        self.imageManager?.allowsCachingHighQualityImages = true
+//
+//
+////            let assetsToStartCaching = self.assetsAtIndexPaths(indexPaths: addedIndexPaths)
+////            let assetsToStopCaching = self.assetsAtIndexPaths(indexPaths: removedIndexPaths)
+//
+//            // Update the assets the PHCachingImageManager is caching.
+//        self.imageManager?.startCachingImages(for: all, targetSize: CGSize(width: U.screenWidth, height: U.screenHeight), contentMode: .aspectFill, options: nil)
 //
 //
 //
-//                removedIndexPaths += indexPaths
-//            }, addedHandler: {addedRect in
-//                let indexPaths = self.collectionView.aapl_indexPathsForElementsInRect(addedRect)
-//                addedIndexPaths += indexPaths
-//            })
 //
-        
-
-//        for group in assetGroups {
-//            all.append(contentsOf: group.assets)
+////        self.imageManager?.stopCachingImages(for: all,
+////                                                          targetSize: CGSize(width: U.screenWidth, height: U.screenHeight),
+////                                                          contentMode: .aspectFill,
+////                                                          options: nil)
 //
-//        }
-            
-        self.imageManager?.allowsCachingHighQualityImages = true
-        
-
-//            let assetsToStartCaching = self.assetsAtIndexPaths(indexPaths: addedIndexPaths)
-//            let assetsToStopCaching = self.assetsAtIndexPaths(indexPaths: removedIndexPaths)
-
-            // Update the assets the PHCachingImageManager is caching.
-        self.imageManager?.startCachingImages(for: all, targetSize: CGSize(width: U.screenWidth, height: U.screenHeight), contentMode: .aspectFill, options: nil)
-        
-        
-        
-        
-//        self.imageManager?.stopCachingImages(for: all,
-//                                                          targetSize: CGSize(width: U.screenWidth, height: U.screenHeight),
-//                                                          contentMode: .aspectFill,
-//                                                          options: nil)
-
-//        }
-    }
+////        }
+//    }
     
     private func assetsAtIndexPaths(indexPaths: [NSIndexPath]) -> [PHAsset] {
         let  assets = indexPaths.map{self.assetGroups[$0.item].assets[$0.row]}
