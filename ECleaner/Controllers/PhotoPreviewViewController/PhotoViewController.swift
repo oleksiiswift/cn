@@ -45,12 +45,20 @@ class PhotoViewController: UIViewController, PhassetPreviewPageProtocol {
         super.init(nibName: nil, bundle: nil)
         
         loadImage()
+        
+        self.view.addSubview(imageView)
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        
+        imageView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor).isActive = true
+        imageView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor).isActive = true
+        imageView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
+        imageView.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
     }
     
     required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
     }
@@ -77,12 +85,19 @@ class PhotoViewController: UIViewController, PhassetPreviewPageProtocol {
 extension PhotoViewController {
     
     public func configureImagesWithPreview() {
+        U.UI {
+            let image = self.asset.getImage
+            self.imageView.image = image
+        }
     }
     
     public func setImage() {
-        
+        U.UI {
+            let image = self.asset.getImage
+            self.imageView.image = image
+        }
     }
-
+    
     public func loadImage() {
         
         fetchingQueue?.addOperation {
@@ -94,7 +109,6 @@ extension PhotoViewController {
         }
     }
 }
-
 
 class ImageAssetOperation: OperationQueue {
     

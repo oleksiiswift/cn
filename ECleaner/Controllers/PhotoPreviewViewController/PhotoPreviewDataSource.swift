@@ -15,7 +15,7 @@ protocol PhassetPreviewPageProtocol {
     var image: UIImage? { get}
 }
 
-protocol PhassetPreviewPageDelegate {
+protocol PhassetPreviewPageDelegate: AnyObject {
     func photoPreviewControllerDidAppear(_ controller: PhassetPreviewPageProtocol)
     func photoPreviewControllerWillDisapper(_ controller: PhassetPreviewPageProtocol)
     func photoPrevireDidPanned(_ recognizer: UIPanGestureRecognizer, view: UIView)
@@ -28,7 +28,7 @@ protocol PhotoPreviewDataSource {
 
 class PhotoPreviewPagingDataSource: NSObject, UIPageViewControllerDataSource {
     
-    public var pageContollerDelegate: PhassetPreviewPageDelegate?
+    public weak var pageContollerDelegate: PhassetPreviewPageDelegate?
      
     private var itemsDataSource: PhotoPreviewDataSource?
     
@@ -75,7 +75,9 @@ class PhotoPreviewPagingDataSource: NSObject, UIPageViewControllerDataSource {
             
         }
         
-        (viewController as! PhassetPreviewPageProtocol).delegate = pageContollerDelegate
+        if var controller = viewController as? PhassetPreviewPageProtocol {
+            controller.delegate = pageContollerDelegate
+        }
         
         return viewController
     }

@@ -449,9 +449,7 @@
 				97CC2F3B26873A7D0072EF8C /* DateSelectorViewController.swift */,
 				97FC78972688CC06000D7F26 /* SimpleAssetsListViewController.swift */,
 				97238A082689D01E00C523DC /* GroupedAssetListViewController.swift */,
-				0459DF9026A56DB20085EEDF /* PhotoPreviewViewController.swift */,
-				0459DF9E26A702AF0085EEDF /* PhotoViewController.swift */,
-				0459DF9C26A6F40F0085EEDF /* PhotoPreviewDataSource.swift */,
+				974EEA3726A74239000A0326 /* PhotoPreviewViewController */,
 				04B20F03269C4F9A00C6BC14 /* ModalControllers */,
 				0459DF9826A6C5E50085EEDF /* celBlock51area.swift */,
 			);
@@ -639,6 +637,16 @@
 				97238A0E2689EE2700C523DC /* CustomDoneHud.swift */,
 			);
 			path = Presenters;
+			sourceTree = "<group>";
+		};
+		974EEA3726A74239000A0326 /* PhotoPreviewViewController */ = {
+			isa = PBXGroup;
+			children = (
+				0459DF9026A56DB20085EEDF /* PhotoPreviewViewController.swift */,
+				0459DF9E26A702AF0085EEDF /* PhotoViewController.swift */,
+				0459DF9C26A6F40F0085EEDF /* PhotoPreviewDataSource.swift */,
+			);
+			path = PhotoPreviewViewController;
 			sourceTree = "<group>";
 		};
 		97E54A892690A9A100C7FD54 /* UICollectionView */ = {

@@ -9,7 +9,7 @@ import UIKit
 import Photos
 import AVKit
 
-class GroupedAssetListViewController: UIViewController {
+class GroupedAssetListViewController: UIViewController, UIPageViewControllerDelegate {
 
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var bottomMenuView: UIView!
@@ -33,6 +33,7 @@ class GroupedAssetListViewController: UIViewController {
     private let deselectAllOptionItem = DropDownOptionsMenuItem(titleMenu: "deselect all", itemThumbnail: I.systemElementsItems.circleCheckBox!, isSelected: false, menuItem: .unselectAll)
     
     private var photoPreviewController = PhotoPreviewViewController()
+//    private weak var delegate: ContentDataProviderDelegate?
     
     public var assetGroups: [PhassetGroup] = []
     public var mediaType: PhotoMediaType = .none
@@ -72,7 +73,7 @@ class GroupedAssetListViewController: UIViewController {
         }
         
         setupUI()
-        setupPhotoPreviewController()
+//        setupPhotoPreviewController()
         updateColors()
         setupCollectionView()
         setupNavigation()
@@ -83,6 +84,7 @@ class GroupedAssetListViewController: UIViewController {
         super.viewWillAppear(animated)
         
 //        updateCachedAssets()
+        setupPhotoPreviewController()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -636,7 +638,7 @@ extension GroupedAssetListViewController {
         self.collectionView.collectionViewLayout.invalidateLayout()
     
 //        photoPreviewController.collectionView.layoutIfNeeded()
-        photoPreviewController.view.layoutIfNeeded()
+//        photoPreviewController.view.layoutIfNeeded()
         
         if isCarouselViewMode {
             self.collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: false)
@@ -646,7 +648,7 @@ extension GroupedAssetListViewController {
         }
         
         
-        photoPreviewController.view.layoutIfNeeded()
+//        photoPreviewController.view.layoutIfNeeded()
         
         if isCarouselViewMode {
 //            if let image = assetGroups[indexPath.section].assets[indexPath.row].getImage {
@@ -729,14 +731,20 @@ extension GroupedAssetListViewController: Themeble {
     
     private func setupPhotoPreviewController() {
         
-        self.addChild(photoPreviewController)
-        photoPreviewController.view.frame = photoPreviewContainerView.bounds
-        photoPreviewContainerView.addSubview(photoPreviewController.view)
-        photoPreviewController.didMove(toParent: self)
+ 
+        photoPreviewController.currentIndex = 0
+        photoPreviewController.photoCount = all.count
+        photoPreviewController.photosDataSource = self
+        photoPreviewController.delegate = self
         photoPreviewController.groupAssetsCollection = self.assetGroups
         photoPreviewController.photoMediaContentType = self.mediaType
         photoPreviewController.mediaContentTypeSetup()
         photoPreviewController.loadAssetsCollection()
+        
+        self.addChild(photoPreviewController)
+        photoPreviewController.view.frame = photoPreviewContainerView.bounds
+        photoPreviewContainerView.addSubview(photoPreviewController.view)
+        photoPreviewController.didMove(toParent: self)
     }
 
     func updateColors() {
@@ -754,6 +762,25 @@ extension GroupedAssetListViewController: Themeble {
     private func setupListenersAndObservers() {
         
         scrollView.delegate = self
+    }
+}
+
+extension GroupedAssetListViewController: PhotoPreviewDataSource {
+    
+    func item(at index: Int) -> (PHAsset, UIImageView) {
+        
+        var imageview = UIImageView()
+        let indexPath = IndexPath(row: index, section: 0)
+        #warning("TODO")
+        if let cell = collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell {
+            imageview = cell.photoThumbnailImageView
+        }
+        
+        return (all[index], imageview)
+    }
+    
+    func itemsCount() -> Int {
+        return all.count
     }
 }
 
@@ -788,6 +815,7 @@ extension GroupedAssetListViewController: UIScrollViewDelegate {
         let asset = self.assetGroups[indexPath.section].assets[indexPath.row]
     
         if !isScrolling {
+            
             
 //            self.imageView.image = asset.getImage
 //            photoPreviewController.collectionView.scrollToItem(at: indexPath, at: [.centeredVertically, .centeredHorizontally], animated: true)
