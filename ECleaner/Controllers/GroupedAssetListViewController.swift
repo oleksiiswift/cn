@@ -641,7 +641,10 @@ extension GroupedAssetListViewController {
         
         if isCarouselViewMode {
             self.collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: false)
-            
+            let index = getSplitIndex(from: indexPath)
+            photoPreviewController.slideToPage(index: index) {
+                debugPrint("done")
+            }
 
         } else {
             self.collectionView.scrollToItem(at: IndexPath(row: 0, section: indexPath.section == 0 ? 0 : indexPath.section - 1), at: [.centeredVertically, .centeredHorizontally], animated: false)
@@ -790,6 +793,7 @@ extension GroupedAssetListViewController: UIScrollViewDelegate {
     
         if !isScrolling {
             let index = self.getSplitIndex(from: indexPath)
+            photoPreviewController.slideToPage(index: index, completion: nil)
             
 //            _ = photoPreviewController.pagingDataSource?.createViewController(at: index)
 //            photoPreviewController.scrollToPage(at: index)
@@ -797,6 +801,8 @@ extension GroupedAssetListViewController: UIScrollViewDelegate {
 //            photoPreviewController.collectionView.scrollToItem(at: indexPath, at: [.centeredVertically, .centeredHorizontally], animated: true)
 //            photoPreviewController.scrollToImageView(at: indexPath)
         } else {
+            let index = self.getSplitIndex(from: indexPath)
+            photoPreviewController.slideToPage(index: index, completion: nil)
 //            photoPreviewController.pageForward()
             
             //            self.imageView.image = asset.getImage
@@ -956,7 +962,10 @@ extension UIPageViewController {
 
     func pageForward(animated: Bool = true, comletionHandler: ((Bool) -> Void)? = nil) {
         if let currentPageViewController = viewControllers?[0] {
+            debugPrint("slide")
+            
             if let nextPage = dataSource?.pageViewController(self, viewControllerAfter: currentPageViewController) {
+                debugPrint("sliding")
                 setViewControllers([nextPage], direction: .forward, animated: animated, completion: comletionHandler)
             }
         }
@@ -965,7 +974,9 @@ extension UIPageViewController {
     func pageBackward(animated: Bool = true, completionHandler: ((Bool) -> Void)? = nil) {
         
         if let currentPageViewController = viewControllers?[0] {
+            debugPrint("slide")
             if let previousePage = dataSource?.pageViewController(self, viewControllerBefore: currentPageViewController) {
+                debugPrint("sliding")
                 setViewControllers([previousePage], direction: .reverse, animated: animated, completion: completionHandler)
             }
         }

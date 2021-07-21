@@ -83,7 +83,7 @@ extension PhotoViewController {
     
     public func configureImagesWithPreview() {
         U.UI {
-            let image = self.asset.getImage
+            let image = self.asset.thumbnail
             self.imageView.image = image
         }
     }

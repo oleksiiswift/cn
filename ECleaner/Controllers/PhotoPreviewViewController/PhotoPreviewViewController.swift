@@ -104,6 +104,41 @@ extension PhotoPreviewViewController {
             setViewControllers([firstViewController], direction: .forward, animated: true, completion: nil)
         }
     }
+    
+    public func slideToPage(index: Int, completion: (() -> Void)?) {
+        let tempIndex = currentIndex
+        if currentIndex < index {
+            var i = tempIndex
+            while i <= index {
+                i += 1
+                
+                    
+                self.pageForward(animated: false, comletionHandler: nil)
+                
+                
+                self.currentIndex = i + 1
+//                self.setViewControllers([loadedViewControllers[i]], direction: .forward, animated: false, completion: {[weak self] (complete: Bool) -> Void in
+//                    if (complete) {
+//                        self?.currentIndex = i - 1
+//                        completion?()
+//                    }
+//                })
+            }
+        } else if currentIndex > index {
+            var i = tempIndex
+            while i >= index {
+                i -= 1
+                self.pageBackward(animated: false, completionHandler: nil)
+                self.currentIndex = i - 1
+//                self.setViewControllers([loadedViewControllers[i]], direction: .reverse, animated: false, completion: {[weak self] (complete: Bool) -> Void in
+//                    if complete {
+//                        self?.currentIndex = i + 1
+//                        completion?()
+//                    }
+//                })
+            }
+        }
+    }
 }
 
 extension PhotoPreviewViewController: Themeble {
