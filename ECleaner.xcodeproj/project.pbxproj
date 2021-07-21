@@ -46,6 +46,8 @@
 		049CC2372683730A0002F988 /* BaseCollectionFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 049CC2362683730A0002F988 /* BaseCollectionFlowLayout.swift */; };
 		049CC23A2683761B0002F988 /* String+ConvertInteger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 049CC2392683761B0002F988 /* String+ConvertInteger.swift */; };
 		04B20F02269C4F6A00C6BC14 /* AssetContextPreviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04B20F01269C4F6A00C6BC14 /* AssetContextPreviewViewController.swift */; };
+		04CACE1E26A7FF62006489FA /* CarouselItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CACE1D26A7FF62006489FA /* CarouselItemView.swift */; };
+		04CACE2026A827CA006489FA /* PhotoOperationQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CACE1F26A827CA006489FA /* PhotoOperationQueue.swift */; };
 		04CF00002685F0C3000CA850 /* ContentTypeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CFFFFE2685F0C3000CA850 /* ContentTypeTableViewCell.swift */; };
 		04CF00012685F0C3000CA850 /* ContentTypeTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04CFFFFF2685F0C3000CA850 /* ContentTypeTableViewCell.xib */; };
 		04CF0003268602DE000CA850 /* MediaContentType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CF0002268602DE000CA850 /* MediaContentType.swift */; };
@@ -137,6 +139,8 @@
 		049CC2362683730A0002F988 /* BaseCollectionFlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseCollectionFlowLayout.swift; sourceTree = "<group>"; };
 		049CC2392683761B0002F988 /* String+ConvertInteger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+ConvertInteger.swift"; sourceTree = "<group>"; };
 		04B20F01269C4F6A00C6BC14 /* AssetContextPreviewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssetContextPreviewViewController.swift; sourceTree = "<group>"; };
+		04CACE1D26A7FF62006489FA /* CarouselItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarouselItemView.swift; sourceTree = "<group>"; };
+		04CACE1F26A827CA006489FA /* PhotoOperationQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoOperationQueue.swift; sourceTree = "<group>"; };
 		04CF0002268602DE000CA850 /* MediaContentType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaContentType.swift; sourceTree = "<group>"; };
 		04CFFFE626846A23000CA850 /* Device.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Device.swift; sourceTree = "<group>"; };
 		04CFFFE826846A38000CA850 /* Screen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Screen.swift; sourceTree = "<group>"; };
@@ -485,6 +489,7 @@
 		04E5835E267A3E7D00EDC3A3 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				04CACE1F26A827CA006489FA /* PhotoOperationQueue.swift */,
 				049CC22726831D480002F988 /* Utilites */,
 				049CC22826831D540002F988 /* Constants */,
 				049CC2382683730E0002F988 /* FlowLayout */,
@@ -547,6 +552,7 @@
 				04CFFFF0268479D3000CA850 /* UIHelpersViews */,
 				97238A142689F30500C523DC /* Presenters */,
 				04649B38268C626C00336FE4 /* HeadersFootes */,
+				04CACE1D26A7FF62006489FA /* CarouselItemView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -832,6 +838,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				04CACE2026A827CA006489FA /* PhotoOperationQueue.swift in Sources */,
 				0459DF8B26A55F360085EEDF /* CarouselCollectionViewCell.swift in Sources */,
 				97CC2F382683CF740072EF8C /* UpdateContentDataBaseMediator.swift in Sources */,
 				04E58379267B39AD00EDC3A3 /* PHPhotoLibrary+Auth.swift in Sources */,
@@ -858,6 +865,7 @@
 				04CF0003268602DE000CA850 /* MediaContentType.swift in Sources */,
 				04E5837C267B3E2A00EDC3A3 /* PhotoManager.swift in Sources */,
 				044281FE2692F9B800B6B47C /* SelectDropDownMenuDelegate.swift in Sources */,
+				04CACE1E26A7FF62006489FA /* CarouselItemView.swift in Sources */,
 				04CFFFEC2684725F000CA850 /* Device+DiskSpace.swift in Sources */,
 				97CC2F3C26873A7D0072EF8C /* DateSelectorViewController.swift in Sources */,
 				04E09470267A06B500A69956 /* AppDelegate.swift in Sources */,

@@ -16,69 +16,69 @@ enum CollectionType {
 
 class PhotoPreviewViewController: UIPageViewController {
     
+    /// managers
+    private var chacheManager = PHCachingImageManager()
+    
+    /// controllers
+    private var loadedViewControllers: [UIViewController] = []
+    
+    /// delegates
+    private var initialViewController: PhassetPreviewPageProtocol?
+    public var pagingDataSource: PhotoPreviewPagingDataSource?
+    public var photosDataSource: PhotoPreviewDataSource?
+    
+    /// assets
     private var collectionType: CollectionType = .none
-    private var assetPhotoCollection: [UIImage] = []
     public var photoMediaContentType: PhotoMediaType = .none
     public var groupAssetsCollection: [PhassetGroup] = []
     public var singleAssetsCollection: [PHAsset] = []
     
-    private var loadedViewControllers: [UIViewController] = []
-    
-    private var chacheManager = PHCachingImageManager()
-    
-    private var initialViewController: PhassetPreviewPageProtocol?
-    private var pagingDataSource: PhotoPreviewPagingDataSource?
-    
+    /// pageControll
     public var currentIndex: Int = 0
     public var photoCount: Int = 0
-    public var photosDataSource: PhotoPreviewDataSource?
     
+    /// properties
     private var spineDividerWidth: Float = 10
+    private let assetsCollectionSizeMaximumSize = PHImageManagerMaximumSize
+    private let aspectSize: CGSize = CGSize(width: U.screenWidth, height: U.screenHeight)
     
-    //    init(startIndex: Int, photoCount: Int, itemDataSource: PhotoPreviewDataSource) {
-    //
-    //        self.currentIndex = startIndex
-    //        self.photoCount = photoCount
-    //        self.photosDataSource = itemDataSource
-    //        self.pagingDataSource = PhotoPreviewPagingDataSource(dataSource: itemDataSource)
-    //
-    //        super.init(transitionStyle: .scroll, navigationOrientation: .horizontal, options: convertToOptionalUIPageViewControllerOptionsKeyDictionary([convertFromUIPageViewControllerOptionsKey(UIPageViewController.OptionsKey.interPageSpacing) : NSNumber(value: spineDividerWidth as Float)]))
-    //
-    //  pagingDataSource.pageContollerDelegate = self
-    //    let initialViewController = pagingDataSource.createViewController(at: currentIndex)
-    //    self.setViewControllers([initialViewController], direction: .forward, animated: false, completion: nil)
-    //    self.initialViewController = initialViewController as? PhassetPreviewPageProtocol
-    //    self.dataSource = pagingDataSource
-    //    }
-    //
-    //    required init?(coder: NSCoder) {
-    //        fatalError("init(coder:) has not been implemented")
-    //    }
-    
+    override init(transitionStyle style: UIPageViewController.TransitionStyle, navigationOrientation: UIPageViewController.NavigationOrientation, options: [UIPageViewController.OptionsKey : Any]? = nil) {
+        super.init(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.pagingDataSource = PhotoPreviewPagingDataSource(dataSource: photosDataSource!)
+        setupDelegate()
+        setupDataSource()
+        setupUI()
+        setupNavigateControll()
+    }
+}
+
+extension PhotoPreviewViewController {
+    
+    private func setupDelegate() {
         
         pagingDataSource?.pageContollerDelegate = self
+    }
+    
+    private func setupDataSource() {
+        
+        /// before baging need to check if collection is single or groped
+        if let dataSource = photosDataSource {
+            self.pagingDataSource = PhotoPreviewPagingDataSource(dataSource: dataSource, isGroupedAssets: self.collectionType == .grouped)
+        }
+        
         let initialViewController = pagingDataSource?.createViewController(at: currentIndex)
         self.setViewControllers([initialViewController!], direction: .forward, animated: false, completion: nil)
         self.initialViewController = initialViewController as? PhassetPreviewPageProtocol
         self.dataSource = pagingDataSource
-        
-        setupUI()
-        setupNavigateControll()
-        setupDelegate()
     }
-}
-
-extension PhotoPreviewViewController: Themeble {
-    
-    private func setupUI() {}
-    
-    private func setupDelegate() {}
-
-    func updateColors() {}
     
     public func mediaContentTypeSetup() {
         
@@ -92,17 +92,10 @@ extension PhotoPreviewViewController: Themeble {
         }
     }
     
-    public func loadAssetsCollection() {
-        
-        var assetCollection: [PHAsset] = []
-        
-        for groupAsset in groupAssetsCollection {
-            assetCollection.append(contentsOf: groupAsset.assets)
-        }
-        
-//        PHImageManagerMaximumSize
+    public func loadAssetsCollection(_ assetsCollection: [PHAsset]) {
+ 
         let options = chacheManager.photoImageRequestOptions()
-        chacheManager.startCachingImages(for: assetCollection, targetSize: CGSize(width: U.screenWidth, height: U.screenHeight), contentMode: .aspectFit, options: options)
+        chacheManager.startCachingImages(for: assetsCollection, targetSize: aspectSize, contentMode: .aspectFit, options: options)
     }
     
     private func setupNavigateControll() {
@@ -111,13 +104,12 @@ extension PhotoPreviewViewController: Themeble {
             setViewControllers([firstViewController], direction: .forward, animated: true, completion: nil)
         }
     }
+}
+
+extension PhotoPreviewViewController: Themeble {
     
-//    private func createCarouselController(with image: UIImage) -> UIViewController {
-//
-//        let viewController = UIViewController()
-//        viewController.view = CarouselItemView(image: image)
-//        return viewController
-//    }
+    private func setupUI() {}
+    func updateColors() {}
 }
 
 extension PhotoPreviewViewController: PhassetPreviewPageDelegate {
@@ -132,39 +124,6 @@ extension PhotoPreviewViewController: PhassetPreviewPageDelegate {
 
     func photoPrevireDidPanned(_ recognizer: UIPanGestureRecognizer, view: UIView) {
         debugPrint("photoPrevireDidPanned")
-    }
-
-}
-
-
-
-class CarouselItemView: UIView {
-    
-    @IBOutlet weak var imageView: UIImageView!
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        
-        initializeWithNib()
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        
-        initializeWithNib()
-    }
-
-    convenience init(image: UIImage) {
-        self.init()
-        
-        imageView.image = image
-    }
-    
-    private func initializeWithNib() {
-        
-        Bundle.main.loadNibNamed(C.identifiers.xibs.carouselView, owner: self, options: nil)
-        imageView.frame = bounds
-        imageView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
     }
 }
 

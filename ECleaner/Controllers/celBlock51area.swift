@@ -600,3 +600,16 @@ import Foundation
 //        return CGSize(width: self.width * scale, height: self.height * scale)
 //    }
 //}
+
+
+//    func item(at index: Int, section: Int) -> (PHAsset, UIImageView) {
+//
+//        var imageView = UIImageView()
+//
+//        let indexPath = IndexPath(item: index, section: section)
+//
+//        if let cell = collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell {
+//            imageView = cell.photoThumbnailImageView
+//        }
+//        return (assetGroups[section].assets[index], imageView)
+//    }

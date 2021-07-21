@@ -10,20 +10,20 @@ import Photos
 
 class PhotoViewController: UIViewController, PhassetPreviewPageProtocol {
     
-    var image: UIImage?
-    
+    /// delegates
     public var delegate: PhassetPreviewPageDelegate?
+    
+    /// managers
+    public var fetchingAssetsQueue: AssetsOperationQueue?
+    
+    /// elementh
+    var image: UIImage?
     
     public let imageView: UIImageView = {
         let image = UIImageView()
         image.isUserInteractionEnabled = true
         return image
     }()
-    
-    public var index: Int
-    public var itemCount: Int
-    
-    public var asset = PHAsset()
     
     public var mainView: UIView {
         return imageView
@@ -32,27 +32,22 @@ class PhotoViewController: UIViewController, PhassetPreviewPageProtocol {
     public var mainImage: UIImage? {
         return imageView.image
     }
+        
+    /// assets collection
+    public var asset = PHAsset()
+    public var index: Int
+    public var itemCount: Int
     
-    public var fetchingQueue: ImageAssetOperation?
-    
-    public init(index: Int, itemCount: Int, asset: PHAsset, fetchingQueue: ImageAssetOperation) {
+    public init(index: Int, itemCount: Int, asset: PHAsset, fetchingQueue: AssetsOperationQueue) {
         
         self.index = index
         self.itemCount = itemCount
         self.asset = asset
-        self.fetchingQueue = fetchingQueue
+        self.fetchingAssetsQueue = fetchingQueue
         
         super.init(nibName: nil, bundle: nil)
         
         loadImage()
-        
-        self.view.addSubview(imageView)
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        
-        imageView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor).isActive = true
-        imageView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor).isActive = true
-        imageView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
-        imageView.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
     }
     
     required public init?(coder aDecoder: NSCoder) {
@@ -61,6 +56,8 @@ class PhotoViewController: UIViewController, PhassetPreviewPageProtocol {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        setupUI()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -100,34 +97,26 @@ extension PhotoViewController {
     
     public func loadImage() {
         
-        fetchingQueue?.addOperation {
+        fetchingAssetsQueue?.addOperation {
             self.setImage()
         }
         
-        DispatchQueue.global(qos: .utility).async {
+        U.GLB(qos: .utility) {
             self.configureImagesWithPreview()
         }
     }
+    
+    private func setupUI() {
+        
+        self.view.addSubview(imageView)
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        
+        imageView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor).isActive = true
+        imageView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor).isActive = true
+        imageView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
+        imageView.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
+        imageView.contentMode = .scaleAspectFit
+    }
 }
 
-class ImageAssetOperation: OperationQueue {
-    
-    override init() {
-        super.init()
-        qualityOfService = .userInitiated
-        maxConcurrentOperationCount = 1
-    }
-    
-    override public func addOperation(_ operation: Operation) {
-        let lastIndex = operations.count - 1
-        
-        if operations.count > 1 {
-            for i in 0..<operations.count {
-                if !operations[i].isCancelled && i != lastIndex {
-                    operations[i].cancel()
-                }
-            }
-        }
-        super.addOperation(operation)
-    }
-}
+

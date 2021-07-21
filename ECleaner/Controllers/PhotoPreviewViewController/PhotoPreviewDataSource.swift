@@ -22,7 +22,7 @@ protocol PhassetPreviewPageDelegate: AnyObject {
 }
 
 protocol PhotoPreviewDataSource {
-    func item(at index: Int) -> (PHAsset, UIImageView)
+    func item(at index: Int, isGroupedAssets: Bool) -> (PHAsset, UIImageView)
     func itemsCount() -> Int
 }
 
@@ -32,20 +32,23 @@ class PhotoPreviewPagingDataSource: NSObject, UIPageViewControllerDataSource {
      
     private var itemsDataSource: PhotoPreviewDataSource?
     
-    private let fetchingPhassetQueue = ImageAssetOperation()
+    private let fetchingPhassetQueue = AssetsOperationQueue()
+    
+    private var isGroupedAssets: Bool
     
     private var itemsCount: Int {
         return itemsDataSource?.itemsCount() ?? 0
     }
     
-    init(dataSource: PhotoPreviewDataSource) {
+    init(dataSource: PhotoPreviewDataSource, isGroupedAssets: Bool) {
+        
         self.itemsDataSource = dataSource
+        self.isGroupedAssets = isGroupedAssets
     }
     
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
         
-        guard let currentController = viewController as? PhassetPreviewPageProtocol, itemsCount > 1 else {
-            return nil }
+        guard let currentController = viewController as? PhassetPreviewPageProtocol, itemsCount > 1 else { return nil }
         
         let previousIndex = (currentController.index == 0) ? itemsCount - 1 : currentController.index - 1
         return self.createViewController(at: previousIndex)
@@ -53,26 +56,27 @@ class PhotoPreviewPagingDataSource: NSObject, UIPageViewControllerDataSource {
     
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
         
-        guard  let currentController = viewController as? PhassetPreviewPageProtocol, itemsCount > 1 else {
-            return nil
-        }
+        guard  let currentController = viewController as? PhassetPreviewPageProtocol, itemsCount > 1 else { return nil }
         
         let nextIndex = (currentController.index == itemsCount - 1) ? 0 : currentController.index + 1
         return self.createViewController(at: nextIndex)
     }
     
-    func createViewController(at index: Int) -> UIViewController {
+    public func createViewController(at index: Int) -> UIViewController {
         
         guard let dataSource = itemsDataSource else { return UIViewController() }
         
-        guard let asset = itemsDataSource?.item(at: index).0 else { return UIViewController() }
+        guard let asset = itemsDataSource?.item(at: index, isGroupedAssets: self.isGroupedAssets).0 else {
+            return UIViewController()
+        }
+    
         var viewController: UIViewController!
         
         if asset.mediaType == .image {
             
             viewController = PhotoViewController(index: index, itemCount: dataSource.itemsCount(), asset: asset, fetchingQueue: fetchingPhassetQueue)
         } else if asset.mediaType == .video {
-            
+//            TODO: add logic for video content
         }
         
         if var controller = viewController as? PhassetPreviewPageProtocol {
@@ -81,4 +85,5 @@ class PhotoPreviewPagingDataSource: NSObject, UIPageViewControllerDataSource {
         
         return viewController
     }
+
 }

@@ -23,7 +23,6 @@ class PreviewAVController: AVPlayerViewController {
             U.UI {
                 if avAsset != nil {
                     let player = AVPlayer(playerItem: AVPlayerItem(asset: avAsset!))
-                    
                     self.player = player
                     self.player?.play()
                 } else {

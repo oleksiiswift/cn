@@ -142,20 +142,29 @@ extension Utils {
         }
     }
     
+    /// main
     static func UI(_ block: @escaping () -> Void) {
         DispatchQueue.main.async(execute: block)
     }
     
+    /// main after
+    static func UI(after: Float, _ block: @escaping ()->Void) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: block)
+    }
+    
+    /// background
     static func BG(_ block: @escaping () -> Void) {
         DispatchQueue.global(qos: .background).async(execute: block)
     }
     
+    /// background delay
     static func BGD(after: Float,_ block: @escaping () -> Void) {
         DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + 0.5, execute: block)
     }
     
-    static func UI(after: Float, _ block: @escaping ()->Void) {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: block)
+    /// global
+    static func GLB(qos: DispatchQoS.QoSClass,_ block: @escaping () -> Void) {
+        DispatchQueue.global(qos: qos).async(execute: block)
     }
 }
 
