@@ -38,7 +38,8 @@ class GroupedAssetListViewController: UIViewController, UIPageViewControllerDele
     private let deselectAllOptionItem = DropDownOptionsMenuItem(titleMenu: "deselect all", itemThumbnail: I.systemElementsItems.circleCheckBox!, isSelected: false, menuItem: .unselectAll)
     
     /// - controllers -
-    private var photoPreviewController = PhotoPreviewViewController()
+    #warning("hide photopreviewLogic for TODO later")
+//    private var photoPreviewController = PhotoPreviewViewController()
 
     /// - delegates -
     private weak var delegate: ContentGroupedDataProviderDelegate?
@@ -76,9 +77,9 @@ class GroupedAssetListViewController: UIViewController, UIPageViewControllerDele
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        splitAllAssetsForPreview()
+//        splitAllAssetsForPreview() /// hide temporary for future
         setupUI()
-//        setupPhotoPreviewController()
+//        setupPhotoPreviewController() /// hide
         updateColors()
         setupCollectionView()
         setupNavigation()
@@ -89,7 +90,7 @@ class GroupedAssetListViewController: UIViewController, UIPageViewControllerDele
         super.viewWillAppear(animated)
         
 //        updateCachedAssets()
-        setupPhotoPreviewController()
+//        setupPhotoPreviewController()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -264,8 +265,8 @@ extension GroupedAssetListViewController: UICollectionViewDelegate, UICollection
     /// if need select cell from custom cell-button and tap on cell need - return `false`
     
     func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
-        
-        self.changeFlowLayoutAndFocus(at: indexPath)
+        #warning("TODO: hide temporary")
+//        self.changeFlowLayoutAndFocus(at: indexPath)
         return false
     }
     
@@ -591,7 +592,8 @@ extension GroupedAssetListViewController {
             if asset.mediaType == .video {
                 self.showVideoPreviewController(asset)
             } else {
-                self.showFullScreenAssetPreviewAndFocus(at: indexPath)
+                #warning("TODO: hide collection")
+//                self.showFullScreenAssetPreviewAndFocus(at: indexPath)
             }
         }
         
@@ -641,10 +643,11 @@ extension GroupedAssetListViewController {
         
         if isCarouselViewMode {
             self.collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: false)
-            let index = getSplitIndex(from: indexPath)
-            photoPreviewController.slideToPage(index: index) {
-                debugPrint("done")
-            }
+//            let index = getSplitIndex(from: indexPath)
+//            TODO: hide temporary preview
+//            photoPreviewController.slideToPage(index: index) {
+//                debugPrint("done")
+//            }
 
         } else {
             self.collectionView.scrollToItem(at: IndexPath(row: 0, section: indexPath.section == 0 ? 0 : indexPath.section - 1), at: [.centeredVertically, .centeredHorizontally], animated: false)
@@ -785,15 +788,16 @@ extension GroupedAssetListViewController: UIScrollViewDelegate {
     func loadPreviewImageThumb(isScrolling: Bool) {
         
         guard isCarouselViewMode else { return }
-        let point = view.convert(self.collectionView.center, to: collectionView)
+//        let point = view.convert(self.collectionView.center, to: collectionView)
         
-        guard let indexPath = self.collectionView.indexPathForItem(at: point) else {return }
+//        guard let indexPath = self.collectionView.indexPathForItem(at: point) else {return }
         
-        let asset = self.assetGroups[indexPath.section].assets[indexPath.row]
+//        let asset = self.assetGroups[indexPath.section].assets[indexPath.row]
     
         if !isScrolling {
-            let index = self.getSplitIndex(from: indexPath)
-            photoPreviewController.slideToPage(index: index, completion: nil)
+//            let index = self.getSplitIndex(from: indexPath)
+//            TODO: hide temporary
+//            photoPreviewController.slideToPage(index: index, completion: nil)
             
 //            _ = photoPreviewController.pagingDataSource?.createViewController(at: index)
 //            photoPreviewController.scrollToPage(at: index)
@@ -801,8 +805,8 @@ extension GroupedAssetListViewController: UIScrollViewDelegate {
 //            photoPreviewController.collectionView.scrollToItem(at: indexPath, at: [.centeredVertically, .centeredHorizontally], animated: true)
 //            photoPreviewController.scrollToImageView(at: indexPath)
         } else {
-            let index = self.getSplitIndex(from: indexPath)
-            photoPreviewController.slideToPage(index: index, completion: nil)
+//            let index = self.getSplitIndex(from: indexPath)
+//            photoPreviewController.slideToPage(index: index, completion: nil)
 //            photoPreviewController.pageForward()
             
             //            self.imageView.image = asset.getImage
@@ -925,19 +929,19 @@ extension GroupedAssetListViewController: Themeble {
     
     private func setupPhotoPreviewController() {
         
-        photoPreviewController.loadAssetsCollection(self.splitAssets)
-        photoPreviewController.currentIndex = 0
-        photoPreviewController.photoCount = splitAssetsNumberOfItems
-        photoPreviewController.photosDataSource = self
-        photoPreviewController.delegate = self
-        photoPreviewController.groupAssetsCollection = self.assetGroups
-        photoPreviewController.photoMediaContentType = self.mediaType
-        photoPreviewController.mediaContentTypeSetup()
-    
-        self.addChild(photoPreviewController)
-        photoPreviewController.view.frame = photoPreviewContainerView.bounds
-        photoPreviewContainerView.addSubview(photoPreviewController.view)
-        photoPreviewController.didMove(toParent: self)
+//        photoPreviewController.loadAssetsCollection(self.splitAssets)
+//        photoPreviewController.currentIndex = 0
+//        photoPreviewController.photoCount = splitAssetsNumberOfItems
+//        photoPreviewController.photosDataSource = self
+//        photoPreviewController.delegate = self
+//        photoPreviewController.groupAssetsCollection = self.assetGroups
+//        photoPreviewController.photoMediaContentType = self.mediaType
+//        photoPreviewController.mediaContentTypeSetup()
+//
+//        self.addChild(photoPreviewController)
+//        photoPreviewController.view.frame = photoPreviewContainerView.bounds
+//        photoPreviewContainerView.addSubview(photoPreviewController.view)
+//        photoPreviewController.didMove(toParent: self)
     }
 
     func updateColors() {
