@@ -49,12 +49,14 @@ class MediaContentViewController: UIViewController {
     public var allScreenShots: [PHAsset] = []
     public var allSelfies: [PHAsset] = []
     public var allLiveFotos: [PHAsset] = []
+    public var allRecentlyDeletedPhotos: [PHAsset] = []
     
     public var allLargeVideos: [PHAsset] = []
     public var allSimmilarVideos: [PHAsset] = []
     public var allDuplicatesVideos: [PHAsset] = []
     public var allScreenRecords: [PHAsset] = []
-    
+    public var allRecentlyDeletedVideos: [PHAsset] = []
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -116,6 +118,8 @@ extension MediaContentViewController: UITableViewDelegate, UITableViewDataSource
                         assetContentCount = self.allSelfies.count
                     case 4:
                         assetContentCount = self.allLiveFotos.count
+                    case 5:
+                        assetContentCount = self.allRecentlyDeletedPhotos.count
                     default:
                         debugPrint("")
                 }
@@ -129,6 +133,8 @@ extension MediaContentViewController: UITableViewDelegate, UITableViewDataSource
                         assetContentCount = self.allSimmilarVideos.count
                     case 3:
                         assetContentCount = self.allScreenRecords.count
+                    case 5:
+                        assetContentCount = self.allRecentlyDeletedVideos.count
                     default:
                         debugPrint("")
                 }
@@ -168,12 +174,12 @@ extension MediaContentViewController: UITableViewDelegate, UITableViewDataSource
 extension MediaContentViewController {
     
     /// `0` - simmilar photos
-    /// `1` -duplicates
+    /// `1` - duplicates
     /// `2` - screenshots
     /// `3` - selfies
-    /// `4` - detecting face???
-    /// `5` -live photos
-    /// `6` -location
+    /// `4` - live photos
+    /// `5` - recently deleted
+    /// `6` - 
     
     private func showMediaContent(by selectedType: MediaContentType, selected index: Int) {
         
@@ -191,7 +197,7 @@ extension MediaContentViewController {
                     case 4:
                         self.showLivePhotos()
                     case 5:
-                        return
+                        self.showRecentlyDeletedPhotos()
                     case 6:
                         return
                     default:
@@ -207,6 +213,8 @@ extension MediaContentViewController {
                         self.showSimilarVideoFiles()
                     case 3:
                         self.showScreenRecordsVideoFiles()
+                    case 5:
+                        self.showRecentlyDeletedVideos()
                     default:
                         return
                 }
@@ -290,6 +298,26 @@ extension MediaContentViewController {
                 self.showAssetViewController(assets: "screenshots", collection: screenshots, photoContent: .singleScreenShots)
             } else {
                 AlertManager.showCantFindMediaContent(by: .noScreenShots)
+            }
+        }
+    }
+    
+    private func showRecentlyDeletedPhotos() {
+        photoManager.getSortedRecentlyDeletedAssets { deletedPhotos, _ in
+            if deletedPhotos.count != 0 {
+                self.showAssetViewController(assets: "recently deleted photos", collection: deletedPhotos, photoContent: .singleRecentlyDeletedPhotos)
+            } else {
+                AlertManager.showCantFindMediaContent(by: .noRecentlyDeletedPhotos)
+            }
+        }
+    }
+    
+    private func showRecentlyDeletedVideos() {
+        photoManager.getSortedRecentlyDeletedAssets { _, deletedVideos in
+            if deletedVideos.count != 0 {
+                self.showAssetViewController(assets: "resently deleted Videos", collection: deletedVideos, photoContent: .singleRecentlyDeletedVideos)
+            } else {
+                AlertManager.showCantFindMediaContent(by: .noRecentlyDeletedVideos)
             }
         }
     }

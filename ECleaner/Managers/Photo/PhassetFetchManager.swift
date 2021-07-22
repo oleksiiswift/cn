@@ -220,30 +220,70 @@ extension PHAsset {
 extension PHAssetFetchManager {
  
     public func recentlyDeletedAlbumFetch(completionHandler: @escaping (([PHAsset]) -> Void)) {
-        
+
         fetchRecentlyDeletedCollection { collection in
             guard let albumCollection = collection else {
                 completionHandler([])
                 return
             }
-            
+
             let result = PHAsset.fetchAssets(in: albumCollection, options: nil)
             var assets = [PHAsset]()
-            
+
             if result.count == 0 {
                 U.UI {
                     completionHandler([])
                 }
                 return
             }
-           
+
             for assetPosition in 1...result.count {
                 assets.append(result[assetPosition - 1])
             }
+            
             U.UI {
                 completionHandler(assets)
             }
             completionHandler(assets)
+        }
+    }
+    
+    public func recentlyDeletedSortedAlbumFetch(completionHandler: @escaping ((_ photosAssets: [PHAsset],_ videoAssets: [PHAsset]) -> Void)) {
+        
+        fetchRecentlyDeletedCollection { collection in
+            
+            guard let recentlyDeletedCollection = collection else { return completionHandler([], [])}
+            
+            var photoAssets: [PHAsset] = []
+            var videoAssets: [PHAsset] = []
+            
+            let photoFetchOptions = PHFetchOptions()
+            let videoFetchOptions = PHFetchOptions()
+            
+            photoFetchOptions.predicate = NSPredicate(format: "mediaType == %d", PHAssetMediaType.image.rawValue)
+            videoFetchOptions.predicate = NSPredicate(format: "mediaType == %d", PHAssetMediaType.video.rawValue)
+            
+            let photoResult = PHAsset.fetchAssets(in: recentlyDeletedCollection, options: photoFetchOptions)
+            let videoResult = PHAsset.fetchAssets(in: recentlyDeletedCollection, options: videoFetchOptions)
+            
+            if photoResult.count == 0 && videoResult.count == 0 {
+                U.UI {
+                    completionHandler([], [])
+                }
+                return
+            }
+            
+            for photoAssetPosition in 1...photoResult.count {
+                photoAssets.append(photoResult[photoAssetPosition - 1])
+            }
+            
+            for videoAssetPosion in 1...videoResult.count {
+                videoAssets.append(videoResult[videoAssetPosion - 1])
+            }
+            
+            U.UI {
+                completionHandler(photoAssets, videoAssets)
+            }
         }
     }
     
