@@ -16,6 +16,7 @@ class Images {
         static let premium = UIImage(systemName: "crown.fill")
         static let settings = UIImage(systemName: "gear")
         static let elipseBurger = UIImage(systemName: "ellipsis.circle.fill")
+        static let leftShevronBack = UIImage(systemName: "chevron.left")
     }
     
     struct mainMenuThumbItems {
@@ -32,5 +33,11 @@ class Images {
         static let circleCheckBox = UIImage(systemName: "checkmark.circle.fill")
         static let tileView = UIImage(systemName: "square.grid.2x2.fill")
         static let sliderView = UIImage(named: "sliderItem")
+    }
+    
+    struct cellElementsItems {
+        static let fullScreen = UIImage(systemName: "arrow.up.backward.and.arrow.down.forward")
+        static let trashBin = UIImage(systemName: "trash")
+        
     }
 }

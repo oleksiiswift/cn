@@ -9,6 +9,7 @@ import Foundation
 import PhotosUI
 import Photos
 import CocoaImageHashing
+import AVKit
 
 class PhassetGroup {
     var name: String
@@ -22,15 +23,17 @@ class PhassetGroup {
 
 /// `getPhotoLibraryAccess` - use for access photo library alert and open settings
 /// `getPhotoLibrary` - fetch all photo assets in the user photo library and update values
-/// `getDuplicatePhotos`- finds duplicate photos in user photo library
-/// `getSimilarVideo` - load duplicated videos
-/// `getSimilarPhotos` load simmilar photos
+/// `getDuplicatedPhotosAsset`- finds duplicate photos in user photo library
+/// `getDuplicateVideoAsset` - load duplicated videos
+/// `getSimilarPhotosAsset` load simmilar photos
 /// `getSimilarLivePhotos` - load simmilar live photos
 /// `getScreenShots` `getSelfiePhotos` `getLivePhotos` -  fetch photos by type
 
 class PhotoManager: NSObject {
     
     private static let shared = PhotoManager()
+    
+    var assetCollection: PHAssetCollection?
     
     static var manager: PhotoManager {
         return self.shared
@@ -60,35 +63,80 @@ class PhotoManager: NSObject {
     
     private func getPhotoLibrary() {
         
-        U.BG {
+        let operationQueue: OperationQueue = {
+            
+            let operation = OperationQueue()
+            operation.qualityOfService = .background
+            operation.maxConcurrentOperationCount = 10
+            
+            return operation
+        }()
+        
+        operationQueue.addOperation {
+            debugPrint("start video count")
             self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumVideos, by: PHAssetMediaType.video.rawValue) { assets in
                 U.UI {
+                    debugPrint("done with video count")
                     UpdateContentDataBaseMediator.instance.updateVideos(assets.count, calculatedSpace: 0)
                 }
             }
-            
+        }
+        operationQueue.addOperation {
+            debugPrint("start photo count")
             self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumUserLibrary, by: PHAssetMediaType.image.rawValue) { assets in
                 U.UI {
+                    debugPrint("done with gallery count")
                     UpdateContentDataBaseMediator.instance.updatePhotos(assets.count, calculatedSpace: 0)
                 }
             }
+        }
+        
+        operationQueue.addOperation {
+            debugPrint("start screen records")
+            self.getScreenRecordsVideos { assets in
+                debugPrint("done with screenrecords")
+                UpdateContentDataBaseMediator.instance.getScreenRecordsVideosAssets(assets)
+            }
+        }
+        
+        operationQueue.addOperation {
             
+            debugPrint("start get screenshots")
             self.getScreenShots { assets in
-                U.UI {
-                    UpdateContentDataBaseMediator.instance.getScreenshots(assets)
-                }
+                debugPrint("done with screenshots")
+                UpdateContentDataBaseMediator.instance.getScreenshots(assets)
             }
-            
+        }
+        
+        operationQueue.addOperation {
+            debugPrint("start live photos")
             self.getLivePhotos { assets in
-                U.UI {
-                    UpdateContentDataBaseMediator.instance.getLivePhotosAsset(assets)
-                }
+                debugPrint("done with livephoto")
+                UpdateContentDataBaseMediator.instance.getLivePhotosAssets(assets)
             }
-            
+        }
+        
+        operationQueue.addOperation {
+            debugPrint("start selfie")
             self.getSelfiePhotos { assets in
-                U.UI {
-                    UpdateContentDataBaseMediator.instance.getFrontCameraAsset(assets)
-                }
+                debugPrint("done with selfies")
+                UpdateContentDataBaseMediator.instance.getFrontCameraAssets(assets)
+            }
+        }
+        
+        operationQueue.addOperation {
+            debugPrint("start large")
+            self.getLargevideoContent { assets in
+                debugPrint("done with large videos")
+                UpdateContentDataBaseMediator.instance.getLargeVideosAssets(assets)
+            }
+        }
+        
+        operationQueue.addOperation {
+            debugPrint("try fetch recentle deleted")
+            
+            self.getRecentlyDeletedAssets { assets in
+                debugPrint(assets.count)
             }
         }
     }
@@ -149,10 +197,13 @@ class PhotoManager: NSObject {
             }
         }
     }
+}
+
+//      MARK: - photo part -
+extension PhotoManager {
     
-    
-//    MARK: - find duplicates in library -
-    public func getDuplicatePhotos(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", completionHandler: @escaping ((_ assets: [PhassetGroup]) -> Void)) {
+    /// `simmilar photo algoritm`
+    public func getSimilarPhotosAssets(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", fileSizeCheck: Bool = false, completionHandler: @escaping ((_ assets: [PhassetGroup]) -> Void)) {
         
         P.showIndicator()
         
@@ -160,42 +211,52 @@ class PhotoManager: NSObject {
             
             var group: [PhassetGroup] = []
             var containsAdd: [Int] = []
-            var duplicatesPhotos: [(asset: PHAsset, date: Int64, imageSize: Int64)] = []
+            var similarPhotos: [(asset: PHAsset, date: Int64, imageSize: Int64)] = []
+            
+            similarPhotos.reserveCapacity(photosInGallery.count)
             
             U.BG {
                 if photosInGallery.count != 0 {
                     
+//                    photosInGallery.enumerateObjects { asset, index, stop in
+//                        debugPrint("index preocessing duplicate")
+//                        debugPrint("index \(index)")
+//                        similarPhotos.append((asset: asset, date: Int64(asset.creationDate!.timeIntervalSince1970), imageSize: fileSizeCheck ? asset.imageSize : 0))
+//                    }
+                    
                     for index in 1...photosInGallery.count {
                         debugPrint("index preocessing duplicate")
                         debugPrint("index \(index)")
-//                        self.delegate?.filesCountProcessing(count: index)
-                        duplicatesPhotos.append((asset: photosInGallery[index - 1], date: Int64(photosInGallery[index - 1].creationDate!.timeIntervalSince1970), imageSize: photosInGallery[index - 1].imageSize))
+                  
+                    similarPhotos.append((asset: photosInGallery[index - 1],
+                                          date: Int64(photosInGallery[index - 1].creationDate!.timeIntervalSince1970),
+                                          imageSize: fileSizeCheck ? photosInGallery[index - 1].imageSize : 0))
                     }
                     
-                    duplicatesPhotos.sort { duplicatePhotoNumberOne, duplicatePhotoNumberTwo in
-                        return duplicatePhotoNumberOne.date > duplicatePhotoNumberTwo.date
+                    similarPhotos.sort { similarPhotoNumberOne, similarPhotoNumberTwo in
+                        return similarPhotoNumberOne.date > similarPhotoNumberTwo.date
                     }
                     
-                    for index in 0...duplicatesPhotos.count - 1 {
-                        var duplicateIndex = index + 1
+                    for index in 0...similarPhotos.count - 1 {
+                        var similarIndex = index + 1
                         if containsAdd.contains(index) { continue }
-                        var duplicate: [PHAsset] = []
+                        var similar: [PHAsset] = []
                         
-                        if (duplicateIndex < duplicatesPhotos.count && abs(duplicatesPhotos[index].date - duplicatesPhotos[duplicateIndex].date) <= 10) {
-                            duplicate.append(duplicatesPhotos[index].asset)
+                        if (similarIndex < similarPhotos.count && abs(similarPhotos[index].date - similarPhotos[similarIndex].date) <= 10) {
+                            similar.append(similarPhotos[index].asset)
                             containsAdd.append(index)
                             repeat {
-                                if containsAdd.contains(duplicateIndex) {
+                                if containsAdd.contains(similarIndex) {
                                     continue
                                 }
-                                duplicate.append(duplicatesPhotos[duplicateIndex].asset)
-                                containsAdd.append(duplicateIndex)
-                                duplicateIndex += 1
-                            } while duplicateIndex < duplicatesPhotos.count && abs(duplicatesPhotos[index].date - duplicatesPhotos[duplicateIndex].date) <= 10
+                                similar.append(similarPhotos[similarIndex].asset)
+                                containsAdd.append(similarIndex)
+                                similarIndex += 1
+                            } while similarIndex < similarPhotos.count && abs(similarPhotos[index].date - similarPhotos[similarIndex].date) <= 10
                         }
-                        if duplicate.count != 0 {
+                        if similar.count != 0 {
                             debugPrint("apend new group")
-                            group.append(PhassetGroup(name: "", assets: duplicate))
+                            group.append(PhassetGroup(name: "", assets: similar))
                         }
                     }
                     P.hideIndicator()
@@ -212,93 +273,8 @@ class PhotoManager: NSObject {
         }
     }
     
-    public func getSimilarVideo(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", completionHandler: @escaping ((_ videoAssets: [PhassetGroup]) -> Void)) {
-        
-        fetchManager.fetchFromGallery(from: startDate,
-                                      to: endDate,
-                                      collectiontype: .smartAlbumVideos,
-                                      by: PHAssetMediaType.video.rawValue) { videoCollection in
-            var videos: [OSTuple<NSString, NSData>] = []
-            
-            U.BG {
-                if videoCollection.count != 0 {
-                    for index in 1...videoCollection.count {
-                        let image = self.fetchManager.getThumbnail(from: videoCollection[index - 1], size: CGSize(width: 150, height: 150))
-                        if let data = image.jpegData(compressionQuality: 0.8) {
-                            let imageTuple = OSTuple<NSString, NSData>(first: "image\(index)" as NSString, andSecond: data as NSData)
-                            videos.append(imageTuple)
-                        } else {
-                            return
-                        }
-                    }
-                    
-                    let similarVideoIDasTuples = OSImageHashing.sharedInstance().similarImages(withProvider: .pHash, forImages: videos)
-                    var similarVideoNumbers: [Int] = []
-                    var similarVideoGroups: [PhassetGroup] = []
-                    U.UI {
-                        guard similarVideoIDasTuples.count >= 1 else { completionHandler([])
-                            return
-                        }
-                        
-                        for index in 1...similarVideoIDasTuples.count {
-                            let tuple = similarVideoIDasTuples[index - 1]
-                            var groupAssets: [PHAsset] = []
-                            if let first = tuple.first as String?, let second = tuple.second as String? {
-                                let firstInteger = first.replacingStringAndConvertToIntegerForImage() - 1
-                                let secondInteger = second.replacingStringAndConvertToIntegerForImage() - 1
-                                
-                                if abs(secondInteger - firstInteger) >= 10 { continue }
-                                if !similarVideoNumbers.contains(firstInteger) {
-                                    similarVideoNumbers.append(firstInteger)
-                                    groupAssets.append(videoCollection[firstInteger])
-                                }
-                                
-                                if !similarVideoNumbers.contains(secondInteger) {
-                                    similarVideoNumbers.append(secondInteger)
-                                    groupAssets.append(videoCollection[secondInteger])
-                                }
-                                
-                                similarVideoIDasTuples.filter({$0.first != nil && $0.second != nil}).filter({ $0.first == tuple.first || $0.first == tuple.second || $0.second == tuple.second || $0.second == tuple.first }).forEach({ tuple in
-                                    if let firstTuple = tuple.first as String?, let secondTuple = tuple.second as String? {
-                                        let firstTupleInteger = firstTuple.replacingStringAndConvertToIntegerForImage() - 1
-                                        let secondTupleInteger = secondTuple.replacingStringAndConvertToIntegerForImage() - 1
-                                        
-                                        if abs(secondTupleInteger - firstTupleInteger) >= 10 {
-                                            return
-                                        }
-                                        
-                                        if !similarVideoNumbers.contains(firstTupleInteger) {
-                                            similarVideoNumbers.append(firstTupleInteger)
-                                            groupAssets.append(videoCollection[firstTupleInteger])
-                                        }
-                                        
-                                        if !similarVideoNumbers.contains(secondTupleInteger) {
-                                            similarVideoNumbers.append(secondTupleInteger)
-                                            groupAssets.append(videoCollection[secondInteger])
-                                        }
-                                    }
-                                })
-                                
-                                if groupAssets.count >= 1 {
-                                    similarVideoGroups.append(PhassetGroup(name: "", assets: groupAssets))
-                                }
-                            }
-                            completionHandler(similarVideoGroups)
-                        }
-                    }
-                } else {
-                    U.UI {
-                        completionHandler([])
-                    }
-                    return
-                }
-            }
-        }
-    }
-
-    
-//    MARK: - simmilar photo check
-    public func getSimilarPhotos(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", completionHandler: @escaping ((_ assets: [PhassetGroup]) -> Void)) {
+    /// `duplicate photo algorithm`
+    public func getDuplicatedPhotosAsset(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", completionHandler: @escaping ((_ assets: [PhassetGroup]) -> Void)) {
         
         P.showIndicator()
         
@@ -306,31 +282,34 @@ class PhotoManager: NSObject {
             U.BG {
                 var photos: [OSTuple<NSString, NSData>] = []
                 
-                if photoGallery.count == 0 {
+                if photoGallery.count != 0 {
+                    
+                    
+                    for photoPos in 1...photoGallery.count {
+                        debugPrint("loading duplicate")
+                        debugPrint("photoposition \(photoPos)")
+                        let image = self.fetchManager.getThumbnail(from: photoGallery[photoPos - 1], size: CGSize(width: 150, height: 150))
+                        if let data = image.jpegData(compressionQuality: 0.8) {
+                            let tuple = OSTuple<NSString, NSData>(first: "image\(photoPos)" as NSString, andSecond: data as NSData)
+                            photos.append(tuple)
+                        }
+                    }
+  
+                    self.getDuplicatedTuples(for: photos, photosInGallery: photoGallery) { duplicatedPhotoAssetsGroup in
+                        P.hideIndicator()
+                        completionHandler(duplicatedPhotoAssetsGroup)
+                    }
+                } else {
                     U.UI {
+                        P.hideIndicator()
                         completionHandler([])
                     }
-                }
-            
-                for photoPos in 1...photoGallery.count {
-                    debugPrint("loading Similar")
-                    debugPrint("photoposition \(photoPos)")
-                    let image = self.fetchManager.getThumbnail(from: photoGallery[photoPos - 1], size: CGSize(width: 150, height: 150))
-                    if let data = image.jpegData(compressionQuality: 0.8) {
-                        let tuple = OSTuple<NSString, NSData>(first: "image\(photoPos)" as NSString, andSecond: data as NSData)
-                        photos.append(tuple)
-                    }
-                }
-                self.getSimilarTuples(for: photos, photosInGallery: photoGallery) { similarPhotos in
-                    P.hideIndicator()
-                    completionHandler(similarPhotos)
                 }
             }
         }
     }
     
-    
-//    MARK: - load simmiliar live photo -
+    /// `load simmiliar live photo` from gallery
     public func getSimilarLivePhotos(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", completionHandler: @escaping ((_ assets: [PhassetGroup]) -> Void)) {
         
         fetchManager.fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumLivePhotos, by: PHAssetMediaType.image.rawValue) { livePhotoGallery in
@@ -346,8 +325,8 @@ class PhotoManager: NSObject {
                         }
                     }
                     
-                    self.getSimilarTuples(for: livePhotos, photosInGallery: livePhotoGallery) { similarLifePhotos in
-                        completionHandler(similarLifePhotos)
+                    self.getDuplicatedTuples(for: livePhotos, photosInGallery: livePhotoGallery) { similarLivePhotoGroup in
+                        completionHandler(similarLivePhotoGroup)
                     }
                 } else {
                     U.UI {
@@ -358,85 +337,82 @@ class PhotoManager: NSObject {
         }
     }
     
-    /// `private` need for service compare
-    private func getSimilarTuples(for photos: [OSTuple<NSString, NSData>], photosInGallery: PHFetchResult<PHAsset>, completionHandler: @escaping ([PhassetGroup]) -> Void){
+    /// `private duplicated tuples` need for service compare
+    private func getDuplicatedTuples(for photos: [OSTuple<NSString, NSData>], photosInGallery: PHFetchResult<PHAsset>, completionHandler: @escaping ([PhassetGroup]) -> Void){
         
-        var similarPhotosCount: [Int] = []
-        var similarGroup: [PhassetGroup] = []
-        let similarIDS = OSImageHashing.sharedInstance().similarImages(with: OSImageHashingQuality.high, forImages: photos)
+        var duplicatedPhotosCount: [Int] = []
+        var duplicatedGroup: [PhassetGroup] = []
+        let duplicatedIDS = OSImageHashing.sharedInstance().similarImages(with: OSImageHashingQuality.high, forImages: photos)
         
-        U.UI {
-            guard similarIDS.count >= 1 else { completionHandler([])
-                debugPrint("zero similar IDS")
+        U.BG {
+            guard duplicatedIDS.count >= 1 else {
+                U.UI {
+                    completionHandler([])
+                }
                 return
             }
             
-            for currentPosition in 1...similarIDS.count {
-                let similarTuple = similarIDS[currentPosition - 1]
+            for currentPosition in 1...duplicatedIDS.count {
+                let duplicatedTuple = duplicatedIDS[currentPosition - 1]
                 var group: [PHAsset] = []
                 
-                debugPrint("checkSimilar")
+                debugPrint("checkDuplicated")
                 debugPrint("position \(currentPosition)")
                 
-                
-                if let first = similarTuple.first as String?, let second = similarTuple.second as String? {
+                if let first = duplicatedTuple.first as String?, let second = duplicatedTuple.second as String? {
                     let firstInteger = first.replacingStringAndConvertToIntegerForImage() - 1
                     let secondInteger = second.replacingStringAndConvertToIntegerForImage() - 1
                     debugPrint(first)
                     debugPrint(second)
                     
                     if abs(secondInteger - firstInteger) >= 10 { continue }
-                    if !similarPhotosCount.contains(firstInteger) {
-                        similarPhotosCount.append(firstInteger)
+                    if !duplicatedPhotosCount.contains(firstInteger) {
+                        duplicatedPhotosCount.append(firstInteger)
                         group.append(photosInGallery[firstInteger])
                     }
                     
-                    if !similarPhotosCount.contains(secondInteger) {
-                        similarPhotosCount.append(secondInteger)
+                    if !duplicatedPhotosCount.contains(secondInteger) {
+                        duplicatedPhotosCount.append(secondInteger)
                         group.append(photosInGallery[secondInteger])
                     }
                     
-                    similarIDS.filter({
-                                        $0.first != nil && $0.second != nil}).filter({
-                                                                                        $0.first == similarTuple.first ||
-                                                                                            $0.second == similarTuple.second ||
-                                                                                            $0.second == similarTuple.second ||
-                                                                                            $0.second == similarTuple.first}).forEach ({ tuple in
-                                                                                                if let first = tuple.first as String?, let second = tuple.second as String? {
-                                                                                                    let firstInt = first.replacingStringAndConvertToIntegerForImage() - 1
-                                                                                                    let socondInt = second.replacingStringAndConvertToIntegerForImage() - 1
-                                                                                                    
-                                                                                                    if abs(secondInteger - firstInteger) >= 10 {
-                                                                                                        return
-                                                                                                    }
-                                                                                                    
-                                                                                                    debugPrint(first)
-                                                                                                    debugPrint(second)
-                                                                                                    
-                                                                                                    if !similarPhotosCount.contains(firstInt) {
-                                                                                                        similarPhotosCount.append(firstInt)
-                                                                                                        group.append(photosInGallery[firstInt])
-                                                                                                    }
-                                                                                                    
-                                                                                                    if !similarPhotosCount.contains(socondInt) {
-                                                                                                        similarPhotosCount.append(socondInt)
-                                                                                                        group.append(photosInGallery[socondInt])
-                                                                                                    }
-                                                                                                } else {
-                                                                                                    return
-                                                                                                }
-                                                                                                
-                                                                                            })
+                    duplicatedIDS.filter({ $0.first != nil && $0.second != nil}).filter({ $0.first == duplicatedTuple.first || $0.second == duplicatedTuple.second || $0.second == duplicatedTuple.second || $0.second == duplicatedTuple.first}).forEach ({ tuple in
+                        if let first = tuple.first as String?, let second = tuple.second as String? {
+                            let firstInt = first.replacingStringAndConvertToIntegerForImage() - 1
+                            let socondInt = second.replacingStringAndConvertToIntegerForImage() - 1
+                            
+                            if abs(secondInteger - firstInteger) >= 10 {
+                                return
+                            }
+                            
+                            debugPrint(first)
+                            debugPrint(second)
+                            
+                            if !duplicatedPhotosCount.contains(firstInt) {
+                                duplicatedPhotosCount.append(firstInt)
+                                group.append(photosInGallery[firstInt])
+                            }
+                            
+                            if !duplicatedPhotosCount.contains(socondInt) {
+                                duplicatedPhotosCount.append(socondInt)
+                                group.append(photosInGallery[socondInt])
+                            }
+                        } else {
+                            return
+                        }
+                    })
                     if group.count >= 2 {
-                        similarGroup.append(PhassetGroup(name: "", assets: group))
+                        duplicatedGroup.append(PhassetGroup(name: "", assets: group))
                     }
                 }
             }
-            completionHandler(similarGroup)
+            U.UI {            
+                completionHandler(duplicatedGroup)
+            }
         }
     }
     
-//    MARK: - load selfies -
+    /// `load selfies` from gallery
     public func getSelfiePhotos(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", completionHandler: @escaping ((_ assets: [PHAsset]) -> Void)) {
         
         fetchManager.fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumSelfPortraits, by: PHAssetMediaType.image.rawValue) { selfiesInLibrary in
@@ -460,7 +436,8 @@ class PhotoManager: NSObject {
             }
         }
     }
-//    MARK: - load life photo -
+    
+    /// `load live photos` from gallery
     public func getLivePhotos(_ completionHandler: @escaping ((_ assets: [PHAsset]) -> Void)) {
         
         fetchManager.fetchFromGallery(collectiontype: .smartAlbumLivePhotos, by: PHAssetMediaType.image.rawValue) { livePhotosLibrary in
@@ -485,7 +462,7 @@ class PhotoManager: NSObject {
         }
     }
     
-//    MARK: - load screenshots -
+    /// `load screenshots` from gallery
     public func getScreenShots(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", completionHandler: @escaping ((_ assets: [PHAsset]) -> Void)) {
         
         fetchManager.fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumScreenshots, by: PHAssetMediaType.image.rawValue) { screensShotsLibrary in
@@ -511,15 +488,227 @@ class PhotoManager: NSObject {
     }
 }
 
-//      MARK: - change assets observer -
-
-extension PhotoManager: PHPhotoLibraryChangeObserver {
+//  MARK: - video part -
+extension PhotoManager {
     
-    func photoLibraryDidChange(_ changeInstance: PHChange) {
-        U.UI {
-            self.getPhotoLibrary()
-            UpdatingChangesInOpenedScreensMediator.instance.updatingChangedScreenShots()
-            UpdatingChangesInOpenedScreensMediator.instance.updatingChangedSelfies()
+    /// `fetch large videos` from gallery
+    public func getLargevideoContent(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", completionHandler: @escaping ((_ assets: [PHAsset]) -> Void)) {
+        
+        fetchManager.fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumVideos, by: PHAssetMediaType.video.rawValue) { videoContent in
+            U.BG {
+                var videos: [PHAsset] = []
+                
+                if videoContent.count == 0 {
+                    U.UI {
+                        completionHandler([])
+                    }
+                    return
+                }
+                
+                for videosPosition in 1...videoContent.count {
+                    if videoContent[videosPosition - 1].imageSize > 15000000 { //550000000 
+                        videos.append(videoContent[videosPosition - 1])
+                    }
+                }
+                U.UI {
+                    completionHandler(videos)
+                }
+            }
+        }
+    }
+    
+    /// `similar Videos` from gallery
+    public func getSimilarVideoAssets(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", completionHandler: @escaping ((_ videoAssets: [PhassetGroup]) -> Void)) {
+        
+        fetchManager.fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumVideos, by: PHAssetMediaType.video.rawValue) { videoContent in
+            U.BG {
+                var assets: [PHAsset] = []
+                
+                if videoContent.count == 0 {
+                    U.UI {
+                        completionHandler([])
+                    }
+                    return
+                }
+                
+                for videoPosition in 1...videoContent.count {
+                    let asset = videoContent[videoPosition - 1]
+                    assets.append(asset)
+                }
+                
+                let z = FindDuplicatesUsingThumbnail.findDupes(assets: assets, strictness: .closeToIdentical)
+                U.UI {
+                    completionHandler(z)
+                }
+            }
+        }
+    }
+    
+    /// `similar videos by time stamp`
+    public func getSimilarVideosByTimeStamp(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", completionHandler: @escaping ((_ videoAssets: [PhassetGroup]) -> Void)) {
+        
+        fetchManager.fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumVideos, by: PHAssetMediaType.video.rawValue) { videoContent in
+            U.BG {
+                var assets: [PHAsset] = []
+                var grouped: [PhassetGroup] = []
+                
+                if videoContent.count == 0 {
+                    U.UI {
+                        completionHandler([])
+                    }
+                    return
+                }
+                
+                for videoPosition in 1...videoContent.count {
+                    assets.append(videoContent[videoPosition - 1])
+                }
+                
+                for video in assets {
+                    var compareAsset: [PHAsset] = []
+                    debugPrint("->>>>>>>>>>")
+                    debugPrint(video.localIdentifier)
+                    
+                    for check in assets {
+                        debugPrint("........")
+                        debugPrint(check.localIdentifier)
+                        if video.localIdentifier != check.localIdentifier {
+                            if video.duration == check.duration && video.creationDate == check.creationDate {
+                                compareAsset.append(video)
+                                compareAsset.append(check)
+                            } else {
+                                
+                            }
+                        }
+                    }
+                    
+                    if compareAsset.count != 0 {
+                        grouped.append(PhassetGroup.init(name: "", assets: compareAsset))
+                    }
+                
+                }
+                
+                U.UI {
+                    completionHandler(grouped.isEmpty ? [] : grouped)
+                }
+            }
+        }
+    }
+    
+    
+    
+    /// `screen recordings` from gallery
+    public func getScreenRecordsVideos(from startDate: String = "01-01-1917 00:00:00", to endDate: String = "01-01-2666 00:00:00", completionHandler: @escaping ((_ screenRecordsAssets: [PHAsset]) -> Void)) {
+        
+        fetchManager.fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumVideos, by: PHAssetMediaType.video.rawValue) { videoAssets in
+            U.BG {
+                var screenRecords: [PHAsset] = []
+                
+                if videoAssets.count == 0 {
+                    U.UI {
+                        completionHandler([])
+                    }
+                    return
+                }
+                                
+                for videosPosition in 1...videoAssets.count {
+                    let asset = videoAssets[videosPosition - 1]
+                    if let assetResource = PHAssetResource.assetResources(for: asset).first {
+                        if assetResource.originalFilename.contains("RPReplay") {
+                            screenRecords.append(asset)
+                        }
+                    }
+                }
+                U.UI {
+                    completionHandler(screenRecords)
+                }
+            }
+        }
+    }
+
+    /// `duplicated videos compare algorithm`
+    public func getDuplicatedVideoAsset(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", completionHandler: @escaping ((_ videoAssets: [PhassetGroup]) -> Void)) {
+        
+        fetchManager.fetchFromGallery(from: startDate,
+                                      to: endDate,
+                                      collectiontype: .smartAlbumVideos,
+                                      by: PHAssetMediaType.video.rawValue) { videoCollection in
+            var videos: [OSTuple<NSString, NSData>] = []
+            
+            U.BG {
+                if videoCollection.count != 0 {
+                    for index in 1...videoCollection.count {
+                        let image = self.fetchManager.getThumbnail(from: videoCollection[index - 1], size: CGSize(width: 150, height: 150))
+                        if let data = image.jpegData(compressionQuality: 0.8) {
+                            let imageTuple = OSTuple<NSString, NSData>(first: "image\(index)" as NSString, andSecond: data as NSData)
+                            videos.append(imageTuple)
+                        } else {
+                            return
+                        }
+                    }
+                    
+                    let duplicateVideoIDasTuples = OSImageHashing.sharedInstance().similarImages(withProvider: .pHash, forImages: videos)
+                    var duplicateVideoNumbers: [Int] = []
+                    var duplicateVideoGroups: [PhassetGroup] = []
+                    U.UI {
+                        guard duplicateVideoIDasTuples.count >= 1 else { completionHandler([])
+                            return
+                        }
+                        
+                        for index in 1...duplicateVideoIDasTuples.count {
+                            let tuple = duplicateVideoIDasTuples[index - 1]
+                            var groupAssets: [PHAsset] = []
+                            if let first = tuple.first as String?, let second = tuple.second as String? {
+                                let firstInteger = first.replacingStringAndConvertToIntegerForImage() - 1
+                                let secondInteger = second.replacingStringAndConvertToIntegerForImage() - 1
+                                
+                                if abs(secondInteger - firstInteger) >= 10 { continue }
+                                if !duplicateVideoNumbers.contains(firstInteger) {
+                                    duplicateVideoNumbers.append(firstInteger)
+                                    groupAssets.append(videoCollection[firstInteger])
+                                }
+                                
+                                if !duplicateVideoNumbers.contains(secondInteger) {
+                                    duplicateVideoNumbers.append(secondInteger)
+                                    groupAssets.append(videoCollection[secondInteger])
+                                }
+                                
+                                duplicateVideoIDasTuples.filter({$0.first != nil && $0.second != nil}).filter({ $0.first == tuple.first || $0.first == tuple.second || $0.second == tuple.second || $0.second == tuple.first }).forEach({ tuple in
+                                    if let firstTuple = tuple.first as String?, let secondTuple = tuple.second as String? {
+                                        let firstTupleInteger = firstTuple.replacingStringAndConvertToIntegerForImage() - 1
+                                        let secondTupleInteger = secondTuple.replacingStringAndConvertToIntegerForImage() - 1
+                                        
+                                        if abs(secondTupleInteger - firstTupleInteger) >= 10 {
+                                            return
+                                        }
+                                        
+                                        if !duplicateVideoNumbers.contains(firstTupleInteger) {
+                                            duplicateVideoNumbers.append(firstTupleInteger)
+                                            groupAssets.append(videoCollection[firstTupleInteger])
+                                        }
+                                        
+                                        if !duplicateVideoNumbers.contains(secondTupleInteger) {
+                                            duplicateVideoNumbers.append(secondTupleInteger)
+                                            groupAssets.append(videoCollection[secondInteger])
+                                        }
+                                    }
+                                })
+                                
+                                if groupAssets.count >= 2 {
+                                    duplicateVideoGroups.append(PhassetGroup(name: "", assets: groupAssets))
+                                }
+                            }
+                        }
+                        U.UI {
+                            completionHandler(duplicateVideoGroups)
+                        }
+                    }
+                } else {
+                    U.UI {
+                        completionHandler([])
+                    }
+                    return
+                }
+            }
         }
     }
 }
@@ -538,115 +727,89 @@ extension PhotoManager {
             PHAssetChangeRequest.deleteAssets(deletedAssets)
         } completionHandler: { success, error in
             U.UI {
-                    completion(success)
+                completion(success)
             }
+        }
+    }
+    
+    /// fetch `recently deleted assets`
+    
+    public func getRecentlyDeletedAssets(completion: @escaping ([PHAsset]) -> Void) {
+        
+        fetchManager.recentlyDeletedAlbumFetch { assets in
+            completion(assets)
         }
     }
 }
 
+//      MARK: - change assets observer -
 
-
-extension PhotoManager {
+extension PhotoManager: PHPhotoLibraryChangeObserver {
     
-//    private func loadTestingAssets() {
-//
-//        let photoCollection = self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumUserLibrary, by: PHAssetMediaType.image.rawValue) { collection in
-//            debugPrint("photo collection count")
-//            debugPrint(collection.count)
-//        }
-//
-//        let selfiesCollection = self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumSelfPortraits, by: PHAssetMediaType.image.rawValue) { selfies in
-//            debugPrint("some selfies count")
-//            debugPrint(selfies.count)
-//        }
-//
-//        let livePhotoCollection = self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumLivePhotos, by: PHAssetMediaType.image.rawValue) { livePhoto in
-//            debugPrint("some live count")
-//            debugPrint(livePhoto.count)
-//        }
-//
-//        let screenShotsCollection = self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumScreenshots, by: PHAssetMediaType.image.rawValue) { screenShots in
-//            debugPrint("some screens count")
-//            debugPrint(screenShots.count)
-//        }
-//
-//
-//        let gifsCollection = self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumAnimated, by: PHAssetMediaType.image.rawValue) { gifs in
-//            debugPrint("some gifs count")
-//            debugPrint(gifs.count)
-//        }
-//
-//        let videoCollection = self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumVideos, by: PHAssetMediaType.video.rawValue) { video in
-//            debugPrint("some video count")
-//            debugPrint(video.count)
-//        }
-//
-//
-//
-//
-//
-////                let collection = PHAssetFetchManager.shared.fetchImagesFromGallery(collection: nil)
-////                debugPrint("all")
-////                debugPrint(collection.count)
-////
-////                let imageCollection = PHAssetFetchManager.shared.fetchAssets(by: PHAssetMediaType.image.rawValue)
-////                debugPrint("images")
-////                debugPrint(imageCollection.count)
-////
-////                let videoCollection = PHAssetFetchManager.shared.fetchAssets(by: PHAssetMediaType.video.rawValue)
-////                debugPrint("video")
-////                debugPrint(videoCollection.count)
-////
-////                let livePhotosCollection = PHAssetFetchManager.shared.fetchAssetsSubtipe(by: PHAssetMediaSubtype.photoLive.rawValue)
-////                debugPrint("live photo cout")
-////                debugPrint(livePhotosCollection.count)
-////
-////                let screenShots = PHAssetFetchManager.shared.fetchAssetsSubtipe(by: PHAssetMediaSubtype.photoScreenshot.rawValue)
-////                debugPrint("screenshots")
-////                debugPrint(screenShots.count)
-////
-////                let videoStreamed = PHAssetFetchManager.shared.fetchAssetsSubtipe(by: PHAssetMediaSubtype.videoStreamed.rawValue)
-////                debugPrint("videoStreamed")
-////                debugPrint(videoStreamed.count)
-////
-////                let videoTimelapse = PHAssetFetchManager.shared.fetchAssetsSubtipe(by: PHAssetMediaSubtype.videoTimelapse.rawValue)
-////                debugPrint("videoTimelapse")
-////                debugPrint(videoTimelapse.count)
-//
-//
-//
-////                imageCollection.enumerateObjects({(object: AnyObject!, count: Int, stop: UnsafeMutablePointer<ObjCBool>) in
-////                    if let fetchObject = object as? PHAsset {
-////                        self.photos.append(fetchObject)
-////                    }
-////                })
-//
-//    }
+    func photoLibraryDidChange(_ changeInstance: PHChange) {
+        U.UI {
+//            self.getPhotoLibrary()
+            UpdatingChangesInOpenedScreensMediator.instance.updatingChangedScreenShots()
+            UpdatingChangesInOpenedScreensMediator.instance.updatingChangedSelfies()
+        }
+    }
 }
 
-
-
-//    /extension PHAssetCollection {
-//
-//    func getCoverImageSize(_ size: CGSize) -> UIImage {
-//        var image = UIImage()
-//        let assets = PHAsset.fetchAssets(in: self, options: nil)
-//        let asset = assets.firstObject
-//        if let thumbImage = asset?.getThumbnail(size: size) {
-//            image = thumbImage
-//        }
-//        return image
-//    }
-//
-//    func hasAssets() -> Bool {
-//        let assets = PHAsset.fetchAssets(in: self, options: nil)
-//        return assets.count > 0
-//    }
-//}
-
-
-
+//      MARK:  find duplicates close to similar
+class FindDuplicatesUsingThumbnail {
     
-
-
+    enum Strictness {
+        case similar
+        case closeToIdentical
+    }
+    
+    public class func findDupes(assets: [PHAsset], strictness: Strictness) -> [PhassetGroup] {
+        
+        var phassetGroup: [PhassetGroup] = []
+        
+        let rawTuples: [OSTuple<NSString, NSData>] = assets.enumerated().map { (index, asset) -> OSTuple<NSString, NSData> in
+            let imageData = asset.thumbnailSync?.pngData()
+            
+            return OSTuple<NSString, NSData>.init(first: "\(index)" as NSString, andSecond: imageData as NSData?)
+        }
+        
+        let toCheckTuples = rawTuples.filter({ $0.second != nil })
+        
+        let providerId = OSImageHashingProviderIdForHashingQuality(.medium)
+        let provider = OSImageHashingProviderFromImageHashingProviderId(providerId);
+        let defaultHashDistanceTreshold = provider.hashDistanceSimilarityThreshold()
+        let hashDistanceTreshold: Int64
+        switch strictness {
+            case .similar: hashDistanceTreshold = defaultHashDistanceTreshold
+            case .closeToIdentical: hashDistanceTreshold = 1
+        }
+        
+        let similarImageIdsAsTuples = OSImageHashing.sharedInstance().similarImages(withProvider: providerId, withHashDistanceThreshold: hashDistanceTreshold, forImages: toCheckTuples)
+    
+        var assetToGroupIndex = [PHAsset: Int]()
+        for pair in similarImageIdsAsTuples {
+            let assetIndex1 = Int(pair.first! as String)!
+            let assetIndex2 = Int(pair.second! as String)!
+            let asset1 = assets[assetIndex1]
+            let asset2 = assets[assetIndex2]
+            let groupIndex1 = assetToGroupIndex[asset1]
+            let groupIndex2 = assetToGroupIndex[asset2]
+            if groupIndex1 == nil && groupIndex2 == nil {
+                
+                let group = PhassetGroup.init(name: "", assets: [asset1, asset2])
+                phassetGroup.append(group)
+                let groupIndex = phassetGroup.count - 1
+                assetToGroupIndex[asset1] = groupIndex
+                assetToGroupIndex[asset2] = groupIndex
+            } else if groupIndex1 == nil && groupIndex2 != nil {
+                phassetGroup[groupIndex2!].assets.append(asset1)
+                assetToGroupIndex[asset1] = groupIndex2!
+            } else if groupIndex1 != nil && groupIndex2 == nil {
+                phassetGroup[groupIndex1!].assets.append(asset2)
+                assetToGroupIndex[asset2] = groupIndex1!
+            }
+        }
+        return phassetGroup
+    }
+}
 

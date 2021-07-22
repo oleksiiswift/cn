@@ -12,6 +12,7 @@ import SwiftMessages
 
 class MainViewController: UIViewController {
     
+    @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var circleTotlaSpaceView: CircleProgressView!
     @IBOutlet weak var mediaCollectionViewContainer: UIView!
     @IBOutlet weak var mediaCollectionView: UICollectionView!
@@ -34,9 +35,13 @@ class MainViewController: UIViewController {
     private var allSelfies: [PHAsset] = []
     private var allLiveFotos: [PHAsset] = []
     
+    private var allLargeVidoes: [PHAsset] = []
+    private var allScreenRecordsVideos: [PHAsset] = []
+    private var allSimilarRecordingsVideos: [PhassetGroup] = []
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+    
         setupObserversAndDelegates()
         setupNavigation()
         setupUI()
@@ -68,19 +73,18 @@ extension MainViewController {
 //      MARK: - updating elements -
 extension MainViewController: UpdateContentDataBaseListener {
     
-    func getScreenAsset(_ assets: [PHAsset]) {
+    func getScreenAssets(_ assets: [PHAsset]) {
         self.allScreenShots = assets
     }
     
-    func getFrontCameraAsset(_ assets: [PHAsset]) {
-        self.allSelfies = assets
-    }
-    
-    func getLivePhotosAsset(_ assets: [PHAsset]) {
+    func getLivePhotosAssets(_ assets: [PHAsset]) {
         self.allLiveFotos = assets
     }
     
-    
+    func getFrontCameraAssets(_ assets: [PHAsset]) {
+        self.allSelfies = assets
+    }
+            
     func getPhotoLibraryCount(count: Int, calculatedSpace: Int64) {
         U.UI {
             self.allPhotoCount = count
@@ -98,6 +102,22 @@ extension MainViewController: UpdateContentDataBaseListener {
         }
     }
     
+    func getLargeVideosAssets(_ assets: [PHAsset]) {
+        self.allLargeVidoes = assets
+    }
+    
+    func getSimmilarVideosAssets(_ assets: [PhassetGroup]) {
+        self.allSimilarRecordingsVideos = assets
+    }
+    
+    func getDuplicateVideosAssets(_ assets: [PhassetGroup]) {
+        debugPrint(assets.count)
+    }
+    
+    func getScreenRecordsVideosAssets(_ assets: [PHAsset]) {
+        self.allScreenRecordsVideos = assets
+    }
+    
     func getContactsCount(count: Int) {
         
         self.allContactsCount = count
@@ -105,13 +125,26 @@ extension MainViewController: UpdateContentDataBaseListener {
             cell.configureCell(mediaType: .userContacts, contentCount: count, diskSpace: 0)
         }
     }
+}
 
+extension MainViewController {
+    
     private func openMediaController(type: MediaContentType) {
         let storyboard = UIStoryboard(name: C.identifiers.storyboards.media, bundle: nil)
         let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.content) as! MediaContentViewController
-        viewController.allScreenShots = self.allScreenShots
-        viewController.allSelfies = self.allSelfies
-        viewController.allLiveFotos = self.allLiveFotos
+  
+        switch type {
+            case .userPhoto:
+                viewController.allScreenShots = self.allScreenShots
+                viewController.allSelfies = self.allSelfies
+                viewController.allLiveFotos = self.allLiveFotos
+            case .userVideo:
+                viewController.allLargeVideos = self.allLargeVidoes
+                viewController.allScreenRecords = self.allScreenRecordsVideos
+            default:
+                return
+        }
+        
         viewController.contentType = type
         self.navigationController?.pushViewController(viewController, animated: true)
     }
@@ -191,13 +224,15 @@ extension MainViewController: UpdateColorsDelegate {
     #warning("LOCO add loco")
     private func setupUI() {
                 
+        scrollView.alwaysBounceVertical = true
         deepCleaningButtonView.setCorner(12)
         deepCleaningButtonTextLabel.font = .systemFont(ofSize: 17, weight: .bold)
         deepCleaningButtonTextLabel.text = "Deep Cleaning"
     }
     
     func updateColors() {
-        self.view.backgroundColor = currentTheme.backgroundColor
+        
+        self.view.backgroundColor = .clear
         deepCleaningButtonView.backgroundColor = currentTheme.accentBackgroundColor
         deepCleaningButtonTextLabel.textColor = currentTheme.activeTitleTextColor
     }

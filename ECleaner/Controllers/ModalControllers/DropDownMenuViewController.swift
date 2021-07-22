@@ -48,7 +48,7 @@ extension DropDownMenuViewController {
         self.tableView?.dataSource = self
         self.tableView?.delegate = self
         self.tableView?.separatorStyle = .none
-        self.tableView?.contentInset = UIEdgeInsets(top: 15, left: 0, bottom: 0, right: 0)
+        self.tableView?.contentInset = UIEdgeInsets(top: 4, left: 0, bottom: 0, right: 0)
         self.tableView?.register(UINib(nibName: C.identifiers.xibs.dropDownCell, bundle: nil), forCellReuseIdentifier: C.identifiers.cells.dropDownCell)
         
         if let optionTableView = self.tableView {
@@ -63,7 +63,7 @@ extension DropDownMenuViewController {
     private func calculateMenuContentSize() {
         let itemsCount = CGFloat(menuSectionItems.flatMap({$0}).count)
         var viewWidth: CGFloat = 150
-        let viewHeight: CGFloat = itemsCount * 50
+        let viewHeight: CGFloat = itemsCount * 44
         let flatItems = menuSectionItems.flatMap{$0}
         for item in flatItems {
             if item.sizeForFutureText().width + 70 > viewWidth {
@@ -94,5 +94,9 @@ extension DropDownMenuViewController: UITableViewDataSource, UITableViewDelegate
         let selectedItem = menuSectionItems[indexPath.section][indexPath.row]
         self.delegate?.selectedItemListViewController(self, didSelectItem: selectedItem.menuItem)
         self.dismiss(animated: true)
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 40
     }
 }

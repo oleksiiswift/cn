@@ -287,13 +287,35 @@
                                             </collectionViewCell>
                                         </cells>
                                     </collectionView>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kwX-8u-SCV">
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="0.0"/>
+                                        <subviews>
+                                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gYZ-ro-UiV">
+                                                <rect key="frame" x="0.0" y="-200" width="414" height="0.0"/>
+                                                <connections>
+                                                    <segue destination="s4c-JU-iXE" kind="embed" id="n9h-wM-JSa"/>
+                                                </connections>
+                                            </containerView>
+                                        </subviews>
+                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                        <constraints>
+                                            <constraint firstAttribute="bottom" secondItem="gYZ-ro-UiV" secondAttribute="bottom" id="FR1-gF-6qm"/>
+                                            <constraint firstAttribute="height" id="UIj-ot-DdT"/>
+                                            <constraint firstItem="gYZ-ro-UiV" firstAttribute="leading" secondItem="kwX-8u-SCV" secondAttribute="leading" id="Uxm-sg-etZ"/>
+                                            <constraint firstItem="gYZ-ro-UiV" firstAttribute="top" secondItem="kwX-8u-SCV" secondAttribute="top" id="peG-Dh-eJa"/>
+                                            <constraint firstAttribute="trailing" secondItem="gYZ-ro-UiV" secondAttribute="trailing" id="rOD-sU-BMD"/>
+                                        </constraints>
+                                    </view>
                                 </subviews>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <constraints>
+                                    <constraint firstItem="kwX-8u-SCV" firstAttribute="top" secondItem="T18-Zm-Mxt" secondAttribute="top" id="IWb-q3-HNc"/>
                                     <constraint firstAttribute="trailing" secondItem="sWN-49-wwQ" secondAttribute="trailing" id="Lb5-cZ-p8A"/>
+                                    <constraint firstItem="kwX-8u-SCV" firstAttribute="leading" secondItem="T18-Zm-Mxt" secondAttribute="leading" id="LpI-cH-5Wy"/>
                                     <constraint firstItem="sWN-49-wwQ" firstAttribute="leading" secondItem="T18-Zm-Mxt" secondAttribute="leading" id="PBo-hg-cEe"/>
-                                    <constraint firstItem="sWN-49-wwQ" firstAttribute="top" secondItem="T18-Zm-Mxt" secondAttribute="top" id="Ro4-Ic-4mD"/>
-                                    <constraint firstAttribute="bottom" secondItem="sWN-49-wwQ" secondAttribute="bottom" id="foH-n4-MZq"/>
+                                    <constraint firstItem="sWN-49-wwQ" firstAttribute="top" secondItem="kwX-8u-SCV" secondAttribute="bottom" id="Zkv-Cz-GHF"/>
+                                    <constraint firstAttribute="bottom" secondItem="sWN-49-wwQ" secondAttribute="bottom" id="yUX-uy-QNS"/>
+                                    <constraint firstAttribute="trailing" secondItem="kwX-8u-SCV" secondAttribute="trailing" id="yd7-hD-Dcs"/>
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FZg-aO-yfu">
@@ -339,9 +361,8 @@
                         <viewLayoutGuide key="safeArea" id="4cq-tk-vZp"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="FZg-aO-yfu" firstAttribute="top" secondItem="T18-Zm-Mxt" secondAttribute="bottom" id="4A6-wX-qyK"/>
-                            <constraint firstItem="FZg-aO-yfu" firstAttribute="top" secondItem="T18-Zm-Mxt" secondAttribute="bottom" id="5Z9-pb-arb"/>
-                            <constraint firstItem="T18-Zm-Mxt" firstAttribute="top" secondItem="4cq-tk-vZp" secondAttribute="top" id="HcT-1a-JiG"/>
+                            <constraint firstItem="FZg-aO-yfu" firstAttribute="top" secondItem="T18-Zm-Mxt" secondAttribute="bottom" id="263-5H-dYw"/>
+                            <constraint firstItem="T18-Zm-Mxt" firstAttribute="top" secondItem="4cq-tk-vZp" secondAttribute="top" id="2kK-eV-VtY"/>
                             <constraint firstItem="FZg-aO-yfu" firstAttribute="leading" secondItem="4cq-tk-vZp" secondAttribute="leading" id="Lte-6P-ov8"/>
                             <constraint firstAttribute="bottom" secondItem="FZg-aO-yfu" secondAttribute="bottom" id="jRT-QT-9yY"/>
                             <constraint firstItem="4cq-tk-vZp" firstAttribute="trailing" secondItem="FZg-aO-yfu" secondAttribute="trailing" id="u6S-7h-5zJ"/>
@@ -355,11 +376,14 @@
                         <outlet property="collectionView" destination="sWN-49-wwQ" id="q5J-n0-Lri"/>
                         <outlet property="deleteAssetsButtonView" destination="ltl-OA-OWg" id="XSr-VE-QlE"/>
                         <outlet property="deleteAssetsTexetLabel" destination="doS-lq-Xzt" id="QYn-NB-GWK"/>
+                        <outlet property="optionalViewerHeightConstraint" destination="UIj-ot-DdT" id="jMd-fk-4J6"/>
+                        <outlet property="photoContentContainerView" destination="T18-Zm-Mxt" id="93R-oS-ZNB"/>
+                        <outlet property="photoPreviewContainerView" destination="gYZ-ro-UiV" id="Fil-ZA-H0S"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="w3y-Ft-b1X" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2130" y="-277"/>
+            <point key="canvasLocation" x="2128.985507246377" y="-277.23214285714283"/>
         </scene>
         <!--Date Selector View Controller-->
         <scene sceneID="56m-Re-eKu">
@@ -598,6 +622,20 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="VCV-Tt-8xJ" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="137.68115942028987" y="45.535714285714285"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="hAS-YS-8iO">
+            <objects>
+                <viewController id="s4c-JU-iXE" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="NBj-aB-qyU">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="0.0"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="D4M-RM-XHx" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2328" y="-766"/>
         </scene>
     </scenes>
     <resources>

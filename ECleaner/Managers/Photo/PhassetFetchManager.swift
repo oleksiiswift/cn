@@ -60,7 +60,7 @@ class PHAssetFetchManager {
 
 extension PHAssetFetchManager {
     
-    
+//    MARK: fetch asseets 
     private func fetchAssets(by type: Int) -> PHFetchResult<PHAsset> {
         let fetchOption = PHFetchOptions()
         fetchOption.sortDescriptors = [NSSortDescriptor(key: SortingDesriptionKey.creationDate.value, ascending: false)]
@@ -68,6 +68,7 @@ extension PHAssetFetchManager {
         return PHAsset.fetchAssets(with: fetchOption)
     }
     
+//    MARK: fetch assets by title
     private func fetchAssetsSubtipe(by type: UInt) -> PHFetchResult<PHAsset> {
         let fetchOption = PHFetchOptions()
         fetchOption.sortDescriptors = [NSSortDescriptor(key: SortingDesriptionKey.creationDate.value, ascending: false)]
@@ -100,7 +101,6 @@ extension PHAssetFetchManager {
             if let image = result {
             thumbnail = image
             }
-            thumbnail = result!
         })
         return thumbnail
     }
@@ -165,31 +165,46 @@ extension PHAssetFetchManager {
         return allSize
     }
     
-    
-    
-    //    func statisticPictureAssetsAllSize(items: PHFetchResult) -> Int64 {
-    //         var fileAllSizeB: Int64 = 0
-    //         let requestOptions = PHImageRequestOptions.init()
-    //         requestOptions.isSynchronous = true
-    //             items.fetchResult?.enumerateObjects({ (object, index, isStop) in
-    //                 let imageManager = PHImageManager.default()
-    //                 imageManager.requestImageData(for: object as! PHAsset, options: requestOptions, resultHandler: { (imageData, dataUTI, orientation, info) in
-    //                     if imageData != nil {
-    //                                                  fileAllSizeB += Int64(imageData!.count); // image size, unit B
-    //                     }
-    //                 })
-    //             })
-    //         }
-    //
-    //         return fileAllSizeB
-    //}
-
-    
+    public func assetSizeFromData(asset: PHAsset, completion: @escaping ((_ result: Int64) -> Void)) {
+        var fileSize: Int64 = 0
+        let requestOptions = PHImageRequestOptions.init()
+        requestOptions.isSynchronous = false
+        
+        let imageManager = PHImageManager.default()
+        
+        imageManager.requestImageDataAndOrientation(for: asset, options: requestOptions) { imageData, _, _, _ in
+            if imageData != nil {
+                fileSize = Int64(imageData!.count)
+                debugPrint(fileSize)
+                completion(fileSize)
+            }
+        }
+        
+        completion(fileSize)
+    }
+        
+    func statisticPictureAssetsAllSize(items: PHFetchResult<AnyObject>) -> Int64 {
+             var fileAllSizeB: Int64 = 0
+             let requestOptions = PHImageRequestOptions.init()
+             requestOptions.isSynchronous = true
+        
+                 items.enumerateObjects({ (object, index, isStop) in
+                     let imageManager = PHImageManager.default()
+                    imageManager.requestImageDataAndOrientation(for: object as! PHAsset, options: requestOptions) { imageData, dataUTI, orientation, info in
+                        if imageData != nil {
+                            fileAllSizeB += Int64(imageData!.count)
+                        }
+                    }
+                 })
+        return fileAllSizeB
+    }
 }
-
+            
+        
 extension PHAsset {
     
     var imageSize: Int64 {
+        
         let resources = PHAssetResource.assetResources(for: self)
         var fileDiskSpace: Int64 = 0
         
@@ -199,5 +214,49 @@ extension PHAsset {
             }
         }
         return fileDiskSpace
+    }
+}
+
+extension PHAssetFetchManager {
+ 
+    public func recentlyDeletedAlbumFetch(completionHandler: @escaping (([PHAsset]) -> Void)) {
+        
+        fetchRecentlyDeletedCollection { collection in
+            guard let albumCollection = collection else {
+                completionHandler([])
+                return
+            }
+            
+            let result = PHAsset.fetchAssets(in: albumCollection, options: nil)
+            var assets = [PHAsset]()
+            
+            if result.count == 0 {
+                U.UI {
+                    completionHandler([])
+                }
+                return
+            }
+           
+            for assetPosition in 1...result.count {
+                assets.append(result[assetPosition - 1])
+            }
+            U.UI {
+                completionHandler(assets)
+            }
+            completionHandler(assets)
+        }
+    }
+    
+    private func fetchRecentlyDeletedCollection(completionHandler: @escaping ((PHAssetCollection?) -> Void)) {
+        
+        let result = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .albumRegular, options: nil)
+        
+        for i in 0..<result.count {
+            let album = result[i]
+            
+            if album.localizedTitle == "Recently Deleted" {
+                 completionHandler(album)
+            }
+        }
     }
 }

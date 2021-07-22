@@ -80,8 +80,6 @@ open class CustomActivityIndicator: NSObject {
                     controllerToPresent.view.bringSubviewToFront(activityIndicatorContainer)
                     isActivityIndicatorShow = true
             }
-        } else {
-            hideActivityIndicator()
         }
     }
     

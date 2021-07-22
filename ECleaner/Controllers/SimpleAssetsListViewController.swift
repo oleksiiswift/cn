@@ -7,6 +7,7 @@
 
 import UIKit
 import Photos
+import AVKit
 
 class SimpleAssetsListViewController: UIViewController {
 
@@ -17,14 +18,15 @@ class SimpleAssetsListViewController: UIViewController {
     @IBOutlet weak var bottomMenuHeightConstraint: NSLayoutConstraint!
     
     public var assetCollection: [PHAsset] = []
-    public var photoMediaType: PhotoMediaType = .none
+    public var mediaType: PhotoMediaType = .none
     
     private var photoManager = PhotoManager()
-    
+
     private let flowLayout = SimpleColumnFlowLayout(cellsPerRow: 3, minimumInterSpacing: 3, minimumLineSpacing: 3, inset: UIEdgeInsets(top: 10, left: 10, bottom: 0, right: 10))
     private var bottomMenuHeight: CGFloat = 80
     
     private lazy var selectAllButton = UIBarButtonItem(title: "select all", style: .plain, target: self, action: #selector(handleSelectAllButtonTapped))
+    private lazy var deselectAllButton = UIBarButtonItem(title: "deselect all", style: .plain, target: self, action: #selector(handleSelectAllButtonTapped))
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -47,7 +49,12 @@ extension SimpleAssetsListViewController: UICollectionViewDelegate, UICollection
     
     private func setupCollectionView() {
         
-        flowLayout.itemHieght = ((U.screenWidth - 26) / 3) / U.ratio
+        switch mediaType {
+            case .singleLargeVideos:
+                flowLayout.isSquare = true
+            default:
+                flowLayout.itemHieght = ((U.screenWidth - 26) / 3) / U.ratio
+        }
         
         self.collectionView.dataSource = self
         self.collectionView.delegate = self
@@ -55,25 +62,60 @@ extension SimpleAssetsListViewController: UICollectionViewDelegate, UICollection
         self.collectionView.collectionViewLayout = flowLayout
         self.collectionView.allowsMultipleSelection = true
         self.collectionView.reloadData()
+        
+        if U.hasTopNotch {
+//            self.collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: U.bottomSafeAreaHeight * 2, right: 0)
+        }
     }
     
     private func configure(_ cell: PhotoCollectionViewCell, at indexPath: IndexPath) {
         
-        switch photoMediaType {
-            case .screenshots:
+        cell.delegate = self
+        cell.indexPath = indexPath
+        cell.cellContentType = self.mediaType
+        
+        if let paths = self.collectionView.indexPathsForSelectedItems, paths.contains([indexPath]) {
+            cell.isSelected = true
+        } else {
+            cell.isSelected = false
+        }
+        
+        cell.checkIsSelected()
+        
+        /// config thumbnail according screen type
+        switch mediaType {
+            case .singleScreenShots:
                 cell.loadCellThumbnail(assetCollection[indexPath.row],
                                        size: CGSize(width: ((U.screenWidth - 26) / 2),
                                                     height: ((U.screenHeight - 26) / 2) / U.ratio ))
-            case .selfies:
+            case .singleSelfies:
                 cell.loadCellThumbnail(assetCollection[indexPath.row],
                                        size: CGSize(width: (U.screenWidth - 26) / 2,
                                                     height: ((U.screenHeight - 26) / 2) / U.ratio))
-            case .livephotos:
+            case .singleLivePhotos:
+                cell.loadCellThumbnail(assetCollection[indexPath.row],
+                                       size: CGSize(width: (U.screenWidth - 26) / 2,
+                                                    height: ((U.screenWidth - 26) / 2) / U.ratio))
+            case .singleLargeVideos:
+                cell.loadCellThumbnail(assetCollection[indexPath.row],
+                                       size: CGSize(width: (U.screenWidth - 26) / 2,
+                                                    height: ((U.screenWidth - 26) / 2) / U.ratio))
+            case .similarVideos:
+                cell.loadCellThumbnail(assetCollection[indexPath.row],
+                                       size: CGSize(width: (U.screenWidth - 26) / 2,
+                                                    height: ((U.screenWidth - 26) / 2) / U.ratio))
+            case .duplicatedVideos:
+                cell.loadCellThumbnail(assetCollection[indexPath.row],
+                                       size: CGSize(width: (U.screenWidth - 26) / 2,
+                                                    height: ((U.screenWidth - 26) / 2) / U.ratio))
+            case .singleScreenRecordings:
                 cell.loadCellThumbnail(assetCollection[indexPath.row],
                                        size: CGSize(width: (U.screenWidth - 26) / 2,
                                                     height: ((U.screenWidth - 26) / 2) / U.ratio))
             default:
-                return
+                cell.loadCellThumbnail(assetCollection[indexPath.row],
+                                       size: CGSize(width: (U.screenWidth - 26) / 2,
+                                                    height: ((U.screenWidth - 26) / 2) / U.ratio))
         }
     }
     
@@ -91,62 +133,93 @@ extension SimpleAssetsListViewController: UICollectionViewDelegate, UICollection
         return cell
     }
     
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        collectionView.selectItem(at: indexPath, animated: true, scrollPosition: .left)
-        if let cell = collectionView.cellForItem(at: indexPath) {
-            cell.isSelected = true
-        }
-        handleSelectAllButtonState()
-        handleBottomButtonMenu()
+    func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
+        debugPrint("some other func ")
+        return false
     }
-    
-    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-        collectionView.deselectItem(at: indexPath, animated: true)
-        if let cell = collectionView.cellForItem(at: indexPath) {
-            cell.isSelected = false
+        
+    func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+        let asset = self.assetCollection[indexPath.row]
+        
+        if asset.mediaType == .video {
+            return UIContextMenuConfiguration(identifier: nil) {
+                return PreviewAVController(asset: asset)
+            } actionProvider: { _ in
+                return self.createCellContextMenu(for: asset, at: indexPath)
+            }
+        } else {
+            return UIContextMenuConfiguration(identifier: nil) {
+                return AssetContextPreviewViewController(asset: asset)
+            } actionProvider: { _ in
+                return self.createCellContextMenu(for: asset, at: indexPath)
+            }
         }
+    }
+}
+
+extension SimpleAssetsListViewController: PhotoCollectionViewCellDelegate {
+    
+    /// custom select deselect button for selected cells
+    /// did select item need for preview photo
+    /// need handle select button state and check cell.isSelected for checkmark image
+    /// for celected cell use cell delegate and indexPath
+    
+    func didSelectCell(at indexPath: IndexPath) {
+        if let cell = self.collectionView.cellForItem(at: indexPath) {
+            if cell.isSelected {
+                self.collectionView.deselectItem(at: indexPath, animated: true)
+                cell.isSelected = false
+            } else {
+                self.collectionView.selectItem(at: indexPath, animated: true, scrollPosition: [])
+                cell.isSelected = true
+            }
+        }
+        
         handleSelectAllButtonState()
         handleBottomButtonMenu()
     }
 }
-
 
 extension SimpleAssetsListViewController {
     
     @objc func handleSelectAllButtonTapped() {
     
         let selected = collectionView.indexPathsForSelectedItems?.count == assetCollection.count
-        selectAllButton.title = selected ? "select all" : "deselect"
+        self.navigationItem.rightBarButtonItem = selected ? selectAllButton : deselectAllButton
         setCollection(selected: selected)
         handleBottomButtonMenu()
     }
     
     private func setCollection(selected: Bool) {
         
+        if selected {
+            self.collectionView.deselectAllItems(in: 0, animated: true)
+        } else {
+            self.collectionView.selectAllItems(in: 0, animated: true)
+        }
+        
         let numbersOfItemsInSection = collectionView.numberOfItems(inSection: 0)
         
         for indexPath in (0..<numbersOfItemsInSection).map({IndexPath(item: $0, section: 0)}) {
-            if selected {
-                collectionView.deselectItem(at: indexPath, animated: true)
-            } else {
-                collectionView.selectItem(at: indexPath, animated: true, scrollPosition: .left)
-            }
             
-            if let cell = collectionView.cellForItem(at: indexPath) {
+            if let cell = collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell {
                 cell.isSelected = !selected
+                cell.checkIsSelected()
             }
         }
     }
     
     private func handleSelectAllButtonState() {
         
-        selectAllButton.title = collectionView.indexPathsForSelectedItems?.count != assetCollection.count ? "select all" : "deselect"
+        self.navigationItem.rightBarButtonItem = self.collectionView.indexPathsForSelectedItems?.count != assetCollection.count ? selectAllButton : deselectAllButton
     }
     
     private func handleBottomButtonMenu() {
         if let selectedItems = collectionView.indexPathsForSelectedItems {
-                bottomMenuHeightConstraint.constant = selectedItems.count > 0 ? bottomMenuHeight + U.bottomSafeAreaHeight : 0
+            bottomMenuHeightConstraint.constant = selectedItems.count > 0 ? (bottomMenuHeight + U.bottomSafeAreaHeight - 5) : 0
+            self.collectionView.contentInset.bottom = selectedItems.count > 0 ? 10 : 5
             U.animate(0.5) {
+                self.collectionView.layoutIfNeeded()
                 self.view.layoutIfNeeded()
             }
         }
@@ -176,9 +249,50 @@ extension SimpleAssetsListViewController {
                 let assetIdentifiers = assetsToDelete.map({ $0.localIdentifier})                
                 self.assetCollection = self.assetCollection.filter({!assetIdentifiers.contains($0.localIdentifier)})
                 self.collectionView.reloadData()
+                self.handleSelectAllButtonState()
+                self.handleBottomButtonMenu()
             }
         }
     }
+    
+    private func createCellContextMenu(for asset: PHAsset, at indexPath: IndexPath) -> UIMenu {
+        
+        let fullScreenPreviewAction = UIAction(title: "full screen preview", image: I.cellElementsItems.fullScreen) { _ in
+            if asset.mediaType == .video {
+                self.showVideoPreviewController(asset)
+            } else {
+                self.showFullScreenAssetPreview(asset)
+            }
+        }
+        
+        let deleteAssetAction = UIAction(title: "delete", image: I.cellElementsItems.trashBin) { _ in
+            debugPrint("delete action at :\(asset.imageSize)")
+            debugPrint(indexPath)
+        }
+        
+        return UIMenu(title: "", children: [fullScreenPreviewAction, deleteAssetAction])
+    }
+    
+    
+    private func showVideoPreviewController(_ asset: PHAsset) {
+        
+        PHCachingImageManager().requestAVAsset(forVideo: asset, options: nil) { (avAsset, _, _) in
+            U.UI {
+                if avAsset != nil {
+                    let playerController = AVPlayerViewController()
+                    let player = AVPlayer(playerItem: AVPlayerItem(asset: avAsset!))
+                    playerController.player = player
+                    self.present(playerController, animated: true) {
+                        playerController.player!.play()
+                    }
+                } else {
+                    return
+                }
+            }
+        }
+    }
+    
+    private func showFullScreenAssetPreview(_ asset: PHAsset) {}
 }
 
 //      MARK: - setup UI -
@@ -216,7 +330,7 @@ extension SimpleAssetsListViewController: UpdatingChangesInOpenedScreensListener
     /// updating screenshots
     func getUpdatingScreenShots() {
         
-        if photoMediaType == .screenshots {
+        if mediaType == .singleScreenShots {
             photoManager.getScreenShots(from: S.startingSavedDate, to: S.endingSavedDate) { screenShots in
                 if self.assetCollection.count != screenShots.count {
                     self.assetCollection = screenShots
@@ -229,7 +343,7 @@ extension SimpleAssetsListViewController: UpdatingChangesInOpenedScreensListener
     /// updating selfies
     func getUpdatingSelfies() {
         
-        if photoMediaType == .selfies {
+        if mediaType == .singleSelfies {
             photoManager.getSelfiePhotos(from: S.startingSavedDate, to: S.endingSavedDate) { selfies in
                 if self.assetCollection.count != selfies.count {
                     self.assetCollection = selfies
@@ -239,3 +353,5 @@ extension SimpleAssetsListViewController: UpdatingChangesInOpenedScreensListener
         }
     }
 }
+
+

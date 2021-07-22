@@ -50,9 +50,15 @@ class MediaContentViewController: UIViewController {
     public var allSelfies: [PHAsset] = []
     public var allLiveFotos: [PHAsset] = []
     
+    public var allLargeVideos: [PHAsset] = []
+    public var allSimmilarVideos: [PHAsset] = []
+    public var allDuplicatesVideos: [PHAsset] = []
+    public var allScreenRecords: [PHAsset] = []
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        checkForAssetsCount()
         setupUI()
         updateColors()
         setupNavigation()
@@ -114,7 +120,18 @@ extension MediaContentViewController: UITableViewDelegate, UITableViewDataSource
                         debugPrint("")
                 }
             case .userVideo:
-                debugPrint("")
+                switch indexPath.row {
+                    case 0:
+                        assetContentCount = self.allLargeVideos.count
+                    case 1:
+                        assetContentCount = self.allDuplicatesVideos.count
+                    case 2:
+                        assetContentCount = self.allSimmilarVideos.count
+                    case 3:
+                        assetContentCount = self.allScreenRecords.count
+                    default:
+                        debugPrint("")
+                }
             case .userContacts:
                 debugPrint("")
             default:
@@ -181,8 +198,18 @@ extension MediaContentViewController {
                         return
                 }
             case .userVideo:
-                debugPrint("show video")
-                
+                switch index {
+                    case 0:
+                        self.showLargeVideoFiles()
+                    case 1:
+                        self.showDuplicateVideoFiles()
+                    case 2:
+                        self.showSimilarVideoFiles()
+                    case 3:
+                        self.showScreenRecordsVideoFiles()
+                    default:
+                        return
+                }
             case .userContacts:
                 debugPrint("show contacts")
             case .none:
@@ -190,17 +217,38 @@ extension MediaContentViewController {
         }
     }
     
+    private func showGropedContoller(assets title: String, grouped collection: [PhassetGroup], photoContent type: PhotoMediaType) {
+        let storyboard = UIStoryboard(name: C.identifiers.storyboards.media, bundle: nil)
+        let viewController  = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.groupedList) as! GroupedAssetListViewController
+        viewController.title = title
+        viewController.assetGroups = collection
+        viewController.mediaType = type
+        self.navigationController?.pushViewController(viewController, animated: true)
+    }
+    
+    private func showAssetViewController(assets title: String, collection: [PHAsset], photoContent type: PhotoMediaType) {
+        let storyboard = UIStoryboard(name: C.identifiers.storyboards.media, bundle: nil)
+        let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.assetsList) as! SimpleAssetsListViewController
+        viewController.title = title
+        viewController.assetCollection = collection
+        viewController.mediaType = type
+        self.navigationController?.pushViewController(viewController, animated: true)
+    }
+}
+
+//      MARK: - photo content -
+extension MediaContentViewController {
     /**
      - parameter
      - parameter
     */
     
     private func showSimilarPhotos() {
-        photoManager.getSimilarPhotos(from: startingDate, to: endingDate) { similarGroup in
+        photoManager.getSimilarPhotosAssets(from: startingDate, to: endingDate) { similarGroup in
             if !similarGroup.isEmpty {
                 self.showGropedContoller(assets: "similar photo", grouped: similarGroup, photoContent: .similarPhotos)
             } else {
-                return
+                AlertManager.showCantFindMediaContent(by: .noSimiliarPhoto)
             }
         }
     }
@@ -209,15 +257,19 @@ extension MediaContentViewController {
         
         photoManager.getLivePhotos { asset in
             if !asset.isEmpty {
-                self.showAssetViewController(assets: "live photos", collection: asset, photoContent: .livephotos)
+                self.showAssetViewController(assets: "live photos", collection: asset, photoContent: .singleLivePhotos)
+            } else {
+                AlertManager.showCantFindMediaContent(by: .noLivePhoto)
             }
         }
     }
     
     private func showDuplicatePhotos() {
-        photoManager.getDuplicatePhotos(from: startingDate, to: endingDate) { duplicateGroup in
+        photoManager.getDuplicatedPhotosAsset(from: startingDate, to: endingDate) { duplicateGroup in
             if !duplicateGroup.isEmpty {
-                self.showGropedContoller(assets: "duplicate photo", grouped: duplicateGroup, photoContent: .similarPhotos)
+                self.showGropedContoller(assets: "duplicate photo", grouped: duplicateGroup, photoContent: .duplicatedPhotos)
+            } else {
+                AlertManager.showCantFindMediaContent(by: .noDuplicatesPhoto)
             }
         }
     }
@@ -225,9 +277,9 @@ extension MediaContentViewController {
     private func showSelfies() {
         photoManager.getSelfiePhotos(from: startingDate, to: endingDate) { selfies in
             if selfies.count != 0 {
-                self.showAssetViewController(assets: "selfies", collection: selfies, photoContent: .selfies)
+                self.showAssetViewController(assets: "selfies", collection: selfies, photoContent: .singleSelfies)
             } else {
-                return
+                AlertManager.showCantFindMediaContent(by: .noSelfie)
             }
         }
     }
@@ -235,30 +287,96 @@ extension MediaContentViewController {
     private func showScreenshots() {
         photoManager.getScreenShots(from: startingDate, to: endingDate) { screenshots in
             if screenshots.count != 0 {
-                self.showAssetViewController(assets: "screenshots", collection: screenshots, photoContent: .screenshots)
+                self.showAssetViewController(assets: "screenshots", collection: screenshots, photoContent: .singleScreenShots)
             } else {
-                return
+                AlertManager.showCantFindMediaContent(by: .noScreenShots)
             }
         }
     }
     
-    private func showGropedContoller(assets title: String, grouped collection: [PhassetGroup], photoContent type: GropedAsset) {
-        let storyboard = UIStoryboard(name: C.identifiers.storyboards.media, bundle: nil)
-        let viewController  = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.groupedList) as! GroupedAssetListViewController
-        viewController.assetGroups = collection
-        viewController.title = title
-        viewController.grouped = type
-        self.navigationController?.pushViewController(viewController, animated: true)
+    private func checkForAssetsCount() {
+        
+        if self.allScreenRecords.isEmpty {
+            photoManager.getScreenRecordsVideos(from: S.startingSavedDate, to: S.endingSavedDate) { videoAssets in
+                if videoAssets.count != 0 {
+                    self.allScreenRecords = videoAssets
+                } else {
+                    return
+                }
+            }
+        }
+        
+        if self.allLargeVideos.isEmpty {
+            photoManager.getLargevideoContent(from: S.startingSavedDate, to: S.endingSavedDate) { videoAssets in
+                if videoAssets.count != 0 {
+                    self.allLargeVideos = videoAssets
+                } else {
+                    return
+                }
+            }
+        }
+    }
+}
+
+//      MARK: - video content -
+extension MediaContentViewController {
+    
+    private func showLargeVideoFiles() {
+        P.showIndicator()
+        photoManager.getLargevideoContent(from: startingDate, to: endingDate) { videos in
+            P.hideIndicator()
+            if videos.count != 0 {
+                self.showAssetViewController(assets: "large videos", collection: videos, photoContent: .singleLargeVideos)
+            } else {
+                AlertManager.showCantFindMediaContent(by: .noLargeVideo)
+            }
+        }
     }
     
+    private func showDuplicateVideoFiles() {
+        P.showIndicator()
+        photoManager.getDuplicatedVideoAsset(from: startingDate, to: endingDate) { videoGrouped in
+            P.hideIndicator()
+            if videoGrouped.count != 0 {
+                self.showGropedContoller(assets: "duplicated video", grouped: videoGrouped, photoContent: .duplicatedVideos)
+            } else {
+                AlertManager.showCantFindMediaContent(by: .noDuplicatesVideo)
+            }
+        }
+    }
     
-    private func showAssetViewController(assets title: String, collection: [PHAsset], photoContent type: PhotoMediaType) {
-        let storyboard = UIStoryboard(name: C.identifiers.storyboards.media, bundle: nil)
-        let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.assetsList) as! SimpleAssetsListViewController
-        viewController.title = title
-        viewController.assetCollection = collection
-        viewController.photoMediaType = type
-        self.navigationController?.pushViewController(viewController, animated: true)
+    private func showSimilarVideoFiles() {
+        P.showIndicator()
+        photoManager.getSimilarVideoAssets(from: startingDate, to: endingDate) { videos in
+            P.hideIndicator()
+            if videos.count != 0 {
+                self.showGropedContoller(assets: "similar videos", grouped: videos, photoContent: .similarVideos)
+            } else {
+                AlertManager.showCantFindMediaContent(by: .noSimilarVideo)
+            }
+        }
+    }
+    
+    private func showScreenRecordsVideoFiles() {
+        P.showIndicator()
+        photoManager.getScreenRecordsVideos(from: startingDate, to: endingDate) { videos in
+            P.hideIndicator()
+            if videos.count != 0 {
+                self.showAssetViewController(assets: "screen records", collection: videos, photoContent: .singleScreenRecordings)
+            } else {
+                AlertManager.showCantFindMediaContent(by: .noScreenRecording)
+            }
+        }
+    }
+    
+    private func showSimmilarVideoFilesByTimeStamp() {
+        P.showIndicator()
+        photoManager.getSimilarVideosByTimeStamp(from: startingDate, to: endingDate) { videos in
+            P.hideIndicator()
+            if videos.count != 0 {
+                self.showGropedContoller(assets: "similar by time stam", grouped: videos, photoContent: .similarVideos)
+            }
+        }
     }
 }
 

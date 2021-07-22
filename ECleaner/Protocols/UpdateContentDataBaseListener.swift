@@ -13,7 +13,12 @@ protocol UpdateContentDataBaseListener {
     func getVideoCount(count: Int, calculatedSpace: Int64)
     func getContactsCount(count: Int)
     
-    func getScreenAsset(_ assets: [PHAsset])
-    func getFrontCameraAsset(_ assets: [PHAsset])
-    func getLivePhotosAsset(_ assets: [PHAsset])
+    func getScreenAssets(_ assets: [PHAsset])
+    func getLivePhotosAssets(_ assets: [PHAsset])
+    func getFrontCameraAssets(_ assets: [PHAsset])
+    
+    func getLargeVideosAssets(_ assets: [PHAsset])
+    func getSimmilarVideosAssets(_ assets: [PhassetGroup])
+    func getDuplicateVideosAssets(_ assets: [PhassetGroup])
+    func getScreenRecordsVideosAssets(_ assets: [PHAsset])
 }

@@ -44,5 +44,3 @@ extension AppDelegate {
         S.endingSavedDate = U.getString(from: Date(), format: C.dateFormat.fullDmy)
     }
 }
-
-
