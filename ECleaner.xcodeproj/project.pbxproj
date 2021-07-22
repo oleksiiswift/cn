@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		0405AA59269D77A5004AC07A /* CMtime+StringDuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0405AA58269D77A5004AC07A /* CMtime+StringDuration.swift */; };
 		0405AA5B269D9BD6004AC07A /* PreviewAVController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0405AA5A269D9BD6004AC07A /* PreviewAVController.swift */; };
+		040E288826A98B0F0019F372 /* DeepCleaningViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 040E288726A98B0F0019F372 /* DeepCleaningViewController.swift */; };
+		040E288B26A98C790019F372 /* DeepClean.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 040E288A26A98C790019F372 /* DeepClean.storyboard */; };
 		044281FC2692F95A00B6B47C /* DropDownMenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 044281FB2692F95A00B6B47C /* DropDownMenuViewController.swift */; };
 		044281FE2692F9B800B6B47C /* SelectDropDownMenuDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 044281FD2692F9B800B6B47C /* SelectDropDownMenuDelegate.swift */; };
 		044282012693034600B6B47C /* DropDownMenuTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 044281FF2693034600B6B47C /* DropDownMenuTableViewCell.swift */; };
@@ -102,6 +104,8 @@
 /* Begin PBXFileReference section */
 		0405AA58269D77A5004AC07A /* CMtime+StringDuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CMtime+StringDuration.swift"; sourceTree = "<group>"; };
 		0405AA5A269D9BD6004AC07A /* PreviewAVController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewAVController.swift; sourceTree = "<group>"; };
+		040E288726A98B0F0019F372 /* DeepCleaningViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepCleaningViewController.swift; sourceTree = "<group>"; };
+		040E288A26A98C790019F372 /* DeepClean.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = DeepClean.storyboard; sourceTree = "<group>"; };
 		044281FB2692F95A00B6B47C /* DropDownMenuViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropDownMenuViewController.swift; sourceTree = "<group>"; };
 		044281FD2692F9B800B6B47C /* SelectDropDownMenuDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectDropDownMenuDelegate.swift; sourceTree = "<group>"; };
 		044281FF2693034600B6B47C /* DropDownMenuTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropDownMenuTableViewCell.swift; sourceTree = "<group>"; };
@@ -208,6 +212,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		040E288926A98B150019F372 /* DeepClean */ = {
+			isa = PBXGroup;
+			children = (
+				040E288726A98B0F0019F372 /* DeepCleaningViewController.swift */,
+			);
+			path = DeepClean;
+			sourceTree = "<group>";
+		};
 		0459DF9626A57A8D0085EEDF /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -346,8 +358,8 @@
 			isa = PBXGroup;
 			children = (
 				049CC22E268337310002F988 /* MediaTypeCollectionViewCell.xib */,
-				04CFFFFF2685F0C3000CA850 /* ContentTypeTableViewCell.xib */,
 				97FC78A02688E5E8000D7F26 /* PhotoCollectionViewCell.xib */,
+				04CFFFFF2685F0C3000CA850 /* ContentTypeTableViewCell.xib */,
 				044282002693034600B6B47C /* DropDownMenuTableViewCell.xib */,
 			);
 			path = Cells;
@@ -456,6 +468,7 @@
 				974EEA3726A74239000A0326 /* PhotoPreviewViewController */,
 				04B20F03269C4F9A00C6BC14 /* ModalControllers */,
 				0459DF9826A6C5E50085EEDF /* celBlock51area.swift */,
+				040E288926A98B150019F372 /* DeepClean */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -604,6 +617,7 @@
 				04E09475267A06B500A69956 /* Main.storyboard */,
 				04CFFFF62685BEAD000CA850 /* MediaContent.storyboard */,
 				04E0947A267A06B900A69956 /* LaunchScreen.storyboard */,
+				040E288A26A98C790019F372 /* DeepClean.storyboard */,
 			);
 			path = Storyboards;
 			sourceTree = "<group>";
@@ -779,6 +793,7 @@
 				04649B36268C52B100336FE4 /* GroupedAssetsReusableFooterView.xib in Resources */,
 				04CF00012685F0C3000CA850 /* ContentTypeTableViewCell.xib in Resources */,
 				049CC230268337310002F988 /* MediaTypeCollectionViewCell.xib in Resources */,
+				040E288B26A98C790019F372 /* DeepClean.storyboard in Resources */,
 				0459DF9326A56DB20085EEDF /* CarouselItemView.xib in Resources */,
 				04E09479267A06B900A69956 /* Assets.xcassets in Resources */,
 				044282022693034600B6B47C /* DropDownMenuTableViewCell.xib in Resources */,
@@ -861,6 +876,7 @@
 				04CFFFF42684B23D000CA850 /* String+Whitespaces.swift in Sources */,
 				04CFFFFD2685E571000CA850 /* UIView+Borders.swift in Sources */,
 				049CC2372683730A0002F988 /* BaseCollectionFlowLayout.swift in Sources */,
+				040E288826A98B0F0019F372 /* DeepCleaningViewController.swift in Sources */,
 				0459DF9B26A6CDCC0085EEDF /* PHCachingImageManager+RequestExtension.swift in Sources */,
 				04CF0003268602DE000CA850 /* MediaContentType.swift in Sources */,
 				04E5837C267B3E2A00EDC3A3 /* PhotoManager.swift in Sources */,

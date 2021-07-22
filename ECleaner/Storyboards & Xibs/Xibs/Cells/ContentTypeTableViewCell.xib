@@ -5,6 +5,7 @@
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -62,15 +63,36 @@
                                             <constraint firstAttribute="trailing" secondItem="jod-pQ-R2a" secondAttribute="trailing" id="yi2-iB-Rqx"/>
                                         </constraints>
                                     </view>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jUJ-Ih-NgP">
+                                        <rect key="frame" x="0.0" y="0.0" width="0.0" height="59"/>
+                                        <subviews>
+                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="fi5-RT-6Ey">
+                                                <rect key="frame" x="-15" y="14.5" width="30" height="30"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="30" id="1Lp-BO-Pf6"/>
+                                                    <constraint firstAttribute="width" constant="30" id="jZ0-9s-BqO"/>
+                                                </constraints>
+                                            </imageView>
+                                        </subviews>
+                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" id="J8R-GW-8lD"/>
+                                            <constraint firstItem="fi5-RT-6Ey" firstAttribute="centerX" secondItem="jUJ-Ih-NgP" secondAttribute="centerX" id="ezZ-v4-oyw"/>
+                                            <constraint firstItem="fi5-RT-6Ey" firstAttribute="centerY" secondItem="jUJ-Ih-NgP" secondAttribute="centerY" id="qNd-IB-Ecb"/>
+                                        </constraints>
+                                    </view>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
-                                    <constraint firstItem="AzT-RF-FAf" firstAttribute="leading" secondItem="YPx-No-nMV" secondAttribute="leading" constant="16" id="0Ye-lK-eEz"/>
                                     <constraint firstAttribute="trailing" secondItem="Hxb-wJ-Nlm" secondAttribute="trailing" constant="16" id="2zx-bc-71D"/>
                                     <constraint firstItem="Hxb-wJ-Nlm" firstAttribute="centerY" secondItem="YPx-No-nMV" secondAttribute="centerY" id="73o-cC-fhn"/>
                                     <constraint firstItem="Hxb-wJ-Nlm" firstAttribute="leading" secondItem="AzT-RF-FAf" secondAttribute="trailing" constant="5" id="A94-pY-cc0"/>
+                                    <constraint firstAttribute="bottom" secondItem="jUJ-Ih-NgP" secondAttribute="bottom" id="F4C-4g-FXg"/>
                                     <constraint firstItem="AzT-RF-FAf" firstAttribute="top" secondItem="YPx-No-nMV" secondAttribute="top" constant="10" id="TTv-BL-C4o"/>
+                                    <constraint firstItem="jUJ-Ih-NgP" firstAttribute="top" secondItem="YPx-No-nMV" secondAttribute="top" id="TXp-l9-wHG"/>
                                     <constraint firstAttribute="bottom" secondItem="AzT-RF-FAf" secondAttribute="bottom" constant="10" id="arF-Y6-5rL"/>
+                                    <constraint firstItem="jUJ-Ih-NgP" firstAttribute="leading" secondItem="YPx-No-nMV" secondAttribute="leading" id="b2b-1k-iNM"/>
+                                    <constraint firstItem="AzT-RF-FAf" firstAttribute="leading" secondItem="jUJ-Ih-NgP" secondAttribute="trailing" constant="16" id="pJc-pB-vnn"/>
                                 </constraints>
                             </view>
                         </subviews>
@@ -96,8 +118,15 @@
                 <outlet property="contentSubtitleTextLabel" destination="nOK-4Y-n1l" id="pvG-9m-LR1"/>
                 <outlet property="contentTypeTextLabel" destination="tma-fH-2HY" id="CaB-SW-CFp"/>
                 <outlet property="rightArrowImageView" destination="Hxb-wJ-Nlm" id="Bka-ZC-xzX"/>
+                <outlet property="selectedAssetsImageView" destination="fi5-RT-6Ey" id="sMG-xD-DTQ"/>
+                <outlet property="selectedContainerWidthConstraint" destination="J8R-GW-8lD" id="rIY-58-zjv"/>
             </connections>
             <point key="canvasLocation" x="87.681159420289859" y="-13.058035714285714"/>
         </tableViewCell>
     </objects>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
 </document>

@@ -50,6 +50,8 @@ class Constants {
             static let datePicker = "DateSelectorViewController"
             static let assetsList = "SimpleAssetsListViewController"
             static let groupedList = "GroupedAssetListViewController"
+            
+            static let deepClean = "DeepCleaningViewController"
         }
         
         struct cells {

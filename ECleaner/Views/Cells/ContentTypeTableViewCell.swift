@@ -13,14 +13,18 @@ class ContentTypeTableViewCell: UITableViewCell {
     @IBOutlet weak var baseView: UIView!
     @IBOutlet weak var rightArrowImageView: UIImageView!
     
+    @IBOutlet weak var selectedAssetsImageView: UIImageView!
+    
     @IBOutlet weak var contentTypeTextLabel: UILabel!
     @IBOutlet weak var contentSubtitleTextLabel: UILabel!
-        
+    @IBOutlet weak var selectedContainerWidthConstraint: NSLayoutConstraint!
+    
     override func prepareForReuse() {
         super.prepareForReuse()
         
         contentTypeTextLabel.text = nil
         contentSubtitleTextLabel.text = nil
+        selectedAssetsImageView.image = nil
     }
     
     override func awakeFromNib() {
@@ -38,6 +42,11 @@ class ContentTypeTableViewCell: UITableViewCell {
 
 extension ContentTypeTableViewCell {
     
+    /**
+     - `cellConfig`use for default cell config
+     - `setupCellSelected` use in deep cleaning part for show selected checkmark for clean
+    */
+    
     public func cellConfig(contentType: MediaContentType, indexPath: IndexPath, phasetCount: Int) {
         
         contentTypeTextLabel.text = contentType.getCellTitle(index: indexPath.row)
@@ -52,6 +61,11 @@ extension ContentTypeTableViewCell {
             case .none:
                 contentSubtitleTextLabel.text = ""
         }
+    }
+
+    public func setupCellSelected(at indexPath: IndexPath, isSelected: Bool) {
+        
+        selectedContainerWidthConstraint.constant = 50
     }
 }
 
