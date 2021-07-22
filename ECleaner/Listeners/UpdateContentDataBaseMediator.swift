@@ -64,4 +64,12 @@ class UpdateContentDataBaseMediator {
     func getScreenRecordsVideosAssets(_ assets: [PHAsset]) {
         listener?.getScreenRecordsVideosAssets(assets)
     }
+    
+    func getRecentlyDeletedPhotosAssets(_ assets: [PHAsset]) {
+        listener?.getRecentlyDeletedPhotoAsssets(assets)
+    }
+    
+    func getRecentlyDeletedVideosAssets(_ assets: [PHAsset]) {
+        listener?.getRecentlyDeletedVideoAssets(assets)
+    }
 }

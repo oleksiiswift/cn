@@ -8,7 +8,6 @@
 import Photos
 import UIKit
 
-
 extension PHCachingImageManager {
     
     public func photoImageRequestOptions() -> PHImageRequestOptions {

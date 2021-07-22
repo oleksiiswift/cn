@@ -22,14 +22,16 @@ enum MediaContentType {
                             2: "screenshots",
                             3: "selfie",
                             4: "live",
-                            5: "face",
-                            6: "location"]]
+                            5: "recently deleted photo",
+                            6: "face",
+                            7: "location"]]
             case .userVideo:
                 return [0: [0: "large video",
                             1: "duplicate",
                             2: "similart",
                             3: "screen rec",
-                            4: "comoress?"]]
+                            4: "compress video",
+                            5: "recently deleted video"]]
             case .userContacts:
                 return [0: [0: "all contacts",
                             1: "empty",
@@ -54,9 +56,11 @@ enum MediaContentType {
                     case 4:
                         return "live photos"
                     case 5:
-                        return "face?"
+                        return "recently deleted photo"
                     case 6:
-                        return "location"
+                        return "face" /// do not in use
+                    case 7:
+                        return "location" /// do not in use
                     default:
                         return ""
                 }
@@ -71,7 +75,9 @@ enum MediaContentType {
                     case 3:
                         return "screen recording"
                     case 4:
-                        return "compress video?"
+                        return "compress video"
+                    case 5:
+                        return "recently deleted video"
                     default:
                         return ""
                 }
@@ -98,9 +104,9 @@ enum MediaContentType {
     var numberOfRows: Int {
         switch self {
             case .userPhoto:
-                return 5
+                return 6
             case .userVideo:
-                return 5
+                return 6
             case .userContacts:
                 return 3
             case .none:

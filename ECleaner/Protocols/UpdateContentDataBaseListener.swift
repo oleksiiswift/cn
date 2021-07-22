@@ -21,4 +21,7 @@ protocol UpdateContentDataBaseListener {
     func getSimmilarVideosAssets(_ assets: [PhassetGroup])
     func getDuplicateVideosAssets(_ assets: [PhassetGroup])
     func getScreenRecordsVideosAssets(_ assets: [PHAsset])
+    
+    func getRecentlyDeletedPhotoAsssets(_ assets: [PHAsset])
+    func getRecentlyDeletedVideoAssets(_ assts: [PHAsset])
 }

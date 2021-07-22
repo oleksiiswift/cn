@@ -133,10 +133,13 @@ class PhotoManager: NSObject {
         }
         
         operationQueue.addOperation {
-            debugPrint("try fetch recentle deleted")
+            debugPrint("try fetch recently deleted photos videos")
             
-            self.getRecentlyDeletedAssets { assets in
-                debugPrint(assets.count)
+            self.getSortedRecentlyDeletedAssets { photos, videos in
+                debugPrint("done with photos and videos")
+            
+                UpdateContentDataBaseMediator.instance.getRecentlyDeletedPhotosAssets(photos)
+                UpdateContentDataBaseMediator.instance.getRecentlyDeletedVideosAssets(videos)
             }
         }
     }
@@ -738,6 +741,13 @@ extension PhotoManager {
         
         fetchManager.recentlyDeletedAlbumFetch { assets in
             completion(assets)
+        }
+    }
+    
+    public func getSortedRecentlyDeletedAssets(completion: @escaping (_ photos: [PHAsset],_ videos: [PHAsset]) -> Void) {
+        
+        fetchManager.recentlyDeletedSortedAlbumFetch { photos, videos in
+            completion(photos, videos)
         }
     }
 }

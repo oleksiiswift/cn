@@ -25,6 +25,9 @@ enum AlertType {
     case noSimilarVideo
     case noScreenRecording
     
+    case noRecentlyDeletedPhotos
+    case noRecentlyDeletedVideos
+    
     
     case none
     
@@ -62,6 +65,10 @@ enum AlertType {
                 return "locomark no similiar video"
             case .noScreenRecording:
                 return "locomark no screen recordings"
+            case .noRecentlyDeletedPhotos:
+                return "locomark no recently deleted photos"
+            case .noRecentlyDeletedVideos:
+                return "locomark no recently deleted vides"
         }
     }
     
@@ -84,6 +91,10 @@ enum AlertType {
             
             case .noSimiliarPhoto, .noDuplicatesPhoto, .noScreenShots, .noSelfie, .noLivePhoto, .noLargeVideo, .noDuplicatesVideo, .noSimilarVideo, .noScreenRecording:
                 return "locomark no content"
+            case .noRecentlyDeletedPhotos:
+                return "recently deleted photos empty"
+            case .noRecentlyDeletedVideos:
+                return "recently deleted videos empty"
         }
     }
     

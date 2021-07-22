@@ -39,6 +39,9 @@ class MainViewController: UIViewController {
     private var allScreenRecordsVideos: [PHAsset] = []
     private var allSimilarRecordingsVideos: [PhassetGroup] = []
     
+    private var allRecentlyDeletedPhotos: [PHAsset] = []
+    private var allRecentlyDeletedVideos: [PHAsset] = []
+    
     override func viewDidLoad() {
         super.viewDidLoad()
     
@@ -72,7 +75,7 @@ extension MainViewController {
 
 //      MARK: - updating elements -
 extension MainViewController: UpdateContentDataBaseListener {
-    
+ 
     func getScreenAssets(_ assets: [PHAsset]) {
         self.allScreenShots = assets
     }
@@ -125,6 +128,14 @@ extension MainViewController: UpdateContentDataBaseListener {
             cell.configureCell(mediaType: .userContacts, contentCount: count, diskSpace: 0)
         }
     }
+    
+    func getRecentlyDeletedPhotoAsssets(_ assets: [PHAsset]) {
+        self.allRecentlyDeletedPhotos = assets
+    }
+    
+    func getRecentlyDeletedVideoAssets(_ assts: [PHAsset]) {
+        self.allRecentlyDeletedVideos = assts
+    }
 }
 
 extension MainViewController {
@@ -138,9 +149,11 @@ extension MainViewController {
                 viewController.allScreenShots = self.allScreenShots
                 viewController.allSelfies = self.allSelfies
                 viewController.allLiveFotos = self.allLiveFotos
+                viewController.allRecentlyDeletedPhotos = self.allRecentlyDeletedPhotos
             case .userVideo:
                 viewController.allLargeVideos = self.allLargeVidoes
                 viewController.allScreenRecords = self.allScreenRecordsVideos
+                viewController.allRecentlyDeletedVideos = self.allRecentlyDeletedVideos
             default:
                 return
         }

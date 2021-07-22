@@ -98,7 +98,7 @@ extension PhotoCollectionViewCell: Themeble {
                 }
             case .duplicatedPhotos, .similarPhotos:
                 videoAssetDurationView.isHidden = true
-            case .singleScreenRecordings:
+            case .singleScreenRecordings, .singleRecentlyDeletedVideos:
                 if asset.mediaType == .video {
                     let duration = CMTime(seconds: asset.duration, preferredTimescale: 1000000)
                     videoAssetDurationTextLabel.text = duration.durationText
