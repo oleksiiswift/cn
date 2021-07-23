@@ -41,6 +41,7 @@ class Constants {
         struct storyboards {
             static let main = "Main"
             static let media = "MediaContent"
+            static let deep = "DeepClean"
         }
         
         struct viewControllers {
@@ -60,6 +61,7 @@ class Constants {
             static let photoSimpleCell = "PhotoCollectionViewCell"
             static let dropDownCell = "DropDownMenuTableViewCell"
             static let carouselCell = "CarouselCollectionViewCell"
+            static let cleanInfoCell = "DeepCleanInfoTableViewCell"
         }
         
         struct views {
@@ -73,6 +75,7 @@ class Constants {
             static let contentTypeCell = "ContentTypeTableViewCell"
             static let photoSimpleCell = "PhotoCollectionViewCell"
             static let dropDownCell = "DropDownMenuTableViewCell"
+            static let cleanInfoCell = "DeepCleanInfoTableViewCell"
             /// views
             static let groupHeader = "GroupedAssetsReusableHeaderView"
             static let groupFooter = "GroupedAssetsReusableFooterView"

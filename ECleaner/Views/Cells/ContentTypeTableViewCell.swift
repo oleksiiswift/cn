@@ -13,6 +13,7 @@ class ContentTypeTableViewCell: UITableViewCell {
     @IBOutlet weak var baseView: UIView!
     @IBOutlet weak var rightArrowImageView: UIImageView!
     
+    @IBOutlet weak var selectedAssetsContainerView: UIView!
     @IBOutlet weak var selectedAssetsImageView: UIImageView!
     
     @IBOutlet weak var contentTypeTextLabel: UILabel!
@@ -65,7 +66,9 @@ extension ContentTypeTableViewCell {
 
     public func setupCellSelected(at indexPath: IndexPath, isSelected: Bool) {
         
-        selectedContainerWidthConstraint.constant = 50
+        selectedAssetsContainerView.isHidden = false
+        selectedContainerWidthConstraint.constant = 36
+        selectedAssetsImageView.image = isSelected ? I.systemElementsItems.circleBox : I.systemElementsItems.circleCheckBox
     }
 }
 
@@ -78,11 +81,14 @@ extension ContentTypeTableViewCell: Themeble {
         baseView.setCorner(12)
         contentTypeTextLabel.font = .systemFont(ofSize: 15, weight: .medium)
         contentSubtitleTextLabel.font = .systemFont(ofSize: 13, weight: .regular)
+        rightArrowImageView.image = I.navigationItems.rightShevronBack
     }
     
     func updateColors() {
         baseView.backgroundColor = currentTheme.contentBackgroundColor
         contentTypeTextLabel.textColor = currentTheme.titleTextColor
         contentSubtitleTextLabel.textColor = currentTheme.subTitleTextColor
+        rightArrowImageView.tintColor = currentTheme.tintColor
+        selectedAssetsImageView.tintColor = currentTheme.tintColor
     }
 }

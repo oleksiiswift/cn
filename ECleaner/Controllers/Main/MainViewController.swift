@@ -65,9 +65,9 @@ class MainViewController: UIViewController {
         
     }
     @IBAction func didTapStartDeepCleaningActionButton(_ sender: Any) {
-        let storyboard = UIStoryboard(name: "DeepClean", bundle: nil)
-        let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.deepClean) as! DeepCleaningViewController
+        let storyboard = UIStoryboard(name: C.identifiers.storyboards.deep, bundle: nil)
         
+        let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.deepClean) as! DeepCleaningViewController
         self.navigationController?.pushViewController(viewController, animated: true)
     }
 }
