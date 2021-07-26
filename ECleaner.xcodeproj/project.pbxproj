@@ -302,6 +302,7 @@
 		049CC21026821D560002F988 /* Photo */ = {
 			isa = PBXGroup;
 			children = (
+				047DE61B26AAD5F000733CD5 /* DeepCleanManager.swift */,
 				04E5837B267B3E2A00EDC3A3 /* PhotoManager.swift */,
 				04E5837F267B9F6B00EDC3A3 /* PhassetFetchManager.swift */,
 			);
@@ -552,7 +553,6 @@
 				049CC2222683179E0002F988 /* ThemeManager */,
 				049CC22C268321DC0002F988 /* NotificationManager */,
 				97E54A8D2690AA0E00C7FD54 /* SegueManager */,
-				047DE61B26AAD5F000733CD5 /* DeepCleanManager.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";

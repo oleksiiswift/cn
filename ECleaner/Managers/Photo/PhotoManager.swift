@@ -206,9 +206,11 @@ class PhotoManager: NSObject {
 extension PhotoManager {
     
     /// `simmilar photo algoritm`
-    public func getSimilarPhotosAssets(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", fileSizeCheck: Bool = false, completionHandler: @escaping ((_ assets: [PhassetGroup]) -> Void)) {
+    public func getSimilarPhotosAssets(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", fileSizeCheck: Bool = false, isDeepCleanScan: Bool = false, completionHandler: @escaping ((_ assets: [PhassetGroup]) -> Void)) {
         
-        P.showIndicator()
+        if !isDeepCleanScan {
+            P.showIndicator()
+        }
         
         fetchManager.fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumUserLibrary, by: PHAssetMediaType.image.rawValue) { photosInGallery in
             
@@ -220,13 +222,7 @@ extension PhotoManager {
             
             U.BG {
                 if photosInGallery.count != 0 {
-                    
-//                    photosInGallery.enumerateObjects { asset, index, stop in
-//                        debugPrint("index preocessing duplicate")
-//                        debugPrint("index \(index)")
-//                        similarPhotos.append((asset: asset, date: Int64(asset.creationDate!.timeIntervalSince1970), imageSize: fileSizeCheck ? asset.imageSize : 0))
-//                    }
-                    
+
                     for index in 1...photosInGallery.count {
                         debugPrint("index preocessing duplicate")
                         debugPrint("index \(index)")
@@ -262,13 +258,21 @@ extension PhotoManager {
                             group.append(PhassetGroup(name: "", assets: similar))
                         }
                     }
-                    P.hideIndicator()
-                    U.UI {
+                    if !isDeepCleanScan {
+                        P.hideIndicator()
+                        U.UI {
+                            completionHandler(group)
+                        }
+                    } else {
                         completionHandler(group)
                     }
                 } else {
-                    P.hideIndicator()
-                    U.UI {
+                    if !isDeepCleanScan {
+                        P.hideIndicator()
+                        U.UI {
+                            completionHandler([])
+                        }
+                    } else {
                         completionHandler([])
                     }
                 }
@@ -277,9 +281,11 @@ extension PhotoManager {
     }
     
     /// `duplicate photo algorithm`
-    public func getDuplicatedPhotosAsset(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", completionHandler: @escaping ((_ assets: [PhassetGroup]) -> Void)) {
+    public func getDuplicatedPhotosAsset(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", isDeepCleanScan: Bool = false, completionHandler: @escaping ((_ assets: [PhassetGroup]) -> Void)) {
         
-        P.showIndicator()
+        if !isDeepCleanScan {
+            P.showIndicator()
+        }
         
         fetchManager.fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumUserLibrary, by: PHAssetMediaType.image.rawValue) { photoGallery in
             U.BG {
@@ -299,12 +305,18 @@ extension PhotoManager {
                     }
   
                     self.getDuplicatedTuples(for: photos, photosInGallery: photoGallery) { duplicatedPhotoAssetsGroup in
-                        P.hideIndicator()
+                        if !isDeepCleanScan {
+                            P.hideIndicator()
+                        }
                         completionHandler(duplicatedPhotoAssetsGroup)
                     }
                 } else {
+                    if !isDeepCleanScan {
                     U.UI {
                         P.hideIndicator()
+                        completionHandler([])
+                    }
+                    } else {
                         completionHandler([])
                     }
                 }
@@ -313,7 +325,7 @@ extension PhotoManager {
     }
     
     /// `load simmiliar live photo` from gallery
-    public func getSimilarLivePhotos(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", completionHandler: @escaping ((_ assets: [PhassetGroup]) -> Void)) {
+    public func getSimilarLivePhotos(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", isDeepCleanScan: Bool = false, completionHandler: @escaping ((_ assets: [PhassetGroup]) -> Void)) {
         
         fetchManager.fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumLivePhotos, by: PHAssetMediaType.image.rawValue) { livePhotoGallery in
             U.BG {
@@ -321,6 +333,7 @@ extension PhotoManager {
                 
                 if livePhotoGallery.count != 0 {
                     for livePosition in 1...livePhotoGallery.count {
+                        debugPrint("live photo position", livePosition)
                         let image = self.fetchManager.getThumbnail(from: livePhotoGallery[livePosition - 1], size: CGSize(width: 150, height: 150))
                         if let data = image.jpegData(compressionQuality: 0.8) {
                             let tuple = OSTuple<NSString, NSData>(first: "image\(livePosition)" as NSString, andSecond: data as NSData)
@@ -328,11 +341,15 @@ extension PhotoManager {
                         }
                     }
                     
-                    self.getDuplicatedTuples(for: livePhotos, photosInGallery: livePhotoGallery) { similarLivePhotoGroup in
+                    self.getDuplicatedTuples(for: livePhotos, photosInGallery: livePhotoGallery, isDeepCleanScan: isDeepCleanScan) { similarLivePhotoGroup in
                         completionHandler(similarLivePhotoGroup)
                     }
                 } else {
-                    U.UI {
+                    if !isDeepCleanScan {
+                        U.UI {
+                            completionHandler([])
+                        }
+                    } else {
                         completionHandler([])
                     }
                 }
@@ -341,7 +358,7 @@ extension PhotoManager {
     }
     
     /// `private duplicated tuples` need for service compare
-    private func getDuplicatedTuples(for photos: [OSTuple<NSString, NSData>], photosInGallery: PHFetchResult<PHAsset>, completionHandler: @escaping ([PhassetGroup]) -> Void){
+    private func getDuplicatedTuples(for photos: [OSTuple<NSString, NSData>], photosInGallery: PHFetchResult<PHAsset>, isDeepCleanScan: Bool = false, completionHandler: @escaping ([PhassetGroup]) -> Void){
         
         var duplicatedPhotosCount: [Int] = []
         var duplicatedGroup: [PhassetGroup] = []
@@ -349,7 +366,11 @@ extension PhotoManager {
         
         U.BG {
             guard duplicatedIDS.count >= 1 else {
-                U.UI {
+                if !isDeepCleanScan {
+                    U.UI {
+                        completionHandler([])
+                    }
+                } else {
                     completionHandler([])
                 }
                 return
@@ -409,21 +430,29 @@ extension PhotoManager {
                     }
                 }
             }
-            U.UI {            
+            if !isDeepCleanScan {
+                U.UI {
+                    completionHandler(duplicatedGroup)
+                }
+            } else {
                 completionHandler(duplicatedGroup)
             }
         }
     }
     
     /// `load selfies` from gallery
-    public func getSelfiePhotos(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", completionHandler: @escaping ((_ assets: [PHAsset]) -> Void)) {
+    public func getSelfiePhotos(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", isDeepCleanScan: Bool = false, completionHandler: @escaping ((_ assets: [PHAsset]) -> Void)) {
         
         fetchManager.fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumSelfPortraits, by: PHAssetMediaType.image.rawValue) { selfiesInLibrary in
             
             U.BG {
                 var selfies: [PHAsset] = []
                 if selfiesInLibrary.count == 0 {
-                    U.UI {
+                    if !isDeepCleanScan {
+                        U.UI {
+                            completionHandler([])
+                        }
+                    } else {
                         completionHandler([])
                     }
                     return
@@ -432,8 +461,11 @@ extension PhotoManager {
                 for selfiePos in 1...selfiesInLibrary.count {
                     selfies.append(selfiesInLibrary[selfiePos - 1])
                 }
-                
-                U.UI {
+                if !isDeepCleanScan {
+                    U.UI {
+                        completionHandler(selfies)
+                    }
+                } else {
                     completionHandler(selfies)
                 }
             }
@@ -441,14 +473,18 @@ extension PhotoManager {
     }
     
     /// `load live photos` from gallery
-    public func getLivePhotos(_ completionHandler: @escaping ((_ assets: [PHAsset]) -> Void)) {
+    public func getLivePhotos(isDeepCleanScan: Bool = false,_ completionHandler: @escaping ((_ assets: [PHAsset]) -> Void)) {
         
         fetchManager.fetchFromGallery(collectiontype: .smartAlbumLivePhotos, by: PHAssetMediaType.image.rawValue) { livePhotosLibrary in
             
             U.BG {
                 var livePhotos: [PHAsset] = []
                 if livePhotosLibrary.count == 0 {
-                    U.UI {
+                    if !isDeepCleanScan {
+                        U.UI {
+                            completionHandler([])
+                        }
+                    } else {
                         completionHandler([])
                     }
                     return
@@ -457,8 +493,11 @@ extension PhotoManager {
                 for livePhoto in 1...livePhotosLibrary.count {
                     livePhotos.append(livePhotosLibrary[livePhoto - 1])
                 }
-                
-                U.UI {
+                if !isDeepCleanScan {
+                    U.UI {
+                        completionHandler(livePhotos)
+                    }
+                } else {
                     completionHandler(livePhotos)
                 }
             }
@@ -466,14 +505,18 @@ extension PhotoManager {
     }
     
     /// `load screenshots` from gallery
-    public func getScreenShots(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", completionHandler: @escaping ((_ assets: [PHAsset]) -> Void)) {
+    public func getScreenShots(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", isDeepCleanScan: Bool = false, completionHandler: @escaping ((_ assets: [PHAsset]) -> Void)) {
         
         fetchManager.fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumScreenshots, by: PHAssetMediaType.image.rawValue) { screensShotsLibrary in
             U.BG {
                 var screens: [PHAsset] = []
                 
                 if screensShotsLibrary.count == 0 {
-                    U.UI {
+                    if !isDeepCleanScan {
+                        U.UI {
+                            completionHandler([])
+                        }
+                    } else {
                         completionHandler([])
                     }
                     return
@@ -483,7 +526,11 @@ extension PhotoManager {
                     screens.append(screensShotsLibrary[screensPos - 1])
                 }
                 
-                U.UI {
+                if !isDeepCleanScan {
+                    U.UI {
+                        completionHandler(screens)
+                    }
+                } else {
                     completionHandler(screens)
                 }
             }
@@ -495,14 +542,18 @@ extension PhotoManager {
 extension PhotoManager {
     
     /// `fetch large videos` from gallery
-    public func getLargevideoContent(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", completionHandler: @escaping ((_ assets: [PHAsset]) -> Void)) {
+    public func getLargevideoContent(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", isDeepCleanScan: Bool = false, completionHandler: @escaping ((_ assets: [PHAsset]) -> Void)) {
         
         fetchManager.fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumVideos, by: PHAssetMediaType.video.rawValue) { videoContent in
             U.BG {
                 var videos: [PHAsset] = []
                 
                 if videoContent.count == 0 {
-                    U.UI {
+                    if !isDeepCleanScan {
+                        U.UI {
+                            completionHandler([])
+                        }
+                    } else {
                         completionHandler([])
                     }
                     return
@@ -513,7 +564,11 @@ extension PhotoManager {
                         videos.append(videoContent[videosPosition - 1])
                     }
                 }
-                U.UI {
+                if !isDeepCleanScan {
+                    U.UI {
+                        completionHandler(videos)
+                    }
+                } else {
                     completionHandler(videos)
                 }
             }
@@ -521,14 +576,18 @@ extension PhotoManager {
     }
     
     /// `similar Videos` from gallery
-    public func getSimilarVideoAssets(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", completionHandler: @escaping ((_ videoAssets: [PhassetGroup]) -> Void)) {
+    public func getSimilarVideoAssets(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", isDeepCleanScan: Bool = false,  completionHandler: @escaping ((_ videoAssets: [PhassetGroup]) -> Void)) {
         
         fetchManager.fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumVideos, by: PHAssetMediaType.video.rawValue) { videoContent in
             U.BG {
                 var assets: [PHAsset] = []
                 
                 if videoContent.count == 0 {
-                    U.UI {
+                    if !isDeepCleanScan {
+                        U.UI {
+                            completionHandler([])
+                        }
+                    } else {
                         completionHandler([])
                     }
                     return
@@ -540,7 +599,11 @@ extension PhotoManager {
                 }
                 
                 let z = FindDuplicatesUsingThumbnail.findDupes(assets: assets, strictness: .closeToIdentical)
-                U.UI {
+                if !isDeepCleanScan {
+                    U.UI {
+                        completionHandler(z)
+                    }
+                } else {
                     completionHandler(z)
                 }
             }
@@ -548,7 +611,7 @@ extension PhotoManager {
     }
     
     /// `similar videos by time stamp`
-    public func getSimilarVideosByTimeStamp(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", completionHandler: @escaping ((_ videoAssets: [PhassetGroup]) -> Void)) {
+    public func getSimilarVideosByTimeStamp(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", isDeepCleanScan: Bool = false, completionHandler: @escaping ((_ videoAssets: [PhassetGroup]) -> Void)) {
         
         fetchManager.fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumVideos, by: PHAssetMediaType.video.rawValue) { videoContent in
             U.BG {
@@ -556,7 +619,11 @@ extension PhotoManager {
                 var grouped: [PhassetGroup] = []
                 
                 if videoContent.count == 0 {
-                    U.UI {
+                    if !isDeepCleanScan {
+                        U.UI {
+                            completionHandler([])
+                        }
+                    } else {
                         completionHandler([])
                     }
                     return
@@ -587,32 +654,37 @@ extension PhotoManager {
                     if compareAsset.count != 0 {
                         grouped.append(PhassetGroup.init(name: "", assets: compareAsset))
                     }
-                
                 }
                 
-                U.UI {
+                if !isDeepCleanScan {
+                    U.UI {
+                        completionHandler(grouped.isEmpty ? [] : grouped)
+                    }
+                } else {
                     completionHandler(grouped.isEmpty ? [] : grouped)
                 }
             }
         }
     }
     
-    
-    
     /// `screen recordings` from gallery
-    public func getScreenRecordsVideos(from startDate: String = "01-01-1917 00:00:00", to endDate: String = "01-01-2666 00:00:00", completionHandler: @escaping ((_ screenRecordsAssets: [PHAsset]) -> Void)) {
+    public func getScreenRecordsVideos(from startDate: String = "01-01-1917 00:00:00", to endDate: String = "01-01-2666 00:00:00", isDeepCleanScan: Bool = false, completionHandler: @escaping ((_ screenRecordsAssets: [PHAsset]) -> Void)) {
         
         fetchManager.fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumVideos, by: PHAssetMediaType.video.rawValue) { videoAssets in
             U.BG {
                 var screenRecords: [PHAsset] = []
                 
                 if videoAssets.count == 0 {
-                    U.UI {
+                    if !isDeepCleanScan {
+                        U.UI {
+                            completionHandler([])
+                        }
+                    } else {
                         completionHandler([])
                     }
                     return
                 }
-                                
+                
                 for videosPosition in 1...videoAssets.count {
                     let asset = videoAssets[videosPosition - 1]
                     if let assetResource = PHAssetResource.assetResources(for: asset).first {
@@ -621,7 +693,12 @@ extension PhotoManager {
                         }
                     }
                 }
-                U.UI {
+                
+                if !isDeepCleanScan {
+                    U.UI {
+                        completionHandler(screenRecords)
+                    }
+                } else {
                     completionHandler(screenRecords)
                 }
             }
@@ -629,7 +706,7 @@ extension PhotoManager {
     }
 
     /// `duplicated videos compare algorithm`
-    public func getDuplicatedVideoAsset(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", completionHandler: @escaping ((_ videoAssets: [PhassetGroup]) -> Void)) {
+    public func getDuplicatedVideoAsset(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", isDeepCleanScan: Bool = false, completionHandler: @escaping ((_ videoAssets: [PhassetGroup]) -> Void)) {
         
         fetchManager.fetchFromGallery(from: startDate,
                                       to: endDate,
@@ -652,61 +729,77 @@ extension PhotoManager {
                     let duplicateVideoIDasTuples = OSImageHashing.sharedInstance().similarImages(withProvider: .pHash, forImages: videos)
                     var duplicateVideoNumbers: [Int] = []
                     var duplicateVideoGroups: [PhassetGroup] = []
-                    U.UI {
-                        guard duplicateVideoIDasTuples.count >= 1 else { completionHandler([])
-                            return
+                    
+                    guard duplicateVideoIDasTuples.count >= 1 else {
+                        if !isDeepCleanScan {
+                            U.UI {
+                                completionHandler([])
+                            }
+                        } else {
+                            completionHandler([])
                         }
-                        
-                        for index in 1...duplicateVideoIDasTuples.count {
-                            let tuple = duplicateVideoIDasTuples[index - 1]
-                            var groupAssets: [PHAsset] = []
-                            if let first = tuple.first as String?, let second = tuple.second as String? {
-                                let firstInteger = first.replacingStringAndConvertToIntegerForImage() - 1
-                                let secondInteger = second.replacingStringAndConvertToIntegerForImage() - 1
-                                
-                                if abs(secondInteger - firstInteger) >= 10 { continue }
-                                if !duplicateVideoNumbers.contains(firstInteger) {
-                                    duplicateVideoNumbers.append(firstInteger)
-                                    groupAssets.append(videoCollection[firstInteger])
-                                }
-                                
-                                if !duplicateVideoNumbers.contains(secondInteger) {
-                                    duplicateVideoNumbers.append(secondInteger)
-                                    groupAssets.append(videoCollection[secondInteger])
-                                }
-                                
-                                duplicateVideoIDasTuples.filter({$0.first != nil && $0.second != nil}).filter({ $0.first == tuple.first || $0.first == tuple.second || $0.second == tuple.second || $0.second == tuple.first }).forEach({ tuple in
-                                    if let firstTuple = tuple.first as String?, let secondTuple = tuple.second as String? {
-                                        let firstTupleInteger = firstTuple.replacingStringAndConvertToIntegerForImage() - 1
-                                        let secondTupleInteger = secondTuple.replacingStringAndConvertToIntegerForImage() - 1
-                                        
-                                        if abs(secondTupleInteger - firstTupleInteger) >= 10 {
-                                            return
-                                        }
-                                        
-                                        if !duplicateVideoNumbers.contains(firstTupleInteger) {
-                                            duplicateVideoNumbers.append(firstTupleInteger)
-                                            groupAssets.append(videoCollection[firstTupleInteger])
-                                        }
-                                        
-                                        if !duplicateVideoNumbers.contains(secondTupleInteger) {
-                                            duplicateVideoNumbers.append(secondTupleInteger)
-                                            groupAssets.append(videoCollection[secondInteger])
-                                        }
+                        return
+                    }
+                    
+                    for index in 1...duplicateVideoIDasTuples.count {
+                        let tuple = duplicateVideoIDasTuples[index - 1]
+                        var groupAssets: [PHAsset] = []
+                        if let first = tuple.first as String?, let second = tuple.second as String? {
+                            let firstInteger = first.replacingStringAndConvertToIntegerForImage() - 1
+                            let secondInteger = second.replacingStringAndConvertToIntegerForImage() - 1
+                            
+                            if abs(secondInteger - firstInteger) >= 10 { continue }
+                            if !duplicateVideoNumbers.contains(firstInteger) {
+                                duplicateVideoNumbers.append(firstInteger)
+                                groupAssets.append(videoCollection[firstInteger])
+                            }
+                            
+                            if !duplicateVideoNumbers.contains(secondInteger) {
+                                duplicateVideoNumbers.append(secondInteger)
+                                groupAssets.append(videoCollection[secondInteger])
+                            }
+                            
+                            duplicateVideoIDasTuples.filter({$0.first != nil && $0.second != nil}).filter({ $0.first == tuple.first || $0.first == tuple.second || $0.second == tuple.second || $0.second == tuple.first }).forEach({ tuple in
+                                if let firstTuple = tuple.first as String?, let secondTuple = tuple.second as String? {
+                                    let firstTupleInteger = firstTuple.replacingStringAndConvertToIntegerForImage() - 1
+                                    let secondTupleInteger = secondTuple.replacingStringAndConvertToIntegerForImage() - 1
+                                    
+                                    if abs(secondTupleInteger - firstTupleInteger) >= 10 {
+                                        return
                                     }
-                                })
-                                
-                                if groupAssets.count >= 2 {
-                                    duplicateVideoGroups.append(PhassetGroup(name: "", assets: groupAssets))
+                                    
+                                    if !duplicateVideoNumbers.contains(firstTupleInteger) {
+                                        duplicateVideoNumbers.append(firstTupleInteger)
+                                        groupAssets.append(videoCollection[firstTupleInteger])
+                                    }
+                                    
+                                    if !duplicateVideoNumbers.contains(secondTupleInteger) {
+                                        duplicateVideoNumbers.append(secondTupleInteger)
+                                        groupAssets.append(videoCollection[secondInteger])
+                                    }
                                 }
+                            })
+                            
+                            if groupAssets.count >= 2 {
+                                duplicateVideoGroups.append(PhassetGroup(name: "", assets: groupAssets))
                             }
                         }
+                    }
+                    
+                    if !isDeepCleanScan {
                         U.UI {
                             completionHandler(duplicateVideoGroups)
                         }
+                    } else {
+                        completionHandler(duplicateVideoGroups)
                     }
+                    
                 } else {
-                    U.UI {
+                    if !isDeepCleanScan {
+                        U.UI {
+                            completionHandler([])
+                        }
+                    } else {
                         completionHandler([])
                     }
                     return
@@ -758,7 +851,6 @@ extension PhotoManager: PHPhotoLibraryChangeObserver {
     
     func photoLibraryDidChange(_ changeInstance: PHChange) {
         U.UI {
-//            self.getPhotoLibrary()
             UpdatingChangesInOpenedScreensMediator.instance.updatingChangedScreenShots()
             UpdatingChangesInOpenedScreensMediator.instance.updatingChangedSelfies()
         }

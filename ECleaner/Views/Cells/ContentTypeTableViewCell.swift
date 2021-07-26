@@ -48,10 +48,10 @@ extension ContentTypeTableViewCell {
      - `setupCellSelected` use in deep cleaning part for show selected checkmark for clean
     */
     
-    public func cellConfig(contentType: MediaContentType, indexPath: IndexPath, phasetCount: Int) {
+    public func cellConfig(contentType: MediaContentType, indexPath: IndexPath, phasetCount: Int, isDeepCleanController: Bool = false) {
         
-        contentTypeTextLabel.text = contentType.getCellTitle(index: indexPath.row)
-        
+        contentTypeTextLabel.text = isDeepCleanController ? contentType.getDeepCellTitle(index: indexPath.row) : contentType.getCellTitle(index: indexPath.row)
+    
         switch contentType {
             case .userPhoto:
                 contentSubtitleTextLabel.text = phasetCount != 0 ? String("\(phasetCount) files") : ""

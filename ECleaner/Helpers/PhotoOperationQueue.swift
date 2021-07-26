@@ -12,7 +12,7 @@ class AssetsOperationQueue: OperationQueue {
     override init() {
         super.init()
         qualityOfService = .userInitiated
-        maxConcurrentOperationCount = 1
+        maxConcurrentOperationCount = 10
     }
     
     override public func addOperation(_ operation: Operation) {
