@@ -55,6 +55,9 @@ class DeepCleaningViewController: UIViewController {
     private var similarVideoCount: Int = 0
     private var duplicatedVideosCount: Int = 0
     
+    
+    public var percentLabelFormat: String = "%.f %%"
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -256,18 +259,30 @@ extension DeepCleaningViewController {
                 guard let totoalAssetsCount =  info[C.key.notificationDictionary.deepCleanSimilarPhotoTotalAsssetsCount] as? Int else { return }
                 
                 if let index = info[C.key.notificationDictionary.deepCleanSimilarPhotoPrecessingIndex] as? Int {
-                    let totalPercent = Double(index) / Double(totoalAssetsCount)
-                    debugPrint(totalPercent, "% processing simmilar")
+                    let totalPercent = CGFloat(Double(index) / Double(totoalAssetsCount))
+                    let stringFormat = String(format: percentLabelFormat, totalPercent * 100)
+                    debugPrint(stringFormat, "% processing simmilar")
+                    U.UI {
+                        if let cell = self.tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? DeepCleanInfoTableViewCell {
+                            cell.updateSimilar(similar: stringFormat)
+                        }
+                    }
                 }
             }
         } else if notification.name.rawValue == C.key.notification.deepCleanDuplicatedPhotoPhassetScan {
             if let info = notification.userInfo {
                 
-                guard let totalAssetsCount = info[C.key.notificationDictionary.deepCleanDuplicatePhotoProcessingIndex] as? Int else { return }
+                guard let totalAssetsCount = info[C.key.notificationDictionary.deepCleanDuplicatePhotoTotalAssetsCount] as? Int else { return }
                 
                 if let index = info[C.key.notificationDictionary.deepCleanDuplicatePhotoProcessingIndex] as? Int {
-                    let totalPercent = Double(index) / Double(totalAssetsCount)
-                    debugPrint(totalPercent, "% processing duplicates")
+                    let totalPercent = CGFloat(Double(index) / Double(totalAssetsCount))
+                    let stringFormat = String(format: percentLabelFormat, totalPercent * 100)
+                    debugPrint(stringFormat, "% processing duplicates")
+                    U.UI {
+                        if let cell = self.tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? DeepCleanInfoTableViewCell {
+                            cell.updateduplicate(duplicate: stringFormat)
+                        }
+                    }
                 }
             }
         }
