@@ -29,11 +29,18 @@ class PhassetGroup {
 /// `getSimilarLivePhotos` - load simmilar live photos
 /// `getScreenShots` `getSelfiePhotos` `getLivePhotos` -  fetch photos by type
 
+
+    /**
+    - parameter isDeepCleanScan in methods used for completion stay in background if `false` completion of methods needs move to main thread
+    */
+
 class PhotoManager: NSObject {
     
     private static let shared = PhotoManager()
     
     var assetCollection: PHAssetCollection?
+    
+//    let operationQueue = AssetsOperationQueue()
     
     static var manager: PhotoManager {
         return self.shared
@@ -64,13 +71,23 @@ class PhotoManager: NSObject {
     private func getPhotoLibrary() {
         
         let operationQueue: OperationQueue = {
-            
+
             let operation = OperationQueue()
             operation.qualityOfService = .background
             operation.maxConcurrentOperationCount = 10
-            
+
             return operation
         }()
+  
+        operationQueue.addOperation {
+            debugPrint("start calculated file size")
+            self.fetchManager.gitAllCalculatedPhassetsSize { photoSize, videoSize, totalSize in
+                debugPrint("end calculated fils size")
+                S.phassetPhotoFilesSizes = photoSize
+                S.phassetVideoFilesSizes = videoSize
+                S.phassetPhotoVideoSizes = totalSize
+            }
+        }
         
         operationQueue.addOperation {
             debugPrint("start video count")
@@ -81,6 +98,7 @@ class PhotoManager: NSObject {
                 }
             }
         }
+        
         operationQueue.addOperation {
             debugPrint("start photo count")
             self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumUserLibrary, by: PHAssetMediaType.image.rawValue) { assets in
@@ -182,24 +200,6 @@ class PhotoManager: NSObject {
             }
         }
     }
-    
-    public func calculateSpace(completionHandler: @escaping (_ spaceIn: Int64) -> Void) {
-        var fileSize: Int64 = 0
-
-        U.BG {
-            self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumUserLibrary, by: PHAssetMediaType.image.rawValue) { result in
-                fileSize += self.fetchManager.calculateAllAssetsSize(result: result)
-            }
-
-            self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumVideos, by: PHAssetMediaType.video.rawValue) { result in
-                fileSize += self.fetchManager.calculateAllAssetsSize(result: result)
-            }
-
-            U.UI {
-                completionHandler(fileSize)
-            }
-        }
-    }
 }
 
 //      MARK: - photo part -
@@ -226,6 +226,12 @@ extension PhotoManager {
                     for index in 1...photosInGallery.count {
                         debugPrint("index preocessing duplicate")
                         debugPrint("index \(index)")
+                        
+                        /// adding notification to handle progress similar photos processing
+                        
+                        let info = [C.key.notificationDictionary.deepCleanSimilarPhotoPrecessingIndex: index,
+                                    C.key.notificationDictionary.deepCleanSimilarPhotoTotalAsssetsCount: photosInGallery.count]
+                        U.notificationCenter.post(name: .deepCleanSimilarPhotoPhassetScan, object: nil, userInfo: info)
                   
                     similarPhotos.append((asset: photosInGallery[index - 1],
                                           date: Int64(photosInGallery[index - 1].creationDate!.timeIntervalSince1970),
@@ -237,6 +243,7 @@ extension PhotoManager {
                     }
                     
                     for index in 0...similarPhotos.count - 1 {
+                        debugPrint("similar index precessing: ", index)
                         var similarIndex = index + 1
                         if containsAdd.contains(index) { continue }
                         var similar: [PHAsset] = []
@@ -297,6 +304,11 @@ extension PhotoManager {
                     for photoPos in 1...photoGallery.count {
                         debugPrint("loading duplicate")
                         debugPrint("photoposition \(photoPos)")
+                        let info = [C.key.notificationDictionary.deepCleanDuplicatePhotoTotalAssetsCount: photoGallery.count,
+                                    C.key.notificationDictionary.deepCleanDuplicatePhotoProcessingIndex: photoPos]
+                        
+                        U.notificationCenter.post(name: .deepCleanDuplicatedPhotoPhassetScan, object: nil, userInfo: info)
+                        
                         let image = self.fetchManager.getThumbnail(from: photoGallery[photoPos - 1], size: CGSize(width: 150, height: 150))
                         if let data = image.jpegData(compressionQuality: 0.8) {
                             let tuple = OSTuple<NSString, NSData>(first: "image\(photoPos)" as NSString, andSecond: data as NSData)
@@ -829,7 +841,6 @@ extension PhotoManager {
     }
     
     /// fetch `recently deleted assets`
-    
     public func getRecentlyDeletedAssets(completion: @escaping ([PHAsset]) -> Void) {
         
         fetchManager.recentlyDeletedAlbumFetch { assets in

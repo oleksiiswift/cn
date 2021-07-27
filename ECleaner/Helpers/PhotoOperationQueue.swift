@@ -11,10 +11,11 @@ class AssetsOperationQueue: OperationQueue {
     
     override init() {
         super.init()
-        qualityOfService = .userInitiated
+        qualityOfService = .background
+        
         maxConcurrentOperationCount = 10
     }
-    
+        
     override public func addOperation(_ operation: Operation) {
         let lastIndex = operations.count - 1
         

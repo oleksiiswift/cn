@@ -32,6 +32,27 @@ class Constants {
             static let startingSavedDate = "startingSavedDate"
             static let endingSavedDate = "endingSavedDate"
             static let lastSmartClean = "lastSmartClean"
+            
+            static let photoSpace = "photoDiskSpace"
+            static let videoSpace = "videoDiskSpace"
+            static let allMediaSpace = "wholeAssetsDiskSpace"
+        }
+        
+        struct notification {
+            static let photoSpaceNotificationName = "photoSpaceDidChange"
+            static let videoSpaceNotificationName = "videoSpaceDidChange"
+            static let mediaSpaceNotificationName = "mediaSpaceDidChange"
+            
+            static let deepCleanSimilarPhotoPhassetScan = "deepCleanSimilarPhotoPhassetScant"
+            static let deepCleanDuplicatedPhotoPhassetScan = "deepCleanDuplicatedPhotoPhassetScan"
+        }
+        
+        struct notificationDictionary {
+            static let deepCleanSimilarPhotoPrecessingIndex = "deepCleanPhotoPrecessIndex"
+            static let deepCleanDuplicatePhotoProcessingIndex = "deepCleanDuplicatePhotoProcessingIndex"
+            
+            static let deepCleanSimilarPhotoTotalAsssetsCount = "deepCleanSimilarPhotoTotalAsssetsCount"
+            static let deepCleanDuplicatePhotoTotalAssetsCount = "deepCleanDuplicatePhotoTotalAssetsCount"
         }
     }
     

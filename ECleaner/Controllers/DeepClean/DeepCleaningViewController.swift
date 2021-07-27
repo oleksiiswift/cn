@@ -61,6 +61,8 @@ class DeepCleaningViewController: UIViewController {
         setupUI()
         setupTableView()
         checkStartCleaningButtonState(false)
+        setupObserversAndDelegate()
+        
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -169,7 +171,6 @@ extension DeepCleaningViewController {
             default:
                 return
         }
-        
     }
     
     private func updateCellInfoCount(by type: MediaContentType, mediaType: PhotoMediaType, assetsCount: Int) {
@@ -245,6 +246,30 @@ extension DeepCleaningViewController {
                 }
             default:
                 debugPrint("view for title")
+        }
+    }
+    
+    @objc func calculateProgressPercentView(_ notification: Notification) {
+        
+        if notification.name.rawValue == C.key.notification.deepCleanSimilarPhotoPhassetScan {
+            if let info = notification.userInfo {
+                guard let totoalAssetsCount =  info[C.key.notificationDictionary.deepCleanSimilarPhotoTotalAsssetsCount] as? Int else { return }
+                
+                if let index = info[C.key.notificationDictionary.deepCleanSimilarPhotoPrecessingIndex] as? Int {
+                    let totalPercent = Double(index) / Double(totoalAssetsCount)
+                    debugPrint(totalPercent, "% processing simmilar")
+                }
+            }
+        } else if notification.name.rawValue == C.key.notification.deepCleanDuplicatedPhotoPhassetScan {
+            if let info = notification.userInfo {
+                
+                guard let totalAssetsCount = info[C.key.notificationDictionary.deepCleanDuplicatePhotoProcessingIndex] as? Int else { return }
+                
+                if let index = info[C.key.notificationDictionary.deepCleanDuplicatePhotoProcessingIndex] as? Int {
+                    let totalPercent = Double(index) / Double(totalAssetsCount)
+                    debugPrint(totalPercent, "% processing duplicates")
+                }
+            }
         }
     }
 }
@@ -349,6 +374,12 @@ extension DeepCleaningViewController {
     
     private func setupUI() {
         
+    }
+    
+    private func setupObserversAndDelegate() {
+     
+        U.notificationCenter.addObserver(self, selector: #selector(calculateProgressPercentView(_:)), name: .deepCleanSimilarPhotoPhassetScan, object: nil)
+        U.notificationCenter.addObserver(self, selector: #selector(calculateProgressPercentView(_:)), name: .deepCleanDuplicatedPhotoPhassetScan, object: nil)
     }
 }
 
