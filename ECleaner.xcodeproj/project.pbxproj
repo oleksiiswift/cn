@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		0405AA59269D77A5004AC07A /* CMtime+StringDuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0405AA58269D77A5004AC07A /* CMtime+StringDuration.swift */; };
 		0405AA5B269D9BD6004AC07A /* PreviewAVController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0405AA5A269D9BD6004AC07A /* PreviewAVController.swift */; };
+		040E288826A98B0F0019F372 /* DeepCleaningViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 040E288726A98B0F0019F372 /* DeepCleaningViewController.swift */; };
+		040E288B26A98C790019F372 /* DeepClean.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 040E288A26A98C790019F372 /* DeepClean.storyboard */; };
 		044281FC2692F95A00B6B47C /* DropDownMenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 044281FB2692F95A00B6B47C /* DropDownMenuViewController.swift */; };
 		044281FE2692F9B800B6B47C /* SelectDropDownMenuDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 044281FD2692F9B800B6B47C /* SelectDropDownMenuDelegate.swift */; };
 		044282012693034600B6B47C /* DropDownMenuTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 044281FF2693034600B6B47C /* DropDownMenuTableViewCell.swift */; };
@@ -31,6 +33,9 @@
 		04649B3A268C6FEC00336FE4 /* Array+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04649B39268C6FEC00336FE4 /* Array+Extension.swift */; };
 		04649B3C268C98A900336FE4 /* UIButton+RemoveAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04649B3B268C98A900336FE4 /* UIButton+RemoveAnimation.swift */; };
 		04649B3E268DDDE700336FE4 /* UICollectionView+SelectAll.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04649B3D268DDDE600336FE4 /* UICollectionView+SelectAll.swift */; };
+		047DE61926AAA53100733CD5 /* DeepCleanInfoTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 047DE61726AAA53100733CD5 /* DeepCleanInfoTableViewCell.swift */; };
+		047DE61A26AAA53100733CD5 /* DeepCleanInfoTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 047DE61826AAA53100733CD5 /* DeepCleanInfoTableViewCell.xib */; };
+		047DE61C26AAD5F000733CD5 /* DeepCleanManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 047DE61B26AAD5F000733CD5 /* DeepCleanManager.swift */; };
 		049CC215268221D40002F988 /* AdvertisementViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 049CC214268221D40002F988 /* AdvertisementViewController.swift */; };
 		049CC217268221DE0002F988 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 049CC216268221DE0002F988 /* MainViewController.swift */; };
 		049CC219268225500002F988 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 049CC218268225500002F988 /* Colors.swift */; };
@@ -102,6 +107,8 @@
 /* Begin PBXFileReference section */
 		0405AA58269D77A5004AC07A /* CMtime+StringDuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CMtime+StringDuration.swift"; sourceTree = "<group>"; };
 		0405AA5A269D9BD6004AC07A /* PreviewAVController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewAVController.swift; sourceTree = "<group>"; };
+		040E288726A98B0F0019F372 /* DeepCleaningViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepCleaningViewController.swift; sourceTree = "<group>"; };
+		040E288A26A98C790019F372 /* DeepClean.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = DeepClean.storyboard; sourceTree = "<group>"; };
 		044281FB2692F95A00B6B47C /* DropDownMenuViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropDownMenuViewController.swift; sourceTree = "<group>"; };
 		044281FD2692F9B800B6B47C /* SelectDropDownMenuDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectDropDownMenuDelegate.swift; sourceTree = "<group>"; };
 		044281FF2693034600B6B47C /* DropDownMenuTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropDownMenuTableViewCell.swift; sourceTree = "<group>"; };
@@ -124,6 +131,9 @@
 		04649B39268C6FEC00336FE4 /* Array+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Extension.swift"; sourceTree = "<group>"; };
 		04649B3B268C98A900336FE4 /* UIButton+RemoveAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton+RemoveAnimation.swift"; sourceTree = "<group>"; };
 		04649B3D268DDDE600336FE4 /* UICollectionView+SelectAll.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UICollectionView+SelectAll.swift"; sourceTree = "<group>"; };
+		047DE61726AAA53100733CD5 /* DeepCleanInfoTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepCleanInfoTableViewCell.swift; sourceTree = "<group>"; };
+		047DE61826AAA53100733CD5 /* DeepCleanInfoTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DeepCleanInfoTableViewCell.xib; sourceTree = "<group>"; };
+		047DE61B26AAD5F000733CD5 /* DeepCleanManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepCleanManager.swift; sourceTree = "<group>"; };
 		049CC214268221D40002F988 /* AdvertisementViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvertisementViewController.swift; sourceTree = "<group>"; };
 		049CC216268221DE0002F988 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		049CC218268225500002F988 /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
@@ -208,6 +218,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		040E288926A98B150019F372 /* DeepClean */ = {
+			isa = PBXGroup;
+			children = (
+				040E288726A98B0F0019F372 /* DeepCleaningViewController.swift */,
+			);
+			path = DeepClean;
+			sourceTree = "<group>";
+		};
 		0459DF9626A57A8D0085EEDF /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -234,6 +252,32 @@
 			path = HeadersFootes;
 			sourceTree = "<group>";
 		};
+		047DE61426AAA33700733CD5 /* Temp */ = {
+			isa = PBXGroup;
+			children = (
+				0459DF9826A6C5E50085EEDF /* celBlock51area.swift */,
+			);
+			path = Temp;
+			sourceTree = "<group>";
+		};
+		047DE61526AAA34800733CD5 /* PhotoControllers */ = {
+			isa = PBXGroup;
+			children = (
+				97FC78972688CC06000D7F26 /* SimpleAssetsListViewController.swift */,
+				97238A082689D01E00C523DC /* GroupedAssetListViewController.swift */,
+			);
+			path = PhotoControllers;
+			sourceTree = "<group>";
+		};
+		047DE61626AAA36C00733CD5 /* Main */ = {
+			isa = PBXGroup;
+			children = (
+				049CC216268221DE0002F988 /* MainViewController.swift */,
+				04CFFFF82685BF01000CA850 /* MediaContentViewController.swift */,
+			);
+			path = Main;
+			sourceTree = "<group>";
+		};
 		049CC20E26821D330002F988 /* UIDevice */ = {
 			isa = PBXGroup;
 			children = (
@@ -258,6 +302,7 @@
 		049CC21026821D560002F988 /* Photo */ = {
 			isa = PBXGroup;
 			children = (
+				047DE61B26AAD5F000733CD5 /* DeepCleanManager.swift */,
 				04E5837B267B3E2A00EDC3A3 /* PhotoManager.swift */,
 				04E5837F267B9F6B00EDC3A3 /* PhassetFetchManager.swift */,
 			);
@@ -338,6 +383,7 @@
 				04CFFFFE2685F0C3000CA850 /* ContentTypeTableViewCell.swift */,
 				044281FF2693034600B6B47C /* DropDownMenuTableViewCell.swift */,
 				0459DF8A26A55F360085EEDF /* CarouselCollectionViewCell.swift */,
+				047DE61726AAA53100733CD5 /* DeepCleanInfoTableViewCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -345,9 +391,10 @@
 		049CC2322683374C0002F988 /* Cells */ = {
 			isa = PBXGroup;
 			children = (
+				047DE61826AAA53100733CD5 /* DeepCleanInfoTableViewCell.xib */,
 				049CC22E268337310002F988 /* MediaTypeCollectionViewCell.xib */,
-				04CFFFFF2685F0C3000CA850 /* ContentTypeTableViewCell.xib */,
 				97FC78A02688E5E8000D7F26 /* PhotoCollectionViewCell.xib */,
+				04CFFFFF2685F0C3000CA850 /* ContentTypeTableViewCell.xib */,
 				044282002693034600B6B47C /* DropDownMenuTableViewCell.xib */,
 			);
 			path = Cells;
@@ -378,6 +425,7 @@
 		04B20F03269C4F9A00C6BC14 /* ModalControllers */ = {
 			isa = PBXGroup;
 			children = (
+				97CC2F3B26873A7D0072EF8C /* DateSelectorViewController.swift */,
 				044281FB2692F95A00B6B47C /* DropDownMenuViewController.swift */,
 				04B20F01269C4F6A00C6BC14 /* AssetContextPreviewViewController.swift */,
 				0405AA5A269D9BD6004AC07A /* PreviewAVController.swift */,
@@ -448,14 +496,12 @@
 			isa = PBXGroup;
 			children = (
 				049CC214268221D40002F988 /* AdvertisementViewController.swift */,
-				049CC216268221DE0002F988 /* MainViewController.swift */,
-				04CFFFF82685BF01000CA850 /* MediaContentViewController.swift */,
-				97CC2F3B26873A7D0072EF8C /* DateSelectorViewController.swift */,
-				97FC78972688CC06000D7F26 /* SimpleAssetsListViewController.swift */,
-				97238A082689D01E00C523DC /* GroupedAssetListViewController.swift */,
+				047DE61626AAA36C00733CD5 /* Main */,
+				047DE61526AAA34800733CD5 /* PhotoControllers */,
 				974EEA3726A74239000A0326 /* PhotoPreviewViewController */,
 				04B20F03269C4F9A00C6BC14 /* ModalControllers */,
-				0459DF9826A6C5E50085EEDF /* celBlock51area.swift */,
+				047DE61426AAA33700733CD5 /* Temp */,
+				040E288926A98B150019F372 /* DeepClean */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -604,6 +650,7 @@
 				04E09475267A06B500A69956 /* Main.storyboard */,
 				04CFFFF62685BEAD000CA850 /* MediaContent.storyboard */,
 				04E0947A267A06B900A69956 /* LaunchScreen.storyboard */,
+				040E288A26A98C790019F372 /* DeepClean.storyboard */,
 			);
 			path = Storyboards;
 			sourceTree = "<group>";
@@ -779,8 +826,10 @@
 				04649B36268C52B100336FE4 /* GroupedAssetsReusableFooterView.xib in Resources */,
 				04CF00012685F0C3000CA850 /* ContentTypeTableViewCell.xib in Resources */,
 				049CC230268337310002F988 /* MediaTypeCollectionViewCell.xib in Resources */,
+				040E288B26A98C790019F372 /* DeepClean.storyboard in Resources */,
 				0459DF9326A56DB20085EEDF /* CarouselItemView.xib in Resources */,
 				04E09479267A06B900A69956 /* Assets.xcassets in Resources */,
+				047DE61A26AAA53100733CD5 /* DeepCleanInfoTableViewCell.xib in Resources */,
 				044282022693034600B6B47C /* DropDownMenuTableViewCell.xib in Resources */,
 				04649B32268C507F00336FE4 /* GroupedAssetsReusableHeaderView.xib in Resources */,
 				97FC78A22688E5E8000D7F26 /* PhotoCollectionViewCell.xib in Resources */,
@@ -861,6 +910,7 @@
 				04CFFFF42684B23D000CA850 /* String+Whitespaces.swift in Sources */,
 				04CFFFFD2685E571000CA850 /* UIView+Borders.swift in Sources */,
 				049CC2372683730A0002F988 /* BaseCollectionFlowLayout.swift in Sources */,
+				040E288826A98B0F0019F372 /* DeepCleaningViewController.swift in Sources */,
 				0459DF9B26A6CDCC0085EEDF /* PHCachingImageManager+RequestExtension.swift in Sources */,
 				04CF0003268602DE000CA850 /* MediaContentType.swift in Sources */,
 				04E5837C267B3E2A00EDC3A3 /* PhotoManager.swift in Sources */,
@@ -901,12 +951,14 @@
 				97FC78982688CC06000D7F26 /* SimpleAssetsListViewController.swift in Sources */,
 				049CC21B268225E60002F988 /* SettingsManager.swift in Sources */,
 				97CC2F3A2683D00F0072EF8C /* UpdateContentDataBaseListener.swift in Sources */,
+				047DE61C26AAD5F000733CD5 /* DeepCleanManager.swift in Sources */,
 				04CF00002685F0C3000CA850 /* ContentTypeTableViewCell.swift in Sources */,
 				049CC221268314690002F988 /* NotificationManager.swift in Sources */,
 				04EE29FB269891F30013837D /* PHasset+Thumbnail.swift in Sources */,
 				049CC23A2683761B0002F988 /* String+ConvertInteger.swift in Sources */,
 				04649B3E268DDDE700336FE4 /* UICollectionView+SelectAll.swift in Sources */,
 				04E5836F267A47FB00EDC3A3 /* Utils.swift in Sources */,
+				047DE61926AAA53100733CD5 /* DeepCleanInfoTableViewCell.swift in Sources */,
 				04E58371267A4A0A00EDC3A3 /* UIDevice+Model.swift in Sources */,
 				04CFFFFB2685E546000CA850 /* UIView+SelectedCornerRadius.swift in Sources */,
 				04CFFFEF268479CE000CA850 /* CircleProgressView.swift in Sources */,

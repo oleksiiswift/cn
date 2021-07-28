@@ -32,6 +32,27 @@ class Constants {
             static let startingSavedDate = "startingSavedDate"
             static let endingSavedDate = "endingSavedDate"
             static let lastSmartClean = "lastSmartClean"
+            
+            static let photoSpace = "photoDiskSpace"
+            static let videoSpace = "videoDiskSpace"
+            static let allMediaSpace = "wholeAssetsDiskSpace"
+        }
+        
+        struct notification {
+            static let photoSpaceNotificationName = "photoSpaceDidChange"
+            static let videoSpaceNotificationName = "videoSpaceDidChange"
+            static let mediaSpaceNotificationName = "mediaSpaceDidChange"
+            
+            static let deepCleanSimilarPhotoPhassetScan = "deepCleanSimilarPhotoPhassetScant"
+            static let deepCleanDuplicatedPhotoPhassetScan = "deepCleanDuplicatedPhotoPhassetScan"
+        }
+        
+        struct notificationDictionary {
+            static let deepCleanSimilarPhotoPrecessingIndex = "deepCleanPhotoPrecessIndex"
+            static let deepCleanDuplicatePhotoProcessingIndex = "deepCleanDuplicatePhotoProcessingIndex"
+            
+            static let deepCleanSimilarPhotoTotalAsssetsCount = "deepCleanSimilarPhotoTotalAsssetsCount"
+            static let deepCleanDuplicatePhotoTotalAssetsCount = "deepCleanDuplicatePhotoTotalAssetsCount"
         }
     }
     
@@ -41,6 +62,7 @@ class Constants {
         struct storyboards {
             static let main = "Main"
             static let media = "MediaContent"
+            static let deep = "DeepClean"
         }
         
         struct viewControllers {
@@ -50,6 +72,8 @@ class Constants {
             static let datePicker = "DateSelectorViewController"
             static let assetsList = "SimpleAssetsListViewController"
             static let groupedList = "GroupedAssetListViewController"
+            
+            static let deepClean = "DeepCleaningViewController"
         }
         
         struct cells {
@@ -58,6 +82,7 @@ class Constants {
             static let photoSimpleCell = "PhotoCollectionViewCell"
             static let dropDownCell = "DropDownMenuTableViewCell"
             static let carouselCell = "CarouselCollectionViewCell"
+            static let cleanInfoCell = "DeepCleanInfoTableViewCell"
         }
         
         struct views {
@@ -71,6 +96,7 @@ class Constants {
             static let contentTypeCell = "ContentTypeTableViewCell"
             static let photoSimpleCell = "PhotoCollectionViewCell"
             static let dropDownCell = "DropDownMenuTableViewCell"
+            static let cleanInfoCell = "DeepCleanInfoTableViewCell"
             /// views
             static let groupHeader = "GroupedAssetsReusableHeaderView"
             static let groupFooter = "GroupedAssetsReusableFooterView"

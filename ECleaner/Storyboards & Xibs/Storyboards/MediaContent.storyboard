@@ -291,7 +291,7 @@
                                         <rect key="frame" x="0.0" y="0.0" width="414" height="0.0"/>
                                         <subviews>
                                             <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gYZ-ro-UiV">
-                                                <rect key="frame" x="0.0" y="-200" width="414" height="0.0"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="414" height="0.0"/>
                                                 <connections>
                                                     <segue destination="s4c-JU-iXE" kind="embed" id="n9h-wM-JSa"/>
                                                 </connections>
@@ -630,6 +630,7 @@
                     <view key="view" contentMode="scaleToFill" id="NBj-aB-qyU">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="0.0"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <viewLayoutGuide key="safeArea" id="mxv-XT-7nl"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     </view>
                 </viewController>

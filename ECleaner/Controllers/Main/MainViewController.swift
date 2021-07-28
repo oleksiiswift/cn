@@ -31,6 +31,18 @@ class MainViewController: UIViewController {
     private var allVideosCount: Int?
     private var allContactsCount: Int?
     
+    private var photoDiskSpaceCount: Int64? {
+        get {
+            return S.phassetPhotoFilesSizes
+        }
+    }
+    
+    private var videoDiskSpaceCount: Int64? {
+        get {
+            return S.phassetPhotoVideoSizes
+        }
+    }
+    
     private var allScreenShots: [PHAsset] = []
     private var allSelfies: [PHAsset] = []
     private var allLiveFotos: [PHAsset] = []
@@ -64,6 +76,10 @@ class MainViewController: UIViewController {
         super.viewDidAppear(animated)
         
     }
+    @IBAction func didTapStartDeepCleaningActionButton(_ sender: Any) {
+        
+        openDeepCleanController()
+    }
 }
 
 extension MainViewController {
@@ -71,6 +87,35 @@ extension MainViewController {
     private func getMediaContent() {}
     @objc func settingsButtonPressed() {}
     @objc func premiumButtonPressed() {}
+    
+    @objc func updatePhotoSpaceDiskUsage(_ notification: Notification) {
+        
+        if notification.name == Notification.Name(rawValue: C.key.notification.photoSpaceNotificationName) {
+            U.UI {
+                let indexPath = IndexPath(row: 0, section: 0)
+                if let cell = self.mediaCollectionView.cellForItem(at: indexPath) as? MediaTypeCollectionViewCell {
+                    cell.configureCell(mediaType: .userPhoto, contentCount: self.allPhotoCount, diskSpace: S.phassetPhotoFilesSizes)
+                    self.mediaCollectionView.reloadItems(at: [indexPath])
+                }
+            }
+        } else if notification.name == Notification.Name(rawValue: C.key.notification.videoSpaceNotificationName) {
+            U.UI {
+                let indexPath = IndexPath(row: 1, section: 0)
+                if let cell = self.mediaCollectionView.cellForItem(at: indexPath) as? MediaTypeCollectionViewCell {
+                    cell.configureCell(mediaType: .userVideo, contentCount: self.allVideosCount, diskSpace: S.phassetVideoFilesSizes)
+                    self.mediaCollectionView.reloadItems(at: [indexPath])
+                }
+            }
+        } else if  notification.name == Notification.Name(rawValue: C.key.notification.mediaSpaceNotificationName) {
+            U.UI {
+                if let info = notification.userInfo {
+                    if let space = info[C.key.settings.allMediaSpace] as? Int64{
+                        debugPrint(space)
+                    }
+                }
+            }
+        }
+    }
 }
 
 //      MARK: - updating elements -
@@ -161,6 +206,19 @@ extension MainViewController {
         viewController.contentType = type
         self.navigationController?.pushViewController(viewController, animated: true)
     }
+    
+    private func openDeepCleanController() {
+        let storyboard = UIStoryboard(name: C.identifiers.storyboards.deep, bundle: nil)
+        let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.deepClean) as! DeepCleaningViewController
+        viewController.scansOptions = [.similarPhotos,
+                                       .similarVideos,
+                                       .duplicatedPhotos,
+                                       .duplicatedVideos,
+                                       .similarLivePhotos,
+                                       .singleScreenShots,
+                                       .singleScreenRecordings]
+        self.navigationController?.pushViewController(viewController, animated: true)
+    }
 }
 
 //
@@ -207,10 +265,10 @@ extension MainViewController {
         switch indexPath.item {
             case 0:
                 cell.mediaTypeCell = .userPhoto
-                cell.configureCell(mediaType: .userPhoto, contentCount: self.allPhotoCount, diskSpace: 0)
+                cell.configureCell(mediaType: .userPhoto, contentCount: self.allPhotoCount, diskSpace: photoDiskSpaceCount)
             case 1:
                 cell.mediaTypeCell = .userVideo
-                cell.configureCell(mediaType: .userVideo, contentCount: self.allVideosCount, diskSpace: 0)
+                cell.configureCell(mediaType: .userVideo, contentCount: self.allVideosCount, diskSpace: videoDiskSpaceCount)
             case 2:
                 cell.mediaTypeCell = .userContacts
                 cell.configureCell(mediaType: .userContacts, contentCount: self.allContactsCount, diskSpace: 0)
@@ -224,6 +282,10 @@ extension MainViewController: UpdateColorsDelegate {
     
     private func setupObserversAndDelegates() {
         UpdateContentDataBaseMediator.instance.setListener(listener: self)
+    
+        U.notificationCenter.addObserver(self, selector: #selector(updatePhotoSpaceDiskUsage(_:)), name: .photoSpaceDidChange, object: nil)
+        U.notificationCenter.addObserver(self, selector: #selector(updatePhotoSpaceDiskUsage(_:)), name: .videoSpaceDidChange, object: nil)
+        U.notificationCenter.addObserver(self, selector: #selector(updatePhotoSpaceDiskUsage(_:)), name: .mediaSpaceDidChange, object: nil)
     }
     
     private func setupNavigation() {
@@ -273,6 +335,11 @@ extension MainViewController: UpdateColorsDelegate {
     
             case .medium:
                 debugPrint("")
+                circleTotlaSpaceView.lineWidth = 20
+                circleTotlaSpaceView.titleLabelBottomInset = (circleTotlaSpaceView.frame.height / 2) + 10
+                circleTotlaSpaceView.titleLabel.font = .systemFont(ofSize: 13, weight: .regular)
+                circleTotlaSpaceView.percentLabel.font = .systemFont(ofSize: 25, weight: .black)
+                circleTotlaSpaceView.percentLabelCenterInset = 25
             case .plus:
                 debugPrint("")
                 circleTotlaSpaceView.lineWidth = 20
@@ -282,8 +349,18 @@ extension MainViewController: UpdateColorsDelegate {
                 circleTotlaSpaceView.percentLabelCenterInset = 25
             case .large:
                 debugPrint("")
+                circleTotlaSpaceView.lineWidth = 20
+                circleTotlaSpaceView.titleLabelBottomInset = (circleTotlaSpaceView.frame.height / 2) + 10
+                circleTotlaSpaceView.titleLabel.font = .systemFont(ofSize: 13, weight: .regular)
+                circleTotlaSpaceView.percentLabel.font = .systemFont(ofSize: 25, weight: .black)
+                circleTotlaSpaceView.percentLabelCenterInset = 25
             case .modern:
                 debugPrint("")
+                circleTotlaSpaceView.lineWidth = 20
+                circleTotlaSpaceView.titleLabelBottomInset = (circleTotlaSpaceView.frame.height / 2) + 10
+                circleTotlaSpaceView.titleLabel.font = .systemFont(ofSize: 13, weight: .regular)
+                circleTotlaSpaceView.percentLabel.font = .systemFont(ofSize: 25, weight: .black)
+                circleTotlaSpaceView.percentLabelCenterInset = 25
             case .max:
                 debugPrint("")
             case .madMax:

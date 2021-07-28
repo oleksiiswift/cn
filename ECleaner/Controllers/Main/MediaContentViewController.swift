@@ -73,7 +73,6 @@ class MediaContentViewController: UIViewController {
         self.navigationItem.backButtonTitle = ""
     }
     
-    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         switch segue.identifier {
             case C.identifiers.segue.showDatePicker:

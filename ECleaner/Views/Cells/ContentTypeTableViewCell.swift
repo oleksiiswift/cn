@@ -13,14 +13,19 @@ class ContentTypeTableViewCell: UITableViewCell {
     @IBOutlet weak var baseView: UIView!
     @IBOutlet weak var rightArrowImageView: UIImageView!
     
+    @IBOutlet weak var selectedAssetsContainerView: UIView!
+    @IBOutlet weak var selectedAssetsImageView: UIImageView!
+    
     @IBOutlet weak var contentTypeTextLabel: UILabel!
     @IBOutlet weak var contentSubtitleTextLabel: UILabel!
-        
+    @IBOutlet weak var selectedContainerWidthConstraint: NSLayoutConstraint!
+    
     override func prepareForReuse() {
         super.prepareForReuse()
         
         contentTypeTextLabel.text = nil
         contentSubtitleTextLabel.text = nil
+        selectedAssetsImageView.image = nil
     }
     
     override func awakeFromNib() {
@@ -38,10 +43,15 @@ class ContentTypeTableViewCell: UITableViewCell {
 
 extension ContentTypeTableViewCell {
     
-    public func cellConfig(contentType: MediaContentType, indexPath: IndexPath, phasetCount: Int) {
+    /**
+     - `cellConfig`use for default cell config
+     - `setupCellSelected` use in deep cleaning part for show selected checkmark for clean
+    */
+    
+    public func cellConfig(contentType: MediaContentType, indexPath: IndexPath, phasetCount: Int, isDeepCleanController: Bool = false) {
         
-        contentTypeTextLabel.text = contentType.getCellTitle(index: indexPath.row)
-        
+        contentTypeTextLabel.text = isDeepCleanController ? contentType.getDeepCellTitle(index: indexPath.row) : contentType.getCellTitle(index: indexPath.row)
+    
         switch contentType {
             case .userPhoto:
                 contentSubtitleTextLabel.text = phasetCount != 0 ? String("\(phasetCount) files") : ""
@@ -52,6 +62,13 @@ extension ContentTypeTableViewCell {
             case .none:
                 contentSubtitleTextLabel.text = ""
         }
+    }
+
+    public func setupCellSelected(at indexPath: IndexPath, isSelected: Bool) {
+        
+        selectedAssetsContainerView.isHidden = false
+        selectedContainerWidthConstraint.constant = 36
+        selectedAssetsImageView.image = isSelected ? I.systemElementsItems.circleBox : I.systemElementsItems.circleCheckBox
     }
 }
 
@@ -64,11 +81,14 @@ extension ContentTypeTableViewCell: Themeble {
         baseView.setCorner(12)
         contentTypeTextLabel.font = .systemFont(ofSize: 15, weight: .medium)
         contentSubtitleTextLabel.font = .systemFont(ofSize: 13, weight: .regular)
+        rightArrowImageView.image = I.navigationItems.rightShevronBack
     }
     
     func updateColors() {
         baseView.backgroundColor = currentTheme.contentBackgroundColor
         contentTypeTextLabel.textColor = currentTheme.titleTextColor
         contentSubtitleTextLabel.textColor = currentTheme.subTitleTextColor
+        rightArrowImageView.tintColor = currentTheme.tintColor
+        selectedAssetsImageView.tintColor = currentTheme.tintColor
     }
 }
