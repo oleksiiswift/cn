@@ -32,7 +32,7 @@ class DeepCleanManager {
         }()
 
         var totalResultCount = 0
-        
+    
         handler(optionMediaType)
         
         fetchingPhassetQueue.addOperation {

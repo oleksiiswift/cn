@@ -54,10 +54,7 @@ class DeepCleaningViewController: UIViewController {
     private var similarLivePhotosCount: Int = 0
     private var similarVideoCount: Int = 0
     private var duplicatedVideosCount: Int = 0
-    
-    
-    public var percentLabelFormat: String = "%.f %%"
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -70,7 +67,9 @@ class DeepCleaningViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
     
-        self.startDeepCleanScan()
+        U.delay(5) {
+            self.startDeepCleanScan()
+        }
     }
 }
 
@@ -251,41 +250,92 @@ extension DeepCleaningViewController {
                 debugPrint("view for title")
         }
     }
+}
+
+//      MARK: - updating progress notification roating -
+extension DeepCleaningViewController {
     
-    @objc func calculateProgressPercentView(_ notification: Notification) {
+    @objc func flowRoatingHandleNotification(_ notification: Notification) {
         
-        if notification.name.rawValue == C.key.notification.deepCleanSimilarPhotoPhassetScan {
-            if let info = notification.userInfo {
-                guard let totoalAssetsCount =  info[C.key.notificationDictionary.deepCleanSimilarPhotoTotalAsssetsCount] as? Int else { return }
-                
-                if let index = info[C.key.notificationDictionary.deepCleanSimilarPhotoPrecessingIndex] as? Int {
-                    let totalPercent = CGFloat(Double(index) / Double(totoalAssetsCount))
-                    let stringFormat = String(format: percentLabelFormat, totalPercent * 100)
-                    debugPrint(stringFormat, "% processing simmilar")
-                    U.UI {
-                        if let cell = self.tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? DeepCleanInfoTableViewCell {
-                            cell.updateSimilar(similar: stringFormat)
-                        }
-                    }
-                }
-            }
-        } else if notification.name.rawValue == C.key.notification.deepCleanDuplicatedPhotoPhassetScan {
-            if let info = notification.userInfo {
-                
-                guard let totalAssetsCount = info[C.key.notificationDictionary.deepCleanDuplicatePhotoTotalAssetsCount] as? Int else { return }
-                
-                if let index = info[C.key.notificationDictionary.deepCleanDuplicatePhotoProcessingIndex] as? Int {
-                    let totalPercent = CGFloat(Double(index) / Double(totalAssetsCount))
-                    let stringFormat = String(format: percentLabelFormat, totalPercent * 100)
-                    debugPrint(stringFormat, "% processing duplicates")
-                    U.UI {
-                        if let cell = self.tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? DeepCleanInfoTableViewCell {
-                            cell.updateduplicate(duplicate: stringFormat)
-                        }
-                    }
-                }
+        switch notification.name.rawValue {
+            case C.key.notification.deepCleanSimilarPhotoPhassetScan:
+                self.recieveNotification(by: .similarPhoto, info: notification.userInfo)
+            case C.key.notification.deepCleanDuplicatedPhotoPhassetScan:
+                self.recieveNotification(by: .duplicatePhoto, info: notification.userInfo)
+            case C.key.notification.deepCleanScreenShotsPhotoPhassetScan:
+                self.recieveNotification(by: .screenshots, info: notification.userInfo)
+            case C.key.notification.deepCleanSimilarLivePhotosPhassetScan:
+                self.recieveNotification(by: .livePhoto, info: notification.userInfo)
+            case C.key.notification.deepCleanLargeVideoPhassetScan:
+                self.recieveNotification(by: .largeVideo, info: notification.userInfo)
+            case C.key.notification.deepCleanDuplicateVideoPhassetScan:
+                self.recieveNotification(by: .duplicateVideo, info: notification.userInfo)
+            case C.key.notification.deepCleanSimilarVideoPhassetScan:
+                self.recieveNotification(by: .similarVideo, info: notification.userInfo)
+            case C.key.notification.deepCleanScreenRecordingsPhassetScan:
+                self.recieveNotification(by: .screenRecordings, info: notification.userInfo)
+            case C.key.notification.deepCleanAllContactsScan:
+                self.recieveNotification(by: .allContacts, info: notification.userInfo)
+            case C.key.notification.deepCleanEmptyContactsScan:
+                self.recieveNotification(by: .emptyContacts, info: notification.userInfo)
+            case C.key.notification.deepCleanDuplicateContacts:
+                self.recieveNotification(by: .duplicateContacts, info: notification.userInfo)
+            default:
+                return
+        }
+    }
+    
+    private func recieveNotification(by type: DeepCleanNotificationType, info: [AnyHashable: Any]?) {
+        guard let userInfo = info,
+              let totalProcessingAssetsCount = userInfo[type.dictionaryCountName] as? Int,
+              let index = userInfo[type.dictionaryIndexName] as? Int else { return }
+        
+        calculateProgressPercentage(total: totalProcessingAssetsCount, current: index) { title, progress in
+            U.UI {
+                self.progressUpdate(type, progress: progress, title: title)
             }
         }
+    }
+
+    private func progressUpdate(_ type: DeepCleanNotificationType, progress: CGFloat, title: String) {
+        
+        var indexPath = IndexPath()
+        
+        switch type {
+            case .similarPhoto:
+                indexPath = MediaContentType.userPhoto.getIndexPath(for: .similarPhotos)
+            case .duplicatePhoto:
+                indexPath = MediaContentType.userPhoto.getIndexPath(for: .duplicatedPhotos)
+            case .screenshots:
+                indexPath = MediaContentType.userPhoto.getIndexPath(for: .singleScreenShots)
+            case .livePhoto:
+                indexPath = MediaContentType.userPhoto.getIndexPath(for: .singleLivePhotos)
+            case .largeVideo:
+                indexPath = MediaContentType.userVideo.getIndexPath(for: .singleLargeVideos)
+            case .duplicateVideo:
+                indexPath = MediaContentType.userVideo.getIndexPath(for: .duplicatedVideos)
+            case .similarVideo:
+                indexPath = MediaContentType.userVideo.getIndexPath(for: .similarVideos)
+            case .screenRecordings:
+                indexPath = MediaContentType.userVideo.getIndexPath(for: .singleScreenRecordings)
+            case .allContacts:
+                indexPath = MediaContentType.userVideo.getIndexPath(for: .allContacts)
+            case .emptyContacts:
+                indexPath = MediaContentType.userContacts.getIndexPath(for: .emptyContacts)
+            case .duplicateContacts:
+                indexPath = MediaContentType.userContacts.getIndexPath(for: .duplicatedContacts)
+        }
+        debugPrint(indexPath)
+        guard let cell = tableView.cellForRow(at: indexPath) as? ContentTypeTableViewCell else { return }
+        cell.setPersent(progress: progress, title: title)
+    }
+    
+    private func calculateProgressPercentage(total: Int, current: Int, completion: @escaping (String, CGFloat) -> Void) {
+        
+        let percentLabelFormat: String = "%.f %%"
+        let totalPercent = CGFloat(Double(current) / Double(total)) * 100
+        let stingFormat = String(format: percentLabelFormat, totalPercent)
+        completion(stingFormat, totalPercent)
     }
 }
 
@@ -393,8 +443,15 @@ extension DeepCleaningViewController {
     
     private func setupObserversAndDelegate() {
      
-        U.notificationCenter.addObserver(self, selector: #selector(calculateProgressPercentView(_:)), name: .deepCleanSimilarPhotoPhassetScan, object: nil)
-        U.notificationCenter.addObserver(self, selector: #selector(calculateProgressPercentView(_:)), name: .deepCleanDuplicatedPhotoPhassetScan, object: nil)
+        U.notificationCenter.addObserver(self, selector: #selector(flowRoatingHandleNotification(_:)), name: .deepCleanSimilarPhotoPhassetScan, object: nil)
+        U.notificationCenter.addObserver(self, selector: #selector(flowRoatingHandleNotification(_:)), name: .deepCleanDuplicatedPhotoPhassetScan, object: nil)
+        U.notificationCenter.addObserver(self, selector: #selector(flowRoatingHandleNotification(_:)), name: .deepCleanScreenShotsPhassetScan, object: nil)
+        U.notificationCenter.addObserver(self, selector: #selector(flowRoatingHandleNotification(_:)), name: .deepCleanSimilarLivePhotosPhaassetScan, object: nil)
+        
+        U.notificationCenter.addObserver(self, selector: #selector(flowRoatingHandleNotification(_:)), name: .deepCleanLargeVideoPhassetScan, object: nil)
+        U.notificationCenter.addObserver(self, selector: #selector(flowRoatingHandleNotification(_:)), name: .deepCleanDuplicateVideoPhassetScan, object: nil)
+        U.notificationCenter.addObserver(self, selector: #selector(flowRoatingHandleNotification(_:)), name: .deepCleanSimilarVideoPhassetScan, object: nil)
+        U.notificationCenter.addObserver(self, selector: #selector(flowRoatingHandleNotification(_:)), name: .deepCleanScreenRecordingsPhassetScan, object: nil)
     }
 }
 

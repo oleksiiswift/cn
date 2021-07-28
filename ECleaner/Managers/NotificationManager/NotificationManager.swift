@@ -22,4 +22,13 @@ extension Notification.Name {
     /// `deep clean progress notification`
     static let deepCleanSimilarPhotoPhassetScan = Notification.Name("deepCleanSimilarPhotoPhassetScant")
     static let deepCleanDuplicatedPhotoPhassetScan = Notification.Name("deepCleanDuplicatedPhotoPhassetScan")
+    static let deepCleanScreenShotsPhassetScan = Notification.Name("deepCleanScreenShotsPhassetScan")
+    static let deepCleanSimilarLivePhotosPhaassetScan = Notification.Name("deepCleanSimilarLivePhotosPhaassetScan")
+    static let deepCleanLargeVideoPhassetScan = Notification.Name("deepCleanLargeVideoPhassetScan")
+    static let deepCleanDuplicateVideoPhassetScan = Notification.Name("deepCleanDuplicateVideoPhassetScan")
+    static let deepCleanSimilarVideoPhassetScan = Notification.Name("deepCleanSimilarVideoPhassetScan")
+    static let deepCleanScreenRecordingsPhassetScan = Notification.Name("deepCleanScreenRecordingsPhassetScant")
+    static let deepCleanAllContactsScan = Notification.Name("deepCleanAllContactsScan")
+    static let deepCleanEmptyContactsScan = Notification.Name("deepCleanEmptyContactsScan")
+    static let deepCleanDuplicatedContactsScan = Notification.Name("deepCleanDuplicatedContactsScan")
 }

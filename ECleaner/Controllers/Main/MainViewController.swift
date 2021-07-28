@@ -78,6 +78,7 @@ class MainViewController: UIViewController {
     }
     @IBAction func didTapStartDeepCleaningActionButton(_ sender: Any) {
         
+        FetchingOperationQueue().exitAndCancelOperations()
         openDeepCleanController()
     }
 }

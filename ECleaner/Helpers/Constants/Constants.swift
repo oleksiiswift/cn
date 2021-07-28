@@ -39,20 +39,64 @@ class Constants {
         }
         
         struct notification {
+            /// `phasset disk space update notification name`
             static let photoSpaceNotificationName = "photoSpaceDidChange"
             static let videoSpaceNotificationName = "videoSpaceDidChange"
             static let mediaSpaceNotificationName = "mediaSpaceDidChange"
             
+            /// `deep clean update progress notification name`
             static let deepCleanSimilarPhotoPhassetScan = "deepCleanSimilarPhotoPhassetScant"
             static let deepCleanDuplicatedPhotoPhassetScan = "deepCleanDuplicatedPhotoPhassetScan"
+            static let deepCleanScreenShotsPhotoPhassetScan = "deepCleanScreenShotsPhotoPhassetScan"
+            static let deepCleanSimilarLivePhotosPhassetScan = "deepCleanSimilarLivePhotosPhassetScan"
+            static let deepCleanLargeVideoPhassetScan = "deepCleanLargeVideoPhassetScan"
+            static let deepCleanDuplicateVideoPhassetScan = "deepCleanDuplicateVideoPhassetScan"
+            static let deepCleanSimilarVideoPhassetScan = "deepCleanSimilarVideoPhassetScan"
+            static let deepCleanScreenRecordingsPhassetScan = "deepCleanScreenRecordingsPhassetScan"
+            static let deepCleanAllContactsScan = "deepCleanAllContactsScan"
+            static let deepCleanEmptyContactsScan = "deepCleanEmptyContactsScan"
+            static let deepCleanDuplicateContacts = "deepCleanDuplicate"
         }
         
+//        MARK: - notification dictionary progress identifiers -
+        /**
+         use for notification info dictionary for update progress of deepCleanNotification
+         - parameter `index` use for detect current progrss index
+         - parameter `count` use for detect total assets count in progress
+         */
+    
         struct notificationDictionary {
-            static let deepCleanSimilarPhotoPrecessingIndex = "deepCleanPhotoPrecessIndex"
-            static let deepCleanDuplicatePhotoProcessingIndex = "deepCleanDuplicatePhotoProcessingIndex"
             
-            static let deepCleanSimilarPhotoTotalAsssetsCount = "deepCleanSimilarPhotoTotalAsssetsCount"
-            static let deepCleanDuplicatePhotoTotalAssetsCount = "deepCleanDuplicatePhotoTotalAssetsCount"
+            /// `INDEXES`
+            /// photo part
+            static let similarPhotoIndex = "deepCleanPhotoPrecessIndex"
+            static let duplicatePhotoIndex = "deepCleanDuplicatePhotoProcessingIndex"
+            static let screenShotsIndex = "deepCleanscreenShotsIndex"
+            static let livePhotosIndex = "deepCleanlivePhotosIndex"
+            /// video part
+            static let largeVideoIndex = "deepCleanlargeVideoIndex"
+            static let duplicateVideoIndex = "deepCleanduplicateVideoIndex"
+            static let similarVideoIndex = "deepCleansimilarVideoIndex"
+            static let screenRecordingsIndex = "deepCleanscreenRecordingsIndex"
+            /// contacts part
+            static let allContactsIndex = "deepCleanallContactsIndex"
+            static let emptyContactsIndex = "deepCleanemptyContactsIndex"
+            static let duplicateContactsIndex = "deepCleanduplicateContactsIndex"
+            
+            /// `TOTAL COUNT`
+            static let similarPhotoCount = "deepCleanSimilarPhotoTotalAsssetsCount"
+            static let duplicatePhotoCount = "deepCleanDuplicatePhotoTotalAssetsCount"
+            static let screenShotsCount = "deepCleanscreenShotsCount"
+            static let livePhotosSimilarCount = "deepCleanlivePhotosCount"
+            /// video part
+            static let largeVideoCount = "deepCleanlargeVideoCount"
+            static let duplicateVideoCount = "deepCleanduplicateVideoCount"
+            static let similarVideoCount = "deepCleansimilarVideoCount"
+            static let screenRecordingsCount = "deepCleanscreenRecordingsCount"
+            /// contacts part
+            static let allContactsCount = "deepCleanallContactsCount"
+            static let emptyContactsCount = "deepCleanemptyContactsCount"
+            static let duplicateContactsCount = "deepCleanduplicateContactsCount"
         }
     }
     
@@ -91,13 +135,13 @@ class Constants {
         }
         
         struct xibs {
-            /// cell xibs
+            /// `cell xibs`
             static let mediaTypeCell = "MediaTypeCollectionViewCell"
             static let contentTypeCell = "ContentTypeTableViewCell"
             static let photoSimpleCell = "PhotoCollectionViewCell"
             static let dropDownCell = "DropDownMenuTableViewCell"
             static let cleanInfoCell = "DeepCleanInfoTableViewCell"
-            /// views
+            /// `views`
             static let groupHeader = "GroupedAssetsReusableHeaderView"
             static let groupFooter = "GroupedAssetsReusableFooterView"
             

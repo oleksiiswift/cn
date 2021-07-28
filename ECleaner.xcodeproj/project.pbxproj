@@ -36,6 +36,8 @@
 		047DE61926AAA53100733CD5 /* DeepCleanInfoTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 047DE61726AAA53100733CD5 /* DeepCleanInfoTableViewCell.swift */; };
 		047DE61A26AAA53100733CD5 /* DeepCleanInfoTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 047DE61826AAA53100733CD5 /* DeepCleanInfoTableViewCell.xib */; };
 		047DE61C26AAD5F000733CD5 /* DeepCleanManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 047DE61B26AAD5F000733CD5 /* DeepCleanManager.swift */; };
+		048D65C726B13EA3004F0ADC /* DeepCleanNotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 048D65C626B13EA3004F0ADC /* DeepCleanNotificationManager.swift */; };
+		048D65C926B171E5004F0ADC /* PlainProgressview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 048D65C826B171E5004F0ADC /* PlainProgressview.swift */; };
 		049CC215268221D40002F988 /* AdvertisementViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 049CC214268221D40002F988 /* AdvertisementViewController.swift */; };
 		049CC217268221DE0002F988 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 049CC216268221DE0002F988 /* MainViewController.swift */; };
 		049CC219268225500002F988 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 049CC218268225500002F988 /* Colors.swift */; };
@@ -134,6 +136,8 @@
 		047DE61726AAA53100733CD5 /* DeepCleanInfoTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepCleanInfoTableViewCell.swift; sourceTree = "<group>"; };
 		047DE61826AAA53100733CD5 /* DeepCleanInfoTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DeepCleanInfoTableViewCell.xib; sourceTree = "<group>"; };
 		047DE61B26AAD5F000733CD5 /* DeepCleanManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepCleanManager.swift; sourceTree = "<group>"; };
+		048D65C626B13EA3004F0ADC /* DeepCleanNotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepCleanNotificationManager.swift; sourceTree = "<group>"; };
+		048D65C826B171E5004F0ADC /* PlainProgressview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlainProgressview.swift; sourceTree = "<group>"; };
 		049CC214268221D40002F988 /* AdvertisementViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvertisementViewController.swift; sourceTree = "<group>"; };
 		049CC216268221DE0002F988 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		049CC218268225500002F988 /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
@@ -305,6 +309,7 @@
 				047DE61B26AAD5F000733CD5 /* DeepCleanManager.swift */,
 				04E5837B267B3E2A00EDC3A3 /* PhotoManager.swift */,
 				04E5837F267B9F6B00EDC3A3 /* PhassetFetchManager.swift */,
+				048D65C626B13EA3004F0ADC /* DeepCleanNotificationManager.swift */,
 			);
 			path = Photo;
 			sourceTree = "<group>";
@@ -446,6 +451,7 @@
 			isa = PBXGroup;
 			children = (
 				04CFFFEE268479CE000CA850 /* CircleProgressView.swift */,
+				048D65C826B171E5004F0ADC /* PlainProgressview.swift */,
 			);
 			path = UIHelpersViews;
 			sourceTree = "<group>";
@@ -887,6 +893,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				048D65C926B171E5004F0ADC /* PlainProgressview.swift in Sources */,
 				04CACE2026A827CA006489FA /* PhotoOperationQueue.swift in Sources */,
 				0459DF8B26A55F360085EEDF /* CarouselCollectionViewCell.swift in Sources */,
 				97CC2F382683CF740072EF8C /* UpdateContentDataBaseMediator.swift in Sources */,
@@ -899,6 +906,7 @@
 				97FC78A12688E5E8000D7F26 /* PhotoCollectionViewCell.swift in Sources */,
 				0405AA5B269D9BD6004AC07A /* PreviewAVController.swift in Sources */,
 				049CC23426833D320002F988 /* UIView+Radius.swift in Sources */,
+				048D65C726B13EA3004F0ADC /* DeepCleanNotificationManager.swift in Sources */,
 				04E58373267A4A2000EDC3A3 /* UIDevice+Enviroment.swift in Sources */,
 				044281FC2692F95A00B6B47C /* DropDownMenuViewController.swift in Sources */,
 				0459DF9226A56DB20085EEDF /* PhotoPreviewViewController.swift in Sources */,

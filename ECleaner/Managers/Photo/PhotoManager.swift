@@ -29,7 +29,6 @@ class PhassetGroup {
 /// `getSimilarLivePhotos` - load simmilar live photos
 /// `getScreenShots` `getSelfiePhotos` `getLivePhotos` -  fetch photos by type
 
-
     /**
     - parameter isDeepCleanScan in methods used for completion stay in background if `false` completion of methods needs move to main thread
     */
@@ -40,13 +39,14 @@ class PhotoManager: NSObject {
     
     var assetCollection: PHAssetCollection?
     
-//    let operationQueue = AssetsOperationQueue()
+    let operationQueue = FetchingOperationQueue()
     
     static var manager: PhotoManager {
         return self.shared
     }
     
     private var fetchManager = PHAssetFetchManager.shared
+    private var progressNotificationManager = DeepCleanNotificationManager.instance
     
     public override init() {
         super.init()
@@ -68,97 +68,90 @@ class PhotoManager: NSObject {
         }
     }
     
+    
+    public func calculateAssetsDiskSpace() {
+        debugPrint("start calculated file size")
+        self.fetchManager.gitAllCalculatedPhassetsSize { photoSize, videoSize, totalSize in
+            debugPrint("end calculated fils size")
+            S.phassetPhotoFilesSizes = photoSize
+            S.phassetVideoFilesSizes = videoSize
+            S.phassetPhotoVideoSizes = totalSize
+        }
+    }
+    
+    public func calculateLargeVideosCount() {
+        debugPrint("start large")
+        self.getLargevideoContent { assets in
+            debugPrint("done with large videos")
+            UpdateContentDataBaseMediator.instance.getLargeVideosAssets(assets)
+        }
+    }
+    
+    public func calculateRecentlyDeleted() {
+        debugPrint("try fetch recently deleted photos videos")
+        self.getSortedRecentlyDeletedAssets { photos, videos in
+            debugPrint("done with photos and videos")
+        
+            UpdateContentDataBaseMediator.instance.getRecentlyDeletedPhotosAssets(photos)
+            UpdateContentDataBaseMediator.instance.getRecentlyDeletedVideosAssets(videos)
+        }
+    }
+    
+    public func calculateVideoCount() {
+        debugPrint("start video count")
+        self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumVideos, by: PHAssetMediaType.video.rawValue) { assets in
+            U.UI {
+                debugPrint("done with video count")
+                UpdateContentDataBaseMediator.instance.updateVideos(assets.count, calculatedSpace: 0)
+            }
+        }
+    }
+    
+    public func calculatePhotoCount() {
+        debugPrint("start photo count")
+        self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumUserLibrary, by: PHAssetMediaType.image.rawValue) { assets in
+            U.UI {
+                debugPrint("done with gallery count")
+                UpdateContentDataBaseMediator.instance.updatePhotos(assets.count, calculatedSpace: 0)
+            }
+        }
+    }
+    
+    public func calculateScreenRecordsCout() {
+        debugPrint("start screen records")
+        self.getScreenRecordsVideos { assets in
+            debugPrint("done with screenrecords")
+            UpdateContentDataBaseMediator.instance.getScreenRecordsVideosAssets(assets)
+        }
+    }
+    
+    public func calculateScreenShotsCount() {
+        debugPrint("start get screenshots")
+        self.getScreenShots { assets in
+            debugPrint("done with screenshots")
+            UpdateContentDataBaseMediator.instance.getScreenshots(assets)
+        }
+    }
+    
+    public func calculateLivePhotoCount() {
+        debugPrint("start live photos")
+        self.getLivePhotos { assets in
+            debugPrint("done with livephoto")
+            UpdateContentDataBaseMediator.instance.getLivePhotosAssets(assets)
+        }
+    }
+    
+    public func calculateSelfiesCount() {
+        debugPrint("start selfie")
+        self.getSelfiePhotos { assets in
+            debugPrint("done with selfies")
+            UpdateContentDataBaseMediator.instance.getFrontCameraAssets(assets)
+        }
+    }
+
     private func getPhotoLibrary() {
-        
-        let operationQueue: OperationQueue = {
-
-            let operation = OperationQueue()
-            operation.qualityOfService = .background
-            operation.maxConcurrentOperationCount = 10
-
-            return operation
-        }()
-  
-        operationQueue.addOperation {
-            debugPrint("start calculated file size")
-            self.fetchManager.gitAllCalculatedPhassetsSize { photoSize, videoSize, totalSize in
-                debugPrint("end calculated fils size")
-                S.phassetPhotoFilesSizes = photoSize
-                S.phassetVideoFilesSizes = videoSize
-                S.phassetPhotoVideoSizes = totalSize
-            }
-        }
-        
-        operationQueue.addOperation {
-            debugPrint("start video count")
-            self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumVideos, by: PHAssetMediaType.video.rawValue) { assets in
-                U.UI {
-                    debugPrint("done with video count")
-                    UpdateContentDataBaseMediator.instance.updateVideos(assets.count, calculatedSpace: 0)
-                }
-            }
-        }
-        
-        operationQueue.addOperation {
-            debugPrint("start photo count")
-            self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumUserLibrary, by: PHAssetMediaType.image.rawValue) { assets in
-                U.UI {
-                    debugPrint("done with gallery count")
-                    UpdateContentDataBaseMediator.instance.updatePhotos(assets.count, calculatedSpace: 0)
-                }
-            }
-        }
-        
-        operationQueue.addOperation {
-            debugPrint("start screen records")
-            self.getScreenRecordsVideos { assets in
-                debugPrint("done with screenrecords")
-                UpdateContentDataBaseMediator.instance.getScreenRecordsVideosAssets(assets)
-            }
-        }
-        
-        operationQueue.addOperation {
-            
-            debugPrint("start get screenshots")
-            self.getScreenShots { assets in
-                debugPrint("done with screenshots")
-                UpdateContentDataBaseMediator.instance.getScreenshots(assets)
-            }
-        }
-        
-        operationQueue.addOperation {
-            debugPrint("start live photos")
-            self.getLivePhotos { assets in
-                debugPrint("done with livephoto")
-                UpdateContentDataBaseMediator.instance.getLivePhotosAssets(assets)
-            }
-        }
-        
-        operationQueue.addOperation {
-            debugPrint("start selfie")
-            self.getSelfiePhotos { assets in
-                debugPrint("done with selfies")
-                UpdateContentDataBaseMediator.instance.getFrontCameraAssets(assets)
-            }
-        }
-        
-        operationQueue.addOperation {
-            debugPrint("start large")
-            self.getLargevideoContent { assets in
-                debugPrint("done with large videos")
-                UpdateContentDataBaseMediator.instance.getLargeVideosAssets(assets)
-            }
-        }
-        
-        operationQueue.addOperation {
-            debugPrint("try fetch recently deleted photos videos")
-            
-            self.getSortedRecentlyDeletedAssets { photos, videos in
-                debugPrint("done with photos and videos")
-            
-                UpdateContentDataBaseMediator.instance.getRecentlyDeletedPhotosAssets(photos)
-                UpdateContentDataBaseMediator.instance.getRecentlyDeletedVideosAssets(videos)
-            }
+        U.delay(1) {
+//            self.operationQueue.start()
         }
     }
     
@@ -222,20 +215,19 @@ extension PhotoManager {
             
             U.BG {
                 if photosInGallery.count != 0 {
-
+                    
                     for index in 1...photosInGallery.count {
                         debugPrint("index preocessing duplicate")
                         debugPrint("index \(index)")
                         
                         /// adding notification to handle progress similar photos processing
+                        self.progressNotificationManager.sendDeepProgressNotificatin(notificationType: .similarPhoto,
+                                                                                     totalProgressItems: photosInGallery.count,
+                                                                                     currentProgressItem: index)
                         
-                        let info = [C.key.notificationDictionary.deepCleanSimilarPhotoPrecessingIndex: index,
-                                    C.key.notificationDictionary.deepCleanSimilarPhotoTotalAsssetsCount: photosInGallery.count]
-                        U.notificationCenter.post(name: .deepCleanSimilarPhotoPhassetScan, object: nil, userInfo: info)
-                  
-                    similarPhotos.append((asset: photosInGallery[index - 1],
-                                          date: Int64(photosInGallery[index - 1].creationDate!.timeIntervalSince1970),
-                                          imageSize: fileSizeCheck ? photosInGallery[index - 1].imageSize : 0))
+                        similarPhotos.append((asset: photosInGallery[index - 1],
+                                              date: Int64(photosInGallery[index - 1].creationDate!.timeIntervalSince1970),
+                                              imageSize: fileSizeCheck ? photosInGallery[index - 1].imageSize : 0))
                     }
                     
                     similarPhotos.sort { similarPhotoNumberOne, similarPhotoNumberTwo in
@@ -304,10 +296,11 @@ extension PhotoManager {
                     for photoPos in 1...photoGallery.count {
                         debugPrint("loading duplicate")
                         debugPrint("photoposition \(photoPos)")
-                        let info = [C.key.notificationDictionary.deepCleanDuplicatePhotoTotalAssetsCount: photoGallery.count,
-                                    C.key.notificationDictionary.deepCleanDuplicatePhotoProcessingIndex: photoPos]
                         
-                        U.notificationCenter.post(name: .deepCleanDuplicatedPhotoPhassetScan, object: nil, userInfo: info)
+                        /// adding notification to handle progress similar photos processing
+                        self.progressNotificationManager.sendDeepProgressNotificatin(notificationType: .duplicatePhoto,
+                                                                                     totalProgressItems: photoGallery.count,
+                                                                                     currentProgressItem: photoPos)
                         
                         let image = self.fetchManager.getThumbnail(from: photoGallery[photoPos - 1], size: CGSize(width: 150, height: 150))
                         if let data = image.jpegData(compressionQuality: 0.8) {
@@ -346,6 +339,11 @@ extension PhotoManager {
                 if livePhotoGallery.count != 0 {
                     for livePosition in 1...livePhotoGallery.count {
                         debugPrint("live photo position", livePosition)
+                        
+                        self.progressNotificationManager.sendDeepProgressNotificatin(notificationType: .livePhoto,
+                                                                                     totalProgressItems: livePhotoGallery.count,
+                                                                                     currentProgressItem: livePosition)
+                        
                         let image = self.fetchManager.getThumbnail(from: livePhotoGallery[livePosition - 1], size: CGSize(width: 150, height: 150))
                         if let data = image.jpegData(compressionQuality: 0.8) {
                             let tuple = OSTuple<NSString, NSData>(first: "image\(livePosition)" as NSString, andSecond: data as NSData)
@@ -536,6 +534,10 @@ extension PhotoManager {
                 
                 for screensPos in 1...screensShotsLibrary.count {
                     screens.append(screensShotsLibrary[screensPos - 1])
+                    
+                    self.progressNotificationManager.sendDeepProgressNotificatin(notificationType: .screenshots,
+                                                                                 totalProgressItems: screensShotsLibrary.count,
+                                                                                 currentProgressItem: screensPos)
                 }
                 
                 if !isDeepCleanScan {
@@ -572,9 +574,15 @@ extension PhotoManager {
                 }
                 
                 for videosPosition in 1...videoContent.count {
+                    #warning("TODO: set videos sizes smaller")
+                    debugPrint("large video processing at index: ", videosPosition)
                     if videoContent[videosPosition - 1].imageSize > 15000000 { //550000000 
                         videos.append(videoContent[videosPosition - 1])
                     }
+                    
+                    self.progressNotificationManager.sendDeepProgressNotificatin(notificationType: .largeVideo,
+                                                                                 totalProgressItems: videoContent.count,
+                                                                                 currentProgressItem: videosPosition)
                 }
                 if !isDeepCleanScan {
                     U.UI {
@@ -699,11 +707,16 @@ extension PhotoManager {
                 
                 for videosPosition in 1...videoAssets.count {
                     let asset = videoAssets[videosPosition - 1]
+                        
                     if let assetResource = PHAssetResource.assetResources(for: asset).first {
                         if assetResource.originalFilename.contains("RPReplay") {
                             screenRecords.append(asset)
                         }
                     }
+                    
+                    self.progressNotificationManager.sendDeepProgressNotificatin(notificationType: .screenRecordings,
+                                                                                 totalProgressItems: videosPosition,
+                                                                                 currentProgressItem: videoAssets.count)
                 }
                 
                 if !isDeepCleanScan {
@@ -729,6 +742,11 @@ extension PhotoManager {
             U.BG {
                 if videoCollection.count != 0 {
                     for index in 1...videoCollection.count {
+                        
+                        self.progressNotificationManager.sendDeepProgressNotificatin(notificationType: .screenRecordings,
+                                                                                     totalProgressItems: videoCollection.count,
+                                                                                     currentProgressItem: index)
+                        
                         let image = self.fetchManager.getThumbnail(from: videoCollection[index - 1], size: CGSize(width: 150, height: 150))
                         if let data = image.jpegData(compressionQuality: 0.8) {
                             let imageTuple = OSTuple<NSString, NSData>(first: "image\(index)" as NSString, andSecond: data as NSData)
@@ -901,6 +919,7 @@ class FindDuplicatesUsingThumbnail {
     
         var assetToGroupIndex = [PHAsset: Int]()
         for pair in similarImageIdsAsTuples {
+            
             let assetIndex1 = Int(pair.first! as String)!
             let assetIndex2 = Int(pair.second! as String)!
             let asset1 = assets[assetIndex1]

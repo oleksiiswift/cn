@@ -20,6 +20,10 @@ class ContentTypeTableViewCell: UITableViewCell {
     @IBOutlet weak var contentSubtitleTextLabel: UILabel!
     @IBOutlet weak var selectedContainerWidthConstraint: NSLayoutConstraint!
     
+    var tempAddTextLabel = UILabel()
+    
+    @IBOutlet weak var horizontalProgressView: PlainHorizontalProgressBar!
+    
     override func prepareForReuse() {
         super.prepareForReuse()
         
@@ -33,6 +37,14 @@ class ContentTypeTableViewCell: UITableViewCell {
         
         setupCellUI()
         updateColors()
+        
+        addSubview(tempAddTextLabel)
+        tempAddTextLabel.translatesAutoresizingMaskIntoConstraints = false
+        tempAddTextLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
+        tempAddTextLabel.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
+        tempAddTextLabel.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        tempAddTextLabel.widthAnchor.constraint(equalToConstant: 100).isActive = true
+        
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -69,6 +81,12 @@ extension ContentTypeTableViewCell {
         selectedAssetsContainerView.isHidden = false
         selectedContainerWidthConstraint.constant = 36
         selectedAssetsImageView.image = isSelected ? I.systemElementsItems.circleBox : I.systemElementsItems.circleCheckBox
+    }
+    
+    public func setPersent(progress: CGFloat, title: String) {
+        
+        tempAddTextLabel.text = title
+        horizontalProgressView.progress = progress
     }
 }
 
