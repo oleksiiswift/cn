@@ -16,6 +16,8 @@
 		044282012693034600B6B47C /* DropDownMenuTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 044281FF2693034600B6B47C /* DropDownMenuTableViewCell.swift */; };
 		044282022693034600B6B47C /* DropDownMenuTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 044282002693034600B6B47C /* DropDownMenuTableViewCell.xib */; };
 		04428204269313AD00B6B47C /* DropDownMenuItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04428203269313AD00B6B47C /* DropDownMenuItems.swift */; };
+		0447A68926B2A1E20074919B /* ConcurentPhotoProcessOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0447A68826B2A1E20074919B /* ConcurentPhotoProcessOperation.swift */; };
+		0447A68B26B2A3C30074919B /* OperationPhotoProcessingQueuer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0447A68A26B2A3C30074919B /* OperationPhotoProcessingQueuer.swift */; };
 		0459DF8B26A55F360085EEDF /* CarouselCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0459DF8A26A55F360085EEDF /* CarouselCollectionViewCell.swift */; };
 		0459DF9226A56DB20085EEDF /* PhotoPreviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0459DF9026A56DB20085EEDF /* PhotoPreviewViewController.swift */; };
 		0459DF9326A56DB20085EEDF /* CarouselItemView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0459DF9126A56DB20085EEDF /* CarouselItemView.xib */; };
@@ -116,6 +118,8 @@
 		044281FF2693034600B6B47C /* DropDownMenuTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropDownMenuTableViewCell.swift; sourceTree = "<group>"; };
 		044282002693034600B6B47C /* DropDownMenuTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DropDownMenuTableViewCell.xib; sourceTree = "<group>"; };
 		04428203269313AD00B6B47C /* DropDownMenuItems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropDownMenuItems.swift; sourceTree = "<group>"; };
+		0447A68826B2A1E20074919B /* ConcurentPhotoProcessOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConcurentPhotoProcessOperation.swift; sourceTree = "<group>"; };
+		0447A68A26B2A3C30074919B /* OperationPhotoProcessingQueuer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperationPhotoProcessingQueuer.swift; sourceTree = "<group>"; };
 		0459DF8A26A55F360085EEDF /* CarouselCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarouselCollectionViewCell.swift; sourceTree = "<group>"; };
 		0459DF9026A56DB20085EEDF /* PhotoPreviewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoPreviewViewController.swift; sourceTree = "<group>"; };
 		0459DF9126A56DB20085EEDF /* CarouselItemView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CarouselItemView.xib; sourceTree = "<group>"; };
@@ -228,6 +232,16 @@
 				040E288726A98B0F0019F372 /* DeepCleaningViewController.swift */,
 			);
 			path = DeepClean;
+			sourceTree = "<group>";
+		};
+		0447A68C26B2A9170074919B /* Operation */ = {
+			isa = PBXGroup;
+			children = (
+				04CACE1F26A827CA006489FA /* PhotoOperationQueue.swift */,
+				0447A68826B2A1E20074919B /* ConcurentPhotoProcessOperation.swift */,
+				0447A68A26B2A3C30074919B /* OperationPhotoProcessingQueuer.swift */,
+			);
+			path = Operation;
 			sourceTree = "<group>";
 		};
 		0459DF9626A57A8D0085EEDF /* Controllers */ = {
@@ -541,7 +555,7 @@
 		04E5835E267A3E7D00EDC3A3 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
-				04CACE1F26A827CA006489FA /* PhotoOperationQueue.swift */,
+				0447A68C26B2A9170074919B /* Operation */,
 				049CC22726831D480002F988 /* Utilites */,
 				049CC22826831D540002F988 /* Constants */,
 				049CC2382683730E0002F988 /* FlowLayout */,
@@ -906,6 +920,7 @@
 				97FC78A12688E5E8000D7F26 /* PhotoCollectionViewCell.swift in Sources */,
 				0405AA5B269D9BD6004AC07A /* PreviewAVController.swift in Sources */,
 				049CC23426833D320002F988 /* UIView+Radius.swift in Sources */,
+				0447A68B26B2A3C30074919B /* OperationPhotoProcessingQueuer.swift in Sources */,
 				048D65C726B13EA3004F0ADC /* DeepCleanNotificationManager.swift in Sources */,
 				04E58373267A4A2000EDC3A3 /* UIDevice+Enviroment.swift in Sources */,
 				044281FC2692F95A00B6B47C /* DropDownMenuViewController.swift in Sources */,
@@ -943,6 +958,7 @@
 				049CC22F268337310002F988 /* MediaTypeCollectionViewCell.swift in Sources */,
 				049CC21D268225F80002F988 /* ThemeManager.swift in Sources */,
 				04428204269313AD00B6B47C /* DropDownMenuItems.swift in Sources */,
+				0447A68926B2A1E20074919B /* ConcurentPhotoProcessOperation.swift in Sources */,
 				0459DF9926A6C5E50085EEDF /* celBlock51area.swift in Sources */,
 				97238A0D2689EDFF00C523DC /* CustomActivityIndicator.swift in Sources */,
 				04649B24268B2F3900336FE4 /* UpdatingChangesInOpenedScreensListeners.swift in Sources */,

@@ -40,7 +40,7 @@ class ContentTypeTableViewCell: UITableViewCell {
         
         addSubview(tempAddTextLabel)
         tempAddTextLabel.translatesAutoresizingMaskIntoConstraints = false
-        tempAddTextLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
+        tempAddTextLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor, constant: 100).isActive = true
         tempAddTextLabel.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
         tempAddTextLabel.heightAnchor.constraint(equalToConstant: 50).isActive = true
         tempAddTextLabel.widthAnchor.constraint(equalToConstant: 100).isActive = true
@@ -86,7 +86,7 @@ extension ContentTypeTableViewCell {
     public func setPersent(progress: CGFloat, title: String) {
         
         tempAddTextLabel.text = title
-        horizontalProgressView.progress = progress
+        horizontalProgressView.progress = progress / 100
     }
 }
 
@@ -108,5 +108,7 @@ extension ContentTypeTableViewCell: Themeble {
         contentSubtitleTextLabel.textColor = currentTheme.subTitleTextColor
         rightArrowImageView.tintColor = currentTheme.tintColor
         selectedAssetsImageView.tintColor = currentTheme.tintColor
+        
+        horizontalProgressView.alpha = 0.2
     }
 }

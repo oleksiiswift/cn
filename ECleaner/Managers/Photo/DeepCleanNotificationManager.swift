@@ -37,7 +37,7 @@ enum DeepCleanNotificationType {
             case .largeVideo:
                 return C.key.notificationDictionary.largeVideoCount
             case .duplicateVideo:
-                return C.key.notificationDictionary.duplicatePhotoCount
+                return C.key.notificationDictionary.duplicateVideoCount
             case .similarVideo:
                 return C.key.notificationDictionary.similarVideoCount
             case .screenRecordings:
@@ -121,7 +121,6 @@ class DeepCleanNotificationManager {
         
         let infoDictionary = [notificationType.dictionaryIndexName: currentProgressItem,
                               notificationType.dictionaryCountName: totalProgressItems]
-        
         NotificationCenter.default.post(name: notificationType.notificationName, object: nil, userInfo: infoDictionary)
     }
 }

@@ -45,17 +45,17 @@ class Constants {
             static let mediaSpaceNotificationName = "mediaSpaceDidChange"
             
             /// `deep clean update progress notification name`
-            static let deepCleanSimilarPhotoPhassetScan = "deepCleanSimilarPhotoPhassetScant"
+            static let deepCleanSimilarPhotoPhassetScan = "deepCleanSimilarPhotoPhassetScan"
             static let deepCleanDuplicatedPhotoPhassetScan = "deepCleanDuplicatedPhotoPhassetScan"
-            static let deepCleanScreenShotsPhotoPhassetScan = "deepCleanScreenShotsPhotoPhassetScan"
-            static let deepCleanSimilarLivePhotosPhassetScan = "deepCleanSimilarLivePhotosPhassetScan"
+            static let deepCleanScreenShotsPhotoPhassetScan = "deepCleanScreenShotsPhassetScan"
+            static let deepCleanSimilarLivePhotosPhassetScan = "deepCleanSimilarLivePhotosPhaassetScan"
             static let deepCleanLargeVideoPhassetScan = "deepCleanLargeVideoPhassetScan"
             static let deepCleanDuplicateVideoPhassetScan = "deepCleanDuplicateVideoPhassetScan"
             static let deepCleanSimilarVideoPhassetScan = "deepCleanSimilarVideoPhassetScan"
-            static let deepCleanScreenRecordingsPhassetScan = "deepCleanScreenRecordingsPhassetScan"
+            static let deepCleanScreenRecordingsPhassetScan = "deepCleanScreenRecordingsPhassetScant"
             static let deepCleanAllContactsScan = "deepCleanAllContactsScan"
             static let deepCleanEmptyContactsScan = "deepCleanEmptyContactsScan"
-            static let deepCleanDuplicateContacts = "deepCleanDuplicate"
+            static let deepCleanDuplicateContacts = "deepCleanDuplicatedContactsScan"
         }
         
 //        MARK: - notification dictionary progress identifiers -

@@ -35,11 +35,16 @@ class PhassetGroup {
 
 class PhotoManager: NSObject {
     
+    enum Strictness {
+        case similar
+        case closeToIdentical
+    }
+    
     private static let shared = PhotoManager()
     
     var assetCollection: PHAssetCollection?
     
-    let operationQueue = FetchingOperationQueue()
+    let operationConcurrentQueue = OperationPhotoProcessingQueuer(name: "photoGrabber", maxConcurrentOperationCount: 4, qualityOfService: .default)
     
     static var manager: PhotoManager {
         return self.shared
@@ -150,9 +155,52 @@ class PhotoManager: NSObject {
     }
 
     private func getPhotoLibrary() {
-        U.delay(1) {
-//            self.operationQueue.start()
+        
+        let concurrentOperationFirst = ConcurrentPhotoProcessOperation { _ in
+            self.calculateAssetsDiskSpace()
         }
+        
+        let concurrentOperationSecond = ConcurrentPhotoProcessOperation { _ in
+            self.calculateLargeVideosCount()
+        }
+        
+        let concurrentOperationThird = ConcurrentPhotoProcessOperation { _ in
+            self.calculateRecentlyDeleted()
+        }
+        
+        let concurrentOperationFourth = ConcurrentPhotoProcessOperation { _ in
+            self.calculateVideoCount()
+        }
+        
+        let concurrentOperationFifth = ConcurrentPhotoProcessOperation { _ in
+            self.calculatePhotoCount()
+        }
+        
+        let concurrentOperationSixth = ConcurrentPhotoProcessOperation { _ in
+            self.calculateScreenRecordsCout()
+        }
+        
+        let concurrentOperationSeventh = ConcurrentPhotoProcessOperation { _ in
+            self.calculateScreenShotsCount()
+        }
+        
+        let concurrentOperationEighth = ConcurrentPhotoProcessOperation { _ in
+            self.calculateLivePhotoCount()
+        }
+        
+        let concurrentOperationNinth = ConcurrentPhotoProcessOperation { _ in
+            self.calculateSelfiesCount()
+        }
+        
+        operationConcurrentQueue.addOperation(concurrentOperationFirst)
+        operationConcurrentQueue.addOperation(concurrentOperationSecond)
+        operationConcurrentQueue.addOperation(concurrentOperationThird)
+        operationConcurrentQueue.addOperation(concurrentOperationFourth)
+        operationConcurrentQueue.addOperation(concurrentOperationFifth)
+        operationConcurrentQueue.addOperation(concurrentOperationSixth)
+        operationConcurrentQueue.addOperation(concurrentOperationSeventh)
+        operationConcurrentQueue.addOperation(concurrentOperationEighth)
+        operationConcurrentQueue.addOperation(concurrentOperationNinth)
     }
     
 //    MARK: - authentification
@@ -221,9 +269,11 @@ extension PhotoManager {
                         debugPrint("index \(index)")
                         
                         /// adding notification to handle progress similar photos processing
-                        self.progressNotificationManager.sendDeepProgressNotificatin(notificationType: .similarPhoto,
-                                                                                     totalProgressItems: photosInGallery.count,
-                                                                                     currentProgressItem: index)
+                        if isDeepCleanScan {
+                            self.progressNotificationManager.sendDeepProgressNotificatin(notificationType: .similarPhoto,
+                                                                                         totalProgressItems: photosInGallery.count,
+                                                                                         currentProgressItem: index)
+                        }
                         
                         similarPhotos.append((asset: photosInGallery[index - 1],
                                               date: Int64(photosInGallery[index - 1].creationDate!.timeIntervalSince1970),
@@ -298,9 +348,11 @@ extension PhotoManager {
                         debugPrint("photoposition \(photoPos)")
                         
                         /// adding notification to handle progress similar photos processing
-                        self.progressNotificationManager.sendDeepProgressNotificatin(notificationType: .duplicatePhoto,
+                        if isDeepCleanScan {
+                            self.progressNotificationManager.sendDeepProgressNotificatin(notificationType: .duplicatePhoto,
                                                                                      totalProgressItems: photoGallery.count,
                                                                                      currentProgressItem: photoPos)
+                        }
                         
                         let image = self.fetchManager.getThumbnail(from: photoGallery[photoPos - 1], size: CGSize(width: 150, height: 150))
                         if let data = image.jpegData(compressionQuality: 0.8) {
@@ -340,9 +392,11 @@ extension PhotoManager {
                     for livePosition in 1...livePhotoGallery.count {
                         debugPrint("live photo position", livePosition)
                         
-                        self.progressNotificationManager.sendDeepProgressNotificatin(notificationType: .livePhoto,
+                        if isDeepCleanScan {
+                            self.progressNotificationManager.sendDeepProgressNotificatin(notificationType: .livePhoto,
                                                                                      totalProgressItems: livePhotoGallery.count,
                                                                                      currentProgressItem: livePosition)
+                        }
                         
                         let image = self.fetchManager.getThumbnail(from: livePhotoGallery[livePosition - 1], size: CGSize(width: 150, height: 150))
                         if let data = image.jpegData(compressionQuality: 0.8) {
@@ -534,10 +588,12 @@ extension PhotoManager {
                 
                 for screensPos in 1...screensShotsLibrary.count {
                     screens.append(screensShotsLibrary[screensPos - 1])
-                    
-                    self.progressNotificationManager.sendDeepProgressNotificatin(notificationType: .screenshots,
+                    if isDeepCleanScan {
+                        debugPrint("screen shots index -> ", screensPos)
+                        self.progressNotificationManager.sendDeepProgressNotificatin(notificationType: .screenshots,
                                                                                  totalProgressItems: screensShotsLibrary.count,
                                                                                  currentProgressItem: screensPos)
+                    }
                 }
                 
                 if !isDeepCleanScan {
@@ -580,9 +636,11 @@ extension PhotoManager {
                         videos.append(videoContent[videosPosition - 1])
                     }
                     
-                    self.progressNotificationManager.sendDeepProgressNotificatin(notificationType: .largeVideo,
+                    if isDeepCleanScan {
+                        self.progressNotificationManager.sendDeepProgressNotificatin(notificationType: .largeVideo,
                                                                                  totalProgressItems: videoContent.count,
                                                                                  currentProgressItem: videosPosition)
+                    }
                 }
                 if !isDeepCleanScan {
                     U.UI {
@@ -618,13 +676,14 @@ extension PhotoManager {
                     assets.append(asset)
                 }
                 
-                let z = FindDuplicatesUsingThumbnail.findDupes(assets: assets, strictness: .closeToIdentical)
+                let similarVideoPhassetGroup = self.findDupes(assets: assets, strictness: .similar, isDeepCleanScan: isDeepCleanScan)
+                
                 if !isDeepCleanScan {
                     U.UI {
-                        completionHandler(z)
+                        completionHandler(similarVideoPhassetGroup)
                     }
                 } else {
-                    completionHandler(z)
+                    completionHandler(similarVideoPhassetGroup)
                 }
             }
         }
@@ -714,9 +773,11 @@ extension PhotoManager {
                         }
                     }
                     
-                    self.progressNotificationManager.sendDeepProgressNotificatin(notificationType: .screenRecordings,
-                                                                                 totalProgressItems: videosPosition,
-                                                                                 currentProgressItem: videoAssets.count)
+                    if isDeepCleanScan {
+                        self.progressNotificationManager.sendDeepProgressNotificatin(notificationType: .screenRecordings,
+                                                                                     totalProgressItems: videoAssets.count,
+                                                                                     currentProgressItem: videosPosition)
+                    }
                 }
                 
                 if !isDeepCleanScan {
@@ -743,9 +804,11 @@ extension PhotoManager {
                 if videoCollection.count != 0 {
                     for index in 1...videoCollection.count {
                         
-                        self.progressNotificationManager.sendDeepProgressNotificatin(notificationType: .screenRecordings,
+                        if isDeepCleanScan {
+                            self.progressNotificationManager.sendDeepProgressNotificatin(notificationType: .duplicateVideo,
                                                                                      totalProgressItems: videoCollection.count,
                                                                                      currentProgressItem: index)
+                        }
                         
                         let image = self.fetchManager.getThumbnail(from: videoCollection[index - 1], size: CGSize(width: 150, height: 150))
                         if let data = image.jpegData(compressionQuality: 0.8) {
@@ -837,6 +900,71 @@ extension PhotoManager {
             }
         }
     }
+    
+    /// similar close to identical videos algoritm
+    public func findDupes(assets: [PHAsset], strictness: Strictness, isDeepCleanScan: Bool) -> [PhassetGroup] {
+        
+        var phassetGroup: [PhassetGroup] = []
+        
+        let rawTuples: [OSTuple<NSString, NSData>] = assets.enumerated().map { (index, asset) -> OSTuple<NSString, NSData> in
+            let imageData = asset.thumbnailSync?.pngData()
+            return OSTuple<NSString, NSData>.init(first: "\(index)" as NSString, andSecond: imageData as NSData?)
+        }
+        
+        let toCheckTuples = rawTuples.filter({ $0.second != nil })
+        
+        let providerId = OSImageHashingProviderIdForHashingQuality(.medium)
+        let provider = OSImageHashingProviderFromImageHashingProviderId(providerId);
+        let defaultHashDistanceTreshold = provider.hashDistanceSimilarityThreshold()
+        let hashDistanceTreshold: Int64
+        
+        switch strictness {
+            case .similar:
+                hashDistanceTreshold = defaultHashDistanceTreshold
+            case .closeToIdentical:
+                hashDistanceTreshold = 1
+        }
+        
+        let similarImageIdsAsTuples = OSImageHashing.sharedInstance().similarImages(withProvider: providerId, withHashDistanceThreshold: hashDistanceTreshold, forImages: toCheckTuples)
+        
+        var assetToGroupIndex = [PHAsset: Int]()
+        
+        var notificationStarterIndex = 1
+        
+        for pair in similarImageIdsAsTuples {
+            
+            
+            
+            if isDeepCleanScan {
+                self.progressNotificationManager.sendDeepProgressNotificatin(notificationType: .similarVideo,
+                                                                             totalProgressItems: notificationStarterIndex,
+                                                                             currentProgressItem: similarImageIdsAsTuples.count)
+                notificationStarterIndex += 1
+            }
+            
+            let assetIndex1 = Int(pair.first! as String)!
+            let assetIndex2 = Int(pair.second! as String)!
+            let asset1 = assets[assetIndex1]
+            let asset2 = assets[assetIndex2]
+            let groupIndex1 = assetToGroupIndex[asset1]
+            let groupIndex2 = assetToGroupIndex[asset2]
+            if groupIndex1 == nil && groupIndex2 == nil {
+                
+                let group = PhassetGroup.init(name: "", assets: [asset1, asset2])
+                phassetGroup.append(group)
+                let groupIndex = phassetGroup.count - 1
+                assetToGroupIndex[asset1] = groupIndex
+                assetToGroupIndex[asset2] = groupIndex
+            } else if groupIndex1 == nil && groupIndex2 != nil {
+                phassetGroup[groupIndex2!].assets.append(asset1)
+                assetToGroupIndex[asset1] = groupIndex2!
+            } else if groupIndex1 != nil && groupIndex2 == nil {
+                phassetGroup[groupIndex1!].assets.append(asset2)
+                assetToGroupIndex[asset2] = groupIndex1!
+            }
+        }
+        return phassetGroup
+    }
 }
 
 //      MARK: - delete selected assets -
@@ -883,65 +1011,6 @@ extension PhotoManager: PHPhotoLibraryChangeObserver {
             UpdatingChangesInOpenedScreensMediator.instance.updatingChangedScreenShots()
             UpdatingChangesInOpenedScreensMediator.instance.updatingChangedSelfies()
         }
-    }
-}
-
-//      MARK:  find duplicates close to similar
-class FindDuplicatesUsingThumbnail {
-    
-    enum Strictness {
-        case similar
-        case closeToIdentical
-    }
-    
-    public class func findDupes(assets: [PHAsset], strictness: Strictness) -> [PhassetGroup] {
-        
-        var phassetGroup: [PhassetGroup] = []
-        
-        let rawTuples: [OSTuple<NSString, NSData>] = assets.enumerated().map { (index, asset) -> OSTuple<NSString, NSData> in
-            let imageData = asset.thumbnailSync?.pngData()
-            
-            return OSTuple<NSString, NSData>.init(first: "\(index)" as NSString, andSecond: imageData as NSData?)
-        }
-        
-        let toCheckTuples = rawTuples.filter({ $0.second != nil })
-        
-        let providerId = OSImageHashingProviderIdForHashingQuality(.medium)
-        let provider = OSImageHashingProviderFromImageHashingProviderId(providerId);
-        let defaultHashDistanceTreshold = provider.hashDistanceSimilarityThreshold()
-        let hashDistanceTreshold: Int64
-        switch strictness {
-            case .similar: hashDistanceTreshold = defaultHashDistanceTreshold
-            case .closeToIdentical: hashDistanceTreshold = 1
-        }
-        
-        let similarImageIdsAsTuples = OSImageHashing.sharedInstance().similarImages(withProvider: providerId, withHashDistanceThreshold: hashDistanceTreshold, forImages: toCheckTuples)
-    
-        var assetToGroupIndex = [PHAsset: Int]()
-        for pair in similarImageIdsAsTuples {
-            
-            let assetIndex1 = Int(pair.first! as String)!
-            let assetIndex2 = Int(pair.second! as String)!
-            let asset1 = assets[assetIndex1]
-            let asset2 = assets[assetIndex2]
-            let groupIndex1 = assetToGroupIndex[asset1]
-            let groupIndex2 = assetToGroupIndex[asset2]
-            if groupIndex1 == nil && groupIndex2 == nil {
-                
-                let group = PhassetGroup.init(name: "", assets: [asset1, asset2])
-                phassetGroup.append(group)
-                let groupIndex = phassetGroup.count - 1
-                assetToGroupIndex[asset1] = groupIndex
-                assetToGroupIndex[asset2] = groupIndex
-            } else if groupIndex1 == nil && groupIndex2 != nil {
-                phassetGroup[groupIndex2!].assets.append(asset1)
-                assetToGroupIndex[asset1] = groupIndex2!
-            } else if groupIndex1 != nil && groupIndex2 == nil {
-                phassetGroup[groupIndex1!].assets.append(asset2)
-                assetToGroupIndex[asset2] = groupIndex1!
-            }
-        }
-        return phassetGroup
     }
 }
 

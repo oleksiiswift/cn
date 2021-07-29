@@ -24,23 +24,15 @@ class DeepCleanManager {
                                        screenRecordings: @escaping ([PHAsset]) -> Void,
                                        completionHandler: @escaping () -> Void) {
         
-        let fetchingPhassetQueue: OperationQueue = {
-            let operation = OperationQueue()
-            operation.qualityOfService = .userInitiated
-            operation.maxConcurrentOperationCount = 10
-            return operation
-        }()
-
         var totalResultCount = 0
     
         handler(optionMediaType)
         
-        fetchingPhassetQueue.addOperation {
-            debugPrint("start simmilar photos")
+//        MARK: - similar video -
+        let similarLivePhotoFetchOperation = ConcurrentPhotoProcessOperation { _ in
+            debugPrint("start simmilar live photos")
             self.photoManager.getSimilarLivePhotos(from: startingFetchingDate, to: endingFetchingDate, isDeepCleanScan: true) { assetsGroup in
-
                 similarLivePhotos(assetsGroup)
-
                 totalResultCount += 1
                 if totalResultCount == 8 {
                     completionHandler()
@@ -48,7 +40,8 @@ class DeepCleanManager {
             }
         }
         
-        fetchingPhassetQueue.addOperation {
+//        MARK: - large video -
+        let largeVideosFetchOperation = ConcurrentPhotoProcessOperation { _ in
             debugPrint("start fetch large videos")
             self.photoManager.getLargevideoContent(from: startingFetchingDate, to: endingFetchingDate, isDeepCleanScan: true) { asset in
                 
@@ -61,7 +54,8 @@ class DeepCleanManager {
             }
         }
         
-        fetchingPhassetQueue.addOperation {
+//        MARK: - screenshots -
+        let screenshotsFetchOperation = ConcurrentPhotoProcessOperation { _ in
             debugPrint("start fetch screenshots")
             self.photoManager.getScreenShots(from: startingFetchingDate, to: endingFetchingDate, isDeepCleanScan: true) { assets in
                 
@@ -74,9 +68,10 @@ class DeepCleanManager {
             }
         }
         
-        fetchingPhassetQueue.addOperation {
+//        MARK: - similar photoassets -
+        let similarPhotoFetchOperation = ConcurrentPhotoProcessOperation { _ in
             debugPrint("start similar photo asssets")
-            self.photoManager.getSimilarPhotosAssets(from: startingFetchingDate, to: endingFetchingDate, fileSizeCheck: false, isDeepCleanScan: true) { assetsGroup in
+            self.photoManager.getSimilarPhotosAssets(from: startingFetchingDate, to: endingFetchingDate, fileSizeCheck: true, isDeepCleanScan: true) { assetsGroup in
                 
                 similarPhoto(assetsGroup)
                 
@@ -87,7 +82,8 @@ class DeepCleanManager {
             }
         }
         
-        fetchingPhassetQueue.addOperation {
+//        MARK: - duplicated photo assets -
+        let duplicatedPhotoFetchOperation = ConcurrentPhotoProcessOperation { _ in
             debugPrint("start dupliacated photo assets")
             self.photoManager.getDuplicatedPhotosAsset(from: startingFetchingDate, to: endingFetchingDate, isDeepCleanScan: true) { assetsGroup in
 
@@ -99,8 +95,9 @@ class DeepCleanManager {
                 }
             }
         }
-            
-        fetchingPhassetQueue.addOperation {
+     
+//        MARK: - similar videos assets -
+        let similarVideoFetchOperation = ConcurrentPhotoProcessOperation { _ in
             debugPrint("start simmilar video assets")
             self.photoManager.getSimilarVideoAssets(from: startingFetchingDate, to: endingFetchingDate, isDeepCleanScan: true) { assetsGroup in
 
@@ -113,7 +110,8 @@ class DeepCleanManager {
             }
         }
         
-        fetchingPhassetQueue.addOperation {
+//        MARK: - duplicated video assets -
+        let duplicatedVideoFetchOperation = ConcurrentPhotoProcessOperation { _ in
             debugPrint("start duplicated video assets")
             self.photoManager.getDuplicatedVideoAsset(from: startingFetchingDate, to: endingFetchingDate, isDeepCleanScan: true) { assetsGroup in
 
@@ -126,7 +124,8 @@ class DeepCleanManager {
             }
         }
         
-        fetchingPhassetQueue.addOperation {
+//        MARK: - screen recordings assets - 
+        let screenRecordingsFethcOperation = ConcurrentPhotoProcessOperation { _ in
             debugPrint("start screen records vidoes")
             self.photoManager.getScreenRecordsVideos(from: startingFetchingDate, to: endingFetchingDate, isDeepCleanScan: true) { assets in
 
@@ -138,5 +137,14 @@ class DeepCleanManager {
                 }
             }
         }
+        
+        photoManager.operationConcurrentQueue.addOperation(duplicatedPhotoFetchOperation)
+        photoManager.operationConcurrentQueue.addOperation(similarPhotoFetchOperation)
+        photoManager.operationConcurrentQueue.addOperation(duplicatedVideoFetchOperation)
+        photoManager.operationConcurrentQueue.addOperation(similarVideoFetchOperation)
+        photoManager.operationConcurrentQueue.addOperation(largeVideosFetchOperation)
+        photoManager.operationConcurrentQueue.addOperation(screenRecordingsFethcOperation)
+        photoManager.operationConcurrentQueue.addOperation(screenshotsFetchOperation)
+        photoManager.operationConcurrentQueue.addOperation(similarLivePhotoFetchOperation)
     }
 }

@@ -15,6 +15,7 @@ class DeepCleaningViewController: UIViewController {
     
     /// managers
     private var deepCleanManager = DeepCleanManager()
+    private var photoManager = PhotoManager()
     
     /// properties
     public var scansOptions: [PhotoMediaType]?
@@ -62,14 +63,11 @@ class DeepCleaningViewController: UIViewController {
         setupTableView()
         checkStartCleaningButtonState(false)
         setupObserversAndDelegate()
-        
     }
     
     override func viewDidAppear(_ animated: Bool) {
     
-        U.delay(5) {
-            self.startDeepCleanScan()
-        }
+        self.startDeepCleanScan()
     }
 }
 
@@ -286,10 +284,11 @@ extension DeepCleaningViewController {
     }
     
     private func recieveNotification(by type: DeepCleanNotificationType, info: [AnyHashable: Any]?) {
+
         guard let userInfo = info,
               let totalProcessingAssetsCount = userInfo[type.dictionaryCountName] as? Int,
               let index = userInfo[type.dictionaryIndexName] as? Int else { return }
-        
+            
         calculateProgressPercentage(total: totalProcessingAssetsCount, current: index) { title, progress in
             U.UI {
                 self.progressUpdate(type, progress: progress, title: title)
@@ -309,7 +308,7 @@ extension DeepCleaningViewController {
             case .screenshots:
                 indexPath = MediaContentType.userPhoto.getIndexPath(for: .singleScreenShots)
             case .livePhoto:
-                indexPath = MediaContentType.userPhoto.getIndexPath(for: .singleLivePhotos)
+                indexPath = MediaContentType.userPhoto.getIndexPath(for: .similarLivePhotos)
             case .largeVideo:
                 indexPath = MediaContentType.userVideo.getIndexPath(for: .singleLargeVideos)
             case .duplicateVideo:
@@ -325,7 +324,8 @@ extension DeepCleaningViewController {
             case .duplicateContacts:
                 indexPath = MediaContentType.userContacts.getIndexPath(for: .duplicatedContacts)
         }
-        debugPrint(indexPath)
+        
+        guard !indexPath.isEmpty else { return }
         guard let cell = tableView.cellForRow(at: indexPath) as? ContentTypeTableViewCell else { return }
         cell.setPersent(progress: progress, title: title)
     }
@@ -437,9 +437,7 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
 
 extension DeepCleaningViewController {
     
-    private func setupUI() {
-        
-    }
+    private func setupUI() {}
     
     private func setupObserversAndDelegate() {
      
