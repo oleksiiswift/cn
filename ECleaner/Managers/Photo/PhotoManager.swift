@@ -191,7 +191,7 @@ class PhotoManager: NSObject {
         let concurrentOperationNinth = ConcurrentPhotoProcessOperation { _ in
             self.calculateSelfiesCount()
         }
-        
+
         operationConcurrentQueue.addOperation(concurrentOperationFirst)
         operationConcurrentQueue.addOperation(concurrentOperationSecond)
         operationConcurrentQueue.addOperation(concurrentOperationThird)
@@ -201,6 +201,7 @@ class PhotoManager: NSObject {
         operationConcurrentQueue.addOperation(concurrentOperationSeventh)
         operationConcurrentQueue.addOperation(concurrentOperationEighth)
         operationConcurrentQueue.addOperation(concurrentOperationNinth)
+        
     }
     
 //    MARK: - authentification
@@ -932,8 +933,6 @@ extension PhotoManager {
         var notificationStarterIndex = 1
         
         for pair in similarImageIdsAsTuples {
-            
-            
             
             if isDeepCleanScan {
                 self.progressNotificationManager.sendDeepProgressNotificatin(notificationType: .similarVideo,

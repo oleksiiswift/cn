@@ -49,8 +49,8 @@ public class OperationPhotoProcessingQueuer {
     }
     
     public func pause() {
-        operationQueue.isSuspended = true
         
+        operationQueue.isSuspended = true
         for operations in operationQueue.operations {
             if let concurrentOperation = operations as? ConcurrentPhotoProcessOperation {
                 concurrentOperation.pause()
@@ -125,7 +125,6 @@ public extension OperationPhotoProcessingQueuer {
     static func state(of queue: OperationQueue) -> QList {
         var operations: QList = []
         
-        
         for operation in queue.operations {
             if let concurrentOperation = operation as? ConcurrentPhotoProcessOperation,
                let operationName = concurrentOperation.name {
@@ -135,7 +134,6 @@ public extension OperationPhotoProcessingQueuer {
         return operations
     }
 }
-
 
 public class OperationState: Codable {
     

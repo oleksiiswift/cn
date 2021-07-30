@@ -143,7 +143,7 @@ extension MediaContentViewController: UITableViewDelegate, UITableViewDataSource
                 return
         }
         
-        cell.cellConfig(contentType: contentType, indexPath: indexPath, phasetCount: assetContentCount)
+        cell.cellConfig(contentType: contentType, indexPath: indexPath, phasetCount: assetContentCount, progress: 0)
     }
         
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -178,8 +178,13 @@ extension MediaContentViewController {
     /// `3` - selfies
     /// `4` - live photos
     /// `5` - recently deleted
-    /// `6` - 
     
+    /// `0` - large video files
+    /// `1` - duplicates
+    /// `2` - similar videos
+    /// `3` - screen records files
+    /// `4` - recently deleted files
+        
     private func showMediaContent(by selectedType: MediaContentType, selected index: Int) {
         
         switch selectedType {
@@ -245,6 +250,7 @@ extension MediaContentViewController {
 
 //      MARK: - photo content -
 extension MediaContentViewController {
+    
     /**
      - parameter
      - parameter

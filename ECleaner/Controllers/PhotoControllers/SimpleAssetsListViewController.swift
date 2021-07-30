@@ -353,5 +353,3 @@ extension SimpleAssetsListViewController: UpdatingChangesInOpenedScreensListener
         }
     }
 }
-
-

@@ -10,11 +10,15 @@ import UIKit
 @IBDesignable
 class PlainHorizontalProgressBar: UIView {
     @IBInspectable var color: UIColor = .gray {
-        didSet { setNeedsDisplay() }
+        didSet {
+            setNeedsDisplay()
+        }
     }
 
     var progress: CGFloat = 0 {
-        didSet { setNeedsDisplay() }
+        didSet {
+            setNeedsDisplay()
+        }
     }
 
     private let progressLayer = CALayer()
@@ -37,6 +41,7 @@ class PlainHorizontalProgressBar: UIView {
     override func draw(_ rect: CGRect) {
         backgroundMask.path = UIBezierPath(roundedRect: rect, cornerRadius: rect.height * 0.25).cgPath
         layer.mask = backgroundMask
+        
 
         let progressRect = CGRect(origin: .zero, size: CGSize(width: rect.width * progress, height: rect.height))
 

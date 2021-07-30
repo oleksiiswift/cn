@@ -60,15 +60,22 @@ extension ContentTypeTableViewCell {
      - `setupCellSelected` use in deep cleaning part for show selected checkmark for clean
     */
     
-    public func cellConfig(contentType: MediaContentType, indexPath: IndexPath, phasetCount: Int, isDeepCleanController: Bool = false) {
+    public func cellConfig(contentType: MediaContentType, indexPath: IndexPath, phasetCount: Int, isDeepCleanController: Bool = false, progress: CGFloat) {
         
         contentTypeTextLabel.text = isDeepCleanController ? contentType.getDeepCellTitle(index: indexPath.row) : contentType.getCellTitle(index: indexPath.row)
+        
+        if progress == 100 {
+            horizontalProgressView.isHidden = true
+            baseView.backgroundColor = currentTheme.sectionBackgroundColor
+        }
+  
+        horizontalProgressView.progress = progress / 100
     
         switch contentType {
             case .userPhoto:
-                contentSubtitleTextLabel.text = phasetCount != 0 ? String("\(phasetCount) files") : ""
+                contentSubtitleTextLabel.text = phasetCount != 0 ? String("\(phasetCount) files") : "0 files"
             case .userVideo:
-                contentSubtitleTextLabel.text = phasetCount != 0 ? String("\(phasetCount) files") : ""
+                contentSubtitleTextLabel.text = phasetCount != 0 ? String("\(phasetCount) files") : "0 files"
             case .userContacts:
                 contentSubtitleTextLabel.text = ""
             case .none:
@@ -83,11 +90,13 @@ extension ContentTypeTableViewCell {
         selectedAssetsImageView.image = isSelected ? I.systemElementsItems.circleBox : I.systemElementsItems.circleCheckBox
     }
     
-    public func setPersent(progress: CGFloat, title: String) {
-        
-        tempAddTextLabel.text = title
-        horizontalProgressView.progress = progress / 100
-    }
+//    public func setPersent(progress: CGFloat, title: String) {
+//
+//        tempAddTextLabel.text = title
+//        UIView.performWithoutAnimation {
+//            self.horizontalProgressView.progress = progress / 100
+//        }
+//    }
 }
 
 extension ContentTypeTableViewCell: Themeble {
@@ -109,6 +118,6 @@ extension ContentTypeTableViewCell: Themeble {
         rightArrowImageView.tintColor = currentTheme.tintColor
         selectedAssetsImageView.tintColor = currentTheme.tintColor
         
-        horizontalProgressView.alpha = 0.2
+        horizontalProgressView.color = currentTheme.sectionBackgroundColor
     }
 }

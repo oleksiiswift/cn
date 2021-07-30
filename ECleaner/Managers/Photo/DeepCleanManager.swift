@@ -11,6 +11,8 @@ import Photos
 class DeepCleanManager {
     
     private var photoManager = PhotoManager.manager
+    
+    let deepCleanOperationQue = OperationPhotoProcessingQueuer(name: "Deep Clean Queuer", maxConcurrentOperationCount: 1, qualityOfService: .default)
         
     public func startDeepCleaningFetch(_ optionMediaType: [PhotoMediaType], startingFetchingDate: String, endingFetchingDate: String,
                                        handler: @escaping ([PhotoMediaType]) -> Void,
@@ -138,13 +140,13 @@ class DeepCleanManager {
             }
         }
         
-        photoManager.operationConcurrentQueue.addOperation(duplicatedPhotoFetchOperation)
-        photoManager.operationConcurrentQueue.addOperation(similarPhotoFetchOperation)
-        photoManager.operationConcurrentQueue.addOperation(duplicatedVideoFetchOperation)
-        photoManager.operationConcurrentQueue.addOperation(similarVideoFetchOperation)
-        photoManager.operationConcurrentQueue.addOperation(largeVideosFetchOperation)
-        photoManager.operationConcurrentQueue.addOperation(screenRecordingsFethcOperation)
-        photoManager.operationConcurrentQueue.addOperation(screenshotsFetchOperation)
-        photoManager.operationConcurrentQueue.addOperation(similarLivePhotoFetchOperation)
+        deepCleanOperationQue.addOperation(duplicatedPhotoFetchOperation)
+        deepCleanOperationQue.addOperation(similarPhotoFetchOperation)
+        deepCleanOperationQue.addOperation(duplicatedVideoFetchOperation)
+        deepCleanOperationQue.addOperation(similarVideoFetchOperation)
+        deepCleanOperationQue.addOperation(largeVideosFetchOperation)
+        deepCleanOperationQue.addOperation(screenRecordingsFethcOperation)
+        deepCleanOperationQue.addOperation(screenshotsFetchOperation)
+        deepCleanOperationQue.addOperation(similarLivePhotoFetchOperation)
     }
 }
