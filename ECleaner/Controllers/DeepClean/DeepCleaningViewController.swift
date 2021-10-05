@@ -13,6 +13,16 @@ class DeepCleaningViewController: UIViewController {
 
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var bottomContainerHeightConstraint: NSLayoutConstraint!
+    @IBOutlet weak var topInfoContainerView: UIView!
+    
+    @IBOutlet weak var progressContainerView: UIView!
+    @IBOutlet weak var totalMemoryCheckContainerView: UIView!
+    
+    @IBOutlet weak var checketFilesTextLabel: UILabel!
+    
+    @IBOutlet weak var totalCheckFilesCountTextLabel: UILabel!
+    @IBOutlet weak var totalSpaceCheckTextLabel: UILabel!
+    
     
     lazy var backBarButtonItem = UIBarButtonItem(image: I.navigationItems.leftShevronBack, style: .plain, target: self, action: #selector(didTapBackButton))
     /// managers
@@ -82,7 +92,9 @@ class DeepCleaningViewController: UIViewController {
         setupNavigation()
         setupTableView()
         checkStartCleaningButtonState(false)
+        setupTotalFilesTitleChecked(0)
         setupObserversAndDelegate()
+        
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -274,6 +286,10 @@ extension DeepCleaningViewController {
                 debugPrint("view for title")
         }
     }
+    
+    private func calculateTotalFilesCalculateCount() {
+        
+    }
 }
 
 extension DeepCleaningViewController {
@@ -367,6 +383,7 @@ extension DeepCleaningViewController {
         }
         
         guard !indexPath.isEmpty else { return }
+        
         guard let cell = tableView.cellForRow(at: indexPath) as? ContentTypeTableViewCell else { return }
         self.configure(cell, at: indexPath)
     }
@@ -404,24 +421,29 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
                                         phasetCount: self.similarPhotosCount,
                                         isDeepCleanController: true,
                                         progress: self.currentProgressSimilarPhoto)
+                                        
                     case 1:
                         cell.cellConfig(contentType: .userPhoto,
                                         indexPath: indexPath,
                                         phasetCount: self.duplicatedPhotosCount,
                                         isDeepCleanController: true,
                                         progress: self.currentProgressDuplicatedPhoto)
+                                        
                     case 2:
                         cell.cellConfig(contentType: .userPhoto,
                                         indexPath: indexPath,
                                         phasetCount: self.screenShots.count,
                                         isDeepCleanController: true,
                                         progress: self.currentProgressScreenShots)
+                                        
                     case 3:
                         cell.cellConfig(contentType: .userPhoto,
                                         indexPath: indexPath,
                                         phasetCount: self.similarLivePhotosCount,
                                         isDeepCleanController: true,
                                         progress: self.currentProgressSimilarLivePhoto)
+                        
+                                        
                     default:
                         return
                 }
@@ -433,18 +455,21 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
                                         phasetCount: self.largeVideos.count,
                                         isDeepCleanController: true,
                                         progress: self.currentProgressLargeVideos)
+                                        
                     case 1:
                         cell.cellConfig(contentType: .userVideo,
                                         indexPath: indexPath,
                                         phasetCount: self.duplicatedVideosCount,
                                         isDeepCleanController: true,
                                         progress: self.currentProgressDuplicatedVideo)
+                                        
                     case 2:
                         cell.cellConfig(contentType: .userVideo,
                                         indexPath: indexPath,
                                         phasetCount: self.similarVideoCount,
                                         isDeepCleanController: true,
                                         progress: self.currentProgressSimilarVideo)
+                                        
                     case 3:
                         cell.cellConfig(contentType: .userVideo,
                                         indexPath: indexPath,
@@ -519,7 +544,7 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-//        forceUpdateAssetsDeepCleanCells(at: indexPath)
+
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -555,7 +580,31 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
 
 extension DeepCleaningViewController {
     
-    private func setupUI() {}
+    private func setupUI() {
+        
+        progressContainerView.setCorner(8)
+
+    }
+    
+    private func setupTotalFilesTitleChecked(_ totalFiles: Int) {
+        
+        let checkedTitleFont: UIFont = .systemFont(ofSize: 12, weight: .regular)
+        let checkedTitleFontColor: UIColor = currentTheme.subTitleTextColor
+        
+        let totalFilesFont: UIFont = .systemFont(ofSize: 16, weight: .bold)
+        let totalFilesFontColor: UIColor = currentTheme.titleTextColor
+        
+        
+        let checkedAttributesText = [NSAttributedString.Key.font: checkedTitleFont, NSAttributedString.Key.foregroundColor: checkedTitleFontColor]
+        let totalFilesAttributes = [NSAttributedString.Key.font: totalFilesFont, NSAttributedString.Key.foregroundColor: totalFilesFontColor]
+        let filesAttributes = [NSAttributedString.Key.font: checkedTitleFont, NSAttributedString.Key.foregroundColor: checkedTitleFontColor]
+        
+        
+        checketFilesTextLabel.attributedText = NSMutableAttributedString(string: "checked", attributes: checkedAttributesText)
+        let finalTextTitle = NSMutableAttributedString(string: String(totalFiles), attributes: totalFilesAttributes)
+        finalTextTitle.append(NSMutableAttributedString(string: " " + "files", attributes: filesAttributes))
+        totalCheckFilesCountTextLabel.attributedText = finalTextTitle
+    }
     
     private func setupObserversAndDelegate() {
      

@@ -20,16 +20,18 @@ class ContentTypeTableViewCell: UITableViewCell {
     @IBOutlet weak var contentSubtitleTextLabel: UILabel!
     @IBOutlet weak var selectedContainerWidthConstraint: NSLayoutConstraint!
     
-    var tempAddTextLabel = UILabel()
-    
     @IBOutlet weak var horizontalProgressView: PlainHorizontalProgressBar!
     
+    var tempAddTextLabel = UILabel()
+
     override func prepareForReuse() {
         super.prepareForReuse()
         
         contentTypeTextLabel.text = nil
         contentSubtitleTextLabel.text = nil
         selectedAssetsImageView.image = nil
+        
+        
     }
     
     override func awakeFromNib() {
@@ -44,7 +46,6 @@ class ContentTypeTableViewCell: UITableViewCell {
         tempAddTextLabel.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
         tempAddTextLabel.heightAnchor.constraint(equalToConstant: 50).isActive = true
         tempAddTextLabel.widthAnchor.constraint(equalToConstant: 100).isActive = true
-        
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -63,19 +64,20 @@ extension ContentTypeTableViewCell {
     public func cellConfig(contentType: MediaContentType, indexPath: IndexPath, phasetCount: Int, isDeepCleanController: Bool = false, progress: CGFloat) {
         
         contentTypeTextLabel.text = isDeepCleanController ? contentType.getDeepCellTitle(index: indexPath.row) : contentType.getCellTitle(index: indexPath.row)
+        let updatingCountValuesDeepClean: String = isDeepCleanController ? String("progress - \(progress.rounded()) %") : "0 files"
         
-        if progress == 100 {
-            horizontalProgressView.isHidden = true
-            baseView.backgroundColor = currentTheme.sectionBackgroundColor
-        }
-  
+        
+//        if progress == 100 {
+//            horizontalProgressView.isHidden = true
+//            baseView.backgroundColor = currentTheme.sectionBackgroundColor
+//        }
         horizontalProgressView.progress = progress / 100
-    
+
         switch contentType {
             case .userPhoto:
-                contentSubtitleTextLabel.text = phasetCount != 0 ? String("\(phasetCount) files") : "0 files"
+                contentSubtitleTextLabel.text = phasetCount != 0 ? String("\(phasetCount) files") : updatingCountValuesDeepClean
             case .userVideo:
-                contentSubtitleTextLabel.text = phasetCount != 0 ? String("\(phasetCount) files") : "0 files"
+                contentSubtitleTextLabel.text = phasetCount != 0 ? String("\(phasetCount) files") : updatingCountValuesDeepClean
             case .userContacts:
                 contentSubtitleTextLabel.text = ""
             case .none:
@@ -87,7 +89,7 @@ extension ContentTypeTableViewCell {
         
         selectedAssetsContainerView.isHidden = false
         selectedContainerWidthConstraint.constant = 36
-        selectedAssetsImageView.image = isSelected ? I.systemElementsItems.circleBox : I.systemElementsItems.circleCheckBox
+        selectedAssetsImageView.image = isSelected ? I.systemElementsItems.circleCheckBox : I.systemElementsItems.circleBox
     }
     
 //    public func setPersent(progress: CGFloat, title: String) {
