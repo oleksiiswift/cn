@@ -20,7 +20,7 @@ class ContentTypeTableViewCell: UITableViewCell {
     @IBOutlet weak var contentSubtitleTextLabel: UILabel!
     @IBOutlet weak var selectedContainerWidthConstraint: NSLayoutConstraint!
     
-    @IBOutlet weak var horizontalProgressView: PlainHorizontalProgressBar!
+    @IBOutlet weak var horizontalProgressView: HorizontalProgressBar!
     
     var tempAddTextLabel = UILabel()
 
@@ -31,7 +31,8 @@ class ContentTypeTableViewCell: UITableViewCell {
         contentSubtitleTextLabel.text = nil
         selectedAssetsImageView.image = nil
         
-        
+        horizontalProgressView.progress = 0
+        horizontalProgressView.setNeedsDisplay()
     }
     
     override func awakeFromNib() {
@@ -71,6 +72,7 @@ extension ContentTypeTableViewCell {
 //            horizontalProgressView.isHidden = true
 //            baseView.backgroundColor = currentTheme.sectionBackgroundColor
 //        }
+        
         horizontalProgressView.progress = progress / 100
 
         switch contentType {
@@ -119,7 +121,6 @@ extension ContentTypeTableViewCell: Themeble {
         contentSubtitleTextLabel.textColor = currentTheme.subTitleTextColor
         rightArrowImageView.tintColor = currentTheme.tintColor
         selectedAssetsImageView.tintColor = currentTheme.tintColor
-        
-        horizontalProgressView.color = currentTheme.sectionBackgroundColor
+        horizontalProgressView.progressColor = currentTheme.progressBackgroundColor
     }
 }

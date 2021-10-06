@@ -147,6 +147,8 @@ class Constants {
             
             static let carouselView = "CarouselItemView"
             
+            static let datePickerContainer = "DateSelectebleView"
+            
             /// controllers
 //            static let photoPreview = "PhotoPreviewViewController"
         }

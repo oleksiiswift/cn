@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19162" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19144"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="DateSelectebleView" customModule="ECleaner" customModuleProvider="target">
+            <connections>
+                <outlet property="dateSelectContainerView" destination="yXL-so-n0a" id="DVb-JS-uZF"/>
+                <outlet property="endingDateButtonView" destination="606-th-yrM" id="qDY-G7-jLT"/>
+                <outlet property="endingDateStackView" destination="sel-5a-Gx6" id="aFb-AJ-7jE"/>
+                <outlet property="endingDateTextLabel" destination="2Fc-E1-1Ip" id="4dl-bS-eEB"/>
+                <outlet property="endingDateTitleTextLabel" destination="lLS-2I-CMg" id="fU1-cy-wfb"/>
+                <outlet property="startingDateButtonView" destination="2GF-1u-fE1" id="nT3-Sx-zmS"/>
+                <outlet property="startingDateStackView" destination="DDN-kC-y3h" id="AMy-XQ-IIJ"/>
+                <outlet property="startingDateTextLabel" destination="uge-Ha-mQ5" id="7Kr-JL-1Xk"/>
+                <outlet property="startingDateTitileTextLabel" destination="Muq-zB-BTv" id="kGD-Ft-27U"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB">
+            <rect key="frame" x="0.0" y="0.0" width="414" height="84"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yXL-so-n0a">
+                    <rect key="frame" x="0.0" y="0.0" width="414" height="84"/>
+                    <subviews>
+                        <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="12" translatesAutoresizingMaskIntoConstraints="NO" id="xQ5-u0-CbR">
+                            <rect key="frame" x="14" y="10" width="386" height="64"/>
+                            <subviews>
+                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2GF-1u-fE1">
+                                    <rect key="frame" x="0.0" y="0.0" width="187" height="64"/>
+                                    <subviews>
+                                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="DDN-kC-y3h">
+                                            <rect key="frame" x="0.0" y="0.0" width="187" height="64"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Muq-zB-BTv">
+                                                    <rect key="frame" x="0.0" y="0.0" width="187" height="32"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uge-Ha-mQ5">
+                                                    <rect key="frame" x="0.0" y="32" width="187" height="32"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                        </stackView>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="EoU-x0-e27">
+                                            <rect key="frame" x="0.0" y="0.0" width="187" height="64"/>
+                                            <connections>
+                                                <action selector="didTapSelectStartDateActionButton:" destination="-1" eventType="touchUpInside" id="kAf-wu-lv2"/>
+                                            </connections>
+                                        </button>
+                                    </subviews>
+                                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                    <constraints>
+                                        <constraint firstAttribute="bottom" secondItem="DDN-kC-y3h" secondAttribute="bottom" id="5aZ-Q8-JOq"/>
+                                        <constraint firstItem="EoU-x0-e27" firstAttribute="top" secondItem="2GF-1u-fE1" secondAttribute="top" id="ApE-af-cJt"/>
+                                        <constraint firstItem="DDN-kC-y3h" firstAttribute="leading" secondItem="2GF-1u-fE1" secondAttribute="leading" id="FMR-Rp-u6i"/>
+                                        <constraint firstAttribute="trailing" secondItem="DDN-kC-y3h" secondAttribute="trailing" id="MYu-CF-o4p"/>
+                                        <constraint firstAttribute="trailing" secondItem="EoU-x0-e27" secondAttribute="trailing" id="T8X-Cx-fTG"/>
+                                        <constraint firstAttribute="bottom" secondItem="EoU-x0-e27" secondAttribute="bottom" id="klJ-0e-Afc"/>
+                                        <constraint firstItem="EoU-x0-e27" firstAttribute="leading" secondItem="2GF-1u-fE1" secondAttribute="leading" id="n5A-t6-3sm"/>
+                                        <constraint firstItem="DDN-kC-y3h" firstAttribute="top" secondItem="2GF-1u-fE1" secondAttribute="top" id="wd6-dY-MtA"/>
+                                    </constraints>
+                                </view>
+                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="606-th-yrM">
+                                    <rect key="frame" x="199" y="0.0" width="187" height="64"/>
+                                    <subviews>
+                                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="sel-5a-Gx6">
+                                            <rect key="frame" x="0.0" y="0.0" width="187" height="64"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lLS-2I-CMg">
+                                                    <rect key="frame" x="0.0" y="0.0" width="187" height="32"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2Fc-E1-1Ip">
+                                                    <rect key="frame" x="0.0" y="32" width="187" height="32"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                        </stackView>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ym7-u2-T53">
+                                            <rect key="frame" x="0.0" y="0.0" width="187" height="64"/>
+                                            <connections>
+                                                <action selector="didTapSelectEndDateActionButton:" destination="-1" eventType="touchUpInside" id="bmo-26-Ze6"/>
+                                            </connections>
+                                        </button>
+                                    </subviews>
+                                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                    <constraints>
+                                        <constraint firstItem="Ym7-u2-T53" firstAttribute="leading" secondItem="606-th-yrM" secondAttribute="leading" id="6hm-g1-LY0"/>
+                                        <constraint firstItem="sel-5a-Gx6" firstAttribute="leading" secondItem="606-th-yrM" secondAttribute="leading" id="Vug-Wl-XYO"/>
+                                        <constraint firstAttribute="bottom" secondItem="Ym7-u2-T53" secondAttribute="bottom" id="WBa-pM-uHt"/>
+                                        <constraint firstItem="Ym7-u2-T53" firstAttribute="top" secondItem="606-th-yrM" secondAttribute="top" id="bkR-w3-yht"/>
+                                        <constraint firstAttribute="trailing" secondItem="sel-5a-Gx6" secondAttribute="trailing" id="gOQ-EP-TUe"/>
+                                        <constraint firstAttribute="bottom" secondItem="sel-5a-Gx6" secondAttribute="bottom" id="lAn-r9-ZOb"/>
+                                        <constraint firstAttribute="trailing" secondItem="Ym7-u2-T53" secondAttribute="trailing" id="v1B-Mz-Av6"/>
+                                        <constraint firstItem="sel-5a-Gx6" firstAttribute="top" secondItem="606-th-yrM" secondAttribute="top" id="x0s-R0-Wh4"/>
+                                    </constraints>
+                                </view>
+                            </subviews>
+                        </stackView>
+                    </subviews>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    <constraints>
+                        <constraint firstAttribute="trailing" secondItem="xQ5-u0-CbR" secondAttribute="trailing" constant="14" id="0Vp-bt-pmk"/>
+                        <constraint firstAttribute="bottom" secondItem="xQ5-u0-CbR" secondAttribute="bottom" constant="10" id="7df-09-SfL"/>
+                        <constraint firstItem="xQ5-u0-CbR" firstAttribute="leading" secondItem="yXL-so-n0a" secondAttribute="leading" constant="14" id="HiE-Ur-L0s"/>
+                        <constraint firstItem="xQ5-u0-CbR" firstAttribute="top" secondItem="yXL-so-n0a" secondAttribute="top" constant="10" id="Uq8-Kw-3dZ"/>
+                        <constraint firstAttribute="height" constant="84" id="qnq-MW-BdR"/>
+                    </constraints>
+                </view>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
+            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+            <constraints>
+                <constraint firstItem="yXL-so-n0a" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="RYL-L7-m1f"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="yXL-so-n0a" secondAttribute="trailing" id="TCu-8h-Iod"/>
+                <constraint firstItem="yXL-so-n0a" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="e92-lG-c8e"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="yXL-so-n0a" secondAttribute="bottom" id="k6b-Bf-7zs"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <point key="canvasLocation" x="94" y="-126"/>
+        </view>
+    </objects>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

@@ -8,23 +8,20 @@
 import UIKit
 import Photos
 import PhotosUI
+import SwiftMessages
 
 class DeepCleaningViewController: UIViewController {
-
+    
+    @IBOutlet weak var dateSelectContainerView: UIView!
     @IBOutlet weak var tableView: UITableView!
+    
+    @IBOutlet weak var dateSelectContainerHeigntConstraint: NSLayoutConstraint!
     @IBOutlet weak var bottomContainerHeightConstraint: NSLayoutConstraint!
-    @IBOutlet weak var topInfoContainerView: UIView!
-    
-    @IBOutlet weak var progressContainerView: UIView!
-    @IBOutlet weak var totalMemoryCheckContainerView: UIView!
-    
-    @IBOutlet weak var checketFilesTextLabel: UILabel!
-    
-    @IBOutlet weak var totalCheckFilesCountTextLabel: UILabel!
-    @IBOutlet weak var totalSpaceCheckTextLabel: UILabel!
-    
+ 
+    var dateSelectableView = DateSelectebleView()
     
     lazy var backBarButtonItem = UIBarButtonItem(image: I.navigationItems.leftShevronBack, style: .plain, target: self, action: #selector(didTapBackButton))
+    
     /// managers
     private var deepCleanManager = DeepCleanManager()
     private var photoManager = PhotoManager()
@@ -34,6 +31,7 @@ class DeepCleaningViewController: UIViewController {
     
     private var bottomMenuHeight: CGFloat = 80
     private var processing: Bool = false
+    private var isStartingDateSelected: Bool = false
     
     private var startingDate: String {
         get {
@@ -91,15 +89,25 @@ class DeepCleaningViewController: UIViewController {
         setupUI()
         setupNavigation()
         setupTableView()
+        setupDateInterval()
         checkStartCleaningButtonState(false)
-        setupTotalFilesTitleChecked(0)
+//        setupTotalFilesTitleChecked(0)
         setupObserversAndDelegate()
-        
+        updateColors()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         
         self.startDeepCleanScan()
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        switch segue.identifier {
+            case C.identifiers.segue.showDatePicker:
+                self.setupShowDatePickerSelectorController(segue: segue)
+            default:
+                break
+        }
     }
 }
 
@@ -108,9 +116,9 @@ extension DeepCleaningViewController {
     private func startDeepCleanScan() {
         
         guard let options = scansOptions else { return }
-    
+        
         backBarButtonItem.isEnabled = false
-    
+        
         deepCleanManager.startDeepCleaningFetch(options, startingFetchingDate: startingDate, endingFetchingDate: endingDate) { mediaType in
             self.scansOptions = mediaType
         } screenShots: { assets in
@@ -170,7 +178,7 @@ extension DeepCleaningViewController {
             U.UI {
                 self.backBarButtonItem.isEnabled = true
             }
-
+            
             debugPrint("done")
             debugPrint(self.screenShots.count, "screenshots")
             debugPrint(self.similarPhoto.count, "similarPhoto")
@@ -292,11 +300,25 @@ extension DeepCleaningViewController {
     }
 }
 
-extension DeepCleaningViewController {
-    
+
+
+extension DeepCleaningViewController: DateSelectebleViewDelegate {
+ 
     @objc func didTapBackButton() {
         self.navigationController?.popViewController(animated: true)
     }
+    
+    
+    func didSelectStartingDate() {
+        self.isStartingDateSelected = true
+        performSegue(withIdentifier: C.identifiers.segue.showDatePicker, sender: self)
+    }
+    
+    func didSelectEndingDate() {
+        self.isStartingDateSelected = false
+        performSegue(withIdentifier: C.identifiers.segue.showDatePicker, sender: self)
+    }
+
 }
 
 //      MARK: - updating progress notification roating -
@@ -442,8 +464,6 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
                                         phasetCount: self.similarLivePhotosCount,
                                         isDeepCleanController: true,
                                         progress: self.currentProgressSimilarLivePhoto)
-                        
-                                        
                     default:
                         return
                 }
@@ -582,29 +602,41 @@ extension DeepCleaningViewController {
     
     private func setupUI() {
         
-        progressContainerView.setCorner(8)
-
+        dateSelectableView.frame = dateSelectContainerView.bounds
+        dateSelectContainerView.addSubview(dateSelectableView)
+        
+        dateSelectableView.translatesAutoresizingMaskIntoConstraints = false
+        
+        dateSelectableView.leadingAnchor.constraint(equalTo: dateSelectContainerView.leadingAnchor).isActive = true
+        dateSelectableView.trailingAnchor.constraint(equalTo: dateSelectContainerView.trailingAnchor).isActive = true
+        dateSelectableView.bottomAnchor.constraint(equalTo: dateSelectContainerView.bottomAnchor).isActive = true
+        dateSelectableView.topAnchor.constraint(equalTo: dateSelectContainerView.topAnchor).isActive = true
     }
     
-    private func setupTotalFilesTitleChecked(_ totalFiles: Int) {
-        
-        let checkedTitleFont: UIFont = .systemFont(ofSize: 12, weight: .regular)
-        let checkedTitleFontColor: UIColor = currentTheme.subTitleTextColor
-        
-        let totalFilesFont: UIFont = .systemFont(ofSize: 16, weight: .bold)
-        let totalFilesFontColor: UIColor = currentTheme.titleTextColor
-        
-        
-        let checkedAttributesText = [NSAttributedString.Key.font: checkedTitleFont, NSAttributedString.Key.foregroundColor: checkedTitleFontColor]
-        let totalFilesAttributes = [NSAttributedString.Key.font: totalFilesFont, NSAttributedString.Key.foregroundColor: totalFilesFontColor]
-        let filesAttributes = [NSAttributedString.Key.font: checkedTitleFont, NSAttributedString.Key.foregroundColor: checkedTitleFontColor]
-        
-        
-        checketFilesTextLabel.attributedText = NSMutableAttributedString(string: "checked", attributes: checkedAttributesText)
-        let finalTextTitle = NSMutableAttributedString(string: String(totalFiles), attributes: totalFilesAttributes)
-        finalTextTitle.append(NSMutableAttributedString(string: " " + "files", attributes: filesAttributes))
-        totalCheckFilesCountTextLabel.attributedText = finalTextTitle
+    private func setupDateInterval() {
+
+        dateSelectableView.setupDisplaysDate(startingDate: self.startingDate, endingDate: self.endingDate)
     }
+    
+//    private func setupTotalFilesTitleChecked(_ totalFiles: Int) {
+//        
+//        let checkedTitleFont: UIFont = .systemFont(ofSize: 12, weight: .regular)
+//        let checkedTitleFontColor: UIColor = currentTheme.subTitleTextColor
+//        
+//        let totalFilesFont: UIFont = .systemFont(ofSize: 16, weight: .bold)
+//        let totalFilesFontColor: UIColor = currentTheme.titleTextColor
+//        
+//        
+//        let checkedAttributesText = [NSAttributedString.Key.font: checkedTitleFont, NSAttributedString.Key.foregroundColor: checkedTitleFontColor]
+//        let totalFilesAttributes = [NSAttributedString.Key.font: totalFilesFont, NSAttributedString.Key.foregroundColor: totalFilesFontColor]
+//        let filesAttributes = [NSAttributedString.Key.font: checkedTitleFont, NSAttributedString.Key.foregroundColor: checkedTitleFontColor]
+//        
+//        
+////        checketFilesTextLabel.attributedText = NSMutableAttributedString(string: "checked", attributes: checkedAttributesText)
+////        let finalTextTitle = NSMutableAttributedString(string: String(totalFiles), attributes: totalFilesAttributes)
+////        finalTextTitle.append(NSMutableAttributedString(string: " " + "files", attributes: filesAttributes))
+////        totalCheckFilesCountTextLabel.attributedText = finalTextTitle
+//    }
     
     private func setupObserversAndDelegate() {
      
@@ -617,12 +649,34 @@ extension DeepCleaningViewController {
         U.notificationCenter.addObserver(self, selector: #selector(flowRoatingHandleNotification(_:)), name: .deepCleanDuplicateVideoPhassetScan, object: nil)
         U.notificationCenter.addObserver(self, selector: #selector(flowRoatingHandleNotification(_:)), name: .deepCleanSimilarVideoPhassetScan, object: nil)
         U.notificationCenter.addObserver(self, selector: #selector(flowRoatingHandleNotification(_:)), name: .deepCleanScreenRecordingsPhassetScan, object: nil)
+        
+        dateSelectableView.delegate = self
     }
     
     private func setupNavigation() {
         
         self.navigationItem.leftBarButtonItem = backBarButtonItem
+    }
+    
+    private func setupShowDatePickerSelectorController(segue: UIStoryboardSegue) {
         
+        guard let segue = segue as? SwiftMessagesSegue else { return }
+        
+        segue.configure(layout: .bottomMessage)
+        segue.dimMode = .gray(interactive: false)
+        segue.interactiveHide = false
+        segue.messageView.configureNoDropShadow()
+        segue.messageView.backgroundHeight = Device.isSafeAreaiPhone ? 458 : 438
+        
+        if let dateSelectorController = segue.destination as? DateSelectorViewController {
+            dateSelectorController.isStartingDateSelected = self.isStartingDateSelected
+            dateSelectorController.setPicker(self.isStartingDateSelected ? self.startingDate : self.endingDate)
+            
+            dateSelectorController.selectedDateCompletion = { selectedDate in
+                self.isStartingDateSelected ? (self.startingDate = selectedDate) : (self.endingDate = selectedDate)
+                self.dateSelectableView.setupDisplaysDate(startingDate: self.startingDate, endingDate: self.endingDate)
+            }
+        }
     }
 }
 
@@ -630,5 +684,6 @@ extension DeepCleaningViewController: Themeble {
     
     func updateColors() {
         
+
     }
 }
