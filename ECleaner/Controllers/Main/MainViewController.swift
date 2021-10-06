@@ -210,6 +210,7 @@ extension MainViewController {
     private func openDeepCleanController() {
         let storyboard = UIStoryboard(name: C.identifiers.storyboards.deep, bundle: nil)
         let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.deepClean) as! DeepCleaningViewController
+        viewController.totalFilesOnDevice = (self.allPhotoCount ?? 0) + (self.allVideosCount ?? 0)
         viewController.scansOptions = [.similarPhotos,
                                        .similarVideos,
                                        .duplicatedPhotos,

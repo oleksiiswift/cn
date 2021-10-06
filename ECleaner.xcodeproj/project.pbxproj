@@ -238,10 +238,16 @@
 			isa = PBXGroup;
 			children = (
 				040E288726A98B0F0019F372 /* DeepCleaningViewController.swift */,
-				04467CE3270DA3A000DBBB39 /* DateSelectebleView.swift */,
-				04467CE5270DA3B200DBBB39 /* DateSelectebleView.xib */,
 			);
 			path = DeepClean;
+			sourceTree = "<group>";
+		};
+		04467CE7270DC60C00DBBB39 /* DateSelectableView */ = {
+			isa = PBXGroup;
+			children = (
+				04467CE3270DA3A000DBBB39 /* DateSelectebleView.swift */,
+			);
+			path = DateSelectableView;
 			sourceTree = "<group>";
 		};
 		0447A68C26B2A9170074919B /* Operation */ = {
@@ -265,6 +271,7 @@
 		04649B37268C624F00336FE4 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				04467CE5270DA3B200DBBB39 /* DateSelectebleView.xib */,
 				04649B30268C507F00336FE4 /* GroupedAssetsReusableHeaderView.xib */,
 				04649B34268C52B100336FE4 /* GroupedAssetsReusableFooterView.xib */,
 			);
@@ -625,6 +632,7 @@
 		04E58364267A3F1600EDC3A3 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				04467CE7270DC60C00DBBB39 /* DateSelectableView */,
 				049CC231268337360002F988 /* Cells */,
 				04CFFFF0268479D3000CA850 /* UIHelpersViews */,
 				97238A142689F30500C523DC /* Presenters */,
