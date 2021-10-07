@@ -48,7 +48,7 @@ extension GroupedAssetsReusableHeaderView: Themeble {
     
     public func updateColors() {
         
-        assetsSelectedCountTextLabel.textColor = currentTheme.titleTextColor
-        selectAllButtonTextLabel.textColor = currentTheme.titleTextColor
+        assetsSelectedCountTextLabel.textColor = theme.titleTextColor
+        selectAllButtonTextLabel.textColor = theme.titleTextColor
     }
 }

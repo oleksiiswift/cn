@@ -7,7 +7,7 @@
 
 import UIKit
 
-enum CurrentTheme: Int {
+enum Theme: Int {
     case light
     case dark
     

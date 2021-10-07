@@ -83,9 +83,9 @@ extension MediaTypeCollectionViewCell: Themeble {
     
     func updateColors() {
         
-        mainView.backgroundColor = currentTheme.contentBackgroundColor
-        mediaContentThumbnailImageView.tintColor = currentTheme.tintColor
-        mediaContentTitleTextLabel.textColor = currentTheme.titleTextColor
-        mediaContentSubTitleTextLabel.textColor = currentTheme.subTitleTextColor
+        mainView.backgroundColor = theme.contentBackgroundColor
+        mediaContentThumbnailImageView.tintColor = theme.tintColor
+        mediaContentTitleTextLabel.textColor = theme.titleTextColor
+        mediaContentSubTitleTextLabel.textColor = theme.subTitleTextColor
     }
 }

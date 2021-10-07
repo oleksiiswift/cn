@@ -95,13 +95,13 @@ class DateSelectebleView: UIView {
     
     private func updateColors() {
         
-        startingDateButtonView.backgroundColor = currentTheme.contentBackgroundColor
-        endingDateButtonView.backgroundColor = currentTheme.contentBackgroundColor
+        startingDateButtonView.backgroundColor = theme.contentBackgroundColor
+        endingDateButtonView.backgroundColor = theme.contentBackgroundColor
         
-        startingDateTitileTextLabel.textColor = currentTheme.titleTextColor
-        endingDateTextLabel.textColor = currentTheme.titleTextColor
+        startingDateTitileTextLabel.textColor = theme.titleTextColor
+        endingDateTextLabel.textColor = theme.titleTextColor
         
-        startingDateTitileTextLabel.textColor = currentTheme.subTitleTextColor
-        endingDateTitleTextLabel.textColor = currentTheme.subTitleTextColor
+        startingDateTitileTextLabel.textColor = theme.subTitleTextColor
+        endingDateTitleTextLabel.textColor = theme.subTitleTextColor
     }
 }

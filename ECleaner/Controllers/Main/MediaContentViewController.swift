@@ -458,7 +458,7 @@ extension MediaContentViewController: Themeble {
     
     func updateColors() {
         
-        dateSelectContainerView.addBottomBorder(with: currentTheme.contentBackgroundColor, andWidth: 1)
+        dateSelectContainerView.addBottomBorder(with: theme.contentBackgroundColor, andWidth: 1)
     }
     
     private func setupShowDatePickerSelectorController(segue: UIStoryboardSegue) {

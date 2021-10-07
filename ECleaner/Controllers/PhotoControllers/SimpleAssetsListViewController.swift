@@ -307,9 +307,9 @@ extension SimpleAssetsListViewController: Themeble {
     }
     
     func updateColors() {
-        bottomMenuView.backgroundColor = currentTheme.sectionBackgroundColor
-        deleteAssetsButtonView.backgroundColor = currentTheme.accentBackgroundColor
-        deleteAssetsTexetLabel.textColor = currentTheme.activeTitleTextColor
+        bottomMenuView.backgroundColor = theme.sectionBackgroundColor
+        deleteAssetsButtonView.backgroundColor = theme.accentBackgroundColor
+        deleteAssetsTexetLabel.textColor = theme.activeTitleTextColor
     }
     
     private func setupNavigation() {

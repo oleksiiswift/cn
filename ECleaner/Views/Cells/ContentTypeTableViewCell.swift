@@ -116,11 +116,11 @@ extension ContentTypeTableViewCell: Themeble {
     }
     
     func updateColors() {
-        baseView.backgroundColor = currentTheme.contentBackgroundColor
-        contentTypeTextLabel.textColor = currentTheme.titleTextColor
-        contentSubtitleTextLabel.textColor = currentTheme.subTitleTextColor
-        rightArrowImageView.tintColor = currentTheme.tintColor
-        selectedAssetsImageView.tintColor = currentTheme.tintColor
-        horizontalProgressView.progressColor = currentTheme.progressBackgroundColor
+        baseView.backgroundColor = theme.contentBackgroundColor
+        contentTypeTextLabel.textColor = theme.titleTextColor
+        contentSubtitleTextLabel.textColor = theme.subTitleTextColor
+        rightArrowImageView.tintColor = theme.tintColor
+        selectedAssetsImageView.tintColor = theme.tintColor
+        horizontalProgressView.progressColor = theme.progressBackgroundColor
     }
 }

@@ -30,10 +30,10 @@ extension DeepCleanInfoTableViewCell {
     func setProgress(files count: Int) {
         
         let totalCheckedFilesComponentFont: UIFont = .systemFont(ofSize: 13, weight: .heavy)
-        let totolCheckedFilesComponentTextColor: UIColor = currentTheme.subTitleTextColor
+        let totolCheckedFilesComponentTextColor: UIColor = theme.subTitleTextColor
         
         let totalCheckedFilesFont: UIFont = .systemFont(ofSize: 16, weight: .bold)
-        let totalCheckedFilesColor: UIColor = currentTheme.titleTextColor
+        let totalCheckedFilesColor: UIColor = theme.titleTextColor
         
         let totalFilesAttributes = [NSAttributedString.Key.font: totalCheckedFilesFont, NSAttributedString.Key.foregroundColor: totalCheckedFilesColor]
         let componentChecketAttributes = [NSAttributedString.Key.font: totalCheckedFilesComponentFont, NSAttributedString.Key.foregroundColor: totolCheckedFilesComponentTextColor]
@@ -66,11 +66,11 @@ extension DeepCleanInfoTableViewCell: Themeble {
         
         progressRing = CircularProgressBar(radius: 30,
                                            position: position,
-                                           innerTrackColor: currentTheme.titleTextColor,
-                                           outerTrackColor: currentTheme.progressBackgroundColor,
+                                           innerTrackColor: theme.titleTextColor,
+                                           outerTrackColor: theme.progressBackgroundColor,
                                            lineWidth: 6)
         
-        progressRing.progressLabel.textColor = currentTheme.titleTextColor
+        progressRing.progressLabel.textColor = theme.titleTextColor
         progressRing.progressLabel.font = .systemFont(ofSize: 13, weight: .bold)
         progressRing.progressLabel.translatesAutoresizingMaskIntoConstraints = false
         progressRing.progressLabel.frame = CGRect(origin: .zero, size: CGSize(width: 50, height: 20))
@@ -82,8 +82,8 @@ extension DeepCleanInfoTableViewCell: Themeble {
     
     func updateColors() {
         
-        mainInfoView.backgroundColor = currentTheme.contentBackgroundColor
-        infoTitleTextLabel.textColor = currentTheme.subTitleTextColor
-        totalSpaceTextLabel.textColor = currentTheme.subTitleTextColor
+        mainInfoView.backgroundColor = theme.contentBackgroundColor
+        infoTitleTextLabel.textColor = theme.subTitleTextColor
+        totalSpaceTextLabel.textColor = theme.subTitleTextColor
     }
 }

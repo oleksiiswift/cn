@@ -133,11 +133,11 @@ extension DateSelectorViewController: Themeble {
     func updateColors() {
         
         self.view.backgroundColor = .clear
-        mainContainerView.backgroundColor = currentTheme.backgroundColor
-        submitButtonView.backgroundColor = currentTheme.accentBackgroundColor
-        submitButton.setTitleColor(currentTheme.backgroundColor, for: .normal)
-        dissmissButtonImageView.tintColor = currentTheme.tintColor
-        autoDatePickTextLabel.textColor = currentTheme.titleTextColor
-        autoDatePickImageView.tintColor = currentTheme.titleTextColor
+        mainContainerView.backgroundColor = theme.backgroundColor
+        submitButtonView.backgroundColor = theme.accentBackgroundColor
+        submitButton.setTitleColor(theme.backgroundColor, for: .normal)
+        dissmissButtonImageView.tintColor = theme.tintColor
+        autoDatePickTextLabel.textColor = theme.titleTextColor
+        autoDatePickImageView.tintColor = theme.titleTextColor
     }
 }
