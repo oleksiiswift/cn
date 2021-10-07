@@ -13,6 +13,9 @@ class DeepCleanInfoTableViewCell: UITableViewCell {
     @IBOutlet weak var infoTitleTextLabel: UILabel!
     @IBOutlet weak var infoCheckettotalFilesCountTextLabel: UILabel!
     @IBOutlet weak var totalSpaceTextLabel: UILabel!
+    @IBOutlet weak var progressContainerView: UIView!
+    
+    var progressRing: CircularProgressBar!
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -41,6 +44,10 @@ extension DeepCleanInfoTableViewCell {
         infoCheckettotalFilesCountTextLabel.attributedText = textTitle
         totalSpaceTextLabel.text = "100 Gb"
     }
+    
+    func setRoundedProgress(value: CGFloat) {
+        progressRing.progress = value
+    }
 }
 
 extension DeepCleanInfoTableViewCell: Themeble {
@@ -52,6 +59,25 @@ extension DeepCleanInfoTableViewCell: Themeble {
         infoTitleTextLabel.text = "checked"
         infoTitleTextLabel.font = .systemFont(ofSize: 12, weight: .regular)
         totalSpaceTextLabel.font = .systemFont(ofSize: 13, weight: .heavy)
+
+        let xPosition = progressContainerView.center.x
+        let yPosition = progressContainerView.center.y
+        let position = CGPoint(x: xPosition, y: yPosition)
+        
+        progressRing = CircularProgressBar(radius: 30,
+                                           position: position,
+                                           innerTrackColor: currentTheme.titleTextColor,
+                                           outerTrackColor: currentTheme.progressBackgroundColor,
+                                           lineWidth: 6)
+        
+        progressRing.progressLabel.textColor = currentTheme.titleTextColor
+        progressRing.progressLabel.font = .systemFont(ofSize: 13, weight: .bold)
+        progressRing.progressLabel.translatesAutoresizingMaskIntoConstraints = false
+        progressRing.progressLabel.frame = CGRect(origin: .zero, size: CGSize(width: 50, height: 20))
+        progressRing.progressLabel.center = position
+        progressRing.progressLabel.textAlignment = .center
+        
+        progressContainerView.layer.addSublayer(progressRing)
     }
     
     func updateColors() {

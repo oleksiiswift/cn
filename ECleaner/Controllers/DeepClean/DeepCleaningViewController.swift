@@ -53,6 +53,7 @@ class DeepCleaningViewController: UIViewController {
     
     private var totalFilesChecked: Int = 0
     public var totalFilesOnDevice: Int = 0
+    private var totalPercentageCalculated: CGFloat = 0
     
 //    TODO: list of selected Assets or list of selected ids'
     public var cleaningAssetsList: [String] = []
@@ -71,6 +72,7 @@ class DeepCleaningViewController: UIViewController {
     private var duplicatedContacts: [Int] = []
     
     private var totalDeepCleanProgress: [CGFloat] = [0,0,0,0,0,0,0,0]
+    private var totalDeepCleanFilesCountIn: [Int] = [0,0,0,0,0,0,0,0]
 
     private var currentProgressScreenShots: CGFloat = 0
     private var currentProgressSimilarPhoto: CGFloat = 0
@@ -98,7 +100,7 @@ class DeepCleaningViewController: UIViewController {
         setupTableView()
         setupDateInterval()
         checkStartCleaningButtonState(false)
-        setupTotalFilesTitleChecked(0)
+        updateTotalFilesTitleChecked(0)
         setupObserversAndDelegate()
         updateColors()
     }
@@ -359,12 +361,58 @@ extension DeepCleaningViewController {
               let totalProcessingAssetsCount = userInfo[type.dictionaryCountName] as? Int,
               let index = userInfo[type.dictionaryIndexName] as? Int else { return }
         
-        self.totalFilesChecked = self.totalFilesChecked + totalProcessingAssetsCount
+        handleTotalFilesChecked(by: type, files: index)
         
         calculateProgressPercentage(total: totalProcessingAssetsCount, current: index) { title, progress in
             U.UI {
                 self.progressUpdate(type, progress: progress, title: title)
             }
+        }
+    }
+    
+    private func handleTotalFilesChecked(by type: DeepCleanNotificationType, files count: Int) {
+        
+        switch type {
+            case .similarPhoto:
+                self.totalDeepCleanFilesCountIn[0] = count
+            case .duplicatePhoto:
+                self.totalDeepCleanFilesCountIn[1] = count
+//            case .screenshots:
+//                self.totalDeepCleanFilesCountIn[2] = count
+                
+//            case .livePhoto:
+//                self.totalDeepCleanFilesCountIn[3] = count
+//            case .largeVideo:
+//                self.totalDeepCleanFilesCountIn[4] = count
+            case .duplicateVideo:
+                self.totalDeepCleanFilesCountIn[5] = count
+            case .similarVideo:
+                self.totalDeepCleanFilesCountIn[6] = count
+//            case .screenRecordings:
+//                self.totalDeepCleanFilesCountIn[7] = count
+            default:
+                return
+        }
+    }
+    
+    private func updateTotalFilesTitleChecked(_ totalFiles: Int) {
+        
+        /// processing `duplicate video and similiar videos`
+        let totalVideoProcessing = (totalDeepCleanFilesCountIn[5] + totalDeepCleanFilesCountIn[6]) / 2
+        
+        /// pricessing `duplicate photos and similar videos`
+        let countAllProcessing = totalDeepCleanFilesCountIn.sum() / 2
+        
+//        let percentageCalculated = totalDeepCleanProgress.sum() / 8
+        
+        totalFilesChecked = countAllProcessing + totalVideoProcessing
+        
+        totalPercentageCalculated = CGFloat((totalFilesChecked * 100) / self.totalFilesOnDevice)
+    
+        
+        if let cell = self.tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? DeepCleanInfoTableViewCell {
+            cell.setProgress(files: totalFilesChecked)
+            cell.setRoundedProgress(value: totalPercentageCalculated)
         }
     }
 
@@ -417,7 +465,7 @@ extension DeepCleaningViewController {
         
         guard let cell = tableView.cellForRow(at: indexPath) as? ContentTypeTableViewCell else { return }
         self.configure(cell, at: indexPath)
-        setupTotalFilesTitleChecked(0)
+        updateTotalFilesTitleChecked(0)
     }
     
     private func calculateProgressPercentage(total: Int, current: Int, completion: @escaping (String, CGFloat) -> Void) {
@@ -540,6 +588,7 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
     private func configureInfoCell(_ cell: DeepCleanInfoTableViewCell, at indexPath: IndexPath) {
         
         cell.setProgress(files: self.totalFilesChecked)
+        cell.setRoundedProgress(value: totalPercentageCalculated)
     }
 
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -625,26 +674,7 @@ extension DeepCleaningViewController {
 
         dateSelectableView.setupDisplaysDate(startingDate: self.startingDate, endingDate: self.endingDate)
     }
-    
-    private func setupTotalFilesTitleChecked(_ totalFiles: Int) {
         
-        /// total processing segment - 8
-        
-//        let total = self.totalFilesOnDevice * 8
-//        let totalPercentage = self.totalDeepCleanProgress.sum() / 8
-//
-//        let files = (Int((totalPercentage.rounded())) / 100 ) * total
-////        let totalPercent = CGFloat(Double(current) / Double(total)) * 100
-//
-//
-//
-        
-        if let cell = self.tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? DeepCleanInfoTableViewCell {
-            cell.setProgress(files: totalFilesChecked)
-        }
-        
-    }
-    
     private func setupObserversAndDelegate() {
      
         U.notificationCenter.addObserver(self, selector: #selector(flowRoatingHandleNotification(_:)), name: .deepCleanSimilarPhotoPhassetScan, object: nil)
@@ -696,10 +726,4 @@ extension DeepCleaningViewController: Themeble {
 }
 
 
-extension Sequence  {
-    func sum<T: AdditiveArithmetic>(_ predicate: (Element) -> T) -> T { reduce(.zero) { $0 + predicate($1) } }
-}
 
-extension Sequence where Element: AdditiveArithmetic {
-    func sum() -> Element { reduce(.zero, +) }
-}

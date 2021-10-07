@@ -22,6 +22,9 @@
 		04467CE6270DA3B200DBBB39 /* DateSelectebleView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04467CE5270DA3B200DBBB39 /* DateSelectebleView.xib */; };
 		0447A68926B2A1E20074919B /* ConcurentPhotoProcessOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0447A68826B2A1E20074919B /* ConcurentPhotoProcessOperation.swift */; };
 		0447A68B26B2A3C30074919B /* OperationPhotoProcessingQueuer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0447A68A26B2A3C30074919B /* OperationPhotoProcessingQueuer.swift */; };
+		044A6FB9270F1B1000CF0D17 /* CircleProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 044A6FB8270F1B0F00CF0D17 /* CircleProgressBar.swift */; };
+		044A6FBB270F1B5300CF0D17 /* CGfloat+RemoveDecimals.swift in Sources */ = {isa = PBXBuildFile; fileRef = 044A6FBA270F1B5300CF0D17 /* CGfloat+RemoveDecimals.swift */; };
+		044A6FBD270F1B9B00CF0D17 /* Sequence+GetSum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 044A6FBC270F1B9B00CF0D17 /* Sequence+GetSum.swift */; };
 		0459DF8B26A55F360085EEDF /* CarouselCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0459DF8A26A55F360085EEDF /* CarouselCollectionViewCell.swift */; };
 		0459DF9226A56DB20085EEDF /* PhotoPreviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0459DF9026A56DB20085EEDF /* PhotoPreviewViewController.swift */; };
 		0459DF9326A56DB20085EEDF /* CarouselItemView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0459DF9126A56DB20085EEDF /* CarouselItemView.xib */; };
@@ -128,6 +131,9 @@
 		04467CE5270DA3B200DBBB39 /* DateSelectebleView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DateSelectebleView.xib; sourceTree = "<group>"; };
 		0447A68826B2A1E20074919B /* ConcurentPhotoProcessOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConcurentPhotoProcessOperation.swift; sourceTree = "<group>"; };
 		0447A68A26B2A3C30074919B /* OperationPhotoProcessingQueuer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperationPhotoProcessingQueuer.swift; sourceTree = "<group>"; };
+		044A6FB8270F1B0F00CF0D17 /* CircleProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleProgressBar.swift; sourceTree = "<group>"; };
+		044A6FBA270F1B5300CF0D17 /* CGfloat+RemoveDecimals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGfloat+RemoveDecimals.swift"; sourceTree = "<group>"; };
+		044A6FBC270F1B9B00CF0D17 /* Sequence+GetSum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sequence+GetSum.swift"; sourceTree = "<group>"; };
 		0459DF8A26A55F360085EEDF /* CarouselCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarouselCollectionViewCell.swift; sourceTree = "<group>"; };
 		0459DF9026A56DB20085EEDF /* PhotoPreviewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoPreviewViewController.swift; sourceTree = "<group>"; };
 		0459DF9126A56DB20085EEDF /* CarouselItemView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CarouselItemView.xib; sourceTree = "<group>"; };
@@ -258,6 +264,30 @@
 				0447A68A26B2A3C30074919B /* OperationPhotoProcessingQueuer.swift */,
 			);
 			path = Operation;
+			sourceTree = "<group>";
+		};
+		044A6FBE270F1BA800CF0D17 /* CGFloat */ = {
+			isa = PBXGroup;
+			children = (
+				044A6FBA270F1B5300CF0D17 /* CGfloat+RemoveDecimals.swift */,
+			);
+			path = CGFloat;
+			sourceTree = "<group>";
+		};
+		044A6FBF270F1BC200CF0D17 /* Sequence */ = {
+			isa = PBXGroup;
+			children = (
+				044A6FBC270F1B9B00CF0D17 /* Sequence+GetSum.swift */,
+			);
+			path = Sequence;
+			sourceTree = "<group>";
+		};
+		044A6FC0270F1BD300CF0D17 /* CMTime */ = {
+			isa = PBXGroup;
+			children = (
+				0405AA58269D77A5004AC07A /* CMtime+StringDuration.swift */,
+			);
+			path = CMTime;
 			sourceTree = "<group>";
 		};
 		0459DF9626A57A8D0085EEDF /* Controllers */ = {
@@ -484,6 +514,7 @@
 				04CFFFEE268479CE000CA850 /* CircleProgressView.swift */,
 				048D65C826B171E5004F0ADC /* PlainProgressview.swift */,
 				04467CDF270D929C00DBBB39 /* HorizontalProgressBar.swift */,
+				044A6FB8270F1B0F00CF0D17 /* CircleProgressBar.swift */,
 			);
 			path = UIHelpersViews;
 			sourceTree = "<group>";
@@ -563,9 +594,9 @@
 				97E54A8A2690A9B100C7FD54 /* UIButton */,
 				97E54A8B2690A9BD00C7FD54 /* Date */,
 				97E54A8C2690A9CE00C7FD54 /* ArrayAndCollection */,
-				04EE29FA269891F30013837D /* PHasset+Thumbnail.swift */,
-				0405AA58269D77A5004AC07A /* CMtime+StringDuration.swift */,
-				0459DF9A26A6CDCC0085EEDF /* PHCachingImageManager+RequestExtension.swift */,
+				044A6FC0270F1BD300CF0D17 /* CMTime */,
+				044A6FBE270F1BA800CF0D17 /* CGFloat */,
+				044A6FBF270F1BC200CF0D17 /* Sequence */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -708,6 +739,8 @@
 		04E5837A267B39C400EDC3A3 /* PhotoLibrary */ = {
 			isa = PBXGroup;
 			children = (
+				04EE29FA269891F30013837D /* PHasset+Thumbnail.swift */,
+				0459DF9A26A6CDCC0085EEDF /* PHCachingImageManager+RequestExtension.swift */,
 				04E58378267B39AD00EDC3A3 /* PHPhotoLibrary+Auth.swift */,
 			);
 			path = PhotoLibrary;
@@ -954,6 +987,7 @@
 				0459DF9F26A702AF0085EEDF /* PhotoViewController.swift in Sources */,
 				97238A072689BD8000C523DC /* PhotoMediaType.swift in Sources */,
 				04CFFFF42684B23D000CA850 /* String+Whitespaces.swift in Sources */,
+				044A6FBB270F1B5300CF0D17 /* CGfloat+RemoveDecimals.swift in Sources */,
 				04CFFFFD2685E571000CA850 /* UIView+Borders.swift in Sources */,
 				049CC2372683730A0002F988 /* BaseCollectionFlowLayout.swift in Sources */,
 				040E288826A98B0F0019F372 /* DeepCleaningViewController.swift in Sources */,
@@ -967,7 +1001,9 @@
 				97CC2F3C26873A7D0072EF8C /* DateSelectorViewController.swift in Sources */,
 				04E09470267A06B500A69956 /* AppDelegate.swift in Sources */,
 				04B20F02269C4F6A00C6BC14 /* AssetContextPreviewViewController.swift in Sources */,
+				044A6FB9270F1B1000CF0D17 /* CircleProgressBar.swift in Sources */,
 				97E54A86268BB16A00C7FD54 /* SNCollectionViewLayout.swift in Sources */,
+				044A6FBD270F1B9B00CF0D17 /* Sequence+GetSum.swift in Sources */,
 				049CC22A26831D630002F988 /* Images.swift in Sources */,
 				04E09472267A06B500A69956 /* SceneDelegate.swift in Sources */,
 				97CC2F3E268743A80072EF8C /* SegueManager.swift in Sources */,
