@@ -62,24 +62,17 @@ extension ContentTypeTableViewCell {
      - `setupCellSelected` use in deep cleaning part for show selected checkmark for clean
     */
     
-    public func cellConfig(contentType: MediaContentType, indexPath: IndexPath, phasetCount: Int, isDeepCleanController: Bool = false, progress: CGFloat) {
+    public func cellConfig(contentType: MediaContentType, indexPath: IndexPath, phasetCount: Int, isDeepCleanController: Bool = false, progress: CGFloat, isProcessingComplete: Bool = false) {
+        
+        let progressStringText = isProcessingComplete ? "processing wait" : String("progress - \(progress.rounded().cleanValue) %")
+        let updatingCountValuesDeepClean: String = isDeepCleanController ? progressStringText : "0 files"
         
         contentTypeTextLabel.text = isDeepCleanController ? contentType.getDeepCellTitle(index: indexPath.row) : contentType.getCellTitle(index: indexPath.row)
-        let updatingCountValuesDeepClean: String = isDeepCleanController ? String("progress - \(progress.rounded()) %") : "0 files"
-        
-        
-//        if progress == 100 {
-//            horizontalProgressView.isHidden = true
-//            baseView.backgroundColor = currentTheme.sectionBackgroundColor
-//        }
-        
         horizontalProgressView.progress = progress / 100
 
         switch contentType {
-            case .userPhoto:
-                contentSubtitleTextLabel.text = phasetCount != 0 ? String("\(phasetCount) files") : updatingCountValuesDeepClean
-            case .userVideo:
-                contentSubtitleTextLabel.text = phasetCount != 0 ? String("\(phasetCount) files") : updatingCountValuesDeepClean
+            case .userPhoto, .userVideo:
+                contentSubtitleTextLabel.text = isProcessingComplete ? phasetCount != 0 ? String("\(phasetCount) files") : "no files to clean" : updatingCountValuesDeepClean
             case .userContacts:
                 contentSubtitleTextLabel.text = ""
             case .none:
@@ -93,14 +86,6 @@ extension ContentTypeTableViewCell {
         selectedContainerWidthConstraint.constant = 36
         selectedAssetsImageView.image = isSelected ? I.systemElementsItems.circleCheckBox : I.systemElementsItems.circleBox
     }
-    
-//    public func setPersent(progress: CGFloat, title: String) {
-//
-//        tempAddTextLabel.text = title
-//        UIView.performWithoutAnimation {
-//            self.horizontalProgressView.progress = progress / 100
-//        }
-//    }
 }
 
 extension ContentTypeTableViewCell: Themeble {
