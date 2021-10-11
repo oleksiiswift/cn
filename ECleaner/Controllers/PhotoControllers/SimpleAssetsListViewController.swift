@@ -16,18 +16,23 @@ class SimpleAssetsListViewController: UIViewController {
     @IBOutlet weak var deleteAssetsButtonView: UIView!
     @IBOutlet weak var deleteAssetsTexetLabel: UILabel!
     @IBOutlet weak var bottomMenuHeightConstraint: NSLayoutConstraint!
-    
-    public var assetCollection: [PHAsset] = []
-    public var mediaType: PhotoMediaType = .none
-    
-    private var photoManager = PhotoManager()
-
+     
     private let flowLayout = SimpleColumnFlowLayout(cellsPerRow: 3, minimumInterSpacing: 3, minimumLineSpacing: 3, inset: UIEdgeInsets(top: 10, left: 10, bottom: 0, right: 10))
     private var bottomMenuHeight: CGFloat = 80
     
     private lazy var selectAllButton = UIBarButtonItem(title: "select all", style: .plain, target: self, action: #selector(handleSelectAllButtonTapped))
     private lazy var deselectAllButton = UIBarButtonItem(title: "deselect all", style: .plain, target: self, action: #selector(handleSelectAllButtonTapped))
+    private lazy var backBarButtonItem = UIBarButtonItem(image: I.navigationItems.leftShevronBack, style: .plain, target: self, action: #selector(didTapBackButton))
     
+    public var assetCollection: [PHAsset] = []
+    public var mediaType: PhotoMediaType = .none
+    
+    public var isDeepCleaningSelectableFlow: Bool = false
+    
+    private var photoManager = PhotoManager()
+    
+    var selectedAssetsDelegate: DeepCleanSelectableAssetsDelegate?
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -182,6 +187,21 @@ extension SimpleAssetsListViewController: PhotoCollectionViewCellDelegate {
 
 extension SimpleAssetsListViewController {
     
+    @objc func didTapBackButton() {
+        
+        guard let selectedIndexPath = self.collectionView.indexPathsForSelectedItems else { return }
+        
+        var selectedAssetsIDs: [String] = []
+        
+        selectedIndexPath.forEach { indexPath in
+            let assetInCollection = self.assetCollection[indexPath.row]            
+            selectedAssetsIDs.append(assetInCollection.localIdentifier)
+        }
+            
+        self.selectedAssetsDelegate?.didSelect(assetsListIds: selectedAssetsIDs, mediaType: self.mediaType)
+        self.navigationController?.popViewController(animated: true)
+    }
+
     @objc func handleSelectAllButtonTapped() {
     
         let selected = collectionView.indexPathsForSelectedItems?.count == assetCollection.count
@@ -215,6 +235,9 @@ extension SimpleAssetsListViewController {
     }
     
     private func handleBottomButtonMenu() {
+        
+        guard !isDeepCleaningSelectableFlow else { return }
+        
         if let selectedItems = collectionView.indexPathsForSelectedItems {
             bottomMenuHeightConstraint.constant = selectedItems.count > 0 ? (bottomMenuHeight + U.bottomSafeAreaHeight - 5) : 0
             self.collectionView.contentInset.bottom = selectedItems.count > 0 ? 10 : 5
@@ -315,13 +338,28 @@ extension SimpleAssetsListViewController: Themeble {
     private func setupNavigation() {
         
         self.navigationItem.rightBarButtonItem = selectAllButton
+        
+        if isDeepCleaningSelectableFlow {
+            
+            self.navigationItem.leftBarButtonItem = backBarButtonItem
+        }
     }
     
     private func setupListenersAndObservers() {
         
         UpdatingChangesInOpenedScreensMediator.instance.setListener(listener: self)
+        
+        
+        
     }
 }
+
+
+
+
+
+
+
 
 //      MARK: - updating screen if photolibrary did change it content -
 

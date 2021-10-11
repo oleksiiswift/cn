@@ -37,12 +37,15 @@ class GroupedAssetListViewController: UIViewController, UIPageViewControllerDele
     private let selectAllOptionItem = DropDownOptionsMenuItem(titleMenu: "select all", itemThumbnail: I.systemElementsItems.circleBox!, isSelected: false, menuItem: .unselectAll)
     private let deselectAllOptionItem = DropDownOptionsMenuItem(titleMenu: "deselect all", itemThumbnail: I.systemElementsItems.circleCheckBox!, isSelected: false, menuItem: .unselectAll)
     
+    private lazy var backBarButtonItem = UIBarButtonItem(image: I.navigationItems.leftShevronBack, style: .plain, target: self, action: #selector(didTapBackButton))
+    
     /// - controllers -
     #warning("hide photopreviewLogic for TODO later")
 //    private var photoPreviewController = PhotoPreviewViewController()
 
     /// - delegates -
     private weak var delegate: ContentGroupedDataProviderDelegate?
+    var selectedAssetsDelegate: DeepCleanSelectableAssetsDelegate?
 //    private weak var delegate: ContentDataProviderDelegate?
     
     /// - assets -
@@ -73,6 +76,8 @@ class GroupedAssetListViewController: UIViewController, UIPageViewControllerDele
     private var bottomMenuHeight: CGFloat = 80
     private var defaultContainerHeight: CGFloat = 0
     private var carouselPreviewCollectionHeight: CGFloat = 150 + U.bottomSafeAreaHeight
+    
+    public var isDeepCleaningSelectableFlow: Bool = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -516,6 +521,8 @@ extension GroupedAssetListViewController {
     
     private func handleDeleteAssetsButton() {
         
+        guard !isDeepCleaningSelectableFlow else { return }
+        
         let calculatedBottomMenuHeight: CGFloat = bottomMenuHeight + U.bottomSafeAreaHeight - 5
         
         /// `collection`
@@ -729,6 +736,22 @@ extension GroupedAssetListViewController {
         popoverPresentationController.delegate = self
         popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirection(rawValue: 0) 
         self.present(drobDownViewController, animated: true, completion: nil)
+    }
+    
+    @objc func didTapBackButton() {
+        
+        if selectedAssets.isEmpty {
+            self.navigationController?.popViewController(animated: true)
+        } else {
+            var selectedAssetsIDs: [String] = []
+            
+            selectedAssets.forEach { asset in
+                selectedAssetsIDs.append(asset.localIdentifier)
+            }
+            
+            self.selectedAssetsDelegate?.didSelect(assetsListIds: selectedAssetsIDs, mediaType: self.mediaType)
+            self.navigationController?.popViewController(animated: true)
+        }
     }
 }
 
@@ -953,7 +976,13 @@ extension GroupedAssetListViewController: Themeble {
     private func setupNavigation() {
         
         self.navigationItem.rightBarButtonItem = burgerOptionSettingButton
+        
+        if isDeepCleaningSelectableFlow {
+            self.navigationItem.leftBarButtonItem = backBarButtonItem
+        } else {
+        
         self.navigationItem.leftBarButtonItem = customBackButton
+        }
     }
     
     private func setupListenersAndObservers() {

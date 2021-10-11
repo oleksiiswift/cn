@@ -128,53 +128,7 @@ enum MediaContentType {
                 return 0
         }
     }
-    
-    /// use this only for deep cleab screen section
-    public func getIndexPath(for mediaType: PhotoMediaType) -> IndexPath {
-        
-        switch self {
-            case .userPhoto:
-                switch mediaType {
-                    case .similarPhotos:
-                        return IndexPath(row: 0, section: 1)
-                    case .duplicatedPhotos:
-                        return IndexPath(row: 1, section: 1)
-                    case .singleScreenShots:
-                        return IndexPath(row: 2, section: 1)
-                    case .similarLivePhotos:
-                        return IndexPath(row: 3, section: 1)
-                    default:
-                        return IndexPath()
-                }
-            case .userVideo:
-                switch mediaType {
-                    case .singleLargeVideos:
-                        return IndexPath(row: 0, section: 2)
-                    case .duplicatedVideos:
-                        return IndexPath(row: 1, section: 2)
-                    case .similarVideos:
-                        return IndexPath(row: 2, section: 2)
-                    case .singleScreenRecordings:
-                        return IndexPath(row: 3, section: 2)
-                    default:
-                        return IndexPath()
-                }
-            case .userContacts:
-                switch mediaType {
-                    case .allContacts:
-                        return IndexPath(row: 0, section: 3)
-                    case .emptyContacts:
-                        return IndexPath(row: 1, section: 3)
-                    case .duplicatedContacts:
-                        return IndexPath(row: 2, section: 3)
-                    default:
-                        return IndexPath()
-                }
-            case .none:
-                return IndexPath()
-        }
-    }
-    
+
     public func getDeepCellTitle(index: Int) -> String {
         switch self {
             case .userPhoto:
@@ -186,7 +140,7 @@ enum MediaContentType {
                     case 2:
                         return "screenshots"
                     case 3:
-                        return "live photos"
+                        return "similar allive photos"
                     default:
                         return ""
                 }

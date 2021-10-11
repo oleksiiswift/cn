@@ -31,10 +31,41 @@ enum PhotoMediaType {
     
     case none
     
-    func mediaTypeName() -> String {
+    /// use this only for deep cleab screen section
+
+    var indexPath: IndexPath {
+     
+        switch self {
+            case .similarPhotos:
+                return IndexPath(row: 0, section: 1)
+            case .duplicatedPhotos:
+                return IndexPath(row: 1, section: 1)
+            case .singleScreenShots:
+                return IndexPath(row: 2, section: 1)
+            case .similarLivePhotos:
+                return IndexPath(row: 3, section: 1)
+            case .singleLargeVideos:
+                return IndexPath(row: 0, section: 2)
+            case .duplicatedVideos:
+                return IndexPath(row: 1, section: 2)
+            case .similarVideos:
+                return IndexPath(row: 2, section: 2)
+            case .singleScreenRecordings:
+                return IndexPath(row: 3, section: 2)
+            case .allContacts:
+                return IndexPath(row: 0, section: 3)
+            case .emptyContacts:
+                return IndexPath(row: 1, section: 3)
+            case .duplicatedContacts:
+                return IndexPath(row: 2, section: 3)
+            default:
+                return IndexPath()
+        }
+    }
+    
+    var mediaTypeName: String {
         
         switch self {
-
             case .duplicatedPhotos:
                 return "duplicated photo"
             case .duplicatedVideos:
@@ -68,5 +99,57 @@ enum PhotoMediaType {
             case .none:
                 return ""
         }
+    }
+}
+
+class MediaType {
+    
+    /// use this only for deep cleab screen section
+    public static func getMediaContentType(from indexPath: IndexPath) -> PhotoMediaType {
+        
+        switch indexPath.section {
+            case 1:
+                /// `photo section`
+                switch indexPath.row {
+                    case 0:
+                        return .similarPhotos
+                    case 1:
+                        return .duplicatedPhotos
+                    case 2:
+                        return .singleScreenShots
+                    case 3:
+                        return .similarLivePhotos
+                    default:
+                        return .none
+                }
+            case 2:
+                /// `video section`
+                switch indexPath.row {
+                    case 0:
+                        return .singleLargeVideos
+                    case 1:
+                        return .duplicatedVideos
+                    case 2:
+                        return .similarVideos
+                    case 3:
+                        return .singleScreenRecordings
+                    default:
+                        return .none
+                }
+            case 3:
+                /// `contats section`
+                switch indexPath.row {
+                    case 0:
+                        return .allContacts
+                    case 1:
+                        return .emptyContacts
+                    case 2:
+                        return .duplicatedContacts
+                    default:
+                        return .none
+                }
+            default:
+                return .none
+        }   
     }
 }

@@ -10,6 +10,11 @@ import Photos
 import PhotosUI
 import SwiftMessages
 
+protocol DeepCleanSelectableAssetsDelegate: AnyObject {
+    
+    func didSelect(assetsListIds: [String], mediaType: PhotoMediaType)
+}
+
 class DeepCleaningViewController: UIViewController {
     
     @IBOutlet weak var dateSelectContainerView: UIView!
@@ -22,9 +27,12 @@ class DeepCleaningViewController: UIViewController {
     
     lazy var backBarButtonItem = UIBarButtonItem(image: I.navigationItems.leftShevronBack, style: .plain, target: self, action: #selector(didTapBackButton))
     
-    /// managers
+    /// managers∂
     private var deepCleanManager = DeepCleanManager()
     private var photoManager = PhotoManager()
+    
+    /// protocols and delegates
+    weak var selectableAssetsDelegate: DeepCleanSelectableAssetsDelegate?
     
     /// properties
     public var scansOptions: [PhotoMediaType]?
@@ -50,14 +58,20 @@ class DeepCleaningViewController: UIViewController {
     }
     
     /// files
-    
-    private var totalFilesChecked: Int = 0
-    public var totalFilesOnDevice: Int = 0
-    private var totalPercentageCalculated: CGFloat = 0
-    
-//    TODO: list of selected Assets or list of selected ids'
+    /// `selected groups of all assets to delete`
+    private var selectedAssetsCollectionID = Set<String>()
     public var cleaningAssetsList: [String] = []
     
+    /// `file processing check count`
+    public var totalFilesOnDevice: Int = 0
+    private var totalFilesChecked: Int = 0
+    private var totalPercentageCalculated: CGFloat = 0
+    private var totalDeepCleanProgress: [CGFloat] = [0,0,0,0,0,0,0,0]
+    private var totalDeepCleanFilesCountIn: [Int] = [0,0,0,0,0,0,0,0]
+    private var handleSelectedAssetsForMediatype: [PhotoMediaType: Bool] = [:]
+    private var doneProcessingDeepCleanForMedia: [PhotoMediaType : Bool] = [:]
+    
+    /// `finding duplicates and assets`
     private var similarPhoto: [PhassetGroup] = []
     private var duplicatedPhoto: [PhassetGroup] = []
     private var screenShots: [PHAsset] = []
@@ -68,14 +82,17 @@ class DeepCleaningViewController: UIViewController {
     private var similarVideo: [PhassetGroup] = []
     private var screenRecordings: [PHAsset] = []
     
+    /// `part use for calculate assets in phasset groups`
+    private var similarPhotosCount: Int = 0
+    private var duplicatedPhotosCount: Int = 0
+    private var similarLivePhotosCount: Int = 0
+    private var similarVideoCount: Int = 0
+    private var duplicatedVideosCount: Int = 0
+    
     private var allContacts: [Int] = []
     private var emptyContacts: [Int] = []
     private var duplicatedContacts: [Int] = []
     
-    private var totalDeepCleanProgress: [CGFloat] = [0,0,0,0,0,0,0,0]
-    private var totalDeepCleanFilesCountIn: [Int] = [0,0,0,0,0,0,0,0]
-    private var doneProcessingDeepCleanForMedia: [PhotoMediaType : Bool] = [:]
-
     private var currentProgressScreenShots: CGFloat = 0
     private var currentProgressSimilarPhoto: CGFloat = 0
     private var currentProgressDuplicatedPhoto: CGFloat = 0
@@ -87,12 +104,6 @@ class DeepCleaningViewController: UIViewController {
     private var currentProgressAllContacts: CGFloat = 0
     private var currentProgressEmptyContacts: CGFloat = 0
     private var currentProgressDuplicateContacts: CGFloat = 0
-    
-    private var similarPhotosCount: Int = 0
-    private var duplicatedPhotosCount: Int = 0
-    private var similarLivePhotosCount: Int = 0
-    private var similarVideoCount: Int = 0
-    private var duplicatedVideosCount: Int = 0
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -105,11 +116,12 @@ class DeepCleaningViewController: UIViewController {
         updateTotalFilesTitleChecked(0)
         setupObserversAndDelegate()
         updateColors()
+        self.startDeepCleanScan()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         
-        self.startDeepCleanScan()
+        
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -246,25 +258,12 @@ extension DeepCleaningViewController {
     }
     
     private func updateCellInfoCount(by type: MediaContentType, mediaType: PhotoMediaType, assetsCount: Int) {
-        
-        var indexPath = IndexPath()
-        
-        switch type {
-            case .userPhoto:
-                indexPath = MediaContentType.userPhoto.getIndexPath(for: mediaType)
-            case .userVideo:
-                indexPath = MediaContentType.userVideo.getIndexPath(for: mediaType)
-            case .userContacts:
-                indexPath = MediaContentType.userContacts.getIndexPath(for: mediaType)
-            case .none:
-                debugPrint("no media content type")
-        }
-        
+                
         if Thread.isMainThread {
-            self.updateAssetsFieldCount(at: indexPath, assetsCount: assetsCount, mediaType: mediaType)
+            self.updateAssetsFieldCount(at: mediaType.indexPath, assetsCount: assetsCount, mediaType: mediaType)
         } else {
             U.UI {
-                self.updateAssetsFieldCount(at: indexPath, assetsCount: assetsCount, mediaType: mediaType)
+                self.updateAssetsFieldCount(at: mediaType.indexPath, assetsCount: assetsCount, mediaType: mediaType)
             }
         }
     }
@@ -276,7 +275,6 @@ extension DeepCleaningViewController {
         for group in groups {
             assetsCount += group.assets.count
         }
-        
         return assetsCount
     }
 }
@@ -296,6 +294,25 @@ extension DeepCleaningViewController: DateSelectebleViewDelegate {
     func didSelectEndingDate() {
         self.isStartingDateSelected = false
         performSegue(withIdentifier: C.identifiers.segue.showDatePicker, sender: self)
+    }
+}
+
+extension DeepCleaningViewController: DeepCleanSelectableAssetsDelegate {
+    
+    
+    func didSelect(assetsListIds: [String], mediaType: PhotoMediaType) {
+        
+        if let cell = self.tableView.cellForRow(at: mediaType.indexPath) as? ContentTypeTableViewCell {
+            self.handleSelectedAssetsForMediatype[mediaType] = !assetsListIds.isEmpty
+            
+            selectedAssetsCollectionID = selectedAssetsCollectionID.union(Set(assetsListIds))
+            
+            let isSelected = self.handleSelectedAssetsForMediatype[mediaType] ?? false
+            
+            U.UI {
+                cell.setupCellSelected(at: mediaType.indexPath, isSelected: isSelected)
+            }
+        }
     }
 }
 
@@ -388,43 +405,43 @@ extension DeepCleaningViewController {
         
         switch type {
             case .similarPhoto:
-                indexPath = MediaContentType.userPhoto.getIndexPath(for: .similarPhotos)
+                indexPath = PhotoMediaType.similarLivePhotos.indexPath
                 self.currentProgressSimilarPhoto = progress
                 self.totalDeepCleanProgress[0] = progress
             case .duplicatePhoto:
-                indexPath = MediaContentType.userPhoto.getIndexPath(for: .duplicatedPhotos)
+                indexPath = PhotoMediaType.duplicatedPhotos.indexPath
                 self.currentProgressDuplicatedPhoto = progress
                 self.totalDeepCleanProgress[1] = progress
             case .screenshots:
-                indexPath = MediaContentType.userPhoto.getIndexPath(for: .singleScreenShots)
+                indexPath = PhotoMediaType.singleScreenShots.indexPath
                 self.currentProgressScreenShots = progress
                 self.totalDeepCleanProgress[2] = progress
             case .livePhoto:
-                indexPath = MediaContentType.userPhoto.getIndexPath(for: .similarLivePhotos)
+                indexPath = PhotoMediaType.similarLivePhotos.indexPath
                 self.currentProgressSimilarLivePhoto = progress
                 self.totalDeepCleanProgress[3] = progress
             case .largeVideo:
-                indexPath = MediaContentType.userVideo.getIndexPath(for: .singleLargeVideos)
+                indexPath = PhotoMediaType.singleLargeVideos.indexPath
                 self.currentProgressLargeVideos = progress
                 self.totalDeepCleanProgress[4] = progress
             case .duplicateVideo:
-                indexPath = MediaContentType.userVideo.getIndexPath(for: .duplicatedVideos)
+                indexPath = PhotoMediaType.duplicatedVideos.indexPath
                 self.currentProgressDuplicatedVideo = progress
                 self.totalDeepCleanProgress[5] = progress
             case .similarVideo:
-                indexPath = MediaContentType.userVideo.getIndexPath(for: .similarVideos)
+                indexPath = PhotoMediaType.similarVideos.indexPath
                 self.currentProgressSimilarVideo = progress
                 self.totalDeepCleanProgress[6] = progress
             case .screenRecordings:
-                indexPath = MediaContentType.userVideo.getIndexPath(for: .singleScreenRecordings)
+                indexPath = PhotoMediaType.singleScreenRecordings.indexPath
                 self.currentProgressScreenRecordings = progress
                 self.totalDeepCleanProgress[7] = progress
             case .allContacts:
-                indexPath = MediaContentType.userVideo.getIndexPath(for: .allContacts)
+                indexPath = PhotoMediaType.allContacts.indexPath
             case .emptyContacts:
-                indexPath = MediaContentType.userContacts.getIndexPath(for: .emptyContacts)
+                indexPath = PhotoMediaType.emptyContacts.indexPath
             case .duplicateContacts:
-                indexPath = MediaContentType.userContacts.getIndexPath(for: .duplicatedContacts)
+                indexPath = PhotoMediaType.duplicatedContacts.indexPath
         }
         
         guard !indexPath.isEmpty else { return }
@@ -445,7 +462,7 @@ extension DeepCleaningViewController {
 
 //      MARK: - show cleaning view controllers -
 extension DeepCleaningViewController {
-    
+         
     private func selectCleaningMedia(at indexPath: IndexPath) {
         
         switch indexPath.section {
@@ -496,35 +513,51 @@ extension DeepCleaningViewController {
         switch type {
             case .similarPhotos:
                 if !similarPhoto.isEmpty {
-                    self.showGropedContoller(assets: type.mediaTypeName(), grouped: similarPhoto, photoContent: type)
+                    self.showGropedContoller(assets: type.mediaTypeName,
+                                             grouped: similarPhoto,
+                                             photoContent: type)
                 }
             case .duplicatedPhotos:
                 if !duplicatedPhoto.isEmpty {
-                    self.showGropedContoller(assets: type.mediaTypeName(), grouped: duplicatedPhoto, photoContent: type)
+                    self.showGropedContoller(assets: type.mediaTypeName,
+                                             grouped: duplicatedPhoto,
+                                             photoContent: type)
                 }
             case .singleScreenShots:
                 if !screenShots.isEmpty {
-                    self.showAssetViewController(assets: type.mediaTypeName(), collection: screenShots, photoContent: type)
+                    self.showAssetViewController(assets: type.mediaTypeName,
+                                                 collection: screenShots,
+                                                 photoContent: type)
                 }
             case .similarLivePhotos:
                 if !similarLivePhotos.isEmpty {
-                    self.showGropedContoller(assets: type.mediaTypeName(), grouped: similarLivePhotos, photoContent: type)
+                    self.showGropedContoller(assets: type.mediaTypeName,
+                                             grouped: similarLivePhotos,
+                                             photoContent: type)
                 }
             case .singleLargeVideos:
                 if !largeVideos.isEmpty {
-                    self.showAssetViewController(assets: type.mediaTypeName(), collection: largeVideos, photoContent: type)
+                    self.showAssetViewController(assets: type.mediaTypeName,
+                                                 collection: largeVideos,
+                                                 photoContent: type)
                 }
             case .duplicatedVideos:
                 if !duplicatedVideo.isEmpty {
-                    self.showGropedContoller(assets: type.mediaTypeName(), grouped: duplicatedVideo, photoContent: type)
+                    self.showGropedContoller(assets: type.mediaTypeName,
+                                             grouped: duplicatedVideo,
+                                             photoContent: type)
                 }
             case .similarVideos:
                 if !similarVideo.isEmpty {
-                    self.showGropedContoller(assets: type.mediaTypeName(), grouped: similarVideo, photoContent: type)
+                    self.showGropedContoller(assets: type.mediaTypeName,
+                                             grouped: similarVideo,
+                                             photoContent: type)
                 }
             case .singleScreenRecordings:
                 if !screenRecordings.isEmpty {
-                    self.showAssetViewController(assets: type.mediaTypeName(), collection: screenRecordings, photoContent: type)
+                    self.showAssetViewController(assets: type.mediaTypeName,
+                                                 collection: screenRecordings,
+                                                 photoContent: type)
                 }
             default:
                 return
@@ -535,7 +568,9 @@ extension DeepCleaningViewController {
         let storyboard = UIStoryboard(name: C.identifiers.storyboards.media, bundle: nil)
         let viewController  = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.groupedList) as! GroupedAssetListViewController
         viewController.title = title
+        viewController.isDeepCleaningSelectableFlow = true
         viewController.assetGroups = collection
+        viewController.selectedAssetsDelegate = self
         viewController.mediaType = type
         self.navigationController?.pushViewController(viewController, animated: true)
     }
@@ -544,7 +579,9 @@ extension DeepCleaningViewController {
         let storyboard = UIStoryboard(name: C.identifiers.storyboards.media, bundle: nil)
         let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.assetsList) as! SimpleAssetsListViewController
         viewController.title = title
+        viewController.isDeepCleaningSelectableFlow = true
         viewController.assetCollection = collection
+        viewController.selectedAssetsDelegate = self
         viewController.mediaType = type
         self.navigationController?.pushViewController(viewController, animated: true)
     }
@@ -563,7 +600,9 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
 
     private func configure(_ cell: ContentTypeTableViewCell, at indexPath: IndexPath) {
         
-        cell.setupCellSelected(at: indexPath, isSelected: false)
+        let contentType = MediaType.getMediaContentType(from: indexPath)
+        let isSelected = self.handleSelectedAssetsForMediatype[contentType] ?? false
+        cell.setupCellSelected(at: indexPath, isSelected: isSelected)
         
         switch indexPath.section {
             case 1:
@@ -773,6 +812,7 @@ extension DeepCleaningViewController {
         U.notificationCenter.addObserver(self, selector: #selector(flowRoatingHandleNotification(_:)), name: .deepCleanScreenRecordingsPhassetScan, object: nil)
         
         dateSelectableView.delegate = self
+        selectableAssetsDelegate = self
     }
     
     private func setupNavigation() {
@@ -801,6 +841,8 @@ extension DeepCleaningViewController {
         }
     }
 }
+
+
 
 extension DeepCleaningViewController: Themeble {
     
