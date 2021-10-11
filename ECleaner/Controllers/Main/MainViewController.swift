@@ -77,7 +77,7 @@ class MainViewController: UIViewController {
         
     }
     @IBAction func didTapStartDeepCleaningActionButton(_ sender: Any) {
-        
+         
         openDeepCleanController()
     }
 }
@@ -210,6 +210,7 @@ extension MainViewController {
     private func openDeepCleanController() {
         let storyboard = UIStoryboard(name: C.identifiers.storyboards.deep, bundle: nil)
         let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.deepClean) as! DeepCleaningViewController
+        viewController.totalFilesOnDevice = (self.allPhotoCount ?? 0) + (self.allVideosCount ?? 0)
         viewController.scansOptions = [.similarPhotos,
                                        .similarVideos,
                                        .duplicatedPhotos,
@@ -308,8 +309,8 @@ extension MainViewController: UpdateColorsDelegate {
     func updateColors() {
         
         self.view.backgroundColor = .clear
-        deepCleaningButtonView.backgroundColor = currentTheme.accentBackgroundColor
-        deepCleaningButtonTextLabel.textColor = currentTheme.activeTitleTextColor
+        deepCleaningButtonView.backgroundColor = theme.accentBackgroundColor
+        deepCleaningButtonTextLabel.textColor = theme.activeTitleTextColor
     }
     
     private func setupProgressAndCollectionSize() {
@@ -373,10 +374,10 @@ extension MainViewController: UpdateColorsDelegate {
         let calculatePercentage: Double = Double(Device.usedDiskSpaceInBytes) / Double(Device.totalDiskSpaceInBytes)
   
         circleTotlaSpaceView.setProgress(progress: CGFloat(calculatePercentage), animated: true)
-        circleTotlaSpaceView.progressShapeColor = currentTheme.tintColor
-        circleTotlaSpaceView.backgroundShapeColor = currentTheme.contentBackgroundColor
-        circleTotlaSpaceView.titleColor = currentTheme.subTitleTextColor
-        circleTotlaSpaceView.percentColor = currentTheme.tintColor
+        circleTotlaSpaceView.progressShapeColor = theme.tintColor
+        circleTotlaSpaceView.backgroundShapeColor = theme.contentBackgroundColor
+        circleTotlaSpaceView.titleColor = theme.subTitleTextColor
+        circleTotlaSpaceView.percentColor = theme.tintColor
         
         circleTotlaSpaceView.orientation = .bottom
         circleTotlaSpaceView.lineCap = .round

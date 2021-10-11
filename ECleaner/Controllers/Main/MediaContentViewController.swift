@@ -11,19 +11,11 @@ import SwiftMessages
 
 class MediaContentViewController: UIViewController {
 
-    @IBOutlet weak var startingDateTitileTextLabel: UILabel!
-    @IBOutlet weak var endingDateTitleTextLabel: UILabel!
-    @IBOutlet weak var startingDateTextLabel: UILabel!
-    @IBOutlet weak var endingDateTextLabel: UILabel!
     @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var startingDateButtonView: UIView!
-    @IBOutlet weak var endingDateButtonView: UIView!
-    
     @IBOutlet weak var dateSelectContainerView: UIView!
     @IBOutlet weak var dateSelectContainerHeigntConstraint: NSLayoutConstraint!
     
-    @IBOutlet weak var startingDateStackView: UIStackView!
-    @IBOutlet weak var endingDateStackView: UIStackView!
+    var dateSelectableView = DateSelectebleView()
     
     public var contentType: MediaContentType = .none
     private var photoManager = PhotoManager()
@@ -62,9 +54,11 @@ class MediaContentViewController: UIViewController {
         
         checkForAssetsCount()
         setupUI()
+        setupDateInterval()
         updateColors()
         setupNavigation()
         setupTableView()
+        setupObserversAndDelegate()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -80,16 +74,6 @@ class MediaContentViewController: UIViewController {
             default:
                 break
         }
-    }
-
-    @IBAction func didTapSelectStartDateActionButton(_ sender: Any) {
-        self.isStartingDateSelected = true
-        performSegue(withIdentifier: C.identifiers.segue.showDatePicker, sender: self)
-    }
-    
-    @IBAction func didTapSelectEndDateActionButton(_ sender: Any) {
-        self.isStartingDateSelected = false
-        performSegue(withIdentifier: C.identifiers.segue.showDatePicker, sender: self)
     }
 }
 
@@ -143,7 +127,7 @@ extension MediaContentViewController: UITableViewDelegate, UITableViewDataSource
                 return
         }
         
-        cell.cellConfig(contentType: contentType, indexPath: indexPath, phasetCount: assetContentCount)
+        cell.cellConfig(contentType: contentType, indexPath: indexPath, phasetCount: assetContentCount, progress: 0)
     }
         
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -178,8 +162,13 @@ extension MediaContentViewController {
     /// `3` - selfies
     /// `4` - live photos
     /// `5` - recently deleted
-    /// `6` - 
     
+    /// `0` - large video files
+    /// `1` - duplicates
+    /// `2` - similar videos
+    /// `3` - screen records files
+    /// `4` - recently deleted files
+        
     private func showMediaContent(by selectedType: MediaContentType, selected index: Int) {
         
         switch selectedType {
@@ -245,6 +234,7 @@ extension MediaContentViewController {
 
 //      MARK: - photo content -
 extension MediaContentViewController {
+    
     /**
      - parameter
      - parameter
@@ -407,6 +397,21 @@ extension MediaContentViewController {
     }
 }
 
+extension MediaContentViewController: DateSelectebleViewDelegate {
+    
+    func didSelectStartingDate() {
+        
+        self.isStartingDateSelected = true
+        performSegue(withIdentifier: C.identifiers.segue.showDatePicker, sender: self)
+    }
+    
+    func didSelectEndingDate() {
+        
+        self.isStartingDateSelected = false
+        performSegue(withIdentifier: C.identifiers.segue.showDatePicker, sender: self)
+    }
+}
+
 extension MediaContentViewController: Themeble {
     
     private func setupUI() {
@@ -424,24 +429,16 @@ extension MediaContentViewController: Themeble {
                 debugPrint("")
         }
         
-        startingDateStackView.layoutMargins = UIEdgeInsets(top: 10, left: 0, bottom: 10, right: 0)
-        startingDateStackView.isLayoutMarginsRelativeArrangement = true
-        endingDateStackView.layoutMargins = UIEdgeInsets(top: 10, left: 0, bottom: 10, right: 0)
-        endingDateStackView.isLayoutMarginsRelativeArrangement = true
-    
-        startingDateButtonView.setCorner(12)
-        endingDateButtonView.setCorner(12)
+        dateSelectableView.frame = dateSelectContainerView.bounds
+        dateSelectContainerView.addSubview(dateSelectableView)
         
-        startingDateTitileTextLabel.text = "from"
-        endingDateTitleTextLabel.text = "to"
+        dateSelectableView.translatesAutoresizingMaskIntoConstraints = false
         
-        startingDateTextLabel.text = U.displayDate(from: startingDate)
-        endingDateTextLabel.text = U.displayDate(from: endingDate)
-        
-        startingDateTextLabel.font = .systemFont(ofSize: 15, weight: .regular)
-        endingDateTextLabel.font = .systemFont(ofSize: 15, weight: .regular)
-        startingDateTitileTextLabel.font = .systemFont(ofSize: 15, weight: .medium)
-        endingDateTextLabel.font = .systemFont(ofSize: 15, weight: .medium)
+        NSLayoutConstraint.activate([
+            dateSelectableView.leadingAnchor.constraint(equalTo: dateSelectContainerView.leadingAnchor),
+            dateSelectableView.trailingAnchor.constraint(equalTo: dateSelectContainerView.trailingAnchor),
+            dateSelectableView.bottomAnchor.constraint(equalTo: dateSelectContainerView.bottomAnchor),
+            dateSelectableView.topAnchor.constraint(equalTo: dateSelectContainerView.topAnchor)])
     }
     
     private func setupNavigation() {
@@ -449,40 +446,38 @@ extension MediaContentViewController: Themeble {
         self.navigationItem.backButtonTitle = ""
     }
     
+    private func setupObserversAndDelegate() {
+        
+        self.dateSelectableView.delegate = self
+    }
+    
+    private func setupDateInterval() {
+        
+        self.dateSelectableView.setupDisplaysDate(startingDate: self.startingDate, endingDate: self.endingDate)
+    }
+    
     func updateColors() {
-        dateSelectContainerView.addBottomBorder(with: currentTheme.contentBackgroundColor, andWidth: 1)
-        startingDateButtonView.backgroundColor = currentTheme.contentBackgroundColor
-        endingDateButtonView.backgroundColor = currentTheme.contentBackgroundColor
         
-        startingDateTitileTextLabel.textColor = currentTheme.titleTextColor
-        endingDateTextLabel.textColor = currentTheme.titleTextColor
-        
-        startingDateTitileTextLabel.textColor = currentTheme.subTitleTextColor
-        endingDateTitleTextLabel.textColor = currentTheme.subTitleTextColor
+        dateSelectContainerView.addBottomBorder(with: theme.contentBackgroundColor, andWidth: 1)
     }
     
     private func setupShowDatePickerSelectorController(segue: UIStoryboardSegue) {
         
-        if let segue = segue as? SwiftMessagesSegue {
-            segue.configure(layout: .bottomMessage)
-            segue.dimMode = .gray(interactive: false)
-            segue.interactiveHide = false
-            segue.messageView.configureNoDropShadow()
-            segue.messageView.backgroundHeight = Device.isSafeAreaiPhone ? 458 : 438
+        guard let segue = segue as? SwiftMessagesSegue else { return }
+        
+        segue.configure(layout: .bottomMessage)
+        segue.dimMode = .gray(interactive: false)
+        segue.interactiveHide = false
+        segue.messageView.configureNoDropShadow()
+        segue.messageView.backgroundHeight = Device.isSafeAreaiPhone ? 458 : 438
+        
+        if let dateSelectorController = segue.destination as? DateSelectorViewController {
+            dateSelectorController.isStartingDateSelected = self.isStartingDateSelected
+            dateSelectorController.setPicker(self.isStartingDateSelected ? self.startingDate : self.endingDate)
             
-            if let dateSelectorController = segue.destination as? DateSelectorViewController {
-                dateSelectorController.isStartingDateSelected = self.isStartingDateSelected
-                dateSelectorController.setPicker(self.isStartingDateSelected ? self.startingDate : self.endingDate)
-                
-                dateSelectorController.selectedDateCompletion = { selectedDate in
-                    if self.isStartingDateSelected {
-                        self.startingDate = selectedDate
-                        self.startingDateTextLabel.text = U.displayDate(from: selectedDate)
-                    } else {
-                        self.endingDate = selectedDate
-                        self.endingDateTextLabel.text = U.displayDate(from: selectedDate)
-                    }
-                }
+            dateSelectorController.selectedDateCompletion = { selectedDate in
+                self.isStartingDateSelected ? (self.startingDate = selectedDate) : (self.endingDate = selectedDate)
+                self.dateSelectableView.setupDisplaysDate(startingDate: self.startingDate, endingDate: self.endingDate)
             }
         }
     }

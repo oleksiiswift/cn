@@ -45,7 +45,7 @@ extension DropDownMenuTableViewCell: Themeble {
     
     func updateColors() {
         
-        menuTitileTextLabel.textColor = currentTheme.titleTextColor
-        thumbnailImageView.tintColor = currentTheme.tintColor
+        menuTitileTextLabel.textColor = theme.titleTextColor
+        thumbnailImageView.tintColor = theme.tintColor
     }
 }

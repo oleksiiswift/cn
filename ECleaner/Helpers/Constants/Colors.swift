@@ -7,7 +7,7 @@
 
 import UIKit
 
-enum CurrentTheme: Int {
+enum Theme: Int {
     case light
     case dark
     
@@ -103,6 +103,15 @@ enum CurrentTheme: Int {
                 return UIColor().colorFromHexString("C4C4C4")
             case .dark:
                 return UIColor().colorFromHexString("C4C4C4")
+        }
+    }
+    
+    var progressBackgroundColor: UIColor {
+        switch self {
+            case .light:
+                return UIColor().colorFromHexString("dedede")
+            case .dark:
+                return UIColor().colorFromHexString("dedede")
         }
     }
 }

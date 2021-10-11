@@ -129,6 +129,7 @@ enum MediaContentType {
         }
     }
     
+    /// use this only for deep cleab screen section
     public func getIndexPath(for mediaType: PhotoMediaType) -> IndexPath {
         
         switch self {

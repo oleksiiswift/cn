@@ -79,10 +79,10 @@ extension PhotoCollectionViewCell: Themeble {
     
     func updateColors() {
         
-        baseView.backgroundColor = currentTheme.sectionBackgroundColor
-        photoCheckmarkImageView.tintColor = currentTheme.accentBackgroundColor
-        bestView.backgroundColor = currentTheme.backgroundColor.withAlphaComponent(0.6)
-        videoAssetDurationView.backgroundColor = currentTheme.backgroundColor.withAlphaComponent(0.6)
+        baseView.backgroundColor = theme.sectionBackgroundColor
+        photoCheckmarkImageView.tintColor = theme.accentBackgroundColor
+        bestView.backgroundColor = theme.backgroundColor.withAlphaComponent(0.6)
+        videoAssetDurationView.backgroundColor = theme.backgroundColor.withAlphaComponent(0.6)
     }
     
     public func loadCellThumbnail(_ asset: PHAsset, size: CGSize) {

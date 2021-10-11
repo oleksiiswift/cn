@@ -9,16 +9,17 @@ import Foundation
 
 enum PhotoMediaType {
     
-    case duplicatedPhotos
-    case duplicatedVideos
     case similarPhotos
-    case similarVideos
+    case duplicatedPhotos
+    case singleScreenShots
+    case singleLivePhotos
     case similarLivePhotos
+
+    case singleLargeVideos
+    case duplicatedVideos
+    case similarVideos
     
     case singleSelfies
-    case singleLivePhotos
-    case singleLargeVideos
-    case singleScreenShots
     case singleScreenRecordings
     
     case singleRecentlyDeletedPhotos

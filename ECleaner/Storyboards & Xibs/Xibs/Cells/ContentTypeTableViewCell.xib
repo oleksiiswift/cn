@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="18122" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19162" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19144"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -23,6 +23,15 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YPx-No-nMV">
                                 <rect key="frame" x="16" y="4" width="463" height="59"/>
                                 <subviews>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gCn-qZ-Nih" customClass="HorizontalProgressBar" customModule="ECleaner" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="0.0" width="463" height="59"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="color" keyPath="color">
+                                                <color key="value" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                    </view>
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Hxb-wJ-Nlm">
                                         <rect key="frame" x="432" y="19.5" width="15" height="20"/>
                                         <constraints>
@@ -84,13 +93,17 @@
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="trailing" secondItem="Hxb-wJ-Nlm" secondAttribute="trailing" constant="16" id="2zx-bc-71D"/>
+                                    <constraint firstItem="gCn-qZ-Nih" firstAttribute="leading" secondItem="YPx-No-nMV" secondAttribute="leading" id="5wY-pt-UgA"/>
                                     <constraint firstItem="Hxb-wJ-Nlm" firstAttribute="centerY" secondItem="YPx-No-nMV" secondAttribute="centerY" id="73o-cC-fhn"/>
                                     <constraint firstItem="Hxb-wJ-Nlm" firstAttribute="leading" secondItem="AzT-RF-FAf" secondAttribute="trailing" constant="5" id="A94-pY-cc0"/>
                                     <constraint firstAttribute="bottom" secondItem="jUJ-Ih-NgP" secondAttribute="bottom" id="F4C-4g-FXg"/>
+                                    <constraint firstAttribute="bottom" secondItem="gCn-qZ-Nih" secondAttribute="bottom" id="QXQ-5n-ogU"/>
+                                    <constraint firstAttribute="trailing" secondItem="gCn-qZ-Nih" secondAttribute="trailing" id="SMg-QY-3O9"/>
                                     <constraint firstItem="AzT-RF-FAf" firstAttribute="top" secondItem="YPx-No-nMV" secondAttribute="top" constant="10" id="TTv-BL-C4o"/>
                                     <constraint firstItem="jUJ-Ih-NgP" firstAttribute="top" secondItem="YPx-No-nMV" secondAttribute="top" id="TXp-l9-wHG"/>
                                     <constraint firstAttribute="bottom" secondItem="AzT-RF-FAf" secondAttribute="bottom" constant="10" id="arF-Y6-5rL"/>
                                     <constraint firstItem="jUJ-Ih-NgP" firstAttribute="leading" secondItem="YPx-No-nMV" secondAttribute="leading" id="b2b-1k-iNM"/>
+                                    <constraint firstItem="gCn-qZ-Nih" firstAttribute="height" secondItem="YPx-No-nMV" secondAttribute="height" id="i9f-ES-CAj"/>
                                     <constraint firstItem="AzT-RF-FAf" firstAttribute="leading" secondItem="jUJ-Ih-NgP" secondAttribute="trailing" constant="16" id="pJc-pB-vnn"/>
                                 </constraints>
                             </view>
@@ -116,6 +129,7 @@
                 <outlet property="baseView" destination="YPx-No-nMV" id="42z-pI-r3h"/>
                 <outlet property="contentSubtitleTextLabel" destination="nOK-4Y-n1l" id="pvG-9m-LR1"/>
                 <outlet property="contentTypeTextLabel" destination="tma-fH-2HY" id="CaB-SW-CFp"/>
+                <outlet property="horizontalProgressView" destination="gCn-qZ-Nih" id="2qu-9X-In9"/>
                 <outlet property="rightArrowImageView" destination="Hxb-wJ-Nlm" id="Bka-ZC-xzX"/>
                 <outlet property="selectedAssetsContainerView" destination="jUJ-Ih-NgP" id="adF-X2-dXV"/>
                 <outlet property="selectedAssetsImageView" destination="fi5-RT-6Ey" id="sMG-xD-DTQ"/>

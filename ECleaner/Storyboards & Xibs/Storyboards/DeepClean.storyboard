@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="18122" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="dgf-k2-Ase">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19162" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="dgf-k2-Ase">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19144"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -18,10 +18,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="aPq-V3-ZQn">
-                                <rect key="frame" x="0.0" y="125" width="414" height="661"/>
+                                <rect key="frame" x="0.0" y="128" width="414" height="658"/>
                                 <subviews>
                                     <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" translatesAutoresizingMaskIntoConstraints="NO" id="Shn-gL-5Xd">
-                                        <rect key="frame" x="0.0" y="0.0" width="414" height="661"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="658"/>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                     </tableView>
                                 </subviews>
@@ -40,7 +40,7 @@
                                         <rect key="frame" x="16" y="16" width="382" height="54"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nkh-KK-TIW">
-                                                <rect key="frame" x="170" y="16.5" width="42" height="21"/>
+                                                <rect key="frame" x="170.5" y="17" width="41.5" height="20.5"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
@@ -70,20 +70,10 @@
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6Ng-o0-PeD">
-                                <rect key="frame" x="0.0" y="44" width="414" height="81"/>
-                                <subviews>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Myg-MN-QFR">
-                                        <rect key="frame" x="20" y="5" width="374" height="71"/>
-                                        <color key="backgroundColor" white="0.89000000000000001" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                    </view>
-                                </subviews>
+                                <rect key="frame" x="0.0" y="44" width="414" height="84"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <constraints>
-                                    <constraint firstAttribute="bottom" secondItem="Myg-MN-QFR" secondAttribute="bottom" constant="5" id="IL3-jz-jgi"/>
-                                    <constraint firstAttribute="height" constant="81" id="NfA-T9-K4L"/>
-                                    <constraint firstItem="Myg-MN-QFR" firstAttribute="top" secondItem="6Ng-o0-PeD" secondAttribute="top" constant="5" id="daf-HD-aBG"/>
-                                    <constraint firstAttribute="trailing" secondItem="Myg-MN-QFR" secondAttribute="trailing" constant="20" id="qAV-Jn-1Mj"/>
-                                    <constraint firstItem="Myg-MN-QFR" firstAttribute="leading" secondItem="6Ng-o0-PeD" secondAttribute="leading" constant="20" id="qFA-0C-miF"/>
+                                    <constraint firstAttribute="height" constant="84" id="NfA-T9-K4L"/>
                                 </constraints>
                             </view>
                         </subviews>
@@ -106,12 +96,25 @@
                     <navigationItem key="navigationItem" id="vpx-hF-lDg"/>
                     <connections>
                         <outlet property="bottomContainerHeightConstraint" destination="AUQ-2o-b9A" id="rag-sk-09r"/>
+                        <outlet property="dateSelectContainerHeigntConstraint" destination="NfA-T9-K4L" id="Kxc-S3-qiI"/>
+                        <outlet property="dateSelectContainerView" destination="6Ng-o0-PeD" id="xph-dH-vDv"/>
                         <outlet property="tableView" destination="Shn-gL-5Xd" id="A6o-3c-XuL"/>
+                        <segue destination="SRX-sV-Dqj" kind="custom" identifier="ShowDatePickerSelectorViewControllerSegue" customClass="ShowDatePickerSelectorViewControllerSegue" customModule="ECleaner" customModuleProvider="target" id="v7i-we-zer"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="aOG-3J-YcB" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2139.130434782609" y="114.50892857142857"/>
+        </scene>
+        <!--DatePicker-->
+        <scene sceneID="gjw-wz-K4k">
+            <objects>
+                <viewControllerPlaceholder storyboardName="DatePicker" id="SRX-sV-Dqj" sceneMemberID="viewController">
+                    <navigationItem key="navigationItem" id="o8P-po-boj"/>
+                </viewControllerPlaceholder>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="tcT-bU-qXc" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3372" y="115"/>
         </scene>
     </scenes>
     <resources>
