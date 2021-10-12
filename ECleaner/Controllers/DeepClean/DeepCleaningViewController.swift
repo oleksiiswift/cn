@@ -556,9 +556,8 @@ extension DeepCleaningViewController {
         viewController.mediaType = type
         
         if let selectedStrings = selectedAssetsCollectionID[type] {
-            
+            viewController.handlePreviousSelected(selectedAssetsIDs: selectedStrings, assetGroupCollection: collection)
         }
-        
         self.navigationController?.pushViewController(viewController, animated: true)
     }
     

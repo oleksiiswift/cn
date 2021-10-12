@@ -54,6 +54,7 @@ class GroupedAssetListViewController: UIViewController, UIPageViewControllerDele
     
     private var selectedAssets: [PHAsset] = []
     private var selectedSection: Set<Int> = []
+    private var previouslySelectedIndexPaths: [IndexPath] = []
     
     private var splitAssetsNumberOfItems: Int = 0
     private var splitAssets: [PHAsset] = []
@@ -94,6 +95,7 @@ class GroupedAssetListViewController: UIViewController, UIPageViewControllerDele
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        didSelectPreviouslyIndexPath()
 //        updateCachedAssets()
 //        setupPhotoPreviewController()
     }
@@ -270,7 +272,7 @@ extension GroupedAssetListViewController: UICollectionViewDelegate, UICollection
     /// if need select cell from custom cell-button and tap on cell need - return `false`
     
     func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
-        #warning("TODO: hide temporary")
+//        #warning("TODO: hide temporary")
 //        self.changeFlowLayoutAndFocus(at: indexPath)
         return false
     }
@@ -359,7 +361,7 @@ extension GroupedAssetListViewController {
         
         var addingSection: Bool = false
         
-        /// work with assets
+            /// work with assets
         if selectedSection.contains(indexPath.section) {
             for asset in self.assetGroups[indexPath.section].assets {
                 self.selectedAssets.removeAll(asset)
@@ -377,7 +379,7 @@ extension GroupedAssetListViewController {
         sectionHeader.setSelectDeselectButton(addingSection)
         self.handleDeleteAssetsButton()
         
-        /// work with indexes paths
+            /// work with indexes paths
         if addingSection {
             selectedSection.insert(indexPath.section)
             self.collectionView.selectAllItems(in: indexPath.section, first: 1, animated: true)
@@ -752,47 +754,37 @@ extension GroupedAssetListViewController {
         
         for selectedAssetsID in selectedAssetsIDs {
             
-            let indexPath =
+            let sectionIndex = assetGroupCollection.firstIndex(where: {
+                $0.assets.contains(where: {$0.localIdentifier == selectedAssetsID})
+            }).flatMap({
+                $0
+            })
             
+            if let section = sectionIndex {
+                let index: Int = Int(section)
+                let indexPath = assetGroupCollection[index].assets.firstIndex(where: {
+                    $0.localIdentifier == selectedAssetsID
+                }).flatMap({
+                    IndexPath(row: $0, section: index)
+                })
+                
+                if let existingIndexPath = indexPath {
+                    self.previouslySelectedIndexPaths.append(existingIndexPath)
+                }
+            }
         }
     }
     
-    
-//    public func handleAssetsPreviousSelected(selectedAssetsIDs: [String], assetCollection: [PHAsset]) {
-//
-//        for selectedAssetsID in selectedAssetsIDs {
-//
-//            let indexPath = assetCollection.firstIndex(where: {
-//                $0.localIdentifier == selectedAssetsID
-//            }).flatMap({
-//                IndexPath(row: $0, section: 0)
-//            })
-//
-//            if let existingIndexPath = indexPath {
-//                self.previouslySelectedIndexPaths.append(existingIndexPath)
-//            }
-//        }
-//    }
-    
-//    private func didSelectPreviouslyIndexPath() {
-//
-//        guard isDeepCleaningSelectableFlow, !previouslySelectedIndexPaths.isEmpty else { return }
-//
-//        for indexPath in previouslySelectedIndexPaths {
-//            self.collectionView.selectItem(at: indexPath, animated: false, scrollPosition: [])
-//            self.collectionView.delegate?.collectionView?(self.collectionView, didSelectItemAt: indexPath)
-//
-//            if let cell = self.collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell {
-//                cell.checkIsSelected()
-//            }
-//        }
-//
-//        handleSelectAllButtonState()
-//    }
-    
-    
-    
-    
+    private func didSelectPreviouslyIndexPath() {
+        
+        guard isDeepCleaningSelectableFlow, !previouslySelectedIndexPaths.isEmpty else { return }
+        
+        for indexPath in previouslySelectedIndexPaths {
+            self.collectionView.selectItem(at: indexPath, animated: false, scrollPosition: [])
+            self.collectionView.delegate?.collectionView?(self.collectionView, didSelectItemAt: indexPath)
+        }
+        self.lazyHardcoreCheckForSelectedItemsAndAssets()
+    }
 }
 
 //      MARK: - delegates flow - 
