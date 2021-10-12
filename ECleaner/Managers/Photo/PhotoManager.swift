@@ -394,7 +394,7 @@ extension PhotoManager {
                         debugPrint("live photo position", livePosition)
                         
                         if isDeepCleanScan {
-                            self.progressNotificationManager.sendDeepProgressNotificatin(notificationType: .livePhoto,
+                            self.progressNotificationManager.sendDeepProgressNotificatin(notificationType: .similarLivePhoto,
                                                                                      totalProgressItems: livePhotoGallery.count,
                                                                                      currentProgressItem: livePosition)
                         }

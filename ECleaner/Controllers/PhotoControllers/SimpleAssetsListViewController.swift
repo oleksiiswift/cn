@@ -25,6 +25,7 @@ class SimpleAssetsListViewController: UIViewController {
     private lazy var backBarButtonItem = UIBarButtonItem(image: I.navigationItems.leftShevronBack, style: .plain, target: self, action: #selector(didTapBackButton))
     
     public var assetCollection: [PHAsset] = []
+    private var previouslySelectedIndexPaths: [IndexPath] = []
     public var mediaType: PhotoMediaType = .none
     
     public var isDeepCleaningSelectableFlow: Bool = false
@@ -42,6 +43,13 @@ class SimpleAssetsListViewController: UIViewController {
         setupNavigation()
         setupListenersAndObservers()
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        didSelectPreviouslyIndexPath()
+    }
+
     
     @IBAction func didTapDeleteAssetsActionButton(_ sender: Any) {
         showDeleteSelectedAssetsAlert()
@@ -84,7 +92,7 @@ extension SimpleAssetsListViewController: UICollectionViewDelegate, UICollection
         } else {
             cell.isSelected = false
         }
-        
+
         cell.checkIsSelected()
         
         /// config thumbnail according screen type
@@ -139,7 +147,8 @@ extension SimpleAssetsListViewController: UICollectionViewDelegate, UICollection
     }
     
     func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
-        debugPrint("some other func ")
+        /// use delegate select cell
+        /// on tap on cell opened full screen photo preivew
         return false
     }
         
@@ -167,7 +176,7 @@ extension SimpleAssetsListViewController: PhotoCollectionViewCellDelegate {
     /// custom select deselect button for selected cells
     /// did select item need for preview photo
     /// need handle select button state and check cell.isSelected for checkmark image
-    /// for celected cell use cell delegate and indexPath
+    /// for selected cell use cell delegate and indexPath
     
     func didSelectCell(at indexPath: IndexPath) {
         if let cell = self.collectionView.cellForItem(at: indexPath) {
@@ -183,18 +192,52 @@ extension SimpleAssetsListViewController: PhotoCollectionViewCellDelegate {
         handleSelectAllButtonState()
         handleBottomButtonMenu()
     }
+    
+    
+    /// handle previously selected indexPath if back from deep clean screen
+    public func handleAssetsPreviousSelected(selectedAssetsIDs: [String], assetCollection: [PHAsset]) {
+        
+        for selectedAssetsID in selectedAssetsIDs {
+        
+            let indexPath = assetCollection.firstIndex(where: {
+                $0.localIdentifier == selectedAssetsID
+            }).flatMap({
+                IndexPath(row: $0, section: 0)
+            })
+            
+            if let existingIndexPath = indexPath {
+                self.previouslySelectedIndexPaths.append(existingIndexPath)
+            }
+        }
+    }
+    
+    private func didSelectPreviouslyIndexPath() {
+        
+        guard isDeepCleaningSelectableFlow, !previouslySelectedIndexPaths.isEmpty else { return }
+        
+        for indexPath in previouslySelectedIndexPaths {
+            self.collectionView.selectItem(at: indexPath, animated: false, scrollPosition: [])
+            self.collectionView.delegate?.collectionView?(self.collectionView, didSelectItemAt: indexPath)
+            
+            if let cell = self.collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell {
+                cell.checkIsSelected()
+            }
+        }
+        
+        handleSelectAllButtonState()
+    }
 }
 
 extension SimpleAssetsListViewController {
     
     @objc func didTapBackButton() {
         
-        guard let selectedIndexPath = self.collectionView.indexPathsForSelectedItems else { return }
+        guard let selectedIndexPath = self.collectionView.indexPathsForSelectedItems, isDeepCleaningSelectableFlow else { return }
         
         var selectedAssetsIDs: [String] = []
         
         selectedIndexPath.forEach { indexPath in
-            let assetInCollection = self.assetCollection[indexPath.row]            
+            let assetInCollection = self.assetCollection[indexPath.row]
             selectedAssetsIDs.append(assetInCollection.localIdentifier)
         }
             
@@ -319,7 +362,6 @@ extension SimpleAssetsListViewController {
 }
 
 //      MARK: - setup UI -
-
 extension SimpleAssetsListViewController: Themeble {
     
     func setupUI() {
@@ -353,13 +395,6 @@ extension SimpleAssetsListViewController: Themeble {
         
     }
 }
-
-
-
-
-
-
-
 
 //      MARK: - updating screen if photolibrary did change it content -
 

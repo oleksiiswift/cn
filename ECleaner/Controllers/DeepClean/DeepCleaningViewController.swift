@@ -59,8 +59,7 @@ class DeepCleaningViewController: UIViewController {
     
     /// files
     /// `selected groups of all assets to delete`
-    private var selectedAssetsCollectionID = Set<String>()
-    public var cleaningAssetsList: [String] = []
+    private var selectedAssetsCollectionID: [PhotoMediaType : [String]] = [:]
     
     /// `file processing check count`
     public var totalFilesOnDevice: Int = 0
@@ -68,8 +67,9 @@ class DeepCleaningViewController: UIViewController {
     private var totalPercentageCalculated: CGFloat = 0
     private var totalDeepCleanProgress: [CGFloat] = [0,0,0,0,0,0,0,0]
     private var totalDeepCleanFilesCountIn: [Int] = [0,0,0,0,0,0,0,0]
-    private var handleSelectedAssetsForMediatype: [PhotoMediaType: Bool] = [:]
+    private var handleSelectedAssetsForRowMediatype: [PhotoMediaType: Bool] = [:]
     private var doneProcessingDeepCleanForMedia: [PhotoMediaType : Bool] = [:]
+    private var currentProgressForRawMediatype: [PhotoMediaType: CGFloat] = [:]
     
     /// `finding duplicates and assets`
     private var similarPhoto: [PhassetGroup] = []
@@ -92,18 +92,6 @@ class DeepCleaningViewController: UIViewController {
     private var allContacts: [Int] = []
     private var emptyContacts: [Int] = []
     private var duplicatedContacts: [Int] = []
-    
-    private var currentProgressScreenShots: CGFloat = 0
-    private var currentProgressSimilarPhoto: CGFloat = 0
-    private var currentProgressDuplicatedPhoto: CGFloat = 0
-    private var currentProgressSimilarLivePhoto: CGFloat = 0
-    private var currentProgressLargeVideos: CGFloat = 0
-    private var currentProgressSimilarVideo: CGFloat = 0
-    private var currentProgressDuplicatedVideo: CGFloat = 0
-    private var currentProgressScreenRecordings: CGFloat = 0
-    private var currentProgressAllContacts: CGFloat = 0
-    private var currentProgressEmptyContacts: CGFloat = 0
-    private var currentProgressDuplicateContacts: CGFloat = 0
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -116,12 +104,16 @@ class DeepCleaningViewController: UIViewController {
         updateTotalFilesTitleChecked(0)
         setupObserversAndDelegate()
         updateColors()
-        self.startDeepCleanScan()
+        
+        U.delay(3) {
+            self.startDeepCleanScan()
+        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
         
         
+//        checkStartCleaningButtonState(true)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -239,11 +231,17 @@ extension DeepCleaningViewController {
 
     private func checkStartCleaningButtonState(_ animate: Bool) {
         
-        bottomContainerHeightConstraint.constant = cleaningAssetsList.count > 0 ? (bottomMenuHeight + U.bottomSafeAreaHeight - 5) : 0
-        self.tableView.contentInset.bottom = cleaningAssetsList.count > 0 ? 10 : 5
-        
+        let selectedAssetsCount = selectedAssetsCollectionID.values.compactMap({$0}).flatMap({$0}).count
+        bottomContainerHeightConstraint.constant = selectedAssetsCount > 0 ? (bottomMenuHeight + U.bottomSafeAreaHeight - 5) : 0
+        self.tableView.contentInset.bottom = selectedAssetsCount > 0 ? 10 : 5
+                
         if animate {
             U.animate(0.5) {
+                self.tableView.layoutIfNeeded()
+                self.view.layoutIfNeeded()
+            }
+        } else {
+            U.UI {
                 self.tableView.layoutIfNeeded()
                 self.view.layoutIfNeeded()
             }
@@ -303,14 +301,13 @@ extension DeepCleaningViewController: DeepCleanSelectableAssetsDelegate {
     func didSelect(assetsListIds: [String], mediaType: PhotoMediaType) {
         
         if let cell = self.tableView.cellForRow(at: mediaType.indexPath) as? ContentTypeTableViewCell {
-            self.handleSelectedAssetsForMediatype[mediaType] = !assetsListIds.isEmpty
-            
-            selectedAssetsCollectionID = selectedAssetsCollectionID.union(Set(assetsListIds))
-            
-            let isSelected = self.handleSelectedAssetsForMediatype[mediaType] ?? false
+            let isSelected = !assetsListIds.isEmpty
+            self.handleSelectedAssetsForRowMediatype[mediaType] = isSelected
+            self.selectedAssetsCollectionID[mediaType] = assetsListIds
             
             U.UI {
                 cell.setupCellSelected(at: mediaType.indexPath, isSelected: isSelected)
+                self.checkStartCleaningButtonState(true)
             }
         }
     }
@@ -329,7 +326,7 @@ extension DeepCleaningViewController {
             case C.key.notification.deepCleanScreenShotsPhotoPhassetScan:
                 self.recieveNotification(by: .screenshots, info: notification.userInfo)
             case C.key.notification.deepCleanSimilarLivePhotosPhassetScan:
-                self.recieveNotification(by: .livePhoto, info: notification.userInfo)
+                self.recieveNotification(by: .similarLivePhoto, info: notification.userInfo)
             case C.key.notification.deepCleanLargeVideoPhassetScan:
                 self.recieveNotification(by: .largeVideo, info: notification.userInfo)
             case C.key.notification.deepCleanDuplicateVideoPhassetScan:
@@ -399,49 +396,34 @@ extension DeepCleaningViewController {
         }
     }
 
-    private func progressUpdate(_ type: DeepCleanNotificationType, progress: CGFloat, title: String) {
+    private func progressUpdate(_ notificationType: DeepCleanNotificationType, progress: CGFloat, title: String) {
         
-        var indexPath = IndexPath()
+        let indexPath = notificationType.mediaTypeRawValue.indexPath
+        self.currentProgressForRawMediatype[notificationType.mediaTypeRawValue] = progress
         
-        switch type {
+        switch notificationType {
             case .similarPhoto:
-                indexPath = PhotoMediaType.similarLivePhotos.indexPath
-                self.currentProgressSimilarPhoto = progress
                 self.totalDeepCleanProgress[0] = progress
             case .duplicatePhoto:
-                indexPath = PhotoMediaType.duplicatedPhotos.indexPath
-                self.currentProgressDuplicatedPhoto = progress
                 self.totalDeepCleanProgress[1] = progress
             case .screenshots:
-                indexPath = PhotoMediaType.singleScreenShots.indexPath
-                self.currentProgressScreenShots = progress
                 self.totalDeepCleanProgress[2] = progress
-            case .livePhoto:
-                indexPath = PhotoMediaType.similarLivePhotos.indexPath
-                self.currentProgressSimilarLivePhoto = progress
+            case .similarLivePhoto:
                 self.totalDeepCleanProgress[3] = progress
             case .largeVideo:
-                indexPath = PhotoMediaType.singleLargeVideos.indexPath
-                self.currentProgressLargeVideos = progress
                 self.totalDeepCleanProgress[4] = progress
             case .duplicateVideo:
-                indexPath = PhotoMediaType.duplicatedVideos.indexPath
-                self.currentProgressDuplicatedVideo = progress
                 self.totalDeepCleanProgress[5] = progress
             case .similarVideo:
-                indexPath = PhotoMediaType.similarVideos.indexPath
-                self.currentProgressSimilarVideo = progress
                 self.totalDeepCleanProgress[6] = progress
             case .screenRecordings:
-                indexPath = PhotoMediaType.singleScreenRecordings.indexPath
-                self.currentProgressScreenRecordings = progress
                 self.totalDeepCleanProgress[7] = progress
             case .allContacts:
-                indexPath = PhotoMediaType.allContacts.indexPath
+                debugPrint("todo")
             case .emptyContacts:
-                indexPath = PhotoMediaType.emptyContacts.indexPath
+                debugPrint("todo")
             case .duplicateContacts:
-                indexPath = PhotoMediaType.duplicatedContacts.indexPath
+                debugPrint("todo")
         }
         
         guard !indexPath.isEmpty else { return }
@@ -572,6 +554,11 @@ extension DeepCleaningViewController {
         viewController.assetGroups = collection
         viewController.selectedAssetsDelegate = self
         viewController.mediaType = type
+        
+        if let selectedStrings = selectedAssetsCollectionID[type] {
+            
+        }
+        
         self.navigationController?.pushViewController(viewController, animated: true)
     }
     
@@ -583,6 +570,11 @@ extension DeepCleaningViewController {
         viewController.assetCollection = collection
         viewController.selectedAssetsDelegate = self
         viewController.mediaType = type
+        
+        if let selectedStrings = selectedAssetsCollectionID[type] {
+            viewController.handleAssetsPreviousSelected(selectedAssetsIDs: selectedStrings, assetCollection: collection)
+        }
+
         self.navigationController?.pushViewController(viewController, animated: true)
     }
 }
@@ -601,7 +593,7 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
     private func configure(_ cell: ContentTypeTableViewCell, at indexPath: IndexPath) {
         
         let contentType = MediaType.getMediaContentType(from: indexPath)
-        let isSelected = self.handleSelectedAssetsForMediatype[contentType] ?? false
+        let isSelected = self.handleSelectedAssetsForRowMediatype[contentType] ?? false
         cell.setupCellSelected(at: indexPath, isSelected: isSelected)
         
         switch indexPath.section {
@@ -612,14 +604,14 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
                                         indexPath: indexPath,
                                         phasetCount: self.similarPhotosCount,
                                         isDeepCleanController: true,
-                                        progress: self.currentProgressSimilarPhoto,
+                                        progress: self.currentProgressForRawMediatype[.similarPhotos] ?? 0,
                                         isProcessingComplete: doneProcessingDeepCleanForMedia[.similarPhotos] ?? false)
                     case 1:
                         cell.cellConfig(contentType: .userPhoto,
                                         indexPath: indexPath,
                                         phasetCount: self.duplicatedPhotosCount,
                                         isDeepCleanController: true,
-                                        progress: self.currentProgressDuplicatedPhoto,
+                                        progress: self.currentProgressForRawMediatype[.duplicatedPhotos] ?? 0,
                                         isProcessingComplete: doneProcessingDeepCleanForMedia[.duplicatedPhotos] ?? false)
                                         
                     case 2:
@@ -627,7 +619,7 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
                                         indexPath: indexPath,
                                         phasetCount: self.screenShots.count,
                                         isDeepCleanController: true,
-                                        progress: self.currentProgressScreenShots,
+                                        progress: self.currentProgressForRawMediatype[.singleScreenShots] ?? 0,
                                         isProcessingComplete: doneProcessingDeepCleanForMedia[.singleScreenShots] ?? false)
                     case 3:
                     
@@ -635,7 +627,7 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
                                         indexPath: indexPath,
                                         phasetCount: self.similarLivePhotosCount,
                                         isDeepCleanController: true,
-                                        progress: self.currentProgressSimilarLivePhoto,
+                                        progress: self.currentProgressForRawMediatype[.similarLivePhotos] ?? 0,
                                         isProcessingComplete: doneProcessingDeepCleanForMedia[.similarLivePhotos] ?? false)
                     default:
                         return
@@ -647,7 +639,7 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
                                         indexPath: indexPath,
                                         phasetCount: self.largeVideos.count,
                                         isDeepCleanController: true,
-                                        progress: self.currentProgressLargeVideos,
+                                        progress: self.currentProgressForRawMediatype[.singleLargeVideos] ?? 0,
                                         isProcessingComplete: doneProcessingDeepCleanForMedia[.singleLargeVideos] ?? false)
                                         
                     case 1:
@@ -655,14 +647,14 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
                                         indexPath: indexPath,
                                         phasetCount: self.duplicatedVideosCount,
                                         isDeepCleanController: true,
-                                        progress: self.currentProgressDuplicatedVideo,
+                                        progress: self.currentProgressForRawMediatype[.duplicatedVideos] ?? 0,
                                         isProcessingComplete: doneProcessingDeepCleanForMedia[.duplicatedVideos] ?? false)
                     case 2:
                         cell.cellConfig(contentType: .userVideo,
                                         indexPath: indexPath,
                                         phasetCount: self.similarVideoCount,
                                         isDeepCleanController: true,
-                                        progress: self.currentProgressSimilarVideo,
+                                        progress: self.currentProgressForRawMediatype[.similarVideos] ?? 0,
                                         isProcessingComplete: doneProcessingDeepCleanForMedia[.similarVideos] ?? false)
                                         
                     case 3:
@@ -670,7 +662,7 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
                                         indexPath: indexPath,
                                         phasetCount: self.screenRecordings.count,
                                         isDeepCleanController: true,
-                                        progress: self.currentProgressScreenRecordings,
+                                        progress: self.currentProgressForRawMediatype[.singleScreenRecordings] ?? 0,
                                         isProcessingComplete: doneProcessingDeepCleanForMedia[.singleScreenRecordings] ?? false)
                     default:
                         return
@@ -682,19 +674,19 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
                                         indexPath: indexPath,
                                         phasetCount: self.allContacts.count,
                                         isDeepCleanController: true,
-                                        progress: self.currentProgressAllContacts)
+                                        progress: self.currentProgressForRawMediatype[.allContacts] ?? 0)
                     case 1:
                         cell.cellConfig(contentType: .userContacts,
                                         indexPath: indexPath,
                                         phasetCount: self.emptyContacts.count,
                                         isDeepCleanController: true,
-                                        progress: self.currentProgressEmptyContacts)
+                                        progress: self.currentProgressForRawMediatype[.emptyContacts] ?? 0)
                     case 2:
                         cell.cellConfig(contentType: .userContacts,
                                         indexPath: indexPath,
                                         phasetCount: self.duplicatedContacts.count,
                                         isDeepCleanController: true,
-                                        progress: self.currentProgressDuplicateContacts)
+                                        progress: self.currentProgressForRawMediatype[.duplicatedContacts] ?? 0)
                     default:
                         return
                 }

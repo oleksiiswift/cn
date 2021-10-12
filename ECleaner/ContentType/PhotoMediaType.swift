@@ -7,32 +7,31 @@
 
 import Foundation
 
-enum PhotoMediaType {
+enum PhotoMediaType: String {
     
-    case similarPhotos
-    case duplicatedPhotos
-    case singleScreenShots
-    case singleLivePhotos
-    case similarLivePhotos
+    case similarPhotos = "similarPhotos"
+    case duplicatedPhotos = "duplicatedPhotos"
+    case singleScreenShots = "singleScreenShots"
+    case singleLivePhotos = "singleLivePhotos"
+    case similarLivePhotos = "similarLivePhotos"
 
-    case singleLargeVideos
-    case duplicatedVideos
-    case similarVideos
+    case singleLargeVideos = "singleLargeVideos"
+    case duplicatedVideos = "duplicatedVideos"
+    case similarVideos = "similarVideos"
     
-    case singleSelfies
-    case singleScreenRecordings
+    case singleSelfies = "singleSelfies"
+    case singleScreenRecordings = "singleScreenRecordings"
     
-    case singleRecentlyDeletedPhotos
-    case singleRecentlyDeletedVideos
+    case singleRecentlyDeletedPhotos = "singleRecentlyDeletedPhotos"
+    case singleRecentlyDeletedVideos = "singleRecentlyDeletedVideos"
     
-    case allContacts
-    case emptyContacts
-    case duplicatedContacts
+    case allContacts = "allContacts"
+    case emptyContacts = "emptyContacts"
+    case duplicatedContacts = "duplicatedContacts"
     
-    case none
+    case none = ""
     
     /// use this only for deep cleab screen section
-
     var indexPath: IndexPath {
      
         switch self {

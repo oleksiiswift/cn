@@ -706,6 +706,7 @@ extension GroupedAssetListViewController {
 extension GroupedAssetListViewController: SelectDropDownMenuDelegate {
     
     func selectedItemListViewController(_ controller: DropDownMenuViewController, didSelectItem: DropDownMenuItems) {
+        
         switch didSelectItem {
             case .changeLayout:
                 self.changeFlowLayoutAndFocus(at: IndexPath(row: 0, section: 0))
@@ -740,19 +741,58 @@ extension GroupedAssetListViewController {
     
     @objc func didTapBackButton() {
         
-        if selectedAssets.isEmpty {
-            self.navigationController?.popViewController(animated: true)
-        } else {
-            var selectedAssetsIDs: [String] = []
+        guard isDeepCleaningSelectableFlow else { return }
+        
+        let selectedAssetsIDs: [String] = selectedAssets.compactMap({ $0.localIdentifier})
+        self.selectedAssetsDelegate?.didSelect(assetsListIds: selectedAssetsIDs, mediaType: self.mediaType)
+        self.navigationController?.popViewController(animated: true)
+    }
+    
+    public func handlePreviousSelected(selectedAssetsIDs: [String], assetGroupCollection: [PhassetGroup]) {
+        
+        for selectedAssetsID in selectedAssetsIDs {
             
-            selectedAssets.forEach { asset in
-                selectedAssetsIDs.append(asset.localIdentifier)
-            }
+            let indexPath =
             
-            self.selectedAssetsDelegate?.didSelect(assetsListIds: selectedAssetsIDs, mediaType: self.mediaType)
-            self.navigationController?.popViewController(animated: true)
         }
     }
+    
+    
+//    public func handleAssetsPreviousSelected(selectedAssetsIDs: [String], assetCollection: [PHAsset]) {
+//
+//        for selectedAssetsID in selectedAssetsIDs {
+//
+//            let indexPath = assetCollection.firstIndex(where: {
+//                $0.localIdentifier == selectedAssetsID
+//            }).flatMap({
+//                IndexPath(row: $0, section: 0)
+//            })
+//
+//            if let existingIndexPath = indexPath {
+//                self.previouslySelectedIndexPaths.append(existingIndexPath)
+//            }
+//        }
+//    }
+    
+//    private func didSelectPreviouslyIndexPath() {
+//
+//        guard isDeepCleaningSelectableFlow, !previouslySelectedIndexPaths.isEmpty else { return }
+//
+//        for indexPath in previouslySelectedIndexPaths {
+//            self.collectionView.selectItem(at: indexPath, animated: false, scrollPosition: [])
+//            self.collectionView.delegate?.collectionView?(self.collectionView, didSelectItemAt: indexPath)
+//
+//            if let cell = self.collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell {
+//                cell.checkIsSelected()
+//            }
+//        }
+//
+//        handleSelectAllButtonState()
+//    }
+    
+    
+    
+    
 }
 
 //      MARK: - delegates flow - 
