@@ -62,7 +62,7 @@ class DeepCleaningViewController: UIViewController {
     private var selectedAssetsCollectionID: [PhotoMediaType : [String]] = [:]
     
     /// `file processing check count`
-    public var totalFilesOnDevice: Int = 0
+    private var totalFilesOnDevice: Int = 0
     private var totalFilesChecked: Int = 0
     private var totalPercentageCalculated: CGFloat = 0
     private var totalDeepCleanProgress: [CGFloat] = [0,0,0,0,0,0,0,0]
@@ -106,7 +106,10 @@ class DeepCleaningViewController: UIViewController {
         updateColors()
         
         U.delay(3) {
-            self.startDeepCleanScan()
+             self.photoManager.getPhotoAssetsCount(from: self.startingDate, to: self.endingDate) { allAssetsCount in
+                  self.totalFilesOnDevice = allAssetsCount
+                  self.startDeepCleanScan()
+             }
         }
     }
     
@@ -361,21 +364,23 @@ extension DeepCleaningViewController {
         }
     }
     
-    private func handleTotalFilesChecked(by type: DeepCleanNotificationType, files count: Int) {
-        
-        switch type {
-            case .similarPhoto:
-                self.totalDeepCleanFilesCountIn[0] = count
-            case .duplicatePhoto:
-                self.totalDeepCleanFilesCountIn[1] = count
-            case .duplicateVideo:
-                self.totalDeepCleanFilesCountIn[5] = count
-            case .similarVideo:
-                self.totalDeepCleanFilesCountIn[6] = count
-            default:
-                return
-        }
-    }
+     private func handleTotalFilesChecked(by type: DeepCleanNotificationType, files count: Int) {
+          
+          switch type {
+               case .similarPhoto:
+                    self.totalDeepCleanFilesCountIn[0] = count
+               case .duplicatePhoto:
+                    self.totalDeepCleanFilesCountIn[1] = count
+               case .duplicateVideo:
+                    self.totalDeepCleanFilesCountIn[5] = count
+               case .similarVideo:
+                    self.totalDeepCleanFilesCountIn[6] = count
+               case .largeVideo:
+                    self.totalDeepCleanFilesCountIn[4] = count
+               default:
+                    return
+          }
+     }
     
     private func updateTotalFilesTitleChecked(_ totalFiles: Int) {
         
@@ -386,9 +391,12 @@ extension DeepCleaningViewController {
         let countAllProcessing = totalDeepCleanFilesCountIn.sum() / 2
                 
         totalFilesChecked = countAllProcessing + totalVideoProcessing
-        
-        totalPercentageCalculated = CGFloat((totalFilesChecked * 100) / self.totalFilesOnDevice)
-    
+         
+         if self.totalFilesOnDevice == 0 {
+              totalPercentageCalculated = 0
+         } else {
+              totalPercentageCalculated = CGFloat((totalFilesChecked * 100) / self.totalFilesOnDevice)
+         }
         
         if let cell = self.tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? DeepCleanInfoTableViewCell {
             cell.setProgress(files: totalFilesChecked)

@@ -33,6 +33,20 @@ enum SortingDesriptionKey {
 class PHAssetFetchManager {
     
     static let shared = PHAssetFetchManager()
+
+    public func fetchTotalAssetsCount(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", completionHandler: @escaping (Int) -> Void) {
+        
+        let fetchOptions = PHFetchOptions()
+        fetchOptions.sortDescriptors = [NSSortDescriptor(key: SortingDesriptionKey.creationDate.value, ascending: false)]
+        fetchOptions.predicate = NSPredicate(format: "mediaType = %d || mediaType = %d", PHAssetMediaType.image.rawValue, PHAssetMediaType.video.rawValue, "\(SDKey.mediaType.value) = %d AND (\(SDKey.creationDate.value) >= %@) AND (\(SDKey.creationDate.value) <= %@)",
+                                                         startDate.NSDateConverter(format: C.dateFormat.fullDmy),
+                                                         endDate.NSDateConverter(format: C.dateFormat.fullDmy))
+        
+        let pholeAssets = PHAsset.fetchAssets(with: fetchOptions)
+        
+        completionHandler(pholeAssets.count)
+    }
+    
     
     public func fetchFromGallery(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", collectiontype: PHAssetCollectionSubtype, by type: Int, completionHandler: @escaping ((_ result: PHFetchResult<PHAsset>) -> Void)) {
         let fetchOptions = PHFetchOptions()

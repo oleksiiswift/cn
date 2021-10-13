@@ -118,7 +118,7 @@
 /* Begin PBXFileReference section */
 		0405AA58269D77A5004AC07A /* CMtime+StringDuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CMtime+StringDuration.swift"; sourceTree = "<group>"; };
 		0405AA5A269D9BD6004AC07A /* PreviewAVController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewAVController.swift; sourceTree = "<group>"; };
-		040E288726A98B0F0019F372 /* DeepCleaningViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepCleaningViewController.swift; sourceTree = "<group>"; };
+		040E288726A98B0F0019F372 /* DeepCleaningViewController.swift */ = {isa = PBXFileReference; indentWidth = 5; lastKnownFileType = sourcecode.swift; path = DeepCleaningViewController.swift; sourceTree = "<group>"; };
 		040E288A26A98C790019F372 /* DeepClean.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = DeepClean.storyboard; sourceTree = "<group>"; };
 		044281FB2692F95A00B6B47C /* DropDownMenuViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropDownMenuViewController.swift; sourceTree = "<group>"; };
 		044281FD2692F9B800B6B47C /* SelectDropDownMenuDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectDropDownMenuDelegate.swift; sourceTree = "<group>"; };
@@ -1200,7 +1200,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = XPH478SCV6;
+				DEVELOPMENT_TEAM = 7684Y6KS7W;
 				INFOPLIST_FILE = ECleaner/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1222,7 +1222,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = XPH478SCV6;
+				DEVELOPMENT_TEAM = 7684Y6KS7W;
 				INFOPLIST_FILE = ECleaner/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (

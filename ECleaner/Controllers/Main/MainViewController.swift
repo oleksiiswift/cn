@@ -30,6 +30,7 @@ class MainViewController: UIViewController {
     private var allPhotoCount: Int?
     private var allVideosCount: Int?
     private var allContactsCount: Int?
+    private var totalFilesOnDevice: Int?
     
     private var photoDiskSpaceCount: Int64? {
         get {
@@ -56,7 +57,7 @@ class MainViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-    
+        
         setupObserversAndDelegates()
         setupNavigation()
         setupUI()
@@ -210,7 +211,7 @@ extension MainViewController {
     private func openDeepCleanController() {
         let storyboard = UIStoryboard(name: C.identifiers.storyboards.deep, bundle: nil)
         let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.deepClean) as! DeepCleaningViewController
-        viewController.totalFilesOnDevice = (self.allPhotoCount ?? 0) + (self.allVideosCount ?? 0)
+    
         viewController.scansOptions = [.similarPhotos,
                                        .similarVideos,
                                        .duplicatedPhotos,

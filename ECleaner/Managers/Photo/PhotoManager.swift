@@ -122,6 +122,14 @@ class PhotoManager: NSObject {
         }
     }
     
+    
+    public func getPhotoAssetsCount(from startDate: String, to endDate: String, completion: @escaping (Int) -> Void) {
+        
+        self.fetchManager.fetchTotalAssetsCount(from: startDate, to: endDate) { totalCount in
+            completion(totalCount)
+        }
+    }
+
     public func calculateScreenRecordsCout() {
         debugPrint("start screen records")
         self.getScreenRecordsVideos { assets in
