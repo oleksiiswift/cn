@@ -47,6 +47,9 @@
                                             </label>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SbI-Cu-zia">
                                                 <rect key="frame" x="0.0" y="0.0" width="382" height="54"/>
+                                                <connections>
+                                                    <action selector="didTapProcessingActionButton:" destination="dgf-k2-Ase" eventType="touchUpInside" id="ZZC-qg-xN9"/>
+                                                </connections>
                                             </button>
                                         </subviews>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -96,8 +99,11 @@
                     <navigationItem key="navigationItem" id="vpx-hF-lDg"/>
                     <connections>
                         <outlet property="bottomContainerHeightConstraint" destination="AUQ-2o-b9A" id="rag-sk-09r"/>
+                        <outlet property="bottomMenuView" destination="Wky-jb-hpF" id="Kjo-QL-zAs"/>
                         <outlet property="dateSelectContainerHeigntConstraint" destination="NfA-T9-K4L" id="Kxc-S3-qiI"/>
                         <outlet property="dateSelectContainerView" destination="6Ng-o0-PeD" id="xph-dH-vDv"/>
+                        <outlet property="processingButtonTextLabel" destination="Nkh-KK-TIW" id="1J1-cE-Toj"/>
+                        <outlet property="processingButtonView" destination="xBL-TH-P3k" id="Gza-1u-OQn"/>
                         <outlet property="tableView" destination="Shn-gL-5Xd" id="A6o-3c-XuL"/>
                         <segue destination="SRX-sV-Dqj" kind="custom" identifier="ShowDatePickerSelectorViewControllerSegue" customClass="ShowDatePickerSelectorViewControllerSegue" customModule="ECleaner" customModuleProvider="target" id="v7i-we-zer"/>
                     </connections>
