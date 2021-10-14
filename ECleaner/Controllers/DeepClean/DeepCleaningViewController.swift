@@ -19,15 +19,9 @@ class DeepCleaningViewController: UIViewController {
      
      @IBOutlet weak var dateSelectContainerView: UIView!
      @IBOutlet weak var tableView: UITableView!
-     
-     
      @IBOutlet weak var bottomMenuView: UIView!
-     
      @IBOutlet weak var processingButtonView: UIView!
-     
      @IBOutlet weak var processingButtonTextLabel: UILabel!
-     
-     
      @IBOutlet weak var dateSelectContainerHeigntConstraint: NSLayoutConstraint!
      @IBOutlet weak var bottomContainerHeightConstraint: NSLayoutConstraint!
      
@@ -75,6 +69,7 @@ class DeepCleaningViewController: UIViewController {
      private var totalFilesOnDevice: Int = 0
      private var totalFilesChecked: Int = 0
      private var totalPercentageCalculated: CGFloat = 0
+     private var totalPartitinAssetsCount: [AssetsGroupType: Int] = [:]
      private var totalDeepCleanProgress: [CGFloat] = [0,0,0,0,0,0,0,0]
      private var totalDeepCleanFilesCountIn: [Int] = [0,0,0,0,0,0,0,0]
      private var handleSelectedAssetsForRowMediatype: [PhotoMediaType: Bool] = [:]
@@ -141,25 +136,16 @@ class DeepCleaningViewController: UIViewController {
 //      MARK: deep cleaning algorithm
 extension DeepCleaningViewController {
      
-     // in completion done
-//     U.delay(2) {
-//
-//          self.checkStartCleaningButtonState(true)
-//          self.prepareButtonsStateStartingProcessing(activate: false)
-//
-//
-//     }
-     
      private func prepareStartDeepCleanProcessing() {
           
           self.photoManager.getPhotoAssetsCount(from: self.startingDate, to: self.endingDate) { allAssetsCount in
                self.totalFilesOnDevice = allAssetsCount
                
-               
-               U.delay(5) {
+               self.photoManager.getPartitionalMediaAssetsCount(from: self.startingDate, to: self.endingDate) { assetGroupPartitionCount in
+                    self.totalPartitinAssetsCount = assetGroupPartitionCount
                     self.checkStartCleaningButtonState(true)
+                    self.startDeepCleanScan()
                }
-               
           }
      }
      
@@ -403,12 +389,20 @@ extension DeepCleaningViewController {
                     self.totalDeepCleanFilesCountIn[0] = count
                case .duplicatePhoto:
                     self.totalDeepCleanFilesCountIn[1] = count
+               case .screenshots:
+//                    self.totalDeepCleanFilesCountIn[2] = count
+                    return
+               case .similarLivePhoto:
+//                    self.totalDeepCleanFilesCountIn[3] = count
+                    return
+               case .largeVideo:
+                    self.totalDeepCleanFilesCountIn[4] = count
                case .duplicateVideo:
                     self.totalDeepCleanFilesCountIn[5] = count
                case .similarVideo:
                     self.totalDeepCleanFilesCountIn[6] = count
-               case .largeVideo:
-                    self.totalDeepCleanFilesCountIn[4] = count
+               case .screenRecordings:
+                    self.totalDeepCleanFilesCountIn[7] = count
                default:
                     return
           }
@@ -416,23 +410,86 @@ extension DeepCleaningViewController {
      
      private func updateTotalFilesTitleChecked(_ totalFiles: Int) {
           
-          /// processing `duplicate video and similiar videos`
-          let totalVideoProcessing = (totalDeepCleanFilesCountIn[5] + totalDeepCleanFilesCountIn[6]) / 2
+          var similarPhotoStarterPercentage = 0
+          var duplicateStarterPhotoPercentage = 0
+          var screeshotsStarterPercentage = 0
+          var similarLiveStarterPercentage = 0
+          var largeVideoStarterPercentage = 0
+          var duplicateVideoStarterPercentage = 0
+          var similarVideoStarterPercentage = 0
+          var screenRecordingsStarterPercentage = 0
           
-          /// pricessing `duplicate photos and similar videos`
-          let countAllProcessing = totalDeepCleanFilesCountIn.sum() / 2
+          if let totalPhoto = totalPartitinAssetsCount[.photo], totalPhoto != 0 {
+               similarPhotoStarterPercentage = totalDeepCleanFilesCountIn[0] * 100 / totalPhoto
+               duplicateStarterPhotoPercentage = totalDeepCleanFilesCountIn[1] * 100 / totalPhoto
+          }
           
-          totalFilesChecked = countAllProcessing + totalVideoProcessing
+          if let totalVideo = totalPartitinAssetsCount[.video], totalVideo != 0 {
+               largeVideoStarterPercentage = totalDeepCleanFilesCountIn[4] * 100 / totalVideo
+               duplicateVideoStarterPercentage = totalDeepCleanFilesCountIn[5] * 100 / totalVideo
+               similarVideoStarterPercentage = totalDeepCleanFilesCountIn[6] * 100 / totalVideo
+          }
           
+          if let totalLivePhotos = totalPartitinAssetsCount[.livePhotos], totalLivePhotos != 0 {
+               similarLiveStarterPercentage = totalDeepCleanFilesCountIn[3] * 100 / totalLivePhotos
+          }
+          
+          if let totalScreenShots = totalPartitinAssetsCount[.screenShots] {
+               screeshotsStarterPercentage = totalDeepCleanFilesCountIn[2] * 100 / totalScreenShots
+          }
+          
+          if let totalScreenRecordings = totalPartitinAssetsCount[.screenRecordings], totalScreenRecordings != 0 {
+               screenRecordingsStarterPercentage = totalDeepCleanFilesCountIn[7] * 100 / totalScreenRecordings
+          }
+          
+          var all = [similarPhotoStarterPercentage,duplicateStarterPhotoPercentage,screeshotsStarterPercentage,similarLiveStarterPercentage,largeVideoStarterPercentage,duplicateVideoStarterPercentage,similarVideoStarterPercentage, screenRecordingsStarterPercentage]
+          
+          let allPercentage = all.sum()
+          
+          
+          debugPrint("*** all percentage count: \(allPercentage)")
+          
+          
+          
+////          /// processing `duplicate video and similiar videos`
+//          let totalVideoProcessing = (totalDeepCleanFilesCountIn[5] + totalDeepCleanFilesCountIn[6]) / 2
+////
+////          /// pricessing `duplicate photos and similar videos`
+//          let countAllProcessing = totalDeepCleanFilesCountIn.sum() / 2
+////
+//          totalFilesChecked = countAllProcessing + totalVideoProcessing
+          
+          var totalOfTotals = 0
+          
+          for (_, value) in totalPartitinAssetsCount {
+               totalOfTotals += totalOfTotals + value
+          }
+          
+          
+//          totalFilesChecked = totalDeepCleanFilesCountIn.sum() / 8
+          
+//          totalFilesChecked = totalDeepCleanFilesCountIn[0]
+          
+          
+          let totalFiles = totalPartitinAssetsCount[.photo]! + totalPartitinAssetsCount[.video]!
+          
+          
+          
+          debugPrint("*** total of totals: \(totalOfTotals)")
+
           if self.totalFilesOnDevice == 0 {
                totalPercentageCalculated = 0
           } else {
-               totalPercentageCalculated = CGFloat((totalFilesChecked * 100) / self.totalFilesOnDevice)
+//               totalPercentageCalculated = CGFloat((totalFilesChecked * 100) / self.totalFilesOnDevice)
+//               totalPercentageCalculated = CGFloat(totalFilesChecked * 100) / CGFloat(totalOfTotals)
+          
+                              totalPercentageCalculated = CGFloat(totalDeepCleanFilesCountIn[0] * 100) / CGFloat(totalFiles)
           }
           
           if let cell = self.tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? DeepCleanInfoTableViewCell {
                cell.setProgress(files: totalFilesChecked)
                cell.setRoundedProgress(value: totalPercentageCalculated)
+               
           }
      }
      

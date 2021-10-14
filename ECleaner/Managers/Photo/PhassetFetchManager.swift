@@ -47,7 +47,6 @@ class PHAssetFetchManager {
         completionHandler(pholeAssets.count)
     }
     
-    
     public func fetchFromGallery(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", collectiontype: PHAssetCollectionSubtype, by type: Int, completionHandler: @escaping ((_ result: PHFetchResult<PHAsset>) -> Void)) {
         let fetchOptions = PHFetchOptions()
     
@@ -155,7 +154,6 @@ extension PHAssetFetchManager {
     }
     
 //    MARK: - all assets size -
-    
     public func calculateAllAssetsSize(result: PHFetchResult<PHAsset>) -> Int64 {
         var allSize: Int64 = 0
 
@@ -203,7 +201,6 @@ extension PHAssetFetchManager {
         completionHandler(photoPhassetSpace, videoPhassetSpace, allSpaceSize)
     }
     
-    
     public func assetSizeFromData(asset: PHAsset, completion: @escaping ((_ result: Int64) -> Void)) {
         var fileSize: Int64 = 0
         let requestOptions = PHImageRequestOptions.init()
@@ -238,7 +235,6 @@ extension PHAssetFetchManager {
     }
 }
             
-
 //  MARK: recentle deleted assets fetch methods
 extension PHAssetFetchManager {
  
@@ -323,8 +319,6 @@ extension PHAssetFetchManager {
         }
     }
 }
-
-
 
 extension PHAsset {
     
