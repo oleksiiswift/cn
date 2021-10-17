@@ -149,7 +149,6 @@ extension DeepCleaningViewController {
           }
      }
      
-     
      private func startDeepCleanScan() {
           
           guard let options = scansOptions else { return }
@@ -243,6 +242,7 @@ extension DeepCleaningViewController {
                debugPrint(self.similarVideo.count, "similarVideo")
                debugPrint(self.duplicatedVideo.count, "duplicatedVideo")
                debugPrint(self.screenRecordings.count, "screenRecordings")
+               P.hideIndicator()
           }
           
           U.delay(1) {
@@ -390,11 +390,9 @@ extension DeepCleaningViewController {
                case .duplicatePhoto:
                     self.totalDeepCleanFilesCountIn[1] = count
                case .screenshots:
-//                    self.totalDeepCleanFilesCountIn[2] = count
-                    return
+                    self.totalDeepCleanFilesCountIn[2] = count
                case .similarLivePhoto:
-//                    self.totalDeepCleanFilesCountIn[3] = count
-                    return
+                    self.totalDeepCleanFilesCountIn[3] = count
                case .largeVideo:
                     self.totalDeepCleanFilesCountIn[4] = count
                case .duplicateVideo:
@@ -409,87 +407,29 @@ extension DeepCleaningViewController {
      }
      
      private func updateTotalFilesTitleChecked(_ totalFiles: Int) {
+                    
+          let totalVideoProcessing = (totalDeepCleanFilesCountIn[5] + totalDeepCleanFilesCountIn[6]) / 2
+          let totalPhotoProcessing = (totalDeepCleanFilesCountIn[0] + totalDeepCleanFilesCountIn[1]) / 2
           
-          var similarPhotoStarterPercentage = 0
-          var duplicateStarterPhotoPercentage = 0
-          var screeshotsStarterPercentage = 0
-          var similarLiveStarterPercentage = 0
-          var largeVideoStarterPercentage = 0
-          var duplicateVideoStarterPercentage = 0
-          var similarVideoStarterPercentage = 0
-          var screenRecordingsStarterPercentage = 0
-          
-          if let totalPhoto = totalPartitinAssetsCount[.photo], totalPhoto != 0 {
-               similarPhotoStarterPercentage = totalDeepCleanFilesCountIn[0] * 100 / totalPhoto
-               duplicateStarterPhotoPercentage = totalDeepCleanFilesCountIn[1] * 100 / totalPhoto
-          }
-          
-          if let totalVideo = totalPartitinAssetsCount[.video], totalVideo != 0 {
-               largeVideoStarterPercentage = totalDeepCleanFilesCountIn[4] * 100 / totalVideo
-               duplicateVideoStarterPercentage = totalDeepCleanFilesCountIn[5] * 100 / totalVideo
-               similarVideoStarterPercentage = totalDeepCleanFilesCountIn[6] * 100 / totalVideo
-          }
-          
-          if let totalLivePhotos = totalPartitinAssetsCount[.livePhotos], totalLivePhotos != 0 {
-               similarLiveStarterPercentage = totalDeepCleanFilesCountIn[3] * 100 / totalLivePhotos
-          }
-          
-          if let totalScreenShots = totalPartitinAssetsCount[.screenShots] {
-               screeshotsStarterPercentage = totalDeepCleanFilesCountIn[2] * 100 / totalScreenShots
-          }
-          
-          if let totalScreenRecordings = totalPartitinAssetsCount[.screenRecordings], totalScreenRecordings != 0 {
-               screenRecordingsStarterPercentage = totalDeepCleanFilesCountIn[7] * 100 / totalScreenRecordings
-          }
-          
-          var all = [similarPhotoStarterPercentage,duplicateStarterPhotoPercentage,screeshotsStarterPercentage,similarLiveStarterPercentage,largeVideoStarterPercentage,duplicateVideoStarterPercentage,similarVideoStarterPercentage, screenRecordingsStarterPercentage]
-          
-          let allPercentage = all.sum()
-          
-          
-          debugPrint("*** all percentage count: \(allPercentage)")
-          
-          
-          
-////          /// processing `duplicate video and similiar videos`
-//          let totalVideoProcessing = (totalDeepCleanFilesCountIn[5] + totalDeepCleanFilesCountIn[6]) / 2
-////
-////          /// pricessing `duplicate photos and similar videos`
-//          let countAllProcessing = totalDeepCleanFilesCountIn.sum() / 2
-////
-//          totalFilesChecked = countAllProcessing + totalVideoProcessing
-          
-          var totalOfTotals = 0
-          
-          for (_, value) in totalPartitinAssetsCount {
-               totalOfTotals += totalOfTotals + value
-          }
-          
-          
-//          totalFilesChecked = totalDeepCleanFilesCountIn.sum() / 8
-          
-//          totalFilesChecked = totalDeepCleanFilesCountIn[0]
-          
-          
-          let totalFiles = totalPartitinAssetsCount[.photo]! + totalPartitinAssetsCount[.video]!
-          
-          
-          
-          debugPrint("*** total of totals: \(totalOfTotals)")
-
+          totalFilesChecked = (totalPhotoProcessing + totalVideoProcessing)
+   
           if self.totalFilesOnDevice == 0 {
                totalPercentageCalculated = 0
           } else {
-//               totalPercentageCalculated = CGFloat((totalFilesChecked * 100) / self.totalFilesOnDevice)
-//               totalPercentageCalculated = CGFloat(totalFilesChecked * 100) / CGFloat(totalOfTotals)
-          
-                              totalPercentageCalculated = CGFloat(totalDeepCleanFilesCountIn[0] * 100) / CGFloat(totalFiles)
+               totalPercentageCalculated = self.totalDeepCleanProgress.sum() / 8
           }
           
           if let cell = self.tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? DeepCleanInfoTableViewCell {
-               cell.setProgress(files: totalFilesChecked)
-               cell.setRoundedProgress(value: totalPercentageCalculated)
                
+               if totalPercentageCalculated == 100 {
+                    let total = (totalPartitinAssetsCount[.photo] ?? 0) + (totalPartitinAssetsCount[.video] ?? 0)
+                    totalFilesChecked = total
+                    cell.setProgress(files: total)
+                    P.showIndicator(in: self)
+               } else {
+                    cell.setProgress(files: totalFilesChecked)
+               }
+               cell.setRoundedProgress(value: totalPercentageCalculated.rounded())
           }
      }
      
@@ -884,8 +824,6 @@ extension DeepCleaningViewController {
           
           processingButtonView.setCorner(12)
           processingButtonTextLabel.font = .systemFont(ofSize: 17, weight: .bold)
-          
-          
      }
      
      private func setupDateInterval() {
@@ -984,12 +922,9 @@ extension DeepCleaningViewController: Themeble {
      func updateColors() {
           
           bottomMenuView.backgroundColor = .clear
-//          theme.sectionBackgroundColor
           processingButtonView.backgroundColor = theme.accentBackgroundColor
           processingButtonTextLabel.textColor = theme.activeTitleTextColor
-          
           processingButtonActivityIndicator.color = theme.backgroundColor
-          
      }
 }
 
