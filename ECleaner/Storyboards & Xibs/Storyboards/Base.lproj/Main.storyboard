@@ -136,6 +136,9 @@
                                                             </label>
                                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jQH-Sg-yGu">
                                                                 <rect key="frame" x="0.0" y="0.0" width="384" height="60"/>
+                                                                <connections>
+                                                                    <action selector="didTapStartDeepCleaningActionButton:" destination="ql3-s6-hd9" eventType="touchUpInside" id="Jmo-4l-bYx"/>
+                                                                </connections>
                                                             </button>
                                                         </subviews>
                                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>

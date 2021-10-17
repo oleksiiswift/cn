@@ -70,3 +70,48 @@ class SettingsManager {
     
     static var timeMachine = "01-01-1970 00:00:00"
 }
+
+
+//  MARK: file sizez String values
+    /// `phassetPhotoFilesSizes` -> disk space for all photos assets
+    /// `phassetVideoFilesSizes` -> disk space for all videos assets
+    /// `phassetPhotoVideoSizes` -> disk space for all phassets
+
+extension SettingsManager {
+    
+    static var phassetPhotoFilesSizes: Int64? {
+        get {
+            return U.userDefaults.value(forKey: C.key.settings.photoSpace) as? Int64
+        } set {
+            let info = [C.key.settings.photoSpace: newValue]
+            U.userDefaults.setValue(newValue, forKey: C.key.settings.photoSpace)
+            do {
+                U.notificationCenter.post(name: .photoSpaceDidChange, object: nil, userInfo: info as [AnyHashable : Any])
+            }
+        }
+    }
+    
+    static var phassetVideoFilesSizes: Int64? {
+        get {
+            return U.userDefaults.value(forKey: C.key.settings.videoSpace) as? Int64
+        } set {
+            let info = [C.key.settings.videoSpace: newValue]
+            U.userDefaults.setValue(newValue, forKey: C.key.settings.videoSpace)
+            do {
+                U.notificationCenter.post(name: .videoSpaceDidChange, object: nil, userInfo: info as [AnyHashable : Any])
+            }
+        }
+    }
+    
+    static var phassetPhotoVideoSizes: Int64? {
+        get {
+            return U.userDefaults.value(forKey: C.key.settings.allMediaSpace) as? Int64
+        } set {
+            let info = [C.key.settings.allMediaSpace: newValue]
+            U.userDefaults.setValue(newValue, forKey: C.key.settings.allMediaSpace)
+            do {
+                U.notificationCenter.post(name: .mediaSpaceDidChange, object: nil, userInfo: info as [AnyHashable : Any])
+            }
+        }
+    }
+}

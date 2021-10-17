@@ -14,6 +14,7 @@ enum MediaContentType {
     case userContacts
     case none
     
+    /// `SECTION PROPERTIES`
     var cellTitle: [Int: [Int : String]] {
         switch self {
             case .userPhoto:
@@ -38,6 +39,23 @@ enum MediaContentType {
                             2: "duplicates"]]
             case .none:
                 return [0: [0: ""]]
+        }
+    }
+    
+    var numberOfSection: Int {
+        return 1
+    }
+    
+    var numberOfRows: Int {
+        switch self {
+            case .userPhoto:
+                return 6
+            case .userVideo:
+                return 6
+            case .userContacts:
+                return 3
+            case .none:
+                return 0
         }
     }
     
@@ -97,20 +115,61 @@ enum MediaContentType {
         }
     }
     
-    var numberOfSection: Int {
-        return 1
-    }
-    
-    var numberOfRows: Int {
+    ///    `DEEP CLEAN PROPERTIES`
+    var deepCleanNumbersOfRows: Int {
         switch self {
             case .userPhoto:
-                return 6
+                return 4
             case .userVideo:
-                return 6
+                return 4
             case .userContacts:
                 return 3
-            case .none:
+            default:
                 return 0
+        }
+    }
+
+    public func getDeepCellTitle(index: Int) -> String {
+        switch self {
+            case .userPhoto:
+                switch index {
+                    case 0:
+                        return "simmilar photo"
+                    case 1:
+                        return "dublicates photo"
+                    case 2:
+                        return "screenshots"
+                    case 3:
+                        return "similar allive photos"
+                    default:
+                        return ""
+                }
+            case .userVideo:
+                switch index {
+                    case 0:
+                        return "large video"
+                    case 1:
+                        return "duplicate video"
+                    case 2:
+                        return "similar video"
+                    case 3:
+                        return "screen recording"
+                    default:
+                        return ""
+                }
+            case .userContacts:
+                switch index {
+                    case 0:
+                        return "all contacts"
+                    case 1:
+                        return "empty"
+                    case 2:
+                        return "duplicates"
+                    default:
+                        return ""
+                }
+            case .none:
+                return ""
         }
     }
 }

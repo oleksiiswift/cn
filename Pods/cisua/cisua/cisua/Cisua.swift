@@ -11,6 +11,12 @@ import StoreKit
 
 public class Cisua {
     
+    public enum AlertType {
+        case notifications
+        case tracking
+        case cisua
+    }
+    
     public typealias OurAppsCompletion = (_ apps: [OurAppModel]) -> ()
     
     public typealias ResultCompletion = () -> ()
@@ -38,15 +44,20 @@ public class Cisua {
     
 }
 
+//extension Cisua {
+//    public class func rateUs() {
+//        RateUsManager.shared.show()
+//    }
+//}
+
 extension Cisua {
     
-    public class func showPendingAlert(alertShowed: BoolResultCompletion? = nil) {
-        NotificationsManager.shared.tryToRegisterAppForRemoteNotifications {
-            if $0 == false, Cisua.shared.isProVersion == false {
-                Cisua.shared.showLaunchAlert(alertShowed: alertShowed)
-                return()
-            }
-            alertShowed?($0)
+    public class func showPendingAlert(type: Cisua.AlertType! = .cisua, alertShowed: BoolResultCompletion? = nil) {
+        switch type {
+            case .cisua:            Cisua.shared.showLaunchAlert(alertShowed: alertShowed)
+            case .notifications:    NotificationsManager.shared.tryToRegisterAppForRemoteNotifications(alertShowed: alertShowed)
+            case .tracking:         AppsFlayerManager.shared.requestTrackingAuthorization(alertShowed: alertShowed)
+            case .none:             alertShowed?(false)
         }
     }
     
@@ -91,7 +102,7 @@ extension Cisua {
     
     fileprivate func showLaunchAlert(alertShowed: BoolResultCompletion? = nil) {
         
-        if Cisua.reachability?.connection == Optional.none {
+        if Cisua.reachability?.connection == Optional.none || Cisua.shared.isProVersion == true {
             alertShowed?(false)
             return()
         }

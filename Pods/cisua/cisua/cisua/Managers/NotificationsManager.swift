@@ -14,26 +14,26 @@ class NotificationsManager {
     static let shared = NotificationsManager()
     
     init() {
-        AppSwizzle.shared().applicationDidFinishLaunching { (application, launchOptions) in
-             if let notificationPayload = launchOptions?[.remoteNotification] as? [AnyHashable : Any] {
-                self.processRemoteNotificationPlayload(notificationPayload, fromBackground: true)
+        if NotificationsManager.isAppReadyForRemoteNotifications() {
+            AppSwizzle.shared().applicationDidFinishLaunching { (application, launchOptions) in
+                 if let notificationPayload = launchOptions?[.remoteNotification] as? [AnyHashable : Any] {
+                    self.processRemoteNotificationPlayload(notificationPayload, fromBackground: true)
+                }
             }
-        }
-        AppSwizzle.shared().applicationDidReceiveRemoteNotificationHandler { (application, userInfo) in
-            self.processRemoteNotificationPlayload(userInfo)
-        }
-        AppSwizzle.shared().applicationDidRegisterForRemoteNotifications { (application, deviceToken) in
-            self.registerDeviceTokenForPushNotifications(deviceToken)
+            AppSwizzle.shared().applicationDidReceiveRemoteNotificationHandler { (application, userInfo) in
+                self.processRemoteNotificationPlayload(userInfo)
+            }
+            AppSwizzle.shared().applicationDidRegisterForRemoteNotifications { (application, deviceToken) in
+                self.registerDeviceTokenForPushNotifications(deviceToken)
+            }
         }
     }
     
     
     internal func tryToRegisterAppForRemoteNotifications(alertShowed: Cisua.BoolResultCompletion? = nil) {
-        if let backgroundModes = Bundle.mainBundle.object(forInfoDictionaryKey: "UIBackgroundModes") as? [String] {
-            if backgroundModes.contains("remote-notification") {
-                UIApplication.shared.delegate?.registerRemoteNotifications(alertShowed: alertShowed)
-                return()
-            }
+        if NotificationsManager.isAppReadyForRemoteNotifications() {
+            UIApplication.shared.delegate?.registerRemoteNotifications(alertShowed: alertShowed)
+            return()
         }
         alertShowed?(false)
     }
@@ -122,6 +122,17 @@ class NotificationsManager {
             }
             
         }
+    }
+    
+}
+
+extension NotificationsManager {
+    
+    class internal func isAppReadyForRemoteNotifications() -> Bool {
+        if let backgroundModes = Bundle.mainBundle.object(forInfoDictionaryKey: "UIBackgroundModes") as? [String] {
+            return backgroundModes.contains("remote-notification")
+        }
+        return false
     }
     
 }

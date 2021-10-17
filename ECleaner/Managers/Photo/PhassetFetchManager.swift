@@ -33,6 +33,19 @@ enum SortingDesriptionKey {
 class PHAssetFetchManager {
     
     static let shared = PHAssetFetchManager()
+
+    public func fetchTotalAssetsCount(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", completionHandler: @escaping (Int) -> Void) {
+        
+        let fetchOptions = PHFetchOptions()
+        fetchOptions.sortDescriptors = [NSSortDescriptor(key: SortingDesriptionKey.creationDate.value, ascending: false)]
+        fetchOptions.predicate = NSPredicate(format: "mediaType = %d || mediaType = %d", PHAssetMediaType.image.rawValue, PHAssetMediaType.video.rawValue, "\(SDKey.mediaType.value) = %d AND (\(SDKey.creationDate.value) >= %@) AND (\(SDKey.creationDate.value) <= %@)",
+                                                         startDate.NSDateConverter(format: C.dateFormat.fullDmy),
+                                                         endDate.NSDateConverter(format: C.dateFormat.fullDmy))
+        
+        let pholeAssets = PHAsset.fetchAssets(with: fetchOptions)
+        
+        completionHandler(pholeAssets.count)
+    }
     
     public func fetchFromGallery(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", collectiontype: PHAssetCollectionSubtype, by type: Int, completionHandler: @escaping ((_ result: PHFetchResult<PHAsset>) -> Void)) {
         let fetchOptions = PHFetchOptions()
@@ -141,7 +154,6 @@ extension PHAssetFetchManager {
     }
     
 //    MARK: - all assets size -
-    
     public func calculateAllAssetsSize(result: PHFetchResult<PHAsset>) -> Int64 {
         var allSize: Int64 = 0
 
@@ -165,6 +177,30 @@ extension PHAssetFetchManager {
         return allSize
     }
     
+    public func gitAllCalculatedPhassetsSize(_ completionHandler: @escaping (_ photoSpace: Int64,_ videoSpace: Int64,_ allAssetsSpace: Int64) -> Void) {
+        var allSpaceSize: Int64 = 0
+        var photoPhassetSpace: Int64 = 0
+        var videoPhassetSpace: Int64 = 0
+            
+        let fetchOption = PHFetchOptions()
+        fetchOption.sortDescriptors = [NSSortDescriptor(key: SortingDesriptionKey.creationDate.value, ascending: false)]
+        fetchOption.predicate = NSPredicate(format: "mediaType == %d || mediaType == %d", PHAssetMediaType.image.rawValue, PHAssetMediaType.video.rawValue)
+        
+        let assets = PHAsset.fetchAssets(with: fetchOption)
+        
+        assets.enumerateObjects { object, index, stopped in
+            debugPrint("calculated space at index: ", index)
+            if object.mediaType == .image {
+                allSpaceSize += object.imageSize
+                photoPhassetSpace += object.imageSize
+            } else if object.mediaType == .video {
+                allSpaceSize += object.imageSize
+                videoPhassetSpace += object.imageSize
+            }
+        }
+        completionHandler(photoPhassetSpace, videoPhassetSpace, allSpaceSize)
+    }
+    
     public func assetSizeFromData(asset: PHAsset, completion: @escaping ((_ result: Int64) -> Void)) {
         var fileSize: Int64 = 0
         let requestOptions = PHImageRequestOptions.init()
@@ -179,7 +215,6 @@ extension PHAssetFetchManager {
                 completion(fileSize)
             }
         }
-        
         completion(fileSize)
     }
         
@@ -200,23 +235,7 @@ extension PHAssetFetchManager {
     }
 }
             
-        
-extension PHAsset {
-    
-    var imageSize: Int64 {
-        
-        let resources = PHAssetResource.assetResources(for: self)
-        var fileDiskSpace: Int64 = 0
-        
-        if let resource = resources.first {
-            if let unsignedInt64 = resource.value(forKey: "fileSize") as? CLong {            
-                fileDiskSpace = Int64(bitPattern: UInt64(unsignedInt64))
-            }
-        }
-        return fileDiskSpace
-    }
-}
-
+//  MARK: recentle deleted assets fetch methods
 extension PHAssetFetchManager {
  
     public func recentlyDeletedAlbumFetch(completionHandler: @escaping (([PHAsset]) -> Void)) {
@@ -298,5 +317,21 @@ extension PHAssetFetchManager {
                  completionHandler(album)
             }
         }
+    }
+}
+
+extension PHAsset {
+    
+    var imageSize: Int64 {
+        
+        let resources = PHAssetResource.assetResources(for: self)
+        var fileDiskSpace: Int64 = 0
+        
+        if let resource = resources.first {
+            if let unsignedInt64 = resource.value(forKey: "fileSize") as? CLong {
+                fileDiskSpace = Int64(bitPattern: UInt64(unsignedInt64))
+            }
+        }
+        return fileDiskSpace
     }
 }

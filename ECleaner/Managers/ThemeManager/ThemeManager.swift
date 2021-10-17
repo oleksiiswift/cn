@@ -9,20 +9,20 @@ import UIKit
 
 class ThemeManager {
     
-    static var currentTheme: CurrentTheme = {
+    static var theme: Theme = {
         return SettingsManager.sharedInstance.isDarkMode ? .dark : .light
     }()
     
-    static var themeBaseOnSystemAppearance: CurrentTheme? {
+    static var themeBaseOnSystemAppearance: Theme? {
         if let window = U.application.delegate?.window, let baseWindow = window {
             return baseWindow.traitCollection.userInterfaceStyle == .dark ? .dark : .light
         }
         return .light
     }
     
-    static func applyTheme(_ theme: CurrentTheme = ThemeManager.currentTheme) {
+    static func applyTheme(_ theme: Theme = ThemeManager.theme) {
         
-        ThemeManager.currentTheme = theme
+        ThemeManager.theme = theme
         SettingsManager.sharedInstance.isDarkMode = theme == .light
     }
 }
@@ -30,20 +30,20 @@ class ThemeManager {
 public class ThemeChangeViewController: UIViewController {
     
     override public var preferredStatusBarStyle: UIStatusBarStyle {
-        return currentTheme.statusBarStyle
+        return theme.statusBarStyle
     }
 }
 
 extension UINavigationController {
     override open var preferredStatusBarStyle: UIStatusBarStyle {
-        return currentTheme.statusBarStyle
+        return theme.statusBarStyle
     }
 }
 
 extension UIViewController {
     
-    var currentTheme: CurrentTheme {
-        return ThemeManager.currentTheme
+    var theme: Theme {
+        return ThemeManager.theme
     }
 }
 
@@ -65,12 +65,12 @@ extension UINavigationController {
 
 extension UIView {
     
-    var currentTheme: CurrentTheme {
-        return ThemeManager.currentTheme
+    var theme: Theme {
+        return ThemeManager.theme
     }
     
     func updateBackground() {
-        backgroundColor = currentTheme.backgroundColor
+        backgroundColor = theme.backgroundColor
     }
 }
 
@@ -79,7 +79,7 @@ extension UINavigationBar: UpdateColorsDelegate {
     
     func updateColors() {
         
-        tintColor = currentTheme.navigationBarTextColor
+        tintColor = theme.navigationBarTextColor
         barTintColor = .red
         
         let customFontSize = UIFont.systemFont(ofSize: 17, weight: .bold)
@@ -91,9 +91,9 @@ extension UINavigationBar: UpdateColorsDelegate {
         backButtonItemAppearance.setTitleTextAttributes(attributes, for: .normal)
         backButtonItemAppearance.setTitleTextAttributes(attributes, for: .highlighted)
         navigationBarAppearance.configureWithOpaqueBackground()
-        navigationBarAppearance.titleTextAttributes = [.foregroundColor: currentTheme.navigationBarTextColor]
-        navigationBarAppearance.largeTitleTextAttributes = [.foregroundColor: currentTheme.navigationBarTextColor, .font: customFontSize]
-        navigationBarAppearance.backgroundColor = currentTheme.backgroundColor
+        navigationBarAppearance.titleTextAttributes = [.foregroundColor: theme.navigationBarTextColor]
+        navigationBarAppearance.largeTitleTextAttributes = [.foregroundColor: theme.navigationBarTextColor, .font: customFontSize]
+        navigationBarAppearance.backgroundColor = theme.backgroundColor
         
         navigationBarAppearance.shadowColor = .clear
         standardAppearance = navigationBarAppearance
