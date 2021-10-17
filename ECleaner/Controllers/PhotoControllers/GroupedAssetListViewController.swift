@@ -37,12 +37,15 @@ class GroupedAssetListViewController: UIViewController, UIPageViewControllerDele
     private let selectAllOptionItem = DropDownOptionsMenuItem(titleMenu: "select all", itemThumbnail: I.systemElementsItems.circleBox!, isSelected: false, menuItem: .unselectAll)
     private let deselectAllOptionItem = DropDownOptionsMenuItem(titleMenu: "deselect all", itemThumbnail: I.systemElementsItems.circleCheckBox!, isSelected: false, menuItem: .unselectAll)
     
+    private lazy var backBarButtonItem = UIBarButtonItem(image: I.navigationItems.leftShevronBack, style: .plain, target: self, action: #selector(didTapBackButton))
+    
     /// - controllers -
     #warning("hide photopreviewLogic for TODO later")
 //    private var photoPreviewController = PhotoPreviewViewController()
 
     /// - delegates -
     private weak var delegate: ContentGroupedDataProviderDelegate?
+    var selectedAssetsDelegate: DeepCleanSelectableAssetsDelegate?
 //    private weak var delegate: ContentDataProviderDelegate?
     
     /// - assets -
@@ -51,6 +54,7 @@ class GroupedAssetListViewController: UIViewController, UIPageViewControllerDele
     
     private var selectedAssets: [PHAsset] = []
     private var selectedSection: Set<Int> = []
+    private var previouslySelectedIndexPaths: [IndexPath] = []
     
     private var splitAssetsNumberOfItems: Int = 0
     private var splitAssets: [PHAsset] = []
@@ -73,6 +77,8 @@ class GroupedAssetListViewController: UIViewController, UIPageViewControllerDele
     private var bottomMenuHeight: CGFloat = 80
     private var defaultContainerHeight: CGFloat = 0
     private var carouselPreviewCollectionHeight: CGFloat = 150 + U.bottomSafeAreaHeight
+    
+    public var isDeepCleaningSelectableFlow: Bool = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -89,6 +95,7 @@ class GroupedAssetListViewController: UIViewController, UIPageViewControllerDele
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        didSelectPreviouslyIndexPath()
 //        updateCachedAssets()
 //        setupPhotoPreviewController()
     }
@@ -265,7 +272,7 @@ extension GroupedAssetListViewController: UICollectionViewDelegate, UICollection
     /// if need select cell from custom cell-button and tap on cell need - return `false`
     
     func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
-        #warning("TODO: hide temporary")
+//        #warning("TODO: hide temporary")
 //        self.changeFlowLayoutAndFocus(at: indexPath)
         return false
     }
@@ -354,7 +361,7 @@ extension GroupedAssetListViewController {
         
         var addingSection: Bool = false
         
-        /// work with assets
+            /// work with assets
         if selectedSection.contains(indexPath.section) {
             for asset in self.assetGroups[indexPath.section].assets {
                 self.selectedAssets.removeAll(asset)
@@ -372,7 +379,7 @@ extension GroupedAssetListViewController {
         sectionHeader.setSelectDeselectButton(addingSection)
         self.handleDeleteAssetsButton()
         
-        /// work with indexes paths
+            /// work with indexes paths
         if addingSection {
             selectedSection.insert(indexPath.section)
             self.collectionView.selectAllItems(in: indexPath.section, first: 1, animated: true)
@@ -515,6 +522,8 @@ extension GroupedAssetListViewController: UICollectionViewDataSourcePrefetching 
 extension GroupedAssetListViewController {
     
     private func handleDeleteAssetsButton() {
+        
+        guard !isDeepCleaningSelectableFlow else { return }
         
         let calculatedBottomMenuHeight: CGFloat = bottomMenuHeight + U.bottomSafeAreaHeight - 5
         
@@ -699,6 +708,7 @@ extension GroupedAssetListViewController {
 extension GroupedAssetListViewController: SelectDropDownMenuDelegate {
     
     func selectedItemListViewController(_ controller: DropDownMenuViewController, didSelectItem: DropDownMenuItems) {
+        
         switch didSelectItem {
             case .changeLayout:
                 self.changeFlowLayoutAndFocus(at: IndexPath(row: 0, section: 0))
@@ -729,6 +739,51 @@ extension GroupedAssetListViewController {
         popoverPresentationController.delegate = self
         popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirection(rawValue: 0) 
         self.present(drobDownViewController, animated: true, completion: nil)
+    }
+    
+    @objc func didTapBackButton() {
+        
+        guard isDeepCleaningSelectableFlow else { return }
+        
+        let selectedAssetsIDs: [String] = selectedAssets.compactMap({ $0.localIdentifier})
+        self.selectedAssetsDelegate?.didSelect(assetsListIds: selectedAssetsIDs, mediaType: self.mediaType)
+        self.navigationController?.popViewController(animated: true)
+    }
+    
+    public func handlePreviousSelected(selectedAssetsIDs: [String], assetGroupCollection: [PhassetGroup]) {
+        
+        for selectedAssetsID in selectedAssetsIDs {
+            
+            let sectionIndex = assetGroupCollection.firstIndex(where: {
+                $0.assets.contains(where: {$0.localIdentifier == selectedAssetsID})
+            }).flatMap({
+                $0
+            })
+            
+            if let section = sectionIndex {
+                let index: Int = Int(section)
+                let indexPath = assetGroupCollection[index].assets.firstIndex(where: {
+                    $0.localIdentifier == selectedAssetsID
+                }).flatMap({
+                    IndexPath(row: $0, section: index)
+                })
+                
+                if let existingIndexPath = indexPath {
+                    self.previouslySelectedIndexPaths.append(existingIndexPath)
+                }
+            }
+        }
+    }
+    
+    private func didSelectPreviouslyIndexPath() {
+        
+        guard isDeepCleaningSelectableFlow, !previouslySelectedIndexPaths.isEmpty else { return }
+        
+        for indexPath in previouslySelectedIndexPaths {
+            self.collectionView.selectItem(at: indexPath, animated: false, scrollPosition: [])
+            self.collectionView.delegate?.collectionView?(self.collectionView, didSelectItemAt: indexPath)
+        }
+        self.lazyHardcoreCheckForSelectedItemsAndAssets()
     }
 }
 
@@ -953,7 +1008,13 @@ extension GroupedAssetListViewController: Themeble {
     private func setupNavigation() {
         
         self.navigationItem.rightBarButtonItem = burgerOptionSettingButton
+        
+        if isDeepCleaningSelectableFlow {
+            self.navigationItem.leftBarButtonItem = backBarButtonItem
+        } else {
+        
         self.navigationItem.leftBarButtonItem = customBackButton
+        }
     }
     
     private func setupListenersAndObservers() {
