@@ -294,7 +294,8 @@ extension MainViewController: UpdateColorsDelegate {
     private func setupNavigation() {
             
         self.navigationController?.navigationBar.isHidden = true
-        customNavBar.setUpNavigation(title: "DASHBOARD_TITLE".localized(), leftImage: I.navigationItems.premium, rightImage: I.navigationItems.premium)
+        customNavBar.setUpNavigation(title: "DASHBOARD_TITLE".localized(), leftImage: I.navigationItems.premium, rightImage: I.navigationItems.settings)
+      
 //        self.navigationController?.updateNavigationColors()
 //        self.navigationItem.leftBarButtonItem = premiumButton
 //        self.navigationItem.rightBarButtonItem = settingsButton

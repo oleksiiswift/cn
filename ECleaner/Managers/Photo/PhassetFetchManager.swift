@@ -295,10 +295,11 @@ extension PHAssetFetchManager {
             for photoAssetPosition in 1...photoResult.count {
                 photoAssets.append(photoResult[photoAssetPosition - 1])
             }
-            
-            for videoAssetPosion in 1...videoResult.count {
-                videoAssets.append(videoResult[videoAssetPosion - 1])
-            }
+          
+            #warning("EC-23")
+//            for videoAssetPosion in 1...videoResult.count {
+//                videoAssets.append(videoResult[videoAssetPosion - 1])
+//            }
             
             U.UI {
                 completionHandler(photoAssets, videoAssets)

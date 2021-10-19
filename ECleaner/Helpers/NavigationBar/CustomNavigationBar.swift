@@ -14,8 +14,8 @@ class CustomNavigationBar: UIView {
   }
 
   @IBOutlet weak var containerView: UIView!
-  @IBOutlet weak var leftBarButton: UIButton!
-  @IBOutlet weak var rightBarButton: UIButton!
+  @IBOutlet weak var leftBarButton: PrimaryButton!
+  @IBOutlet weak var rightBarButton: PrimaryButton!
   @IBOutlet weak var titleLabel: UILabel!
 
   override func awakeFromNib() {
@@ -40,6 +40,11 @@ class CustomNavigationBar: UIView {
     
     Bundle.main.loadNibNamed(self.className, owner: self, options: nil)
   }
+  
+//  override func layoutSubviews() {
+//    super.layoutSubviews()
+//    addDropShadow()
+//  }
 
   func configure() {
     
@@ -51,10 +56,10 @@ class CustomNavigationBar: UIView {
     
     leftBarButton.clipsToBounds = true
     leftBarButton.layer.cornerRadius = 10
-    
+
     rightBarButton.clipsToBounds = true
     rightBarButton.layer.cornerRadius = 10
-    
+
 //    titleLabel.font = UIFont(font: FontManager.robotoBlack, size: 16.0)
   }
   
@@ -66,4 +71,109 @@ class CustomNavigationBar: UIView {
   }
 
 
+}
+
+//class PrimaryImageView: UIImageView {
+//
+//  let layer1 = CALayer(), layer2 = CALayer()
+//
+//  override func layoutSubviews() {
+//    super.layoutSubviews()
+//
+//    image = I.navigationItems.settings
+//
+//    layer1.backgroundColor = UIColor().colorFromHexString("E9EFF2").cgColor
+//    layer1.cornerRadius = 10
+//    [layer1, layer2].forEach {
+//      $0.masksToBounds = false
+//      $0.frame = layer.bounds
+//      layer.insertSublayer($0, at: 0)
+//    }
+//
+//    layer.applySketchShadow(
+//      color: .red,//UIColor().colorFromHexString("FFFFFF"),
+//      alpha: 1.0,
+//      x: -9,
+//      y: -9,
+//      blur: 27,
+//      spread: 0)
+//
+//
+//    layer2.applySketchShadow(
+//      color: .black,//UIColor().colorFromHexString("A4B5C4"),
+//      alpha: 1.0,
+//      x: 9,
+//      y: 9,
+//      blur: 32,
+//      spread: -1)
+//  }
+//}
+
+class PrimaryButton: UIButton {
+
+  let layer1 = CALayer(), layer2 = CALayer()
+//  let primaryImageView = PrimaryImageView()
+
+  override func layoutSubviews() {
+    super.layoutSubviews()
+    
+//    imageView?.addSubview(primaryImageView) //= primaryImageView
+    
+    layer1.backgroundColor = UIColor().colorFromHexString("E9EFF2").cgColor
+    layer1.cornerRadius = 10
+    [layer1, layer2].forEach {
+      $0.masksToBounds = false
+      $0.frame = layer.bounds
+      layer.insertSublayer($0, at: 0)
+    }
+
+    layer.applySketchShadow(
+      color: UIColor().colorFromHexString("D1DAE8"),
+      alpha: 1.0,
+      x: 6,
+      y: 6,
+      blur: 10,
+      spread: 0)
+
+
+    layer2.applySketchShadow(
+      color: UIColor().colorFromHexString("FFFFFF"),
+      alpha: 1.0,
+      x: -2,
+      y: -9,
+      blur: 19,
+      spread: -1)
+  }
+}
+
+extension CALayer {
+  
+  func applySketchShadow(
+    color: UIColor = .black,
+    alpha: Float = 0.5,
+    x: CGFloat = 0,
+    y: CGFloat = 2,
+    blur: CGFloat = 4,
+    spread: CGFloat = 0) {
+      masksToBounds = false
+      shadowColor = color.cgColor
+      shadowOpacity = alpha
+      shadowOffset = CGSize(width: x, height: y)
+      shadowRadius = blur / 2.0
+      if spread == 0 {
+        shadowPath = nil
+      } else {
+        let dx = -spread
+        let rect = bounds.insetBy(dx: dx, dy: dx)
+        shadowPath = UIBezierPath(rect: rect).cgPath
+      }
+    }
+  
+  func removeSketchShadow() {
+    shadowColor = nil
+    shadowOpacity = 0
+    shadowOffset = CGSize(width: 0, height: 0)
+    shadowRadius = 0
+    shadowPath = nil
+  }
 }
