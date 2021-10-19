@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="18122" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="CK9-qa-cg6">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19158" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="CK9-qa-cg6">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19141"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="collection view cell content view" minToolsVersion="11.0"/>
@@ -66,7 +66,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7Yr-dc-Kkh">
-                                <rect key="frame" x="0.0" y="88" width="414" height="764"/>
+                                <rect key="frame" x="0.0" y="138" width="414" height="714"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iz0-Rg-XOo">
                                         <rect key="frame" x="0.0" y="0.0" width="414" height="685"/>
@@ -76,14 +76,14 @@
                                                 <subviews>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FiS-cX-K1W" customClass="CircleProgressView" customModule="ECleaner" customModuleProvider="target">
                                                         <rect key="frame" x="112" y="42.5" width="190" height="190"/>
-                                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="190" id="AZj-7v-i58"/>
                                                             <constraint firstAttribute="width" secondItem="FiS-cX-K1W" secondAttribute="height" multiplier="1:1" id="Zoa-Vf-ylr"/>
                                                         </constraints>
                                                     </view>
                                                 </subviews>
-                                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <constraints>
                                                     <constraint firstItem="FiS-cX-K1W" firstAttribute="centerX" secondItem="EFP-vX-09K" secondAttribute="centerX" id="Hts-7n-66O"/>
                                                     <constraint firstItem="FiS-cX-K1W" firstAttribute="centerY" secondItem="EFP-vX-09K" secondAttribute="centerY" id="rsT-b3-AoN"/>
@@ -95,7 +95,7 @@
                                                 <subviews>
                                                     <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="Dg3-qT-o61">
                                                         <rect key="frame" x="0.0" y="0.0" width="414" height="290"/>
-                                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="cNy-i7-aRQ">
                                                             <size key="itemSize" width="128" height="128"/>
                                                             <size key="headerReferenceSize" width="0.0" height="0.0"/>
@@ -114,7 +114,7 @@
                                                         </cells>
                                                     </collectionView>
                                                 </subviews>
-                                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <constraints>
                                                     <constraint firstItem="Dg3-qT-o61" firstAttribute="leading" secondItem="9Zu-Nv-jnl" secondAttribute="leading" id="N0S-gf-Mqa"/>
                                                     <constraint firstAttribute="bottom" secondItem="Dg3-qT-o61" secondAttribute="bottom" id="QVb-1h-Pgh"/>
@@ -155,7 +155,7 @@
                                                         </constraints>
                                                     </view>
                                                 </subviews>
-                                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="120" id="Gh1-aX-nWa"/>
                                                     <constraint firstItem="70r-WS-60s" firstAttribute="leading" secondItem="poS-86-x66" secondAttribute="leading" constant="15" id="JQr-sy-StC"/>
@@ -164,7 +164,7 @@
                                                 </constraints>
                                             </view>
                                         </subviews>
-                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstItem="9Zu-Nv-jnl" firstAttribute="leading" secondItem="iz0-Rg-XOo" secondAttribute="leading" id="1oC-8s-DmB"/>
                                             <constraint firstAttribute="trailing" secondItem="9Zu-Nv-jnl" secondAttribute="trailing" id="5AO-wB-PcO"/>
@@ -188,21 +188,32 @@
                                     <constraint firstItem="iz0-Rg-XOo" firstAttribute="top" secondItem="7Yr-dc-Kkh" secondAttribute="top" id="sTY-I7-pXC"/>
                                 </constraints>
                             </scrollView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="o3N-4y-HyM" customClass="CustomNavigationBar" customModule="ECleaner" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="88" width="414" height="50"/>
+                                <color key="backgroundColor" red="0.8901960784313725" green="0.90980392156862744" blue="0.94509803921568625" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="wTo-aQ-Ok7"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="yCB-kf-eGm"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="7Yr-dc-Kkh" firstAttribute="leading" secondItem="yCB-kf-eGm" secondAttribute="leading" id="4jj-FG-RUC"/>
                             <constraint firstItem="yCB-kf-eGm" firstAttribute="bottom" secondItem="7Yr-dc-Kkh" secondAttribute="bottom" id="CjX-Yg-Hup"/>
-                            <constraint firstItem="7Yr-dc-Kkh" firstAttribute="top" secondItem="yCB-kf-eGm" secondAttribute="top" id="Szo-Q8-bIP"/>
+                            <constraint firstItem="o3N-4y-HyM" firstAttribute="top" secondItem="yCB-kf-eGm" secondAttribute="top" id="G2E-TK-FsY"/>
+                            <constraint firstItem="yCB-kf-eGm" firstAttribute="trailing" secondItem="o3N-4y-HyM" secondAttribute="trailing" id="VQM-If-ZlI"/>
+                            <constraint firstItem="o3N-4y-HyM" firstAttribute="leading" secondItem="yCB-kf-eGm" secondAttribute="leading" id="cYU-mo-hbr"/>
                             <constraint firstItem="yCB-kf-eGm" firstAttribute="trailing" secondItem="7Yr-dc-Kkh" secondAttribute="trailing" id="vOS-7I-Nvj"/>
                             <constraint firstItem="7Yr-dc-Kkh" firstAttribute="centerX" secondItem="el6-aC-zDK" secondAttribute="centerX" id="w5i-mz-SkE"/>
+                            <constraint firstItem="7Yr-dc-Kkh" firstAttribute="top" secondItem="o3N-4y-HyM" secondAttribute="bottom" id="zfi-j2-mxf"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="mIn-Xu-8Lg"/>
                     <connections>
                         <outlet property="circleProgressBarViewHeightConstraint" destination="AZj-7v-i58" id="afQ-SP-zrZ"/>
                         <outlet property="circleTotlaSpaceView" destination="FiS-cX-K1W" id="P5d-7m-G2J"/>
+                        <outlet property="customNavBar" destination="o3N-4y-HyM" id="aEi-5X-SLo"/>
                         <outlet property="deepCleaningButtonTextLabel" destination="7t5-6G-mDG" id="v6q-pD-LxJ"/>
                         <outlet property="deepCleaningButtonView" destination="70r-WS-60s" id="1Qf-mB-dyU"/>
                         <outlet property="mediaCollectionView" destination="Dg3-qT-o61" id="p6Y-t8-dtI"/>

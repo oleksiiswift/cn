@@ -13,8 +13,8 @@ class Images {
     static let blank = UIImage(named: "")
     
     struct navigationItems {
-        static let premium = UIImage(systemName: "crown.fill")
-        static let settings = UIImage(systemName: "gear")
+        static let premium = UIImage(named: "premium")!//UIImage(systemName: "crown.fill")
+        static let settings = UIImage(named: "settings")!//UIImage(systemName: "gear")
         static let elipseBurger = UIImage(systemName: "ellipsis.circle.fill")
         static let leftShevronBack = UIImage(systemName: "chevron.left")
         static let rightShevronBack = UIImage(systemName: "chevron.right")

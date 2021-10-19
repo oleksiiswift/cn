@@ -9,8 +9,9 @@ import UIKit
 import Photos
 import SwiftMessages
 
-
 class MainViewController: UIViewController {
+  
+    @IBOutlet weak var customNavBar: CustomNavigationBar!
     
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var circleTotlaSpaceView: CircleProgressView!
@@ -292,10 +293,12 @@ extension MainViewController: UpdateColorsDelegate {
     
     private func setupNavigation() {
             
-        self.navigationController?.updateNavigationColors()
-        self.navigationItem.leftBarButtonItem = premiumButton
-        self.navigationItem.rightBarButtonItem = settingsButton
-        self.navigationItem.backButtonTitle = ""
+        self.navigationController?.navigationBar.isHidden = true
+        customNavBar.setUpNavigation(title: "DASHBOARD_TITLE".localized(), leftImage: I.navigationItems.premium, rightImage: I.navigationItems.premium)
+//        self.navigationController?.updateNavigationColors()
+//        self.navigationItem.leftBarButtonItem = premiumButton
+//        self.navigationItem.rightBarButtonItem = settingsButton
+//        self.navigationItem.backButtonTitle = ""
     }
     
     #warning("LOCO add loco")
@@ -309,7 +312,7 @@ extension MainViewController: UpdateColorsDelegate {
     
     func updateColors() {
         
-        self.view.backgroundColor = .clear
+        self.view.backgroundColor = theme.backgroundColor//.clear
         deepCleaningButtonView.backgroundColor = theme.accentBackgroundColor
         deepCleaningButtonTextLabel.textColor = theme.activeTitleTextColor
     }
@@ -388,3 +391,5 @@ extension MainViewController: UpdateColorsDelegate {
         circleTotlaSpaceView.percentLabelFormat = "%.f%%"
     }
 }
+
+

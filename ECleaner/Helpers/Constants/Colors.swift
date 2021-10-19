@@ -24,7 +24,7 @@ enum Theme: Int {
     var backgroundColor: UIColor {
         switch self {
             case .light:
-                return UIColor().colorFromHexString("FFFFFF")
+                return UIColor().colorFromHexString("E3E8F1")
             case .dark:
                 return UIColor().colorFromHexString("FFFFFF")
         }

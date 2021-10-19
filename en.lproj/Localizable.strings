@@ -1,0 +1,10 @@
+/* 
+  Localizable.strings
+  ECleaner
+
+  Created by iMac_1 on 18.10.2021.
+  
+*/
+
+// MARK: - Navigation
+"DASHBOARD_TITLE" = "DASHBOARD";
