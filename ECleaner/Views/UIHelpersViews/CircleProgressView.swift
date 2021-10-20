@@ -75,14 +75,14 @@ class CircleProgressView: UIView {
     }
 
     /// `Line width`
-    public var lineWidth: CGFloat = 8.0 {
+    public var lineWidth: CGFloat = 40.0 {
         didSet {
             updateShapes()
         }
     }
 
     /// `Space value`
-    public var spaceDegree: CGFloat = 45.0 {
+    public var spaceDegree: CGFloat = 0.0 {
         didSet {
             layoutSubviews()
             updateShapes()
@@ -163,6 +163,18 @@ class CircleProgressView: UIView {
     private var backgroundShape: CAShapeLayer!
     private var progressShape: CAShapeLayer!
     private var progressAnimation: CABasicAnimation!
+  
+  var startColor: UIColor = UIColor().colorFromHexString("3677FF") { didSet { setNeedsLayout() } }
+  var endColor:   UIColor = UIColor().colorFromHexString("66CDFF")  { didSet { setNeedsLayout() } }
+  
+  private let gradientLayer: CAGradientLayer = {
+    let gradientLayer = CAGradientLayer()
+    gradientLayer.type = .conic
+//    gradient.locations = [0.2,0.5,0.75,1]
+    gradientLayer.startPoint = CGPoint(x: 0.0, y: 0.0)
+    gradientLayer.endPoint = CGPoint(x: 1.0, y: 0.0)
+    return gradientLayer
+  }()
 
     // MARK: - Init
 
@@ -188,6 +200,8 @@ class CircleProgressView: UIView {
         progressShape.strokeStart = 0.0
         progressShape.strokeEnd   = 0.1
         layer.addSublayer(progressShape)
+      
+        layer.addSublayer(gradientLayer)
 
         progressAnimation = CABasicAnimation(keyPath: "strokeEnd")
 
@@ -200,16 +214,16 @@ class CircleProgressView: UIView {
         percentLabel.text = String(format: "%.1f%%", progress * 100)
 
 
-        titleLabel.frame = CGRect(x: (self.bounds.size.width - titleLabelWidth) / 2, y: self.bounds.size.height - 10, width: titleLabelWidth, height: 21)
-
-        titleLabel.textAlignment = .center
-        titleLabel.text = title
-        titleLabel.contentScaleFactor = 0.3
-
-        titleLabel.numberOfLines = 2
-
-        titleLabel.adjustsFontSizeToFitWidth = true
-        self.addSubview(titleLabel)
+//        titleLabel.frame = CGRect(x: (self.bounds.size.width - titleLabelWidth) / 2, y: self.bounds.size.height - 10, width: titleLabelWidth, height: 21)
+//
+//        titleLabel.textAlignment = .center
+//        titleLabel.text = title
+//        titleLabel.contentScaleFactor = 0.3
+//
+//        titleLabel.numberOfLines = 2
+//
+//        titleLabel.adjustsFontSizeToFitWidth = true
+//        self.addSubview(titleLabel)
     }
 
     // MARK: - Progress Animation
@@ -251,8 +265,21 @@ class CircleProgressView: UIView {
         let rect = rectForShape()
         backgroundShape.path = pathForShape(rect: rect).cgPath
         progressShape.path   = pathForShape(rect: rect).cgPath
+      
+      gradientLayer.frame = bounds
+      gradientLayer.colors = [startColor, endColor].map { $0.cgColor }
+      
+      
+      let path = progressShape.path
+      if let mask = progressShape {
+        mask.fillColor = UIColor.clear.cgColor
+        mask.strokeColor = UIColor.white.cgColor
+        mask.lineWidth = lineWidth
+        mask.path = path
+        gradientLayer.mask = mask
+      }
 
-        self.titleLabel.frame = CGRect(x: (self.bounds.size.width - titleLabelWidth) / 2, y: self.bounds.size.height - titleLabelBottomInset, width: titleLabelWidth, height: 42)
+//        self.titleLabel.frame = CGRect(x: (self.bounds.size.width - titleLabelWidth) / 2, y: self.bounds.size.height - titleLabelBottomInset, width: titleLabelWidth, height: 42)
 
         updateShapes()
 
@@ -285,14 +312,14 @@ class CircleProgressView: UIView {
             self.backgroundShape.transform = CATransform3DMakeRotation(CGFloat.pi * 1.5, 0, 0, 1.0)
         case .bottom:
             
-            titleLabel.isHidden = false
+            titleLabel.isHidden = true//false
             
-            UIView.animate(withDuration: 0.3, delay: 0.0, usingSpringWithDamping: 0.9, initialSpringVelocity: 0.0, options: [] , animations: { [weak self] in
-                if let temp = self{
-                    temp.titleLabel.frame = CGRect(x: (temp.bounds.size.width - temp.titleLabelWidth) / 2, y: temp.bounds.size.height - self!.titleLabelBottomInset, width: temp.titleLabelWidth, height: 42)
-                }
-
-            }, completion: nil)
+//            UIView.animate(withDuration: 0.3, delay: 0.0, usingSpringWithDamping: 0.9, initialSpringVelocity: 0.0, options: [] , animations: { [weak self] in
+//                if let temp = self{
+//                    temp.titleLabel.frame = CGRect(x: (temp.bounds.size.width - temp.titleLabelWidth) / 2, y: temp.bounds.size.height - self!.titleLabelBottomInset, width: temp.titleLabelWidth, height: 42)
+//                }
+//
+//            }, completion: nil)
             
             self.progressShape.transform = CATransform3DMakeRotation( CGFloat.pi * 2, 0, 0, 1.0)
             self.backgroundShape.transform = CATransform3DMakeRotation(CGFloat.pi * 2, 0, 0, 1.0)
@@ -315,7 +342,7 @@ class CircleProgressView: UIView {
     // MARK: - Helper
 
     private func rectForShape() -> CGRect {
-        return bounds.insetBy(dx: lineWidth / 2.0, dy: lineWidth / 2.0)
+      return bounds.insetBy(dx: lineWidth / 2.0, dy: lineWidth / 2.0)
     }
     private func pathForShape(rect: CGRect) -> UIBezierPath {
         

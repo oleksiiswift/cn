@@ -29,6 +29,38 @@ enum Theme: Int {
                 return UIColor().colorFromHexString("FFFFFF")
         }
     }
+  
+  var blueTextColor: UIColor {
+    switch self {
+      case .light:
+        return UIColor().colorFromHexString("3587E3")
+      case .dark:
+        return UIColor().colorFromHexString("FFFFFF")
+    }
+  }
+  
+  var titleTextColor: UIColor {
+    switch self {
+      case .light:
+        return UIColor().colorFromHexString("374058")
+      case .dark:
+        return UIColor().colorFromHexString("374058")
+    }
+  }
+  
+  var subTitleTextColor: UIColor {
+    switch self {
+      case .light:
+        return UIColor().colorFromHexString("374058").withAlphaComponent(0.5)
+      case .dark:
+        return UIColor().colorFromHexString("374058").withAlphaComponent(0.5)
+    }
+  }
+  
+  
+  
+  
+  
     
     var contentBackgroundColor: UIColor {
         switch self {
@@ -70,23 +102,9 @@ enum Theme: Int {
         }
     }
     
-    var titleTextColor: UIColor {
-        switch self {
-            case .light:
-                return UIColor().colorFromHexString("4F4F4F")
-            case .dark:
-                return UIColor().colorFromHexString("4F4F4F")
-        }
-    }
     
-    var subTitleTextColor: UIColor {
-        switch self {
-            case .light:
-                return UIColor().colorFromHexString("4F4F4F").withAlphaComponent(0.5)
-            case .dark:
-                return UIColor().colorFromHexString("4F4F4F").withAlphaComponent(0.5)
-        }
-    }
+    
+    
     
     var activeTitleTextColor: UIColor {
         switch self {

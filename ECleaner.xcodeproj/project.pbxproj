@@ -98,6 +98,24 @@
 		4F4A17B9271D812400CAF157 /* CustomNavigationBar.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4F4A17B8271D812400CAF157 /* CustomNavigationBar.xib */; };
 		4F4A17BB271D819F00CAF157 /* CustomNavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F4A17BA271D819F00CAF157 /* CustomNavigationBar.swift */; };
 		4F56071C271DC6C800CA19E9 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4F56071E271DC6C800CA19E9 /* Localizable.strings */; };
+		4F560722271FF81F00CA19E9 /* ShadowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F560721271FF81F00CA19E9 /* ShadowView.swift */; };
+		4F56073A27205AF300CA19E9 /* GradientCircularProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F56072427205AF100CA19E9 /* GradientCircularProgress.swift */; };
+		4F56073B27205AF300CA19E9 /* Property.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F56072627205AF200CA19E9 /* Property.swift */; };
+		4F56073C27205AF300CA19E9 /* CircularProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F56072827205AF200CA19E9 /* CircularProgressView.swift */; };
+		4F56073D27205AF300CA19E9 /* ProgressAtRatioView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F56072927205AF200CA19E9 /* ProgressAtRatioView.swift */; };
+		4F56073E27205AF300CA19E9 /* ProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F56072A27205AF200CA19E9 /* ProgressView.swift */; };
+		4F56073F27205AF300CA19E9 /* GradientArcView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F56072C27205AF200CA19E9 /* GradientArcView.swift */; };
+		4F56074027205AF300CA19E9 /* ArcView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F56072D27205AF200CA19E9 /* ArcView.swift */; };
+		4F56074127205AF300CA19E9 /* Background.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F56072E27205AF200CA19E9 /* Background.swift */; };
+		4F56074227205AF300CA19E9 /* WindowBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F56072F27205AF200CA19E9 /* WindowBuilder.swift */; };
+		4F56074327205AF300CA19E9 /* GradientArcWithClearColorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F56073027205AF200CA19E9 /* GradientArcWithClearColorView.swift */; };
+		4F56074427205AF300CA19E9 /* ProgressViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F56073127205AF200CA19E9 /* ProgressViewController.swift */; };
+		4F56074527205AF300CA19E9 /* GreenLightStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F56073327205AF200CA19E9 /* GreenLightStyle.swift */; };
+		4F56074627205AF300CA19E9 /* BlueIndicatorStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F56073427205AF200CA19E9 /* BlueIndicatorStyle.swift */; };
+		4F56074727205AF300CA19E9 /* BlueDarkStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F56073527205AF200CA19E9 /* BlueDarkStyle.swift */; };
+		4F56074827205AF300CA19E9 /* OrangeClearStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F56073627205AF200CA19E9 /* OrangeClearStyle.swift */; };
+		4F56074927205AF300CA19E9 /* Style.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F56073727205AF200CA19E9 /* Style.swift */; };
+		4F56074A27205AF300CA19E9 /* ColorUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F56073927205AF300CA19E9 /* ColorUtil.swift */; };
 		97238A072689BD8000C523DC /* PhotoMediaType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97238A062689BD8000C523DC /* PhotoMediaType.swift */; };
 		97238A092689D01E00C523DC /* GroupedAssetListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97238A082689D01E00C523DC /* GroupedAssetListViewController.swift */; };
 		97238A0B2689EDD200C523DC /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97238A0A2689EDD200C523DC /* Toast.swift */; };
@@ -228,6 +246,24 @@
 		4F560717271DC5C400CA19E9 /* en-GB */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-GB"; path = "en-GB.lproj/Main.strings"; sourceTree = "<group>"; };
 		4F560718271DC5C400CA19E9 /* en-GB */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-GB"; path = "en-GB.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
 		4F56071F271DC6FC00CA19E9 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		4F560721271FF81F00CA19E9 /* ShadowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowView.swift; sourceTree = "<group>"; };
+		4F56072427205AF100CA19E9 /* GradientCircularProgress.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GradientCircularProgress.swift; sourceTree = "<group>"; };
+		4F56072627205AF200CA19E9 /* Property.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Property.swift; sourceTree = "<group>"; };
+		4F56072827205AF200CA19E9 /* CircularProgressView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircularProgressView.swift; sourceTree = "<group>"; };
+		4F56072927205AF200CA19E9 /* ProgressAtRatioView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProgressAtRatioView.swift; sourceTree = "<group>"; };
+		4F56072A27205AF200CA19E9 /* ProgressView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProgressView.swift; sourceTree = "<group>"; };
+		4F56072C27205AF200CA19E9 /* GradientArcView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GradientArcView.swift; sourceTree = "<group>"; };
+		4F56072D27205AF200CA19E9 /* ArcView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArcView.swift; sourceTree = "<group>"; };
+		4F56072E27205AF200CA19E9 /* Background.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Background.swift; sourceTree = "<group>"; };
+		4F56072F27205AF200CA19E9 /* WindowBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WindowBuilder.swift; sourceTree = "<group>"; };
+		4F56073027205AF200CA19E9 /* GradientArcWithClearColorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GradientArcWithClearColorView.swift; sourceTree = "<group>"; };
+		4F56073127205AF200CA19E9 /* ProgressViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProgressViewController.swift; sourceTree = "<group>"; };
+		4F56073327205AF200CA19E9 /* GreenLightStyle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GreenLightStyle.swift; sourceTree = "<group>"; };
+		4F56073427205AF200CA19E9 /* BlueIndicatorStyle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlueIndicatorStyle.swift; sourceTree = "<group>"; };
+		4F56073527205AF200CA19E9 /* BlueDarkStyle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlueDarkStyle.swift; sourceTree = "<group>"; };
+		4F56073627205AF200CA19E9 /* OrangeClearStyle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrangeClearStyle.swift; sourceTree = "<group>"; };
+		4F56073727205AF200CA19E9 /* Style.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Style.swift; sourceTree = "<group>"; };
+		4F56073927205AF300CA19E9 /* ColorUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorUtil.swift; sourceTree = "<group>"; };
 		81D1B9EBAF1D92CCA563E435 /* Pods-ECleaner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ECleaner.debug.xcconfig"; path = "Target Support Files/Pods-ECleaner/Pods-ECleaner.debug.xcconfig"; sourceTree = "<group>"; };
 		97238A062689BD8000C523DC /* PhotoMediaType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoMediaType.swift; sourceTree = "<group>"; };
 		97238A082689D01E00C523DC /* GroupedAssetListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupedAssetListViewController.swift; sourceTree = "<group>"; };
@@ -612,6 +648,7 @@
 		04E5835E267A3E7D00EDC3A3 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				4F56072327205ADC00CA19E9 /* CustomCircular */,
 				4F4A17B7271D80D400CAF157 /* NavigationBar */,
 				4F4A17A2271D73B100CAF157 /* Fonts */,
 				0447A68C26B2A9170074919B /* Operation */,
@@ -619,6 +656,7 @@
 				049CC22826831D540002F988 /* Constants */,
 				049CC2382683730E0002F988 /* FlowLayout */,
 				04CFFFEA26846A3E000CA850 /* Device */,
+				4F560721271FF81F00CA19E9 /* ShadowView.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -764,6 +802,70 @@
 				4F4A17BA271D819F00CAF157 /* CustomNavigationBar.swift */,
 			);
 			path = NavigationBar;
+			sourceTree = "<group>";
+		};
+		4F56072327205ADC00CA19E9 /* CustomCircular */ = {
+			isa = PBXGroup;
+			children = (
+				4F56072427205AF100CA19E9 /* GradientCircularProgress.swift */,
+				4F56072527205AF200CA19E9 /* Progress */,
+				4F56073227205AF200CA19E9 /* Styles */,
+				4F56073827205AF300CA19E9 /* Utils */,
+			);
+			path = CustomCircular;
+			sourceTree = "<group>";
+		};
+		4F56072527205AF200CA19E9 /* Progress */ = {
+			isa = PBXGroup;
+			children = (
+				4F56072627205AF200CA19E9 /* Property.swift */,
+				4F56072727205AF200CA19E9 /* Core */,
+				4F56072A27205AF200CA19E9 /* ProgressView.swift */,
+				4F56072B27205AF200CA19E9 /* Elements */,
+				4F56073127205AF200CA19E9 /* ProgressViewController.swift */,
+			);
+			path = Progress;
+			sourceTree = "<group>";
+		};
+		4F56072727205AF200CA19E9 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				4F56072827205AF200CA19E9 /* CircularProgressView.swift */,
+				4F56072927205AF200CA19E9 /* ProgressAtRatioView.swift */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		4F56072B27205AF200CA19E9 /* Elements */ = {
+			isa = PBXGroup;
+			children = (
+				4F56072C27205AF200CA19E9 /* GradientArcView.swift */,
+				4F56072D27205AF200CA19E9 /* ArcView.swift */,
+				4F56072E27205AF200CA19E9 /* Background.swift */,
+				4F56072F27205AF200CA19E9 /* WindowBuilder.swift */,
+				4F56073027205AF200CA19E9 /* GradientArcWithClearColorView.swift */,
+			);
+			path = Elements;
+			sourceTree = "<group>";
+		};
+		4F56073227205AF200CA19E9 /* Styles */ = {
+			isa = PBXGroup;
+			children = (
+				4F56073327205AF200CA19E9 /* GreenLightStyle.swift */,
+				4F56073427205AF200CA19E9 /* BlueIndicatorStyle.swift */,
+				4F56073527205AF200CA19E9 /* BlueDarkStyle.swift */,
+				4F56073627205AF200CA19E9 /* OrangeClearStyle.swift */,
+				4F56073727205AF200CA19E9 /* Style.swift */,
+			);
+			path = Styles;
+			sourceTree = "<group>";
+		};
+		4F56073827205AF300CA19E9 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				4F56073927205AF300CA19E9 /* ColorUtil.swift */,
+			);
+			path = Utils;
 			sourceTree = "<group>";
 		};
 		78535D8DFC85B5DF1D785ED7 /* Pods */ = {
@@ -1001,10 +1103,13 @@
 				049CC23426833D320002F988 /* UIView+Radius.swift in Sources */,
 				0447A68B26B2A3C30074919B /* OperationPhotoProcessingQueuer.swift in Sources */,
 				04467CE4270DA3A000DBBB39 /* DateSelectebleView.swift in Sources */,
+				4F56073B27205AF300CA19E9 /* Property.swift in Sources */,
 				048D65C726B13EA3004F0ADC /* DeepCleanNotificationManager.swift in Sources */,
 				04E58373267A4A2000EDC3A3 /* UIDevice+Enviroment.swift in Sources */,
+				4F56074927205AF300CA19E9 /* Style.swift in Sources */,
 				044281FC2692F95A00B6B47C /* DropDownMenuViewController.swift in Sources */,
 				0459DF9226A56DB20085EEDF /* PhotoPreviewViewController.swift in Sources */,
+				4F56074027205AF300CA19E9 /* ArcView.swift in Sources */,
 				97238A0F2689EE2700C523DC /* CustomDoneHud.swift in Sources */,
 				04E5837E267B60F600EDC3A3 /* AlertManager.swift in Sources */,
 				4F4A17BB271D819F00CAF157 /* CustomNavigationBar.swift in Sources */,
@@ -1021,12 +1126,15 @@
 				04E5837C267B3E2A00EDC3A3 /* PhotoManager.swift in Sources */,
 				04467CE0270D929D00DBBB39 /* HorizontalProgressBar.swift in Sources */,
 				044281FE2692F9B800B6B47C /* SelectDropDownMenuDelegate.swift in Sources */,
+				4F56073E27205AF300CA19E9 /* ProgressView.swift in Sources */,
 				04CACE1E26A7FF62006489FA /* CarouselItemView.swift in Sources */,
 				04CFFFEC2684725F000CA850 /* Device+DiskSpace.swift in Sources */,
+				4F56074527205AF300CA19E9 /* GreenLightStyle.swift in Sources */,
 				97CC2F3C26873A7D0072EF8C /* DateSelectorViewController.swift in Sources */,
 				04E09470267A06B500A69956 /* AppDelegate.swift in Sources */,
 				04B20F02269C4F6A00C6BC14 /* AssetContextPreviewViewController.swift in Sources */,
 				044A6FB9270F1B1000CF0D17 /* CircleProgressBar.swift in Sources */,
+				4F56074227205AF300CA19E9 /* WindowBuilder.swift in Sources */,
 				97E54A86268BB16A00C7FD54 /* SNCollectionViewLayout.swift in Sources */,
 				044A6FBD270F1B9B00CF0D17 /* Sequence+GetSum.swift in Sources */,
 				049CC22A26831D630002F988 /* Images.swift in Sources */,
@@ -1034,10 +1142,14 @@
 				97CC2F3E268743A80072EF8C /* SegueManager.swift in Sources */,
 				04649B35268C52B100336FE4 /* GroupedAssetsReusableFooterView.swift in Sources */,
 				049CC217268221DE0002F988 /* MainViewController.swift in Sources */,
+				4F56073A27205AF300CA19E9 /* GradientCircularProgress.swift in Sources */,
+				4F56073D27205AF300CA19E9 /* ProgressAtRatioView.swift in Sources */,
+				4F56074127205AF300CA19E9 /* Background.swift in Sources */,
 				04CFFFE926846A38000CA850 /* Screen.swift in Sources */,
 				97238A092689D01E00C523DC /* GroupedAssetListViewController.swift in Sources */,
 				049CC22426831B800002F988 /* UIColor+Hex.swift in Sources */,
 				04CFFFF22684B1ED000CA850 /* String+Extension.swift in Sources */,
+				4F56074827205AF300CA19E9 /* OrangeClearStyle.swift in Sources */,
 				97D0BABD2680AD6E0067A3A6 /* String+NSDate.swift in Sources */,
 				049CC21F268312950002F988 /* UpdateColorsProtocolol.swift in Sources */,
 				049CC22F268337310002F988 /* MediaTypeCollectionViewCell.swift in Sources */,
@@ -1049,6 +1161,8 @@
 				04649B24268B2F3900336FE4 /* UpdatingChangesInOpenedScreensListeners.swift in Sources */,
 				04E58377267B323E00EDC3A3 /* Constants.swift in Sources */,
 				04CFFFE726846A23000CA850 /* Device.swift in Sources */,
+				4F56074427205AF300CA19E9 /* ProgressViewController.swift in Sources */,
+				4F56073C27205AF300CA19E9 /* CircularProgressView.swift in Sources */,
 				97238A132689EF6E00C523DC /* Presenter.swift in Sources */,
 				97FC7894268882C9000D7F26 /* Date+DateFormatter.swift in Sources */,
 				04649B3C268C98A900336FE4 /* UIButton+RemoveAnimation.swift in Sources */,
@@ -1056,23 +1170,29 @@
 				97238A112689EECE00C523DC /* UIView+BlurView.swift in Sources */,
 				0459DF9D26A6F40F0085EEDF /* PhotoPreviewDataSource.swift in Sources */,
 				04CFFFF92685BF01000CA850 /* MediaContentViewController.swift in Sources */,
+				4F56074327205AF300CA19E9 /* GradientArcWithClearColorView.swift in Sources */,
 				049CC215268221D40002F988 /* AdvertisementViewController.swift in Sources */,
 				97FC78982688CC06000D7F26 /* SimpleAssetsListViewController.swift in Sources */,
 				049CC21B268225E60002F988 /* SettingsManager.swift in Sources */,
+				4F560722271FF81F00CA19E9 /* ShadowView.swift in Sources */,
 				4F4A17A4271D73E900CAF157 /* Font.swift in Sources */,
 				97CC2F3A2683D00F0072EF8C /* UpdateContentDataBaseListener.swift in Sources */,
 				047DE61C26AAD5F000733CD5 /* DeepCleanManager.swift in Sources */,
 				04CF00002685F0C3000CA850 /* ContentTypeTableViewCell.swift in Sources */,
+				4F56074727205AF300CA19E9 /* BlueDarkStyle.swift in Sources */,
 				049CC221268314690002F988 /* NotificationManager.swift in Sources */,
 				4F4A17A8271D745300CAF157 /* UIFont+Extension.swift in Sources */,
 				04EE29FB269891F30013837D /* PHasset+Thumbnail.swift in Sources */,
 				049CC23A2683761B0002F988 /* String+ConvertInteger.swift in Sources */,
 				04649B3E268DDDE700336FE4 /* UICollectionView+SelectAll.swift in Sources */,
 				04E5836F267A47FB00EDC3A3 /* Utils.swift in Sources */,
+				4F56073F27205AF300CA19E9 /* GradientArcView.swift in Sources */,
 				047DE61926AAA53100733CD5 /* DeepCleanInfoTableViewCell.swift in Sources */,
 				04E58371267A4A0A00EDC3A3 /* UIDevice+Model.swift in Sources */,
 				04CFFFFB2685E546000CA850 /* UIView+SelectedCornerRadius.swift in Sources */,
+				4F56074A27205AF300CA19E9 /* ColorUtil.swift in Sources */,
 				04CFFFEF268479CE000CA850 /* CircleProgressView.swift in Sources */,
+				4F56074627205AF300CA19E9 /* BlueIndicatorStyle.swift in Sources */,
 				97238A0B2689EDD200C523DC /* Toast.swift in Sources */,
 				04649B3A268C6FEC00336FE4 /* Array+Extension.swift in Sources */,
 				04E58380267B9F6B00EDC3A3 /* PhassetFetchManager.swift in Sources */,
