@@ -50,7 +50,7 @@ public enum BackgroundStyles: Int {
 
 internal struct Property {
     let margin: CGFloat = 5.0
-    let arcLineCapStyle: CGLineCap = CGLineCap.butt
+    let arcLineCapStyle: CGLineCap = CGLineCap.round
     
     // Progress Size
     var progressSize: CGFloat

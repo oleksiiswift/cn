@@ -61,7 +61,7 @@ class CircleProgressView: UIView {
     }
 
     /// `Stroke background color`
-    public var backgroundShapeColor: UIColor = UIColor(white: 0.9, alpha: 0.5) {
+    public var backgroundShapeColor: UIColor = UIColor(white: 0.9, alpha: 1.0) {
         didSet {
             updateShapes()
         }
@@ -103,7 +103,7 @@ class CircleProgressView: UIView {
         }
     }
 
-    public var percentColor: UIColor = UIColor(white: 0.9, alpha: 0.5) {
+    public var percentColor: UIColor = UIColor(white: 0.9, alpha: 1.0) {
         didSet {
             percentLabel.textColor = percentColor
         }
@@ -117,7 +117,7 @@ class CircleProgressView: UIView {
         }
     }
 
-    public var titleColor: UIColor = UIColor(white: 0.9, alpha: 0.5) {
+    public var titleColor: UIColor = UIColor(white: 0.9, alpha: 1.0) {
         didSet {
             titleLabel.textColor = titleColor
         }
@@ -164,13 +164,13 @@ class CircleProgressView: UIView {
     private var progressShape: CAShapeLayer!
     private var progressAnimation: CABasicAnimation!
   
-  var startColor: UIColor = UIColor().colorFromHexString("3677FF") { didSet { setNeedsLayout() } }
-  var endColor:   UIColor = UIColor().colorFromHexString("66CDFF")  { didSet { setNeedsLayout() } }
+  var startColor: UIColor = UIColor().colorFromHexString("66CDFF") { didSet { setNeedsLayout() } }
+  var endColor:   UIColor = UIColor().colorFromHexString("3677FF")  { didSet { setNeedsLayout() } }
   
   private let gradientLayer: CAGradientLayer = {
     let gradientLayer = CAGradientLayer()
-    gradientLayer.type = .conic
-//    gradient.locations = [0.2,0.5,0.75,1]
+    gradientLayer.type = .axial
+//    gradientLayer.locations = [0.2,0.5,0.75,1]
     gradientLayer.startPoint = CGPoint(x: 0.0, y: 0.0)
     gradientLayer.endPoint = CGPoint(x: 1.0, y: 0.0)
     return gradientLayer
@@ -205,7 +205,7 @@ class CircleProgressView: UIView {
 
         progressAnimation = CABasicAnimation(keyPath: "strokeEnd")
 
-        percentLabel.frame = CGRect(x: (self.bounds.size.width - titleLabelWidth) / 2, y: self.bounds.midY - percentLabelCenterInset, width: titleLabelWidth, height: 21)
+        percentLabel.frame = CGRect(x: (self.bounds.size.width - titleLabelWidth) / 2, y: self.bounds.midY - percentLabelCenterInset, width: titleLabelWidth, height: 61)
 
         percentLabel.textAlignment = .center
         
@@ -214,16 +214,16 @@ class CircleProgressView: UIView {
         percentLabel.text = String(format: "%.1f%%", progress * 100)
 
 
-//        titleLabel.frame = CGRect(x: (self.bounds.size.width - titleLabelWidth) / 2, y: self.bounds.size.height - 10, width: titleLabelWidth, height: 21)
-//
-//        titleLabel.textAlignment = .center
-//        titleLabel.text = title
-//        titleLabel.contentScaleFactor = 0.3
-//
-//        titleLabel.numberOfLines = 2
-//
-//        titleLabel.adjustsFontSizeToFitWidth = true
-//        self.addSubview(titleLabel)
+        titleLabel.frame = CGRect(x: (self.bounds.size.width - titleLabelWidth) / 2, y: self.percentLabel.frame.maxY, width: titleLabelWidth, height: 21)
+
+        titleLabel.textAlignment = .center
+        titleLabel.text = title
+        titleLabel.contentScaleFactor = 0.3
+
+        titleLabel.numberOfLines = 2
+
+        titleLabel.adjustsFontSizeToFitWidth = true
+        self.addSubview(titleLabel)
     }
 
     // MARK: - Progress Animation
@@ -268,8 +268,7 @@ class CircleProgressView: UIView {
       
       gradientLayer.frame = bounds
       gradientLayer.colors = [startColor, endColor].map { $0.cgColor }
-      
-      
+
       let path = progressShape.path
       if let mask = progressShape {
         mask.fillColor = UIColor.clear.cgColor
@@ -278,12 +277,10 @@ class CircleProgressView: UIView {
         mask.path = path
         gradientLayer.mask = mask
       }
-
-//        self.titleLabel.frame = CGRect(x: (self.bounds.size.width - titleLabelWidth) / 2, y: self.bounds.size.height - titleLabelBottomInset, width: titleLabelWidth, height: 42)
+        percentLabel.frame = CGRect(x: (self.bounds.size.width - titleLabelWidth) / 2, y: self.bounds.midY - percentLabelCenterInset, width: titleLabelWidth, height: 61)
+        self.titleLabel.frame = CGRect(x: (self.bounds.size.width - titleLabelWidth) / 2, y: self.percentLabel.frame.maxY, width: titleLabelWidth, height: 42)
 
         updateShapes()
-
-        percentLabel.frame = CGRect(x: (self.bounds.size.width - titleLabelWidth) / 2, y: self.bounds.midY - percentLabelCenterInset, width: titleLabelWidth, height: 21)
     }
 
     private func updateShapes() {
@@ -292,7 +289,8 @@ class CircleProgressView: UIView {
         backgroundShape?.strokeColor = backgroundShapeColor.cgColor
         backgroundShape?.lineCap     = CAShapeLayerLineCap(rawValue: lineCap.style())
 
-        progressShape?.strokeColor = progressShapeColor.cgColor
+//      progressShape?.strokeColor = endColor.cgColor//progressShapeColor.cgColor
+      
         progressShape?.lineWidth   = lineWidth - inset
         progressShape?.lineCap     = CAShapeLayerLineCap(rawValue: lineCap.style())
 
@@ -312,7 +310,7 @@ class CircleProgressView: UIView {
             self.backgroundShape.transform = CATransform3DMakeRotation(CGFloat.pi * 1.5, 0, 0, 1.0)
         case .bottom:
             
-            titleLabel.isHidden = true//false
+            titleLabel.isHidden = false
             
 //            UIView.animate(withDuration: 0.3, delay: 0.0, usingSpringWithDamping: 0.9, initialSpringVelocity: 0.0, options: [] , animations: { [weak self] in
 //                if let temp = self{
@@ -362,7 +360,68 @@ class CircleProgressView: UIView {
                                 startAngle: startAngle,
                                 endAngle: endAngle,
                                 clockwise: clockwise)
+      
         return path
     }
+}
+
+
+class MMTGradientArcView: UIView {
+  
+  var lineWidth: CGFloat = 47              { didSet { setNeedsDisplay(bounds) } }
+  var startColor = UIColor().colorFromHexString("66CDFF")          { didSet { setNeedsDisplay(bounds) } }
+  var endColor = UIColor().colorFromHexString("3677FF")            { didSet { setNeedsDisplay(bounds) } }
+  var startAngle:CGFloat = 0              { didSet { setNeedsDisplay(bounds) } }
+  var endAngle:CGFloat = 360                { didSet { setNeedsDisplay(bounds) } }
+  
+  override func draw(_ rect: CGRect) {
+    
+    let gradations = 360 //My School Number
+    
+    var startColorR:CGFloat = 0
+    var startColorG:CGFloat = 0
+    var startColorB:CGFloat = 0
+    var startColorA:CGFloat = 0
+    
+    var endColorR:CGFloat = 0
+    var endColorG:CGFloat = 0
+    var endColorB:CGFloat = 0
+    var endColorA:CGFloat = 0
+    
+    startColor.getRed(&startColorR, green: &startColorG, blue: &startColorB, alpha: &startColorA)
+    endColor.getRed(&endColorR, green: &endColorG, blue: &endColorB, alpha: &endColorA)
+    
+    let startAngle:CGFloat = 90
+    let endAngle:CGFloat = 360
+    
+//    let startAngle = CGFloat(0 * .pi / 180.0) + (0.5 * .pi)
+//    let endAngle = CGFloat((360.0 - 0) * (.pi / 180.0)) + (0.5 * .pi)
+
+    let center = CGPoint(x: bounds.midX, y: bounds.midY)
+    let radius = (min(bounds.width, bounds.height) - lineWidth) / 2
+    var angle = startAngle
+    
+    for i in 1 ... gradations {
+      let extraAngle = (endAngle - startAngle) / CGFloat(gradations)
+      let currentStartAngle = angle
+      let currentEndAngle = currentStartAngle + extraAngle
+      
+      let currentR = ((endColorR - startColorR) / CGFloat(gradations - 1)) * CGFloat(i - 1) + startColorR
+      let currentG = ((endColorG - startColorG) / CGFloat(gradations - 1)) * CGFloat(i - 1) + startColorG
+      let currentB = ((endColorB - startColorB) / CGFloat(gradations - 1)) * CGFloat(i - 1) + startColorB
+      let currentA = ((endColorA - startColorA) / CGFloat(gradations - 1)) * CGFloat(i - 1) + startColorA
+      
+      let currentColor = UIColor.init(red: currentR, green: currentG, blue: currentB, alpha: currentA)
+      
+      let path = UIBezierPath()
+      path.lineWidth = lineWidth
+      path.lineCapStyle = .round
+      path.addArc(withCenter: center, radius: radius, startAngle: currentStartAngle * CGFloat(Double.pi / 180.0), endAngle: currentEndAngle * CGFloat(Double.pi / 180.0), clockwise: true)
+      
+      currentColor.setStroke()
+      path.stroke()
+      angle = currentEndAngle
+    }
+  }
 }
 

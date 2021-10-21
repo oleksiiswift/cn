@@ -89,21 +89,19 @@
                                                                     <constraint firstAttribute="width" secondItem="FiS-cX-K1W" secondAttribute="height" multiplier="1:1" id="VBl-5R-fGS"/>
                                                                 </constraints>
                                                             </view>
-                                                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="oeD-qr-sj7">
-                                                                <rect key="frame" x="63" y="0.0" width="288" height="288"/>
+                                                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="oeD-qr-sj7" customClass="MMTGradientArcView" customModule="ECleaner" customModuleProvider="target">
+                                                                <rect key="frame" x="0.0" y="0.0" width="414" height="288"/>
                                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                                <constraints>
-                                                                    <constraint firstAttribute="width" secondItem="oeD-qr-sj7" secondAttribute="height" id="XU7-rU-uhs"/>
-                                                                </constraints>
                                                             </view>
                                                         </subviews>
                                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <constraints>
                                                             <constraint firstAttribute="bottom" secondItem="oeD-qr-sj7" secondAttribute="bottom" id="8AM-m9-dnH"/>
+                                                            <constraint firstAttribute="trailing" secondItem="oeD-qr-sj7" secondAttribute="trailing" id="D7x-zD-Udb"/>
                                                             <constraint firstAttribute="bottom" secondItem="FiS-cX-K1W" secondAttribute="bottom" constant="20" id="Eea-6b-NMV"/>
                                                             <constraint firstItem="FiS-cX-K1W" firstAttribute="top" secondItem="ZZg-q9-TUe" secondAttribute="top" id="F4c-HT-a9R"/>
                                                             <constraint firstItem="oeD-qr-sj7" firstAttribute="top" secondItem="ZZg-q9-TUe" secondAttribute="top" id="WKT-2t-2uY"/>
-                                                            <constraint firstItem="oeD-qr-sj7" firstAttribute="centerX" secondItem="ZZg-q9-TUe" secondAttribute="centerX" id="tIZ-TY-2m7"/>
+                                                            <constraint firstItem="oeD-qr-sj7" firstAttribute="leading" secondItem="ZZg-q9-TUe" secondAttribute="leading" id="XoR-ta-WDa"/>
                                                             <constraint firstItem="FiS-cX-K1W" firstAttribute="centerX" secondItem="ZZg-q9-TUe" secondAttribute="centerX" id="zmS-qU-iy7"/>
                                                         </constraints>
                                                     </view>
