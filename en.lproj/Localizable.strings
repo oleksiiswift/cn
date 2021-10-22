@@ -10,7 +10,7 @@
 "FILES" = "FILES";
 
 // MARK: - Navigation
-"DASHBOARD_TITLE" = "DASHBOARD";
+//"DASHBOARD_TITLE" = "DASHBOARD";
 
 // MARK: - Dashboard
 "PHOTOS_TITLE" = "Photos";

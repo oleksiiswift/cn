@@ -10,20 +10,21 @@ import UIKit
 class MediaTypeCollectionViewCell: UICollectionViewCell {
 
     @IBOutlet weak var mainView: ShadowView!
-    @IBOutlet weak var mediaContentThumbnailImageView: UIImageView!
-//    @IBOutlet weak var mediaContentImageView: UIImageView!
+    @IBOutlet weak var mediaContentView: ShadowRoundedView!
     @IBOutlet weak var mediaContentTitleTextLabel: UILabel!
     @IBOutlet weak var mediaContentSubTitleTextLabel: UILabel!
     @IBOutlet weak var mediaSpaceTitleTextLabel: UILabel!
+  
+    @IBOutlet weak var contentViewHeightConstraint: NSLayoutConstraint!
     
     private var photoManager = PhotoManager()
     public var mediaTypeCell: MediaContentType = .none
+  
+  var imV = ShadowRoundedView()
     
     override func prepareForReuse() {
         super.prepareForReuse()
         
-//        mediaContentImageView.image = nil
-        mediaContentThumbnailImageView.image = nil
         mediaContentTitleTextLabel.text = nil
         mediaContentSubTitleTextLabel.text = nil
     }
@@ -33,6 +34,28 @@ class MediaTypeCollectionViewCell: UICollectionViewCell {
         
         setupUI()
         updateColors()
+      
+      switch Screen.size {
+        case .small:
+          debugPrint("")
+
+        case .medium:
+          debugPrint("")
+          
+        case .plus:
+          debugPrint("")
+          contentViewHeightConstraint.constant = 200
+        case .large:
+          debugPrint("")
+          contentViewHeightConstraint.constant = 200
+        case .modern:
+          debugPrint("")
+          contentViewHeightConstraint.constant = 200
+        case .max:
+          debugPrint("")
+        case .madMax:
+          debugPrint("")
+      }
     }
 }
 
@@ -51,8 +74,8 @@ extension MediaTypeCollectionViewCell: Themeble {
         #warning("LOCO add localization in future")
         switch mediaType {
             case .userPhoto:
-                mediaContentThumbnailImageView.image = I.mainMenuThumbItems.photo
-            mediaContentTitleTextLabel.text = "PHOTOS_TITLE".localized()
+                mediaContentView.imageView.image = I.mainMenuThumbItems.photo
+                mediaContentTitleTextLabel.text = "PHOTOS_TITLE".localized()
                 
                 if let photosCount = contentCount, let space = diskSpace {
                     let spaceMessage = space != 0 ? String("\(U.getSpaceFromInt(space))") : "calculate"
@@ -62,7 +85,7 @@ extension MediaTypeCollectionViewCell: Themeble {
                     mediaContentSubTitleTextLabel.text = "NO CONTENT"
                 }
             case .userVideo:
-                mediaContentThumbnailImageView.image = I.mainMenuThumbItems.video
+                mediaContentView.imageView.image = I.mainMenuThumbItems.video
                 mediaContentTitleTextLabel.text = "VIDEOS_TITLE".localized()
                 if let videosCount = contentCount, let space = diskSpace {
                     let spaceMessage = space != 0 ? String("\(U.getSpaceFromInt(space))") : "calculate"
@@ -73,7 +96,7 @@ extension MediaTypeCollectionViewCell: Themeble {
                 }
                 
             case .userContacts:
-                mediaContentThumbnailImageView.image = I.mainMenuThumbItems.contacts
+                mediaContentView.imageView.image = I.mainMenuThumbItems.contacts
                 mediaContentTitleTextLabel.text = "CONTACTS_TITLE".localized()
                 if let contactsCount = contentCount {
                     mediaContentSubTitleTextLabel.text = String("\(contactsCount) contacts")

@@ -63,9 +63,15 @@ class CustomNavigationBar: UIView {
 //    titleLabel.font = UIFont(font: FontManager.robotoBlack, size: 16.0)
   }
   
-  func setUpNavigation(title: String, leftImage: UIImage, rightImage: UIImage) {
+  func setUpNavigation(title: String?, leftImage: UIImage, rightImage: UIImage) {
     
-    titleLabel.text = title
+    if let title = title {
+      titleLabel.isHidden = false
+      titleLabel.text = title
+    } else {
+      titleLabel.isHidden = true
+    }
+
     leftBarButton.setImage(leftImage, for: .normal)
     rightBarButton.setImage(rightImage, for: .normal)
   }

@@ -71,13 +71,13 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7Yr-dc-Kkh">
-                                <rect key="frame" x="0.0" y="124" width="414" height="728"/>
+                                <rect key="frame" x="0.0" y="44" width="414" height="808"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iz0-Rg-XOo">
-                                        <rect key="frame" x="0.0" y="0.0" width="414" height="728"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="808"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="d7L-g7-bO4">
-                                                <rect key="frame" x="0.0" y="0.0" width="414" height="568"/>
+                                                <rect key="frame" x="0.0" y="80" width="414" height="568"/>
                                                 <subviews>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZZg-q9-TUe">
                                                         <rect key="frame" x="0.0" y="0.0" width="414" height="288"/>
@@ -141,8 +141,8 @@
                                                 </subviews>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             </stackView>
-                                            <pageControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" numberOfPages="3" translatesAutoresizingMaskIntoConstraints="NO" id="OZa-pG-XCJ">
-                                                <rect key="frame" x="258.5" y="278" width="155.5" height="20"/>
+                                            <pageControl opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" numberOfPages="3" translatesAutoresizingMaskIntoConstraints="NO" id="OZa-pG-XCJ">
+                                                <rect key="frame" x="258.5" y="358" width="155.5" height="20"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="20" id="vl9-ZG-f0W"/>
                                                 </constraints>
@@ -150,7 +150,7 @@
                                                 <color key="currentPageIndicatorTintColor" red="0.57647058823529407" green="0.60784313725490191" blue="0.65490196078431373" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             </pageControl>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="poS-86-x66">
-                                                <rect key="frame" x="0.0" y="568" width="414" height="160"/>
+                                                <rect key="frame" x="0.0" y="648" width="414" height="160"/>
                                                 <subviews>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="70r-WS-60s" customClass="ShadowView" customModule="ECleaner" customModuleProvider="target">
                                                         <rect key="frame" x="20" y="10" width="374" height="60"/>
@@ -206,7 +206,7 @@
                                             <constraint firstItem="OZa-pG-XCJ" firstAttribute="top" secondItem="ZZg-q9-TUe" secondAttribute="bottom" constant="-10" id="KLd-It-cTO"/>
                                             <constraint firstAttribute="trailing" secondItem="poS-86-x66" secondAttribute="trailing" id="L5d-CF-HVC"/>
                                             <constraint firstItem="poS-86-x66" firstAttribute="leading" secondItem="iz0-Rg-XOo" secondAttribute="leading" id="LzQ-8A-7aS"/>
-                                            <constraint firstItem="d7L-g7-bO4" firstAttribute="top" secondItem="iz0-Rg-XOo" secondAttribute="top" id="clL-wE-uxb"/>
+                                            <constraint firstItem="d7L-g7-bO4" firstAttribute="top" secondItem="iz0-Rg-XOo" secondAttribute="top" constant="80" id="clL-wE-uxb"/>
                                             <constraint firstItem="d7L-g7-bO4" firstAttribute="bottom" secondItem="poS-86-x66" secondAttribute="top" id="fEd-Ib-wW4"/>
                                             <constraint firstItem="OZa-pG-XCJ" firstAttribute="trailing" secondItem="ZZg-q9-TUe" secondAttribute="trailing" id="lKp-e6-pQ4"/>
                                             <constraint firstAttribute="bottom" secondItem="poS-86-x66" secondAttribute="bottom" id="qwu-hP-IIM"/>
@@ -214,6 +214,7 @@
                                         </constraints>
                                     </view>
                                 </subviews>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstItem="iz0-Rg-XOo" firstAttribute="leading" secondItem="7Yr-dc-Kkh" secondAttribute="leading" id="3PC-4p-tR4"/>
                                     <constraint firstItem="iz0-Rg-XOo" firstAttribute="height" secondItem="7Yr-dc-Kkh" secondAttribute="height" id="8w5-Bn-hUV"/>
@@ -225,14 +226,14 @@
                             </scrollView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="o3N-4y-HyM" customClass="CustomNavigationBar" customModule="ECleaner" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="44" width="414" height="80"/>
-                                <color key="backgroundColor" red="0.8901960784313725" green="0.90980392156862744" blue="0.94509803921568625" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="80" id="wTo-aQ-Ok7"/>
                                 </constraints>
                             </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="yCB-kf-eGm"/>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="7Yr-dc-Kkh" firstAttribute="leading" secondItem="yCB-kf-eGm" secondAttribute="leading" id="4jj-FG-RUC"/>
                             <constraint firstAttribute="bottom" secondItem="7Yr-dc-Kkh" secondAttribute="bottom" id="CjX-Yg-Hup"/>
@@ -241,7 +242,7 @@
                             <constraint firstItem="o3N-4y-HyM" firstAttribute="leading" secondItem="yCB-kf-eGm" secondAttribute="leading" id="cYU-mo-hbr"/>
                             <constraint firstItem="yCB-kf-eGm" firstAttribute="trailing" secondItem="7Yr-dc-Kkh" secondAttribute="trailing" id="vOS-7I-Nvj"/>
                             <constraint firstItem="7Yr-dc-Kkh" firstAttribute="centerX" secondItem="el6-aC-zDK" secondAttribute="centerX" id="w5i-mz-SkE"/>
-                            <constraint firstItem="7Yr-dc-Kkh" firstAttribute="top" secondItem="o3N-4y-HyM" secondAttribute="bottom" id="zfi-j2-mxf"/>
+                            <constraint firstItem="7Yr-dc-Kkh" firstAttribute="top" secondItem="yCB-kf-eGm" secondAttribute="top" id="zfi-j2-mxf"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="mIn-Xu-8Lg"/>
@@ -249,6 +250,7 @@
                     <connections>
                         <outlet property="circleProgressView" destination="oeD-qr-sj7" id="Jaj-lB-HAO"/>
                         <outlet property="circleTotlaSpaceView" destination="FiS-cX-K1W" id="P5d-7m-G2J"/>
+                        <outlet property="collectionViewHeightConstraint" destination="U1g-Ww-fyt" id="6u2-Dc-SMa"/>
                         <outlet property="customNavBar" destination="o3N-4y-HyM" id="aEi-5X-SLo"/>
                         <outlet property="deepCleaningButtonTextLabel" destination="7t5-6G-mDG" id="v6q-pD-LxJ"/>
                         <outlet property="deepCleaningButtonView" destination="70r-WS-60s" id="1Qf-mB-dyU"/>

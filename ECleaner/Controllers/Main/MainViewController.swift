@@ -16,11 +16,11 @@ class MainViewController: UIViewController {
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var circleTotlaSpaceView: CircleProgressView!
     @IBOutlet weak var circleProgressView: MMTGradientArcView!
-//    @IBOutlet weak var mediaCollectionViewContainer: UIView!
     @IBOutlet weak var mediaCollectionView: UICollectionView!
     @IBOutlet weak var deepCleaningButtonView: ShadowView!
     @IBOutlet weak var deepCleaningButtonTextLabel: UILabel!
-//    @IBOutlet weak var circleProgressBarViewHeightConstraint: NSLayoutConstraint!
+  
+    @IBOutlet weak var collectionViewHeightConstraint: NSLayoutConstraint!
     
     lazy var premiumButton = UIBarButtonItem(image: I.navigationItems.premium, style: .plain, target: self, action: #selector(premiumButtonPressed))
     lazy var settingsButton = UIBarButtonItem(image: I.navigationItems.settings, style: .plain, target: self, action: #selector(settingsButtonPressed))
@@ -303,7 +303,7 @@ extension MainViewController: UpdateColorsDelegate {
     private func setupNavigation() {
             
         self.navigationController?.navigationBar.isHidden = true
-        customNavBar.setUpNavigation(title: "DASHBOARD_TITLE".localized(), leftImage: I.navigationItems.premium, rightImage: I.navigationItems.settings)
+        customNavBar.setUpNavigation(title: nil, leftImage: I.navigationItems.premium, rightImage: I.navigationItems.settings)
       
 //        self.navigationController?.updateNavigationColors()
 //        self.navigationItem.leftBarButtonItem = premiumButton
@@ -316,7 +316,7 @@ extension MainViewController: UpdateColorsDelegate {
                 
         scrollView.alwaysBounceVertical = true
         deepCleaningButtonView.setCorner(12)
-        deepCleaningButtonTextLabel.font = UIFont(font: FontManager.robotoBlack, size: 16.0)//.systemFont(ofSize: 17, weight: .bold)
+        deepCleaningButtonTextLabel.font = UIFont(font: FontManager.robotoBlack, size: 16.0)
         deepCleaningButtonTextLabel.text = "DEEP_CLEANING_BUTTON_TITLE".localized()
       
         deepCleaningButtonView.clipsToBounds = true
@@ -325,8 +325,7 @@ extension MainViewController: UpdateColorsDelegate {
     
     func updateColors() {
         
-        self.view.backgroundColor = theme.backgroundColor//.clear
-//        deepCleaningButtonView.backgroundColor = theme.accentBackgroundColor
+        self.view.backgroundColor = theme.backgroundColor
         deepCleaningButtonTextLabel.textColor = theme.blueTextColor
     }
     
@@ -335,6 +334,53 @@ extension MainViewController: UpdateColorsDelegate {
       circleTotlaSpaceView.font = UIFont(font: FontManager.robotoBlack, size: 61.0)!
       circleTotlaSpaceView.percentLabel.font = UIFont(font: FontManager.robotoBlack, size: 61.0)
       circleTotlaSpaceView.percentLabelCenterInset = 45
+      
+      switch Screen.size {
+        case .small:
+          debugPrint("")
+            //                circleProgressBarViewHeightConstraint.constant = 140
+//          circleTotlaSpaceView.lineWidth = 10
+//          circleTotlaSpaceView.titleLabelBottomInset = (circleTotlaSpaceView.frame.height / 2) - 10
+//          circleTotlaSpaceView.percentLabelCenterInset = 25
+//          circleTotlaSpaceView.titleLabel.font = .systemFont(ofSize: 11, weight: .regular)
+//          circleTotlaSpaceView.percentLabel.font = .systemFont(ofSize: 18, weight: .bold)
+//
+//          circleTotlaSpaceView.layoutIfNeeded()
+//          self.view.layoutIfNeeded()
+//
+//          baseCarouselLayout.itemSize = CGSize(width: 138, height: mediaCollectionView.frame.height)
+          
+        case .medium:
+          debugPrint("")
+//          circleTotlaSpaceView.lineWidth = 20
+//          circleTotlaSpaceView.titleLabelBottomInset = (circleTotlaSpaceView.frame.height / 2) + 10
+//          circleTotlaSpaceView.titleLabel.font = .systemFont(ofSize: 13, weight: .regular)
+//          circleTotlaSpaceView.percentLabel.font = .systemFont(ofSize: 25, weight: .black)
+//          circleTotlaSpaceView.percentLabelCenterInset = 25
+        case .plus:
+          debugPrint("")
+          collectionViewHeightConstraint.constant = 260
+          
+          circleTotlaSpaceView.font = UIFont(font: FontManager.robotoBlack, size: 20.0)!
+          circleTotlaSpaceView.percentLabel.font = UIFont(font: FontManager.robotoBlack, size: 20.0)
+        case .large:
+          debugPrint("")
+          collectionViewHeightConstraint.constant = 260
+          
+          circleTotlaSpaceView.font = UIFont(font: FontManager.robotoBlack, size: 45.0)!
+          circleTotlaSpaceView.percentLabel.font = UIFont(font: FontManager.robotoBlack, size: 45.0)
+        case .modern:
+          debugPrint("")
+          
+          collectionViewHeightConstraint.constant = 260
+          
+          circleTotlaSpaceView.font = UIFont(font: FontManager.robotoBlack, size: 50.0)!
+          circleTotlaSpaceView.percentLabel.font = UIFont(font: FontManager.robotoBlack, size: 50.0)
+        case .max:
+          debugPrint("")
+        case .madMax:
+          debugPrint("")
+      }
     }
     
     private func setupCircleProgressView() {

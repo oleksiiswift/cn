@@ -20,25 +20,19 @@
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="DDF-aQ-mOR" customClass="ShadowView" customModule="ECleaner" customModuleProvider="target">
                         <rect key="frame" x="30" y="30" width="150" height="220"/>
                         <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kRt-Ta-nlS" customClass="ShadowRoundedView" customModule="ECleaner" customModuleProvider="target">
+                                <rect key="frame" x="42.5" y="32" width="65" height="65"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="kRt-Ta-nlS" secondAttribute="height" multiplier="1:1" id="VzL-HA-niV"/>
+                                </constraints>
+                            </view>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="Drq-4P-gkP">
                                 <rect key="frame" x="18.5" y="32" width="113" height="156"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kZu-EV-x76">
                                         <rect key="frame" x="0.0" y="0.0" width="113" height="65"/>
-                                        <subviews>
-                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="photo" translatesAutoresizingMaskIntoConstraints="NO" id="s2V-iX-8Gt">
-                                                <rect key="frame" x="24" y="0.0" width="65" height="65"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="width" secondItem="s2V-iX-8Gt" secondAttribute="height" id="AcK-sm-Oog"/>
-                                                </constraints>
-                                            </imageView>
-                                        </subviews>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        <constraints>
-                                            <constraint firstAttribute="bottom" secondItem="s2V-iX-8Gt" secondAttribute="bottom" id="2p4-EZ-HJ3"/>
-                                            <constraint firstItem="s2V-iX-8Gt" firstAttribute="top" secondItem="kZu-EV-x76" secondAttribute="top" id="CcU-H5-IlM"/>
-                                            <constraint firstItem="s2V-iX-8Gt" firstAttribute="centerX" secondItem="kZu-EV-x76" secondAttribute="centerX" id="GsW-Iu-rPz"/>
-                                        </constraints>
                                     </view>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" alignment="center" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="24m-oN-FOP">
                                         <rect key="frame" x="39" y="75" width="35" height="46"/>
@@ -84,9 +78,13 @@
                             <constraint firstItem="Drq-4P-gkP" firstAttribute="centerX" secondItem="DDF-aQ-mOR" secondAttribute="centerX" id="94h-Pn-QyW"/>
                             <constraint firstAttribute="width" constant="150" id="Ang-Om-wQc"/>
                             <constraint firstItem="Drq-4P-gkP" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="DDF-aQ-mOR" secondAttribute="leading" constant="10" id="Cdh-hI-psS"/>
+                            <constraint firstItem="kZu-EV-x76" firstAttribute="height" secondItem="kRt-Ta-nlS" secondAttribute="height" id="Jyk-wv-Lub"/>
                             <constraint firstAttribute="height" constant="220" id="KmZ-hN-0Uv"/>
+                            <constraint firstItem="kRt-Ta-nlS" firstAttribute="centerX" secondItem="kZu-EV-x76" secondAttribute="centerX" id="U3r-Ib-7nb"/>
+                            <constraint firstItem="kRt-Ta-nlS" firstAttribute="height" secondItem="DDF-aQ-mOR" secondAttribute="height" multiplier="0.295455" id="VvR-E5-J8c"/>
                             <constraint firstItem="Drq-4P-gkP" firstAttribute="top" relation="greaterThanOrEqual" secondItem="DDF-aQ-mOR" secondAttribute="top" constant="10" id="XyO-rZ-xa7"/>
                             <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="Drq-4P-gkP" secondAttribute="bottom" constant="10" id="YnV-3y-Dq7"/>
+                            <constraint firstItem="kRt-Ta-nlS" firstAttribute="centerY" secondItem="kZu-EV-x76" secondAttribute="centerY" id="jdd-8S-2s1"/>
                         </constraints>
                     </view>
                 </subviews>
@@ -100,10 +98,11 @@
             </constraints>
             <size key="customSize" width="183" height="275"/>
             <connections>
+                <outlet property="contentViewHeightConstraint" destination="KmZ-hN-0Uv" id="xi1-EK-bGE"/>
                 <outlet property="mainView" destination="DDF-aQ-mOR" id="cZi-96-BtM"/>
                 <outlet property="mediaContentSubTitleTextLabel" destination="nmQ-vH-i7R" id="dbx-2S-t1M"/>
-                <outlet property="mediaContentThumbnailImageView" destination="s2V-iX-8Gt" id="I8W-r3-qsY"/>
                 <outlet property="mediaContentTitleTextLabel" destination="HZd-Lx-c5G" id="gdQ-Ly-Mud"/>
+                <outlet property="mediaContentView" destination="kRt-Ta-nlS" id="TFe-lJ-hLI"/>
                 <outlet property="mediaSpaceTitleTextLabel" destination="Ig6-nn-AHZ" id="sFz-cv-xTc"/>
             </connections>
             <point key="canvasLocation" x="194.92753623188406" y="141.29464285714286"/>
@@ -111,6 +110,5 @@
     </objects>
     <resources>
         <image name="path" width="25" height="25"/>
-        <image name="photo" width="65" height="65"/>
     </resources>
 </document>
