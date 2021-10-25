@@ -14,6 +14,19 @@ enum MediaContentType {
     case userContacts
     case none
     
+    var navTitle: String {
+        switch self {
+            case .userPhoto:
+            return "PHOTOS_NAV_TITLE".localized()
+            case .userVideo:
+            return "VIDEOS_NAV_TITLE".localized()
+            case .userContacts:
+            return "CONTACTS_NAV_TITLE".localized()
+            case .none:
+                return ""
+        }
+    }
+    
     /// `SECTION PROPERTIES`
     var cellTitle: [Int: [Int : String]] {
         switch self {
@@ -59,26 +72,39 @@ enum MediaContentType {
         }
     }
     
+    var imageOfRows: UIImage {
+        switch self {
+        case .userPhoto:
+            return I.mainMenuThumbItems.photo
+        case .userVideo:
+            return I.mainMenuThumbItems.video
+        case .userContacts:
+            return I.mainMenuThumbItems.contacts
+        case .none:
+            return UIImage()
+        }
+    }
+    
     public func getCellTitle(index: Int) -> String {
         switch self {
             case .userPhoto:
                 switch index {
                     case 0:
-                        return "simmilar photo"
+                    return "SIMILAR_PHOTO".localized()
                     case 1:
-                        return "dublicates photo"
+                        return "DUBLICATES_PHOTO".localized()
                     case 2:
-                        return "screenshots"
+                        return "SCREENSHOTS".localized()
                     case 3:
-                        return "selfie"
+                        return "SELFIE".localized()
                     case 4:
-                        return "live photos"
+                        return "LIVE_PHOTOS".localized()
                     case 5:
-                        return "recently deleted photo"
+                        return "RECENTLY_DEL_PHOTOS".localized()
                     case 6:
-                        return "face" /// do not in use
+                        return "FACE".localized() /// do not in use
                     case 7:
-                        return "location" /// do not in use
+                        return "LOCATION".localized() /// do not in use
                     default:
                         return ""
                 }

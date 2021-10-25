@@ -19,8 +19,6 @@ class MediaTypeCollectionViewCell: UICollectionViewCell {
     
     private var photoManager = PhotoManager()
     public var mediaTypeCell: MediaContentType = .none
-  
-  var imV = ShadowRoundedView()
     
     override func prepareForReuse() {
         super.prepareForReuse()

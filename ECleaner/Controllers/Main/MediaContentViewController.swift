@@ -10,6 +10,8 @@ import Photos
 import SwiftMessages
 
 class MediaContentViewController: UIViewController {
+  
+    @IBOutlet weak var customNavBar: CustomNavigationBar!
 
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var dateSelectContainerView: UIView!
@@ -145,7 +147,7 @@ extension MediaContentViewController: UITableViewDelegate, UITableViewDataSource
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 67
+        return 100
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -412,21 +414,25 @@ extension MediaContentViewController: DateSelectebleViewDelegate {
     }
 }
 
+extension MediaContentViewController: CustomNavigationBarDelegate {
+    
+    func didTapLeftBarButton(_sender: UIButton) {
+        self.navigationController?.popViewController(animated: true)
+    }
+    
+    func didTapRightBarButton(_sender: UIButton) {}
+    
+    
+}
+
 extension MediaContentViewController: Themeble {
     
     private func setupUI() {
         
-        switch contentType {
-            case .userPhoto:
-                title = "title photo"
-            case .userVideo:
-                title = "title video"
-            case .userContacts:
-                title = "title contact"
-                dateSelectContainerHeigntConstraint.constant = 0
-                dateSelectContainerView.isHidden = true
-            case .none:
-                debugPrint("")
+        if contentType == .userContacts {
+            
+            dateSelectContainerHeigntConstraint.constant = 0
+            dateSelectContainerView.isHidden = true
         }
         
         dateSelectableView.frame = dateSelectContainerView.bounds
@@ -442,13 +448,17 @@ extension MediaContentViewController: Themeble {
     }
     
     private func setupNavigation() {
-        self.navigationController?.updateNavigationColors()
-        self.navigationItem.backButtonTitle = ""
+      
+      self.navigationController?.navigationBar.isHidden = true
+        customNavBar.setUpNavigation(title: contentType.navTitle, leftImage: I.navigationItems.back, rightImage: nil)
+//        self.navigationController?.updateNavigationColors()
+//        self.navigationItem.backButtonTitle = ""
     }
     
     private func setupObserversAndDelegate() {
         
         self.dateSelectableView.delegate = self
+        self.customNavBar.delegate = self
     }
     
     private func setupDateInterval() {
@@ -458,7 +468,8 @@ extension MediaContentViewController: Themeble {
     
     func updateColors() {
         
-        dateSelectContainerView.addBottomBorder(with: theme.contentBackgroundColor, andWidth: 1)
+        self.view.backgroundColor = theme.backgroundColor
+//        dateSelectContainerView.addBottomBorder(with: theme.contentBackgroundColor, andWidth: 1)
     }
     
     private func setupShowDatePickerSelectorController(segue: UIStoryboardSegue) {
