@@ -10,15 +10,16 @@ import Photos
 
 class ContentTypeTableViewCell: UITableViewCell {
     
-    @IBOutlet weak var baseView: UIView!
+    @IBOutlet weak var baseView: ShadowView!
     @IBOutlet weak var rightArrowImageView: UIImageView!
     
-    @IBOutlet weak var selectedAssetsContainerView: UIView!
-    @IBOutlet weak var selectedAssetsImageView: UIImageView!
+    @IBOutlet weak var shadowImageView: ShadowRoundedView!
+//    @IBOutlet weak var selectedAssetsContainerView: UIView!
+//    @IBOutlet weak var selectedAssetsImageView: UIImageView!
     
     @IBOutlet weak var contentTypeTextLabel: UILabel!
     @IBOutlet weak var contentSubtitleTextLabel: UILabel!
-    @IBOutlet weak var selectedContainerWidthConstraint: NSLayoutConstraint!
+//    @IBOutlet weak var selectedContainerWidthConstraint: NSLayoutConstraint!
     
     @IBOutlet weak var horizontalProgressView: HorizontalProgressBar!
     
@@ -29,7 +30,7 @@ class ContentTypeTableViewCell: UITableViewCell {
         
         contentTypeTextLabel.text = nil
         contentSubtitleTextLabel.text = nil
-        selectedAssetsImageView.image = nil
+//        selectedAssetsImageView.image = nil
         
         horizontalProgressView.progress = 0
         horizontalProgressView.setNeedsDisplay()
@@ -53,6 +54,14 @@ class ContentTypeTableViewCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
 
     }
+    
+    override func layoutSubviews() {
+          super.layoutSubviews()
+          //set the values for top,left,bottom,right margins
+          let margins = UIEdgeInsets(top: -20, left: 0, bottom: -20, right: 0)
+          contentView.frame = contentView.frame.inset(by: margins)
+//          contentView.layer.cornerRadius = 8
+    }
 }
 
 extension ContentTypeTableViewCell {
@@ -65,26 +74,28 @@ extension ContentTypeTableViewCell {
     public func cellConfig(contentType: MediaContentType, indexPath: IndexPath, phasetCount: Int, isDeepCleanController: Bool = false, progress: CGFloat, isProcessingComplete: Bool = false) {
         
         let progressStringText = isProcessingComplete ? "processing wait" : String("progress - \(progress.rounded().cleanValue) %")
-        let updatingCountValuesDeepClean: String = isDeepCleanController ? progressStringText : "0 files"
+        let updatingCountValuesDeepClean: String = isDeepCleanController ? progressStringText : "0 \("FILES".localized())"
         
         contentTypeTextLabel.text = isDeepCleanController ? contentType.getDeepCellTitle(index: indexPath.row) : contentType.getCellTitle(index: indexPath.row)
         horizontalProgressView.progress = progress / 100
 
         switch contentType {
             case .userPhoto, .userVideo:
-                contentSubtitleTextLabel.text = isProcessingComplete ? phasetCount != 0 ? String("\(phasetCount) files") : "no files to clean" : updatingCountValuesDeepClean
+                contentSubtitleTextLabel.text = isProcessingComplete ? phasetCount != 0 ? String("\(phasetCount) \("FILES".localized())") : "no files to clean" : updatingCountValuesDeepClean
             case .userContacts:
                 contentSubtitleTextLabel.text = ""
             case .none:
                 contentSubtitleTextLabel.text = ""
         }
+        
+        shadowImageView.imageView.image = contentType.imageOfRows
     }
 
     public func setupCellSelected(at indexPath: IndexPath, isSelected: Bool) {
         
-        selectedAssetsContainerView.isHidden = false
-        selectedContainerWidthConstraint.constant = 36
-        selectedAssetsImageView.image = isSelected ? I.systemElementsItems.circleCheckBox : I.systemElementsItems.circleBox
+//        selectedAssetsContainerView.isHidden = false
+//        selectedContainerWidthConstraint.constant = 36
+//        selectedAssetsImageView.image = isSelected ? I.systemElementsItems.circleCheckBox : I.systemElementsItems.circleBox
     }
 }
 
@@ -94,9 +105,9 @@ extension ContentTypeTableViewCell: Themeble {
         
         selectionStyle = .none
         
-        baseView.setCorner(12)
-        contentTypeTextLabel.font = .systemFont(ofSize: 15, weight: .medium)
-        contentSubtitleTextLabel.font = .systemFont(ofSize: 13, weight: .regular)
+        baseView.setCorner(14)
+        contentTypeTextLabel.font = UIFont(font: FontManager.robotoBold, size: 18.0)
+        contentSubtitleTextLabel.font = UIFont(font: FontManager.robotoMedium, size: 14.0)
         rightArrowImageView.image = I.navigationItems.rightShevronBack
     }
     
@@ -104,8 +115,6 @@ extension ContentTypeTableViewCell: Themeble {
         baseView.backgroundColor = theme.contentBackgroundColor
         contentTypeTextLabel.textColor = theme.titleTextColor
         contentSubtitleTextLabel.textColor = theme.subTitleTextColor
-        rightArrowImageView.tintColor = theme.tintColor
-        selectedAssetsImageView.tintColor = theme.tintColor
         horizontalProgressView.progressColor = theme.progressBackgroundColor
     }
 }

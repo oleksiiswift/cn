@@ -18,32 +18,43 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4y9-cB-Zgb">
-                                <rect key="frame" x="0.0" y="88" width="414" height="84"/>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FVD-oU-MMA" customClass="CustomNavigationBar" customModule="ECleaner" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="88" width="414" height="80"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="84" id="pSs-hd-HgH"/>
+                                    <constraint firstAttribute="height" constant="80" id="hMJ-F0-2rp"/>
+                                </constraints>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4y9-cB-Zgb">
+                                <rect key="frame" x="0.0" y="168" width="414" height="92"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="92" id="pSs-hd-HgH"/>
                                 </constraints>
                             </view>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="ST8-VF-aFu">
-                                <rect key="frame" x="0.0" y="172" width="414" height="690"/>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <rect key="frame" x="0.0" y="260" width="414" height="602"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </tableView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="vDu-zF-Fre"/>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="4y9-cB-Zgb" firstAttribute="top" secondItem="vDu-zF-Fre" secondAttribute="top" id="4g6-3m-eXD"/>
+                            <constraint firstItem="FVD-oU-MMA" firstAttribute="top" secondItem="vDu-zF-Fre" secondAttribute="top" id="87L-UV-r6D"/>
                             <constraint firstItem="4y9-cB-Zgb" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" id="8iH-J4-UaQ"/>
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="4y9-cB-Zgb" secondAttribute="trailing" id="BUd-rS-p0M"/>
                             <constraint firstItem="ST8-VF-aFu" firstAttribute="top" secondItem="4y9-cB-Zgb" secondAttribute="bottom" id="C2h-1Z-yac"/>
+                            <constraint firstItem="FVD-oU-MMA" firstAttribute="trailing" secondItem="vDu-zF-Fre" secondAttribute="trailing" id="CZi-4c-OCE"/>
+                            <constraint firstItem="4y9-cB-Zgb" firstAttribute="top" secondItem="FVD-oU-MMA" secondAttribute="bottom" id="HqM-1d-uct"/>
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="ST8-VF-aFu" secondAttribute="trailing" id="cIl-ut-Ggd"/>
+                            <constraint firstItem="FVD-oU-MMA" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" id="iwQ-BY-nIG"/>
                             <constraint firstItem="ST8-VF-aFu" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" id="jGj-A9-i4Y"/>
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="bottom" secondItem="ST8-VF-aFu" secondAttribute="bottom" id="rlQ-uu-Upf"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" largeTitleDisplayMode="never" id="qgE-SF-aLJ"/>
                     <connections>
+                        <outlet property="customNavBar" destination="FVD-oU-MMA" id="9U0-LJ-5CG"/>
                         <outlet property="dateSelectContainerHeigntConstraint" destination="pSs-hd-HgH" id="FmJ-9h-gYu"/>
                         <outlet property="dateSelectContainerView" destination="4y9-cB-Zgb" id="6Md-cE-4ba"/>
                         <outlet property="tableView" destination="ST8-VF-aFu" id="EA4-bM-OEe"/>
