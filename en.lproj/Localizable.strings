@@ -10,10 +10,22 @@
 "FILES" = "FILES";
 
 // MARK: - Navigation
-//"DASHBOARD_TITLE" = "DASHBOARD";
+"PHOTOS_NAV_TITLE" = "PHOTOS";
+"VIDEOS_NAV_TITLE" = "VIDEOS";
+"CONTACTS_NAV_TITLE" = "CONTACTS";
 
-// MARK: - Dashboard
+// MARK: - Main screen
 "PHOTOS_TITLE" = "Photos";
 "VIDEOS_TITLE" = "Videos";
 "CONTACTS_TITLE" = "Contacts";
 "DEEP_CLEANING_BUTTON_TITLE" = "DEEP CLEANING";
+
+// MARK: - Photos screen
+"SIMILAR_PHOTO" = "Simmilar photo";
+"DUBLICATES_PHOTO" = "Dublicates photo";
+"SCREENSHOTS" = "Screenshots";
+"SELFIE" = "Selfie";
+"LIVE_PHOTOS" = "Live photos";
+"RECENTLY_DEL_PHOTOS" = "Recently deleted photo";
+"FACE" = "Face";
+"LOCATION" = "Location";

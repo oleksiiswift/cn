@@ -94,7 +94,7 @@ class DateSelectebleView: UIView {
     }
     
     private func updateColors() {
-        
+      
         startingDateButtonView.backgroundColor = theme.contentBackgroundColor
         endingDateButtonView.backgroundColor = theme.contentBackgroundColor
         

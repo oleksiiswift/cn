@@ -7,6 +7,11 @@
 
 import UIKit
 
+protocol CustomNavigationBarDelegate: AnyObject {
+    func didTapLeftBarButton(_sender: UIButton)
+    func didTapRightBarButton(_sender: UIButton)
+}
+
 class CustomNavigationBar: UIView {
   
   var className: String {
@@ -17,12 +22,17 @@ class CustomNavigationBar: UIView {
   @IBOutlet weak var leftBarButton: PrimaryButton!
   @IBOutlet weak var rightBarButton: PrimaryButton!
   @IBOutlet weak var titleLabel: UILabel!
-
-  override func awakeFromNib() {
-    super.awakeFromNib()
     
-    self.configure()
-  }
+    var delegate: CustomNavigationBarDelegate?
+
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        
+        self.configure()
+        
+        leftBarButton.addTarget(self, action: #selector(didTapLeftBarButton(sender:)), for: .touchUpInside)
+        rightBarButton.addTarget(self, action: #selector(didTapRightBarButton(sender:)), for: .touchUpInside)
+    }
 
   override init(frame: CGRect) {
     super.init(frame: frame)
@@ -63,19 +73,32 @@ class CustomNavigationBar: UIView {
 //    titleLabel.font = UIFont(font: FontManager.robotoBlack, size: 16.0)
   }
   
-  func setUpNavigation(title: String?, leftImage: UIImage, rightImage: UIImage) {
+  func setUpNavigation(title: String?, leftImage: UIImage, rightImage: UIImage?) {
     
-    if let title = title {
-      titleLabel.isHidden = false
-      titleLabel.text = title
-    } else {
-      titleLabel.isHidden = true
-    }
+      if let title = title {
+          titleLabel.isHidden = false
+          titleLabel.text = title
+      } else {
+          titleLabel.isHidden = true
+      }
+      
+      if let rightImage = rightImage {
+          rightBarButton.isHidden = false
+          rightBarButton.setImage(rightImage, for: .normal)
+      } else {
+          rightBarButton.isHidden = true
+      }
 
     leftBarButton.setImage(leftImage, for: .normal)
-    rightBarButton.setImage(rightImage, for: .normal)
   }
 
+    @objc func didTapLeftBarButton(sender: UIButton) {
+        delegate?.didTapLeftBarButton(_sender: sender)
+    }
+    
+    @objc func didTapRightBarButton(sender: UIButton) {
+        delegate?.didTapRightBarButton(_sender: sender)
+    }
 
 }
 
