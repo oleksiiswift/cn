@@ -1,0 +1,19 @@
+/* 
+  Localizable.strings
+  ECleaner
+
+  Created by iMac_1 on 18.10.2021.
+  
+*/
+
+// MARK: - General
+"FILES" = "FILES";
+
+// MARK: - Navigation
+//"DASHBOARD_TITLE" = "DASHBOARD";
+
+// MARK: - Dashboard
+"PHOTOS_TITLE" = "Photos";
+"VIDEOS_TITLE" = "Videos";
+"CONTACTS_TITLE" = "Contacts";
+"DEEP_CLEANING_BUTTON_TITLE" = "DEEP CLEANING";

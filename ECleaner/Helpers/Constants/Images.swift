@@ -13,17 +13,17 @@ class Images {
     static let blank = UIImage(named: "")
     
     struct navigationItems {
-        static let premium = UIImage(systemName: "crown.fill")
-        static let settings = UIImage(systemName: "gear")
+        static let premium = UIImage(named: "premium")!//UIImage(systemName: "crown.fill")
+        static let settings = UIImage(named: "settings")!//UIImage(systemName: "gear")
         static let elipseBurger = UIImage(systemName: "ellipsis.circle.fill")
         static let leftShevronBack = UIImage(systemName: "chevron.left")
         static let rightShevronBack = UIImage(systemName: "chevron.right")
     }
     
     struct mainMenuThumbItems {
-        static let photo = UIImage(systemName: "photo.fill")
-        static let video = UIImage(systemName: "video.fill")
-        static let contacts = UIImage(systemName: "person.fill")
+        static let photo = UIImage(named: "photo")!//UIImage(systemName: "photo.fill")
+        static let video = UIImage(named: "video")!//UIImage(systemName: "video.fill")
+        static let contacts = UIImage(named: "contact")!//UIImage(systemName: "person.fill")
     }
     
     struct systemElementsItems {

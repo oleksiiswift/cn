@@ -9,16 +9,18 @@ import UIKit
 import Photos
 import SwiftMessages
 
-
 class MainViewController: UIViewController {
+  
+    @IBOutlet weak var customNavBar: CustomNavigationBar!
     
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var circleTotlaSpaceView: CircleProgressView!
-    @IBOutlet weak var mediaCollectionViewContainer: UIView!
+    @IBOutlet weak var circleProgressView: MMTGradientArcView!
     @IBOutlet weak var mediaCollectionView: UICollectionView!
-    @IBOutlet weak var deepCleaningButtonView: UIView!
+    @IBOutlet weak var deepCleaningButtonView: ShadowView!
     @IBOutlet weak var deepCleaningButtonTextLabel: UILabel!
-    @IBOutlet weak var circleProgressBarViewHeightConstraint: NSLayoutConstraint!
+  
+    @IBOutlet weak var collectionViewHeightConstraint: NSLayoutConstraint!
     
     lazy var premiumButton = UIBarButtonItem(image: I.navigationItems.premium, style: .plain, target: self, action: #selector(premiumButtonPressed))
     lazy var settingsButton = UIBarButtonItem(image: I.navigationItems.settings, style: .plain, target: self, action: #selector(settingsButtonPressed))
@@ -65,6 +67,14 @@ class MainViewController: UIViewController {
         setupCollectionView()
         setupCircleProgressView()
         updateColors()
+      
+//      let progress = GradientCircularProgress()
+//      var style = MyStyle()
+//      style.progressSize = circleProgressView.frame.size.height
+//      let progressView = progress.showAtRatio(frame: circleProgressView.bounds, display: true, style: style)
+//      circleProgressView.addSubview(progressView!)
+//      let calculatePercentage: Double = Double(Device.usedDiskSpaceInBytes) / Double(Device.totalDiskSpaceInBytes)
+//      progress.updateRatio(CGFloat(calculatePercentage))
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -292,10 +302,13 @@ extension MainViewController: UpdateColorsDelegate {
     
     private func setupNavigation() {
             
-        self.navigationController?.updateNavigationColors()
-        self.navigationItem.leftBarButtonItem = premiumButton
-        self.navigationItem.rightBarButtonItem = settingsButton
-        self.navigationItem.backButtonTitle = ""
+        self.navigationController?.navigationBar.isHidden = true
+        customNavBar.setUpNavigation(title: nil, leftImage: I.navigationItems.premium, rightImage: I.navigationItems.settings)
+      
+//        self.navigationController?.updateNavigationColors()
+//        self.navigationItem.leftBarButtonItem = premiumButton
+//        self.navigationItem.rightBarButtonItem = settingsButton
+//        self.navigationItem.backButtonTitle = ""
     }
     
     #warning("LOCO add loco")
@@ -303,88 +316,124 @@ extension MainViewController: UpdateColorsDelegate {
                 
         scrollView.alwaysBounceVertical = true
         deepCleaningButtonView.setCorner(12)
-        deepCleaningButtonTextLabel.font = .systemFont(ofSize: 17, weight: .bold)
-        deepCleaningButtonTextLabel.text = "Deep Cleaning"
+        deepCleaningButtonTextLabel.font = UIFont(font: FontManager.robotoBlack, size: 16.0)
+        deepCleaningButtonTextLabel.text = "DEEP_CLEANING_BUTTON_TITLE".localized()
+      
+        deepCleaningButtonView.clipsToBounds = true
+        deepCleaningButtonView.layer.cornerRadius = 14
     }
     
     func updateColors() {
         
-        self.view.backgroundColor = .clear
-        deepCleaningButtonView.backgroundColor = theme.accentBackgroundColor
-        deepCleaningButtonTextLabel.textColor = theme.activeTitleTextColor
+        self.view.backgroundColor = theme.backgroundColor
+        deepCleaningButtonTextLabel.textColor = theme.blueTextColor
     }
     
     private func setupProgressAndCollectionSize() {
         
-        /// `default size` of collection CGSize(width: 163, height: 290)
-        /// `default size` of progress bar is 190
-        /// `height` item size must be is equel to collection view height
-        
-        switch Screen.size {
-            case .small:
-                
-                circleProgressBarViewHeightConstraint.constant = 140
-                circleTotlaSpaceView.lineWidth = 10
-                circleTotlaSpaceView.titleLabelBottomInset = (circleTotlaSpaceView.frame.height / 2) - 10
-                circleTotlaSpaceView.percentLabelCenterInset = 25
-                circleTotlaSpaceView.titleLabel.font = .systemFont(ofSize: 11, weight: .regular)
-                circleTotlaSpaceView.percentLabel.font = .systemFont(ofSize: 18, weight: .bold)
-                
-                circleTotlaSpaceView.layoutIfNeeded()
-                self.view.layoutIfNeeded()
-                
-                baseCarouselLayout.itemSize = CGSize(width: 138, height: mediaCollectionView.frame.height)
-    
-            case .medium:
-                debugPrint("")
-                circleTotlaSpaceView.lineWidth = 20
-                circleTotlaSpaceView.titleLabelBottomInset = (circleTotlaSpaceView.frame.height / 2) + 10
-                circleTotlaSpaceView.titleLabel.font = .systemFont(ofSize: 13, weight: .regular)
-                circleTotlaSpaceView.percentLabel.font = .systemFont(ofSize: 25, weight: .black)
-                circleTotlaSpaceView.percentLabelCenterInset = 25
-            case .plus:
-                debugPrint("")
-                circleTotlaSpaceView.lineWidth = 20
-                circleTotlaSpaceView.titleLabelBottomInset = (circleTotlaSpaceView.frame.height / 2) + 10
-                circleTotlaSpaceView.titleLabel.font = .systemFont(ofSize: 13, weight: .regular)
-                circleTotlaSpaceView.percentLabel.font = .systemFont(ofSize: 25, weight: .black)
-                circleTotlaSpaceView.percentLabelCenterInset = 25
-            case .large:
-                debugPrint("")
-                circleTotlaSpaceView.lineWidth = 20
-                circleTotlaSpaceView.titleLabelBottomInset = (circleTotlaSpaceView.frame.height / 2) + 10
-                circleTotlaSpaceView.titleLabel.font = .systemFont(ofSize: 13, weight: .regular)
-                circleTotlaSpaceView.percentLabel.font = .systemFont(ofSize: 25, weight: .black)
-                circleTotlaSpaceView.percentLabelCenterInset = 25
-            case .modern:
-                debugPrint("")
-                circleTotlaSpaceView.lineWidth = 20
-                circleTotlaSpaceView.titleLabelBottomInset = (circleTotlaSpaceView.frame.height / 2) + 10
-                circleTotlaSpaceView.titleLabel.font = .systemFont(ofSize: 13, weight: .regular)
-                circleTotlaSpaceView.percentLabel.font = .systemFont(ofSize: 25, weight: .black)
-                circleTotlaSpaceView.percentLabelCenterInset = 25
-            case .max:
-                debugPrint("")
-            case .madMax:
-                debugPrint("")
-        }
+      circleTotlaSpaceView.font = UIFont(font: FontManager.robotoBlack, size: 61.0)!
+      circleTotlaSpaceView.percentLabel.font = UIFont(font: FontManager.robotoBlack, size: 61.0)
+      circleTotlaSpaceView.percentLabelCenterInset = 45
+      
+      switch Screen.size {
+        case .small:
+          debugPrint("")
+            //                circleProgressBarViewHeightConstraint.constant = 140
+//          circleTotlaSpaceView.lineWidth = 10
+//          circleTotlaSpaceView.titleLabelBottomInset = (circleTotlaSpaceView.frame.height / 2) - 10
+//          circleTotlaSpaceView.percentLabelCenterInset = 25
+//          circleTotlaSpaceView.titleLabel.font = .systemFont(ofSize: 11, weight: .regular)
+//          circleTotlaSpaceView.percentLabel.font = .systemFont(ofSize: 18, weight: .bold)
+//
+//          circleTotlaSpaceView.layoutIfNeeded()
+//          self.view.layoutIfNeeded()
+//
+//          baseCarouselLayout.itemSize = CGSize(width: 138, height: mediaCollectionView.frame.height)
+          
+        case .medium:
+          debugPrint("")
+//          circleTotlaSpaceView.lineWidth = 20
+//          circleTotlaSpaceView.titleLabelBottomInset = (circleTotlaSpaceView.frame.height / 2) + 10
+//          circleTotlaSpaceView.titleLabel.font = .systemFont(ofSize: 13, weight: .regular)
+//          circleTotlaSpaceView.percentLabel.font = .systemFont(ofSize: 25, weight: .black)
+//          circleTotlaSpaceView.percentLabelCenterInset = 25
+        case .plus:
+          debugPrint("")
+          collectionViewHeightConstraint.constant = 260
+          
+          circleTotlaSpaceView.font = UIFont(font: FontManager.robotoBlack, size: 20.0)!
+          circleTotlaSpaceView.percentLabel.font = UIFont(font: FontManager.robotoBlack, size: 20.0)
+        case .large:
+          debugPrint("")
+          collectionViewHeightConstraint.constant = 260
+          
+          circleTotlaSpaceView.font = UIFont(font: FontManager.robotoBlack, size: 45.0)!
+          circleTotlaSpaceView.percentLabel.font = UIFont(font: FontManager.robotoBlack, size: 45.0)
+        case .modern:
+          debugPrint("")
+          
+          collectionViewHeightConstraint.constant = 260
+          
+          circleTotlaSpaceView.font = UIFont(font: FontManager.robotoBlack, size: 50.0)!
+          circleTotlaSpaceView.percentLabel.font = UIFont(font: FontManager.robotoBlack, size: 50.0)
+        case .max:
+          debugPrint("")
+        case .madMax:
+          debugPrint("")
+      }
     }
     
     private func setupCircleProgressView() {
         
         let calculatePercentage: Double = Double(Device.usedDiskSpaceInBytes) / Double(Device.totalDiskSpaceInBytes)
-  
+
         circleTotlaSpaceView.setProgress(progress: CGFloat(calculatePercentage), animated: true)
         circleTotlaSpaceView.progressShapeColor = theme.tintColor
-        circleTotlaSpaceView.backgroundShapeColor = theme.contentBackgroundColor
+        circleTotlaSpaceView.backgroundShapeColor = .clear
         circleTotlaSpaceView.titleColor = theme.subTitleTextColor
-        circleTotlaSpaceView.percentColor = theme.tintColor
-        
+        circleTotlaSpaceView.percentColor = theme.titleTextColor
+
         circleTotlaSpaceView.orientation = .bottom
         circleTotlaSpaceView.lineCap = .round
         circleTotlaSpaceView.clockwise = true
 
-        circleTotlaSpaceView.title = "\(Device.usedDiskSpaceInGB.removeWhitespace()) out of \(Device.totalDiskSpaceInGB.removeWhitespace())"
+        circleTotlaSpaceView.title = "\(Device.usedDiskSpaceInGB.removeWhitespace()) FROM \(Device.totalDiskSpaceInGB.removeWhitespace()) USED"
         circleTotlaSpaceView.percentLabelFormat = "%.f%%"
     }
 }
+
+public struct MyStyle : StyleProperty {
+
+    // Progress Size
+  public var progressSize: CGFloat = 200
+
+    // Gradient Circular
+  public var arcLineWidth: CGFloat = 47.0
+  public var startArcColor: UIColor = UIColor().colorFromHexString("3677FF")
+  public var endArcColor: UIColor = UIColor().colorFromHexString("66CDFF")
+
+
+    // Base Circular
+  public var baseLineWidth: CGFloat? = 47.0
+  public var baseArcColor: UIColor? = UIColor.clear//darkGray()
+
+    // Ratio
+  public var ratioLabelFont: UIFont? = UIFont(name: "Verdana-Bold", size: 16.0)
+  public var ratioLabelFontColor: UIColor? = UIColor.white//()
+
+    // Message
+  public var messageLabelFont: UIFont? = UIFont.systemFont(ofSize: 16.0)
+  public var messageLabelFontColor: UIColor? = UIColor.white//()
+
+    // Background
+  public var backgroundStyle: BackgroundStyles = .none
+
+    // Dismiss
+  public var dismissTimeInterval: Double? = 0.0 // 'nil' for default setting.
+
+  public init() {}
+}
+
+
+
+
