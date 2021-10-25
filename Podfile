@@ -17,9 +17,6 @@ target 'ECleaner' do
   
   pod 'SwiftDate'
   pod 'SwiftyUserDefaults'
-  pod 'SwiftyContacts'
-  
-  
   
 #  pod 'Google-Mobile-Ads-SDK'
 end

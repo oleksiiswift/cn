@@ -135,6 +135,8 @@
 		97238A0F2689EE2700C523DC /* CustomDoneHud.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97238A0E2689EE2700C523DC /* CustomDoneHud.swift */; };
 		97238A112689EECE00C523DC /* UIView+BlurView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97238A102689EECE00C523DC /* UIView+BlurView.swift */; };
 		97238A132689EF6E00C523DC /* Presenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97238A122689EF6E00C523DC /* Presenter.swift */; };
+		976465D42727055200F8CDA6 /* String+Alphabetical+Range.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976465D32727055200F8CDA6 /* String+Alphabetical+Range.swift */; };
+		97A61EDE2726AB8700F2E6DE /* ContactsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A61EDD2726AB8700F2E6DE /* ContactsManager.swift */; };
 		97CC2F382683CF740072EF8C /* UpdateContentDataBaseMediator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CC2F372683CF740072EF8C /* UpdateContentDataBaseMediator.swift */; };
 		97CC2F3A2683D00F0072EF8C /* UpdateContentDataBaseListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CC2F392683D00F0072EF8C /* UpdateContentDataBaseListener.swift */; };
 		97CC2F3C26873A7D0072EF8C /* DateSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CC2F3B26873A7D0072EF8C /* DateSelectorViewController.swift */; };
@@ -284,6 +286,8 @@
 		97238A0E2689EE2700C523DC /* CustomDoneHud.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomDoneHud.swift; sourceTree = "<group>"; };
 		97238A102689EECE00C523DC /* UIView+BlurView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+BlurView.swift"; sourceTree = "<group>"; };
 		97238A122689EF6E00C523DC /* Presenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Presenter.swift; sourceTree = "<group>"; };
+		976465D32727055200F8CDA6 /* String+Alphabetical+Range.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Alphabetical+Range.swift"; sourceTree = "<group>"; };
+		97A61EDD2726AB8700F2E6DE /* ContactsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsManager.swift; sourceTree = "<group>"; };
 		97CC2F372683CF740072EF8C /* UpdateContentDataBaseMediator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateContentDataBaseMediator.swift; sourceTree = "<group>"; };
 		97CC2F392683D00F0072EF8C /* UpdateContentDataBaseListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateContentDataBaseListener.swift; sourceTree = "<group>"; };
 		97CC2F3B26873A7D0072EF8C /* DateSelectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateSelectorViewController.swift; sourceTree = "<group>"; };
@@ -434,6 +438,7 @@
 				049CC2392683761B0002F988 /* String+ConvertInteger.swift */,
 				04CFFFF12684B1ED000CA850 /* String+Extension.swift */,
 				04CFFFF32684B23D000CA850 /* String+Whitespaces.swift */,
+				976465D32727055200F8CDA6 /* String+Alphabetical+Range.swift */,
 			);
 			path = Strings;
 			sourceTree = "<group>";
@@ -676,6 +681,7 @@
 		04E5835F267A3EB600EDC3A3 /* Managers */ = {
 			isa = PBXGroup;
 			children = (
+				97A61EDF2726AB8B00F2E6DE /* Contacts */,
 				049CC21026821D560002F988 /* Photo */,
 				049CC21126821D5F0002F988 /* Alert */,
 				049CC22B268321D30002F988 /* Settings */,
@@ -909,6 +915,14 @@
 			path = PhotoPreviewViewController;
 			sourceTree = "<group>";
 		};
+		97A61EDF2726AB8B00F2E6DE /* Contacts */ = {
+			isa = PBXGroup;
+			children = (
+				97A61EDD2726AB8700F2E6DE /* ContactsManager.swift */,
+			);
+			path = Contacts;
+			sourceTree = "<group>";
+		};
 		97E54A892690A9A100C7FD54 /* UICollectionView */ = {
 			isa = PBXGroup;
 			children = (
@@ -1123,6 +1137,7 @@
 				97FC789226888120000D7F26 /* Date+CurrentDate.swift in Sources */,
 				0405AA59269D77A5004AC07A /* CMtime+StringDuration.swift in Sources */,
 				97FC78A12688E5E8000D7F26 /* PhotoCollectionViewCell.swift in Sources */,
+				97A61EDE2726AB8700F2E6DE /* ContactsManager.swift in Sources */,
 				0405AA5B269D9BD6004AC07A /* PreviewAVController.swift in Sources */,
 				049CC23426833D320002F988 /* UIView+Radius.swift in Sources */,
 				0447A68B26B2A3C30074919B /* OperationPhotoProcessingQueuer.swift in Sources */,
@@ -1172,6 +1187,7 @@
 				04CFFFE926846A38000CA850 /* Screen.swift in Sources */,
 				97238A092689D01E00C523DC /* GroupedAssetListViewController.swift in Sources */,
 				049CC22426831B800002F988 /* UIColor+Hex.swift in Sources */,
+				976465D42727055200F8CDA6 /* String+Alphabetical+Range.swift in Sources */,
 				04CFFFF22684B1ED000CA850 /* String+Extension.swift in Sources */,
 				4F56074827205AF300CA19E9 /* OrangeClearStyle.swift in Sources */,
 				97D0BABD2680AD6E0067A3A6 /* String+NSDate.swift in Sources */,
