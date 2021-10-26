@@ -20,7 +20,7 @@ enum Theme: Int {
         }
     }
 //    MARK: - backgroud colors -
-    
+  
     var backgroundColor: UIColor {
         switch self {
             case .light:
@@ -29,6 +29,15 @@ enum Theme: Int {
                 return UIColor().colorFromHexString("FFFFFF")
         }
     }
+  
+  var dateViewBackgroundColor: UIColor {
+    switch self {
+      case .light:
+        return UIColor().colorFromHexString("E1E8F0")
+      case .dark:
+        return UIColor().colorFromHexString("FFFFFF")
+    }
+  }
   
   var blueTextColor: UIColor {
     switch self {

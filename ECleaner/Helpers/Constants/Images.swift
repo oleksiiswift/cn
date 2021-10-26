@@ -13,6 +13,7 @@ class Images {
     static let blank = UIImage(named: "")
     
     struct navigationItems {
+        static let dissmiss = UIImage(named: "dissmiss")!
         static let back = UIImage(named: "back")!
         static let premium = UIImage(named: "premium")!//UIImage(systemName: "crown.fill")
         static let settings = UIImage(named: "settings")!//UIImage(systemName: "gear")
@@ -29,7 +30,7 @@ class Images {
     
     struct systemElementsItems {
         static let crissCross = UIImage(systemName: "xmark.circle.fill")
-        static let checkBox = UIImage(systemName: "stop")
+        static let checkBox = UIImage(named: "check")!//UIImage(systemName: "stop")
         static let checkBoxIsChecked = UIImage(systemName: "checkmark.square")
         static let circleBox = UIImage(systemName: "circle")
         static let circleCheckBox = UIImage(systemName: "checkmark.circle.fill")

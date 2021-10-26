@@ -6,26 +6,42 @@
   
 */
 
-// MARK: - General
+    // MARK: - General
 "FILES" = "FILES";
+"FROM" = "FROM:";
+"TO" = "TO:";
+"SUBMIT" = "SUBMIT";
 
-// MARK: - Navigation
+    // MARK: - Navigation
 "PHOTOS_NAV_TITLE" = "PHOTOS";
 "VIDEOS_NAV_TITLE" = "VIDEOS";
 "CONTACTS_NAV_TITLE" = "CONTACTS";
+"SELECT_PERIOD" = "SELECT PERIOD";
 
-// MARK: - Main screen
+    // MARK: - Main screen
 "PHOTOS_TITLE" = "Photos";
 "VIDEOS_TITLE" = "Videos";
 "CONTACTS_TITLE" = "Contacts";
 "DEEP_CLEANING_BUTTON_TITLE" = "DEEP CLEANING";
 
-// MARK: - Photos screen
+    // MARK: - Photos screen
 "SIMILAR_PHOTO" = "Simmilar photo";
 "DUBLICATES_PHOTO" = "Dublicates photo";
 "SCREENSHOTS" = "Screenshots";
 "SELFIE" = "Selfie";
-"LIVE_PHOTOS" = "Live photos";
-"RECENTLY_DEL_PHOTOS" = "Recently deleted photo";
+"LIVE_PHOTO" = "Live photos";
+"RECENTLY_DEL_PHOTO" = "Recently deleted photo";
 "FACE" = "Face";
 "LOCATION" = "Location";
+
+    // MARK: - Videos screen
+"LARGE_VIDEO" = "Large video";
+"DUPLICATE_VIDEO" = "Duplicate video";
+"SIMILAR_VIDEO" = "Similar video";
+"SCREEN_RECORDING" = "Screen recording";
+"COMPRESS_VIDEO" = "Compress video";
+"RECENTLY_DEL_VIDEO" = "Recently deleted video";
+
+    // MARK: - DatePicker screen
+"SINCE_THE_LAST_CLEANING" = "SINCE THE LAST CLEANING";
+"NOW_IS_THE_TIME_FOR" = "NOW IS THE TIME FOR";
