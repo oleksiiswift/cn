@@ -82,15 +82,10 @@ extension ContactsManager {
     private func contactsProcessingStore() {
         
         U.UI {
-            self.startingProcessFetchingContactsSections { contacts in
-                
-            }
-            
+            /// fetch all contacts
             self.fetchContacts { result in
                 switch result {
                 case .success(let contacts):
-                        
-//                        TODO: remove from this lateter and add to processing
                         self.resultProcessing(contacts)
                     break
                 case .failure:
@@ -101,31 +96,39 @@ extension ContactsManager {
     }
     
     
-    private func resultProcessing(_ contacts: [CNContact]) {
-        #warning("WorkInProgress")
-        
-        let phoneDuplicatesContacts = self.phoneDuplicates(contacts)
-        debugPrint(phoneDuplicates)
-        
-        let sections = self.phoneDuplicatedGroup(phoneDuplicatesContacts)
-        debugPrint(sections)
-        
-        let names = self.namesDuplicated(contacts)
-        
-        debugPrint(names)
-        
-        
-        let firstTestSection = self.namesDuplicatesGroup(contacts)
     
-        let secondTestSection = self.namesDuplicatesGroup(names)
+    private func resultProcessing(_ contacts: [CNContact]) {
         
-        debugPrint(firstTestSection)
-        debugPrint(secondTestSection)
+        /// sort and get contacts sectiions
+        
+        let sortedContacts: [String : [CNContact]] = getSortAndGroupContacts(contacts)
+        
+        
+        
+        
+    }
+    
+    public func getSortAndGroupContacts(_ contacts: [CNContact]) -> [String : [CNContact]] {
+        return Dictionary(grouping: contacts, by: {String($0.givenName.uppercased().prefix(1))})
+    }
+    
+    /// `all containers`
+    private func getContactsContainers() -> [CNContainer] {
+        
+        let contactStore = CNContactStore()
+        var contactsContainers: [CNContainer] = []
+        
+        do {
+            contactsContainers = try contactStore.containers(matching: nil)
+        } catch {
+            self.checkStatus { _ in }
+        }
+        return contactsContainers
     }
     
     
     /// `result` for all contacts
-    private func startingProcessFetchingContactsSections(completionHandler: @escaping([String: [CNContact]]) -> Void) {
+    private func startingProcessFetchingContactsSections(completionHandler: @escaping ([String: [CNContact]]) -> Void) {
         
         self.fetchSortedContacts { result in
             switch result {
@@ -221,7 +224,6 @@ extension ContactsManager {
 }
 
 //      MARK: - contacts managers - work with contacts
-
 extension ContactsManager {
     
         /// `phoneDuplicates` - find duplicates by existing phone numbers
