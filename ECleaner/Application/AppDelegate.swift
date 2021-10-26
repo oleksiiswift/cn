@@ -56,8 +56,17 @@ extension AppDelegate {
         
         let contactsManager = ContactsManager.shared
         
+        
+        
+        
+        
         contactsManager.checkStatus { contacts in
-            debugPrint(contacts)
+            
+            
+            
+            
+            
+            
         }
         
         

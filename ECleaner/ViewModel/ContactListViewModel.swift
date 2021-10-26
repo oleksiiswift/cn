@@ -68,6 +68,50 @@ extension ContactListViewModel {
                 return first.localizedCaseInsensitiveCompare(second) == .orderedAscending
             }
         })
+        
+        sortedSections.forEach { sectionKey in
+            if sectionKey.containsNumbers() {
+                sortedSections.bringToFront(item: sectionKey)
+            }
+        }
+        /// if section start from +
+        sortedSections.forEach { (sectionKey) in
+            if sectionKey == "+" {
+                sortedSections.bringToFront(item: sectionKey)
+            }
+        }
+        
+        /// if section start from -
+        sortedSections.forEach { (sectionKey) in
+            if sectionKey == "-" {
+                sortedSections.bringToFront(item: sectionKey)
+            }
+        }
+        
+        /// if array contains special symbols
+        sortedSections.forEach { (sectionKey) in
+            if !sectionKey.isEmpty || sectionKey != " " {
+                if !sectionKey.isAlphabetic, !sectionKey.isNumeric {
+                    sortedSections.bringToFront(item: sectionKey)
+                }
+            }
+        }
+        
+        /// if array contais emoji
+        sortedSections.forEach { (sectionKey) in
+            if sectionKey.containEmoji {
+                sortedSections.bringToFront(item: sectionKey)
+            }
+        }
+        
+        /// for array move empty to the end
+        sortedSections.forEach { (sectionKey) in
+            if sectionKey.isEmpty || sectionKey == " " || sectionKey.isWhitespace {
+                sortedSections.bringToFront(item: sectionKey)
+            }
+        }
+        
+        self.contactsSections = sortedSections
     }
 }
 

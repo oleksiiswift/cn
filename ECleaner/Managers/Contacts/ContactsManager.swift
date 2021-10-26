@@ -96,16 +96,16 @@ extension ContactsManager {
     }
     
     
-    
     private func resultProcessing(_ contacts: [CNContact]) {
         
         /// sort and get contacts sectiions
         
         let sortedContacts: [String : [CNContact]] = getSortAndGroupContacts(contacts)
         
+        let viewModel = ContactListViewModel(contacts: contacts)
         
         
-        
+
     }
     
     public func getSortAndGroupContacts(_ contacts: [CNContact]) -> [String : [CNContact]] {
