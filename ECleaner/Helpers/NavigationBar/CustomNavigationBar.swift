@@ -8,23 +8,24 @@
 import UIKit
 
 protocol CustomNavigationBarDelegate: AnyObject {
+    
     func didTapLeftBarButton(_sender: UIButton)
     func didTapRightBarButton(_sender: UIButton)
 }
 
 class CustomNavigationBar: UIView {
-  
-  var className: String {
-    return "CustomNavigationBar"
-  }
-
-  @IBOutlet weak var containerView: UIView!
-  @IBOutlet weak var leftBarButton: PrimaryButton!
-  @IBOutlet weak var rightBarButton: PrimaryButton!
-  @IBOutlet weak var titleLabel: UILabel!
+    
+    var className: String {
+        return "CustomNavigationBar"
+    }
+    
+    @IBOutlet weak var containerView: UIView!
+    @IBOutlet weak var leftBarButton: PrimaryButton!
+    @IBOutlet weak var rightBarButton: PrimaryButton!
+    @IBOutlet weak var titleLabel: UILabel!
     
     var delegate: CustomNavigationBarDelegate?
-
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         
@@ -33,65 +34,68 @@ class CustomNavigationBar: UIView {
         leftBarButton.addTarget(self, action: #selector(didTapLeftBarButton(sender:)), for: .touchUpInside)
         rightBarButton.addTarget(self, action: #selector(didTapRightBarButton(sender:)), for: .touchUpInside)
     }
-
-  override init(frame: CGRect) {
-    super.init(frame: frame)
     
-    self.load()
-  }
-
-  required init?(coder aDecoder: NSCoder) {
-    super.init(coder: aDecoder)
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        self.load()
+    }
     
-    self.load()
-  }
-  
-  func load() {
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        
+        self.load()
+    }
     
-    Bundle.main.loadNibNamed(self.className, owner: self, options: nil)
-  }
-  
-//  override func layoutSubviews() {
-//    super.layoutSubviews()
-//    addDropShadow()
-//  }
-
-  func configure() {
+    func load() {
+        
+        Bundle.main.loadNibNamed(self.className, owner: self, options: nil)
+    }
     
-    containerView.backgroundColor = .clear
-    backgroundColor = .clear
-    addSubview(self.containerView)
-    containerView.frame = self.bounds
-    containerView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        //  override func layoutSubviews() {
+        //    super.layoutSubviews()
+        //    addDropShadow()
+        //  }
     
-    leftBarButton.clipsToBounds = true
-    leftBarButton.layer.cornerRadius = 10
-
-    rightBarButton.clipsToBounds = true
-    rightBarButton.layer.cornerRadius = 10
-
-//    titleLabel.font = UIFont(font: FontManager.robotoBlack, size: 16.0)
-  }
-  
-  func setUpNavigation(title: String?, leftImage: UIImage, rightImage: UIImage?) {
+    func configure() {
+        
+        containerView.backgroundColor = .clear
+        backgroundColor = .clear
+        addSubview(self.containerView)
+        containerView.frame = self.bounds
+        containerView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        
+        leftBarButton.clipsToBounds = true
+        leftBarButton.layer.cornerRadius = 10
+        
+        rightBarButton.clipsToBounds = true
+        rightBarButton.layer.cornerRadius = 10
+    }
     
-      if let title = title {
-          titleLabel.isHidden = false
-          titleLabel.text = title
-      } else {
-          titleLabel.isHidden = true
-      }
-      
-      if let rightImage = rightImage {
-          rightBarButton.isHidden = false
-          rightBarButton.setImage(rightImage, for: .normal)
-      } else {
-          rightBarButton.isHidden = true
-      }
-
-    leftBarButton.setImage(leftImage, for: .normal)
-  }
-
+    func setUpNavigation(title: String?, leftImage: UIImage?, rightImage: UIImage?) {
+        
+        if let title = title {
+            titleLabel.isHidden = false
+            titleLabel.text = title
+        } else {
+            titleLabel.isHidden = true
+        }
+        
+        if let rightImage = rightImage {
+            rightBarButton.isHidden = false
+            rightBarButton.setImage(rightImage, for: .normal)
+        } else {
+            rightBarButton.isHidden = true
+        }
+        
+        if let leftImage = leftImage {
+            leftBarButton.isHidden = false
+            leftBarButton.setImage(leftImage, for: .normal)
+        } else {
+            leftBarButton.isHidden = true
+        }
+    }
+    
     @objc func didTapLeftBarButton(sender: UIButton) {
         delegate?.didTapLeftBarButton(_sender: sender)
     }
@@ -99,7 +103,7 @@ class CustomNavigationBar: UIView {
     @objc func didTapRightBarButton(sender: UIButton) {
         delegate?.didTapRightBarButton(_sender: sender)
     }
-
+    
 }
 
 //class PrimaryImageView: UIImageView {

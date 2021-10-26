@@ -15,10 +15,7 @@ protocol DateSelectebleViewDelegate {
 class DateSelectebleView: UIView {
 
     @IBOutlet weak var dateSelectContainerView: UIView!
-    @IBOutlet weak var startingDateStackView: UIStackView!
-    @IBOutlet weak var endingDateStackView: UIStackView!
-    @IBOutlet weak var startingDateButtonView: UIView!
-    @IBOutlet weak var endingDateButtonView: UIView!
+    @IBOutlet weak var contentStackView: UIStackView!
     @IBOutlet weak var startingDateTitileTextLabel: UILabel!
     @IBOutlet weak var endingDateTitleTextLabel: UILabel!
     @IBOutlet weak var startingDateTextLabel: UILabel!
@@ -54,54 +51,57 @@ class DateSelectebleView: UIView {
     }
     
     
-    private func commonInit() {
+  private func commonInit() {
     
-        U.mainBundle.loadNibNamed(C.identifiers.xibs.datePickerContainer, owner: self, options: nil)
-        
-        self.addSubview(self.dateSelectContainerView)
-        self.dateSelectContainerView.translatesAutoresizingMaskIntoConstraints = false
-        
-        NSLayoutConstraint.activate([
-                                        self.dateSelectContainerView.topAnchor.constraint(equalTo: self.topAnchor),
-                                        self.dateSelectContainerView.bottomAnchor.constraint(equalTo: self.bottomAnchor),
-                                        self.dateSelectContainerView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-                                        self.dateSelectContainerView.trailingAnchor.constraint(equalTo: self.trailingAnchor)])
-    }
+    U.mainBundle.loadNibNamed(C.identifiers.xibs.datePickerContainer, owner: self, options: nil)
     
-    public func setupDisplaysDate(startingDate: String, endingDate: String) {
-        
-        startingDateTextLabel.text = U.displayDate(from: startingDate)
-        endingDateTextLabel.text = U.displayDate(from: endingDate)
-    }
-    
-    private func setupUI() {
-        
-        startingDateStackView.layoutMargins = UIEdgeInsets(top: 10, left: 0, bottom: 10, right: 0)
-        startingDateStackView.isLayoutMarginsRelativeArrangement = true
-        endingDateStackView.layoutMargins = UIEdgeInsets(top: 10, left: 0, bottom: 10, right: 0)
-        endingDateStackView.isLayoutMarginsRelativeArrangement = true
-        
-        startingDateButtonView.setCorner(12)
-        endingDateButtonView.setCorner(12)
-        
-        startingDateTitileTextLabel.text = "from"
-        endingDateTitleTextLabel.text = "to"
-    
-        startingDateTextLabel.font = .systemFont(ofSize: 15, weight: .regular)
-        endingDateTextLabel.font = .systemFont(ofSize: 15, weight: .regular)
-        startingDateTitileTextLabel.font = .systemFont(ofSize: 15, weight: .medium)
-        endingDateTextLabel.font = .systemFont(ofSize: 15, weight: .medium)
-    }
-    
-    private func updateColors() {
+    dateSelectContainerView.backgroundColor = theme.dateViewBackgroundColor
+    dateSelectContainerView.clipsToBounds = true
+    dateSelectContainerView.layer.cornerRadius = 14
       
-        startingDateButtonView.backgroundColor = theme.contentBackgroundColor
-        endingDateButtonView.backgroundColor = theme.contentBackgroundColor
-        
-        startingDateTitileTextLabel.textColor = theme.titleTextColor
-        endingDateTextLabel.textColor = theme.titleTextColor
-        
-        startingDateTitileTextLabel.textColor = theme.subTitleTextColor
-        endingDateTitleTextLabel.textColor = theme.subTitleTextColor
-    }
+    dateSelectContainerView.layer.applySketchShadow(
+      color: UIColor().colorFromHexString("D8DFEB"),
+      alpha: 1.0,
+      x: 6,
+      y: 6,
+      blur: 10,
+      spread: 0)
+    
+    self.addSubview(self.dateSelectContainerView)
+    self.dateSelectContainerView.translatesAutoresizingMaskIntoConstraints = false
+    
+    let margins = self.safeAreaLayoutGuide
+    dateSelectContainerView.leadingAnchor.constraint(equalTo: margins.leadingAnchor, constant: 20).isActive = true
+    dateSelectContainerView.trailingAnchor.constraint(equalTo: margins.trailingAnchor, constant: -20).isActive = true
+    dateSelectContainerView.topAnchor.constraint(equalTo: margins.topAnchor, constant: 10).isActive = true
+    dateSelectContainerView.bottomAnchor.constraint(equalTo: margins.bottomAnchor, constant: -10).isActive = true
+      
+      dateSelectContainerView.layer.masksToBounds = true
+  }
+    
+  public func setupDisplaysDate(startingDate: String, endingDate: String) {
+    
+      startingDateTextLabel.text = U.displayDate(from: startingDate).uppercased()
+      endingDateTextLabel.text = U.displayDate(from: endingDate).uppercased()
+  }
+    
+  private func setupUI() {
+    
+    startingDateTitileTextLabel.text = "FROM".localized()
+    endingDateTitleTextLabel.text = "TO".localized()
+    
+    startingDateTextLabel.font = UIFont(font: FontManager.robotoMedium, size: 16.0)
+    endingDateTextLabel.font = UIFont(font: FontManager.robotoMedium, size: 16.0)
+    startingDateTitileTextLabel.font = UIFont(font: FontManager.robotoBold, size: 14.0)
+    endingDateTitleTextLabel.font = UIFont(font: FontManager.robotoBold, size: 14.0)
+  }
+    
+  private func updateColors() {
+    
+    startingDateTextLabel.textColor = theme.titleTextColor.withAlphaComponent(0.7)
+    endingDateTextLabel.textColor = theme.titleTextColor.withAlphaComponent(0.7)
+    
+    startingDateTitileTextLabel.textColor = theme.titleTextColor.withAlphaComponent(0.5)
+    endingDateTitleTextLabel.textColor = theme.titleTextColor.withAlphaComponent(0.5)
+  }
 }

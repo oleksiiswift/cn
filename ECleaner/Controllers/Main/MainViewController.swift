@@ -315,12 +315,8 @@ extension MainViewController: UpdateColorsDelegate {
     private func setupUI() {
                 
         scrollView.alwaysBounceVertical = true
-        deepCleaningButtonView.setCorner(12)
         deepCleaningButtonTextLabel.font = UIFont(font: FontManager.robotoBlack, size: 16.0)
         deepCleaningButtonTextLabel.text = "DEEP_CLEANING_BUTTON_TITLE".localized()
-      
-        deepCleaningButtonView.clipsToBounds = true
-        deepCleaningButtonView.layer.cornerRadius = 14
     }
     
     func updateColors() {

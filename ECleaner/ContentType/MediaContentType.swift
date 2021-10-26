@@ -98,9 +98,9 @@ enum MediaContentType {
                     case 3:
                         return "SELFIE".localized()
                     case 4:
-                        return "LIVE_PHOTOS".localized()
+                        return "LIVE_PHOTO".localized()
                     case 5:
-                        return "RECENTLY_DEL_PHOTOS".localized()
+                        return "RECENTLY_DEL_PHOTO".localized()
                     case 6:
                         return "FACE".localized() /// do not in use
                     case 7:
@@ -111,17 +111,17 @@ enum MediaContentType {
             case .userVideo:
                 switch index {
                     case 0:
-                        return "large video"
+                        return "LARGE_VIDEO".localized()
                     case 1:
-                        return "duplicate video"
+                        return "DUPLICATE_VIDEO".localized()
                     case 2:
-                        return "similar video"
+                        return "SIMILAR_VIDEO".localized()
                     case 3:
-                        return "screen recording"
+                        return "SCREEN_RECORDING".localized()
                     case 4:
-                        return "compress video"
+                        return "COMPRESS_VIDEO".localized()
                     case 5:
-                        return "recently deleted video"
+                        return "RECENTLY_DEL_VIDEO".localized()
                     default:
                         return ""
                 }
