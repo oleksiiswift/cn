@@ -189,7 +189,7 @@ extension PHAssetFetchManager {
         let assets = PHAsset.fetchAssets(with: fetchOption)
         
         assets.enumerateObjects { object, index, stopped in
-            debugPrint("calculated space at index: ", index)
+//            debugPrint("calculated space at index: ", index)
             if object.mediaType == .image {
                 allSpaceSize += object.imageSize
                 photoPhassetSpace += object.imageSize
