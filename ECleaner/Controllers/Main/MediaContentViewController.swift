@@ -8,6 +8,7 @@
 import UIKit
 import Photos
 import SwiftMessages
+import Contacts
 
 class MediaContentViewController: UIViewController {
   
@@ -50,7 +51,11 @@ class MediaContentViewController: UIViewController {
     public var allDuplicatesVideos: [PHAsset] = []
     public var allScreenRecords: [PHAsset] = []
     public var allRecentlyDeletedVideos: [PHAsset] = []
-
+    
+    public var allContacts: [CNContact] = []
+    public var allEmptyContacts: [ContactsGroup] = []
+    public var allDuplicatedContacts: [ContactsGroup] = []
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         

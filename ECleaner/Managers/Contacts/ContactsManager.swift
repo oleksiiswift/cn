@@ -125,19 +125,14 @@ extension ContactsManager {
     
     private func resultProcessing(_ contacts: [CNContact]) {
         
-        /// sort and get contacts sectiions
-        #warning("IN PROGRESS ->")
-        
-        let sortedContacts: [String : [CNContact]] = getSortAndGroupContacts(contacts)
-        
-        let viewModel = ContactListViewModel(contacts: contacts)
-        
         let emptyCpntacts = self.groupingMissingIncompleteContacts(contacts)
+        UpdateContentDataBaseMediator.instance.getAllEmptyContacts(emptyCpntacts)
+        UpdateContentDataBaseMediator.instance.getAllContacts(contacts)
         
-        for i in emptyCpntacts {
-            debugPrint(i.name)
+        self.getDuplicatedAllContacts(contacts) { contactsGroup in
+            
+            UpdateContentDataBaseMediator.instance.getAllDuplicatedContacts(contactsGroup)
         }
-
     }
     
     public func getSortAndGroupContacts(_ contacts: [CNContact]) -> [String : [CNContact]] {
@@ -456,6 +451,19 @@ extension ContactsManager {
         wholeEmptyContacts.count != 0 ? contactsGroup.append(wholeEmptyGroup) : ()
         
         return contactsGroup
+    }
+    
+    private func getDuplicatedAllContacts(_ contacts: [CNContact], completion: @escaping ([ContactsGroup]) -> Void) {
+        
+        let phoneDuplicated = self.phoneDuplicatedGroup(contacts)
+        let nameDuplicated = self.namesDuplicatesGroup(contacts)
+        
+        var allGroups: [ContactsGroup] = []
+        
+        allGroups.append(contentsOf: phoneDuplicated)
+        allGroups.append(contentsOf: nameDuplicated)
+        
+        completion(allGroups)
     }
 }
 

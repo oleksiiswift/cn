@@ -8,6 +8,7 @@
 import UIKit
 import Photos
 import SwiftMessages
+import Contacts
 
 class MainViewController: UIViewController {
   
@@ -56,6 +57,10 @@ class MainViewController: UIViewController {
     
     private var allRecentlyDeletedPhotos: [PHAsset] = []
     private var allRecentlyDeletedVideos: [PHAsset] = []
+    
+    private var allContacts: [CNContact] = []
+    private var allEmptyContacts: [ContactsGroup] = []
+    private var allDuplicatedContacts: [ContactsGroup] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -192,6 +197,18 @@ extension MainViewController: UpdateContentDataBaseListener {
     func getRecentlyDeletedVideoAssets(_ assts: [PHAsset]) {
         self.allRecentlyDeletedVideos = assts
     }
+    
+    func getAllCNContacts(_ contacts: [CNContact]) {
+        self.allContacts = contacts
+    }
+    
+    func getAllEmptyContacts(_ contacts: [ContactsGroup]) {
+        self.allEmptyContacts = contacts
+    }
+    
+    func getAllDuplicatedContacts(_ contacts: [ContactsGroup]) {
+        self.allDuplicatedContacts = contacts
+    }
 }
 
 extension MainViewController {
@@ -210,6 +227,10 @@ extension MainViewController {
                 viewController.allLargeVideos = self.allLargeVidoes
                 viewController.allScreenRecords = self.allScreenRecordsVideos
                 viewController.allRecentlyDeletedVideos = self.allRecentlyDeletedVideos
+            case .userContacts:
+                viewController.allContacts = self.allContacts
+                viewController.allEmptyContacts = self.allEmptyContacts
+                viewController.allDuplicatedContacts = self.allDuplicatedContacts
             default:
                 return
         }
@@ -311,7 +332,6 @@ extension MainViewController: UpdateColorsDelegate {
 //        self.navigationItem.backButtonTitle = ""
     }
     
-    #warning("LOCO add loco")
     private func setupUI() {
                 
         scrollView.alwaysBounceVertical = true
