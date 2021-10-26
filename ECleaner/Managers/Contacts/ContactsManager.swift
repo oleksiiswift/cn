@@ -13,16 +13,43 @@ enum AlphabeticalContactsResults {
     case error(error: Error)
 }
 
-class ContactsGroup {
-    let name: String
-    var contacts: [CNContact]
+enum IncompleteType {
+    case onlyName
+    case onlyPhone
+    case onlyEmail
+    case emptyName
+    case wholeEmpty
+    case none
     
-    init(name: String, contacts: [CNContact]) {
-        self.name = name
-        self.contacts = contacts
+    var rawValue: String {
+        switch self {
+            case .onlyName:
+                return "only name"
+            case .onlyPhone:
+                return "only phone"
+            case .onlyEmail:
+                return "only mail"
+            case .emptyName:
+                return "incomplete name"
+            case .wholeEmpty:
+                return "whole Empty phone"
+            case .none:
+                return ""
+        }
     }
 }
 
+class ContactsGroup {
+    let name: String
+    var contacts: [CNContact]
+    var groupType: IncompleteType
+    
+    init(name: String, contacts: [CNContact], groupType: IncompleteType) {
+        self.name = name
+        self.contacts = contacts
+        self.groupType = groupType
+    }
+}
 
 class ContactsManager {
     
@@ -99,12 +126,17 @@ extension ContactsManager {
     private func resultProcessing(_ contacts: [CNContact]) {
         
         /// sort and get contacts sectiions
+        #warning("IN PROGRESS ->")
         
         let sortedContacts: [String : [CNContact]] = getSortAndGroupContacts(contacts)
         
         let viewModel = ContactListViewModel(contacts: contacts)
         
+        let emptyCpntacts = self.groupingMissingIncompleteContacts(contacts)
         
+        for i in emptyCpntacts {
+            debugPrint(i.name)
+        }
 
     }
     
@@ -232,6 +264,7 @@ extension ContactsManager {
         /// `namesDuplicatesGroup` - get sections of duplicated contacts by names
         /// `emailDuplicates` - find duplicated contacts by emails
         /// `mailListDuplicatedGroup` -  get sections of duplicated contacts by emails
+        /// `groupingMissingIncompleteContacts` - checj for empty fields
     
     /// `phone duplicated contacts`
     private func phoneDuplicates(_ contacts: [CNContact]) -> [CNContact] {
@@ -272,7 +305,7 @@ extension ContactsManager {
                 let stringValue = phone.value.stringValue
                 if !phoneNumbers.contains(stringValue) {
                     phoneNumbers.append(stringValue)
-                    group.append(ContactsGroup(name: stringValue, contacts: []))
+                    group.append(ContactsGroup(name: stringValue, contacts: [], groupType: .none))
                 }
             }
         }
@@ -316,7 +349,7 @@ extension ContactsManager {
         
         for contact in contacts {
             if group.filter({$0.name == contact.givenName + " " + contact.familyName}).count == 0 {
-                group.append(ContactsGroup(name: contact.givenName + " " + contact.familyName, contacts: []))
+                group.append(ContactsGroup(name: contact.givenName + " " + contact.familyName, contacts: [], groupType: .none))
             }
         }
         
@@ -367,7 +400,7 @@ extension ContactsManager {
             for email in contact.emailAddresses {
                 if emailList.contains(email.value as String) {
                     emailList.append(email.value as String)
-                    group.append(ContactsGroup(name: email.value as String, contacts: []))
+                    group.append(ContactsGroup(name: email.value as String, contacts: [], groupType: .none))
                 }
             }
         }
@@ -378,6 +411,51 @@ extension ContactsManager {
         }
         
         return group
+    }
+    
+    
+    /// `check empty filds` - check if some fileds is emty
+    private func groupingMissingIncompleteContacts(_ contacts: [CNContact]) -> [ContactsGroup] {
+        
+        var contactsGroup: [ContactsGroup] = []
+        
+        /// `only name` group
+        let onlyNameContacts = contacts.filter({ $0.phoneNumbers.count == 0 && $0.emailAddresses.count == 0})
+        let onlyNameGroupName = IncompleteType.onlyName.rawValue
+        let onlyNameGroup = ContactsGroup(name: onlyNameGroupName, contacts: onlyNameContacts, groupType: .onlyName)
+        
+        onlyNameContacts.count != 0 ? contactsGroup.append(onlyNameGroup) : ()
+        
+        /// `incomplete name` group
+        let emptyNameContacts = contacts.filter({$0.givenName.isEmpty || $0.givenName.isWhitespace}).filter({$0.familyName.isEmpty || $0.familyName.isWhitespace}).filter({$0.middleName.isEmpty || $0.middleName.isWhitespace})
+        let emptyNameGroupName = IncompleteType.emptyName.rawValue
+        let incompleteNameContacts = emptyNameContacts.filter({$0.phoneNumbers.count != 0 && $0.emailAddresses.count != 0} )
+        
+        let emptyNameGroup = ContactsGroup(name: emptyNameGroupName, contacts: incompleteNameContacts, groupType: .emptyName)
+        
+        emptyNameContacts.count != 0 ? contactsGroup.append(emptyNameGroup) : ()
+        
+        /// `only mail` group
+        let onlyEmailsContacts = emptyNameContacts.filter({$0.phoneNumbers.count == 0 && $0.emailAddresses.count != 0})
+        let onlyEmailGroupName = IncompleteType.onlyEmail.rawValue
+        let onlyEmailGroup = ContactsGroup(name: onlyEmailGroupName, contacts: onlyEmailsContacts, groupType: .onlyEmail)
+        
+        onlyEmailsContacts.count != 0 ? contactsGroup.append(onlyEmailGroup) : ()
+    
+        /// `only phone number` group
+        let onlyPhoneNumbersContacts = emptyNameContacts.filter({$0.phoneNumbers.count != 0 && $0.emailAddresses.count == 0})
+        let onlyPhoneNumbersGroupName = IncompleteType.onlyPhone.rawValue
+        let onlyPhoneNumbersGroup = ContactsGroup(name: onlyPhoneNumbersGroupName, contacts: onlyPhoneNumbersContacts, groupType: .onlyPhone)
+        
+        onlyPhoneNumbersContacts.count != 0 ? contactsGroup.append(onlyPhoneNumbersGroup) : ()
+    
+        let wholeEmptyContacts = emptyNameContacts.filter({$0.phoneNumbers.count == 0 && $0.emailAddresses.count == 0})
+        let wholeEmptyContactsName = IncompleteType.wholeEmpty.rawValue
+        let wholeEmptyGroup = ContactsGroup(name: wholeEmptyContactsName, contacts: wholeEmptyContacts, groupType: .wholeEmpty)
+        
+        wholeEmptyContacts.count != 0 ? contactsGroup.append(wholeEmptyGroup) : ()
+        
+        return contactsGroup
     }
 }
 
