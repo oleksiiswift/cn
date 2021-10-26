@@ -705,7 +705,7 @@ extension PhotoManager {
                 
                 for videosPosition in 1...videoContent.count {
                     #warning("TODO: set videos sizes smaller")
-                    debugPrint("large video processing at index: ", videosPosition)
+//                    debugPrint("large video processing at index: ", videosPosition)
                     if videoContent[videosPosition - 1].imageSize > 15000000 { //550000000 
                         videos.append(videoContent[videosPosition - 1])
                     }
