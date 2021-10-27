@@ -99,17 +99,26 @@ extension MediaContentViewController: UITableViewDelegate, UITableViewDataSource
     func configure(_ cell: ContentTypeTableViewCell, at indexPath: IndexPath) {
         
         var assetContentCount: Int = 0
+        var photoMediaType: PhotoMediaType = .none
     
         switch self.contentType {
             case .userPhoto:
                 switch indexPath.row {
+                    case 0:
+                        photoMediaType = .similarPhotos
+                    case 1:
+                        photoMediaType = .duplicatedPhotos
                     case 2:
+                        photoMediaType = .singleScreenShots
                         assetContentCount = self.allScreenShots.count
                     case 3:
+                        photoMediaType = .singleSelfies
                         assetContentCount = self.allSelfies.count
                     case 4:
+                        photoMediaType = .singleLivePhotos
                         assetContentCount = self.allLiveFotos.count
                     case 5:
+                        photoMediaType = .singleRecentlyDeletedPhotos
                         assetContentCount = self.allRecentlyDeletedPhotos.count
                     default:
                         debugPrint("")
@@ -117,14 +126,21 @@ extension MediaContentViewController: UITableViewDelegate, UITableViewDataSource
             case .userVideo:
                 switch indexPath.row {
                     case 0:
+                        photoMediaType = .singleLargeVideos
                         assetContentCount = self.allLargeVideos.count
                     case 1:
+                        photoMediaType = .duplicatedVideos
                         assetContentCount = self.allDuplicatesVideos.count
                     case 2:
+                        photoMediaType = .similarVideos
                         assetContentCount = self.allSimmilarVideos.count
                     case 3:
+                        photoMediaType = .singleScreenRecordings
                         assetContentCount = self.allScreenRecords.count
+                    case 4:
+                        photoMediaType = .compress
                     case 5:
+                        photoMediaType = .singleRecentlyDeletedVideos
                         assetContentCount = self.allRecentlyDeletedVideos.count
                     default:
                         debugPrint("")
@@ -132,10 +148,13 @@ extension MediaContentViewController: UITableViewDelegate, UITableViewDataSource
             case .userContacts:
                 switch indexPath.row {
                     case 0:
+                        photoMediaType = .allContacts
                         assetContentCount = self.allContacts.count
                     case 1:
+                        photoMediaType = .emptyContacts
                         assetContentCount = self.allEmptyContacts.count
                     case 2:
+                        photoMediaType = .duplicatedContacts
                         assetContentCount = self.allDuplicatedContacts.count
                     default:
                         return                        
@@ -144,8 +163,7 @@ extension MediaContentViewController: UITableViewDelegate, UITableViewDataSource
                 return
         }
         
-        cell.cellConfig(contentType: contentType, indexPath: indexPath, phasetCount: assetContentCount, progress: 0)
-        
+        cell.cellConfig(contentType: self.contentType, photoMediaType: photoMediaType, indexPath: indexPath, phasetCount: assetContentCount, progress: 0)
     }
         
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -439,7 +457,7 @@ extension MediaContentViewController {
     private func showDuplicatedContacts() {
         P.showIndicator()
         contactsManager.getDuplicatedAllContacts(self.allContacts) { groupedContacts in
-            
+            #warning("WORK in PROGRESS")
             for group in groupedContacts {
                 
                 debugPrint("group ->")
