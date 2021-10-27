@@ -145,6 +145,7 @@ extension MediaContentViewController: UITableViewDelegate, UITableViewDataSource
         }
         
         cell.cellConfig(contentType: contentType, indexPath: indexPath, phasetCount: assetContentCount, progress: 0)
+        
     }
         
     func numberOfSections(in tableView: UITableView) -> Int {

@@ -21,6 +21,10 @@ enum IncompleteType {
     case wholeEmpty
     case none
     
+    case duplicatedPhoneNumnber
+    case duplicatedContactName
+    case duplicatedEmail
+    
     var rawValue: String {
         switch self {
             case .onlyName:
@@ -33,7 +37,7 @@ enum IncompleteType {
                 return "incomplete name"
             case .wholeEmpty:
                 return "whole Empty phone"
-            case .none:
+            default:
                 return ""
         }
     }
@@ -58,7 +62,7 @@ class ContactsManager {
         return instance
     }()
     
-    private let contactsDuplicatesOperationQueue = OperationPhotoProcessingQueuer(name: "Contacts Duplicates Queuer", maxConcurrentOperationCount: 2, qualityOfService: .default)
+    private let contactsDuplicatesOperationQueue = OperationPhotoProcessingQueuer(name: "Contacts Duplicates Queuer", maxConcurrentOperationCount: 1, qualityOfService: .default)
     
     private let fetchingKeys: [CNKeyDescriptor] = [
         CNContactVCardSerialization.descriptorForRequiredKeys(),
@@ -300,7 +304,7 @@ extension ContactsManager {
                 let stringValue = phone.value.stringValue
                 if !phoneNumbers.contains(stringValue) {
                     phoneNumbers.append(stringValue)
-                    group.append(ContactsGroup(name: stringValue, contacts: [], groupType: .none))
+                    group.append(ContactsGroup(name: stringValue, contacts: [], groupType: .duplicatedPhoneNumnber))
                 }
             }
         }
@@ -348,7 +352,7 @@ extension ContactsManager {
         for contact in contacts {
             debugPrint("names group index: \(contacts.firstIndex(of: contact))")
             if group.filter({$0.name == contact.givenName + " " + contact.familyName}).count == 0 {
-                group.append(ContactsGroup(name: contact.givenName + " " + contact.familyName, contacts: [], groupType: .none))
+                group.append(ContactsGroup(name: contact.givenName + " " + contact.familyName, contacts: [], groupType: .duplicatedContactName))
             }
         }
         
@@ -400,7 +404,7 @@ extension ContactsManager {
             for email in contact.emailAddresses {
                 if emailList.contains(email.value as String) {
                     emailList.append(email.value as String)
-                    group.append(ContactsGroup(name: email.value as String, contacts: [], groupType: .none))
+                    group.append(ContactsGroup(name: email.value as String, contacts: [], groupType: .duplicatedEmail))
                 }
             }
         }
