@@ -420,9 +420,7 @@ extension MediaContentViewController: CustomNavigationBarDelegate {
         self.navigationController?.popViewController(animated: true)
     }
     
-    func didTapRightBarButton(_sender: UIButton) {}
-    
-    
+    func didTapRightBarButton(_sender: UIButton) {}  
 }
 
 extension MediaContentViewController: Themeble {
@@ -448,11 +446,9 @@ extension MediaContentViewController: Themeble {
     }
     
     private func setupNavigation() {
-      
-      self.navigationController?.navigationBar.isHidden = true
+        
+        self.navigationController?.navigationBar.isHidden = true
         customNavBar.setUpNavigation(title: contentType.navTitle, leftImage: I.navigationItems.back, rightImage: nil)
-//        self.navigationController?.updateNavigationColors()
-//        self.navigationItem.backButtonTitle = ""
     }
     
     private func setupObserversAndDelegate() {
