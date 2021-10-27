@@ -185,6 +185,7 @@ extension MainViewController: UpdateContentDataBaseListener {
     func getContactsCount(count: Int) {
         
         self.allContactsCount = count
+        
         if let cell = mediaCollectionView.cellForItem(at: IndexPath(item: 2, section: 0)) as? MediaTypeCollectionViewCell {
             cell.configureCell(mediaType: .userContacts, contentCount: count, diskSpace: 0)
         }
