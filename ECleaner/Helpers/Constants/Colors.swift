@@ -29,45 +29,63 @@ enum Theme: Int {
                 return UIColor().colorFromHexString("FFFFFF")
         }
     }
-  
-  var dateViewBackgroundColor: UIColor {
-    switch self {
-      case .light:
-        return UIColor().colorFromHexString("E1E8F0")
-      case .dark:
-        return UIColor().colorFromHexString("FFFFFF")
+    
+    var dateViewBackgroundColor: UIColor {
+        switch self {
+            case .light:
+                return UIColor().colorFromHexString("E1E8F0")
+            case .dark:
+                return UIColor().colorFromHexString("FFFFFF")
+        }
     }
-  }
-  
-  var blueTextColor: UIColor {
-    switch self {
-      case .light:
-        return UIColor().colorFromHexString("3587E3")
-      case .dark:
-        return UIColor().colorFromHexString("FFFFFF")
+    
+    var blueTextColor: UIColor {
+        switch self {
+            case .light:
+                return UIColor().colorFromHexString("3587E3")
+            case .dark:
+                return UIColor().colorFromHexString("FFFFFF")
+        }
     }
-  }
-  
-  var titleTextColor: UIColor {
-    switch self {
-      case .light:
-        return UIColor().colorFromHexString("374058")
-      case .dark:
-        return UIColor().colorFromHexString("374058")
+    
+    var titleTextColor: UIColor {
+        switch self {
+            case .light:
+                return UIColor().colorFromHexString("374058")
+            case .dark:
+                return UIColor().colorFromHexString("374058")
+        }
     }
-  }
-  
-  var subTitleTextColor: UIColor {
-    switch self {
-      case .light:
-        return UIColor().colorFromHexString("374058").withAlphaComponent(0.5)
-      case .dark:
-        return UIColor().colorFromHexString("374058").withAlphaComponent(0.5)
+    
+    var subTitleTextColor: UIColor {
+        switch self {
+            case .light:
+                return UIColor().colorFromHexString("374058").withAlphaComponent(0.5)
+            case .dark:
+                return UIColor().colorFromHexString("374058").withAlphaComponent(0.5)
+        }
     }
-  }
-  
-  
-  
+    
+    var customRedColor: UIColor {
+        switch self {
+            case .light:
+                return UIColor().colorFromHexString("FA796F")
+            case .dark:
+                return UIColor().colorFromHexString("FA796F")
+        }
+    }
+    
+    var activeTitleTextColor: UIColor {
+        switch self {
+            case .light:
+                return UIColor().colorFromHexString("FFFFFF")
+            case .dark:
+                return UIColor().colorFromHexString("FFFFFF")
+        }
+    }
+    
+    
+    
   
   
     
@@ -115,14 +133,7 @@ enum Theme: Int {
     
     
     
-    var activeTitleTextColor: UIColor {
-        switch self {
-            case .light:
-                return UIColor().colorFromHexString("FFFFFF")
-            case .dark:
-                return UIColor().colorFromHexString("FFFFFF")
-        }
-    }
+    
     
     var sectionBackgroundColor: UIColor {
         switch self {

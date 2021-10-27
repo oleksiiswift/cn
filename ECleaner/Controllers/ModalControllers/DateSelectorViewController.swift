@@ -141,7 +141,14 @@ extension DateSelectorViewController: Themeble {
             y: 6,
             blur: 10,
             spread: 0)
+        
         autoDatePickImageView.isHidden = !autoPickCheckIsOn
+        
+        periodDatePicker.setValue(false, forKey: "highlightsToday")
+        periodDatePicker.setValue(theme.titleTextColor, forKeyPath: "textColor")
+        if periodDatePicker.subviews[0].subviews.count >= 2 {
+            periodDatePicker.subviews[0].subviews[1].backgroundColor = UIColor.clear
+        }
     }
     
     func updateColors() {
@@ -150,7 +157,6 @@ extension DateSelectorViewController: Themeble {
         mainContainerView.backgroundColor = theme.backgroundColor
         submitButtonTextLabel.textColor = theme.blueTextColor
         autoDatePickTextLabel.textColor = theme.subTitleTextColor
-//        autoDatePickImageView.tintColor = theme.titleTextColor
     }
 }
 
