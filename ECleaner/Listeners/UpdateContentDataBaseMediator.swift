@@ -7,6 +7,7 @@
 
 import Foundation
 import Photos
+import Contacts
 
 
 class UpdateContentDataBaseMediator {
@@ -71,5 +72,17 @@ class UpdateContentDataBaseMediator {
     
     func getRecentlyDeletedVideosAssets(_ assets: [PHAsset]) {
         listener?.getRecentlyDeletedVideoAssets(assets)
+    }
+    
+    func getAllContacts(_ contacts: [CNContact]) {
+        listener?.getAllCNContacts(contacts)
+    }
+    
+    func getAllEmptyContacts(_ contacts: [ContactsGroup]) {
+        listener?.getAllEmptyContacts(contacts)
+    }
+    
+    func getAllDuplicatedContacts(_ contacts: [ContactsGroup]) {
+        listener?.getAllDuplicatedContacts(contacts)
     }
 }

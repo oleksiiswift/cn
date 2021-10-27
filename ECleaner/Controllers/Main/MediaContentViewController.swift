@@ -8,6 +8,7 @@
 import UIKit
 import Photos
 import SwiftMessages
+import Contacts
 
 class MediaContentViewController: UIViewController {
   
@@ -21,6 +22,7 @@ class MediaContentViewController: UIViewController {
     
     public var contentType: MediaContentType = .none
     private var photoManager = PhotoManager()
+    private var contactsManager = ContactsManager.shared
     
     private var startingDate: String {
         get {
@@ -50,7 +52,11 @@ class MediaContentViewController: UIViewController {
     public var allDuplicatesVideos: [PHAsset] = []
     public var allScreenRecords: [PHAsset] = []
     public var allRecentlyDeletedVideos: [PHAsset] = []
-
+    
+    public var allContacts: [CNContact] = []
+    public var allEmptyContacts: [ContactsGroup] = []
+    public var allDuplicatedContacts: [ContactsGroup] = []
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -124,12 +130,22 @@ extension MediaContentViewController: UITableViewDelegate, UITableViewDataSource
                         debugPrint("")
                 }
             case .userContacts:
-                debugPrint("")
+                switch indexPath.row {
+                    case 0:
+                        assetContentCount = self.allContacts.count
+                    case 1:
+                        assetContentCount = self.allEmptyContacts.count
+                    case 2:
+                        assetContentCount = self.allDuplicatedContacts.count
+                    default:
+                        return                        
+                }
             default:
                 return
         }
         
         cell.cellConfig(contentType: contentType, indexPath: indexPath, phasetCount: assetContentCount, progress: 0)
+        
     }
         
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -209,7 +225,16 @@ extension MediaContentViewController {
                         return
                 }
             case .userContacts:
-                debugPrint("show contacts")
+                switch index {
+                    case 0:
+                        self.showAllContacts()
+                    case 1:
+                        self.showEmptyGroupsContacts()
+                    case 2:
+                        self.showDuplicatedContacts()
+                    default:
+                        return
+                }
             case .none:
                 return
         }
@@ -396,6 +421,37 @@ extension MediaContentViewController {
                 self.showGropedContoller(assets: "similar by time stam", grouped: videos, photoContent: .similarVideos)
             }
         }
+    }
+}
+
+//      MARK: - contacts content -
+extension MediaContentViewController {
+    
+    private func showAllContacts() {
+        
+    }
+    
+    private func showEmptyGroupsContacts() {
+        
+        
+    }
+    
+    private func showDuplicatedContacts() {
+        P.showIndicator()
+        contactsManager.getDuplicatedAllContacts(self.allContacts) { groupedContacts in
+            
+            for group in groupedContacts {
+                
+                debugPrint("group ->")
+                for contac in group.contacts {
+                    debugPrint(contac)
+                }
+            }
+            
+            debugPrint(groupedContacts.count)
+            P.hideIndicator()
+        }
+        
     }
 }
 
