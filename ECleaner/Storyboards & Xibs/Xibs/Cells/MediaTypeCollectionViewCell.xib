@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19158" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19162" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19141"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19144"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -99,6 +99,8 @@
             <size key="customSize" width="183" height="275"/>
             <connections>
                 <outlet property="contentViewHeightConstraint" destination="KmZ-hN-0Uv" id="xi1-EK-bGE"/>
+                <outlet property="diskSpaceImageView" destination="vcD-43-xaQ" id="OlC-YM-mZu"/>
+                <outlet property="infoSpaceStackView" destination="O7N-8B-EFa" id="qof-1w-gtH"/>
                 <outlet property="mainView" destination="DDF-aQ-mOR" id="cZi-96-BtM"/>
                 <outlet property="mediaContentSubTitleTextLabel" destination="nmQ-vH-i7R" id="dbx-2S-t1M"/>
                 <outlet property="mediaContentTitleTextLabel" destination="HZd-Lx-c5G" id="gdQ-Ly-Mud"/>

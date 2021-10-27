@@ -21,6 +21,10 @@ enum IncompleteType {
     case wholeEmpty
     case none
     
+    case duplicatedPhoneNumnber
+    case duplicatedContactName
+    case duplicatedEmail
+    
     var rawValue: String {
         switch self {
             case .onlyName:
@@ -33,7 +37,7 @@ enum IncompleteType {
                 return "incomplete name"
             case .wholeEmpty:
                 return "whole Empty phone"
-            case .none:
+            default:
                 return ""
         }
     }
@@ -57,6 +61,8 @@ class ContactsManager {
         let instance = ContactsManager()
         return instance
     }()
+    
+    private let contactsDuplicatesOperationQueue = OperationPhotoProcessingQueuer(name: "Contacts Duplicates Queuer", maxConcurrentOperationCount: 1, qualityOfService: .default)
     
     private let fetchingKeys: [CNKeyDescriptor] = [
         CNContactVCardSerialization.descriptorForRequiredKeys(),
@@ -125,19 +131,10 @@ extension ContactsManager {
     
     private func resultProcessing(_ contacts: [CNContact]) {
         
-        /// sort and get contacts sectiions
-        #warning("IN PROGRESS ->")
-        
-        let sortedContacts: [String : [CNContact]] = getSortAndGroupContacts(contacts)
-        
-        let viewModel = ContactListViewModel(contacts: contacts)
-        
         let emptyCpntacts = self.groupingMissingIncompleteContacts(contacts)
-        
-        for i in emptyCpntacts {
-            debugPrint(i.name)
-        }
-
+        UpdateContentDataBaseMediator.instance.getAllEmptyContacts(emptyCpntacts)
+        UpdateContentDataBaseMediator.instance.updateContacts(contacts.count)
+        UpdateContentDataBaseMediator.instance.getAllContacts(contacts)
     }
     
     public func getSortAndGroupContacts(_ contacts: [CNContact]) -> [String : [CNContact]] {
@@ -267,12 +264,13 @@ extension ContactsManager {
         /// `groupingMissingIncompleteContacts` - checj for empty fields
     
     /// `phone duplicated contacts`
-    private func phoneDuplicates(_ contacts: [CNContact]) -> [CNContact] {
+    private func phoneDuplicates(_ contacts: [CNContact], completionHandler: @escaping ([CNContact]) -> Void) {
         var duplicates: [CNContact] = []
         
         let filteredContacts = contacts.filter({ $0.phoneNumbers.count != 0})
         
         for i in 0...filteredContacts.count - 1 {
+            debugPrint("phone duplicates index: \(i)")
             if duplicates.contains(contacts[i]) {
                 continue
             }
@@ -291,21 +289,22 @@ extension ContactsManager {
                 }
             })
         }
-        return duplicates
+        completionHandler(duplicates)
     }
     
     /// `phone duplicated group`
-    private func phoneDuplicatedGroup(_ contacts: [CNContact]) -> [ContactsGroup] {
+    private func phoneDuplicatedGroup(_ contacts: [CNContact], completionHandler: @escaping ([ContactsGroup]) -> Void) {
         
         var group: [ContactsGroup] = []
         var phoneNumbers: [String] = []
         
         for contact in contacts {
+            debugPrint("group phone index: \(contacts.firstIndex(of: contact))")
             for phone in contact.phoneNumbers {
                 let stringValue = phone.value.stringValue
                 if !phoneNumbers.contains(stringValue) {
                     phoneNumbers.append(stringValue)
-                    group.append(ContactsGroup(name: stringValue, contacts: [], groupType: .none))
+                    group.append(ContactsGroup(name: stringValue, contacts: [], groupType: .duplicatedPhoneNumnber))
                 }
             }
         }
@@ -314,23 +313,26 @@ extension ContactsManager {
             let contacts = contacts.filter({ $0.phoneNumbers.map({ $0.value.stringValue }).contains(number) })
             group.filter({ $0.name == number })[0].contacts.append(contentsOf: contacts)
         }
-        return group
+        completionHandler(group)
     }
     
     
     /// `names duplicated contacts`
-    private func namesDuplicated(_ contacts: [CNContact]) -> [CNContact] {
+    private func namesDuplicated(_ contacts: [CNContact], completionHandler: @escaping ([CNContact]) -> Void) {
         
         var duplicates: [CNContact] = []
         
         for i in 0...contacts.count - 1 {
+            debugPrint("name duplicate index: \(i)")
             if duplicates.contains(contacts[i]) {
                 continue
             }
             let contact = contacts[i]
             let duplicatedContacts: [CNContact] = contacts.filter({ $0 != contacts[i]}).filter({$0.givenName == contact.givenName}).filter({$0.familyName == contact.familyName})
-            
+            var z = 0
             duplicatedContacts.forEach({
+                z += 1
+                debugPrint(z)
                 if !duplicates.contains(contact) {
                     duplicates.append(contact)
                 }
@@ -340,23 +342,25 @@ extension ContactsManager {
                 }
             })
         }
-        return duplicates
+        completionHandler(duplicates)
     }
     
     /// `names duplicated group`
-    private func namesDuplicatesGroup(_ contacts: [CNContact]) -> [ContactsGroup] {
+    private func namesDuplicatesGroup(_ contacts: [CNContact], completionHandler: @escaping ([ContactsGroup]) -> Void) {
         var group: [ContactsGroup] = []
         
         for contact in contacts {
+            debugPrint("names group index: \(contacts.firstIndex(of: contact))")
             if group.filter({$0.name == contact.givenName + " " + contact.familyName}).count == 0 {
-                group.append(ContactsGroup(name: contact.givenName + " " + contact.familyName, contacts: [], groupType: .none))
+                group.append(ContactsGroup(name: contact.givenName + " " + contact.familyName, contacts: [], groupType: .duplicatedContactName))
             }
         }
         
         for contact in contacts {
+            debugPrint("extra filer index: \(contacts.firstIndex(of: contact))")
             group.filter({$0.name == contact.givenName + " " + contact.familyName})[0].contacts.append(contact)
         }
-        return group
+        completionHandler(group)
     }
     
     
@@ -400,7 +404,7 @@ extension ContactsManager {
             for email in contact.emailAddresses {
                 if emailList.contains(email.value as String) {
                     emailList.append(email.value as String)
-                    group.append(ContactsGroup(name: email.value as String, contacts: [], groupType: .none))
+                    group.append(ContactsGroup(name: email.value as String, contacts: [], groupType: .duplicatedEmail))
                 }
             }
         }
@@ -456,6 +460,42 @@ extension ContactsManager {
         wholeEmptyContacts.count != 0 ? contactsGroup.append(wholeEmptyGroup) : ()
         
         return contactsGroup
+    }
+    
+    public func getDuplicatedAllContacts(_ contacts: [CNContact], completion: @escaping ([ContactsGroup]) -> Void) {
+        
+        var totalProcessingOperation = 0
+        var allGroupsDuplicated: [ContactsGroup] = []
+        
+        let phoneDuplicatesFindOperation = ConcurrentPhotoProcessOperation { _ in
+            
+            self.phoneDuplicates(contacts) { duplicatedContacts in
+            
+                self.phoneDuplicatedGroup(duplicatedContacts) { contactsGroup in
+                    totalProcessingOperation += 1
+                    allGroupsDuplicated.append(contentsOf: contactsGroup)
+                    if totalProcessingOperation == 2 {
+                        completion(allGroupsDuplicated)
+                    }
+                }
+            }
+        }
+        
+        let nameDuplicatedFindOperation = ConcurrentPhotoProcessOperation { _ in
+            
+            self.namesDuplicated(contacts) { duplicatedContacts in
+                
+                self.namesDuplicatesGroup(duplicatedContacts) { contactsGroup in
+                    totalProcessingOperation += 1
+                    allGroupsDuplicated.append(contentsOf: contactsGroup)
+                    if totalProcessingOperation == 2 {
+                        completion(allGroupsDuplicated)
+                    }
+                }
+            }
+        }
+        contactsDuplicatesOperationQueue.addOperation(phoneDuplicatesFindOperation)
+        contactsDuplicatesOperationQueue.addOperation(nameDuplicatedFindOperation)
     }
 }
 

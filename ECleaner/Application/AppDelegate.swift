@@ -14,10 +14,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         configureApplication(with: launchOptions)
         setDefaults()
-        
-        U.delay(2) {
-            self.temporaryWorkWithContacts()
-        }
     
         return true
     }
@@ -42,33 +38,11 @@ extension AppDelegate {
     private func configureApplication(with launchOptions: [UIApplication.LaunchOptionsKey: Any]?) {
         
         PhotoManager().getPhotoLibraryAccess()
+        ContactsManager.shared.checkStatus { _ in }
     }
     
     private func setDefaults() {
         
         S.endingSavedDate = U.getString(from: Date(), format: C.dateFormat.fullDmy)
-    }
-}
-
-extension AppDelegate {
-    
-    private func temporaryWorkWithContacts() {
-        
-        let contactsManager = ContactsManager.shared
-        
-        
-        
-        
-        
-        contactsManager.checkStatus { contacts in
-            
-            
-            
-            
-            
-            
-        }
-        
-        
     }
 }

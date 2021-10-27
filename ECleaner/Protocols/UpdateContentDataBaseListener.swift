@@ -7,6 +7,7 @@
 
 import Foundation
 import Photos
+import Contacts
 
 protocol UpdateContentDataBaseListener {
     func getPhotoLibraryCount(count: Int, calculatedSpace: Int64)
@@ -24,4 +25,8 @@ protocol UpdateContentDataBaseListener {
     
     func getRecentlyDeletedPhotoAsssets(_ assets: [PHAsset])
     func getRecentlyDeletedVideoAssets(_ assts: [PHAsset])
+    
+    func getAllCNContacts(_ contacts: [CNContact])
+    func getAllEmptyContacts(_ contacts: [ContactsGroup])
+    func getAllDuplicatedContacts(_ contacts: [ContactsGroup])
 }
