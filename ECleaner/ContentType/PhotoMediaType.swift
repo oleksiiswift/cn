@@ -25,6 +25,8 @@ enum PhotoMediaType: String {
     case singleRecentlyDeletedPhotos = "singleRecentlyDeletedPhotos"
     case singleRecentlyDeletedVideos = "singleRecentlyDeletedVideos"
     
+    case compress = "compress video"
+    
     case allContacts = "allContacts"
     case emptyContacts = "emptyContacts"
     case duplicatedContacts = "duplicatedContacts"
@@ -97,6 +99,8 @@ enum PhotoMediaType: String {
                 return "duplicated contacts"
             case .none:
                 return ""
+            case .compress:
+                return "compress video"
         }
     }
 }

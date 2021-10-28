@@ -13,7 +13,7 @@ enum AlphabeticalContactsResults {
     case error(error: Error)
 }
 
-enum IncompleteType {
+enum ContactasCleaningType {
     case onlyName
     case onlyPhone
     case onlyEmail
@@ -46,9 +46,9 @@ enum IncompleteType {
 class ContactsGroup {
     let name: String
     var contacts: [CNContact]
-    var groupType: IncompleteType
+    var groupType: ContactasCleaningType
     
-    init(name: String, contacts: [CNContact], groupType: IncompleteType) {
+    init(name: String, contacts: [CNContact], groupType: ContactasCleaningType) {
         self.name = name
         self.contacts = contacts
         self.groupType = groupType
@@ -62,7 +62,7 @@ class ContactsManager {
         return instance
     }()
     
-    private let contactsDuplicatesOperationQueue = OperationPhotoProcessingQueuer(name: "Contacts Duplicates Queuer", maxConcurrentOperationCount: 1, qualityOfService: .default)
+    private let contactsDuplicatesOperationQueue = OperationPhotoProcessingQueuer(name: "Contacts Duplicates Queuer", maxConcurrentOperationCount: 5, qualityOfService: .userInteractive)
     
     private let fetchingKeys: [CNKeyDescriptor] = [
         CNContactVCardSerialization.descriptorForRequiredKeys(),
@@ -270,7 +270,7 @@ extension ContactsManager {
         let filteredContacts = contacts.filter({ $0.phoneNumbers.count != 0})
         
         for i in 0...filteredContacts.count - 1 {
-            debugPrint("phone duplicates index: \(i)")
+//            debugPrint("phone duplicates index: \(i)")
             if duplicates.contains(contacts[i]) {
                 continue
             }
@@ -299,7 +299,7 @@ extension ContactsManager {
         var phoneNumbers: [String] = []
         
         for contact in contacts {
-            debugPrint("group phone index: \(contacts.firstIndex(of: contact))")
+//            debugPrint("group phone index: \(contacts.firstIndex(of: contact))")
             for phone in contact.phoneNumbers {
                 let stringValue = phone.value.stringValue
                 if !phoneNumbers.contains(stringValue) {
@@ -311,6 +311,7 @@ extension ContactsManager {
         
         for number in phoneNumbers {
             let contacts = contacts.filter({ $0.phoneNumbers.map({ $0.value.stringValue }).contains(number) })
+//            debugPrint("fileter phone number \(number)")
             group.filter({ $0.name == number })[0].contacts.append(contentsOf: contacts)
         }
         completionHandler(group)
@@ -323,16 +324,15 @@ extension ContactsManager {
         var duplicates: [CNContact] = []
         
         for i in 0...contacts.count - 1 {
-            debugPrint("name duplicate index: \(i)")
+//            debugPrint("name duplicate index: \(i)")
             if duplicates.contains(contacts[i]) {
                 continue
             }
             let contact = contacts[i]
             let duplicatedContacts: [CNContact] = contacts.filter({ $0 != contacts[i]}).filter({$0.givenName == contact.givenName}).filter({$0.familyName == contact.familyName})
-            var z = 0
+            
             duplicatedContacts.forEach({
-                z += 1
-                debugPrint(z)
+
                 if !duplicates.contains(contact) {
                     duplicates.append(contact)
                 }
@@ -350,14 +350,14 @@ extension ContactsManager {
         var group: [ContactsGroup] = []
         
         for contact in contacts {
-            debugPrint("names group index: \(contacts.firstIndex(of: contact))")
+//            debugPrint("names group index: \(contacts.firstIndex(of: contact))")
             if group.filter({$0.name == contact.givenName + " " + contact.familyName}).count == 0 {
                 group.append(ContactsGroup(name: contact.givenName + " " + contact.familyName, contacts: [], groupType: .duplicatedContactName))
             }
         }
         
         for contact in contacts {
-            debugPrint("extra filer index: \(contacts.firstIndex(of: contact))")
+//            debugPrint("extra filer index: \(contacts.firstIndex(of: contact))")
             group.filter({$0.name == contact.givenName + " " + contact.familyName})[0].contacts.append(contact)
         }
         completionHandler(group)
@@ -365,7 +365,7 @@ extension ContactsManager {
     
     
     /// `duplicates by email`
-    private func emailDuplicates(_ contacts: [CNContact]) -> [CNContact] {
+    private func emailDuplicates(_ contacts: [CNContact], completionHandler: @escaping ([CNContact]) -> Void) {
         
         var duplicates: [CNContact] = []
         
@@ -391,11 +391,11 @@ extension ContactsManager {
                 }
             })
         }
-        return duplicates
+        completionHandler(duplicates)
     }
     
     /// `email duplicates group`
-    private func mailListDuplicatedGroup(_ contacts: [CNContact]) -> [ContactsGroup] {
+    private func emailListDuplicatedGroup(_ contacts: [CNContact], completionHandler: @escaping ([ContactsGroup]) -> Void) {
             
         var group: [ContactsGroup] = []
         var emailList: [String] = []
@@ -413,8 +413,7 @@ extension ContactsManager {
             let contacts = contacts.filter({$0.emailAddresses.map({ $0.value as String}).contains(email)})
             group.filter({$0.name == email})[0].contacts.append(contentsOf: contacts)
         }
-        
-        return group
+        completionHandler(group)
     }
     
     
@@ -425,14 +424,14 @@ extension ContactsManager {
         
         /// `only name` group
         let onlyNameContacts = contacts.filter({ $0.phoneNumbers.count == 0 && $0.emailAddresses.count == 0})
-        let onlyNameGroupName = IncompleteType.onlyName.rawValue
+        let onlyNameGroupName = ContactasCleaningType.onlyName.rawValue
         let onlyNameGroup = ContactsGroup(name: onlyNameGroupName, contacts: onlyNameContacts, groupType: .onlyName)
         
         onlyNameContacts.count != 0 ? contactsGroup.append(onlyNameGroup) : ()
         
         /// `incomplete name` group
         let emptyNameContacts = contacts.filter({$0.givenName.isEmpty || $0.givenName.isWhitespace}).filter({$0.familyName.isEmpty || $0.familyName.isWhitespace}).filter({$0.middleName.isEmpty || $0.middleName.isWhitespace})
-        let emptyNameGroupName = IncompleteType.emptyName.rawValue
+        let emptyNameGroupName = ContactasCleaningType.emptyName.rawValue
         let incompleteNameContacts = emptyNameContacts.filter({$0.phoneNumbers.count != 0 && $0.emailAddresses.count != 0} )
         
         let emptyNameGroup = ContactsGroup(name: emptyNameGroupName, contacts: incompleteNameContacts, groupType: .emptyName)
@@ -441,31 +440,31 @@ extension ContactsManager {
         
         /// `only mail` group
         let onlyEmailsContacts = emptyNameContacts.filter({$0.phoneNumbers.count == 0 && $0.emailAddresses.count != 0})
-        let onlyEmailGroupName = IncompleteType.onlyEmail.rawValue
+        let onlyEmailGroupName = ContactasCleaningType.onlyEmail.rawValue
         let onlyEmailGroup = ContactsGroup(name: onlyEmailGroupName, contacts: onlyEmailsContacts, groupType: .onlyEmail)
         
         onlyEmailsContacts.count != 0 ? contactsGroup.append(onlyEmailGroup) : ()
     
         /// `only phone number` group
         let onlyPhoneNumbersContacts = emptyNameContacts.filter({$0.phoneNumbers.count != 0 && $0.emailAddresses.count == 0})
-        let onlyPhoneNumbersGroupName = IncompleteType.onlyPhone.rawValue
+        let onlyPhoneNumbersGroupName = ContactasCleaningType.onlyPhone.rawValue
         let onlyPhoneNumbersGroup = ContactsGroup(name: onlyPhoneNumbersGroupName, contacts: onlyPhoneNumbersContacts, groupType: .onlyPhone)
         
         onlyPhoneNumbersContacts.count != 0 ? contactsGroup.append(onlyPhoneNumbersGroup) : ()
     
         let wholeEmptyContacts = emptyNameContacts.filter({$0.phoneNumbers.count == 0 && $0.emailAddresses.count == 0})
-        let wholeEmptyContactsName = IncompleteType.wholeEmpty.rawValue
+        let wholeEmptyContactsName = ContactasCleaningType.wholeEmpty.rawValue
         let wholeEmptyGroup = ContactsGroup(name: wholeEmptyContactsName, contacts: wholeEmptyContacts, groupType: .wholeEmpty)
         
         wholeEmptyContacts.count != 0 ? contactsGroup.append(wholeEmptyGroup) : ()
         
         return contactsGroup
     }
-    
-    public func getDuplicatedAllContacts(_ contacts: [CNContact], completion: @escaping ([ContactsGroup]) -> Void) {
+        
+    public func getDuplicatedAllContacts(_ contacts: [CNContact], completion: @escaping ([ContactasCleaningType : [ContactsGroup]]) -> Void) {
         
         var totalProcessingOperation = 0
-        var allGroupsDuplicated: [ContactsGroup] = []
+        var allGroupsDuplicated: [ContactasCleaningType : [ContactsGroup]] = [:]
         
         let phoneDuplicatesFindOperation = ConcurrentPhotoProcessOperation { _ in
             
@@ -473,8 +472,8 @@ extension ContactsManager {
             
                 self.phoneDuplicatedGroup(duplicatedContacts) { contactsGroup in
                     totalProcessingOperation += 1
-                    allGroupsDuplicated.append(contentsOf: contactsGroup)
-                    if totalProcessingOperation == 2 {
+                    allGroupsDuplicated[.duplicatedPhoneNumnber] = contactsGroup
+                    if totalProcessingOperation == 3 {
                         completion(allGroupsDuplicated)
                     }
                 }
@@ -487,15 +486,30 @@ extension ContactsManager {
                 
                 self.namesDuplicatesGroup(duplicatedContacts) { contactsGroup in
                     totalProcessingOperation += 1
-                    allGroupsDuplicated.append(contentsOf: contactsGroup)
-                    if totalProcessingOperation == 2 {
+                    allGroupsDuplicated[.duplicatedContactName] = contactsGroup
+                    if totalProcessingOperation == 3 {
                         completion(allGroupsDuplicated)
                     }
                 }
             }
         }
-        contactsDuplicatesOperationQueue.addOperation(phoneDuplicatesFindOperation)
+        
+        let emailDuplicatedFindOperation = ConcurrentPhotoProcessOperation { _ in
+        
+            self.emailDuplicates(contacts) { duplicatedContacts in
+                self.emailListDuplicatedGroup(duplicatedContacts) { contactsGroup in
+                    totalProcessingOperation += 1
+                    allGroupsDuplicated[.duplicatedEmail] = contactsGroup
+                    if totalProcessingOperation == 3 {
+                        completion(allGroupsDuplicated)
+                    }
+                }
+            }
+        }
+        
         contactsDuplicatesOperationQueue.addOperation(nameDuplicatedFindOperation)
+        contactsDuplicatesOperationQueue.addOperation(phoneDuplicatesFindOperation)
+        contactsDuplicatesOperationQueue.addOperation(emailDuplicatedFindOperation)
     }
 }
 
