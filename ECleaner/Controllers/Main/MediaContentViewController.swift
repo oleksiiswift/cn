@@ -204,6 +204,11 @@ extension MediaContentViewController {
     /// `2` - similar videos
     /// `3` - screen records files
     /// `4` - recently deleted files
+    
+    /// `0` -  all contacts
+    /// `1` - empty contacts
+    /// `2` - duplicated contacts
+        
         
     private func showMediaContent(by selectedType: MediaContentType, selected index: Int) {
         
@@ -445,31 +450,17 @@ extension MediaContentViewController {
 //      MARK: - contacts content -
 extension MediaContentViewController {
     
-    private func showAllContacts() {
-        
-    }
+    private func showAllContacts() {}
     
-    private func showEmptyGroupsContacts() {
-        
-        
-    }
+    private func showEmptyGroupsContacts() {}
     
     private func showDuplicatedContacts() {
         P.showIndicator()
         contactsManager.getDuplicatedAllContacts(self.allContacts) { groupedContacts in
-            #warning("WORK in PROGRESS")
-            for group in groupedContacts {
-                
-                debugPrint("group ->")
-                for contac in group.contacts {
-                    debugPrint(contac)
-                }
-            }
-            
+   
             debugPrint(groupedContacts.count)
             P.hideIndicator()
         }
-        
     }
 }
 
