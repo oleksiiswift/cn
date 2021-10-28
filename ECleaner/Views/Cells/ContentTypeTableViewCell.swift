@@ -10,7 +10,7 @@ import Photos
 
 class ContentTypeTableViewCell: UITableViewCell {
     
-    @IBOutlet weak var baseView: ShadowView!
+    @IBOutlet weak var baseView: UIView!
     @IBOutlet weak var rightArrowImageView: UIImageView!
     
     @IBOutlet weak var shadowImageView: ShadowRoundedView!
@@ -30,8 +30,7 @@ class ContentTypeTableViewCell: UITableViewCell {
         
         contentTypeTextLabel.text = nil
         contentSubtitleTextLabel.text = nil
-//        selectedAssetsImageView.image = nil
-        
+
         horizontalProgressView.progress = 0
         horizontalProgressView.setNeedsDisplay()
     }
@@ -135,7 +134,7 @@ extension ContentTypeTableViewCell: Themeble {
     }
     
     func updateColors() {
-        baseView.backgroundColor = theme.contentBackgroundColor
+        baseView.backgroundColor = .clear
         contentTypeTextLabel.textColor = theme.titleTextColor
         contentSubtitleTextLabel.textColor = theme.subTitleTextColor
         horizontalProgressView.progressColor = theme.progressBackgroundColor

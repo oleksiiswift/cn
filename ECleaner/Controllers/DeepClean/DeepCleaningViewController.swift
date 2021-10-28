@@ -774,13 +774,16 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
      }
      
      func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-          return indexPath.section == 0 ? 125 : UITableView.automaticDimension
+          return indexPath.section == 0 ? 151 : 100//UITableView.automaticDimension
      }
      
      func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
           
           let view = UIView(frame: CGRect(x: 0, y: 0, width: U.screenWidth, height: 30))
           let sectionTitleTextLabel = UILabel()
+          
+          sectionTitleTextLabel.font = UIFont(font: FontManager.robotoBlack, size: 16.0)
+          sectionTitleTextLabel.textColor = theme.titleTextColor
           
           view.addSubview(sectionTitleTextLabel)
           sectionTitleTextLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -790,15 +793,16 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
           sectionTitleTextLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
           
           view.layoutIfNeeded()
+          
           switch section {
                case 0:
                     view.frame = CGRect(x: 0, y: 0, width: U.screenWidth, height: 0)
                case 1:
-                    sectionTitleTextLabel.text = "photo"
+                    sectionTitleTextLabel.text = "PHOTOS_NAV_TITLE".localized()
                case 2:
-                    sectionTitleTextLabel.text = "video"
+                    sectionTitleTextLabel.text = "VIDEOS_NAV_TITLE".localized()
                default:
-                    sectionTitleTextLabel.text = "contacts"
+                    sectionTitleTextLabel.text = "CONTACTS_NAV_TITLE".localized()
           }
           return view
      }

@@ -84,6 +84,26 @@ enum Theme: Int {
         }
     }
     
+//    var progressBackgroundColor: UIColor {
+//        switch self {
+//            case .light:
+//                return UIColor().colorFromHexString("EAF0F6")
+//            case .dark:
+//                return UIColor().colorFromHexString("EAF0F6")
+//        }
+//    }
+    
+    var progressBackgroundColor: UIColor {
+        switch self {
+            case .light:
+                return UIColor().colorFromHexString("DCE3EB")
+            case .dark:
+                return UIColor().colorFromHexString("DCE3EB")
+        }
+    }
+    
+    
+    
     
     
   
@@ -144,13 +164,6 @@ enum Theme: Int {
         }
     }
     
-    var progressBackgroundColor: UIColor {
-        switch self {
-            case .light:
-                return UIColor().colorFromHexString("dedede")
-            case .dark:
-                return UIColor().colorFromHexString("dedede")
-        }
-    }
+    
 }
 

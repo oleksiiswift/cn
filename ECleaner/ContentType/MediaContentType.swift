@@ -160,26 +160,26 @@ enum MediaContentType {
             case .userPhoto:
                 switch index {
                     case 0:
-                        return "simmilar photo"
+                        return "SIMILAR_PHOTO".localized()
                     case 1:
-                        return "dublicates photo"
+                        return "DUBLICATES_PHOTO".localized()
                     case 2:
-                        return "screenshots"
+                        return "SCREENSHOTS".localized()
                     case 3:
-                        return "similar allive photos"
+                        return "SIMILAR_ALLIVE_PHOTOS".localized()
                     default:
                         return ""
                 }
             case .userVideo:
                 switch index {
                     case 0:
-                        return "large video"
+                        return "LARGE_VIDEO".localized()
                     case 1:
-                        return "duplicate video"
+                        return "DUPLICATE_VIDEO".localized()
                     case 2:
-                        return "similar video"
+                        return "SIMILAR_VIDEO".localized()
                     case 3:
-                        return "screen recording"
+                        return "SCREEN_RECORDING".localized()
                     default:
                         return ""
                 }
