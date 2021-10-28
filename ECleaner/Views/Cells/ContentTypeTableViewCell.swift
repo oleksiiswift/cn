@@ -70,29 +70,47 @@ extension ContentTypeTableViewCell {
      - `setupCellSelected` use in deep cleaning part for show selected checkmark for clean
     */
     
-    public func cellConfig(contentType: MediaContentType, indexPath: IndexPath, phasetCount: Int, isDeepCleanController: Bool = false, progress: CGFloat, isProcessingComplete: Bool = false) {
-        
-        let progressStringText = isProcessingComplete ? "processing wait" : String("progress - \(progress.rounded().cleanValue) %")
-        let updatingCountValuesDeepClean: String = isDeepCleanController ? progressStringText : "0 \("FILES".localized())"
-        let updatingCountValuesContactDeepClean: String = isDeepCleanController ?  progressStringText : "0 contacts"
-        
-        contentTypeTextLabel.text = isDeepCleanController ? contentType.getDeepCellTitle(index: indexPath.row) : contentType.getCellTitle(index: indexPath.row)
-        horizontalProgressView.progress = progress / 100
-
-        switch contentType {
-            case .userPhoto, .userVideo:
-                contentSubtitleTextLabel.text = isProcessingComplete ? phasetCount != 0 ? String("\(phasetCount) \("FILES".localized())") : "no files to clean" : updatingCountValuesDeepClean
-            case .userContacts:
-                if isDeepCleanController {
-                    contentSubtitleTextLabel.text = isProcessingComplete ? phasetCount != 0 ? String("\(phasetCount) \("contacts")") : "no contacts to clean" : updatingCountValuesContactDeepClean
-                } else {
-                    contentSubtitleTextLabel.text  = phasetCount != 0 ? String("\(phasetCount) contacts") : ""
-                }
-            case .none:
-                contentSubtitleTextLabel.text = ""
-        }
+    public func cellConfig(contentType: MediaContentType, photoMediaType: PhotoMediaType = .none, indexPath: IndexPath, phasetCount: Int, isDeepCleanController: Bool = false, progress: CGFloat, isProcessingComplete: Bool = false) {
         
         shadowImageView.imageView.image = contentType.imageOfRows
+        contentTypeTextLabel.text = isDeepCleanController ? contentType.getDeepCellTitle(index: indexPath.row) : contentType.getCellTitle(index: indexPath.row)
+        
+        if isDeepCleanController {
+            
+            horizontalProgressView.progress = progress / 100
+            
+            let progressStringText = isProcessingComplete ? "processing wait" : String("progress - \(progress.rounded().cleanValue) %")
+            let updatingCountValuesDeepClean: String = isDeepCleanController ? progressStringText : "0 \("FILES".localized())"
+            let updatingCountValuesContactDeepClean: String = isDeepCleanController ?  progressStringText : "0 contacts"
+            
+            switch contentType {
+                case .userPhoto, .userVideo:
+                    
+                    contentSubtitleTextLabel.text = isProcessingComplete ? phasetCount != 0 ? String("\(phasetCount) \("FILES".localized())") : "no files to clean" : updatingCountValuesDeepClean
+                    
+                case .userContacts:
+                    
+                        contentSubtitleTextLabel.text = isProcessingComplete ? phasetCount != 0 ? String("\(phasetCount) \("contacts")") : "no contacts to clean" : updatingCountValuesContactDeepClean
+                case .none:
+                    contentSubtitleTextLabel.text = ""
+            }
+        } else {
+            
+            switch photoMediaType {
+                case .similarPhotos, .duplicatedPhotos, .similarVideos, .duplicatedVideos:
+                    contentSubtitleTextLabel.text = ""
+                case .singleScreenShots, .singleSelfies, .singleLivePhotos, .singleLargeVideos, .singleScreenRecordings, .singleRecentlyDeletedPhotos, .singleRecentlyDeletedVideos:
+                    contentSubtitleTextLabel.text = phasetCount != 0 ?  String("\(phasetCount) \("FILES".localized())") : "no files"
+                case .allContacts, .emptyContacts:
+                    contentSubtitleTextLabel.text  = phasetCount != 0 ? String("\(phasetCount) contacts") : ""
+                case .duplicatedContacts:
+                    contentSubtitleTextLabel.text = ""
+                case .compress:
+                    contentSubtitleTextLabel.text = ""
+                default:
+                    return
+            }
+        }
     }
 
     public func setupCellSelected(at indexPath: IndexPath, isSelected: Bool) {
