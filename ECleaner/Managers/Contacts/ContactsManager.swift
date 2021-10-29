@@ -62,22 +62,21 @@ class ContactsManager {
         return instance
     }()
     
-    private let contactsDuplicatesOperationQueue = OperationPhotoProcessingQueuer(name: "Contacts Duplicates Queuer", maxConcurrentOperationCount: 5, qualityOfService: .userInteractive)
+    private let contactsDuplicatesOperationQueue = OperationPhotoProcessingQueuer(name: "Contacts Duplicates Queuer", maxConcurrentOperationCount: 10, qualityOfService: .utility)
     
     private let fetchingKeys: [CNKeyDescriptor] = [
         CNContactVCardSerialization.descriptorForRequiredKeys(),
         CNContactThumbnailImageDataKey as CNKeyDescriptor
     ]
     
-//    MARK: - contacts store auth status -
-    
-    /// auth for contacts data
+        //    MARK: - contacts store auth status -
+        /// auth for contacts data
     private func checkContactStoreAuthStatus(completion: @escaping(_ grantAccess: Bool) -> Void) {
         
         completion(CNContactStore.authorizationStatus(for: .contacts) == .authorized)
     }
     
-    /// request access for user contacts
+        /// request access for user contacts
     private func requestAccesss(_ requestGranted: @escaping(Bool, Error?) -> ()) {
         
         CNContactStore().requestAccess(for: .contacts) { grandted, error in
@@ -86,16 +85,16 @@ class ContactsManager {
     }
 }
 
+//  MARK: - public external methods -
 extension ContactsManager {
     
-    /// check status and if restricted returned to settings or ask for permision
+        /// check status and if restricted returned to settings or ask for permision
     public func checkStatus(completionHandler: @escaping ([String: [CNContact]]) -> ()) {
         
         switch CNContactStore.authorizationStatus(for: .contacts) {
                 
             case .denied, .restricted:
                 self.showRestrictedAlert()
-
             case .notDetermined:
                 self.requestAccesss { [unowned self] granted, error in
                     self.checkStatus(completionHandler: completionHandler)
@@ -106,6 +105,75 @@ extension ContactsManager {
                 self.showRestrictedAlert()
         }
     }
+    
+        /// fetch all contacts
+    public func getAllContacts(_ completionHandler: @escaping ([CNContact]) -> Void) {
+        U.BG {
+            self.fetchContacts { result in
+                switch result {
+                    case .success(let contacts):
+                        completionHandler(contacts)
+                        break
+                    case .failure:
+                        completionHandler([])
+                        break
+                }
+            }
+        }
+    }
+    
+    public func getDuplicatedContacts(_ completionHandler: @escaping ([ContactsGroup]) -> Void) {
+        
+        self.getAllContacts { contacts in
+            self.namesDuplicated(contacts) { duplicatedContacts in
+                self.namesDuplicatesGroup(duplicatedContacts) { contactsGroup in
+                    completionHandler(contactsGroup)
+                }
+            }
+        }
+    }
+    
+    public func getDuplicatedContacts(of type: ContactasCleaningType, completionHandler: @escaping ([ContactsGroup]) -> Void) {
+        
+        self.getAllContacts { contacts in
+            guard contacts.isEmpty else {
+                completionHandler([])
+                return
+            }
+            U.BG {
+                switch type {
+                    case .duplicatedPhoneNumnber:
+                        self.phoneDuplicates(contacts) { duplicatedContacts in
+                            self.phoneDuplicatedGroup(duplicatedContacts) { contactsGroup in
+                                completionHandler(contactsGroup)
+                            }
+                        }
+                    case .duplicatedContactName:
+                        self.namesDuplicated(contacts) { duplicatedContacts in
+                            self.namesDuplicatesGroup(duplicatedContacts) { contactsGroup in
+                                completionHandler(contactsGroup)
+                            }
+                        }
+                    case .duplicatedEmail:
+                        self.emailDuplicates(contacts) { duplicatedContacts in
+                            self.emailListDuplicatedGroup(duplicatedContacts) { contactsGroup in
+                                completionHandler(contactsGroup)
+                            }
+                        }
+                    default:
+                        completionHandler([])
+                }
+            }
+        }
+    }
+    
+    public func getEmptyContacts(_ completionHandler: @escaping ([ContactsGroup]) -> Void) {
+        self.getAllContacts { contacts in
+            self.groupingMissingIncompleteContacts(contacts) { groupingIncompleteContacts in
+                completionHandler(groupingIncompleteContacts)
+            }
+        }
+    }
 }
 
 
@@ -114,25 +182,19 @@ extension ContactsManager {
     
     private func contactsProcessingStore() {
         
-        U.UI {
-            /// fetch all contacts
-            self.fetchContacts { result in
-                switch result {
-                case .success(let contacts):
-                        self.resultProcessing(contacts)
-                    break
-                case .failure:
-                    break
-                }
+        self.getAllContacts { contacts in
+            U.UI {
+                self.resultProcessing(contacts)
             }
         }
     }
     
-    
     private func resultProcessing(_ contacts: [CNContact]) {
         
-        let emptyCpntacts = self.groupingMissingIncompleteContacts(contacts)
-        UpdateContentDataBaseMediator.instance.getAllEmptyContacts(emptyCpntacts)
+        
+        self.groupingMissingIncompleteContacts(contacts) { emptyContacts in
+            UpdateContentDataBaseMediator.instance.getAllEmptyContacts(emptyContacts)
+        }
         UpdateContentDataBaseMediator.instance.updateContacts(contacts.count)
         UpdateContentDataBaseMediator.instance.getAllContacts(contacts)
     }
@@ -141,7 +203,7 @@ extension ContactsManager {
         return Dictionary(grouping: contacts, by: {String($0.givenName.uppercased().prefix(1))})
     }
     
-    /// `all containers`
+        /// `all containers`
     private func getContactsContainers() -> [CNContainer] {
         
         let contactStore = CNContactStore()
@@ -155,8 +217,7 @@ extension ContactsManager {
         return contactsContainers
     }
     
-    
-    /// `result` for all contacts
+        /// `result` for all contacts
     private func startingProcessFetchingContactsSections(completionHandler: @escaping ([String: [CNContact]]) -> Void) {
         
         self.fetchSortedContacts { result in
@@ -169,9 +230,9 @@ extension ContactsManager {
         }
     }
     
-    /// `sort contacts` by alphabetical results (helper private function)
+        /// `sort contacts` by alphabetical results (helper private function)
     private func fetchSortedContacts(completionHandler: @escaping (AlphabeticalContactsResults) -> ()) {
-    
+        
         var orderedContacts: [String: [CNContact]] = [String: [CNContact]]()
         let contactStore: CNContactStore = CNContactStore()
         let fetchRequest: CNContactFetchRequest = CNContactFetchRequest(keysToFetch: self.fetchingKeys)
@@ -180,7 +241,7 @@ extension ContactsManager {
         fetchRequest.mutableObjects = false
         fetchRequest.unifyResults = true
         fetchRequest.sortOrder = .givenName
-    
+        
         do {
             try contactStore.enumerateContacts(with: fetchRequest, usingBlock: { contact, _ in
                 var key: String = "#"
@@ -193,7 +254,7 @@ extension ContactsManager {
                 var contacts = [CNContact]()
                 
                 if let segregated = orderedContacts[key] {
-                   contacts = segregated
+                    contacts = segregated
                 }
                 
                 contacts.append(contact)
@@ -206,7 +267,7 @@ extension ContactsManager {
         completionHandler(.succes(responce: orderedContacts))
     }
     
-    /// `fetch all contacts` for work with all contacts results
+        /// `fetch all contacts` for work with all contacts results
     private func fetchContacts(keys: [CNKeyDescriptor] = [CNContactVCardSerialization.descriptorForRequiredKeys()], completionHandler: @escaping (_ result: Result<[CNContact], Error>) -> Void) {
         let contactStore = CNContactStore()
         var contacts = [CNContact]()
@@ -223,12 +284,12 @@ extension ContactsManager {
     }
 }
 
-//  MARK: - in app permisson alert section -
+    //  MARK: - in app permisson alert section -
 extension ContactsManager {
     
     private func showRestrictedAlert() {
         
-//  TODO: add alert manager
+            //  TODO: add alert manager
         
         let alert = UIAlertController(title: "permisision denied", message: "\(U.appName) does not have access to contacts. Please, allow the application to access to your contacts.", preferredStyle: .alert)
         let settingsAction = UIAlertAction(title: "settings", style: .destructive) { _ in
@@ -252,7 +313,7 @@ extension ContactsManager {
     }
 }
 
-//      MARK: - contacts managers - work with contacts
+    //      MARK: - contacts managers - work with contacts
 extension ContactsManager {
     
         /// `phoneDuplicates` - find duplicates by existing phone numbers
@@ -263,14 +324,14 @@ extension ContactsManager {
         /// `mailListDuplicatedGroup` -  get sections of duplicated contacts by emails
         /// `groupingMissingIncompleteContacts` - checj for empty fields
     
-    /// `phone duplicated contacts`
+        /// `phone duplicated contacts`
     private func phoneDuplicates(_ contacts: [CNContact], completionHandler: @escaping ([CNContact]) -> Void) {
         var duplicates: [CNContact] = []
         
         let filteredContacts = contacts.filter({ $0.phoneNumbers.count != 0})
         
         for i in 0...filteredContacts.count - 1 {
-//            debugPrint("phone duplicates index: \(i)")
+            debugPrint("phone duplicates index: \(i)")
             if duplicates.contains(contacts[i]) {
                 continue
             }
@@ -281,10 +342,13 @@ extension ContactsManager {
             })
             
             duplicatedContacts.forEach({
+                debugPrint("for each number")
                 if !duplicates.contains(filteredContacts[i]){
+                    debugPrint(filteredContacts[i])
                     duplicates.append(filteredContacts[i])
                 }
                 if !duplicates.contains($0){
+                    debugPrint($0)
                     duplicates.append($0)
                 }
             })
@@ -292,14 +356,14 @@ extension ContactsManager {
         completionHandler(duplicates)
     }
     
-    /// `phone duplicated group`
+        /// `phone duplicated group`
     private func phoneDuplicatedGroup(_ contacts: [CNContact], completionHandler: @escaping ([ContactsGroup]) -> Void) {
         
         var group: [ContactsGroup] = []
         var phoneNumbers: [String] = []
         
         for contact in contacts {
-//            debugPrint("group phone index: \(contacts.firstIndex(of: contact))")
+            debugPrint("group phone index: \(String(describing: contacts.firstIndex(of: contact)))")
             for phone in contact.phoneNumbers {
                 let stringValue = phone.value.stringValue
                 if !phoneNumbers.contains(stringValue) {
@@ -311,20 +375,20 @@ extension ContactsManager {
         
         for number in phoneNumbers {
             let contacts = contacts.filter({ $0.phoneNumbers.map({ $0.value.stringValue }).contains(number) })
-//            debugPrint("fileter phone number \(number)")
+            debugPrint("fileter phone number \(number)")
             group.filter({ $0.name == number })[0].contacts.append(contentsOf: contacts)
         }
         completionHandler(group)
     }
     
     
-    /// `names duplicated contacts`
+        /// `names duplicated contacts`
     private func namesDuplicated(_ contacts: [CNContact], completionHandler: @escaping ([CNContact]) -> Void) {
         
         var duplicates: [CNContact] = []
         
         for i in 0...contacts.count - 1 {
-//            debugPrint("name duplicate index: \(i)")
+            debugPrint("name duplicate index: \(i)")
             if duplicates.contains(contacts[i]) {
                 continue
             }
@@ -332,12 +396,14 @@ extension ContactsManager {
             let duplicatedContacts: [CNContact] = contacts.filter({ $0 != contacts[i]}).filter({$0.givenName == contact.givenName}).filter({$0.familyName == contact.familyName})
             
             duplicatedContacts.forEach({
-
+                debugPrint("each")
                 if !duplicates.contains(contact) {
+                    debugPrint(contact)
                     duplicates.append(contact)
                 }
                 
                 if !duplicates.contains($0) {
+                    debugPrint($0)
                     duplicates.append($0)
                 }
             })
@@ -345,32 +411,32 @@ extension ContactsManager {
         completionHandler(duplicates)
     }
     
-    /// `names duplicated group`
+        /// `names duplicated group`
     private func namesDuplicatesGroup(_ contacts: [CNContact], completionHandler: @escaping ([ContactsGroup]) -> Void) {
         var group: [ContactsGroup] = []
         
         for contact in contacts {
-//            debugPrint("names group index: \(contacts.firstIndex(of: contact))")
+            debugPrint("names group index: \(String(describing: contacts.firstIndex(of: contact)))")
             if group.filter({$0.name == contact.givenName + " " + contact.familyName}).count == 0 {
                 group.append(ContactsGroup(name: contact.givenName + " " + contact.familyName, contacts: [], groupType: .duplicatedContactName))
             }
         }
         
         for contact in contacts {
-//            debugPrint("extra filer index: \(contacts.firstIndex(of: contact))")
+            debugPrint("extra filer index: \(String(describing: contacts.firstIndex(of: contact)))")
             group.filter({$0.name == contact.givenName + " " + contact.familyName})[0].contacts.append(contact)
         }
         completionHandler(group)
     }
     
     
-    /// `duplicates by email`
+        /// `duplicates by email`
     private func emailDuplicates(_ contacts: [CNContact], completionHandler: @escaping ([CNContact]) -> Void) {
         
         var duplicates: [CNContact] = []
         
         for i in 0...contacts.count - 1 {
-            
+            debugPrint("email -> \(i)")
             let contact = contacts[i]
             
             if duplicates.contains(contact) {
@@ -383,6 +449,7 @@ extension ContactsManager {
             })
             
             duplicatedContacts.forEach({
+                debugPrint("compare email")
                 if !duplicates.contains(contact) {
                     duplicates.append(contact)
                 }
@@ -394,13 +461,15 @@ extension ContactsManager {
         completionHandler(duplicates)
     }
     
-    /// `email duplicates group`
+        /// `email duplicates group`
     private func emailListDuplicatedGroup(_ contacts: [CNContact], completionHandler: @escaping ([ContactsGroup]) -> Void) {
-            
+        
         var group: [ContactsGroup] = []
         var emailList: [String] = []
         
         for contact in contacts {
+//            TODO: email clean position for deeep grouping
+            debugPrint(contacts.firstIndex(of: contact) ?? "hell")
             for email in contact.emailAddresses {
                 if emailList.contains(email.value as String) {
                     emailList.append(email.value as String)
@@ -416,20 +485,19 @@ extension ContactsManager {
         completionHandler(group)
     }
     
-    
-    /// `check empty filds` - check if some fileds is emty
-    private func groupingMissingIncompleteContacts(_ contacts: [CNContact]) -> [ContactsGroup] {
+        /// `check empty filds` - check if some fileds is emty
+    private func groupingMissingIncompleteContacts(_ contacts: [CNContact], completionHandler: @escaping ([ContactsGroup]) -> Void) {
         
         var contactsGroup: [ContactsGroup] = []
         
-        /// `only name` group
+            /// `only name` group
         let onlyNameContacts = contacts.filter({ $0.phoneNumbers.count == 0 && $0.emailAddresses.count == 0})
         let onlyNameGroupName = ContactasCleaningType.onlyName.rawValue
         let onlyNameGroup = ContactsGroup(name: onlyNameGroupName, contacts: onlyNameContacts, groupType: .onlyName)
         
         onlyNameContacts.count != 0 ? contactsGroup.append(onlyNameGroup) : ()
         
-        /// `incomplete name` group
+            /// `incomplete name` group
         let emptyNameContacts = contacts.filter({$0.givenName.isEmpty || $0.givenName.isWhitespace}).filter({$0.familyName.isEmpty || $0.familyName.isWhitespace}).filter({$0.middleName.isEmpty || $0.middleName.isWhitespace})
         let emptyNameGroupName = ContactasCleaningType.emptyName.rawValue
         let incompleteNameContacts = emptyNameContacts.filter({$0.phoneNumbers.count != 0 && $0.emailAddresses.count != 0} )
@@ -438,29 +506,29 @@ extension ContactsManager {
         
         emptyNameContacts.count != 0 ? contactsGroup.append(emptyNameGroup) : ()
         
-        /// `only mail` group
+            /// `only mail` group
         let onlyEmailsContacts = emptyNameContacts.filter({$0.phoneNumbers.count == 0 && $0.emailAddresses.count != 0})
         let onlyEmailGroupName = ContactasCleaningType.onlyEmail.rawValue
         let onlyEmailGroup = ContactsGroup(name: onlyEmailGroupName, contacts: onlyEmailsContacts, groupType: .onlyEmail)
         
         onlyEmailsContacts.count != 0 ? contactsGroup.append(onlyEmailGroup) : ()
-    
-        /// `only phone number` group
+        
+            /// `only phone number` group
         let onlyPhoneNumbersContacts = emptyNameContacts.filter({$0.phoneNumbers.count != 0 && $0.emailAddresses.count == 0})
         let onlyPhoneNumbersGroupName = ContactasCleaningType.onlyPhone.rawValue
         let onlyPhoneNumbersGroup = ContactsGroup(name: onlyPhoneNumbersGroupName, contacts: onlyPhoneNumbersContacts, groupType: .onlyPhone)
         
         onlyPhoneNumbersContacts.count != 0 ? contactsGroup.append(onlyPhoneNumbersGroup) : ()
-    
+        
         let wholeEmptyContacts = emptyNameContacts.filter({$0.phoneNumbers.count == 0 && $0.emailAddresses.count == 0})
         let wholeEmptyContactsName = ContactasCleaningType.wholeEmpty.rawValue
         let wholeEmptyGroup = ContactsGroup(name: wholeEmptyContactsName, contacts: wholeEmptyContacts, groupType: .wholeEmpty)
         
         wholeEmptyContacts.count != 0 ? contactsGroup.append(wholeEmptyGroup) : ()
         
-        return contactsGroup
+        completionHandler(contactsGroup)
     }
-        
+    
     public func getDuplicatedAllContacts(_ contacts: [CNContact], completion: @escaping ([ContactasCleaningType : [ContactsGroup]]) -> Void) {
         
         var totalProcessingOperation = 0
@@ -469,7 +537,7 @@ extension ContactsManager {
         let phoneDuplicatesFindOperation = ConcurrentPhotoProcessOperation { _ in
             
             self.phoneDuplicates(contacts) { duplicatedContacts in
-            
+                
                 self.phoneDuplicatedGroup(duplicatedContacts) { contactsGroup in
                     totalProcessingOperation += 1
                     allGroupsDuplicated[.duplicatedPhoneNumnber] = contactsGroup
@@ -495,7 +563,7 @@ extension ContactsManager {
         }
         
         let emailDuplicatedFindOperation = ConcurrentPhotoProcessOperation { _ in
-        
+            
             self.emailDuplicates(contacts) { duplicatedContacts in
                 self.emailListDuplicatedGroup(duplicatedContacts) { contactsGroup in
                     totalProcessingOperation += 1
@@ -513,4 +581,49 @@ extension ContactsManager {
     }
 }
 
+extension ContactsManager {
+    
+    public func deleteContacts(_ contacts: [CNContact]) {
+        
+                        
+        contacts.forEach { contact in
+            self.deleteContact(contact) { success in
+                
+            }
+        }
+        
+//        (contact) { success in
+//                            count += 1
+//                            debugPrint(count)
+//            //                debugPrint(contact.phoneNumbers)
+//                            debugPrint("\(success) deleted")
+//                        }
+//                    }
+    }
 
+    public func deleteContact(_ contact: CNContact, _ handler: @escaping ((_ success: Bool) -> Void)){
+        deleteContact(Contact: contact.mutableCopy() as! CNMutableContact, completionHandler: {
+            (result) in
+            switch result{
+            case .success(let bool):
+                handler(bool)
+                break
+            case .failure:
+                handler(false)
+                break
+            }
+        })
+    }
+
+    private func deleteContact(Contact mutContact: CNMutableContact, completionHandler: @escaping (_ result: Result<Bool, Error>) -> Void) {
+        let store = CNContactStore()
+        let request = CNSaveRequest()
+        request.delete(mutContact)
+        do {
+            try store.execute(request)
+            completionHandler(.success(true))
+        } catch {
+            completionHandler(.failure(error))
+        }
+    }
+}
