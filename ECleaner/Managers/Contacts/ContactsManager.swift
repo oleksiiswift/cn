@@ -136,30 +136,38 @@ extension ContactsManager {
     public func getDuplicatedContacts(of type: ContactasCleaningType, completionHandler: @escaping ([ContactsGroup]) -> Void) {
         
         self.getAllContacts { contacts in
-            guard contacts.isEmpty else {
-                completionHandler([])
-                return
-            }
+            
+            guard !contacts.isEmpty else { completionHandler([]); return }
+            
             U.BG {
                 switch type {
                     case .duplicatedPhoneNumnber:
-                        self.phoneDuplicates(contacts) { duplicatedContacts in
-                            self.phoneDuplicatedGroup(duplicatedContacts) { contactsGroup in
-                                completionHandler(contactsGroup)
+                        let burn = ConcurrentPhotoProcessOperation { _ in
+                            self.phoneDuplicates(contacts) { duplicatedContacts in
+                                self.phoneDuplicatedGroup(duplicatedContacts) { contactsGroup in
+                                    completionHandler(contactsGroup)
+                                }
                             }
                         }
+                        self.contactsDuplicatesOperationQueue.addOperation(burn)
                     case .duplicatedContactName:
-                        self.namesDuplicated(contacts) { duplicatedContacts in
-                            self.namesDuplicatesGroup(duplicatedContacts) { contactsGroup in
-                                completionHandler(contactsGroup)
+                        let burn = ConcurrentPhotoProcessOperation { _ in
+                            self.namesDuplicated(contacts) { duplicatedContacts in
+                                self.namesDuplicatesGroup(duplicatedContacts) { contactsGroup in
+                                    completionHandler(contactsGroup)
+                                }
                             }
                         }
+                        self.contactsDuplicatesOperationQueue.addOperation(burn)
                     case .duplicatedEmail:
-                        self.emailDuplicates(contacts) { duplicatedContacts in
-                            self.emailListDuplicatedGroup(duplicatedContacts) { contactsGroup in
-                                completionHandler(contactsGroup)
+                        let burn = ConcurrentPhotoProcessOperation { _ in
+                            self.emailDuplicates(contacts) { duplicatedContacts in
+                                self.emailListDuplicatedGroup(duplicatedContacts) { contactsGroup in
+                                    completionHandler(contactsGroup)
+                                }
                             }
                         }
+                        self.contactsDuplicatesOperationQueue.addOperation(burn)
                     default:
                         completionHandler([])
                 }
