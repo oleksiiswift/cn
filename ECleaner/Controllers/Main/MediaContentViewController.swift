@@ -450,16 +450,33 @@ extension MediaContentViewController {
 //      MARK: - contacts content -
 extension MediaContentViewController {
     
-    private func showAllContacts() {}
+    private func showAllContacts() {
+        P.showIndicator()
+        self.contactsManager.getAllContacts { contacts in
+            U.UI {
+                P.hideIndicator()
+                debugPrint(contacts)
+            }
+        }
+    }
     
-    private func showEmptyGroupsContacts() {}
+    private func showEmptyGroupsContacts() {
+        P.showIndicator()
+        self.contactsManager.getEmptyContacts { contactsGroup in
+            U.UI {
+                P.hideIndicator()
+                debugPrint(contactsGroup)
+            }
+        }
+    }
     
     private func showDuplicatedContacts() {
         P.showIndicator()
-        contactsManager.getDuplicatedAllContacts(self.allContacts) { groupedContacts in
-   
-            debugPrint(groupedContacts.count)
-            P.hideIndicator()
+        self.contactsManager.getDuplicatedContacts(of: .duplicatedContactName) { contactsGroup in
+            U.UI {
+                P.hideIndicator()
+                debugPrint(contactsGroup)
+            }
         }
     }
 }
