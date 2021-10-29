@@ -107,6 +107,7 @@ class Constants {
             static let main = "Main"
             static let media = "MediaContent"
             static let deep = "DeepClean"
+            static let contacts = "Contacts"
         }
         
         struct viewControllers {
@@ -116,7 +117,7 @@ class Constants {
             static let datePicker = "DateSelectorViewController"
             static let assetsList = "SimpleAssetsListViewController"
             static let groupedList = "GroupedAssetListViewController"
-            
+            static let contacts = "ContactsViewController"
             static let deepClean = "DeepCleaningViewController"
         }
         
@@ -127,6 +128,7 @@ class Constants {
             static let dropDownCell = "DropDownMenuTableViewCell"
             static let carouselCell = "CarouselCollectionViewCell"
             static let cleanInfoCell = "DeepCleanInfoTableViewCell"
+            static let contactCell = "ContactTableViewCell"
         }
         
         struct views {
@@ -141,6 +143,7 @@ class Constants {
             static let photoSimpleCell = "PhotoCollectionViewCell"
             static let dropDownCell = "DropDownMenuTableViewCell"
             static let cleanInfoCell = "DeepCleanInfoTableViewCell"
+            static let contactCell = "ContactTableViewCell"
             /// `views`
             static let groupHeader = "GroupedAssetsReusableHeaderView"
             static let groupFooter = "GroupedAssetsReusableFooterView"

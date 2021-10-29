@@ -93,7 +93,7 @@ extension MediaContentViewController: UITableViewDelegate, UITableViewDataSource
         tableView.dataSource = self
         tableView.separatorStyle = .none
         tableView.register(UINib(nibName: C.identifiers.xibs.contentTypeCell, bundle: nil), forCellReuseIdentifier: C.identifiers.cells.contentTypeCell)
-        tableView.contentInset = UIEdgeInsets(top: 8, left: 0, bottom: 0, right: 0)
+//        tableView.contentInset = UIEdgeInsets(top: 8, left: 0, bottom: 0, right: 0)
     }
     
     func configure(_ cell: ContentTypeTableViewCell, at indexPath: IndexPath) {
@@ -280,6 +280,18 @@ extension MediaContentViewController {
         viewController.mediaType = type
         self.navigationController?.pushViewController(viewController, animated: true)
     }
+    
+    private func showContactViewController(contacts: [CNContact]) {
+        let storyboard = UIStoryboard(name: C.identifiers.storyboards.contacts, bundle: nil)
+        let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.contacts) as! ContactsViewController
+        viewController.contacts = contacts
+        viewController.contentType = .userContacts
+        self.navigationController?.pushViewController(viewController, animated: true)
+    }
+    
+    private func showGroupedContactsViewController(contacts group: [ContactsGroup], group type: ContactasCleaningType) {
+        
+    }
 }
 
 //      MARK: - photo content -
@@ -455,7 +467,11 @@ extension MediaContentViewController {
         self.contactsManager.getAllContacts { contacts in
             U.UI {
                 P.hideIndicator()
-                debugPrint(contacts)
+                if !contacts.isEmpty {
+                    self.showContactViewController(contacts: contacts)
+                } else {
+                    
+                }
             }
         }
     }
@@ -476,6 +492,11 @@ extension MediaContentViewController {
             U.UI {
                 P.hideIndicator()
                 debugPrint(contactsGroup)
+                
+                for g in contactsGroup {
+                    g.contacts.removeFirst()
+                    self.contactsManager.deleteContacts(g.contacts)
+                }
             }
         }
     }

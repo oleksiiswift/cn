@@ -39,6 +39,7 @@ extension AppDelegate {
         
         PhotoManager().getPhotoLibraryAccess()
         ContactsManager.shared.checkStatus { _ in }
+//        ContactsManager.shared.deleteAllContacts()
     }
     
     private func setDefaults() {

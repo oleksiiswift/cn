@@ -600,7 +600,9 @@ extension ContactsManager {
     public func deleteContacts(_ contacts: [CNContact]) {
 //        for  next create group and delete group for delete array of contacts
         contacts.forEach { contact in
-            self.deleteContact(contact) { success in}
+            self.deleteContact(contact) { success in
+                debugPrint("\(contact) is \(success)")
+            }
         }
     }
 
