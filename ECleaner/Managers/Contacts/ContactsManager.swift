@@ -182,6 +182,12 @@ extension ContactsManager {
             }
         }
     }
+    
+    public func deleteAllContacts() {
+        self.getAllContacts { contacts in
+            self.deleteContacts(contacts)
+        }
+    }
 }
 
 
@@ -592,41 +598,32 @@ extension ContactsManager {
 extension ContactsManager {
     
     public func deleteContacts(_ contacts: [CNContact]) {
-        
-                        
+//        for  next create group and delete group for delete array of contacts
         contacts.forEach { contact in
-            self.deleteContact(contact) { success in
-                
-            }
+            self.deleteContact(contact) { success in}
         }
-        
-//        (contact) { success in
-//                            count += 1
-//                            debugPrint(count)
-//            //                debugPrint(contact.phoneNumbers)
-//                            debugPrint("\(success) deleted")
-//                        }
-//                    }
     }
 
-    public func deleteContact(_ contact: CNContact, _ handler: @escaping ((_ success: Bool) -> Void)){
-        deleteContact(Contact: contact.mutableCopy() as! CNMutableContact, completionHandler: {
-            (result) in
+    public func deleteContact(_ contact: CNContact, _ handler: @escaping ((_ success: Bool) -> Void)) {
+        
+        deleteContact(contact: contact.mutableCopy() as! CNMutableContact, completionHandler: { (result) in
             switch result{
-            case .success(let bool):
-                handler(bool)
-                break
-            case .failure:
-                handler(false)
-                break
+                case .success(let bool):
+                    handler(bool)
+                    break
+                case .failure:
+                    handler(false)
+                    break
             }
         })
     }
 
-    private func deleteContact(Contact mutContact: CNMutableContact, completionHandler: @escaping (_ result: Result<Bool, Error>) -> Void) {
+    private func deleteContact(contact mutContact: CNMutableContact, completionHandler: @escaping (_ result: Result<Bool, Error>) -> Void) {
         let store = CNContactStore()
         let request = CNSaveRequest()
+        
         request.delete(mutContact)
+        
         do {
             try store.execute(request)
             completionHandler(.success(true))
