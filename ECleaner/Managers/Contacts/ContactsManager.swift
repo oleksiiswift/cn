@@ -407,7 +407,7 @@ extension ContactsManager {
                 continue
             }
             let contact = contacts[i]
-            let duplicatedContacts: [CNContact] = contacts.filter({ $0 != contacts[i]}).filter({$0.givenName == contact.givenName}).filter({$0.familyName == contact.familyName})
+            let duplicatedContacts: [CNContact] = contacts.filter({ $0 != contacts[i]}).filter({$0.givenName.removeWhitespace() + $0.familyName.removeWhitespace() == contact.givenName.removeWhitespace() + contact.familyName.removeWhitespace()}) //.filter({$0.familyName == contact.familyName})
             
             duplicatedContacts.forEach({
                 debugPrint("each")
@@ -431,14 +431,14 @@ extension ContactsManager {
         
         for contact in contacts {
             debugPrint("names group index: \(String(describing: contacts.firstIndex(of: contact)))")
-            if group.filter({$0.name == contact.givenName + " " + contact.familyName}).count == 0 {
-                group.append(ContactsGroup(name: contact.givenName + " " + contact.familyName, contacts: [], groupType: .duplicatedContactName))
+            if group.filter({$0.name.removeWhitespace() == contact.givenName.removeWhitespace() + contact.familyName.removeWhitespace()}).count == 0 {
+                group.append(ContactsGroup(name: contact.givenName.removeWhitespace() + contact.familyName.removeWhitespace(), contacts: [], groupType: .duplicatedContactName))
             }
         }
         
         for contact in contacts {
             debugPrint("extra filer index: \(String(describing: contacts.firstIndex(of: contact)))")
-            group.filter({$0.name == contact.givenName + " " + contact.familyName})[0].contacts.append(contact)
+            group.filter({$0.name.removeWhitespace() == contact.givenName.removeWhitespace() + contact.familyName.removeWhitespace()})[0].contacts.append(contact)
         }
         completionHandler(group)
     }
@@ -595,6 +595,89 @@ extension ContactsManager {
     }
 }
 
+extension ContactsManager  {
+    
+    private func smartNamesDuplicated(_ contacts: [CNContact], completionHandler: @escaping ([CNContact]) -> Void) {
+        
+        var duplicates: [CNContact] = []
+        
+        for i in 0...contacts.count - 1 {
+            debugPrint("name duplicate index: \(i)")
+            if duplicates.contains(contacts[i]) {
+                continue
+            }
+            let contact = contacts[i]
+            let duplicatedContacts: [CNContact] = contacts.filter({ $0 != contacts[i]}).filter({$0.givenName.removeWhitespace() + $0.familyName.removeWhitespace() == contact.givenName.removeWhitespace() + contact.familyName.removeWhitespace()}) //.filter({$0.familyName == contact.familyName})
+            
+            duplicatedContacts.forEach({
+                debugPrint("each")
+                if !duplicates.contains(contact) {
+                    debugPrint(contact)
+                    duplicates.append(contact)
+                }
+                
+                if !duplicates.contains($0) {
+                    debugPrint($0)
+                    duplicates.append($0)
+                }
+            })
+        }
+        completionHandler(duplicates)
+    }
+    
+        /// `names duplicated group`
+    private func smartNamesDuplicatesGroup(_ contacts: [CNContact], completionHandler: @escaping ([ContactsGroup]) -> Void) {
+        var group: [ContactsGroup] = []
+        
+        for contact in contacts {
+            debugPrint("names group index: \(String(describing: contacts.firstIndex(of: contact)))")
+            if group.filter({$0.name.removeWhitespace().lowercased() == contact.givenName.removeWhitespace().lowercased() + contact.familyName.removeWhitespace().lowercased()}).count == 0 {
+                group.append(ContactsGroup(name: contact.givenName.removeWhitespace().lowercased() + contact.familyName.removeWhitespace().lowercased(), contacts: [], groupType: .duplicatedContactName))
+            }
+        }
+        
+        for contact in contacts {
+            debugPrint("extra filer index: \(String(describing: contacts.firstIndex(of: contact)))")
+            group.filter({$0.name.removeWhitespace().lowercased() == contact.givenName.removeWhitespace().lowercased() + contact.familyName.removeWhitespace().lowercased()})[0].contacts.append(contact)
+        }
+        completionHandler(group)
+    }
+    
+    
+    public func smartRebaseContacts(_ contactsGroup: [ContactsGroup], completionHelpers: @escaping () -> Void) {
+            
+        let groupNumbers = contactsGroup.count
+        var numbersOfIteration = 0
+        for group in contactsGroup {
+            self.combine(group.contacts) { success in
+                numbersOfIteration += 1
+                debugPrint("combine -> \(success)")
+                if numbersOfIteration == groupNumbers {
+                    completionHelpers()
+                }
+            }
+        }
+    }
+    
+    public func combine(_ contacts: [CNContact], _ handler: @escaping ((_ success: Bool) -> Void)){
+        var bestContact: CNContact?
+        var bestValue: Int = 0
+        for contact in contacts {
+            if contact.getPrice() > bestValue {
+                bestValue = contact.getPrice()
+                bestContact = contact
+            }
+        }
+        let deletedContacts = contacts.filter({ $0 != bestContact! })
+        
+        self.deleteContacts(deletedContacts)
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
+            handler(true)
+        })
+    }
+}
+
 extension ContactsManager {
     
     public func deleteContacts(_ contacts: [CNContact]) {
@@ -632,5 +715,12 @@ extension ContactsManager {
         } catch {
             completionHandler(.failure(error))
         }
+    }
+}
+
+
+extension CNContact{
+    func getPrice() -> Int{
+        return self.emailAddresses.count + self.phoneNumbers.count + (self.givenName.isEmpty ? 0 : 1) + (self.familyName.isEmpty ? 0 : 1) + (self.middleName.isEmpty ? 0 : 1)
     }
 }

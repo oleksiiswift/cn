@@ -493,10 +493,13 @@ extension MediaContentViewController {
                 P.hideIndicator()
                 debugPrint(contactsGroup)
                 
-                for g in contactsGroup {
-                    g.contacts.removeFirst()
-                    self.contactsManager.deleteContacts(g.contacts)
-                }
+//                self.contactsManager.smartRebaseContacts(contactsGroup) {
+//                    debugPrint("done")
+//                }
+//                for g in contactsGroup {
+//                    g.contacts.removeFirst()
+//                    self.contactsManager.deleteContacts(g.contacts)
+//                }
             }
         }
     }

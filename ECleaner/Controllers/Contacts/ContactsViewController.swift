@@ -61,7 +61,7 @@ extension ContactsViewController: Themeble {
         tableView.delegate = contactListDataSource
         tableView.dataSource = contactListDataSource
         tableView.separatorStyle = .none
-        
+        tableView.sectionIndexColor = UIColor().colorFromHexString("30C08F")
         tableView.backgroundColor = theme.backgroundColor
     }
     

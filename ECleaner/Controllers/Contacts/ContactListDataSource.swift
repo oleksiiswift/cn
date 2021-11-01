@@ -48,24 +48,20 @@ extension ContactListDataSource: UITableViewDelegate, UITableViewDataSource {
     func sectionIndexTitles(for tableView: UITableView) -> [String]? {
         return contactListViewModel.contactsSections
     }
-    
+
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return contactListViewModel.titleOFHeader(at: section)
     }
-    
+
     func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
-    
+
         let header = view as! UITableViewHeaderFooterView
-        
-        let frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: 42)
-        let helperFrameView = UIView(frame: frame)
-        helperFrameView.backgroundColor = ThemeManager.theme.backgroundColor
-        header.contentView.sendSubviewToBack(helperFrameView)
         header.contentView.backgroundColor = ThemeManager.theme.backgroundColor
         header.textLabel?.textColor = ThemeManager.theme.titleTextColor
         header.textLabel?.font = UIFont(font: FontManager.robotoBold, size: 18.0)
-        
-        
-        
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 60
     }
 }
