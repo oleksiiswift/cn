@@ -108,6 +108,7 @@ class Constants {
             static let media = "MediaContent"
             static let deep = "DeepClean"
             static let contacts = "Contacts"
+            static let contactsGroup = "ContactsGroup"
         }
         
         struct viewControllers {
@@ -119,6 +120,7 @@ class Constants {
             static let groupedList = "GroupedAssetListViewController"
             static let contacts = "ContactsViewController"
             static let deepClean = "DeepCleaningViewController"
+            static let contactsGroup = "ContactsGroupViewController"
         }
         
         struct cells {

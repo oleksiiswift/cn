@@ -288,8 +288,13 @@ extension MediaContentViewController {
         viewController.contentType = .userContacts
         self.navigationController?.pushViewController(viewController, animated: true)
     }
-    
+        
     private func showGroupedContactsViewController(contacts group: [ContactsGroup], group type: ContactasCleaningType) {
+        let storyboard = UIStoryboard(name: C.identifiers.storyboards.contactsGroup, bundle: nil)
+        let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.contactsGroup) as! ContactsGroupViewController
+        viewController.contactGroup = group
+        viewController.contentType = .userContacts
+        self.navigationController?.pushViewController(viewController, animated: true)
         
     }
 }
@@ -490,8 +495,32 @@ extension MediaContentViewController {
         P.showIndicator()
         self.contactsManager.getDuplicatedContacts(of: .duplicatedContactName) { contactsGroup in
             U.UI {
+                
+                
+                for group in contactsGroup {
+                    debugPrint("group")
+                    for contact in group.contacts {
+                        debugPrint(contact)
+                    }
+                }
+                
+                contactsGroup.forEach { group in
+                    let refablishGroup = self.contactsManager.checkForBestContact(group.contacts)
+                    group.contacts = refablishGroup
+                }
                 P.hideIndicator()
-                debugPrint(contactsGroup)
+                
+                
+                for group in contactsGroup {
+                    debugPrint("group")
+                    for contact in group.contacts {
+                        debugPrint(contact)
+                    }
+                }
+                
+                self.showGroupedContactsViewController(contacts: contactsGroup, group: .duplicatedContactName)
+                
+                
                 
 //                self.contactsManager.smartRebaseContacts(contactsGroup) {
 //                    debugPrint("done")

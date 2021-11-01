@@ -622,6 +622,7 @@ extension ContactsManager  {
                 }
             })
         }
+        
         completionHandler(duplicates)
     }
     
@@ -663,8 +664,8 @@ extension ContactsManager  {
         var bestContact: CNContact?
         var bestValue: Int = 0
         for contact in contacts {
-            if contact.getPrice() > bestValue {
-                bestValue = contact.getPrice()
+            if contact.fieldStatus() > bestValue {
+                bestValue = contact.fieldStatus()
                 bestContact = contact
             }
         }
@@ -675,6 +676,20 @@ extension ContactsManager  {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
             handler(true)
         })
+    }
+    
+    public func checkForBestContact(_ contacts: [CNContact]) -> [CNContact] {
+        
+        var refablishContacts: [CNContact] = contacts
+        var bestValue: Int = 0
+        
+        for contact in refablishContacts {
+            if contact.fieldStatus() > bestValue {
+                bestValue = contact.fieldStatus()
+                refablishContacts.bringToFront(item: contact)
+            }
+        }
+        return refablishContacts
     }
 }
 
@@ -720,7 +735,7 @@ extension ContactsManager {
 
 
 extension CNContact{
-    func getPrice() -> Int{
+    func fieldStatus() -> Int {
         return self.emailAddresses.count + self.phoneNumbers.count + (self.givenName.isEmpty ? 0 : 1) + (self.familyName.isEmpty ? 0 : 1) + (self.middleName.isEmpty ? 0 : 1)
     }
 }
