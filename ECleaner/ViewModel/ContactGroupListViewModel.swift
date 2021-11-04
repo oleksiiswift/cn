@@ -17,6 +17,7 @@ class ContactGroupListViewModel {
     init(contactsGroup: [ContactsGroup]) {
         
         self.groupSection = contactsGroup
+        
     }
 }
 
@@ -39,5 +40,11 @@ extension ContactGroupListViewModel {
 
 extension ContactGroupListViewModel {
     
+    
+    
+    private func reloadSections(_ contactsGroup: [ContactsGroup]) {
+        
+        
+    }
     
 }

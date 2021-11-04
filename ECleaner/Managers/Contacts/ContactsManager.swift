@@ -418,6 +418,9 @@ extension ContactsManager {
             debugPrint("fileter phone number \(number)")
             group.filter({ $0.name == number })[0].contacts.append(contentsOf: contacts)
         }
+        
+        group.forEach({ $0.contacts = self.esctimateBestContactIn($0.contacts )})
+        
         completionHandler(group)
     }
     
@@ -436,6 +439,11 @@ extension ContactsManager {
             let duplicatedContacts: [CNContact] = contacts.filter({ $0 != contacts[i]}).filter({$0.givenName.removeWhitespace() + $0.familyName.removeWhitespace() == contact.givenName.removeWhitespace() + contact.familyName.removeWhitespace()}) //.filter({$0.familyName == contact.familyName})
             
             duplicatedContacts.forEach({
+                
+                let name = $0.givenName.removeWhitespace() + $0.familyName.removeWhitespace() + $0.middleName.removeWhitespace()
+                
+                guard !name.isEmpty else { return }
+                
                 debugPrint("each")
                 if !duplicates.contains(contact) {
                     debugPrint(contact)
@@ -466,6 +474,9 @@ extension ContactsManager {
             debugPrint("extra filer index: \(String(describing: contacts.firstIndex(of: contact)))")
             group.filter({$0.name.removeWhitespace() == contact.givenName.removeWhitespace() + contact.familyName.removeWhitespace()})[0].contacts.append(contact)
         }
+        
+        group.forEach({ $0.contacts = self.esctimateBestContactIn($0.contacts )})
+        
         completionHandler(group)
     }
     
@@ -667,6 +678,9 @@ extension ContactsManager  {
             debugPrint("extra filer index: \(String(describing: contacts.firstIndex(of: contact)))")
             group.filter({$0.name.removeWhitespace().lowercased() == contact.givenName.removeWhitespace().lowercased() + contact.familyName.removeWhitespace().lowercased()})[0].contacts.append(contact)
         }
+    
+        group.forEach({ $0.contacts = self.esctimateBestContactIn($0.contacts )})
+    
         completionHandler(group)
     }
     
@@ -690,7 +704,6 @@ extension ContactsManager  {
         var thumbnailsImageData: [Data] = []
         var imagesData: [Data] = []
         
-            
         /// `user phone numbers and social`
         var phoneNumbers: [CNLabeledValue<CNPhoneNumber>] = []
         var emailAddresses: [CNLabeledValue<NSString>] = []
@@ -768,6 +781,33 @@ extension ContactsManager  {
         }
     }
     
+    public func esctimateBestContactIn(_ group: [CNContact]) -> [CNContact] {
+        
+        var refactorContactGroup = group
+        var bestContact: CNContact?
+        var bestValue: Int = 0
+        var longestNumber: Int = 0
+        for contact in group {
+            if contact.fieldStatus() > bestValue {
+                bestValue = contact.fieldStatus()
+                bestContact = contact
+            } else if contact.fieldStatus() == bestValue {
+                let sum = contact.phoneNumbers.map({$0.value.stringValue.count}).sum()
+                if sum > longestNumber {
+                    longestNumber = sum
+                    bestContact = contact
+                }
+            }
+        }
+        
+        if let contact = bestContact {
+            debugPrint("refacor group")
+            refactorContactGroup.bringToFront(item: contact)
+            return refactorContactGroup
+        }
+        return group
+    }
+    
     /// simlple rebase contacts for groups and selectd one more fill contact
     public func rebaseContacts(_ contactsGroup: [ContactsGroup], completionHelpers: @escaping () -> Void) {
             
@@ -809,6 +849,7 @@ extension ContactsManager  {
         var bestValue: Int = 0
         
         for contact in refablishContacts {
+            debugPrint("refactor contact group")
             if contact.fieldStatus() > bestValue {
                 bestValue = contact.fieldStatus()
                 refablishContacts.bringToFront(item: contact)

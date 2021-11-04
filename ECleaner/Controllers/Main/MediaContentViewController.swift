@@ -492,12 +492,26 @@ extension MediaContentViewController {
         }
     }
     
-    private func showDuplicatedContacts() {
+    private func showDubplicatedPhoneNumbersContacts() {
         P.showIndicator()
+        
+        self.contactsManager.getDuplicatedContacts(of: .duplicatedPhoneNumnber) { contactsGroup in
+            U.UI {
+                P.hideIndicator()
+                let group = contactsGroup.sorted(by: {$0.name < $1.name})
+                self.showGroupedContactsViewController(contacts: group, group: .duplicatedPhoneNumnber)
+            }
+        }
+    }
+
+    private func showDuplicatedNamesContacts() {
+        P.showIndicator()
+        
         self.contactsManager.getDuplicatedContacts(of: .duplicatedContactName) { contactsGroup in
             U.UI {
                 P.hideIndicator()
-                self.showGroupedContactsViewController(contacts: contactsGroup, group: .duplicatedContactName)
+                let group = contactsGroup.sorted(by: {$0.name < $1.name})
+                self.showGroupedContactsViewController(contacts: group, group: .duplicatedContactName)
             }
         }
     }
