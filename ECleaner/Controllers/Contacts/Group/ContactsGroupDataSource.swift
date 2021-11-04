@@ -43,6 +43,11 @@ extension ContactsGroupDataSource: UITableViewDelegate, UITableViewDataSource {
         self.cellConfigure(cell: cell, at: indexPath)
         return cell
     }
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let view = UIView(frame: CGRect(x: 0, y: 0, width: U.screenWidth, height: 40))
+        return view
+    }
 }
 
 

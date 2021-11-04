@@ -174,4 +174,17 @@ class Constants {
     struct defaultValues {
         static let dateNow = Date()
     }
+    
+    struct contacts {
+        
+        struct contactsContainer{
+            static let card = "Card"
+            static let iCloud = "iCloud"
+            static let addressBook = "Address Book"
+            static let google = "Google"
+            static let contancts = "Contacts"
+            static let yahoo = "Yahoo"
+            static let facebook = "Facebook"
+        }
+    }
 }

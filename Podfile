@@ -14,9 +14,11 @@ target 'ECleaner' do
   pod 'cisua'
   pod 'SwiftyStoreKit'
   pod 'SwiftMessages'
+  pod 'PhoneNumberKit'
   
   pod 'SwiftDate'
   pod 'SwiftyUserDefaults'
+  pod 'SwiftyContacts'
   
 #  pod 'Google-Mobile-Ads-SDK'
 end

@@ -486,6 +486,7 @@ extension MediaContentViewController {
         self.contactsManager.getEmptyContacts { contactsGroup in
             U.UI {
                 P.hideIndicator()
+                
                 debugPrint(contactsGroup)
             }
         }
@@ -495,40 +496,8 @@ extension MediaContentViewController {
         P.showIndicator()
         self.contactsManager.getDuplicatedContacts(of: .duplicatedContactName) { contactsGroup in
             U.UI {
-                
-                
-                for group in contactsGroup {
-                    debugPrint("group")
-                    for contact in group.contacts {
-                        debugPrint(contact)
-                    }
-                }
-                
-                contactsGroup.forEach { group in
-                    let refablishGroup = self.contactsManager.checkForBestContact(group.contacts)
-                    group.contacts = refablishGroup
-                }
                 P.hideIndicator()
-                
-                
-                for group in contactsGroup {
-                    debugPrint("group")
-                    for contact in group.contacts {
-                        debugPrint(contact)
-                    }
-                }
-                
                 self.showGroupedContactsViewController(contacts: contactsGroup, group: .duplicatedContactName)
-                
-                
-                
-//                self.contactsManager.smartRebaseContacts(contactsGroup) {
-//                    debugPrint("done")
-//                }
-//                for g in contactsGroup {
-//                    g.contacts.removeFirst()
-//                    self.contactsManager.deleteContacts(g.contacts)
-//                }
             }
         }
     }
