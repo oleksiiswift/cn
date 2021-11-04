@@ -7,6 +7,7 @@
 
 import ContactsUI
 import UIKit
+import PhoneNumberKit
 
 enum AlphabeticalContactsResults {
     case succes(responce: [String: [CNContact]])
@@ -43,6 +44,26 @@ enum ContactasCleaningType {
     }
 }
 
+enum ContactsContainerType {
+    case none
+    case card
+    case adressBook
+    case contacts
+    
+    var rawValue: String? {
+        switch self {
+            case .none:
+                return nil
+            case .card:
+                return C.contacts.contactsContainer.card
+            case .adressBook:
+                return C.contacts.contactsContainer.addressBook
+            case .contacts:
+                return C.contacts.contactsContainer.contancts
+        }
+    }
+}
+
 class ContactsGroup {
     let name: String
     var contacts: [CNContact]
@@ -62,14 +83,18 @@ class ContactsManager {
         return instance
     }()
     
+    private var phoneNumberKit = PhoneNumberKit()
+    
     private let contactsDuplicatesOperationQueue = OperationPhotoProcessingQueuer(name: "Contacts Duplicates Queuer", maxConcurrentOperationCount: 10, qualityOfService: .utility)
     
     private let fetchingKeys: [CNKeyDescriptor] = [
         CNContactVCardSerialization.descriptorForRequiredKeys(),
-        CNContactThumbnailImageDataKey as CNKeyDescriptor
+        CNContactThumbnailImageDataKey as CNKeyDescriptor,
+        CNContactImageDataAvailableKey as CNKeyDescriptor,
+        CNContactImageDataKey as CNKeyDescriptor
     ]
     
-        //    MARK: - contacts store auth status -
+//    MARK: - contacts store auth status -
         /// auth for contacts data
     private func checkContactStoreAuthStatus(completion: @escaping(_ grantAccess: Bool) -> Void) {
         
@@ -109,7 +134,7 @@ extension ContactsManager {
         /// fetch all contacts
     public func getAllContacts(_ completionHandler: @escaping ([CNContact]) -> Void) {
         U.BG {
-            self.fetchContacts { result in
+            self.fetchContacts(keys: self.fetchingKeys) { result in
                 switch result {
                     case .success(let contacts):
                         completionHandler(contacts)
@@ -180,6 +205,12 @@ extension ContactsManager {
             self.groupingMissingIncompleteContacts(contacts) { groupingIncompleteContacts in
                 completionHandler(groupingIncompleteContacts)
             }
+        }
+    }
+    
+    public func deleteAllContacts() {
+        self.getAllContacts { contacts in
+            self.deleteContacts(contacts)
         }
     }
 }
@@ -287,6 +318,7 @@ extension ContactsManager {
             })
             completionHandler(.success(contacts))
         } catch {
+            debugPrint(error.localizedDescription)
             completionHandler(.failure(error))
         }
     }
@@ -401,7 +433,7 @@ extension ContactsManager {
                 continue
             }
             let contact = contacts[i]
-            let duplicatedContacts: [CNContact] = contacts.filter({ $0 != contacts[i]}).filter({$0.givenName == contact.givenName}).filter({$0.familyName == contact.familyName})
+            let duplicatedContacts: [CNContact] = contacts.filter({ $0 != contacts[i]}).filter({$0.givenName.removeWhitespace() + $0.familyName.removeWhitespace() == contact.givenName.removeWhitespace() + contact.familyName.removeWhitespace()}) //.filter({$0.familyName == contact.familyName})
             
             duplicatedContacts.forEach({
                 debugPrint("each")
@@ -425,14 +457,14 @@ extension ContactsManager {
         
         for contact in contacts {
             debugPrint("names group index: \(String(describing: contacts.firstIndex(of: contact)))")
-            if group.filter({$0.name == contact.givenName + " " + contact.familyName}).count == 0 {
-                group.append(ContactsGroup(name: contact.givenName + " " + contact.familyName, contacts: [], groupType: .duplicatedContactName))
+            if group.filter({$0.name.removeWhitespace() == contact.givenName.removeWhitespace() + contact.familyName.removeWhitespace()}).count == 0 {
+                group.append(ContactsGroup(name: contact.givenName.removeWhitespace() + contact.familyName.removeWhitespace(), contacts: [], groupType: .duplicatedContactName))
             }
         }
         
         for contact in contacts {
             debugPrint("extra filer index: \(String(describing: contacts.firstIndex(of: contact)))")
-            group.filter({$0.name == contact.givenName + " " + contact.familyName})[0].contacts.append(contact)
+            group.filter({$0.name.removeWhitespace() == contact.givenName.removeWhitespace() + contact.familyName.removeWhitespace()})[0].contacts.append(contact)
         }
         completionHandler(group)
     }
@@ -589,44 +621,285 @@ extension ContactsManager {
     }
 }
 
+extension ContactsManager  {
+    
+    private func smartNamesDuplicated(_ contacts: [CNContact], completionHandler: @escaping ([CNContact]) -> Void) {
+        
+        var duplicates: [CNContact] = []
+        
+        for i in 0...contacts.count - 1 {
+            debugPrint("name duplicate index: \(i)")
+            if duplicates.contains(contacts[i]) {
+                continue
+            }
+            let contact = contacts[i]
+            let duplicatedContacts: [CNContact] = contacts.filter({ $0 != contacts[i]}).filter({$0.givenName.removeWhitespace() + $0.familyName.removeWhitespace() == contact.givenName.removeWhitespace() + contact.familyName.removeWhitespace()}) //.filter({$0.familyName == contact.familyName})
+            
+            duplicatedContacts.forEach({
+                debugPrint("each")
+                if !duplicates.contains(contact) {
+                    debugPrint(contact)
+                    duplicates.append(contact)
+                }
+                
+                if !duplicates.contains($0) {
+                    debugPrint($0)
+                    duplicates.append($0)
+                }
+            })
+        }
+        
+        completionHandler(duplicates)
+    }
+    
+        /// `names duplicated group`
+    private func smartNamesDuplicatesGroup(_ contacts: [CNContact], completionHandler: @escaping ([ContactsGroup]) -> Void) {
+        var group: [ContactsGroup] = []
+        
+        for contact in contacts {
+            debugPrint("names group index: \(String(describing: contacts.firstIndex(of: contact)))")
+            if group.filter({$0.name.removeWhitespace().lowercased() == contact.givenName.removeWhitespace().lowercased() + contact.familyName.removeWhitespace().lowercased()}).count == 0 {
+                group.append(ContactsGroup(name: contact.givenName.removeWhitespace().lowercased() + contact.familyName.removeWhitespace().lowercased(), contacts: [], groupType: .duplicatedContactName))
+            }
+        }
+        
+        for contact in contacts {
+            debugPrint("extra filer index: \(String(describing: contacts.firstIndex(of: contact)))")
+            group.filter({$0.name.removeWhitespace().lowercased() == contact.givenName.removeWhitespace().lowercased() + contact.familyName.removeWhitespace().lowercased()})[0].contacts.append(contact)
+        }
+        completionHandler(group)
+    }
+    
+    public func smartMergeContacts(in group: ContactsGroup, deletingContactsCompletion: @escaping ([CNContact]) -> Void) {
+        
+        var contactsDuplicates: [CNContact] = group.contacts
+        
+        var futureBestContact = CNMutableContact()
+        var bestGroupValue: Int = 0
+        
+        /// `main user names data`
+        var givenName: [String] = []
+        var familyName: [String] = []
+        var middleName: [String] = []
+        var organizationName: [String] = []
+        /// `optional user data`
+        var jobTitle: [String] = []
+        var departmentName: [String] = []
+        
+        /// `ìmage data`
+        var thumbnailsImageData: [Data] = []
+        var imagesData: [Data] = []
+        
+            
+        /// `user phone numbers and social`
+        var phoneNumbers: [CNLabeledValue<CNPhoneNumber>] = []
+        var emailAddresses: [CNLabeledValue<NSString>] = []
+        var postalAddresses: [CNLabeledValue<CNPostalAddress>] = []
+        var urlAddresses: [CNLabeledValue<NSString>] = []
+        var contactRelations: [CNLabeledValue<CNContactRelation>] = []
+        var socialProfiles: [CNLabeledValue<CNSocialProfile>] = []
+        var instantMessageAddresses: [CNLabeledValue<CNInstantMessageAddress>] = []
+        
+        /// `grouping contacts`
+        for contact in contactsDuplicates {
+            
+            if contact.fieldStatus() > bestGroupValue {
+                bestGroupValue = contact.fieldStatus()
+                futureBestContact = contact.mutableCopy() as! CNMutableContact
+            }
+            
+            givenName.append(contact.givenName)
+            familyName.append(contact.familyName)
+            middleName.append(contact.middleName)
+            
+            jobTitle.append(contact.jobTitle)
+            departmentName.append(contact.departmentName)
+            
+            organizationName.append(contact.organizationName)
+            contact.phoneNumbers.forEach { phoneNumbers.append($0) }
+            contact.emailAddresses.forEach { emailAddresses.append($0) }
+            contact.postalAddresses.forEach { postalAddresses.append($0) }
+            contact.urlAddresses.forEach { urlAddresses.append($0) }
+            contact.contactRelations.forEach { contactRelations.append($0)}
+            contact.socialProfiles.forEach { socialProfiles.append($0)}
+            contact.instantMessageAddresses.forEach {instantMessageAddresses.append($0) }
+            
+            if contact.imageDataAvailable {
+                if let data = contact.thumbnailImageData {
+                    thumbnailsImageData.append(data)
+                }
+                
+                if let imageData = contact.imageData {
+                    imagesData.append(imageData)
+                }
+            }
+        }
+        
+        if let mutableContact = futureBestContact.mutableCopy() as? CNMutableContact {
+            
+            mutableContact.givenName = givenName.bestElement ?? ""
+            mutableContact.familyName = familyName.bestElement ?? ""
+            mutableContact.middleName = middleName.bestElement ?? ""
+            mutableContact.organizationName = organizationName.bestElement ?? ""
+            
+            mutableContact.jobTitle = jobTitle.bestElement ?? ""
+            mutableContact.departmentName = departmentName.bestElement ?? ""
+        
+            phoneNumbers.forEach { mutableContact.phoneNumbers.append($0) }
+            emailAddresses.forEach { mutableContact.emailAddresses.append($0) }
+            postalAddresses.forEach { mutableContact.postalAddresses.append($0) }
+            urlAddresses.forEach { mutableContact.urlAddresses.append($0) }
+            contactRelations.forEach { mutableContact.contactRelations.append($0) }
+            socialProfiles.forEach { mutableContact.socialProfiles.append($0) }
+            instantMessageAddresses.forEach { mutableContact.instantMessageAddresses.append($0) }
+            
+            if !imagesData.isEmpty {
+                if let imageData = self.checkImages(from: imagesData) {
+                    mutableContact.imageData = imageData
+                }
+            }
+            
+            U.BGD(after: 1) {
+                self.update(contact: mutableContact) { result in
+                    contactsDuplicates = contactsDuplicates.filter({ $0.identifier != mutableContact.identifier })
+                    deletingContactsCompletion(contactsDuplicates)
+                }
+            }
+        }
+    }
+    
+    /// simlple rebase contacts for groups and selectd one more fill contact
+    public func rebaseContacts(_ contactsGroup: [ContactsGroup], completionHelpers: @escaping () -> Void) {
+            
+        let groupNumbers = contactsGroup.count
+        var numbersOfIteration = 0
+        for group in contactsGroup {
+            self.simpleCombine(group.contacts) { success in
+                numbersOfIteration += 1
+                debugPrint("combine -> \(success)")
+                if numbersOfIteration == groupNumbers {
+                    completionHelpers()
+                }
+            }
+        }
+    }
+    
+    /// merge contactrs only select where best fields
+    public func simpleCombine(_ contacts: [CNContact], _ handler: @escaping ((_ success: Bool) -> Void)){
+        var bestContact: CNContact?
+        var bestValue: Int = 0
+        for contact in contacts {
+            if contact.fieldStatus() > bestValue {
+                bestValue = contact.fieldStatus()
+                bestContact = contact
+            }
+        }
+        let deletedContacts = contacts.filter({ $0 != bestContact! })
+        
+        self.deleteContacts(deletedContacts)
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
+            handler(true)
+        })
+    }
+    
+    public func checkForBestContact(_ contacts: [CNContact]) -> [CNContact] {
+        
+        var refablishContacts: [CNContact] = contacts
+        var bestValue: Int = 0
+        
+        for contact in refablishContacts {
+            if contact.fieldStatus() > bestValue {
+                bestValue = contact.fieldStatus()
+                refablishContacts.bringToFront(item: contact)
+            }
+        }
+        return refablishContacts
+    }
+    
+    private func checkImages(from imageDatas: [Data]) -> Data? {
+        
+        var bestImageData: Data?
+        
+        if let data = imageDatas.first {
+            bestImageData = data
+        }
+        
+        for representData in imageDatas {
+            if bestImageData != representData {
+                if let rhsData = bestImageData {
+                    let lhsData = representData
+                    if lhsData.count > rhsData.count {
+                        bestImageData = lhsData
+                    }
+                }
+            }
+        }
+        
+        return bestImageData
+    }
+}
+
 extension ContactsManager {
     
     public func deleteContacts(_ contacts: [CNContact]) {
         
-                        
-        contacts.forEach { contact in
-            self.deleteContact(contact) { success in
-                
+        U.BG {
+            var contactsCount = contacts.count
+            contacts.forEach { contact in
+                self.deleteContact(contact) { success in
+                    contactsCount -= 1
+                    debugPrint(contactsCount)
+                }
             }
         }
-        
-//        (contact) { success in
-//                            count += 1
-//                            debugPrint(count)
-//            //                debugPrint(contact.phoneNumbers)
-//                            debugPrint("\(success) deleted")
-//                        }
-//                    }
     }
 
-    public func deleteContact(_ contact: CNContact, _ handler: @escaping ((_ success: Bool) -> Void)){
-        deleteContact(Contact: contact.mutableCopy() as! CNMutableContact, completionHandler: {
-            (result) in
+    public func deleteContact(_ contact: CNContact, _ handler: @escaping ((_ success: Bool) -> Void)) {
+        
+        delete(contact: contact.mutableCopy() as! CNMutableContact, completionHandler: { (result) in
             switch result{
-            case .success(let bool):
-                handler(bool)
-                break
-            case .failure:
-                handler(false)
-                break
+                case .success(let bool):
+                    handler(bool)
+                    break
+                case .failure:
+                    handler(false)
+                    break
             }
         })
     }
 
-    private func deleteContact(Contact mutContact: CNMutableContact, completionHandler: @escaping (_ result: Result<Bool, Error>) -> Void) {
+    private func delete(contact mutContact: CNMutableContact, completionHandler: @escaping (_ result: Result<Bool, Error>) -> Void) {
         let store = CNContactStore()
         let request = CNSaveRequest()
+        
         request.delete(mutContact)
+        
+        do {
+            try store.execute(request)
+            completionHandler(.success(true))
+        } catch {
+            completionHandler(.failure(error))
+        }
+    }
+    
+    private func update(contact mutContact: CNMutableContact, completionHandler: @escaping (_ result: Result<Bool, Error>) -> Void) {
+        let store = CNContactStore()
+        let request = CNSaveRequest()
+        
+        request.update(mutContact)
+        do {
+            try store.execute(request)
+            completionHandler(.success(true))
+        } catch {
+            completionHandler(.failure(error))
+        }
+    }
+    
+    private func create(contact mutContact: CNMutableContact, completionHandler: @escaping (_ result: Result<Bool, Error>) -> Void) {
+        let store = CNContactStore()
+        let request = CNSaveRequest()
+        request.add(mutContact, toContainerWithIdentifier: nil)
         do {
             try store.execute(request)
             completionHandler(.success(true))
@@ -635,3 +908,50 @@ extension ContactsManager {
         }
     }
 }
+
+extension ContactsManager {
+    
+    private func getAppropriateName(for container: CNContainer?) -> String? {
+        
+        switch container?.name {
+            case ContactsContainerType.card.rawValue, ContactsContainerType.none.rawValue:
+                return C.contacts.contactsContainer.iCloud
+            case ContactsContainerType.adressBook.rawValue:
+                return C.contacts.contactsContainer.google
+            case ContactsContainerType.contacts.rawValue:
+                return C.contacts.contactsContainer.yahoo
+            default:
+                return C.contacts.contactsContainer.facebook
+        }
+    }
+          
+    public func getIcloudContacts() -> [CNContact] {
+        
+        let contactStore = CNContactStore()
+        
+        var allContainers: [CNContainer] = []
+        do {
+            allContainers = try contactStore.containers(matching: nil)
+        } catch {
+            print("Error fetching containers")
+        }
+        
+        for container in allContainers {
+            let containerName = getAppropriateName(for: container)
+            
+            if containerName == C.contacts.contactsContainer.iCloud {
+                let fetchPredicate = CNContact.predicateForContactsInContainer(withIdentifier: container.identifier)
+                do {
+                    let containerResults = try contactStore.unifiedContacts(matching: fetchPredicate, keysToFetch: self.fetchingKeys)
+                    return containerResults
+                } catch {
+                    print("Error fetching results for container")
+                }
+            }
+        }
+        return []
+    }
+}
+
+
+

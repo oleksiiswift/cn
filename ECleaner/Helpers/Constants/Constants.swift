@@ -107,6 +107,8 @@ class Constants {
             static let main = "Main"
             static let media = "MediaContent"
             static let deep = "DeepClean"
+            static let contacts = "Contacts"
+            static let contactsGroup = "ContactsGroup"
         }
         
         struct viewControllers {
@@ -116,8 +118,9 @@ class Constants {
             static let datePicker = "DateSelectorViewController"
             static let assetsList = "SimpleAssetsListViewController"
             static let groupedList = "GroupedAssetListViewController"
-            
+            static let contacts = "ContactsViewController"
             static let deepClean = "DeepCleaningViewController"
+            static let contactsGroup = "ContactsGroupViewController"
         }
         
         struct cells {
@@ -127,6 +130,7 @@ class Constants {
             static let dropDownCell = "DropDownMenuTableViewCell"
             static let carouselCell = "CarouselCollectionViewCell"
             static let cleanInfoCell = "DeepCleanInfoTableViewCell"
+            static let contactCell = "ContactTableViewCell"
         }
         
         struct views {
@@ -141,6 +145,7 @@ class Constants {
             static let photoSimpleCell = "PhotoCollectionViewCell"
             static let dropDownCell = "DropDownMenuTableViewCell"
             static let cleanInfoCell = "DeepCleanInfoTableViewCell"
+            static let contactCell = "ContactTableViewCell"
             /// `views`
             static let groupHeader = "GroupedAssetsReusableHeaderView"
             static let groupFooter = "GroupedAssetsReusableFooterView"
@@ -168,5 +173,18 @@ class Constants {
     
     struct defaultValues {
         static let dateNow = Date()
+    }
+    
+    struct contacts {
+        
+        struct contactsContainer{
+            static let card = "Card"
+            static let iCloud = "iCloud"
+            static let addressBook = "Address Book"
+            static let google = "Google"
+            static let contancts = "Contacts"
+            static let yahoo = "Yahoo"
+            static let facebook = "Facebook"
+        }
     }
 }

@@ -130,6 +130,7 @@
 		4FE4EA7627217130005FBB68 /* Roboto-ThinItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4F4A17AE271D76F700CAF157 /* Roboto-ThinItalic.ttf */; };
 		4FE56A992729973B006CD946 /* DeepCleanInfoView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4FE56A982729973B006CD946 /* DeepCleanInfoView.xib */; };
 		4FE56A9B27299A11006CD946 /* DeepCleanInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FE56A9A27299A11006CD946 /* DeepCleanInfoView.swift */; };
+		9720EBEB27326F8C0078CD40 /* CellBlock 52.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9720EBEA27326F8C0078CD40 /* CellBlock 52.swift */; };
 		97238A072689BD8000C523DC /* PhotoMediaType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97238A062689BD8000C523DC /* PhotoMediaType.swift */; };
 		97238A092689D01E00C523DC /* GroupedAssetListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97238A082689D01E00C523DC /* GroupedAssetListViewController.swift */; };
 		97238A0B2689EDD200C523DC /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97238A0A2689EDD200C523DC /* Toast.swift */; };
@@ -145,6 +146,12 @@
 		975AF43E2728987500744E3B /* Contacts.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 975AF43D2728987500744E3B /* Contacts.storyboard */; };
 		975AF440272898AE00744E3B /* ContactsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 975AF43F272898AE00744E3B /* ContactsViewController.swift */; };
 		976465D42727055200F8CDA6 /* String+Alphabetical+Range.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976465D32727055200F8CDA6 /* String+Alphabetical+Range.swift */; };
+		977BA04527328C4A0018DF53 /* Array+BestValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977BA04427328C4A0018DF53 /* Array+BestValue.swift */; };
+		977BA0472733171F0018DF53 /* CNContacts+FillRows.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977BA0462733171F0018DF53 /* CNContacts+FillRows.swift */; };
+		977FE23527302F57004DE4C3 /* ContactGroupListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977FE23427302F57004DE4C3 /* ContactGroupListViewModel.swift */; };
+		977FE23727306355004DE4C3 /* ContactsGroupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977FE23627306355004DE4C3 /* ContactsGroupViewController.swift */; };
+		977FE2392730658B004DE4C3 /* ContactsGroupDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977FE2382730658B004DE4C3 /* ContactsGroupDataSource.swift */; };
+		977FE23B273072A2004DE4C3 /* ContactsGroup.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 977FE23A273072A2004DE4C3 /* ContactsGroup.storyboard */; };
 		97A61EDE2726AB8700F2E6DE /* ContactsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A61EDD2726AB8700F2E6DE /* ContactsManager.swift */; };
 		97CC2F382683CF740072EF8C /* UpdateContentDataBaseMediator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CC2F372683CF740072EF8C /* UpdateContentDataBaseMediator.swift */; };
 		97CC2F3A2683D00F0072EF8C /* UpdateContentDataBaseListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CC2F392683D00F0072EF8C /* UpdateContentDataBaseListener.swift */; };
@@ -152,6 +159,8 @@
 		97CC2F3E268743A80072EF8C /* SegueManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CC2F3D268743A80072EF8C /* SegueManager.swift */; };
 		97CC2F40268749CF0072EF8C /* UIButton+ImageAlign.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CC2F3F268749CF0072EF8C /* UIButton+ImageAlign.swift */; };
 		97D0BABD2680AD6E0067A3A6 /* String+NSDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97D0BABC2680AD6E0067A3A6 /* String+NSDate.swift */; };
+		97DAB62E272C164A00F05CEA /* ContactTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97DAB62C272C164A00F05CEA /* ContactTableViewCell.swift */; };
+		97DAB62F272C164A00F05CEA /* ContactTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 97DAB62D272C164A00F05CEA /* ContactTableViewCell.xib */; };
 		97E54A86268BB16A00C7FD54 /* SNCollectionViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97E54A85268BB16A00C7FD54 /* SNCollectionViewLayout.swift */; };
 		97FC789226888120000D7F26 /* Date+CurrentDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97FC789126888120000D7F26 /* Date+CurrentDate.swift */; };
 		97FC7894268882C9000D7F26 /* Date+DateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97FC7893268882C9000D7F26 /* Date+DateFormatter.swift */; };
@@ -290,6 +299,7 @@
 		4FE56A982729973B006CD946 /* DeepCleanInfoView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DeepCleanInfoView.xib; sourceTree = "<group>"; };
 		4FE56A9A27299A11006CD946 /* DeepCleanInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepCleanInfoView.swift; sourceTree = "<group>"; };
 		81D1B9EBAF1D92CCA563E435 /* Pods-ECleaner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ECleaner.debug.xcconfig"; path = "Target Support Files/Pods-ECleaner/Pods-ECleaner.debug.xcconfig"; sourceTree = "<group>"; };
+		9720EBEA27326F8C0078CD40 /* CellBlock 52.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CellBlock 52.swift"; sourceTree = "<group>"; };
 		97238A062689BD8000C523DC /* PhotoMediaType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoMediaType.swift; sourceTree = "<group>"; };
 		97238A082689D01E00C523DC /* GroupedAssetListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupedAssetListViewController.swift; sourceTree = "<group>"; };
 		97238A0A2689EDD200C523DC /* Toast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
@@ -305,6 +315,12 @@
 		975AF43D2728987500744E3B /* Contacts.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Contacts.storyboard; sourceTree = "<group>"; };
 		975AF43F272898AE00744E3B /* ContactsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsViewController.swift; sourceTree = "<group>"; };
 		976465D32727055200F8CDA6 /* String+Alphabetical+Range.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Alphabetical+Range.swift"; sourceTree = "<group>"; };
+		977BA04427328C4A0018DF53 /* Array+BestValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+BestValue.swift"; sourceTree = "<group>"; };
+		977BA0462733171F0018DF53 /* CNContacts+FillRows.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CNContacts+FillRows.swift"; sourceTree = "<group>"; };
+		977FE23427302F57004DE4C3 /* ContactGroupListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactGroupListViewModel.swift; sourceTree = "<group>"; };
+		977FE23627306355004DE4C3 /* ContactsGroupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsGroupViewController.swift; sourceTree = "<group>"; };
+		977FE2382730658B004DE4C3 /* ContactsGroupDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsGroupDataSource.swift; sourceTree = "<group>"; };
+		977FE23A273072A2004DE4C3 /* ContactsGroup.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ContactsGroup.storyboard; sourceTree = "<group>"; };
 		97A61EDD2726AB8700F2E6DE /* ContactsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsManager.swift; sourceTree = "<group>"; };
 		97CC2F372683CF740072EF8C /* UpdateContentDataBaseMediator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateContentDataBaseMediator.swift; sourceTree = "<group>"; };
 		97CC2F392683D00F0072EF8C /* UpdateContentDataBaseListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateContentDataBaseListener.swift; sourceTree = "<group>"; };
@@ -312,6 +328,8 @@
 		97CC2F3D268743A80072EF8C /* SegueManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegueManager.swift; sourceTree = "<group>"; };
 		97CC2F3F268749CF0072EF8C /* UIButton+ImageAlign.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton+ImageAlign.swift"; sourceTree = "<group>"; };
 		97D0BABC2680AD6E0067A3A6 /* String+NSDate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+NSDate.swift"; sourceTree = "<group>"; };
+		97DAB62C272C164A00F05CEA /* ContactTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactTableViewCell.swift; sourceTree = "<group>"; };
+		97DAB62D272C164A00F05CEA /* ContactTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ContactTableViewCell.xib; sourceTree = "<group>"; };
 		97E54A85268BB16A00C7FD54 /* SNCollectionViewLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SNCollectionViewLayout.swift; sourceTree = "<group>"; };
 		97FC789126888120000D7F26 /* Date+CurrentDate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+CurrentDate.swift"; sourceTree = "<group>"; };
 		97FC7893268882C9000D7F26 /* Date+DateFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+DateFormatter.swift"; sourceTree = "<group>"; };
@@ -373,7 +391,9 @@
 		044A6FBF270F1BC200CF0D17 /* Sequence */ = {
 			isa = PBXGroup;
 			children = (
+				975AF4382728300E00744E3B /* Arrray+Rearranged.swift */,
 				044A6FBC270F1B9B00CF0D17 /* Sequence+GetSum.swift */,
+				977BA04427328C4A0018DF53 /* Array+BestValue.swift */,
 			);
 			path = Sequence;
 			sourceTree = "<group>";
@@ -417,6 +437,7 @@
 			isa = PBXGroup;
 			children = (
 				0459DF9826A6C5E50085EEDF /* celBlock51area.swift */,
+				9720EBEA27326F8C0078CD40 /* CellBlock 52.swift */,
 			);
 			path = Temp;
 			sourceTree = "<group>";
@@ -541,6 +562,7 @@
 				044281FF2693034600B6B47C /* DropDownMenuTableViewCell.swift */,
 				0459DF8A26A55F360085EEDF /* CarouselCollectionViewCell.swift */,
 				047DE61726AAA53100733CD5 /* DeepCleanInfoTableViewCell.swift */,
+				97DAB62C272C164A00F05CEA /* ContactTableViewCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -548,6 +570,7 @@
 		049CC2322683374C0002F988 /* Cells */ = {
 			isa = PBXGroup;
 			children = (
+				97DAB62D272C164A00F05CEA /* ContactTableViewCell.xib */,
 				047DE61826AAA53100733CD5 /* DeepCleanInfoTableViewCell.xib */,
 				049CC22E268337310002F988 /* MediaTypeCollectionViewCell.xib */,
 				97FC78A02688E5E8000D7F26 /* PhotoCollectionViewCell.xib */,
@@ -658,8 +681,8 @@
 				974EEA3726A74239000A0326 /* PhotoPreviewViewController */,
 				04B20F03269C4F9A00C6BC14 /* ModalControllers */,
 				047DE61426AAA33700733CD5 /* Temp */,
-				040E288926A98B150019F372 /* DeepClean */,
 				975AF43C2728307300744E3B /* Contacts */,
+				040E288926A98B150019F372 /* DeepClean */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -679,7 +702,7 @@
 				044A6FC0270F1BD300CF0D17 /* CMTime */,
 				044A6FBE270F1BA800CF0D17 /* CGFloat */,
 				044A6FBF270F1BC200CF0D17 /* Sequence */,
-				975AF4382728300E00744E3B /* Arrray+Rearranged.swift */,
+				977BA0482733173B0018DF53 /* CNContacts */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -784,6 +807,7 @@
 				04E0947A267A06B900A69956 /* LaunchScreen.storyboard */,
 				040E288A26A98C790019F372 /* DeepClean.storyboard */,
 				975AF43D2728987500744E3B /* Contacts.storyboard */,
+				977FE23A273072A2004DE4C3 /* ContactsGroup.storyboard */,
 			);
 			path = Storyboards;
 			sourceTree = "<group>";
@@ -949,10 +973,29 @@
 			path = PhotoPreviewViewController;
 			sourceTree = "<group>";
 		};
+		9755500D2731411D00E54C5A /* List */ = {
+			isa = PBXGroup;
+			children = (
+				975AF43A2728306C00744E3B /* ContactListDataSource.swift */,
+				975AF43F272898AE00744E3B /* ContactsViewController.swift */,
+			);
+			path = List;
+			sourceTree = "<group>";
+		};
+		9755500E2731412800E54C5A /* Group */ = {
+			isa = PBXGroup;
+			children = (
+				977FE2382730658B004DE4C3 /* ContactsGroupDataSource.swift */,
+				977FE23627306355004DE4C3 /* ContactsGroupViewController.swift */,
+			);
+			path = Group;
+			sourceTree = "<group>";
+		};
 		975AF43327281E5E00744E3B /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
 				975AF43027281DF700744E3B /* ContactListViewModel.swift */,
+				977FE23427302F57004DE4C3 /* ContactGroupListViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -960,10 +1003,18 @@
 		975AF43C2728307300744E3B /* Contacts */ = {
 			isa = PBXGroup;
 			children = (
-				975AF43A2728306C00744E3B /* ContactListDataSource.swift */,
-				975AF43F272898AE00744E3B /* ContactsViewController.swift */,
+				9755500D2731411D00E54C5A /* List */,
+				9755500E2731412800E54C5A /* Group */,
 			);
 			path = Contacts;
+			sourceTree = "<group>";
+		};
+		977BA0482733173B0018DF53 /* CNContacts */ = {
+			isa = PBXGroup;
+			children = (
+				977BA0462733171F0018DF53 /* CNContacts+FillRows.swift */,
+			);
+			path = CNContacts;
 			sourceTree = "<group>";
 		};
 		97A61EDF2726AB8B00F2E6DE /* Contacts */ = {
@@ -1114,11 +1165,13 @@
 				040E288B26A98C790019F372 /* DeepClean.storyboard in Resources */,
 				4FE4EA6F2721711B005FBB68 /* Roboto-Italic.ttf in Resources */,
 				4FE4EA6C27217112005FBB68 /* Roboto-BlackItalic.ttf in Resources */,
+				977FE23B273072A2004DE4C3 /* ContactsGroup.storyboard in Resources */,
 				0459DF9326A56DB20085EEDF /* CarouselItemView.xib in Resources */,
 				04E09479267A06B900A69956 /* Assets.xcassets in Resources */,
 				4FE4EA6E27217118005FBB68 /* Roboto-BoldItalic.ttf in Resources */,
 				4F4A17B9271D812400CAF157 /* CustomNavigationBar.xib in Resources */,
 				047DE61A26AAA53100733CD5 /* DeepCleanInfoTableViewCell.xib in Resources */,
+				97DAB62F272C164A00F05CEA /* ContactTableViewCell.xib in Resources */,
 				044282022693034600B6B47C /* DropDownMenuTableViewCell.xib in Resources */,
 				04649B32268C507F00336FE4 /* GroupedAssetsReusableHeaderView.xib in Resources */,
 				04467CE2270D9B1200DBBB39 /* DatePicker.storyboard in Resources */,
@@ -1182,6 +1235,7 @@
 				4F4A17A6271D743600CAF157 /* FontRepresentable.swift in Sources */,
 				04CACE2026A827CA006489FA /* PhotoOperationQueue.swift in Sources */,
 				0459DF8B26A55F360085EEDF /* CarouselCollectionViewCell.swift in Sources */,
+				977BA04527328C4A0018DF53 /* Array+BestValue.swift in Sources */,
 				97CC2F382683CF740072EF8C /* UpdateContentDataBaseMediator.swift in Sources */,
 				04E58379267B39AD00EDC3A3 /* PHPhotoLibrary+Auth.swift in Sources */,
 				049CC219268225500002F988 /* Colors.swift in Sources */,
@@ -1210,6 +1264,7 @@
 				975AF440272898AE00744E3B /* ContactsViewController.swift in Sources */,
 				4F4A17BB271D819F00CAF157 /* CustomNavigationBar.swift in Sources */,
 				97FC789A2688D907000D7F26 /* SimpleColumnFlowLayout.swift in Sources */,
+				977BA0472733171F0018DF53 /* CNContacts+FillRows.swift in Sources */,
 				0459DF9F26A702AF0085EEDF /* PhotoViewController.swift in Sources */,
 				97238A072689BD8000C523DC /* PhotoMediaType.swift in Sources */,
 				04CFFFF42684B23D000CA850 /* String+Whitespaces.swift in Sources */,
@@ -1247,8 +1302,10 @@
 				049CC22426831B800002F988 /* UIColor+Hex.swift in Sources */,
 				975AF4372728279900744E3B /* String+Numeric.swift in Sources */,
 				976465D42727055200F8CDA6 /* String+Alphabetical+Range.swift in Sources */,
+				9720EBEB27326F8C0078CD40 /* CellBlock 52.swift in Sources */,
 				04CFFFF22684B1ED000CA850 /* String+Extension.swift in Sources */,
 				4F56074827205AF300CA19E9 /* OrangeClearStyle.swift in Sources */,
+				977FE2392730658B004DE4C3 /* ContactsGroupDataSource.swift in Sources */,
 				97D0BABD2680AD6E0067A3A6 /* String+NSDate.swift in Sources */,
 				049CC21F268312950002F988 /* UpdateColorsProtocolol.swift in Sources */,
 				049CC22F268337310002F988 /* MediaTypeCollectionViewCell.swift in Sources */,
@@ -1265,6 +1322,7 @@
 				97238A132689EF6E00C523DC /* Presenter.swift in Sources */,
 				97FC7894268882C9000D7F26 /* Date+DateFormatter.swift in Sources */,
 				04649B3C268C98A900336FE4 /* UIButton+RemoveAnimation.swift in Sources */,
+				977FE23527302F57004DE4C3 /* ContactGroupListViewModel.swift in Sources */,
 				04649B31268C507F00336FE4 /* GroupedAssetsReusableHeaderView.swift in Sources */,
 				97238A112689EECE00C523DC /* UIView+BlurView.swift in Sources */,
 				0459DF9D26A6F40F0085EEDF /* PhotoPreviewDataSource.swift in Sources */,
@@ -1272,7 +1330,9 @@
 				4F56074327205AF300CA19E9 /* GradientArcWithClearColorView.swift in Sources */,
 				049CC215268221D40002F988 /* AdvertisementViewController.swift in Sources */,
 				97FC78982688CC06000D7F26 /* SimpleAssetsListViewController.swift in Sources */,
+				97DAB62E272C164A00F05CEA /* ContactTableViewCell.swift in Sources */,
 				049CC21B268225E60002F988 /* SettingsManager.swift in Sources */,
+				977FE23727306355004DE4C3 /* ContactsGroupViewController.swift in Sources */,
 				4F560722271FF81F00CA19E9 /* ShadowView.swift in Sources */,
 				4F4A17A4271D73E900CAF157 /* Font.swift in Sources */,
 				975AF43B2728306C00744E3B /* ContactListDataSource.swift in Sources */,
