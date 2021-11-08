@@ -20,6 +20,10 @@ class ContactTableViewCell: UITableViewCell {
     @IBOutlet weak var contactSubtitleTextLabel: UILabel!
     @IBOutlet weak var rightShevronImageView: UIImageView!
     
+    @IBOutlet weak var topBaseViewConstraint: NSLayoutConstraint!
+    
+    @IBOutlet weak var bottomBaseViewConstraint: NSLayoutConstraint!
+    
     private var indexPath: IndexPath?
     private var isFirstRowInSection: Bool = false
     private var isLastRowInSection: Bool = false
@@ -84,9 +88,7 @@ extension ContactTableViewCell {
 
 
 extension ContactTableViewCell: Themeble {
-    
 
-    
     private func setupUI() {
         
         selectionStyle = .none
@@ -101,6 +103,16 @@ extension ContactTableViewCell: Themeble {
         baseView.backgroundColor = .clear
         contactTitleTextLabel.textColor = theme.titleTextColor
         contactSubtitleTextLabel.textColor = theme.subTitleTextColor
+    }
+    
+    public func showTopInset() {
+        self.topBaseViewConstraint.constant = 20
+        self.baseView.layoutIfNeeded()
+    }
+    
+    public func showBottomInset() {
+        self.bottomBaseViewConstraint.constant = 20
+        self.baseView.layoutIfNeeded()
     }
 }
 

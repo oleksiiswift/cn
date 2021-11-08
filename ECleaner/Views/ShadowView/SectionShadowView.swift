@@ -14,125 +14,38 @@ enum RoundedSectionCorners {
     case central
 }
 
-
-
 class SectionShadowView: UIView {
     
     public var sectionColorsPosition: RoundedSectionCorners = .central
+    
+    private var cellBackgroundColor: UIColor = .init(hex: "ECF0F6")
+    private var topShadowColor: UIColor = .init(hex: "FFFFFF")
+    private var cellShadowColor: UIColor = .init(hex: "D1DAE8")
     
     let topShadowView = UIView()
     
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        self.clipsToBounds = true
-//        self.layer.cornerRadius = 14
-        
-        self.topShadowView.clipsToBounds = true
-//        self.topShadowView.layer.cornerRadius = 14
-        
-        self.backgroundColor = UIColor().colorFromHexString("E9EFF2")
-        topShadowView.backgroundColor = UIColor().colorFromHexString("E9EFF2")
+        self.backgroundColor = .clear
         topShadowView.frame = self.bounds
         
+        self.insertSubview(topShadowView, at: 0)
         
         switch sectionColorsPosition {
             case .top:
-
-                
-                self.insertSubview(topShadowView, at: 0)
-                
-//                self.layer.setShadowAndCorners(radius: 14, corners: [.topLeft, .topRight], color: .init(hex: "D1DAE8"), alpha: 1, x: 6, y: 6, blur: 10, spread: 0)
-                
-                self.layer.applySketchShadowZ(
-                    color: .red,
-                    alpha: 1.0,
-                    x: 6,
-                    y: 6,
-                    blur: 10,
-                    spread: 0)
-                
-//                self.layer.setShadowAndCorners(cornersRadius: 14, corners: [.topLeft, .topRight], color: .init(hex: "D1DAE8"), alpha: 1.0, x: 6, y: 6, blur: 10, spread: 0)
-//                self.cornerSelectRadiusView(corners: [.topLeft, .topRight], radius: 14)
-//                topShadowView.layer.setShadowAndCorners(cornersRadius: 14, corners: [.topLeft, .topRight], color: .init(hex: "FFFFFF"), alpha: 1.0, x: -2, y: -3, blur: 19, spread: 0)
-                topShadowView.layer.applySketchShadowZ(
-                    color: .black,
-                    alpha: 1.0,
-                    x: -2,
-                    y: -3,
-                    blur: 19,
-                    spread: 0)
-                
-                
-//                self.topShadowView.layer.setShadowAndCorners(cornersRadius: 14, corners: [.topLeft, .topRight], color: UIColor().colorFromHexString("FFFFFF"), alpha: 1.0, x: -2, y: -3, blur: 19, spread: 0)
-                
-//                                    self.topShadowView.cornerSelectRadiusView(corners: [.topLeft, .topRight], radius: 14)
-//                                    self.layer.setRoundedMask(corners: [.topLeft, .topRight], radius: 14)
-                
-            case .bottom:
-//                self.topShadowView.cornerSelectRadiusView(corners: [.topLeft, .topRight], radius: 14)
-                
-//                self.layer.setRoundedMask(corners: [.bottomLeft, .bottomRight], radius: 14)
-                
-                self.layer.applySketchShadow(
-                    color: UIColor().colorFromHexString("D1DAE8"),
-                    alpha: 1.0,
-                    x: 6,
-                    y: 6,
-                    blur: 10,
-                    spread: 0)
+                let cellCorners: UIRectCorner = [.topLeft, .topRight]
+                self.layer.setShadowAndCustomCorners(backgroundColor: cellBackgroundColor, shadow: .orange, alpha: 1, x: 6, y: 6, blur: 10, corners: cellCorners, radius: 14)
+                self.topShadowView.layer.setShadowAndCustomCorners(backgroundColor: .clear, shadow: topShadowColor, alpha: 1, x: -1, y: -2, blur: 19, corners: [], radius: 14)
             case .central:
-                
-                layer.applySketchShadow(
-                    color: UIColor().colorFromHexString("D1DAE8"),
-                    alpha: 1.0,
-                    x: 6,
-                    y: 0,
-                    blur: 10,
-                    spread: 0)
+                self.layer.setShadowAndCustomCorners(backgroundColor: cellBackgroundColor, shadow: .orange, alpha: 1, x: 6, y: 0, blur: 10, corners: [], radius: 14)
+                self.topShadowView.layer.setShadowAndCustomCorners(backgroundColor: .clear, shadow: topShadowColor, alpha: 1, x: -1, y: 1, blur: 19, corners: [], radius: 14)
+            case .bottom:
+                let cellCorners: UIRectCorner = [.bottomLeft, .bottomRight]
+                self.layer.setShadowAndCustomCorners(backgroundColor: cellBackgroundColor, shadow: .orange, alpha: 1, x: 6, y: 6, blur: 10, corners: cellCorners, radius: 14)
+                self.topShadowView.layer.setShadowAndCustomCorners(backgroundColor: .clear, shadow: topShadowColor, alpha: 1, x: -1, y: 1, blur: 19, corners: [], radius: 14)
         }
-        
-     
     }
-    
-//    let shadowView = UIView()
-//
-//    public var sectionColorsPosition: RoundedSectionCorners = .central
-//
-//
-//    override func layoutSubviews() {
-//        super.layoutSubviews()
-//
-//        self.clipsToBounds = true
-//        self.shadowView.clipsToBounds = true
-//
-//
-//        self.backgroundColor = .init(hex: "E9EFF2")
-//        self.shadowView.backgroundColor = .init(hex: "E9EFF2")
-//
-//        self.shadowView.frame = self.bounds
-//        self.shadowView.layer.cornerRadius = 14
-//
-//        switch sectionColorsPosition {
-//        case .top:
-//                self.layer.setRoundedMask(corners: [.topLeft, .topRight], radius: 14)
-//
-//
-//                self.insertSubview(shadowView, at: 0)
-//
-//                self.layer.applySketchShadow(color: UIColor().colorFromHexString("D1DAE8"), alpha: 1.0, x: 6, y: 6, blur: 10, spread: 0)
-//                self.shadowView.layer.applySketchShadow(color: .red, alpha: 1.0, x: -2, y: -3, blur: 19, spread: 0)
-//        case .bottom:
-//                self.layer.setRoundedMask(corners: [.bottomLeft, .bottomRight], radius: 14)
-//                self.shadowView.cornerSelectRadiusView(corners: [.bottomLeft, .bottomRight], radius: 14)
-//                self.insertSubview(shadowView, at: 0)
-//
-//
-//
-//        case .central:
-//                debugPrint("")
-//        }
-//    }
 }
 
 
