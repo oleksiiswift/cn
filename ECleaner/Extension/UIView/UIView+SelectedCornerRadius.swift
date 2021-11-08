@@ -17,4 +17,3 @@ extension UIView {
         layer.mask = mask
     }
 }
-

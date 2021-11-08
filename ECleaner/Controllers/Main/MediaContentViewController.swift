@@ -254,7 +254,7 @@ extension MediaContentViewController {
                     case 1:
                         self.showEmptyGroupsContacts()
                     case 2:
-                        self.showDuplicatedContacts()
+                        self.showDuplicatedNamesContacts()
                     default:
                         return
                 }

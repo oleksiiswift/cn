@@ -10,6 +10,7 @@ import Contacts
 
 class ContactTableViewCell: UITableViewCell {
     
+    @IBOutlet weak var topShadowView: SectionShadowView!
     
     @IBOutlet weak var baseView: UIView!
     @IBOutlet weak var shhadowImageView: ShadowRoundedView!
@@ -38,6 +39,19 @@ class ContactTableViewCell: UITableViewCell {
         setupUI()
         updateColors()
     }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+//        contentView.frame = contentView.frame.inset(by: UIEdgeInsets(top: 0, left: 12, bottom: 0, right: 12))
+        
+        shhadowImageView.rounded()
+        
+//        backgroundView = UIView(frame: contentView.frame)
+//        backgroundView?.clipsToBounds = false
+//        backgroundView?.backgroundColor = .clear
+    
+    }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
@@ -61,6 +75,7 @@ extension ContactTableViewCell {
         if let imageData = contact.thumbnailImageData {
             let image = UIImage(data: imageData)
             shhadowImageView.imageView.image = image
+            
         } else {
             shhadowImageView.imageView.image = I.mainMenuThumbItems.contacts
         }
@@ -70,21 +85,31 @@ extension ContactTableViewCell {
 
 extension ContactTableViewCell: Themeble {
     
+
+    
     private func setupUI() {
         
         selectionStyle = .none
-        
         shhadowImageView.rounded()
-        
         contactTitleTextLabel.font = UIFont(font: FontManager.robotoBold, size: 18.0)
         contactSubtitleTextLabel.font = UIFont(font: FontManager.robotoMedium, size: 14.0)
         rightShevronImageView.image = I.navigationItems.rightShevronBack
     }
     
     func updateColors() {
-        
+        topShadowView.backgroundColor = .clear
         baseView.backgroundColor = .clear
         contactTitleTextLabel.textColor = theme.titleTextColor
         contactSubtitleTextLabel.textColor = theme.subTitleTextColor
+    }
+}
+
+
+extension UITableView {
+    func lastIndexpath() -> IndexPath {
+        let section = max(numberOfSections - 1, 0)
+        let row = max(numberOfRows(inSection: section) - 1, 0)
+
+        return IndexPath(row: row, section: section)
     }
 }

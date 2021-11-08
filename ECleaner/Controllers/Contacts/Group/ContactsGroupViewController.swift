@@ -29,7 +29,13 @@ class ContactsGroupViewController: UIViewController {
         setupNavigation()
         setupTableView()
         setupObserversAndDelegate()
+        updateColors()
         self.tableView.reloadData()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -37,8 +43,7 @@ class ContactsGroupViewController: UIViewController {
     }
 }
 
-extension ContactsGroupViewController {
-    
+extension ContactsGroupViewController: Themeble {
     
     func setupUI() {}
     
@@ -66,6 +71,12 @@ extension ContactsGroupViewController {
     private func setupObserversAndDelegate() {
         
         customNavBar.delegate = self
+    }
+    
+    func updateColors() {
+        
+        self.view.backgroundColor = theme.backgroundColor
+        self.customNavBar.backgroundColor = theme.backgroundColor
     }
 }
 
