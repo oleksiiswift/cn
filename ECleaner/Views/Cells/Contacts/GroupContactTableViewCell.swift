@@ -10,7 +10,7 @@ import Contacts
 
 class GroupContactTableViewCell: UITableViewCell {
     
-    @IBOutlet weak var topShadowView: SectionShadowView!
+    @IBOutlet weak var sectionShadowView: SectionShadowView!
     @IBOutlet weak var shhadowImageView: ShadowRoundedView!
     
     @IBOutlet weak var baseView: UIView!
@@ -22,23 +22,15 @@ class GroupContactTableViewCell: UITableViewCell {
     
     private var customSeparator = UIView()
     private let helperSeparatorView = UIView()
-    
 
-    
-    private var indexPath: IndexPath?
     private var isFirstRowInSection: Bool = false
     private var isLastRowInSection: Bool = false
     
     override func prepareForReuse() {
         super.prepareForReuse()
         
-        contactTitleTextLabel.text = nil
-        contactSubtitleTextLabel.text = nil
-        shhadowImageView.imageView.image = nil
-
-//        topShadowView.prepareForReuse()
+        self.superReuseElemnt()
     }
-    
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -55,14 +47,24 @@ class GroupContactTableViewCell: UITableViewCell {
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
-        
     }
 }
 
 extension GroupContactTableViewCell {
     
-    public func updateContactCell(_ contact: CNContact) {
+    public func updateContactCell(_ contact: CNContact, rowPosition: RowPosition) {
+    
+        self.showCellInset(at: rowPosition)
+        self.sectionShadowView.sectionRowPosition = rowPosition
+        
+        if rowPosition != .bottom {
+            self.setupForCustomSeparator()
+        }
+
+        self.setupContact(contact)
+    }
+    
+    private func setupContact(_ contact: CNContact) {
         
         let contactFullName = CNContactFormatter.string(from: contact, style: .fullName)
         
@@ -94,7 +96,8 @@ extension GroupContactTableViewCell: Themeble {
     }
     
     func updateColors() {
-        topShadowView.backgroundColor = .clear
+
+        sectionShadowView.backgroundColor = .clear
         baseView.backgroundColor = .clear
         
         contactTitleTextLabel.textColor = theme.titleTextColor
@@ -104,20 +107,16 @@ extension GroupContactTableViewCell: Themeble {
         helperSeparatorView.backgroundColor = theme.separatorHelperColor
     }
     
-    public func showTopInset() {
-        self.topBaseViewConstraint.constant = 20
+    /// `inset` for first and last cell in section for extra shadow
+    private func showCellInset(at position: RowPosition) {
+        
+        self.topBaseViewConstraint.constant = position == .top ? 20 : 0
+        self.bottomBaseViewConstraint.constant = position == .bottom ? 20 : 0
         self.baseView.layoutIfNeeded()
     }
-    
-    public func showBottomInset() {
-        self.bottomBaseViewConstraint.constant = 20
-        self.baseView.layoutIfNeeded()
-    }
-    
-    public func setupForCustomSeparator(_ isShow: Bool) {
         
-        guard isShow else { return }
-        
+    public func setupForCustomSeparator() {
+                
         self.baseView.addSubview(customSeparator)
         customSeparator.translatesAutoresizingMaskIntoConstraints = false
         
@@ -134,5 +133,21 @@ extension GroupContactTableViewCell: Themeble {
         helperSeparatorView.bottomAnchor.constraint(equalTo: customSeparator.bottomAnchor).isActive = true
         helperSeparatorView.heightAnchor.constraint(equalToConstant: 1.5).isActive = true
     }
-}
 
+    private func superReuseElemnt() {
+        
+        /// for best reuse background shadows and reuse corners radii need renove somer parsts of ui
+        /// in section shadow need remove layers with corners radii
+        
+        contactTitleTextLabel.text = nil
+        contactSubtitleTextLabel.text = nil
+        shhadowImageView.imageView.image = nil
+        
+        sectionShadowView.prepareForReuse()
+        customSeparator.removeFromSuperview()
+        helperSeparatorView.removeFromSuperview()
+        
+        topBaseViewConstraint.constant = 0
+        bottomBaseViewConstraint.constant = 0
+    }
+}

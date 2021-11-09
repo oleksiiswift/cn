@@ -7,6 +7,13 @@
 
 import UIKit
 
+enum RowPosition {
+    case top
+    case middle
+    case bottom
+    case none
+}
+
 class ContactsGroupDataSource: NSObject {
     
     public var contactGroupListViewModel: ContactGroupListViewModel
@@ -18,10 +25,10 @@ class ContactsGroupDataSource: NSObject {
 
 extension ContactsGroupDataSource {
     
-    private func cellConfigure(cell: GroupContactTableViewCell, at indexPath: IndexPath) {
+    private func cellConfigure(cell: GroupContactTableViewCell, at indexPath: IndexPath, with position: RowPosition) {
         
         guard let contact = contactGroupListViewModel.getContact(at: indexPath) else { return }
-        cell.updateContactCell(contact)
+        cell.updateContactCell(contact, rowPosition: position)
     }
 }
 
@@ -39,9 +46,9 @@ extension ContactsGroupDataSource: UITableViewDelegate, UITableViewDataSource {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: C.identifiers.cells.contactCell, for: indexPath) as! GroupContactTableViewCell
 
-        let numbersOfRowsInSection = tableView.numberOfRows(inSection: indexPath.section)
-        self.setupShadowPath(in: cell, at: indexPath, numberOFRowsInSection: numbersOfRowsInSection)
-        self.cellConfigure(cell: cell, at: indexPath)
+        let rowPosition = self.checkIndexPosition(from: indexPath, numberOfRows: tableView.numberOfRows(inSection: indexPath.section))
+        
+        self.cellConfigure(cell: cell, at: indexPath, with: rowPosition)
         return cell
     }
     
@@ -54,45 +61,36 @@ extension ContactsGroupDataSource: UITableViewDelegate, UITableViewDataSource {
         return 60
     }
     
-    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let numbersOfRowsInSection = tableView.numberOfRows(inSection: indexPath.section)
-        
-        if indexPath.row == 0 {
-            return 130
-        } else if indexPath.row + 1 < numbersOfRowsInSection {
-            return UITableView.automaticDimension
-        } else if indexPath.row + 1 == numbersOfRowsInSection {
-            return 130
-        }
-        return UITableView.automaticDimension
-    }
     
-    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        guard let cell = cell as? GroupContactTableViewCell else { return }
+        let rowPosition = self.checkIndexPosition(from: indexPath, numberOfRows: tableView.numberOfRows(inSection: indexPath.section))
         
-        let numbersOfRowsInSection = tableView.numberOfRows(inSection: indexPath.section)
-        self.setupShadowPath(in: cell, at: indexPath, numberOFRowsInSection: numbersOfRowsInSection)
+        switch rowPosition {
+            case .top:
+                return 130
+            case .middle:
+                return 110
+            case .bottom:
+                return 130
+            case .none:
+                return 110
+        }
     }
 }
 
 extension ContactsGroupDataSource {
     
-    private func setupShadowPath(in cell: GroupContactTableViewCell, at indexPath: IndexPath, numberOFRowsInSection: Int) {
-        
-        if numberOFRowsInSection <= 1 { return }
+    private func checkIndexPosition(from indexPath: IndexPath, numberOfRows: Int) -> RowPosition {
         
         if indexPath.row == 0 {
-            cell.showTopInset()
-            cell.topShadowView.sectionColorsPosition = .top
-            cell.setupForCustomSeparator(true)
-        } else if indexPath.row + 1 < numberOFRowsInSection {
-            cell.topShadowView.sectionColorsPosition = .central
-            cell.setupForCustomSeparator(true)
-        } else if indexPath.row + 1 == numberOFRowsInSection {
-            cell.showBottomInset()
-            cell.topShadowView.sectionColorsPosition = .bottom
-            cell.setupForCustomSeparator(false)
+            return .top
+        } else if indexPath.row + 1 < numberOfRows {
+            return .middle
+        } else if indexPath.row + 1 == numberOfRows {
+            return .bottom
+        } else {
+            return .none
         }
     }
 }
+

@@ -35,7 +35,6 @@ extension CALayer {
     }
 }
  
-
 extension CALayer {
     
     func setShadowAndCustomCorners(backgroundColor: UIColor = .black, shadow: UIColor = .black, alpha: Float = 0.5, x: CGFloat = 0, y: CGFloat = 2, blur: CGFloat, corners: UIRectCorner, radius: CGFloat = 12) {
@@ -54,19 +53,14 @@ extension CALayer {
         self.addSublayer(layerMask)
     }
     
-    func removeSulayers() {
-        if let subls = sublayers  {
-            
+    func removeCornersSublayers() {
         
-        for sublayer in subls {
-
+        guard let sublayers = sublayers else { return }
+        
+        for sublayer in sublayers {
             if sublayer.name == "corners" {
-                debugPrint("contains and remove")
                 sublayer.removeFromSuperlayer()
-            } else {
-                debugPrint("")
             }
-        }
         }
     }
 }

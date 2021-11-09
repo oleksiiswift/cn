@@ -81,9 +81,9 @@
                 <outlet property="bottomBaseViewConstraint" destination="zQb-JQ-uiz" id="j81-1W-sH4"/>
                 <outlet property="contactSubtitleTextLabel" destination="W2j-FK-GyH" id="icH-jL-7th"/>
                 <outlet property="contactTitleTextLabel" destination="pC7-l2-Sjg" id="WSB-9b-uD4"/>
+                <outlet property="sectionShadowView" destination="B9G-3u-IT5" id="nzp-hg-6be"/>
                 <outlet property="shhadowImageView" destination="Srh-c6-OGa" id="MnI-27-Bch"/>
                 <outlet property="topBaseViewConstraint" destination="AGE-4h-HeO" id="X9o-sS-nMJ"/>
-                <outlet property="topShadowView" destination="B9G-3u-IT5" id="Gia-6b-9VN"/>
             </connections>
             <point key="canvasLocation" x="260.86956521739131" y="128.57142857142856"/>
         </tableViewCell>
