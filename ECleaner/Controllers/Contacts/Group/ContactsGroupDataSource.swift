@@ -18,7 +18,7 @@ class ContactsGroupDataSource: NSObject {
 
 extension ContactsGroupDataSource {
     
-    private func cellConfigure(cell: ContactTableViewCell, at indexPath: IndexPath) {
+    private func cellConfigure(cell: GroupContactTableViewCell, at indexPath: IndexPath) {
         
         guard let contact = contactGroupListViewModel.getContact(at: indexPath) else { return }
         cell.updateContactCell(contact)
@@ -37,8 +37,10 @@ extension ContactsGroupDataSource: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: C.identifiers.cells.contactCell, for: indexPath) as! ContactTableViewCell
-        
+        let cell = tableView.dequeueReusableCell(withIdentifier: C.identifiers.cells.contactCell, for: indexPath) as! GroupContactTableViewCell
+
+        let numbersOfRowsInSection = tableView.numberOfRows(inSection: indexPath.section)
+        self.setupShadowPath(in: cell, at: indexPath, numberOFRowsInSection: numbersOfRowsInSection)
         self.cellConfigure(cell: cell, at: indexPath)
         return cell
     }
@@ -57,34 +59,40 @@ extension ContactsGroupDataSource: UITableViewDelegate, UITableViewDataSource {
         let numbersOfRowsInSection = tableView.numberOfRows(inSection: indexPath.section)
         
         if indexPath.row == 0 {
-            return 100
+            return 130
         } else if indexPath.row + 1 < numbersOfRowsInSection {
-            return 80
+            return UITableView.automaticDimension
         } else if indexPath.row + 1 == numbersOfRowsInSection {
-            return 100
+            return 130
         }
-        
-        return 80
+        return UITableView.automaticDimension
     }
     
-
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        guard let groupCell = cell as? ContactTableViewCell else { return }
+        guard let cell = cell as? GroupContactTableViewCell else { return }
         
-        let numbersOfRows = tableView.numberOfRows(inSection: indexPath.section)
+        let numbersOfRowsInSection = tableView.numberOfRows(inSection: indexPath.section)
+        self.setupShadowPath(in: cell, at: indexPath, numberOFRowsInSection: numbersOfRowsInSection)
+    }
+}
+
+extension ContactsGroupDataSource {
+    
+    private func setupShadowPath(in cell: GroupContactTableViewCell, at indexPath: IndexPath, numberOFRowsInSection: Int) {
         
-        
-        if numbersOfRows <= 1 { return }
+        if numberOFRowsInSection <= 1 { return }
         
         if indexPath.row == 0 {
-            groupCell.showTopInset()
-            groupCell.topShadowView.sectionColorsPosition = .top
-            
-        } else if indexPath.row + 1 < numbersOfRows {
-            groupCell.topShadowView.sectionColorsPosition = .central
-        } else if indexPath.row + 1 == numbersOfRows {
-            groupCell.showBottomInset()
-            groupCell.topShadowView.sectionColorsPosition = .bottom
+            cell.showTopInset()
+            cell.topShadowView.sectionColorsPosition = .top
+            cell.setupForCustomSeparator(true)
+        } else if indexPath.row + 1 < numberOFRowsInSection {
+            cell.topShadowView.sectionColorsPosition = .central
+            cell.setupForCustomSeparator(true)
+        } else if indexPath.row + 1 == numberOFRowsInSection {
+            cell.showBottomInset()
+            cell.topShadowView.sectionColorsPosition = .bottom
+            cell.setupForCustomSeparator(false)
         }
     }
 }

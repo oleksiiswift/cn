@@ -44,6 +44,7 @@ extension CALayer {
         let layerMask = CAShapeLayer()
         layerMask.path = path.cgPath
         layerMask.fillColor = backgroundColor.cgColor
+        layerMask.name = "corners"
         masksToBounds = false
         shadowColor = shadow.cgColor
         shadowOpacity = alpha
@@ -51,6 +52,22 @@ extension CALayer {
         shadowRadius = blur / 2.0
         shadowPath = path.cgPath
         self.addSublayer(layerMask)
+    }
+    
+    func removeSulayers() {
+        if let subls = sublayers  {
+            
+        
+        for sublayer in subls {
+
+            if sublayer.name == "corners" {
+                debugPrint("contains and remove")
+                sublayer.removeFromSuperlayer()
+            } else {
+                debugPrint("")
+            }
+        }
+        }
     }
 }
 

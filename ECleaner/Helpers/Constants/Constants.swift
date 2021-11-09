@@ -131,6 +131,7 @@ class Constants {
             static let carouselCell = "CarouselCollectionViewCell"
             static let cleanInfoCell = "DeepCleanInfoTableViewCell"
             static let contactCell = "ContactTableViewCell"
+            static let groupContactCell = "GroupContactTableViewCell"
         }
         
         struct views {
@@ -145,7 +146,7 @@ class Constants {
             static let photoSimpleCell = "PhotoCollectionViewCell"
             static let dropDownCell = "DropDownMenuTableViewCell"
             static let cleanInfoCell = "DeepCleanInfoTableViewCell"
-            static let contactCell = "ContactTableViewCell"
+            static let contactCell = "GroupContactTableViewCell"
             /// `views`
             static let groupHeader = "GroupedAssetsReusableHeaderView"
             static let groupFooter = "GroupedAssetsReusableFooterView"

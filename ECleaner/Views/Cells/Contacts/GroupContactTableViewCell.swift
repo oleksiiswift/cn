@@ -1,5 +1,5 @@
 //
-//  ContactTableViewCell.swift
+//  GroupContactTableViewCell.swift
 //  ECleaner
 //
 //  Created by alexey sorochan on 29.10.2021.
@@ -8,21 +8,22 @@
 import UIKit
 import Contacts
 
-class ContactTableViewCell: UITableViewCell {
+class GroupContactTableViewCell: UITableViewCell {
     
     @IBOutlet weak var topShadowView: SectionShadowView!
-    
-    @IBOutlet weak var baseView: UIView!
     @IBOutlet weak var shhadowImageView: ShadowRoundedView!
     
+    @IBOutlet weak var baseView: UIView!
     @IBOutlet weak var contactTitleTextLabel: UILabel!
-    
     @IBOutlet weak var contactSubtitleTextLabel: UILabel!
-    @IBOutlet weak var rightShevronImageView: UIImageView!
     
     @IBOutlet weak var topBaseViewConstraint: NSLayoutConstraint!
-    
     @IBOutlet weak var bottomBaseViewConstraint: NSLayoutConstraint!
+    
+    private var customSeparator = UIView()
+    private let helperSeparatorView = UIView()
+    
+
     
     private var indexPath: IndexPath?
     private var isFirstRowInSection: Bool = false
@@ -34,6 +35,8 @@ class ContactTableViewCell: UITableViewCell {
         contactTitleTextLabel.text = nil
         contactSubtitleTextLabel.text = nil
         shhadowImageView.imageView.image = nil
+
+//        topShadowView.prepareForReuse()
     }
     
 
@@ -47,14 +50,7 @@ class ContactTableViewCell: UITableViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-//        contentView.frame = contentView.frame.inset(by: UIEdgeInsets(top: 0, left: 12, bottom: 0, right: 12))
-        
         shhadowImageView.rounded()
-        
-//        backgroundView = UIView(frame: contentView.frame)
-//        backgroundView?.clipsToBounds = false
-//        backgroundView?.backgroundColor = .clear
-    
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -64,7 +60,7 @@ class ContactTableViewCell: UITableViewCell {
     }
 }
 
-extension ContactTableViewCell {
+extension GroupContactTableViewCell {
     
     public func updateContactCell(_ contact: CNContact) {
         
@@ -87,7 +83,7 @@ extension ContactTableViewCell {
 }
 
 
-extension ContactTableViewCell: Themeble {
+extension GroupContactTableViewCell: Themeble {
 
     private func setupUI() {
         
@@ -95,14 +91,17 @@ extension ContactTableViewCell: Themeble {
         shhadowImageView.rounded()
         contactTitleTextLabel.font = UIFont(font: FontManager.robotoBold, size: 18.0)
         contactSubtitleTextLabel.font = UIFont(font: FontManager.robotoMedium, size: 14.0)
-        rightShevronImageView.image = I.navigationItems.rightShevronBack
     }
     
     func updateColors() {
         topShadowView.backgroundColor = .clear
         baseView.backgroundColor = .clear
+        
         contactTitleTextLabel.textColor = theme.titleTextColor
-        contactSubtitleTextLabel.textColor = theme.subTitleTextColor
+        contactSubtitleTextLabel.textColor = theme.contactsAccentColor
+
+        customSeparator.backgroundColor = theme.separatorMainColor
+        helperSeparatorView.backgroundColor = theme.separatorHelperColor
     }
     
     public func showTopInset() {
@@ -114,14 +113,26 @@ extension ContactTableViewCell: Themeble {
         self.bottomBaseViewConstraint.constant = 20
         self.baseView.layoutIfNeeded()
     }
-}
-
-
-extension UITableView {
-    func lastIndexpath() -> IndexPath {
-        let section = max(numberOfSections - 1, 0)
-        let row = max(numberOfRows(inSection: section) - 1, 0)
-
-        return IndexPath(row: row, section: section)
+    
+    public func setupForCustomSeparator(_ isShow: Bool) {
+        
+        guard isShow else { return }
+        
+        self.baseView.addSubview(customSeparator)
+        customSeparator.translatesAutoresizingMaskIntoConstraints = false
+        
+        customSeparator.leadingAnchor.constraint(equalTo: self.baseView.leadingAnchor, constant: 23).isActive = true
+        customSeparator.trailingAnchor.constraint(equalTo: self.baseView.trailingAnchor, constant: -23).isActive = true
+        customSeparator.heightAnchor.constraint(equalToConstant: 3).isActive = true
+        customSeparator.bottomAnchor.constraint(equalTo: self.baseView.bottomAnchor, constant: 0).isActive = true
+        
+        customSeparator.addSubview(helperSeparatorView)
+        helperSeparatorView.translatesAutoresizingMaskIntoConstraints = false
+        
+        helperSeparatorView.leadingAnchor.constraint(equalTo: customSeparator.leadingAnchor).isActive = true
+        helperSeparatorView.trailingAnchor.constraint(equalTo: customSeparator.trailingAnchor).isActive = true
+        helperSeparatorView.bottomAnchor.constraint(equalTo: customSeparator.bottomAnchor).isActive = true
+        helperSeparatorView.heightAnchor.constraint(equalToConstant: 1.5).isActive = true
     }
 }
+
