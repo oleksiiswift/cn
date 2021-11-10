@@ -32,7 +32,7 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Srh-c6-OGa" customClass="ShadowRoundedView" customModule="ECleaner" customModuleProvider="target">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Srh-c6-OGa" customClass="ReuseShadowRoundedView" customModule="ECleaner" customModuleProvider="target">
                                 <rect key="frame" x="20" y="23.5" width="33" height="33"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <constraints>
@@ -47,13 +47,22 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="AB8-OE-K6K">
+                                <rect key="frame" x="419" y="12" width="25" height="25"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="25" id="DaI-y9-UZo"/>
+                                    <constraint firstAttribute="height" constant="25" id="cJX-60-dyR"/>
+                                </constraints>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="pC7-l2-Sjg" secondAttribute="trailing" constant="20" id="12c-wb-9eA"/>
                             <constraint firstItem="Srh-c6-OGa" firstAttribute="top" secondItem="3X1-ra-xpO" secondAttribute="top" constant="23.5" id="5Nt-oc-bwm"/>
+                            <constraint firstAttribute="trailing" secondItem="AB8-OE-K6K" secondAttribute="trailing" constant="12" id="KrW-JJ-fv7"/>
                             <constraint firstItem="W2j-FK-GyH" firstAttribute="top" secondItem="Srh-c6-OGa" secondAttribute="bottom" constant="20" id="N2a-NR-jHc"/>
                             <constraint firstItem="W2j-FK-GyH" firstAttribute="leading" secondItem="Srh-c6-OGa" secondAttribute="leading" id="PQV-ax-Qci"/>
+                            <constraint firstItem="AB8-OE-K6K" firstAttribute="top" secondItem="3X1-ra-xpO" secondAttribute="top" constant="12" id="cup-R7-SJ4"/>
                             <constraint firstItem="Srh-c6-OGa" firstAttribute="leading" secondItem="3X1-ra-xpO" secondAttribute="leading" constant="20" id="h8l-nF-hY2"/>
                             <constraint firstItem="pC7-l2-Sjg" firstAttribute="centerY" secondItem="Srh-c6-OGa" secondAttribute="centerY" id="lub-DE-Lim"/>
                             <constraint firstAttribute="height" constant="130" id="ubR-9p-gxC"/>
@@ -82,7 +91,8 @@
                 <outlet property="contactSubtitleTextLabel" destination="W2j-FK-GyH" id="icH-jL-7th"/>
                 <outlet property="contactTitleTextLabel" destination="pC7-l2-Sjg" id="WSB-9b-uD4"/>
                 <outlet property="sectionShadowView" destination="B9G-3u-IT5" id="nzp-hg-6be"/>
-                <outlet property="shhadowImageView" destination="Srh-c6-OGa" id="MnI-27-Bch"/>
+                <outlet property="selectableContactImageView" destination="AB8-OE-K6K" id="Nyu-Jt-NCZ"/>
+                <outlet property="shadowRoundedReuseView" destination="Srh-c6-OGa" id="giU-8I-gom"/>
                 <outlet property="topBaseViewConstraint" destination="AGE-4h-HeO" id="X9o-sS-nMJ"/>
             </connections>
             <point key="canvasLocation" x="260.86956521739131" y="128.57142857142856"/>

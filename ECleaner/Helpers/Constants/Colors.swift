@@ -48,6 +48,15 @@ enum Theme: Int {
                 return UIColor().colorFromHexString("F5F9FF")
         }
     }
+    
+    var primaryButtonBackgroundColor: UIColor {
+        switch self {
+            case .light:
+                return UIColor().colorFromHexString("E9EFF2")
+            case .dark :
+                return UIColor().colorFromHexString("E9EFF2")
+        }
+    }
 
     
 //    MARK: - shadow colors -
@@ -69,6 +78,37 @@ enum Theme: Int {
                 return UIColor().colorFromHexString("D8DFEB")
         }
     }
+    
+    var bottomShadowColor: UIColor {
+        switch self {
+            case .light:
+                return UIColor().colorFromHexString("A4B5C4")
+            case .dark :
+                return UIColor().colorFromHexString("A4B5C4")
+        }
+    }
+    
+    var primaryButtonTopShadowColor: UIColor {
+        switch self {
+            case .light:
+                return UIColor().colorFromHexString("FFFFFF")
+            case .dark :
+                return UIColor().colorFromHexString("FFFFFF")
+        }
+    }
+    
+    var primaryButtonBottomShadowColor: UIColor {
+        switch self {
+            case .light:
+                return UIColor().colorFromHexString("D1DAE8")
+            case .dark :
+                return UIColor().colorFromHexString("D1DAE8")
+        }
+    }
+
+    
+    
+    
     
 //      MARK: - accent colors
         
@@ -93,12 +133,21 @@ enum Theme: Int {
         }
     }
     
+    var sectionTitleTextColor: UIColor {
+        
+        switch self {
+            case .light:
+                return UIColor().colorFromHexString("8F97A7")
+            case .dark:
+                return UIColor().colorFromHexString("8F97A7")
+        }
+    }
     
     
     
     
     
-    
+    #warning("check colors") 
 // MARK: - `neeed! Check colors for new aftet this linge!!!!!
   
     var backgroundColor: UIColor {

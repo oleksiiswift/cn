@@ -137,6 +137,7 @@
 		97238A0F2689EE2700C523DC /* CustomDoneHud.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97238A0E2689EE2700C523DC /* CustomDoneHud.swift */; };
 		97238A112689EECE00C523DC /* UIView+BlurView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97238A102689EECE00C523DC /* UIView+BlurView.swift */; };
 		97238A132689EF6E00C523DC /* Presenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97238A122689EF6E00C523DC /* Presenter.swift */; };
+		975617D8273BC32A00E07A62 /* ReuseShadowRoundedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 975617D7273BC32A00E07A62 /* ReuseShadowRoundedView.swift */; };
 		975AF43127281DF700744E3B /* ContactListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 975AF43027281DF700744E3B /* ContactListViewModel.swift */; };
 		975AF4352728210A00744E3B /* DynamicListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 975AF4342728210A00744E3B /* DynamicListener.swift */; };
 		975AF4372728279900744E3B /* String+Numeric.swift in Sources */ = {isa = PBXBuildFile; fileRef = 975AF4362728279900744E3B /* String+Numeric.swift */; };
@@ -170,6 +171,10 @@
 		97D0BABD2680AD6E0067A3A6 /* String+NSDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97D0BABC2680AD6E0067A3A6 /* String+NSDate.swift */; };
 		97DAB62E272C164A00F05CEA /* GroupContactTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97DAB62C272C164A00F05CEA /* GroupContactTableViewCell.swift */; };
 		97DAB62F272C164A00F05CEA /* GroupContactTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 97DAB62D272C164A00F05CEA /* GroupContactTableViewCell.xib */; };
+		97DC39AA273BE9C800D487BE /* GroupedContactsHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97DC39A9273BE9C800D487BE /* GroupedContactsHeaderView.swift */; };
+		97DC39AC273BE9D300D487BE /* GroupedContactsHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 97DC39AB273BE9D300D487BE /* GroupedContactsHeaderView.xib */; };
+		97DC39AE273C003300D487BE /* PrimaryShadowButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97DC39AD273C003300D487BE /* PrimaryShadowButton.swift */; };
+		97DC39B0273C08ED00D487BE /* PrimaryShadowImageWithTextButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97DC39AF273C08ED00D487BE /* PrimaryShadowImageWithTextButton.swift */; };
 		97E54A86268BB16A00C7FD54 /* SNCollectionViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97E54A85268BB16A00C7FD54 /* SNCollectionViewLayout.swift */; };
 		97FC789226888120000D7F26 /* Date+CurrentDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97FC789126888120000D7F26 /* Date+CurrentDate.swift */; };
 		97FC7894268882C9000D7F26 /* Date+DateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97FC7893268882C9000D7F26 /* Date+DateFormatter.swift */; };
@@ -315,6 +320,7 @@
 		97238A0E2689EE2700C523DC /* CustomDoneHud.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomDoneHud.swift; sourceTree = "<group>"; };
 		97238A102689EECE00C523DC /* UIView+BlurView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+BlurView.swift"; sourceTree = "<group>"; };
 		97238A122689EF6E00C523DC /* Presenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Presenter.swift; sourceTree = "<group>"; };
+		975617D7273BC32A00E07A62 /* ReuseShadowRoundedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReuseShadowRoundedView.swift; sourceTree = "<group>"; };
 		975AF43027281DF700744E3B /* ContactListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactListViewModel.swift; sourceTree = "<group>"; };
 		975AF4342728210A00744E3B /* DynamicListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicListener.swift; sourceTree = "<group>"; };
 		975AF4362728279900744E3B /* String+Numeric.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Numeric.swift"; sourceTree = "<group>"; };
@@ -348,6 +354,10 @@
 		97D0BABC2680AD6E0067A3A6 /* String+NSDate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+NSDate.swift"; sourceTree = "<group>"; };
 		97DAB62C272C164A00F05CEA /* GroupContactTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupContactTableViewCell.swift; sourceTree = "<group>"; };
 		97DAB62D272C164A00F05CEA /* GroupContactTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GroupContactTableViewCell.xib; sourceTree = "<group>"; };
+		97DC39A9273BE9C800D487BE /* GroupedContactsHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupedContactsHeaderView.swift; sourceTree = "<group>"; };
+		97DC39AB273BE9D300D487BE /* GroupedContactsHeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GroupedContactsHeaderView.xib; sourceTree = "<group>"; };
+		97DC39AD273C003300D487BE /* PrimaryShadowButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimaryShadowButton.swift; sourceTree = "<group>"; };
+		97DC39AF273C08ED00D487BE /* PrimaryShadowImageWithTextButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimaryShadowImageWithTextButton.swift; sourceTree = "<group>"; };
 		97E54A85268BB16A00C7FD54 /* SNCollectionViewLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SNCollectionViewLayout.swift; sourceTree = "<group>"; };
 		97FC789126888120000D7F26 /* Date+CurrentDate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+CurrentDate.swift"; sourceTree = "<group>"; };
 		97FC7893268882C9000D7F26 /* Date+DateFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+DateFormatter.swift"; sourceTree = "<group>"; };
@@ -438,6 +448,7 @@
 				04467CE5270DA3B200DBBB39 /* DateSelectebleView.xib */,
 				04649B30268C507F00336FE4 /* GroupedAssetsReusableHeaderView.xib */,
 				04649B34268C52B100336FE4 /* GroupedAssetsReusableFooterView.xib */,
+				97DC39AB273BE9D300D487BE /* GroupedContactsHeaderView.xib */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -447,6 +458,7 @@
 			children = (
 				04649B33268C52B100336FE4 /* GroupedAssetsReusableFooterView.swift */,
 				04649B2F268C507F00336FE4 /* GroupedAssetsReusableHeaderView.swift */,
+				97DC39A9273BE9C800D487BE /* GroupedContactsHeaderView.swift */,
 			);
 			path = HeadersFootes;
 			sourceTree = "<group>";
@@ -788,6 +800,7 @@
 				04649B38268C626C00336FE4 /* HeadersFootes */,
 				9776F57727359362009D806A /* Carousel */,
 				9776F5822735949C009D806A /* ShadowView */,
+				97DC39B1273C091C00D487BE /* ShadowButtons */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1054,6 +1067,7 @@
 				9776F57D27359406009D806A /* ShadowRoundedView.swift */,
 				9776F5832735953A009D806A /* ShadowView.swift */,
 				97CB351027395802005DA881 /* SectionShadowView.swift */,
+				975617D7273BC32A00E07A62 /* ReuseShadowRoundedView.swift */,
 			);
 			path = ShadowView;
 			sourceTree = "<group>";
@@ -1106,6 +1120,15 @@
 				97CB351D273A9746005DA881 /* TableView+IndexPath.swift */,
 			);
 			path = TableView;
+			sourceTree = "<group>";
+		};
+		97DC39B1273C091C00D487BE /* ShadowButtons */ = {
+			isa = PBXGroup;
+			children = (
+				97DC39AD273C003300D487BE /* PrimaryShadowButton.swift */,
+				97DC39AF273C08ED00D487BE /* PrimaryShadowImageWithTextButton.swift */,
+			);
+			path = ShadowButtons;
 			sourceTree = "<group>";
 		};
 		97E54A892690A9A100C7FD54 /* UICollectionView */ = {
@@ -1257,6 +1280,7 @@
 				97DAB62F272C164A00F05CEA /* GroupContactTableViewCell.xib in Resources */,
 				97CB3517273A9129005DA881 /* ContactTableViewCell.xib in Resources */,
 				044282022693034600B6B47C /* DropDownMenuTableViewCell.xib in Resources */,
+				97DC39AC273BE9D300D487BE /* GroupedContactsHeaderView.xib in Resources */,
 				04649B32268C507F00336FE4 /* GroupedAssetsReusableHeaderView.xib in Resources */,
 				04467CE2270D9B1200DBBB39 /* DatePicker.storyboard in Resources */,
 				97FC78A22688E5E8000D7F26 /* PhotoCollectionViewCell.xib in Resources */,
@@ -1334,12 +1358,14 @@
 				0405AA5B269D9BD6004AC07A /* PreviewAVController.swift in Sources */,
 				97CB3513273965BD005DA881 /* CAlayer+selectedCorners.swift in Sources */,
 				049CC23426833D320002F988 /* UIView+Radius.swift in Sources */,
+				97DC39AA273BE9C800D487BE /* GroupedContactsHeaderView.swift in Sources */,
 				0447A68B26B2A3C30074919B /* OperationPhotoProcessingQueuer.swift in Sources */,
 				04467CE4270DA3A000DBBB39 /* DateSelectebleView.swift in Sources */,
 				4F56073B27205AF300CA19E9 /* Property.swift in Sources */,
 				048D65C726B13EA3004F0ADC /* DeepCleanNotificationManager.swift in Sources */,
 				04E58373267A4A2000EDC3A3 /* UIDevice+Enviroment.swift in Sources */,
 				9776F5792735937E009D806A /* InnerShadowLayer.swift in Sources */,
+				975617D8273BC32A00E07A62 /* ReuseShadowRoundedView.swift in Sources */,
 				975AF43127281DF700744E3B /* ContactListViewModel.swift in Sources */,
 				4F56074927205AF300CA19E9 /* Style.swift in Sources */,
 				044281FC2692F95A00B6B47C /* DropDownMenuViewController.swift in Sources */,
@@ -1384,6 +1410,7 @@
 				04649B35268C52B100336FE4 /* GroupedAssetsReusableFooterView.swift in Sources */,
 				4FE56A9B27299A11006CD946 /* DeepCleanInfoView.swift in Sources */,
 				049CC217268221DE0002F988 /* MainViewController.swift in Sources */,
+				97DC39B0273C08ED00D487BE /* PrimaryShadowImageWithTextButton.swift in Sources */,
 				4F56073A27205AF300CA19E9 /* GradientCircularProgress.swift in Sources */,
 				4F56073D27205AF300CA19E9 /* ProgressAtRatioView.swift in Sources */,
 				4F56074127205AF300CA19E9 /* Background.swift in Sources */,
@@ -1430,6 +1457,7 @@
 				97CC2F3A2683D00F0072EF8C /* UpdateContentDataBaseListener.swift in Sources */,
 				9776F57E27359406009D806A /* ShadowRoundedView.swift in Sources */,
 				047DE61C26AAD5F000733CD5 /* DeepCleanManager.swift in Sources */,
+				97DC39AE273C003300D487BE /* PrimaryShadowButton.swift in Sources */,
 				04CF00002685F0C3000CA850 /* ContentTypeTableViewCell.swift in Sources */,
 				4F56074727205AF300CA19E9 /* BlueDarkStyle.swift in Sources */,
 				049CC221268314690002F988 /* NotificationManager.swift in Sources */,

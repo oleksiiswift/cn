@@ -18,9 +18,7 @@ class SectionShadowView: UIView {
     var topSideShadowView = UIView()
     var sidSideShadowView = UIView()
     var bottomSideShadowView = UIView()
-    
-    var setupShadowDone: Bool = false
-    
+
     override func layoutSubviews() {
         super.layoutSubviews()
         
@@ -79,7 +77,6 @@ class SectionShadowView: UIView {
 
                 debugPrint("none")
         }
-        setupShadowDone = true
     }
     
     public func prepareForReuse() {

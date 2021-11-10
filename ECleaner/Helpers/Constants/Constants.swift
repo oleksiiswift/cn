@@ -137,6 +137,7 @@ class Constants {
         struct views {
             static let groupHeaderView = "GroupedAssetsReusableHeaderView"
             static let groupFooterView = "GroupedAssetsReusableFooterView"
+            static let contactGroupHeader = "GroupedContactsHeaderView"
         }
         
         struct xibs {
@@ -150,6 +151,7 @@ class Constants {
             /// `views`
             static let groupHeader = "GroupedAssetsReusableHeaderView"
             static let groupFooter = "GroupedAssetsReusableFooterView"
+            static let contactGroupHeader = "GroupedContactsHeaderView"
             
             static let carouselView = "CarouselItemView"
             

@@ -19,7 +19,7 @@
                 <autoresizingMask key="autoresizingMask"/>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
-            <point key="canvasLocation" x="132" y="132"/>
+            <point key="canvasLocation" x="209" y="221"/>
         </tableViewCell>
         <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="90" id="5C8-dK-CKW" customClass="GroupContactTableViewCell" customModule="ECleaner" customModuleProvider="target">
             <rect key="frame" x="0.0" y="0.0" width="486" height="90"/>

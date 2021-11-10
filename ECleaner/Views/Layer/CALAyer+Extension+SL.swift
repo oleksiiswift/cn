@@ -35,7 +35,26 @@ extension CALayer {
     }
 }
  
+//  MARK: - main shadow setups -
+
 extension CALayer {
+    
+    func setShadow(color: UIColor = .black, alpha: Float = 0.5, x: CGFloat = 0, y: CGFloat = 2, blur: CGFloat = 4, spread: CGFloat = 0) {
+        
+        masksToBounds = false
+        shadowColor = color.cgColor
+        shadowOpacity = alpha
+        shadowOffset = CGSize(width: x, height: y)
+        shadowRadius = blur / 2.0
+        
+        if spread == 0 {
+            shadowPath = nil
+        } else {
+            let dx = -spread
+            let rect = bounds.insetBy(dx: dx, dy: dx)
+            shadowPath = UIBezierPath(rect: rect).cgPath
+        }
+    }
     
     func setShadowAndCustomCorners(backgroundColor: UIColor = .black, shadow: UIColor = .black, alpha: Float = 0.5, x: CGFloat = 0, y: CGFloat = 2, blur: CGFloat, corners: UIRectCorner, radius: CGFloat = 12) {
     
@@ -53,6 +72,18 @@ extension CALayer {
         self.addSublayer(layerMask)
     }
     
+    func setRoundedShadow(with color: UIColor, size offset: CGSize, alpha opacity: Float, radius: CGFloat) {
+        
+        name = "rounded"
+        masksToBounds = false
+        cornerRadius = frame.height / 2
+        shadowColor = color.cgColor
+        shadowPath = UIBezierPath(roundedRect: self.bounds, cornerRadius: cornerRadius).cgPath
+        shadowOffset = offset
+        shadowOpacity = opacity
+        shadowRadius = radius
+    }
+    
     func removeCornersSublayers() {
         
         guard let sublayers = sublayers else { return }
@@ -63,6 +94,15 @@ extension CALayer {
             }
         }
     }
+    
+    func removeRoundedSublayers() {
+        
+        guard let sublayers = sublayers else { return }
+        
+        for sublayer in sublayers {
+            if sublayer.name == "rounded" {
+                sublayer.removeFromSuperlayer()
+            }
+        }
+    }
 }
-
-

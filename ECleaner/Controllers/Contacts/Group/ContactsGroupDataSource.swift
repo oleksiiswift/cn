@@ -15,7 +15,7 @@ enum RowPosition {
 }
 
 class ContactsGroupDataSource: NSObject {
-    
+
     public var contactGroupListViewModel: ContactGroupListViewModel
 
     init(viewModel: ContactGroupListViewModel) {
@@ -29,6 +29,10 @@ extension ContactsGroupDataSource {
         
         guard let contact = contactGroupListViewModel.getContact(at: indexPath) else { return }
         cell.updateContactCell(contact, rowPosition: position)
+    }
+    
+    private func configureHeader(view: GroupedContactsHeaderView, at section: Int) {
+        view.configure("+380 (UKRAINE)", index: section)
     }
 }
 
@@ -45,20 +49,25 @@ extension ContactsGroupDataSource: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: C.identifiers.cells.contactCell, for: indexPath) as! GroupContactTableViewCell
-
+        
         let rowPosition = self.checkIndexPosition(from: indexPath, numberOfRows: tableView.numberOfRows(inSection: indexPath.section))
         
         self.cellConfigure(cell: cell, at: indexPath, with: rowPosition)
+        
         return cell
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let view = UIView(frame: CGRect(x: 0, y: 0, width: U.screenWidth, height: 60))
+        
+        let view = tableView.dequeueReusableHeaderFooterView(withIdentifier: C.identifiers.views.contactGroupHeader) as! GroupedContactsHeaderView
+        view.delegate = self
+        configureHeader(view: view, at: section)
+        
         return view
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 60
+        return 40
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -94,3 +103,19 @@ extension ContactsGroupDataSource {
     }
 }
 
+extension ContactsGroupDataSource: GroupedHeadersButtonDelegate {
+    
+    func didTapDeleteGroupActionButton(_ tag: Int?) {
+        
+        guard let indexOfSection = tag else { return }
+        
+        debugPrint("delete section at: \(indexOfSection)")
+    }
+    
+    func didTapMergeGroupActionButton(_ tag: Int?) {
+        
+        guard let indexOfSection = tag else { return }
+        
+        debugPrint("merge section at: \(indexOfSection)")
+    }
+}

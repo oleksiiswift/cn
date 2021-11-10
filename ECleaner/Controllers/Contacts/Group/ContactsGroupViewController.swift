@@ -60,17 +60,19 @@ extension ContactsGroupViewController: Themeble {
     }
     
     func setupTableView() {
-        
+        tableView.register(UINib(nibName: C.identifiers.xibs.contactGroupHeader, bundle: nil), forHeaderFooterViewReuseIdentifier: C.identifiers.views.contactGroupHeader)
         tableView.register(UINib(nibName: C.identifiers.xibs.contactCell, bundle: nil), forCellReuseIdentifier: C.identifiers.cells.contactCell)
         tableView.delegate = contactGroupListDataSource
         tableView.dataSource = contactGroupListDataSource
         tableView.separatorStyle = .none
         tableView.backgroundColor = theme.backgroundColor
+        tableView.contentInset.top = 20
     }
     
     private func setupObserversAndDelegate() {
         
         customNavBar.delegate = self
+        
     }
     
     func updateColors() {

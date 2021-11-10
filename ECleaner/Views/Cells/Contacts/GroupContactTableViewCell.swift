@@ -11,7 +11,7 @@ import Contacts
 class GroupContactTableViewCell: UITableViewCell {
     
     @IBOutlet weak var sectionShadowView: SectionShadowView!
-    @IBOutlet weak var shhadowImageView: ShadowRoundedView!
+    @IBOutlet weak var shadowRoundedReuseView: ReuseShadowRoundedView!
     
     @IBOutlet weak var baseView: UIView!
     @IBOutlet weak var contactTitleTextLabel: UILabel!
@@ -19,6 +19,8 @@ class GroupContactTableViewCell: UITableViewCell {
     
     @IBOutlet weak var topBaseViewConstraint: NSLayoutConstraint!
     @IBOutlet weak var bottomBaseViewConstraint: NSLayoutConstraint!
+    
+    @IBOutlet weak var selectableContactImageView: UIImageView!
     
     private var customSeparator = UIView()
     private let helperSeparatorView = UIView()
@@ -42,7 +44,6 @@ class GroupContactTableViewCell: UITableViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        shhadowImageView.rounded()
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -56,12 +57,18 @@ extension GroupContactTableViewCell {
     
         self.showCellInset(at: rowPosition)
         self.sectionShadowView.sectionRowPosition = rowPosition
-        
-        if rowPosition != .bottom {
-            self.setupForCustomSeparator()
-        }
-
         self.setupContact(contact)
+        
+        switch rowPosition {
+            case .top:
+                self.setBestContactMerge(isShow: true)
+                self.setupForCustomSeparator()
+            case .middle:
+                self.setBestContactMerge(isShow: false)
+                self.setupForCustomSeparator()
+            default:
+                self.setBestContactMerge(isShow: false)
+        }
     }
     
     private func setupContact(_ contact: CNContact) {
@@ -74,23 +81,25 @@ extension GroupContactTableViewCell {
     
         contactSubtitleTextLabel.text = numbers.joined(separator: numbers.count > 1 ? ", " : "")
     
-        if let imageData = contact.thumbnailImageData {
-            let image = UIImage(data: imageData)
-            shhadowImageView.imageView.image = image
-            
+        if let imageData = contact.thumbnailImageData, let image = UIImage(data: imageData) {
+            shadowRoundedReuseView.setImage(image)
         } else {
-            shhadowImageView.imageView.image = I.mainMenuThumbItems.contacts
+            shadowRoundedReuseView.setImage(I.mainMenuThumbItems.contacts)
         }
     }
+    
+    private func setBestContactMerge(isShow: Bool) {
+        
+        selectableContactImageView.image = isShow ? I.personalElementsItems.activeCheckmark : nil
+        selectableContactImageView.isHidden = !isShow
+    }
 }
-
 
 extension GroupContactTableViewCell: Themeble {
 
     private func setupUI() {
         
         selectionStyle = .none
-        shhadowImageView.rounded()
         contactTitleTextLabel.font = UIFont(font: FontManager.robotoBold, size: 18.0)
         contactSubtitleTextLabel.font = UIFont(font: FontManager.robotoMedium, size: 14.0)
     }
@@ -105,6 +114,8 @@ extension GroupContactTableViewCell: Themeble {
 
         customSeparator.backgroundColor = theme.separatorMainColor
         helperSeparatorView.backgroundColor = theme.separatorHelperColor
+        
+        shadowRoundedReuseView.setShadowColor(for: theme.topShadowColor, and: theme.bottomShadowColor)
     }
     
     /// `inset` for first and last cell in section for extra shadow
@@ -141,9 +152,11 @@ extension GroupContactTableViewCell: Themeble {
         
         contactTitleTextLabel.text = nil
         contactSubtitleTextLabel.text = nil
-        shhadowImageView.imageView.image = nil
+        selectableContactImageView.image = nil
         
+        shadowRoundedReuseView.setImage()
         sectionShadowView.prepareForReuse()
+        
         customSeparator.removeFromSuperview()
         helperSeparatorView.removeFromSuperview()
         
