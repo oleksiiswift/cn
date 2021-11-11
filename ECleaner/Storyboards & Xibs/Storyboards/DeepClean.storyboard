@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19158" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="dgf-k2-Ase">
-    <device id="retina6_1" orientation="portrait" appearance="light"/>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19162" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="dgf-k2-Ase">
     <dependencies>
-        <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19141"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19144"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -14,28 +12,28 @@
             <objects>
                 <viewController storyboardIdentifier="DeepCleaningViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="dgf-k2-Ase" customClass="DeepCleaningViewController" customModule="ECleaner" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="NYr-Eo-MdD">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="AfT-1t-egB" customClass="CustomNavigationBar" customModule="ECleaner" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="44" width="414" height="80"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="AfT-1t-egB" customClass="StartingNavigationBar" customModule="ECleaner" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="80"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="80" id="oqP-Gv-7aC"/>
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6Ng-o0-PeD">
-                                <rect key="frame" x="0.0" y="124" width="414" height="84"/>
+                                <rect key="frame" x="0.0" y="80" width="600" height="84"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="84" id="NfA-T9-K4L"/>
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="aPq-V3-ZQn">
-                                <rect key="frame" x="0.0" y="208" width="414" height="578"/>
+                                <rect key="frame" x="0.0" y="164" width="600" height="326"/>
                                 <subviews>
                                     <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" translatesAutoresizingMaskIntoConstraints="NO" id="Shn-gL-5Xd">
-                                        <rect key="frame" x="0.0" y="0.0" width="414" height="578"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="600" height="326"/>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                     </tableView>
                                 </subviews>
@@ -48,20 +46,20 @@
                                 </constraints>
                             </view>
                             <scrollView hidden="YES" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" translatesAutoresizingMaskIntoConstraints="NO" id="DCH-Yg-0Z0">
-                                <rect key="frame" x="0.0" y="124" width="414" height="772"/>
+                                <rect key="frame" x="0.0" y="80" width="600" height="520"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="O8j-GD-tDd">
-                                        <rect key="frame" x="0.0" y="0.0" width="414" height="772"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="600" height="520"/>
                                         <subviews>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3bJ-0g-6AS" customClass="DeepCleanBackgroundShadowView" customModule="ECleaner" customModuleProvider="target">
-                                                <rect key="frame" x="20" y="20" width="374" height="190"/>
+                                                <rect key="frame" x="20" y="20" width="560" height="190"/>
                                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="190" id="hAC-mp-a1x"/>
                                                 </constraints>
                                             </view>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="NLZ-jm-cJt" customClass="DeepCleanInfoView" customModule="ECleaner" customModuleProvider="target">
-                                                <rect key="frame" x="20" y="20" width="374" height="190"/>
+                                                <rect key="frame" x="20" y="20" width="560" height="190"/>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             </view>
                                         </subviews>
@@ -90,10 +88,10 @@
                                 <viewLayoutGuide key="frameLayoutGuide" id="GN5-0x-TtB"/>
                             </scrollView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Wky-jb-hpF">
-                                <rect key="frame" x="0.0" y="786" width="414" height="110"/>
+                                <rect key="frame" x="0.0" y="490" width="600" height="110"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xBL-TH-P3k">
-                                        <rect key="frame" x="16" y="16" width="382" height="60"/>
+                                        <rect key="frame" x="16" y="16" width="568" height="60"/>
                                         <subviews>
                                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="deepClean" translatesAutoresizingMaskIntoConstraints="NO" id="dKt-gy-yaJ">
                                                 <rect key="frame" x="50" y="17" width="26" height="26"/>
@@ -102,13 +100,13 @@
                                                 </constraints>
                                             </imageView>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nkh-KK-TIW">
-                                                <rect key="frame" x="170.5" y="20" width="41.5" height="20.5"/>
+                                                <rect key="frame" x="263.5" y="20" width="41.5" height="20.5"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SbI-Cu-zia">
-                                                <rect key="frame" x="0.0" y="0.0" width="382" height="60"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="568" height="60"/>
                                                 <connections>
                                                     <action selector="didTapProcessingActionButton:" destination="dgf-k2-Ase" eventType="touchUpInside" id="ZZC-qg-xN9"/>
                                                 </connections>

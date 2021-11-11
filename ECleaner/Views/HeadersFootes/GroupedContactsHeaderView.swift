@@ -57,7 +57,7 @@ class GroupedContactsHeaderView: UITableViewHeaderFooterView {
     
     private func updadeColors() {
         
-        mergeButton.setTitleColor(theme.contactsAccentColor, for: .normal)
+        mergeButton.setTitleColor(theme.contactsTintColor, for: .normal)
         headerTitleTextLabel.textColor = theme.sectionTitleTextColor
     }
     

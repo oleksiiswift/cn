@@ -10,14 +10,15 @@ import Contacts
 
 class ContactsGroupViewController: UIViewController {
     
-    @IBOutlet weak var customNavBar: CustomNavigationBar!
+    @IBOutlet weak var navigationBar: NavigationBar!
     @IBOutlet weak var tableView: UITableView!
 
     public var contactGroup: [ContactsGroup] = []
     public var contactGroupListViewModel: ContactGroupListViewModel!
     public var contactGroupListDataSource: ContactsGroupDataSource!
     
-    public var contentType: MediaContentType = .none
+    public var mediaType: MediaContentType = .none
+    public var contentType: ContentTye
     
     private var contactsManager = ContactsManager.shared
     
@@ -50,7 +51,7 @@ extension ContactsGroupViewController: Themeble {
     func setupNavigation() {
         
         self.navigationController?.navigationBar.isHidden = true
-        customNavBar.setUpNavigation(title: contentType.navTitle, leftImage: I.navigationItems.back, rightImage: I.navigationItems.back)
+        navigationBar.setupNavigation(title: contentType.navTitle, leftBarButtonImage: I.navigationItems.back, rightBarButtonImage: I.navigationItems.burgerDots, contenType: contentType)
     }
     
     func setupViewModel(contacts: [ContactsGroup]) {
@@ -71,31 +72,24 @@ extension ContactsGroupViewController: Themeble {
     
     private func setupObserversAndDelegate() {
         
-        customNavBar.delegate = self
-        
+        navigationBar.delegate = self
     }
     
     func updateColors() {
         
         self.view.backgroundColor = theme.backgroundColor
-        self.customNavBar.backgroundColor = theme.backgroundColor
     }
 }
 
-extension ContactsGroupViewController: CustomNavigationBarDelegate {
-
-
-    func didTapLeftBarButton(_sender: UIButton) {
+extension ContactsGroupViewController: NavigationBarDelegate {
+    
+    
+    func didTapLeftBarButton(_ sender: UIButton) {
         self.navigationController?.popViewController(animated: true)
     }
     
-    func didTapRightBarButton(_sender: UIButton) {
+    func didTapRightBarButton(_ sender: UIButton) {
         
-        contactGroup.forEach { group in
-            self.contactsManager.smartMergeContacts(in: group) { deletingContacts in
-                self.contactsManager.deleteContacts(deletingContacts)
-            }
-        }
     }
 }
 

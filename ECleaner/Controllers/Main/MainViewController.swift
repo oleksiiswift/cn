@@ -12,7 +12,7 @@ import Contacts
 
 class MainViewController: UIViewController {
   
-    @IBOutlet weak var customNavBar: CustomNavigationBar!
+    @IBOutlet weak var customNavBar: StartingNavigationBar!
     
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var circleTotlaSpaceView: CircleProgressView!

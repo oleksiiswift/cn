@@ -12,7 +12,7 @@ import Contacts
 
 class MediaContentViewController: UIViewController {
   
-    @IBOutlet weak var customNavBar: CustomNavigationBar!
+    @IBOutlet weak var customNavBar: StartingNavigationBar!
 
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var dateSelectContainerView: UIView!
@@ -532,7 +532,7 @@ extension MediaContentViewController: DateSelectebleViewDelegate {
     }
 }
 
-extension MediaContentViewController: CustomNavigationBarDelegate {
+extension MediaContentViewController: StartingNavigationBarDelegate {
     
     func didTapLeftBarButton(_sender: UIButton) {
         self.navigationController?.popViewController(animated: true)

@@ -110,7 +110,7 @@ extension GroupContactTableViewCell: Themeble {
         baseView.backgroundColor = .clear
         
         contactTitleTextLabel.textColor = theme.titleTextColor
-        contactSubtitleTextLabel.textColor = theme.contactsAccentColor
+        contactSubtitleTextLabel.textColor = theme.contactsTintColor
 
         customSeparator.backgroundColor = theme.separatorMainColor
         helperSeparatorView.backgroundColor = theme.separatorHelperColor

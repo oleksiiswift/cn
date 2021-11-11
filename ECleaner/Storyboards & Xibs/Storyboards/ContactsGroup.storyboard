@@ -17,7 +17,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="oOR-XK-bvK" customClass="CustomNavigationBar" customModule="ECleaner" customModuleProvider="target">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="oOR-XK-bvK" customClass="NavigationBar" customModule="ECleaner" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="44" width="414" height="80"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <constraints>
@@ -43,7 +43,7 @@
                     </view>
                     <navigationItem key="navigationItem" id="zOc-j3-A8e"/>
                     <connections>
-                        <outlet property="customNavBar" destination="oOR-XK-bvK" id="CFV-4o-c63"/>
+                        <outlet property="navigationBar" destination="oOR-XK-bvK" id="gJe-83-qSo"/>
                         <outlet property="tableView" destination="pV1-1m-SKW" id="590-N6-Vs0"/>
                     </connections>
                 </viewController>
