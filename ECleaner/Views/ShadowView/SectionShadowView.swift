@@ -54,7 +54,7 @@ class SectionShadowView: UIView {
                 self.topSideShadowView.layer.setShadowAndCustomCorners(backgroundColor: .clear, shadow: cellShadowColor, alpha: 1, x: 20, y: 6, blur: 10, corners: [], radius: 14)
                 
                 self.insertSubview(topShadowView, at: 0)
-                self.topShadowView.layer.setShadowAndCustomCorners(backgroundColor: .clear, shadow: topShadowColor, alpha: 1, x: -3, y: -2, blur: 10, corners: [], radius: 14)
+                self.topShadowView.layer.setShadowAndCustomCorners(backgroundColor: .clear, shadow: topShadowColor, alpha: 1, x: -3, y: -2, blur: 19, corners: [], radius: 14)
             case .middle:
                 self.layer.setShadowAndCustomCorners(backgroundColor: cellBackgroundColor, shadow: .clear, alpha: 1, x: 6, y: 0, blur: 10, corners: [], radius: 14)
                 
@@ -62,7 +62,7 @@ class SectionShadowView: UIView {
                 self.sidSideShadowView.layer.setShadowAndCustomCorners(backgroundColor: .clear, shadow: cellShadowColor, alpha: 1, x: 20, y: -6, blur: 10, corners: [], radius: 14)
                 
                 self.insertSubview(sideShadowView, at: 0)
-                self.sideShadowView.layer.setShadowAndCustomCorners(backgroundColor: .clear, shadow: topShadowColor, alpha: 1, x: -3, y: -2, blur: 10, corners: [], radius: 14)
+                self.sideShadowView.layer.setShadowAndCustomCorners(backgroundColor: .clear, shadow: topShadowColor, alpha: 1, x: -3, y: -2, blur: 19, corners: [], radius: 14)
             case .bottom:
                 let cellCorners: UIRectCorner = [.bottomLeft, .bottomRight]
                 
@@ -72,7 +72,7 @@ class SectionShadowView: UIView {
                 self.bottomSideShadowView.layer.setShadowAndCustomCorners(backgroundColor: .clear, shadow: cellShadowColor, alpha: 1, x: 20, y: -30, blur: 10, corners: [], radius: 14)
                 
                 self.insertSubview(bottomShadowView, at: 0)
-                self.bottomShadowView.layer.setShadowAndCustomCorners(backgroundColor: .clear, shadow: topShadowColor, alpha: 1, x: -3, y: -2, blur: 10, corners: [], radius: 14)
+                self.bottomShadowView.layer.setShadowAndCustomCorners(backgroundColor: .clear, shadow: topShadowColor, alpha: 1, x: -3, y: -2, blur: 19, corners: [], radius: 14)
             case .none:
 
                 debugPrint("none")

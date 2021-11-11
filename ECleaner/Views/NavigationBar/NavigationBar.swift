@@ -54,9 +54,9 @@ class NavigationBar: UIView {
         rightBarButtonItem.backgroundColor = .clear
     }
     
-    public func setupNavigation(title: String?, leftBarButtonImage: UIImage?, rightBarButtonImage: UIImage?, contenType: MediaContentType) {
+    public func setupNavigation(title: String?, leftBarButtonImage: UIImage?, rightBarButtonImage: UIImage?, mediaType: MediaContentType) {
         
-        self.setAccentColorFor(buttonsTintColor: contenType.screenAcentTintColor, title: theme.tintColor)
+        self.setAccentColorFor(buttonsTintColor: mediaType.screenAcentTintColor, title: theme.tintColor)
         
         if let title = title {
             titleTextLabel.text = title

@@ -8,6 +8,11 @@
 import UIKit
 import Contacts
 
+protocol GroupContactSelectableDelegate: AnyObject {
+    
+    func didSelecMeregeSection(at index: Int)
+}
+
 class GroupContactTableViewCell: UITableViewCell {
     
     @IBOutlet weak var sectionShadowView: SectionShadowView!
@@ -16,6 +21,7 @@ class GroupContactTableViewCell: UITableViewCell {
     @IBOutlet weak var baseView: UIView!
     @IBOutlet weak var contactTitleTextLabel: UILabel!
     @IBOutlet weak var contactSubtitleTextLabel: UILabel!
+    @IBOutlet weak var selectableButton: UIButton!
     
     @IBOutlet weak var topBaseViewConstraint: NSLayoutConstraint!
     @IBOutlet weak var bottomBaseViewConstraint: NSLayoutConstraint!
@@ -27,6 +33,10 @@ class GroupContactTableViewCell: UITableViewCell {
 
     private var isFirstRowInSection: Bool = false
     private var isLastRowInSection: Bool = false
+
+    private var isSelectableSection: Bool = false
+    
+    public var delegate: GroupContactSelectableDelegate?
     
     override func prepareForReuse() {
         super.prepareForReuse()
@@ -49,13 +59,21 @@ class GroupContactTableViewCell: UITableViewCell {
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
     }
+    
+    @IBAction func didTapSelectSection(_ sender: Any) {
+    
+        delegate?.didSelecMeregeSection(at: tag)
+        checkSelecttion()
+    }
 }
 
 extension GroupContactTableViewCell {
     
-    public func updateContactCell(_ contact: CNContact, rowPosition: RowPosition) {
-    
+    public func updateContactCell(_ contact: CNContact, rowPosition: RowPosition, sectionIndex: Int, isSelected: Bool) {
+        
+        self.tag = sectionIndex
         self.showCellInset(at: rowPosition)
+        self.isSelectableSection = isSelected
         self.sectionShadowView.sectionRowPosition = rowPosition
         self.setupContact(contact)
         
@@ -90,8 +108,23 @@ extension GroupContactTableViewCell {
     
     private func setBestContactMerge(isShow: Bool) {
         
-        selectableContactImageView.image = isShow ? I.personalElementsItems.activeCheckmark : nil
-        selectableContactImageView.isHidden = !isShow
+        selectableButton.isEnabled = isShow
+        
+        if isShow {
+            selectableContactImageView.image = self.isSelectableSection ? I.personalElementsItems.selectableContactsCheckmark : I.personalElementsItems.emptyContactCheckmark
+            selectableContactImageView.isHidden = false
+        } else {
+            selectableContactImageView.image = nil
+            selectableContactImageView.isHidden = true
+        }
+    }
+    
+    private func checkSelecttion() {
+        
+        guard selectableButton.isEnabled else { return }
+        
+        self.isSelectableSection = !self.isSelectableSection
+        setBestContactMerge(isShow: true)
     }
 }
 
@@ -100,8 +133,8 @@ extension GroupContactTableViewCell: Themeble {
     private func setupUI() {
         
         selectionStyle = .none
-        contactTitleTextLabel.font = UIFont(font: FontManager.robotoBold, size: 18.0)
-        contactSubtitleTextLabel.font = UIFont(font: FontManager.robotoMedium, size: 14.0)
+        contactTitleTextLabel.font = .systemFont(ofSize: 16, weight: .bold)
+        contactSubtitleTextLabel.font = .systemFont(ofSize: 14, weight: .bold)
     }
     
     func updateColors() {
@@ -149,6 +182,8 @@ extension GroupContactTableViewCell: Themeble {
         
         /// for best reuse background shadows and reuse corners radii need renove somer parsts of ui
         /// in section shadow need remove layers with corners radii
+        
+        isSelected = false
         
         contactTitleTextLabel.text = nil
         contactSubtitleTextLabel.text = nil

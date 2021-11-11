@@ -27,7 +27,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YxE-95-yZz">
-                    <rect key="frame" x="20" y="5" width="50" height="50"/>
+                    <rect key="frame" x="5" y="5" width="50" height="50"/>
                     <color key="backgroundColor" red="0.91372549020000005" green="0.93725490199999995" blue="0.94901960780000005" alpha="1" colorSpace="calibratedRGB"/>
                     <constraints>
                         <constraint firstAttribute="width" secondItem="YxE-95-yZz" secondAttribute="height" id="Se4-uk-NCb"/>
@@ -44,7 +44,7 @@
                     <nil key="highlightedColor"/>
                 </label>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ebL-5N-jGx">
-                    <rect key="frame" x="344" y="5" width="50" height="50"/>
+                    <rect key="frame" x="359" y="5" width="50" height="50"/>
                     <color key="backgroundColor" red="0.91372549020000005" green="0.93725490199999995" blue="0.94901960780000005" alpha="1" colorSpace="calibratedRGB"/>
                     <constraints>
                         <constraint firstAttribute="width" secondItem="ebL-5N-jGx" secondAttribute="height" id="2bb-MX-c9a"/>
@@ -58,11 +58,11 @@
             <viewLayoutGuide key="safeArea" id="vgk-wa-kAz"/>
             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <constraints>
-                <constraint firstItem="YxE-95-yZz" firstAttribute="leading" secondItem="EFo-4y-Iu0" secondAttribute="leading" constant="20" id="Gp0-z5-cVj"/>
+                <constraint firstItem="YxE-95-yZz" firstAttribute="leading" secondItem="EFo-4y-Iu0" secondAttribute="leading" constant="5" id="Gp0-z5-cVj"/>
                 <constraint firstItem="SbH-cJ-wAs" firstAttribute="centerX" secondItem="EFo-4y-Iu0" secondAttribute="centerX" id="H2s-Uy-dGl"/>
                 <constraint firstItem="ebL-5N-jGx" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="SbH-cJ-wAs" secondAttribute="trailing" constant="10" id="S0t-fk-XCA"/>
                 <constraint firstItem="YxE-95-yZz" firstAttribute="centerY" secondItem="SbH-cJ-wAs" secondAttribute="centerY" id="Voj-nd-kbB"/>
-                <constraint firstItem="vgk-wa-kAz" firstAttribute="trailing" secondItem="ebL-5N-jGx" secondAttribute="trailing" constant="20" id="oDM-pC-Oob"/>
+                <constraint firstItem="vgk-wa-kAz" firstAttribute="trailing" secondItem="ebL-5N-jGx" secondAttribute="trailing" constant="5" id="oDM-pC-Oob"/>
                 <constraint firstItem="SbH-cJ-wAs" firstAttribute="centerY" secondItem="EFo-4y-Iu0" secondAttribute="centerY" id="oSY-IL-d6P"/>
                 <constraint firstItem="ebL-5N-jGx" firstAttribute="centerY" secondItem="SbH-cJ-wAs" secondAttribute="centerY" id="sK2-7W-K0Z"/>
                 <constraint firstItem="SbH-cJ-wAs" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="YxE-95-yZz" secondAttribute="trailing" constant="10" id="uW8-VT-8nj"/>

@@ -61,9 +61,9 @@ enum Theme: Int {
     var navigationBarBackgroundColor: UIColor {
         switch self {
             case .light:
-                return UIColor().colorFromHexString("ECF0F6")
+                return UIColor().colorFromHexString("E3E8F1")
             case .dark :
-                return UIColor().colorFromHexString("ECF0F6")
+                return UIColor().colorFromHexString("E3E8F1")
         }
     }
 

@@ -293,7 +293,8 @@ extension MediaContentViewController {
         let storyboard = UIStoryboard(name: C.identifiers.storyboards.contactsGroup, bundle: nil)
         let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.contactsGroup) as! ContactsGroupViewController
         viewController.contactGroup = group
-        viewController.contentType = .userContacts
+        viewController.navigationTitle = "simillar contacts"
+        viewController.mediaType = .userContacts
         self.navigationController?.pushViewController(viewController, animated: true)
         
     }

@@ -18,7 +18,8 @@ class ContactsGroupViewController: UIViewController {
     public var contactGroupListDataSource: ContactsGroupDataSource!
     
     public var mediaType: MediaContentType = .none
-    public var contentType: ContentTye
+    
+    public var navigationTitle: String?
     
     private var contactsManager = ContactsManager.shared
     
@@ -51,7 +52,7 @@ extension ContactsGroupViewController: Themeble {
     func setupNavigation() {
         
         self.navigationController?.navigationBar.isHidden = true
-        navigationBar.setupNavigation(title: contentType.navTitle, leftBarButtonImage: I.navigationItems.back, rightBarButtonImage: I.navigationItems.burgerDots, contenType: contentType)
+        navigationBar.setupNavigation(title: navigationTitle, leftBarButtonImage: I.navigationItems.back, rightBarButtonImage: I.navigationItems.burgerDots, mediaType: mediaType)
     }
     
     func setupViewModel(contacts: [ContactsGroup]) {
@@ -66,13 +67,14 @@ extension ContactsGroupViewController: Themeble {
         tableView.delegate = contactGroupListDataSource
         tableView.dataSource = contactGroupListDataSource
         tableView.separatorStyle = .none
-        tableView.backgroundColor = theme.backgroundColor
+        tableView.backgroundColor = .clear
         tableView.contentInset.top = 20
     }
     
     private func setupObserversAndDelegate() {
         
         navigationBar.delegate = self
+        navigationBar.layer.setShadow(color: theme.bottomShadowColor, alpha: 0.5, x: 3, y: 0, blur: 10, spread: 0)
     }
     
     func updateColors() {
