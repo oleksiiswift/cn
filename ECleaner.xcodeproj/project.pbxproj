@@ -158,6 +158,8 @@
 		977FE2392730658B004DE4C3 /* ContactsGroupDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977FE2382730658B004DE4C3 /* ContactsGroupDataSource.swift */; };
 		977FE23B273072A2004DE4C3 /* ContactsGroup.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 977FE23A273072A2004DE4C3 /* ContactsGroup.storyboard */; };
 		97A61EDE2726AB8700F2E6DE /* ContactsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A61EDD2726AB8700F2E6DE /* ContactsManager.swift */; };
+		97CA423F273EBBFA001FEA15 /* BottomButtonBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CA423E273EBBFA001FEA15 /* BottomButtonBarView.swift */; };
+		97CA4241273EBC33001FEA15 /* BottomButtonBarView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 97CA4240273EBC33001FEA15 /* BottomButtonBarView.xib */; };
 		97CB351127395803005DA881 /* SectionShadowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CB351027395802005DA881 /* SectionShadowView.swift */; };
 		97CB3513273965BD005DA881 /* CAlayer+selectedCorners.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CB3512273965BD005DA881 /* CAlayer+selectedCorners.swift */; };
 		97CB3516273A9129005DA881 /* ContactTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CB3514273A9129005DA881 /* ContactTableViewCell.swift */; };
@@ -344,6 +346,8 @@
 		977FE2382730658B004DE4C3 /* ContactsGroupDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsGroupDataSource.swift; sourceTree = "<group>"; };
 		977FE23A273072A2004DE4C3 /* ContactsGroup.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ContactsGroup.storyboard; sourceTree = "<group>"; };
 		97A61EDD2726AB8700F2E6DE /* ContactsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsManager.swift; sourceTree = "<group>"; };
+		97CA423E273EBBFA001FEA15 /* BottomButtonBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomButtonBarView.swift; sourceTree = "<group>"; };
+		97CA4240273EBC33001FEA15 /* BottomButtonBarView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BottomButtonBarView.xib; sourceTree = "<group>"; };
 		97CB351027395802005DA881 /* SectionShadowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionShadowView.swift; sourceTree = "<group>"; };
 		97CB3512273965BD005DA881 /* CAlayer+selectedCorners.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CAlayer+selectedCorners.swift"; sourceTree = "<group>"; };
 		97CB3514273A9129005DA881 /* ContactTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactTableViewCell.swift; sourceTree = "<group>"; };
@@ -451,6 +455,7 @@
 		04649B37268C624F00336FE4 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				97CA4240273EBC33001FEA15 /* BottomButtonBarView.xib */,
 				04467CE5270DA3B200DBBB39 /* DateSelectebleView.xib */,
 				04649B30268C507F00336FE4 /* GroupedAssetsReusableHeaderView.xib */,
 				04649B34268C52B100336FE4 /* GroupedAssetsReusableFooterView.xib */,
@@ -798,6 +803,7 @@
 		04E58364267A3F1600EDC3A3 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				97CA4242273ECB59001FEA15 /* BottomButtonBarView */,
 				4F4A17B7271D80D400CAF157 /* NavigationBar */,
 				9776F57A27359382009D806A /* Layer */,
 				04467CE7270DC60C00DBBB39 /* DateSelectableView */,
@@ -1096,6 +1102,14 @@
 			path = Contacts;
 			sourceTree = "<group>";
 		};
+		97CA4242273ECB59001FEA15 /* BottomButtonBarView */ = {
+			isa = PBXGroup;
+			children = (
+				97CA423E273EBBFA001FEA15 /* BottomButtonBarView.swift */,
+			);
+			path = BottomButtonBarView;
+			sourceTree = "<group>";
+		};
 		97CB3518273A9158005DA881 /* Contacts */ = {
 			isa = PBXGroup;
 			children = (
@@ -1280,6 +1294,7 @@
 				4FE4EA742721712A005FBB68 /* Roboto-Regular.ttf in Resources */,
 				4FE4EA7227217125005FBB68 /* Roboto-Medium.ttf in Resources */,
 				04649B36268C52B100336FE4 /* GroupedAssetsReusableFooterView.xib in Resources */,
+				97CA4241273EBC33001FEA15 /* BottomButtonBarView.xib in Resources */,
 				04CF00012685F0C3000CA850 /* ContentTypeTableViewCell.xib in Resources */,
 				049CC230268337310002F988 /* MediaTypeCollectionViewCell.xib in Resources */,
 				4FE4EA6B27217110005FBB68 /* Roboto-Black.ttf in Resources */,
@@ -1452,6 +1467,7 @@
 				04428204269313AD00B6B47C /* DropDownMenuItems.swift in Sources */,
 				0447A68926B2A1E20074919B /* ConcurentPhotoProcessOperation.swift in Sources */,
 				0459DF9926A6C5E50085EEDF /* celBlock51area.swift in Sources */,
+				97CA423F273EBBFA001FEA15 /* BottomButtonBarView.swift in Sources */,
 				97238A0D2689EDFF00C523DC /* CustomActivityIndicator.swift in Sources */,
 				04649B24268B2F3900336FE4 /* UpdatingChangesInOpenedScreensListeners.swift in Sources */,
 				04E58377267B323E00EDC3A3 /* Constants.swift in Sources */,
