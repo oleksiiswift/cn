@@ -53,9 +53,12 @@ class NavigationBar: UIView {
         
         leftBarButtonItem.backgroundColor = .clear
         rightBarButtonItem.backgroundColor = .clear
+        
+        rightBarButtonItem.titleLabel?.font = .systemFont(ofSize: 17, weight: .medium)
+        leftBarButtonItem.titleLabel?.font = .systemFont(ofSize: 17, weight: .medium)
     }
     
-    public func setupNavigation(title: String?, leftBarButtonImage: UIImage?, rightBarButtonImage: UIImage?, mediaType: MediaContentType) {
+    public func setupNavigation(title: String?, leftBarButtonImage: UIImage?, rightBarButtonImage: UIImage?, mediaType: MediaContentType, leftButtonTitle: String? = nil, rightButtonTitle: String? = nil) {
         
         self.setAccentColorFor(buttonsTintColor: mediaType.screenAcentTintColor, title: theme.tintColor)
         
@@ -69,6 +72,9 @@ class NavigationBar: UIView {
         if let leftBarButtonImage = leftBarButtonImage {
             leftBarButtonItem.setImage(leftBarButtonImage, for: .normal)
             leftBarButtonItem.isHidden = false
+        } else if let leftTitle = leftButtonTitle {
+            leftBarButtonItem.setTitle(leftTitle, for: .normal)
+            leftBarButtonItem.isHidden = false
         } else {
             leftBarButtonItem.isHidden = true
         }
@@ -76,9 +82,24 @@ class NavigationBar: UIView {
         if let rightBarButtonImage = rightBarButtonImage {
             rightBarButtonItem.setImage(rightBarButtonImage, for: .normal)
             rightBarButtonItem.isHidden = false
+        } else if let rightTitle = rightButtonTitle {
+            rightBarButtonItem.setTitle(rightTitle, for: .normal)
+            rightBarButtonItem.isHidden = false
         } else {
             rightBarButtonItem.isHidden = true
         }
+    }
+    
+    public func changeHotLeftTitle(newTitle: String) {
+        leftBarButtonItem.setImage(nil, for: .normal)
+        leftBarButtonItem.sizeToFit()
+        leftBarButtonItem.setTitle(newTitle, for: .normal)
+    }
+    
+    public func changeHotRightTitle(newTitle: String) {
+        rightBarButtonItem.setImage(nil, for: .normal)
+        rightBarButtonItem.sizeToFit()
+        rightBarButtonItem.setTitle(newTitle, for: .normal)
     }
 
     private func setAccentColorFor(buttonsTintColor: UIColor, title: UIColor) {

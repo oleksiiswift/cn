@@ -50,5 +50,6 @@ class Images {
         static let mergeArrow = UIImage(named: "mergeArrow")!
         static let selectableContactsCheckmark = UIImage(named: "activeCheckmark")
         static let emptyContactCheckmark = UIImage(named: "emptyCheckmark")
+        static let mergeArrowTop = UIImage(named: "mergeTopArrow")
     }
 }

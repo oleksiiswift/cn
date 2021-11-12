@@ -153,6 +153,15 @@ enum Theme: Int {
         }
     }
     
+    var activeTitleTextColor: UIColor {
+        switch self {
+            case .light:
+                return UIColor().colorFromHexString("FFFFFF")
+            case .dark:
+                return UIColor().colorFromHexString("FFFFFF")
+        }
+    }
+    
 //    MARK: - title and subtitle colors -
     
     var titleTextColor: UIColor {
@@ -228,14 +237,7 @@ enum Theme: Int {
         }
     }
     
-    var activeTitleTextColor: UIColor {
-        switch self {
-            case .light:
-                return UIColor().colorFromHexString("FFFFFF")
-            case .dark:
-                return UIColor().colorFromHexString("FFFFFF")
-        }
-    }
+
     
 //    var progressBackgroundColor: UIColor {
 //        switch self {

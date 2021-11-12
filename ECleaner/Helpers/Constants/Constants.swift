@@ -57,6 +57,9 @@ class Constants {
             static let deepCleanAllContactsScan = "deepCleanAllContactsScan"
             static let deepCleanEmptyContactsScan = "deepCleanEmptyContactsScan"
             static let deepCleanDuplicateContacts = "deepCleanDuplicatedContactsScan"
+            
+            /// `contacts notification`
+            static let mergeContactsSelectionDidChange = "mergeContactsSelectionDidChange"
         }
         
 //        MARK: - notification dictionary progress identifiers -
