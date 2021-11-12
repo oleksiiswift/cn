@@ -17,7 +17,7 @@ protocol DeepCleanSelectableAssetsDelegate: AnyObject {
 
 class DeepCleaningViewController: UIViewController {
      
-     @IBOutlet weak var customNavBar: CustomNavigationBar!
+     @IBOutlet weak var customNavBar: StartingNavigationBar!
      
      @IBOutlet weak var dateSelectContainerView: UIView!
      @IBOutlet weak var tableView: UITableView!
@@ -934,7 +934,7 @@ extension DeepCleaningViewController: Themeble {
      }
 }
 
-extension DeepCleaningViewController: CustomNavigationBarDelegate {
+extension DeepCleaningViewController: StartingNavigationBarDelegate {
      
      func didTapLeftBarButton(_sender: UIButton) {
           self.navigationController?.popViewController(animated: true)

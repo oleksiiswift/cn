@@ -17,6 +17,8 @@ enum RowPosition {
 class ContactsGroupDataSource: NSObject {
 
     public var contactGroupListViewModel: ContactGroupListViewModel
+    
+    public var selectedSections: [Int] = []
 
     init(viewModel: ContactGroupListViewModel) {
         self.contactGroupListViewModel = viewModel
@@ -28,7 +30,11 @@ extension ContactsGroupDataSource {
     private func cellConfigure(cell: GroupContactTableViewCell, at indexPath: IndexPath, with position: RowPosition) {
         
         guard let contact = contactGroupListViewModel.getContact(at: indexPath) else { return }
-        cell.updateContactCell(contact, rowPosition: position)
+        
+        let isSelected = checkIfSelectedSecetion(at: indexPath.section)
+    
+        cell.delegate = self
+        cell.updateContactCell(contact, rowPosition: position, sectionIndex: indexPath.section, isSelected: isSelected)
     }
     
     private func configureHeader(view: GroupedContactsHeaderView, at section: Int) {
@@ -100,6 +106,23 @@ extension ContactsGroupDataSource {
         } else {
             return .none
         }
+    }
+}
+
+extension ContactsGroupDataSource: GroupContactSelectableDelegate {
+    
+    func didSelecMeregeSection(at index: Int) {
+    
+        if selectedSections.contains(index) {
+            selectedSections.removeAll(index)
+        } else {
+            selectedSections.append(index)
+        }
+    }
+    
+    private func checkIfSelectedSecetion(at index: Int) -> Bool {
+        
+        return selectedSections.contains(index)
     }
 }
 

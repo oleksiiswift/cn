@@ -141,6 +141,22 @@ enum MediaContentType {
         }
     }
     
+    var screenAcentTintColor: UIColor {
+        
+        let theme = ThemeManager.theme
+        
+        switch self {
+            case .userPhoto:
+                return theme.phoneTintColor
+            case .userVideo:
+                return theme.videosTintColor
+            case .userContacts:
+                return theme.contactsTintColor
+            case .none:
+                return theme.defaulTintColor
+        }
+    }
+    
     ///    `DEEP CLEAN PROPERTIES`
     var deepCleanNumbersOfRows: Int {
         switch self {
@@ -198,4 +214,6 @@ enum MediaContentType {
                 return ""
         }
     }
+    
+    
 }

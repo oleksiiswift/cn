@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 typealias C = Constants
 class Constants {
@@ -103,6 +104,11 @@ class Constants {
 //    MARK: - public identifiers -
     struct identifiers {
         
+        struct navigation {
+            static let main = "StartingNavigationBar"
+            static let navigationBar = "NavigationBar"
+        }
+        
         struct storyboards {
             static let main = "Main"
             static let media = "MediaContent"
@@ -154,8 +160,11 @@ class Constants {
             static let contactGroupHeader = "GroupedContactsHeaderView"
             
             static let carouselView = "CarouselItemView"
-            
             static let datePickerContainer = "DateSelectebleView"
+            
+            /// `navigation`
+            static let startingNavigationBar = "StartingNavigationBar"
+            static let navigationBar = "NavigationBar"
             
             /// controllers
 //            static let photoPreview = "PhotoPreviewViewController"
@@ -191,3 +200,4 @@ class Constants {
         }
     }
 }
+

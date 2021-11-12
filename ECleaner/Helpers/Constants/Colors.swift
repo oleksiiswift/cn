@@ -57,6 +57,15 @@ enum Theme: Int {
                 return UIColor().colorFromHexString("E9EFF2")
         }
     }
+    
+    var navigationBarBackgroundColor: UIColor {
+        switch self {
+            case .light:
+                return UIColor().colorFromHexString("E3E8F1")
+            case .dark :
+                return UIColor().colorFromHexString("E3E8F1")
+        }
+    }
 
     
 //    MARK: - shadow colors -
@@ -106,13 +115,9 @@ enum Theme: Int {
         }
     }
 
-    
-    
-    
-    
-//      MARK: - accent colors
+//      MARK: - accent tint colors -
         
-    var contactsAccentColor: UIColor {
+    var contactsTintColor: UIColor {
         switch self {
             case .light:
                 return UIColor().colorFromHexString("1AC18E")
@@ -120,9 +125,35 @@ enum Theme: Int {
                 return UIColor().colorFromHexString("1AC18E")
         }
     }
-
     
-//    MARK: - title and subtitle colors =
+    var videosTintColor: UIColor {
+        switch self {
+            case .light:
+                return UIColor().colorFromHexString("418CFF")
+            case .dark :
+                return UIColor().colorFromHexString("418CFF")
+        }
+    }
+    
+    var phoneTintColor: UIColor {
+        switch self {
+            case .light:
+                return UIColor().colorFromHexString("F07378")
+            case .dark :
+                return UIColor().colorFromHexString("F07378")
+        }
+    }
+    
+    var defaulTintColor: UIColor {
+        switch self {
+            case .light:
+                return UIColor().colorFromHexString("418CFF")
+            case .dark :
+                return UIColor().colorFromHexString("418CFF")
+        }
+    }
+    
+//    MARK: - title and subtitle colors -
     
     var titleTextColor: UIColor {
         switch self {

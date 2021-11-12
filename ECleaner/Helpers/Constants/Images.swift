@@ -20,6 +20,7 @@ class Images {
         static let elipseBurger = UIImage(systemName: "ellipsis.circle.fill")
         static let leftShevronBack = UIImage(systemName: "chevron.left")
         static let rightShevronBack = UIImage(named: "chevron")!
+        static let burgerDots = UIImage(named: "burgerDots")
     }
     
     struct mainMenuThumbItems {
@@ -47,6 +48,7 @@ class Images {
     struct personalElementsItems {
         static let crossContacts = UIImage(named: "crossContacts")
         static let mergeArrow = UIImage(named: "mergeArrow")!
-        static let activeCheckmark = UIImage(named: "activeCheckmark")
+        static let selectableContactsCheckmark = UIImage(named: "activeCheckmark")
+        static let emptyContactCheckmark = UIImage(named: "emptyCheckmark")
     }
 }

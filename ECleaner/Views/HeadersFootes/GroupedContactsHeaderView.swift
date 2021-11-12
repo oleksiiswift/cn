@@ -51,13 +51,13 @@ class GroupedContactsHeaderView: UITableViewHeaderFooterView {
         deleteButton.setImage(I.personalElementsItems.crossContacts, for: .normal)
         mergeButton.didset(righty: I.personalElementsItems.mergeArrow, with: "MERGE")
         
-        mergeButton.titleLabel!.font = UIFont(font: FontManager.robotoBlack, size: 14.0)
-        headerTitleTextLabel.font = UIFont(font: FontManager.robotoBlack, size: 14.0)
+        mergeButton.titleLabel!.font = .systemFont(ofSize: 12, weight: .heavy)
+        headerTitleTextLabel.font = .systemFont(ofSize: 14, weight: .heavy)
     }
     
     private func updadeColors() {
         
-        mergeButton.setTitleColor(theme.contactsAccentColor, for: .normal)
+        mergeButton.setTitleColor(theme.contactsTintColor, for: .normal)
         headerTitleTextLabel.textColor = theme.sectionTitleTextColor
     }
     

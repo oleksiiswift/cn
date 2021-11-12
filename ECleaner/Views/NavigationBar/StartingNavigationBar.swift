@@ -1,63 +1,46 @@
 //
-//  CustomNavigationBar.swift
-//  CustomNavigationBar
+//  StartingNavigationBar.swift
+//  StartingNavigationBar
 //
 //  Created by iMac_1 on 18.10.2021.
 //
 
 import UIKit
 
-protocol CustomNavigationBarDelegate: AnyObject {
-    
-    func didTapLeftBarButton(_sender: UIButton)
-    func didTapRightBarButton(_sender: UIButton)
-}
-
-class CustomNavigationBar: UIView {
-    
-    var className: String {
-        return "CustomNavigationBar"
-    }
+class StartingNavigationBar: UIView {
     
     @IBOutlet weak var containerView: UIView!
     @IBOutlet weak var leftBarButton: PrimaryButton!
     @IBOutlet weak var rightBarButton: PrimaryButton!
     @IBOutlet weak var titleLabel: UILabel!
     
-    var delegate: CustomNavigationBarDelegate?
+    var delegate: StartingNavigationBarDelegate?
     
     override func awakeFromNib() {
         super.awakeFromNib()
         
         self.configure()
-        
-        leftBarButton.addTarget(self, action: #selector(didTapLeftBarButton(sender:)), for: .touchUpInside)
-        rightBarButton.addTarget(self, action: #selector(didTapRightBarButton(sender:)), for: .touchUpInside)
+        self.actionButtonsSetup()
     }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        self.load()
+        self.commonInit()
     }
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         
-        self.load()
+        self.commonInit()
     }
     
-    func load() {
+    private func commonInit() {
         
-        Bundle.main.loadNibNamed(self.className, owner: self, options: nil)
+        U.mainBundle.loadNibNamed(C.identifiers.navigation.main, owner: self, options: nil)
     }
-    
-        //  override func layoutSubviews() {
-        //    super.layoutSubviews()
-        //    addDropShadow()
-        //  }
-    
-    func configure() {
+   
+    private func configure() {
         
         containerView.backgroundColor = .clear
         backgroundColor = .clear
@@ -72,7 +55,7 @@ class CustomNavigationBar: UIView {
         rightBarButton.layer.cornerRadius = 10
     }
     
-    func setUpNavigation(title: String?, leftImage: UIImage?, rightImage: UIImage?) {
+    public func setUpNavigation(title: String?, leftImage: UIImage?, rightImage: UIImage?) {
         
         if let title = title {
             titleLabel.isHidden = false
@@ -94,6 +77,12 @@ class CustomNavigationBar: UIView {
         } else {
             leftBarButton.isHidden = true
         }
+    }
+    
+    private func actionButtonsSetup() {
+        
+        leftBarButton.addTarget(self, action: #selector(didTapLeftBarButton(sender:)), for: .touchUpInside)
+        rightBarButton.addTarget(self, action: #selector(didTapRightBarButton(sender:)), for: .touchUpInside)
     }
     
     @objc func didTapLeftBarButton(sender: UIButton) {

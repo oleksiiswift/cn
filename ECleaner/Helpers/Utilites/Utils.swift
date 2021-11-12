@@ -262,5 +262,14 @@ internal extension Bundle {
         }
         return ""
     }
+}
+
+
+class Hello: NSObject {
     
+    private static let shared = Hello()
+    
+    static var sharedInstance: Hello {
+        return self.shared
+    }
 }
