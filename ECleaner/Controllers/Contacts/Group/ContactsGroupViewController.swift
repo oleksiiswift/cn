@@ -74,7 +74,6 @@ extension ContactsGroupViewController: Themeble {
     private func setupObserversAndDelegate() {
         
         navigationBar.delegate = self
-        navigationBar.layer.setShadow(color: theme.bottomShadowColor, alpha: 0.5, x: 3, y: 0, blur: 10, spread: 0)
     }
     
     func updateColors() {

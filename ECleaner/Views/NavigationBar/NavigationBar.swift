@@ -44,8 +44,9 @@ class NavigationBar: UIView {
     private func configure() {
         
         containerView.backgroundColor = theme.navigationBarBackgroundColor
+        
+        layer.setShadow(color: theme.bottomShadowColor, alpha: 1, x: 3, y: 0, blur: 10, spread: 0)
         backgroundColor = .clear
-//        theme.navigationBarBackgroundColor
         addSubview(self.containerView)
         containerView.frame = self.bounds
         containerView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
