@@ -12,8 +12,7 @@ class ContactsGroupViewController: UIViewController {
     
     @IBOutlet weak var navigationBar: NavigationBar!
     @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var mergeSelectedButton: UIButton!
-    @IBOutlet weak var bottomMergeButtonContainerView: UIView!
+    @IBOutlet weak var bottomButtonBarView: BottomButtonBarView!
     @IBOutlet weak var bottomButtonHeightConstraint: NSLayoutConstraint!
     
     private var contactsManager = ContactsManager.shared
@@ -46,11 +45,6 @@ class ContactsGroupViewController: UIViewController {
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-    }
-    
-    
-    @IBAction func didTapMegreSelectedContactsActionButton(_ sender: Any) {
-        
         
     }
 }
@@ -59,9 +53,7 @@ extension ContactsGroupViewController: Themeble {
     
     func setupUI() {
         
-        mergeSelectedButton.setCorner(14)
-        mergeSelectedButton.addLeftImageWithFixLeft(spacing: 25, size: CGSize(width: 22, height: 30), image: I.personalElementsItems.mergeArrowTop!)
-        mergeSelectedButton.titleLabel!.font = .systemFont(ofSize: 16.8, weight: .bold)
+        bottomButtonBarView.setImage(I.personalElementsItems.mergeArrowTop!)
     }
     
     func setupNavigation() {
@@ -89,21 +81,21 @@ extension ContactsGroupViewController: Themeble {
     private func setupObserversAndDelegate() {
         
         navigationBar.delegate = self
-    
+        bottomButtonBarView.delegate = self
+        
         U.notificationCenter.addObserver(self, selector: #selector(mergeContactsDidChange(_:)), name: .mergeContactsSelectionDidChange, object: nil)
     }
     
     func updateColors() {
         
         self.view.backgroundColor = theme.backgroundColor
-        mergeSelectedButton.backgroundColor = theme.contactsTintColor
-        mergeSelectedButton.tintColor  = theme.activeTitleTextColor
-        
+        bottomButtonBarView.buttonTintColor = theme.activeTitleTextColor
+        bottomButtonBarView.buttonColor = theme.contactsTintColor
+        bottomButtonBarView.updateColorsSettings()
     }
 }
 
 extension ContactsGroupViewController: NavigationBarDelegate {
-    
     
     func didTapLeftBarButton(_ sender: UIButton) {
         self.navigationController?.popViewController(animated: true)
@@ -111,6 +103,14 @@ extension ContactsGroupViewController: NavigationBarDelegate {
     
     func didTapRightBarButton(_ sender: UIButton) {
         
+    }
+}
+
+extension ContactsGroupViewController: BottomActionButtonDelegate {
+    
+    func didTapActionButton() {
+        debugPrint("merge indexes")
+        debugPrint(self.contactGroupListDataSource.selectedSections)
     }
 }
 
@@ -122,14 +122,13 @@ extension ContactsGroupViewController {
     }
     
     private func handleMergeContactsAppearButton() {
-        
-        
+    
         let calculatedBottomButtonHeight: CGFloat = bottomButtonHeight + U.bottomSafeAreaHeight
         bottomButtonHeightConstraint.constant = !self.contactGroupListDataSource.selectedSections.isEmpty ? calculatedBottomButtonHeight : 0
         
         let buttonTitle: String = "merge selected".uppercased() + " (\(self.contactGroupListDataSource.selectedSections.count))"
-        self.mergeSelectedButton.setTitleWithoutAnimation(title: buttonTitle)
-        self.bottomMergeButtonContainerView.layoutIfNeeded()
+        self.bottomButtonBarView.title(buttonTitle)
+        self.bottomButtonBarView.layoutIfNeeded()
         self.tableView.contentInset.bottom = !self.contactGroupListDataSource.selectedSections.isEmpty ? calculatedBottomButtonHeight :  34
     }
 }

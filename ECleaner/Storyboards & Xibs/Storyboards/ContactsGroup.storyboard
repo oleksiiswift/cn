@@ -28,26 +28,11 @@
                                     <constraint firstAttribute="height" constant="60" id="8Dg-4N-uh5"/>
                                 </constraints>
                             </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7H5-5o-oid">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7H5-5o-oid" customClass="BottomButtonBarView" customModule="ECleaner" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="802" width="414" height="94"/>
-                                <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fm1-kb-WfO">
-                                        <rect key="frame" x="20" y="0.0" width="374" height="60"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="60" id="Iyd-F3-O0F"/>
-                                        </constraints>
-                                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                        <connections>
-                                            <action selector="didTapMegreSelectedContactsActionButton:" destination="eSz-JA-9Jw" eventType="touchUpInside" id="7Qb-2k-9os"/>
-                                        </connections>
-                                    </button>
-                                </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="94" id="CR9-dB-vZl"/>
-                                    <constraint firstItem="fm1-kb-WfO" firstAttribute="top" secondItem="7H5-5o-oid" secondAttribute="top" id="JgS-iT-Q27"/>
-                                    <constraint firstItem="fm1-kb-WfO" firstAttribute="leading" secondItem="7H5-5o-oid" secondAttribute="leading" constant="20" id="bmW-aW-Kld"/>
-                                    <constraint firstAttribute="trailing" secondItem="fm1-kb-WfO" secondAttribute="trailing" constant="20" id="drU-8N-67r"/>
                                 </constraints>
                             </view>
                         </subviews>
@@ -68,9 +53,8 @@
                     </view>
                     <navigationItem key="navigationItem" id="zOc-j3-A8e"/>
                     <connections>
+                        <outlet property="bottomButtonBarView" destination="7H5-5o-oid" id="zwl-Zn-i8x"/>
                         <outlet property="bottomButtonHeightConstraint" destination="CR9-dB-vZl" id="5K1-2a-ums"/>
-                        <outlet property="bottomMergeButtonContainerView" destination="7H5-5o-oid" id="t6c-Kw-hsn"/>
-                        <outlet property="mergeSelectedButton" destination="fm1-kb-WfO" id="Llf-h6-qTZ"/>
                         <outlet property="navigationBar" destination="oOR-XK-bvK" id="gJe-83-qSo"/>
                         <outlet property="tableView" destination="pV1-1m-SKW" id="590-N6-Vs0"/>
                     </connections>
