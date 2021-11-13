@@ -15,14 +15,33 @@ class ContactsGroupViewController: UIViewController {
     @IBOutlet weak var bottomButtonBarView: BottomButtonBarView!
     @IBOutlet weak var bottomButtonHeightConstraint: NSLayoutConstraint!
     
+    lazy var selectAllOptionItem = DropDownOptionsMenuItem(titleMenu: "select all",
+                                                           itemThumbnail: I.systemItems.selectItems.roundedCheckMark,
+                                                           isSelected: false,
+                                                           menuItem: .unselectAll)
+    
+    lazy var deselectAllOptionItem = DropDownOptionsMenuItem(titleMenu: "deselect all",
+                                                             itemThumbnail: I.systemItems.selectItems.circleMark,
+                                                             isSelected: false,
+                                                             menuItem: .unselectAll)
+    
+    lazy var exportSelectedContacts = DropDownOptionsMenuItem(titleMenu: "export selected",
+                                                              itemThumbnail: I.systemItems.defaultItems.share,
+                                                              isSelected: false,
+                                                              menuItem: .share)
+    
     private var contactsManager = ContactsManager.shared
     
     public var contactGroup: [ContactsGroup] = []
     public var contactGroupListViewModel: ContactGroupListViewModel!
     public var contactGroupListDataSource: ContactsGroupDataSource!
     public var mediaType: MediaContentType = .none
-    public var navigationTitle: String?
     
+    private var isSelectedAllItems: Bool {
+        return contactGroup.count == contactGroupListDataSource.selectedSections.count
+    }
+    
+    public var navigationTitle: String?
     private var bottomButtonHeight: CGFloat = 56
     
     override func viewDidLoad() {
@@ -95,6 +114,110 @@ extension ContactsGroupViewController: Themeble {
     }
 }
 
+//      MARK: - operations with contacts methods -
+extension ContactsGroupViewController {
+    
+    private func didSelectDeselecAllItems() {
+        
+        if !isSelectedAllItems {
+            for index in 0...self.contactGroup.count - 1 {
+                if !contactGroupListDataSource.selectedSections.contains(index) {
+                    contactGroupListDataSource.selectedSections.append(index)
+                }
+            }
+        } else {
+            contactGroupListDataSource.selectedSections.removeAll()
+        }
+        self.tableView.reloadData()
+        self.handleMergeContactsAppearButton()
+    }
+    
+    private func mergeSelectedItems() {
+        
+        guard !contactGroupListDataSource.selectedSections.isEmpty else { return }
+        
+        let totalIndexesCount = contactGroupListDataSource.selectedSections.count
+        var deletedIndexesCount = 0
+        
+        contactGroupListDataSource.selectedSections.forEach { index in
+            self.contactsManager.smartMergeContacts(in: self.contactGroup[index]) { deletingContacts in
+                self.contactsManager.deleteContacts(deletingContacts) { suxxess, deletetCount in
+                    
+                    if suxxess {
+                        deletedIndexesCount += 1
+                        self.tableView.deleteSections(IndexSet(integer: index), with: .automatic)
+                    }
+                    
+                    if totalIndexesCount == deletedIndexesCount {
+                        if deletedIndexesCount == self.contactGroup.count {
+                            self.contactGroup.removeAll()
+                        } else {
+                            self.contactGroupListDataSource.selectedSections.forEach { index in
+                                self.contactGroup.remove(at: index)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    private func exportBackupSelectedItems() {
+        
+        for itemInGroup in contactGroup {
+            self.contactsManager.smartMergeContacts(in: itemInGroup) { deletingContacts in
+                self.contactsManager.deleteContacts(deletingContacts) { suxxess, deletetCount in
+                    
+                }
+            }
+        }
+    }
+}
+
+//      MARK: - burger derop down menu
+extension ContactsGroupViewController: SelectDropDownMenuDelegate {
+    
+    private func didTapOpenBurgerMenu() {
+        
+        let firstRowItem = isSelectedAllItems ? self.deselectAllOptionItem : self.selectAllOptionItem
+        let secontRowItem = exportSelectedContacts
+        self.presentDropDonwMenu(with: [[firstRowItem, secontRowItem]], from: navigationBar.rightBarButtonItem)
+    }
+
+    private func presentDropDonwMenu(with items: [[DropDownOptionsMenuItem]], from navigationButton: UIButton) {
+        let dropDownViewController = DropDownMenuViewController()
+        dropDownViewController.menuSectionItems = items
+        dropDownViewController.delegate = self
+        
+        guard let popoverPresentationController = dropDownViewController.popoverPresentationController else { return }
+        
+        popoverPresentationController.delegate = self
+        popoverPresentationController.sourceView = navigationButton
+        popoverPresentationController.sourceRect = CGRect(x: navigationButton.bounds.midX, y: navigationButton.bounds.maxY - 13, width: 0, height: 0)
+        popoverPresentationController.permittedArrowDirections = .up
+        self.present(dropDownViewController, animated: true, completion: nil)
+    }
+    
+    func selectedItemListViewController(_ controller: DropDownMenuViewController, didSelectItem: DropDownMenuItems) {
+        
+        switch didSelectItem {
+            case .unselectAll:
+                self.didSelectDeselecAllItems()
+            case .share:
+                self.exportBackupSelectedItems()
+            default:
+                return
+        }
+    }
+}
+
+extension ContactsGroupViewController: UIPopoverPresentationControllerDelegate {
+    
+    func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
+        return .none
+    }
+}
+
 extension ContactsGroupViewController: NavigationBarDelegate {
     
     func didTapLeftBarButton(_ sender: UIButton) {
@@ -102,7 +225,7 @@ extension ContactsGroupViewController: NavigationBarDelegate {
     }
     
     func didTapRightBarButton(_ sender: UIButton) {
-        
+        self.didTapOpenBurgerMenu()
     }
 }
 
@@ -111,6 +234,7 @@ extension ContactsGroupViewController: BottomActionButtonDelegate {
     func didTapActionButton() {
         debugPrint("merge indexes")
         debugPrint(self.contactGroupListDataSource.selectedSections)
+        self.mergeSelectedItems()
     }
 }
 

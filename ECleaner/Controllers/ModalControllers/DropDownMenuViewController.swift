@@ -16,6 +16,7 @@ class DropDownMenuViewController: UIViewController {
     }
     
     private weak var tableView: UITableView?
+    
     var delegate: SelectDropDownMenuDelegate?
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
@@ -31,24 +32,28 @@ class DropDownMenuViewController: UIViewController {
     override func loadView() {
         view = UITableView(frame: .zero, style: .plain)
         self.tableView = view as? UITableView
-        self.tableView?.isScrollEnabled = false
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        setupUI()
         setupTableView()
     }
 }
 
 extension DropDownMenuViewController {
     
+    private func setupUI() {}
+    
     private func setupTableView() {
         
         self.tableView?.dataSource = self
         self.tableView?.delegate = self
         self.tableView?.separatorStyle = .none
-        self.tableView?.contentInset = UIEdgeInsets(top: 4, left: 0, bottom: 0, right: 0)
+        self.tableView?.isScrollEnabled = false
+        self.tableView?.backgroundColor = theme.dropDownMenuBackgroundColor
+        self.tableView?.contentInset = UIEdgeInsets(top: 15, left: 0, bottom: 0, right: 0)
         self.tableView?.register(UINib(nibName: C.identifiers.xibs.dropDownCell, bundle: nil), forCellReuseIdentifier: C.identifiers.cells.dropDownCell)
         
         if let optionTableView = self.tableView {
@@ -57,7 +62,11 @@ extension DropDownMenuViewController {
     }
     
     private func configure(_ cell: DropDownMenuTableViewCell, at indexPath: IndexPath) {
-        cell.configure(with: menuSectionItems[indexPath.section][indexPath.row])
+        
+        guard let tableView = self.tableView else { return }
+        
+        let rowPosition = self.checkIndexPosition(from: indexPath, numberOfRows: tableView.numberOfRows(inSection: indexPath.section))
+        cell.configure(with: menuSectionItems[indexPath.section][indexPath.row], row: rowPosition)
     }
     
     private func calculateMenuContentSize() {
@@ -66,8 +75,8 @@ extension DropDownMenuViewController {
         let viewHeight: CGFloat = itemsCount * 44
         let flatItems = menuSectionItems.flatMap{$0}
         for item in flatItems {
-            if item.sizeForFutureText().width + 70 > viewWidth {
-                viewWidth = item.sizeForFutureText().width + 70
+            if item.sizeForFutureText().width + 90 > viewWidth {
+                viewWidth = item.sizeForFutureText().width + 90
             }
         }
         preferredContentSize = CGSize(width: viewWidth, height: viewHeight)
@@ -98,5 +107,21 @@ extension DropDownMenuViewController: UITableViewDataSource, UITableViewDelegate
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 40
+    }
+}
+
+extension DropDownMenuViewController {
+    
+    private func checkIndexPosition(from indexPath: IndexPath, numberOfRows: Int) -> RowPosition {
+        
+        if indexPath.row == 0 {
+            return .top
+        } else if indexPath.row + 1 < numberOfRows {
+            return .middle
+        } else if indexPath.row + 1 == numberOfRows {
+            return .bottom
+        } else {
+            return .none
+        }
     }
 }

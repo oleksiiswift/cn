@@ -66,6 +66,15 @@ enum Theme: Int {
                 return UIColor().colorFromHexString("E3E8F1")
         }
     }
+    
+    var dropDownMenuBackgroundColor: UIColor {
+        switch self {
+            case .light:
+                return UIColor().colorFromHexString("F3F7FD")
+            case .dark :
+                return UIColor().colorFromHexString("F3F7FD")
+        }
+    }
 
     
 //    MARK: - shadow colors -

@@ -135,8 +135,6 @@ extension ContactsGroupDataSource: GroupedHeadersButtonDelegate {
         guard let indexOfSection = tag else { return }
         
         debugPrint("delete section at: \(indexOfSection)")
-        
-        
     }
     
     func didTapMergeGroupActionButton(_ tag: Int?) {

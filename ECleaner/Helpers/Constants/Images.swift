@@ -12,6 +12,23 @@ class Images {
 
     static let blank = UIImage(named: "")
     
+    struct systemItems {
+        
+        struct selectItems {
+            static let roundedCheckMark = UIImage(named: "roundedCheckmark")!
+            static let circleMark = UIImage(named: "circle")!
+        }
+        
+        struct defaultItems {
+            static let share = UIImage(named: "share")!
+        }
+    }
+    
+    
+    
+    
+//  TODO: Check all images!!!!
+    #warning("check all images -> ")
     struct navigationItems {
         static let dissmiss = UIImage(named: "dissmiss")!
         static let back = UIImage(named: "back")!
