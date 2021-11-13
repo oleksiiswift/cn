@@ -137,7 +137,8 @@ extension ContactsGroupViewController {
         guard !contactGroupListDataSource.selectedSections.isEmpty else { return }
         
         let totalIndexesCount = contactGroupListDataSource.selectedSections.count
-        var deletedIndexesCount = 0
+        var errorsCount: Int = 0
+        var deletedIndexesCount: Int = 0
         
         contactGroupListDataSource.selectedSections.forEach { index in
             self.contactsManager.smartMergeContacts(in: self.contactGroup[index]) { deletingContacts in
@@ -145,20 +146,42 @@ extension ContactsGroupViewController {
                     
                     if suxxess {
                         deletedIndexesCount += 1
-                        self.tableView.deleteSections(IndexSet(integer: index), with: .automatic)
+                    } else {
+                        errorsCount += deletetCount
+                        self.contactGroupListDataSource.selectedSections.remove(at: index)
                     }
                     
                     if totalIndexesCount == deletedIndexesCount {
                         if deletedIndexesCount == self.contactGroup.count {
-                            self.contactGroup.removeAll()
+                            U.UI {
+                                debugPrint("totdo clean complete alert")
+                                self.closeController()
+                            }
                         } else {
-                            self.contactGroupListDataSource.selectedSections.forEach { index in
-                                self.contactGroup.remove(at: index)
+                            let removableSections: [Int] = self.contactGroupListDataSource.selectedSections
+                            U.UI {
+                                if errorsCount == 0 {
+                                    debugPrint("todo alerr all contacts remove without errors")
+                                    self.updateRemovedIndexes(removableSections, errorsCount: errorsCount)
+                                } else {
+                                    debugPrint("TODO show alert delete with errors")
+                                    self.updateRemovedIndexes(removableSections, errorsCount: 0)
+                                }
                             }
                         }
                     }
                 }
             }
+        }
+    }
+    
+    
+    private func updateRemovedIndexes(_ indexes: [Int], errorsCount: Int) {
+        
+        let _ = contactGroup.remove(elementsAtIndices: indexes)
+        self.contactGroupListDataSource.selectedSections.removeAll()
+        indexes.forEach { index in
+            self.tableView.deleteSections(IndexSet(integer: index), with: .none)
         }
     }
     
@@ -221,11 +244,15 @@ extension ContactsGroupViewController: UIPopoverPresentationControllerDelegate {
 extension ContactsGroupViewController: NavigationBarDelegate {
     
     func didTapLeftBarButton(_ sender: UIButton) {
-        self.navigationController?.popViewController(animated: true)
+        closeController()
     }
-    
+
     func didTapRightBarButton(_ sender: UIButton) {
         self.didTapOpenBurgerMenu()
+    }
+    
+    func closeController() {
+        self.navigationController?.popViewController(animated: true)
     }
 }
 
