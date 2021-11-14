@@ -118,6 +118,8 @@ extension ContactsGroupDataSource: GroupContactSelectableDelegate {
         } else {
             selectedSections.append(index)
         }
+        
+        U.notificationCenter.post(name: .mergeContactsSelectionDidChange, object: nil)
     }
     
     private func checkIfSelectedSecetion(at index: Int) -> Bool {
@@ -132,13 +134,13 @@ extension ContactsGroupDataSource: GroupedHeadersButtonDelegate {
         
         guard let indexOfSection = tag else { return }
         
-        debugPrint("delete section at: \(indexOfSection)")
+        SingleContactsGroupOperationMediator.instance.didDeleteFullContactsGroup(in: indexOfSection)
     }
     
     func didTapMergeGroupActionButton(_ tag: Int?) {
         
         guard let indexOfSection = tag else { return }
         
-        debugPrint("merge section at: \(indexOfSection)")
+        SingleContactsGroupOperationMediator.instance.didMergeContacts(in: indexOfSection)
     }
 }

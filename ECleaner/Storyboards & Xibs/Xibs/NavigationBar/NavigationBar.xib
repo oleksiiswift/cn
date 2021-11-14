@@ -30,15 +30,13 @@
                     <rect key="frame" x="5" y="5" width="50" height="50"/>
                     <color key="backgroundColor" red="0.91372549020000005" green="0.93725490199999995" blue="0.94901960780000005" alpha="1" colorSpace="calibratedRGB"/>
                     <constraints>
-                        <constraint firstAttribute="width" secondItem="YxE-95-yZz" secondAttribute="height" id="Se4-uk-NCb"/>
+                        <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="50" id="YA3-4U-9SI"/>
                         <constraint firstAttribute="height" constant="50" id="ecG-3c-YY7"/>
                     </constraints>
                     <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                    <state key="normal" image="premium"/>
-                    <buttonConfiguration key="configuration" style="plain"/>
                 </button>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Title" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SbH-cJ-wAs">
-                    <rect key="frame" x="192" y="20.5" width="30" height="19"/>
+                    <rect key="frame" x="191" y="20.5" width="32.5" height="19"/>
                     <fontDescription key="fontDescription" name="Roboto-Bold" family="Roboto" pointSize="16"/>
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
@@ -47,12 +45,10 @@
                     <rect key="frame" x="359" y="5" width="50" height="50"/>
                     <color key="backgroundColor" red="0.91372549020000005" green="0.93725490199999995" blue="0.94901960780000005" alpha="1" colorSpace="calibratedRGB"/>
                     <constraints>
-                        <constraint firstAttribute="width" secondItem="ebL-5N-jGx" secondAttribute="height" id="2bb-MX-c9a"/>
-                        <constraint firstAttribute="height" constant="50" id="PCO-8D-q6W"/>
+                        <constraint firstAttribute="height" constant="50" id="Ab3-U4-FMc"/>
+                        <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="50" id="hKY-Tz-aUm"/>
                     </constraints>
                     <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                    <state key="normal" image="settings"/>
-                    <buttonConfiguration key="configuration" style="plain"/>
                 </button>
             </subviews>
             <viewLayoutGuide key="safeArea" id="vgk-wa-kAz"/>
@@ -71,8 +67,4 @@
             <point key="canvasLocation" x="180" y="-144"/>
         </view>
     </objects>
-    <resources>
-        <image name="premium" width="50" height="50"/>
-        <image name="settings" width="50" height="50"/>
-    </resources>
 </document>

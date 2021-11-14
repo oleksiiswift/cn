@@ -66,6 +66,15 @@ enum Theme: Int {
                 return UIColor().colorFromHexString("E3E8F1")
         }
     }
+    
+    var dropDownMenuBackgroundColor: UIColor {
+        switch self {
+            case .light:
+                return UIColor().colorFromHexString("F3F7FD")
+            case .dark :
+                return UIColor().colorFromHexString("F3F7FD")
+        }
+    }
 
     
 //    MARK: - shadow colors -
@@ -153,6 +162,15 @@ enum Theme: Int {
         }
     }
     
+    var activeTitleTextColor: UIColor {
+        switch self {
+            case .light:
+                return UIColor().colorFromHexString("FFFFFF")
+            case .dark:
+                return UIColor().colorFromHexString("FFFFFF")
+        }
+    }
+    
 //    MARK: - title and subtitle colors -
     
     var titleTextColor: UIColor {
@@ -228,14 +246,7 @@ enum Theme: Int {
         }
     }
     
-    var activeTitleTextColor: UIColor {
-        switch self {
-            case .light:
-                return UIColor().colorFromHexString("FFFFFF")
-            case .dark:
-                return UIColor().colorFromHexString("FFFFFF")
-        }
-    }
+
     
 //    var progressBackgroundColor: UIColor {
 //        switch self {

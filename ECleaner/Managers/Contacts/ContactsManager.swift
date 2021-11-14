@@ -210,7 +210,10 @@ extension ContactsManager {
     
     public func deleteAllContacts() {
         self.getAllContacts { contacts in
-            self.deleteContacts(contacts)
+            self.deleteContacts(contacts) { suxxess, deletedCount in
+                debugPrint("deleting is \(suxxess)")
+                debugPrint("deleted \(deletedCount) contacts")
+            }
         }
     }
 }
@@ -835,8 +838,7 @@ extension ContactsManager  {
             }
         }
         let deletedContacts = contacts.filter({ $0 != bestContact! })
-        
-        self.deleteContacts(deletedContacts)
+        self.deleteContacts(deletedContacts) { _, _ in }
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
             handler(true)
@@ -883,15 +885,23 @@ extension ContactsManager  {
 
 extension ContactsManager {
     
-    public func deleteContacts(_ contacts: [CNContact]) {
+    public func deleteContacts(_ contacts: [CNContact],_ completionHandler: @escaping ((Bool, Int) -> Void)) {
         
         U.BG {
-            var contactsCount = contacts.count
+            var deletedContactsCount = 0
             contacts.forEach { contact in
                 self.deleteContact(contact) { success in
-                    contactsCount -= 1
-                    debugPrint(contactsCount)
+                    if success {
+                        deletedContactsCount += 1
+                        debugPrint(deletedContactsCount)
+                    }
                 }
+            }
+            
+            if contacts.count == deletedContactsCount {
+                completionHandler(true, deletedContactsCount)
+            } else {
+                completionHandler(false,deletedContactsCount)
             }
         }
     }

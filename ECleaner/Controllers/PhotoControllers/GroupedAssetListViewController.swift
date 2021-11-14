@@ -715,6 +715,8 @@ extension GroupedAssetListViewController: SelectDropDownMenuDelegate {
             case .unselectAll:
                 self.shouldSelectAllAssetsInSections(isSelectAllAssetsMode)
                 isSelectAllAssetsMode = !isSelectAllAssetsMode
+            case .share:
+                return
         }
     }
 }

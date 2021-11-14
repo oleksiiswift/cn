@@ -57,6 +57,9 @@ class Constants {
             static let deepCleanAllContactsScan = "deepCleanAllContactsScan"
             static let deepCleanEmptyContactsScan = "deepCleanEmptyContactsScan"
             static let deepCleanDuplicateContacts = "deepCleanDuplicatedContactsScan"
+            
+            /// `contacts notification`
+            static let mergeContactsSelectionDidChange = "mergeContactsSelectionDidChange"
         }
         
 //        MARK: - notification dictionary progress identifiers -
@@ -144,6 +147,7 @@ class Constants {
             static let groupHeaderView = "GroupedAssetsReusableHeaderView"
             static let groupFooterView = "GroupedAssetsReusableFooterView"
             static let contactGroupHeader = "GroupedContactsHeaderView"
+            static let bottomButtonBarView = "BottomButtonBarView"
         }
         
         struct xibs {
@@ -158,6 +162,7 @@ class Constants {
             static let groupHeader = "GroupedAssetsReusableHeaderView"
             static let groupFooter = "GroupedAssetsReusableFooterView"
             static let contactGroupHeader = "GroupedContactsHeaderView"
+            static let bottomButtonBarView = "BottomButtonBarView"
             
             static let carouselView = "CarouselItemView"
             static let datePickerContainer = "DateSelectebleView"

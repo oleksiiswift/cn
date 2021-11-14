@@ -17,7 +17,6 @@ class ContactGroupListViewModel {
     init(contactsGroup: [ContactsGroup]) {
         
         self.groupSection = contactsGroup
-        
     }
 }
 

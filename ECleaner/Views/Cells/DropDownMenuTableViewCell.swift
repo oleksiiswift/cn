@@ -9,30 +9,42 @@ import UIKit
 
 class DropDownMenuTableViewCell: UITableViewCell {
     
-    
+    @IBOutlet weak var baseView: UIView!
     @IBOutlet weak var thumbnailImageView: UIImageView!
     @IBOutlet weak var menuTitileTextLabel: UILabel!
     
+    lazy var simpleSeparatorView = UIView()
+        
     override func awakeFromNib() {
         super.awakeFromNib()
         
         setupUI()
         updateColors()
     }
-
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-    }
 }
 
 extension DropDownMenuTableViewCell {
     
-    public func configure(with menuItem: DropDownOptionsMenuItem) {
+    public func configure(with menuItem: DropDownOptionsMenuItem, row position: RowPosition) {
         
         thumbnailImageView.image = menuItem.itemThumbnail
         menuTitileTextLabel.text = menuItem.titleMenu
         menuTitileTextLabel.font = menuItem.titleFont
+        
+        if position != .bottom {
+            setupSeparatorView()
+        }
+    }
+    
+    private func setupSeparatorView() {
+        
+        self.baseView.addSubview(simpleSeparatorView)
+        simpleSeparatorView.translatesAutoresizingMaskIntoConstraints = false
+        
+        simpleSeparatorView.leadingAnchor.constraint(equalTo: self.baseView.leadingAnchor, constant: 20).isActive = true
+        simpleSeparatorView.trailingAnchor.constraint(equalTo: self.baseView.trailingAnchor, constant: 0).isActive = true
+        simpleSeparatorView.heightAnchor.constraint(equalToConstant: 1).isActive = true
+        simpleSeparatorView.bottomAnchor.constraint(equalTo: self.baseView.bottomAnchor, constant: 0).isActive = true
     }
 }
 
@@ -46,6 +58,7 @@ extension DropDownMenuTableViewCell: Themeble {
     func updateColors() {
         
         menuTitileTextLabel.textColor = theme.titleTextColor
-        thumbnailImageView.tintColor = theme.tintColor
+        thumbnailImageView.tintColor = theme.titleTextColor
+        simpleSeparatorView.backgroundColor = theme.separatorMainColor
     }
 }

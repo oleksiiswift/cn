@@ -123,8 +123,6 @@ extension GroupContactTableViewCell {
         
         guard selectableButton.isEnabled else { return }
         
-        
-        
         self.isSelectableSection = !self.isSelectableSection
         setBestContactMerge(isShow: true)
     }
