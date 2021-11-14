@@ -38,7 +38,16 @@ extension ContactsGroupDataSource {
     }
     
     private func configureHeader(view: GroupedContactsHeaderView, at section: Int) {
-        view.configure("+380 (UKRAINE)", index: section)
+        let group = self.contactGroupListViewModel.groupSection[section]
+        let countryCode = group.countryIdentifier.countryCode
+        let region = group.countryIdentifier.region
+        
+        if countryCode != "", let country = U.locale.localizedString(forRegionCode: region) {
+            let futureText = "+ \(countryCode) (\(country))"
+            view.configure(futureText, index: section)
+        } else {
+            view.configure("-", index: section)
+        }
     }
 }
 
