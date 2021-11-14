@@ -419,7 +419,7 @@ extension ContactsManager {
         
         for contact in contacts {
             debugPrint("group phone index: \(String(describing: contacts.firstIndex(of: contact)))")
-            let countryIdentifier = self.getCountryRegion(from: contact)
+            let countryIdentifier = self.getRegionIdentifier(from: contact)
             for phone in contact.phoneNumbers {
                 let stringValue = phone.value.stringValue
                 if !phoneNumbers.contains(stringValue) {
@@ -482,7 +482,7 @@ extension ContactsManager {
         for contact in contacts {
             debugPrint("names group index: \(String(describing: contacts.firstIndex(of: contact)))")
             if group.filter({$0.name.removeWhitespace() == contact.givenName.removeWhitespace() + contact.familyName.removeWhitespace()}).count == 0 {
-                let itentifier = self.getCountryRegion(from: contact)
+                let itentifier = self.getRegionIdentifier(from: contact)
                 group.append(ContactsGroup(name: contact.givenName.removeWhitespace() + contact.familyName.removeWhitespace(), contacts: [], groupType: .duplicatedContactName, countryIdentifier: itentifier))
             }
         }
@@ -537,7 +537,7 @@ extension ContactsManager {
         
         for contact in contacts {
 //            TODO: email clean position for deeep grouping
-            let identifier = self.getCountryRegion(from: contact)
+            let identifier = self.getRegionIdentifier(from: contact)
             debugPrint(contacts.firstIndex(of: contact) ?? "hell")
             for email in contact.emailAddresses {
                 if emailList.contains(email.value as String) {
@@ -689,7 +689,7 @@ extension ContactsManager  {
         for contact in contacts {
             debugPrint("names group index: \(String(describing: contacts.firstIndex(of: contact)))")
             if group.filter({$0.name.removeWhitespace().lowercased() == contact.givenName.removeWhitespace().lowercased() + contact.familyName.removeWhitespace().lowercased()}).count == 0 {
-                let countryIdentifier = self.getCountryRegion(from: contact)
+                let countryIdentifier = self.getRegionIdentifier(from: contact)
                 group.append(ContactsGroup(name: contact.givenName.removeWhitespace().lowercased() + contact.familyName.removeWhitespace().lowercased(), contacts: [], groupType: .duplicatedContactName, countryIdentifier: countryIdentifier))
             }
         }
@@ -1026,47 +1026,23 @@ extension ContactsManager {
 //      MARK: - phone number parsing -
 extension ContactsManager {
     
-    public func parse(phoneNumber: String) -> String {
+    public func getRegionIdentifier(from contact: CNContact) -> ContactsCountryIdentifier {
         
-        let phoneNumberKit = PhoneNumberKit()
-        var parsingNumber: String = ""
-        
-        do {
-            let phoneNumber = try phoneNumberKit.parse(phoneNumber)
-            parsingNumber = String(describing: phoneNumber)
-        } catch {
-            debugPrint(error.localizedDescription)
-        }
-        return parsingNumber
-    }
-    
-    
-    public func getCountryRegion(from contact: CNContact) -> ContactsCountryIdentifier {
-    
         let contactPhoneNumbers: [String] = contact.phoneNumbers.map({$0.value.stringValue})
-
+        
         if !contactPhoneNumbers.isEmpty {
-            let phoneKit = PhoneNumberKit()
-            
-            let phoneNumbers = phoneKit.parse(contactPhoneNumbers)
-            let phoneCountryCode = self.commonElementsInArray(stringArray: phoneNumbers.map({String($0.countryCode)}))
-            let regionID = self.commonElementsInArray(stringArray: phoneNumbers.map({$0.regionID}).compactMap { $0 })
-            
-            let identifier = ContactsCountryIdentifier(region: regionID, countryCode: phoneCountryCode)
-            return identifier
+            let phoneNumbers = phoneNumberKit.parse(contactPhoneNumbers)
+            let phoneCountryCode = self.getCommonIdentificators(from: phoneNumbers.map({String($0.countryCode)}))
+            let regionID = self.getCommonIdentificators(from: phoneNumbers.map({$0.regionID}).compactMap({$0}))
+            return ContactsCountryIdentifier(region: regionID, countryCode: phoneCountryCode)
         } else {
             return ContactsCountryIdentifier(region: "", countryCode: "")
         }
     }
     
-    
-    
-    
-    func commonElementsInArray(stringArray: [String]) -> String {
-        let dict = Dictionary(grouping: stringArray, by: {$0})
-        let newDict = dict.mapValues({$0.count})
-        return newDict.sorted(by: {$0.value > $1.value}).first?.key ?? ""
+    private func getCommonIdentificators(from stingIndentifiers: [String]) -> String {
+        let identificatorDictionary = Dictionary(grouping: stingIndentifiers, by: {$0})
+        let sortedIdentificators = identificatorDictionary.mapValues({$0.count})
+        return sortedIdentificators.sorted(by: {$0.value > $1.value}).first?.key ?? ""
     }
 }
-
-
