@@ -134,13 +134,13 @@ extension ContactsGroupDataSource: GroupedHeadersButtonDelegate {
         
         guard let indexOfSection = tag else { return }
         
-        debugPrint("delete section at: \(indexOfSection)")
+        SingleContactsGroupOperationMediator.instance.didDeleteFullContactsGroup(in: indexOfSection)
     }
     
     func didTapMergeGroupActionButton(_ tag: Int?) {
         
         guard let indexOfSection = tag else { return }
         
-        debugPrint("merge section at: \(indexOfSection)")
+        SingleContactsGroupOperationMediator.instance.didMergeContacts(in: indexOfSection)
     }
 }

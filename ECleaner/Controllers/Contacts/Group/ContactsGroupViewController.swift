@@ -102,6 +102,7 @@ extension ContactsGroupViewController: Themeble {
         navigationBar.delegate = self
         bottomButtonBarView.delegate = self
         
+        SingleContactsGroupOperationMediator.instance.setListener(listener: self)
         U.notificationCenter.addObserver(self, selector: #selector(mergeContactsDidChange(_:)), name: .mergeContactsSelectionDidChange, object: nil)
     }
     
@@ -159,14 +160,12 @@ extension ContactsGroupViewController {
                             }
                         } else {
                             let removableSections: [Int] = self.contactGroupListDataSource.selectedSections
-                            U.UI {
-                                if errorsCount == 0 {
-                                    debugPrint("todo alerr all contacts remove without errors")
-                                    self.updateRemovedIndexes(removableSections, errorsCount: errorsCount)
-                                } else {
-                                    debugPrint("TODO show alert delete with errors")
-                                    self.updateRemovedIndexes(removableSections, errorsCount: 0)
-                                }
+                            if errorsCount == 0 {
+                                debugPrint("todo alerr all contacts remove without errors")
+                                self.updateRemovedIndexes(removableSections, errorsCount: errorsCount)
+                            } else {
+                                debugPrint("TODO show alert delete with errors")
+                                self.updateRemovedIndexes(removableSections, errorsCount: 0)
                             }
                         }
                     }
@@ -175,13 +174,57 @@ extension ContactsGroupViewController {
         }
     }
     
-    
-    private func updateRemovedIndexes(_ indexes: [Int], errorsCount: Int) {
+    private func mergeContacts(in section: Int) {
         
-        let _ = contactGroup.remove(elementsAtIndices: indexes)
-        self.contactGroupListDataSource.selectedSections.removeAll()
-        indexes.forEach { index in
-            self.tableView.deleteSections(IndexSet(integer: index), with: .none)
+        let mergedSingleGroup = contactGroup[section]
+        
+        self.contactsManager.smartMergeContacts(in: mergedSingleGroup) { contactsToDelete in
+            self.contactsManager.deleteContacts(contactsToDelete) { suxxess, deletedCount in
+                if suxxess {
+                    if self.contactGroup.count == 1 {
+                        U.UI {
+                            self.closeController()
+                        }
+                    } else {
+                        self.updateRemovedIndexes([section], errorsCount: 0)
+                    }
+                } else {
+                    debugPrint("TODO alert merge error")
+                }
+            }
+        }
+    }
+    
+    private func deleteContacts(in section: Int) {
+        
+        let contacts = self.contactGroup[section].contacts
+        
+        self.contactsManager.deleteContacts(contacts) { suxxess, contactsCount in
+            if suxxess {
+                if contacts.count == contactsCount {
+                    if self.contactGroup.count != 1 {
+                            self.updateRemovedIndexes([section], errorsCount: 0)
+                    } else {
+                        debugPrint("delete suxxess")
+                        U.UI {
+                            self.closeController()                            
+                        }
+                    }
+                }
+            } else {
+                debugPrint("todo delete alert error")
+            }
+        }
+    }
+
+    private func updateRemovedIndexes(_ indexes: [Int], errorsCount: Int) {
+        U.UI {
+            _ = self.contactGroup.remove(elementsAtIndices: indexes)
+            self.setupViewModel(contacts: self.contactGroup)
+            self.tableView.delegate = self.contactGroupListDataSource
+            self.tableView.dataSource = self.contactGroupListDataSource
+            self.handleMergeContactsAppearButton()
+            self.tableView.reloadData()
         }
     }
     
@@ -232,6 +275,19 @@ extension ContactsGroupViewController: SelectDropDownMenuDelegate {
                 return
         }
     }
+}
+
+extension ContactsGroupViewController: SingleContactsGroupOperationsListener {
+    
+    func didMergeContacts(in section: Int) {
+        self.mergeContacts(in: section)
+    }
+    
+    func didDeleteFullContactsGroup(in section: Int) {
+        self.deleteContacts(in: section)
+    }
+    
+    func didRefactorContactsGroup(in section: Int, with indexPath: IndexPath) {}
 }
 
 extension ContactsGroupViewController: UIPopoverPresentationControllerDelegate {
