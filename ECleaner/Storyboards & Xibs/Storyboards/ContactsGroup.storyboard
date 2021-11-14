@@ -17,33 +17,45 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="oOR-XK-bvK" customClass="CustomNavigationBar" customModule="ECleaner" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="44" width="414" height="80"/>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="80" id="8Dg-4N-uh5"/>
-                                </constraints>
-                            </view>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="pV1-1m-SKW">
-                                <rect key="frame" x="0.0" y="124" width="414" height="772"/>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" estimatedSectionHeaderHeight="-1" sectionFooterHeight="18" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="pV1-1m-SKW">
+                                <rect key="frame" x="0.0" y="104" width="414" height="792"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </tableView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="oOR-XK-bvK" customClass="NavigationBar" customModule="ECleaner" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="44" width="414" height="60"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="60" id="8Dg-4N-uh5"/>
+                                </constraints>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7H5-5o-oid" customClass="BottomButtonBarView" customModule="ECleaner" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="802" width="414" height="94"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="94" id="CR9-dB-vZl"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="agK-c9-lmr"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstAttribute="bottom" secondItem="pV1-1m-SKW" secondAttribute="bottom" id="73R-YD-5Bn"/>
                             <constraint firstItem="agK-c9-lmr" firstAttribute="trailing" secondItem="oOR-XK-bvK" secondAttribute="trailing" id="8VK-IL-bQv"/>
                             <constraint firstItem="pV1-1m-SKW" firstAttribute="top" secondItem="oOR-XK-bvK" secondAttribute="bottom" id="E7a-8o-BL1"/>
+                            <constraint firstItem="7H5-5o-oid" firstAttribute="leading" secondItem="agK-c9-lmr" secondAttribute="leading" id="G3C-Zc-Rzm"/>
                             <constraint firstItem="oOR-XK-bvK" firstAttribute="leading" secondItem="agK-c9-lmr" secondAttribute="leading" id="GRj-o2-YEK"/>
+                            <constraint firstAttribute="bottom" secondItem="7H5-5o-oid" secondAttribute="bottom" id="GxU-Da-Pbr"/>
                             <constraint firstItem="pV1-1m-SKW" firstAttribute="leading" secondItem="agK-c9-lmr" secondAttribute="leading" id="HCa-oE-pf8"/>
                             <constraint firstItem="agK-c9-lmr" firstAttribute="trailing" secondItem="pV1-1m-SKW" secondAttribute="trailing" id="Kiw-GV-ZSx"/>
                             <constraint firstItem="oOR-XK-bvK" firstAttribute="top" secondItem="agK-c9-lmr" secondAttribute="top" id="OMp-oA-Mx7"/>
+                            <constraint firstItem="agK-c9-lmr" firstAttribute="trailing" secondItem="7H5-5o-oid" secondAttribute="trailing" id="R3w-fR-gzT"/>
+                            <constraint firstAttribute="bottom" secondItem="pV1-1m-SKW" secondAttribute="bottom" id="YWm-cO-EYb"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="zOc-j3-A8e"/>
                     <connections>
-                        <outlet property="customNavBar" destination="oOR-XK-bvK" id="CFV-4o-c63"/>
+                        <outlet property="bottomButtonBarView" destination="7H5-5o-oid" id="zwl-Zn-i8x"/>
+                        <outlet property="bottomButtonHeightConstraint" destination="CR9-dB-vZl" id="5K1-2a-ums"/>
+                        <outlet property="navigationBar" destination="oOR-XK-bvK" id="gJe-83-qSo"/>
                         <outlet property="tableView" destination="pV1-1m-SKW" id="590-N6-Vs0"/>
                     </connections>
                 </viewController>

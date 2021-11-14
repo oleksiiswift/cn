@@ -10,7 +10,7 @@ import Contacts
 
 class ContactsViewController: UIViewController {
     
-    @IBOutlet weak var customNavBar: CustomNavigationBar!
+    @IBOutlet weak var customNavBar: StartingNavigationBar!
     @IBOutlet weak var tableView: UITableView!
     
     
@@ -71,7 +71,7 @@ extension ContactsViewController: Themeble {
     }
 }
 
-extension ContactsViewController: CustomNavigationBarDelegate {
+extension ContactsViewController: StartingNavigationBarDelegate {
     
     
     func didTapLeftBarButton(_sender: UIButton) {

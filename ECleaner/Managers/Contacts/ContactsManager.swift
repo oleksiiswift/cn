@@ -64,12 +64,24 @@ enum ContactsContainerType {
     }
 }
 
+class ContactsCountryIdentifier {
+    var region: String
+    var countryCode: String
+    
+    init(region: String, countryCode: String) {
+        self.region = region
+        self.countryCode = countryCode
+    }
+}
+
 class ContactsGroup {
+    let countryIdentifier: ContactsCountryIdentifier
     let name: String
     var contacts: [CNContact]
     var groupType: ContactasCleaningType
     
-    init(name: String, contacts: [CNContact], groupType: ContactasCleaningType) {
+    init(name: String, contacts: [CNContact], groupType: ContactasCleaningType, countryIdentifier: ContactsCountryIdentifier) {
+        self.countryIdentifier = countryIdentifier
         self.name = name
         self.contacts = contacts
         self.groupType = groupType
@@ -210,7 +222,10 @@ extension ContactsManager {
     
     public func deleteAllContacts() {
         self.getAllContacts { contacts in
-            self.deleteContacts(contacts)
+            self.deleteContacts(contacts) { suxxess, deletedCount in
+                debugPrint("deleting is \(suxxess)")
+                debugPrint("deleted \(deletedCount) contacts")
+            }
         }
     }
 }
@@ -404,11 +419,12 @@ extension ContactsManager {
         
         for contact in contacts {
             debugPrint("group phone index: \(String(describing: contacts.firstIndex(of: contact)))")
+            let countryIdentifier = self.getRegionIdentifier(from: contact)
             for phone in contact.phoneNumbers {
                 let stringValue = phone.value.stringValue
                 if !phoneNumbers.contains(stringValue) {
                     phoneNumbers.append(stringValue)
-                    group.append(ContactsGroup(name: stringValue, contacts: [], groupType: .duplicatedPhoneNumnber))
+                    group.append(ContactsGroup(name: stringValue, contacts: [], groupType: .duplicatedPhoneNumnber, countryIdentifier: countryIdentifier))
                 }
             }
         }
@@ -466,7 +482,8 @@ extension ContactsManager {
         for contact in contacts {
             debugPrint("names group index: \(String(describing: contacts.firstIndex(of: contact)))")
             if group.filter({$0.name.removeWhitespace() == contact.givenName.removeWhitespace() + contact.familyName.removeWhitespace()}).count == 0 {
-                group.append(ContactsGroup(name: contact.givenName.removeWhitespace() + contact.familyName.removeWhitespace(), contacts: [], groupType: .duplicatedContactName))
+                let itentifier = self.getRegionIdentifier(from: contact)
+                group.append(ContactsGroup(name: contact.givenName.removeWhitespace() + contact.familyName.removeWhitespace(), contacts: [], groupType: .duplicatedContactName, countryIdentifier: itentifier))
             }
         }
         
@@ -520,11 +537,12 @@ extension ContactsManager {
         
         for contact in contacts {
 //            TODO: email clean position for deeep grouping
+            let identifier = self.getRegionIdentifier(from: contact)
             debugPrint(contacts.firstIndex(of: contact) ?? "hell")
             for email in contact.emailAddresses {
                 if emailList.contains(email.value as String) {
                     emailList.append(email.value as String)
-                    group.append(ContactsGroup(name: email.value as String, contacts: [], groupType: .duplicatedEmail))
+                    group.append(ContactsGroup(name: email.value as String, contacts: [], groupType: .duplicatedEmail, countryIdentifier: identifier))
                 }
             }
         }
@@ -540,11 +558,12 @@ extension ContactsManager {
     private func groupingMissingIncompleteContacts(_ contacts: [CNContact], completionHandler: @escaping ([ContactsGroup]) -> Void) {
         
         var contactsGroup: [ContactsGroup] = []
+        let emptyIdentifier = ContactsCountryIdentifier(region: "", countryCode: "")
         
             /// `only name` group
         let onlyNameContacts = contacts.filter({ $0.phoneNumbers.count == 0 && $0.emailAddresses.count == 0})
         let onlyNameGroupName = ContactasCleaningType.onlyName.rawValue
-        let onlyNameGroup = ContactsGroup(name: onlyNameGroupName, contacts: onlyNameContacts, groupType: .onlyName)
+        let onlyNameGroup = ContactsGroup(name: onlyNameGroupName, contacts: onlyNameContacts, groupType: .onlyName, countryIdentifier: emptyIdentifier)
         
         onlyNameContacts.count != 0 ? contactsGroup.append(onlyNameGroup) : ()
         
@@ -553,27 +572,27 @@ extension ContactsManager {
         let emptyNameGroupName = ContactasCleaningType.emptyName.rawValue
         let incompleteNameContacts = emptyNameContacts.filter({$0.phoneNumbers.count != 0 && $0.emailAddresses.count != 0} )
         
-        let emptyNameGroup = ContactsGroup(name: emptyNameGroupName, contacts: incompleteNameContacts, groupType: .emptyName)
+        let emptyNameGroup = ContactsGroup(name: emptyNameGroupName, contacts: incompleteNameContacts, groupType: .emptyName, countryIdentifier: emptyIdentifier)
         
         emptyNameContacts.count != 0 ? contactsGroup.append(emptyNameGroup) : ()
         
             /// `only mail` group
         let onlyEmailsContacts = emptyNameContacts.filter({$0.phoneNumbers.count == 0 && $0.emailAddresses.count != 0})
         let onlyEmailGroupName = ContactasCleaningType.onlyEmail.rawValue
-        let onlyEmailGroup = ContactsGroup(name: onlyEmailGroupName, contacts: onlyEmailsContacts, groupType: .onlyEmail)
+        let onlyEmailGroup = ContactsGroup(name: onlyEmailGroupName, contacts: onlyEmailsContacts, groupType: .onlyEmail, countryIdentifier: emptyIdentifier)
         
         onlyEmailsContacts.count != 0 ? contactsGroup.append(onlyEmailGroup) : ()
         
             /// `only phone number` group
         let onlyPhoneNumbersContacts = emptyNameContacts.filter({$0.phoneNumbers.count != 0 && $0.emailAddresses.count == 0})
         let onlyPhoneNumbersGroupName = ContactasCleaningType.onlyPhone.rawValue
-        let onlyPhoneNumbersGroup = ContactsGroup(name: onlyPhoneNumbersGroupName, contacts: onlyPhoneNumbersContacts, groupType: .onlyPhone)
+        let onlyPhoneNumbersGroup = ContactsGroup(name: onlyPhoneNumbersGroupName, contacts: onlyPhoneNumbersContacts, groupType: .onlyPhone, countryIdentifier: emptyIdentifier)
         
         onlyPhoneNumbersContacts.count != 0 ? contactsGroup.append(onlyPhoneNumbersGroup) : ()
         
         let wholeEmptyContacts = emptyNameContacts.filter({$0.phoneNumbers.count == 0 && $0.emailAddresses.count == 0})
         let wholeEmptyContactsName = ContactasCleaningType.wholeEmpty.rawValue
-        let wholeEmptyGroup = ContactsGroup(name: wholeEmptyContactsName, contacts: wholeEmptyContacts, groupType: .wholeEmpty)
+        let wholeEmptyGroup = ContactsGroup(name: wholeEmptyContactsName, contacts: wholeEmptyContacts, groupType: .wholeEmpty, countryIdentifier: emptyIdentifier)
         
         wholeEmptyContacts.count != 0 ? contactsGroup.append(wholeEmptyGroup) : ()
         
@@ -670,7 +689,8 @@ extension ContactsManager  {
         for contact in contacts {
             debugPrint("names group index: \(String(describing: contacts.firstIndex(of: contact)))")
             if group.filter({$0.name.removeWhitespace().lowercased() == contact.givenName.removeWhitespace().lowercased() + contact.familyName.removeWhitespace().lowercased()}).count == 0 {
-                group.append(ContactsGroup(name: contact.givenName.removeWhitespace().lowercased() + contact.familyName.removeWhitespace().lowercased(), contacts: [], groupType: .duplicatedContactName))
+                let countryIdentifier = self.getRegionIdentifier(from: contact)
+                group.append(ContactsGroup(name: contact.givenName.removeWhitespace().lowercased() + contact.familyName.removeWhitespace().lowercased(), contacts: [], groupType: .duplicatedContactName, countryIdentifier: countryIdentifier))
             }
         }
         
@@ -834,9 +854,9 @@ extension ContactsManager  {
                 bestContact = contact
             }
         }
-        let deletedContacts = contacts.filter({ $0 != bestContact! })
         
-        self.deleteContacts(deletedContacts)
+        let deletedContacts = contacts.filter({ $0 != bestContact! })
+        self.deleteContacts(deletedContacts) { _, _ in }
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
             handler(true)
@@ -883,15 +903,23 @@ extension ContactsManager  {
 
 extension ContactsManager {
     
-    public func deleteContacts(_ contacts: [CNContact]) {
+    public func deleteContacts(_ contacts: [CNContact],_ completionHandler: @escaping ((Bool, Int) -> Void)) {
         
         U.BG {
-            var contactsCount = contacts.count
+            var deletedContactsCount = 0
             contacts.forEach { contact in
                 self.deleteContact(contact) { success in
-                    contactsCount -= 1
-                    debugPrint(contactsCount)
+                    if success {
+                        deletedContactsCount += 1
+                        debugPrint(deletedContactsCount)
+                    }
                 }
+            }
+            
+            if contacts.count == deletedContactsCount {
+                completionHandler(true, deletedContactsCount)
+            } else {
+                completionHandler(false,deletedContactsCount)
             }
         }
     }
@@ -995,4 +1023,26 @@ extension ContactsManager {
 }
 
 
-
+//      MARK: - phone number parsing -
+extension ContactsManager {
+    
+    public func getRegionIdentifier(from contact: CNContact) -> ContactsCountryIdentifier {
+        
+        let contactPhoneNumbers: [String] = contact.phoneNumbers.map({$0.value.stringValue})
+        
+        if !contactPhoneNumbers.isEmpty {
+            let phoneNumbers = phoneNumberKit.parse(contactPhoneNumbers)
+            let phoneCountryCode = self.getCommonIdentificators(from: phoneNumbers.map({String($0.countryCode)}))
+            let regionID = self.getCommonIdentificators(from: phoneNumbers.map({$0.regionID}).compactMap({$0}))
+            return ContactsCountryIdentifier(region: regionID, countryCode: phoneCountryCode)
+        } else {
+            return ContactsCountryIdentifier(region: "", countryCode: "")
+        }
+    }
+    
+    private func getCommonIdentificators(from stingIndentifiers: [String]) -> String {
+        let identificatorDictionary = Dictionary(grouping: stingIndentifiers, by: {$0})
+        let sortedIdentificators = identificatorDictionary.mapValues({$0.count})
+        return sortedIdentificators.sorted(by: {$0.value > $1.value}).first?.key ?? ""
+    }
+}

@@ -11,7 +11,7 @@ class DateSelectorViewController: UIViewController {
     
     @IBOutlet weak var periodDatePicker: UIDatePicker!
     @IBOutlet weak var mainContainerView: UIView!
-    @IBOutlet weak var customNavBar: CustomNavigationBar!
+    @IBOutlet weak var customNavBar: StartingNavigationBar!
     @IBOutlet weak var autoDatePickButton: UIButton!
     @IBOutlet weak var autoDatePickBackgroundImageView: UIImageView!
     @IBOutlet weak var autoDatePickImageView: UIImageView!
@@ -160,7 +160,7 @@ extension DateSelectorViewController: Themeble {
     }
 }
 
-extension DateSelectorViewController: CustomNavigationBarDelegate {
+extension DateSelectorViewController: StartingNavigationBarDelegate {
     
     func didTapLeftBarButton(_sender: UIButton) {}
     

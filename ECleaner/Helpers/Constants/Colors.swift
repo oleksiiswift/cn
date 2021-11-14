@@ -19,7 +19,185 @@ enum Theme: Int {
                 return .lightContent
         }
     }
+    
 //    MARK: - backgroud colors -
+    
+    var cellBackGroundColor: UIColor {
+        switch self {
+            case .light:
+                return UIColor().colorFromHexString("ECF0F6")
+            case .dark :
+                return UIColor().colorFromHexString("ECF0F6")
+        }
+    }
+    
+    var separatorMainColor: UIColor {
+        switch self {
+            case .light:
+                return UIColor().colorFromHexString("D8DEE9")
+            case .dark :
+                return UIColor().colorFromHexString("D8DEE9")
+        }
+    }
+
+    var separatorHelperColor: UIColor {
+        switch self {
+            case .light:
+                return UIColor().colorFromHexString("F5F9FF")
+            case .dark :
+                return UIColor().colorFromHexString("F5F9FF")
+        }
+    }
+    
+    var primaryButtonBackgroundColor: UIColor {
+        switch self {
+            case .light:
+                return UIColor().colorFromHexString("E9EFF2")
+            case .dark :
+                return UIColor().colorFromHexString("E9EFF2")
+        }
+    }
+    
+    var navigationBarBackgroundColor: UIColor {
+        switch self {
+            case .light:
+                return UIColor().colorFromHexString("E3E8F1")
+            case .dark :
+                return UIColor().colorFromHexString("E3E8F1")
+        }
+    }
+    
+    var dropDownMenuBackgroundColor: UIColor {
+        switch self {
+            case .light:
+                return UIColor().colorFromHexString("F3F7FD")
+            case .dark :
+                return UIColor().colorFromHexString("F3F7FD")
+        }
+    }
+
+    
+//    MARK: - shadow colors -
+    
+    var topShadowColor: UIColor {
+        switch self {
+            case .light:
+                return UIColor().colorFromHexString("FFFFFF")
+            case .dark :
+                return UIColor().colorFromHexString("FFFFFF")
+        }
+    }
+    
+    var sideShadowColor: UIColor {
+        switch self {
+            case .light:
+                return UIColor().colorFromHexString("D8DFEB")
+            case .dark :
+                return UIColor().colorFromHexString("D8DFEB")
+        }
+    }
+    
+    var bottomShadowColor: UIColor {
+        switch self {
+            case .light:
+                return UIColor().colorFromHexString("A4B5C4")
+            case .dark :
+                return UIColor().colorFromHexString("A4B5C4")
+        }
+    }
+    
+    var primaryButtonTopShadowColor: UIColor {
+        switch self {
+            case .light:
+                return UIColor().colorFromHexString("FFFFFF")
+            case .dark :
+                return UIColor().colorFromHexString("FFFFFF")
+        }
+    }
+    
+    var primaryButtonBottomShadowColor: UIColor {
+        switch self {
+            case .light:
+                return UIColor().colorFromHexString("D1DAE8")
+            case .dark :
+                return UIColor().colorFromHexString("D1DAE8")
+        }
+    }
+
+//      MARK: - accent tint colors -
+        
+    var contactsTintColor: UIColor {
+        switch self {
+            case .light:
+                return UIColor().colorFromHexString("1AC18E")
+            case .dark :
+                return UIColor().colorFromHexString("1AC18E")
+        }
+    }
+    
+    var videosTintColor: UIColor {
+        switch self {
+            case .light:
+                return UIColor().colorFromHexString("418CFF")
+            case .dark :
+                return UIColor().colorFromHexString("418CFF")
+        }
+    }
+    
+    var phoneTintColor: UIColor {
+        switch self {
+            case .light:
+                return UIColor().colorFromHexString("F07378")
+            case .dark :
+                return UIColor().colorFromHexString("F07378")
+        }
+    }
+    
+    var defaulTintColor: UIColor {
+        switch self {
+            case .light:
+                return UIColor().colorFromHexString("418CFF")
+            case .dark :
+                return UIColor().colorFromHexString("418CFF")
+        }
+    }
+    
+    var activeTitleTextColor: UIColor {
+        switch self {
+            case .light:
+                return UIColor().colorFromHexString("FFFFFF")
+            case .dark:
+                return UIColor().colorFromHexString("FFFFFF")
+        }
+    }
+    
+//    MARK: - title and subtitle colors -
+    
+    var titleTextColor: UIColor {
+        switch self {
+            case .light:
+                return UIColor().colorFromHexString("374058")
+            case .dark:
+                return UIColor().colorFromHexString("374058")
+        }
+    }
+    
+    var sectionTitleTextColor: UIColor {
+        
+        switch self {
+            case .light:
+                return UIColor().colorFromHexString("8F97A7")
+            case .dark:
+                return UIColor().colorFromHexString("8F97A7")
+        }
+    }
+    
+    
+    
+    
+    
+    #warning("check colors") 
+// MARK: - `neeed! Check colors for new aftet this linge!!!!!
   
     var backgroundColor: UIColor {
         switch self {
@@ -48,14 +226,7 @@ enum Theme: Int {
         }
     }
     
-    var titleTextColor: UIColor {
-        switch self {
-            case .light:
-                return UIColor().colorFromHexString("374058")
-            case .dark:
-                return UIColor().colorFromHexString("374058")
-        }
-    }
+
     
     var subTitleTextColor: UIColor {
         switch self {
@@ -75,14 +246,7 @@ enum Theme: Int {
         }
     }
     
-    var activeTitleTextColor: UIColor {
-        switch self {
-            case .light:
-                return UIColor().colorFromHexString("FFFFFF")
-            case .dark:
-                return UIColor().colorFromHexString("FFFFFF")
-        }
-    }
+
     
 //    var progressBackgroundColor: UIColor {
 //        switch self {
@@ -149,12 +313,6 @@ enum Theme: Int {
         }
     }
     
-    
-    
-    
-    
-    
-    
     var sectionBackgroundColor: UIColor {
         switch self {
             case .light:
@@ -163,7 +321,15 @@ enum Theme: Int {
                 return UIColor().colorFromHexString("C4C4C4")
         }
     }
-    
-    
 }
 
+
+
+//var templateColor: UIColor {
+//    switch self {
+//        case .light:
+//            return UIColor().colorFromHexString("C4C4C4")
+//        case .dark :
+//            return UIColor().colorFromHexString("C4C4C4")
+//    }
+//}

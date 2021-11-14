@@ -31,4 +31,8 @@ extension Notification.Name {
     static let deepCleanAllContactsScan = Notification.Name(C.key.notification.deepCleanAllContactsScan)
     static let deepCleanEmptyContactsScan = Notification.Name(C.key.notification.deepCleanEmptyContactsScan)
     static let deepCleanDuplicatedContactsScan = Notification.Name(C.key.notification.deepCleanDuplicateContacts)
+    
+    /// `contacts`
+    static let mergeContactsSelectionDidChange = Notification.Name(C.key.notification.mergeContactsSelectionDidChange)
+    
 }

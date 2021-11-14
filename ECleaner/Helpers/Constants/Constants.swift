@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 typealias C = Constants
 class Constants {
@@ -56,6 +57,9 @@ class Constants {
             static let deepCleanAllContactsScan = "deepCleanAllContactsScan"
             static let deepCleanEmptyContactsScan = "deepCleanEmptyContactsScan"
             static let deepCleanDuplicateContacts = "deepCleanDuplicatedContactsScan"
+            
+            /// `contacts notification`
+            static let mergeContactsSelectionDidChange = "mergeContactsSelectionDidChange"
         }
         
 //        MARK: - notification dictionary progress identifiers -
@@ -103,6 +107,11 @@ class Constants {
 //    MARK: - public identifiers -
     struct identifiers {
         
+        struct navigation {
+            static let main = "StartingNavigationBar"
+            static let navigationBar = "NavigationBar"
+        }
+        
         struct storyboards {
             static let main = "Main"
             static let media = "MediaContent"
@@ -131,11 +140,14 @@ class Constants {
             static let carouselCell = "CarouselCollectionViewCell"
             static let cleanInfoCell = "DeepCleanInfoTableViewCell"
             static let contactCell = "ContactTableViewCell"
+            static let groupContactCell = "GroupContactTableViewCell"
         }
         
         struct views {
             static let groupHeaderView = "GroupedAssetsReusableHeaderView"
             static let groupFooterView = "GroupedAssetsReusableFooterView"
+            static let contactGroupHeader = "GroupedContactsHeaderView"
+            static let bottomButtonBarView = "BottomButtonBarView"
         }
         
         struct xibs {
@@ -145,14 +157,19 @@ class Constants {
             static let photoSimpleCell = "PhotoCollectionViewCell"
             static let dropDownCell = "DropDownMenuTableViewCell"
             static let cleanInfoCell = "DeepCleanInfoTableViewCell"
-            static let contactCell = "ContactTableViewCell"
+            static let contactCell = "GroupContactTableViewCell"
             /// `views`
             static let groupHeader = "GroupedAssetsReusableHeaderView"
             static let groupFooter = "GroupedAssetsReusableFooterView"
+            static let contactGroupHeader = "GroupedContactsHeaderView"
+            static let bottomButtonBarView = "BottomButtonBarView"
             
             static let carouselView = "CarouselItemView"
-            
             static let datePickerContainer = "DateSelectebleView"
+            
+            /// `navigation`
+            static let startingNavigationBar = "StartingNavigationBar"
+            static let navigationBar = "NavigationBar"
             
             /// controllers
 //            static let photoPreview = "PhotoPreviewViewController"
@@ -188,3 +205,4 @@ class Constants {
         }
     }
 }
+

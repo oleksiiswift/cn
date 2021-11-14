@@ -12,7 +12,7 @@ import Contacts
 
 class MediaContentViewController: UIViewController {
   
-    @IBOutlet weak var customNavBar: CustomNavigationBar!
+    @IBOutlet weak var customNavBar: StartingNavigationBar!
 
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var dateSelectContainerView: UIView!
@@ -254,7 +254,7 @@ extension MediaContentViewController {
                     case 1:
                         self.showEmptyGroupsContacts()
                     case 2:
-                        self.showDuplicatedContacts()
+                        self.showDuplicatedNamesContacts()
                     default:
                         return
                 }
@@ -293,7 +293,8 @@ extension MediaContentViewController {
         let storyboard = UIStoryboard(name: C.identifiers.storyboards.contactsGroup, bundle: nil)
         let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.contactsGroup) as! ContactsGroupViewController
         viewController.contactGroup = group
-        viewController.contentType = .userContacts
+        viewController.navigationTitle = "simillar contacts"
+        viewController.mediaType = .userContacts
         self.navigationController?.pushViewController(viewController, animated: true)
         
     }
@@ -532,7 +533,7 @@ extension MediaContentViewController: DateSelectebleViewDelegate {
     }
 }
 
-extension MediaContentViewController: CustomNavigationBarDelegate {
+extension MediaContentViewController: StartingNavigationBarDelegate {
     
     func didTapLeftBarButton(_sender: UIButton) {
         self.navigationController?.popViewController(animated: true)
