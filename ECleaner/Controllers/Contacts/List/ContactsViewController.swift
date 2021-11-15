@@ -10,15 +10,15 @@ import Contacts
 
 class ContactsViewController: UIViewController {
     
-    @IBOutlet weak var customNavBar: StartingNavigationBar!
+    @IBOutlet weak var navigationBar: NavigationBar!
     @IBOutlet weak var tableView: UITableView!
-    
     
     public var contactListViewModel: ContactListViewModel!
     public var contactListDataSource: ContactListDataSource!
     
     public var contacts: [CNContact] = []
-    public var contentType: MediaContentType = .none
+    public var contentType: PhotoMediaType = .none
+    public var mediaType: MediaContentType = .none
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,22 +32,20 @@ class ContactsViewController: UIViewController {
     }
 }
 
-
 extension ContactsViewController: Themeble {
     
     private func setupNavigation() {
         
         self.navigationController?.navigationBar.isHidden = true
-        customNavBar.setUpNavigation(title: contentType.navTitle, leftImage: I.navigationItems.back, rightImage: nil)
-    }
-    
-    private func setupUI() {
+//        customNavBar.setUpNavigation(title: mediaType.navigationTitle, leftImage: I.navigationItems.back, rightImage: nil)
         
     }
     
+    private func setupUI() {}
+    
     private func setupViewModel(contacts: [CNContact]) {
         self.contactListViewModel = ContactListViewModel(contacts: contacts)
-        self.contactListDataSource = ContactListDataSource(contactListViewModel: self.contactListViewModel)
+        self.contactListDataSource = ContactListDataSource(contactListViewModel: self.contactListViewModel, contentType: self.contentType)
     }
     
     func updateColors() {
@@ -67,18 +65,15 @@ extension ContactsViewController: Themeble {
     
     private func setupObserversAndDelegate() {
         
-        customNavBar.delegate = self
+        navigationBar.delegate = self
     }
 }
 
-extension ContactsViewController: StartingNavigationBarDelegate {
+extension ContactsViewController: NavigationBarDelegate {
     
-    
-    func didTapLeftBarButton(_sender: UIButton) {
+    func didTapLeftBarButton(_ sender: UIButton) {
         self.navigationController?.popViewController(animated: true)
     }
     
-    func didTapRightBarButton(_sender: UIButton) {}
-    
-    
+    func didTapRightBarButton(_ sender: UIButton) {}
 }

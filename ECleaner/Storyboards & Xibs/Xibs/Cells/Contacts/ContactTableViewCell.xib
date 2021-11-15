@@ -11,17 +11,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="KGk-i7-Jjw" customClass="ContactTableViewCell" customModule="ECleaner" customModuleProvider="target">
-            <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
-            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
-                <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
-                <autoresizingMask key="autoresizingMask"/>
-            </tableViewCellContentView>
-            <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
-            <point key="canvasLocation" x="209" y="221"/>
-        </tableViewCell>
-        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="90" id="5C8-dK-CKW" customClass="GroupContactTableViewCell" customModule="ECleaner" customModuleProvider="target">
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="90" id="5C8-dK-CKW" customClass="ContactTableViewCell" customModule="ECleaner" customModuleProvider="target">
             <rect key="frame" x="0.0" y="0.0" width="486" height="90"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" ambiguous="YES" tableViewCell="5C8-dK-CKW" id="M08-5C-c3g">
@@ -111,14 +101,10 @@
             <viewLayoutGuide key="safeArea" id="DES-5V-GEJ"/>
             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <connections>
-                <outlet property="baseView" destination="jiH-Zu-BpU" id="sid-PO-juH"/>
-                <outlet property="bottomBaseViewConstraint" destination="aDg-f8-KKN" id="E9e-Or-45h"/>
-                <outlet property="contactSubtitleTextLabel" destination="I8z-ds-RqL" id="UpG-e8-Aqi"/>
-                <outlet property="contactTitleTextLabel" destination="n1u-i6-xtA" id="KvW-fO-dEm"/>
-                <outlet property="rightShevronImageView" destination="RrH-wC-nXM" id="Ct6-b3-q22"/>
-                <outlet property="shhadowImageView" destination="P74-6f-l9L" id="bli-f8-0ZC"/>
-                <outlet property="topBaseViewConstraint" destination="a5i-mn-o8t" id="KLY-lN-syQ"/>
-                <outlet property="topShadowView" destination="L9p-Bo-91J" id="VdL-hg-b4k"/>
+                <outlet property="bottomBaseViewConstraint" destination="aDg-f8-KKN" id="hCy-bC-nM1"/>
+                <outlet property="contactSubtitleTextLabel" destination="I8z-ds-RqL" id="1AP-Av-1zL"/>
+                <outlet property="contactTitleTextLabel" destination="n1u-i6-xtA" id="guq-dL-CoK"/>
+                <outlet property="topBaseViewConstraint" destination="a5i-mn-o8t" id="2yt-sq-uor"/>
             </connections>
             <point key="canvasLocation" x="253.62318840579712" y="113.16964285714285"/>
         </tableViewCell>

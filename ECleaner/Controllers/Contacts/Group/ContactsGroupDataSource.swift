@@ -63,7 +63,7 @@ extension ContactsGroupDataSource: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: C.identifiers.cells.contactCell, for: indexPath) as! GroupContactTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: C.identifiers.cells.groupContactCell, for: indexPath) as! GroupContactTableViewCell
         
         let rowPosition = self.checkIndexPosition(from: indexPath, numberOfRows: tableView.numberOfRows(inSection: indexPath.section))
         

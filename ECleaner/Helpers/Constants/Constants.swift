@@ -157,7 +157,8 @@ class Constants {
             static let photoSimpleCell = "PhotoCollectionViewCell"
             static let dropDownCell = "DropDownMenuTableViewCell"
             static let cleanInfoCell = "DeepCleanInfoTableViewCell"
-            static let contactCell = "GroupContactTableViewCell"
+            static let contactCell = "ContactTableViewCell"
+            static let groupContactCell = "GroupContactTableViewCell"
             /// `views`
             static let groupHeader = "GroupedAssetsReusableHeaderView"
             static let groupFooter = "GroupedAssetsReusableFooterView"

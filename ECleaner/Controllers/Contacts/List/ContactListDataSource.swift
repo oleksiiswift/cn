@@ -14,18 +14,21 @@ class ContactListDataSource: NSObject {
     public var isContactAvailable: ((Bool) -> (Void)) = {_ in}
     public var didSelectContact: ((ContactListViewModel) -> Void) = {_ in }
     
-    init(contactListViewModel: ContactListViewModel) {
+    public var contentType: PhotoMediaType = .none
+    
+    init(contactListViewModel: ContactListViewModel, contentType: PhotoMediaType) {
         
         self.contactListViewModel = contactListViewModel
+        self.contentType = contentType
     }
 }
 
 extension ContactListDataSource {
     
     private func cellConfigure(cell: ContactTableViewCell, at indexPath: IndexPath) {
-        
+    
         guard let contact = contactListViewModel.getContactOnRow(at: indexPath) else { return }
-        cell.updateContactCell(contact)
+        cell.updateContactCell(contact, contentType: self.contentType)
     }
 }
 

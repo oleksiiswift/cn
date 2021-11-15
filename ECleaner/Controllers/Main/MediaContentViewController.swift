@@ -12,8 +12,7 @@ import Contacts
 
 class MediaContentViewController: UIViewController {
   
-    @IBOutlet weak var customNavBar: StartingNavigationBar!
-
+    @IBOutlet weak var navigationBar: NavigationBar!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var dateSelectContainerView: UIView!
     @IBOutlet weak var dateSelectContainerHeigntConstraint: NSLayoutConstraint!
@@ -93,7 +92,7 @@ extension MediaContentViewController: UITableViewDelegate, UITableViewDataSource
         tableView.dataSource = self
         tableView.separatorStyle = .none
         tableView.register(UINib(nibName: C.identifiers.xibs.contentTypeCell, bundle: nil), forCellReuseIdentifier: C.identifiers.cells.contentTypeCell)
-//        tableView.contentInset = UIEdgeInsets(top: 8, left: 0, bottom: 0, right: 0)
+        tableView.contentInset.top = 20
     }
     
     func configure(_ cell: ContentTypeTableViewCell, at indexPath: IndexPath) {
@@ -205,7 +204,7 @@ extension MediaContentViewController {
     /// `3` - screen records files
     /// `4` - recently deleted files
     
-    /// `0` -  all contacts
+    /// `0` - all contacts
     /// `1` - empty contacts
     /// `2` - duplicated contacts
         
@@ -281,11 +280,12 @@ extension MediaContentViewController {
         self.navigationController?.pushViewController(viewController, animated: true)
     }
     
-    private func showContactViewController(contacts: [CNContact]) {
+    private func showContactViewController(contacts: [CNContact], contentType: PhotoMediaType) {
         let storyboard = UIStoryboard(name: C.identifiers.storyboards.contacts, bundle: nil)
         let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.contacts) as! ContactsViewController
         viewController.contacts = contacts
-        viewController.contentType = .userContacts
+        viewController.mediaType = .userContacts
+        viewController.contentType = contentType
         self.navigationController?.pushViewController(viewController, animated: true)
     }
         
@@ -296,7 +296,6 @@ extension MediaContentViewController {
         viewController.navigationTitle = "simillar contacts"
         viewController.mediaType = .userContacts
         self.navigationController?.pushViewController(viewController, animated: true)
-        
     }
 }
 
@@ -474,7 +473,7 @@ extension MediaContentViewController {
             U.UI {
                 P.hideIndicator()
                 if !contacts.isEmpty {
-                    self.showContactViewController(contacts: contacts)
+                    self.showContactViewController(contacts: contacts, contentType: .allContacts)
                 } else {
                     
                 }
@@ -487,7 +486,6 @@ extension MediaContentViewController {
         self.contactsManager.getEmptyContacts { contactsGroup in
             U.UI {
                 P.hideIndicator()
-                
                 debugPrint(contactsGroup)
             }
         }
@@ -533,21 +531,21 @@ extension MediaContentViewController: DateSelectebleViewDelegate {
     }
 }
 
-extension MediaContentViewController: StartingNavigationBarDelegate {
+extension MediaContentViewController: NavigationBarDelegate {
     
-    func didTapLeftBarButton(_sender: UIButton) {
+    func didTapLeftBarButton(_ sender: UIButton) {
         self.navigationController?.popViewController(animated: true)
     }
     
-    func didTapRightBarButton(_sender: UIButton) {}  
+    func didTapRightBarButton(_ sender: UIButton) {}
 }
+
 
 extension MediaContentViewController: Themeble {
     
     private func setupUI() {
         
         if contentType == .userContacts {
-            
             dateSelectContainerHeigntConstraint.constant = 0
             dateSelectContainerView.isHidden = true
         }
@@ -567,13 +565,18 @@ extension MediaContentViewController: Themeble {
     private func setupNavigation() {
         
         self.navigationController?.navigationBar.isHidden = true
-        customNavBar.setUpNavigation(title: contentType.navTitle, leftImage: I.navigationItems.back, rightImage: nil)
+        navigationBar.setupNavigation(title: contentType.navigationTitle,
+                                      leftBarButtonImage: I.navigationItems.back,
+                                      rightBarButtonImage: nil,
+                                      mediaType: contentType,
+                                      leftButtonTitle: nil,
+                                      rightButtonTitle: nil)
     }
     
     private func setupObserversAndDelegate() {
         
         self.dateSelectableView.delegate = self
-        self.customNavBar.delegate = self
+        self.navigationBar.delegate = self
     }
     
     private func setupDateInterval() {
@@ -584,7 +587,6 @@ extension MediaContentViewController: Themeble {
     func updateColors() {
         
         self.view.backgroundColor = theme.backgroundColor
-//        dateSelectContainerView.addBottomBorder(with: theme.contentBackgroundColor, andWidth: 1)
     }
     
     private func setupShowDatePickerSelectorController(segue: UIStoryboardSegue) {

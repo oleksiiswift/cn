@@ -20,10 +20,17 @@ class ShadowView: UIView {
         self.topShadowView.clipsToBounds = true
         self.topShadowView.layer.cornerRadius = 14
         
+        #warning("TODO: re edit view for background cell and refactor elmnt")
+        
         self.backgroundColor = UIColor().colorFromHexString("E9EFF2")
         topShadowView.backgroundColor = UIColor().colorFromHexString("E9EFF2")
         topShadowView.frame = self.bounds
         
+//        self.backgroundColor = UIColor().colorFromHexString("E9EFF2")
+//        topShadowView.backgroundColor = UIColor().colorFromHexString("E9EFF2")
+//        topShadowView.frame = self.bounds
+        
+    
         self.insertSubview(topShadowView, at: 0)
         
         layer.applySketchShadow(
