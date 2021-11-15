@@ -10,13 +10,14 @@ import Contacts
 
 class ContactTableViewCell: UITableViewCell {
     
-    @IBOutlet weak var topShadowView: SectionShadowView!
+    @IBOutlet weak var reuseShadowView: ReuseShadowView!
+    
     @IBOutlet weak var baseView: UIView!
     @IBOutlet weak var contactTitleTextLabel: UILabel!
     @IBOutlet weak var contactSubtitleTextLabel: UILabel!
-    @IBOutlet weak var shadowImageView: ShadowRoundedView!
-    @IBOutlet weak var rightShevronImageView: UIImageView!
     
+    @IBOutlet weak var shadowRoundedReuseView: ReuseShadowRoundedView!
+        
     @IBOutlet weak var topBaseViewConstraint: NSLayoutConstraint!
     @IBOutlet weak var bottomBaseViewConstraint: NSLayoutConstraint!
     
@@ -36,7 +37,6 @@ class ContactTableViewCell: UITableViewCell {
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
     }
-    
 }
 
 
@@ -49,7 +49,24 @@ extension ContactTableViewCell {
         }
         
         let contactFullName = CNContactFormatter.string(from: contact, style: .fullName)
-        contactTitleTextLabel.text = contactFullName
+
+        let numbers = contact.phoneNumbers.map({$0.value.stringValue})
+    
+        if contactFullName == nil {
+            if !numbers.isEmpty {
+                contactTitleTextLabel.text = numbers.joined(separator: numbers.count > 1 ? ", " : "")
+            } else {
+                contactTitleTextLabel.text = "empty contactact"
+            }
+        } else {
+            contactTitleTextLabel.text = contactFullName
+        }
+        
+        if let imageData = contact.thumbnailImageData, let image = UIImage(data: imageData) {
+            shadowRoundedReuseView.setImage(image)
+        } else {
+            shadowRoundedReuseView.setImage(I.mainMenuThumbItems.contacts)
+        }
         
     }
 }
@@ -57,9 +74,20 @@ extension ContactTableViewCell {
 
 extension ContactTableViewCell: Themeble {
     
-    private func setupUI() {}
+    private func setupUI() {
+        
+        reuseShadowView.topShadowOffsetOriginY = -3
+        reuseShadowView.topAlpha = 0.8
+        
+        contactTitleTextLabel.font = .systemFont(ofSize: 16, weight: .bold)
+        contactSubtitleTextLabel.font = .systemFont(ofSize: 14, weight: .bold)
+    }
     
-    func updateColors() {}
+    func updateColors() {
+        
+        baseView.backgroundColor = .clear
+        shadowRoundedReuseView.setShadowColor(for: theme.topShadowColor, and: theme.bottomShadowColor)
+    }
     
     private func superPrepareForReuse() {
         

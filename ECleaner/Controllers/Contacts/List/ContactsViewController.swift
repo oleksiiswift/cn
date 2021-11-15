@@ -37,8 +37,7 @@ extension ContactsViewController: Themeble {
     private func setupNavigation() {
         
         self.navigationController?.navigationBar.isHidden = true
-//        customNavBar.setUpNavigation(title: mediaType.navigationTitle, leftImage: I.navigationItems.back, rightImage: nil)
-        
+        navigationBar.setupNavigation(title: mediaType.navigationTitle, leftBarButtonImage: I.navigationItems.back, rightBarButtonImage: nil, mediaType: .userContacts, leftButtonTitle: nil, rightButtonTitle: nil)   
     }
     
     private func setupUI() {}
@@ -61,6 +60,7 @@ extension ContactsViewController: Themeble {
         tableView.separatorStyle = .none
         tableView.sectionIndexColor = UIColor().colorFromHexString("30C08F")
         tableView.backgroundColor = theme.backgroundColor
+        tableView.contentInset.top = 20
     }
     
     private func setupObserversAndDelegate() {

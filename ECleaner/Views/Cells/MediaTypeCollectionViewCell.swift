@@ -38,10 +38,8 @@ class MediaTypeCollectionViewCell: UICollectionViewCell {
       switch Screen.size {
         case .small:
           debugPrint("")
-
         case .medium:
           debugPrint("")
-          
         case .plus:
           debugPrint("")
           contentViewHeightConstraint.constant = 200

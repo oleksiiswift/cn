@@ -18,7 +18,7 @@
                 <rect key="frame" x="0.0" y="0.0" width="497" height="149"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kmy-RS-29w" customClass="ShadowView" customModule="ECleaner" customModuleProvider="target">
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kmy-RS-29w" customClass="ReuseShadowView" customModule="ECleaner" customModuleProvider="target">
                         <rect key="frame" x="20" y="30" width="457" height="89"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     </view>
@@ -72,7 +72,7 @@
                                     <constraint firstItem="jod-pQ-R2a" firstAttribute="centerY" secondItem="AzT-RF-FAf" secondAttribute="centerY" id="z7K-w4-xXT"/>
                                 </constraints>
                             </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="a7D-8P-t7B" customClass="ShadowRoundedView" customModule="ECleaner" customModuleProvider="target">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="a7D-8P-t7B" customClass="ReuseShadowRoundedView" customModule="ECleaner" customModuleProvider="target">
                                 <rect key="frame" x="20" y="28" width="33" height="33"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <constraints>
@@ -117,8 +117,8 @@
                 <outlet property="contentSubtitleTextLabel" destination="nOK-4Y-n1l" id="pvG-9m-LR1"/>
                 <outlet property="contentTypeTextLabel" destination="tma-fH-2HY" id="CaB-SW-CFp"/>
                 <outlet property="horizontalProgressView" destination="gCn-qZ-Nih" id="2qu-9X-In9"/>
+                <outlet property="reuseShadowRoundedView" destination="a7D-8P-t7B" id="ib0-82-C2C"/>
                 <outlet property="rightArrowImageView" destination="Hxb-wJ-Nlm" id="Bka-ZC-xzX"/>
-                <outlet property="shadowImageView" destination="a7D-8P-t7B" id="Ll3-oS-Qr3"/>
             </connections>
             <point key="canvasLocation" x="89.130434782608702" y="20.424107142857142"/>
         </tableViewCell>

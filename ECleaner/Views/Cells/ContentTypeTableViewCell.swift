@@ -12,8 +12,8 @@ class ContentTypeTableViewCell: UITableViewCell {
     
     @IBOutlet weak var baseView: UIView!
     @IBOutlet weak var rightArrowImageView: UIImageView!
+    @IBOutlet weak var reuseShadowRoundedView: ReuseShadowRoundedView!
     
-    @IBOutlet weak var shadowImageView: ShadowRoundedView!
 //    @IBOutlet weak var selectedAssetsContainerView: UIView!
 //    @IBOutlet weak var selectedAssetsImageView: UIImageView!
     
@@ -71,8 +71,7 @@ extension ContentTypeTableViewCell {
     */
     
     public func cellConfig(contentType: MediaContentType, photoMediaType: PhotoMediaType = .none, indexPath: IndexPath, phasetCount: Int, isDeepCleanController: Bool = false, progress: CGFloat, isProcessingComplete: Bool = false) {
-        
-        shadowImageView.imageView.image = contentType.imageOfRows
+        reuseShadowRoundedView.setImage(contentType.imageOfRows)
         contentTypeTextLabel.text = isDeepCleanController ? contentType.getDeepCellTitle(index: indexPath.row) : contentType.getCellTitle(index: indexPath.row)
         
         if isDeepCleanController {
@@ -85,11 +84,8 @@ extension ContentTypeTableViewCell {
             
             switch contentType {
                 case .userPhoto, .userVideo:
-                    
                     contentSubtitleTextLabel.text = isProcessingComplete ? phasetCount != 0 ? String("\(phasetCount) \("FILES".localized())") : "no files to clean" : updatingCountValuesDeepClean
-                    
                 case .userContacts:
-                    
                         contentSubtitleTextLabel.text = isProcessingComplete ? phasetCount != 0 ? String("\(phasetCount) \("contacts")") : "no contacts to clean" : updatingCountValuesContactDeepClean
                 case .none:
                     contentSubtitleTextLabel.text = ""
@@ -104,7 +100,7 @@ extension ContentTypeTableViewCell {
                 case .allContacts, .emptyContacts:
                     contentSubtitleTextLabel.text  = phasetCount != 0 ? String("\(phasetCount) contacts") : ""
                 case .duplicatedContacts:
-                    contentSubtitleTextLabel.text = ""
+                    contentSubtitleTextLabel.isHidden = true
                 case .compress:
                     contentSubtitleTextLabel.text = ""
                 default:
@@ -135,6 +131,8 @@ extension ContentTypeTableViewCell: Themeble {
     
     func updateColors() {
         baseView.backgroundColor = .clear
+        
+        reuseShadowRoundedView.setShadowColor(for: theme.topShadowColor, and: theme.bottomShadowColor)
         contentTypeTextLabel.textColor = theme.titleTextColor
         contentSubtitleTextLabel.textColor = theme.subTitleTextColor
         horizontalProgressView.progressColor = theme.progressBackgroundColor
