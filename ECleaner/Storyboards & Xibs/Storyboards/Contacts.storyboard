@@ -44,10 +44,10 @@
                             <constraint firstItem="wfo-kS-LRV" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" id="DbC-DQ-6N8"/>
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="hB7-Ph-8Z4" secondAttribute="trailing" id="F9w-Q8-xOP"/>
                             <constraint firstItem="hB7-Ph-8Z4" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" id="IWk-lL-Zsi"/>
-                            <constraint firstItem="wfo-kS-LRV" firstAttribute="top" secondItem="GYO-7k-zWR" secondAttribute="bottom" id="UyD-H6-dSN"/>
                             <constraint firstItem="hB7-Ph-8Z4" firstAttribute="top" secondItem="wfo-kS-LRV" secondAttribute="bottom" id="VR7-v3-zyk"/>
                             <constraint firstItem="GYO-7k-zWR" firstAttribute="top" secondItem="vDu-zF-Fre" secondAttribute="top" id="aVi-SH-cgD"/>
                             <constraint firstAttribute="bottom" secondItem="hB7-Ph-8Z4" secondAttribute="bottom" id="rLH-LL-TwM"/>
+                            <constraint firstItem="wfo-kS-LRV" firstAttribute="top" secondItem="vDu-zF-Fre" secondAttribute="top" constant="60" id="vhv-h3-lRS"/>
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="wfo-kS-LRV" secondAttribute="trailing" id="zFm-Pa-ZWb"/>
                         </constraints>
                     </view>
@@ -55,7 +55,9 @@
                     <connections>
                         <outlet property="navigationBar" destination="GYO-7k-zWR" id="7t8-Ew-jWw"/>
                         <outlet property="navigationBarHeightConstraint" destination="92A-ib-dzr" id="1PK-DT-Z8Z"/>
+                        <outlet property="navigationBarTopConstraint" destination="aVi-SH-cgD" id="IrM-fY-7Ir"/>
                         <outlet property="searchBarHeightConstraint" destination="m9h-Ly-B55" id="u31-UQ-LVa"/>
+                        <outlet property="searchBarTopConstraint" destination="vhv-h3-lRS" id="bWw-Vq-W6A"/>
                         <outlet property="searchBarView" destination="wfo-kS-LRV" id="uT6-0L-hTr"/>
                         <outlet property="tableView" destination="hB7-Ph-8Z4" id="Ba2-fD-RRL"/>
                     </connections>

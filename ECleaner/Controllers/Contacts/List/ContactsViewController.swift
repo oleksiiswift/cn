@@ -14,6 +14,8 @@ class ContactsViewController: UIViewController {
     @IBOutlet weak var searchBarView: SearchBarView!
     @IBOutlet weak var searchBarHeightConstraint: NSLayoutConstraint!
     @IBOutlet weak var navigationBarHeightConstraint: NSLayoutConstraint!
+    @IBOutlet weak var navigationBarTopConstraint: NSLayoutConstraint!
+    @IBOutlet weak var searchBarTopConstraint: NSLayoutConstraint!
     
     @IBOutlet weak var tableView: UITableView!
     
@@ -100,20 +102,44 @@ extension ContactsViewController: Themeble {
 //        tableView.tableHeaderView = searchBar
 //    }
     
-    private func isSelected(enabled: Bool) {
-        
-        tableView.allowsSelection = enabled
-        tableView.allowsMultipleSelection = enabled
-    }
+ 
     
     private func setupObserversAndDelegate() {
         
         navigationBar.delegate = self
         searchBarView.searchBar.delegate = self
         
+        U.notificationCenter.addObserver(self, selector: #selector(handleSearchBarState), name: .searchBarDidCancel, object: nil)
         U.notificationCenter.addObserver(self, selector: #selector(showNavigationBarShadow(_:)), name: .searchBarDidChangeAppearance, object: nil)
     }
 }
+
+extension ContactsViewController {
+    
+    private func isSelected(enabled: Bool) {
+        
+        tableView.allowsSelection = enabled
+        tableView.allowsMultipleSelection = enabled
+    }
+    
+    private func setActiveSearchBar(setActive: Bool) {
+        
+        self.searchBarView.setShowCancelButton(setActive, animated: true)
+//        navigationBarTopConstraint.constant = setActive ? -60 : 0
+        searchBarTopConstraint.constant = setActive ? 0 : 60
+        U.animate(0.3) {
+            self.navigationBar.containerView.alpha = setActive ? 0 : 1
+            self.navigationBar.layoutIfNeeded()
+            self.view.layoutIfNeeded()
+        }
+    }
+    
+    @objc func handleSearchBarState() {
+        
+        setActiveSearchBar(setActive: false)
+    }
+}
+
 
 extension ContactsViewController {
     
@@ -121,11 +147,23 @@ extension ContactsViewController {
         
         guard let userInfo = notification.userInfo else { return }
         
-        let minimumSearchBarHeighValue: CGFloat = 40
-        let maximumSearchBarHeightValue: CGFloat = 80
-        let defaultSearchBarHeightValue: CGFloat = 60
+//        let minimumSearchBarHeighValue: CGFloat = 40
+//        let maximumSearchBarHeightValue: CGFloat = 80
+//        let defaultSearchBarHeightValue: CGFloat = 60
         
         if let offset = userInfo[C.key.notificationDictionary.scrollDidChangeValue] as? CGFloat {
+            let defaultVaule: CGFloat = 60
+            if offset <= 60 {
+                self.navigationBar.containerView.alpha = 1.0  - (offset / 100) / 0.4
+                searchBarTopConstraint.constant = defaultVaule - offset
+                searchBarView.showCancelButtonProgress(offset)
+                
+            } else if offset <= 0 {
+                self.navigationBar.containerView.alpha = 0.0 + (offset / 100) / 0.4
+                searchBarTopConstraint.constant = defaultVaule + offset
+            } else if offset > 0 {
+//                searchBarTopConstraint.constant = 60  offset
+            }
             
             
 //            containerViewHeight.constant = scrollView.contentInset.top
@@ -139,8 +177,7 @@ extension ContactsViewController {
 //                searchBarView.layoutIfNeeded()
 //            }
         }
-        
-        
+    
 //        if let showShadow = userInfo[C.key.notificationDictionary.scrollDidChangeBool] as? Bool {
 //            debugPrint("need sho shadow: \(showShadow)")
 //            navigationBar.setDropShadow(visible: showShadow)
@@ -154,13 +191,7 @@ extension ContactsViewController: UISearchBarDelegate {
     
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
         
-        self.searchBarView.setShowCancelButton(true, animated: true)
-        navigationBarHeightConstraint.constant = 0
-        U.animate(1) {
-            self.navigationBar.containerView.alpha = 0
-            self.navigationBar.layoutIfNeeded()
-            self.tableView.layoutIfNeeded()
-        }
+        self.setActiveSearchBar(setActive: true)
     }
     
     

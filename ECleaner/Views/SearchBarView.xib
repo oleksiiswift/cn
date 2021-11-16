@@ -12,9 +12,10 @@
             <connections>
                 <outlet property="baseView" destination="SbQ-Mo-v6Q" id="Ecy-sy-4Vk"/>
                 <outlet property="cancelButton" destination="q38-1d-CVD" id="tdx-3x-mrL"/>
-                <outlet property="cancelButtonWidthConstraint" destination="btI-Pe-mxP" id="bcc-R4-g41"/>
                 <outlet property="containerView" destination="iN0-l3-epB" id="6va-WP-oqv"/>
+                <outlet property="leadingButtonConstraint" destination="Vin-xI-mAu" id="07U-DF-amw"/>
                 <outlet property="searchBar" destination="7aE-ny-h8e" id="usQ-Lc-glN"/>
+                <outlet property="trailingButtonConstraint" destination="t0c-0i-XPL" id="577-LK-NIp"/>
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
@@ -33,13 +34,13 @@
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
                         <constraint firstItem="7aE-ny-h8e" firstAttribute="top" secondItem="SbQ-Mo-v6Q" secondAttribute="top" id="0eh-0V-NKS"/>
-                        <constraint firstAttribute="trailing" secondItem="7aE-ny-h8e" secondAttribute="trailing" id="DQs-lD-Upx"/>
                         <constraint firstAttribute="bottom" secondItem="7aE-ny-h8e" secondAttribute="bottom" id="OfU-aK-3ji"/>
+                        <constraint firstAttribute="trailing" secondItem="7aE-ny-h8e" secondAttribute="trailing" id="rEo-gf-4FB"/>
                         <constraint firstItem="7aE-ny-h8e" firstAttribute="leading" secondItem="SbQ-Mo-v6Q" secondAttribute="leading" id="urO-cn-i0e"/>
                     </constraints>
                 </view>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="q38-1d-CVD">
-                    <rect key="frame" x="324" y="0.0" width="90" height="60"/>
+                    <rect key="frame" x="324" y="5" width="90" height="40"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="90" id="btI-Pe-mxP"/>
                     </constraints>
@@ -51,12 +52,12 @@
             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <constraints>
                 <constraint firstItem="SbQ-Mo-v6Q" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="5" id="1Y5-Zo-w6E"/>
-                <constraint firstItem="q38-1d-CVD" firstAttribute="leading" secondItem="SbQ-Mo-v6Q" secondAttribute="trailing" constant="10" id="2XV-e0-7se"/>
+                <constraint firstItem="q38-1d-CVD" firstAttribute="top" secondItem="7aE-ny-h8e" secondAttribute="top" id="Dyh-de-Uss"/>
+                <constraint firstItem="q38-1d-CVD" firstAttribute="bottom" secondItem="7aE-ny-h8e" secondAttribute="bottom" id="Eo9-fP-eHz"/>
                 <constraint firstItem="SbQ-Mo-v6Q" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="20" id="J7Y-C1-GUp"/>
                 <constraint firstAttribute="bottom" secondItem="SbQ-Mo-v6Q" secondAttribute="bottom" constant="15" id="Ol1-xx-ujS"/>
-                <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="q38-1d-CVD" secondAttribute="bottom" id="k7K-Nf-FYx"/>
+                <constraint firstItem="q38-1d-CVD" firstAttribute="leading" secondItem="SbQ-Mo-v6Q" secondAttribute="trailing" constant="10" id="Vin-xI-mAu"/>
                 <constraint firstAttribute="trailing" secondItem="q38-1d-CVD" secondAttribute="trailing" id="t0c-0i-XPL"/>
-                <constraint firstItem="q38-1d-CVD" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="yAY-hh-AVx"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <point key="canvasLocation" x="131.8840579710145" y="116.51785714285714"/>

@@ -13,8 +13,8 @@ class SearchBarView: UIView {
     @IBOutlet weak var baseView: UIView!
     @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var cancelButton: UIButton!
-    
-    @IBOutlet weak var cancelButtonWidthConstraint: NSLayoutConstraint!
+    @IBOutlet weak var trailingButtonConstraint: NSLayoutConstraint!
+    @IBOutlet weak var leadingButtonConstraint: NSLayoutConstraint!
     
     private var shadowView = UIView()
     private var helperExtraView = UIView()
@@ -92,37 +92,62 @@ class SearchBarView: UIView {
     }
     
     @objc func didTapCancelButton() {
-        
+        searchBar.endEditing(true)
         setShowCancelButton(false, animated: true)
-        
+        U.notificationCenter.post(name: .searchBarDidCancel, object: nil)
     }
     
     public func setShowCancelButton(_ showCancelButton: Bool, animated: Bool) {
         
         cancelButton.isEnabled = showCancelButton
-        cancelButtonWidthConstraint.constant = showCancelButton ? 90 : 0
         cancelButton.alpha = showCancelButton ? 1.0 : 0
         
-        if animated {
-            self.animateLayout()
-        } else {
-            self.baseView.layoutIfNeeded()
-            self.cancelButton.layoutIfNeeded()
-        }
-    }
-    
-    private func animateLayout() {
+        leadingButtonConstraint.constant = showCancelButton ? 10 : 20
+        trailingButtonConstraint.constant = showCancelButton ? 0 : -90
         
-        U.animate(1.0) {
-            self.baseView.layoutIfNeeded()
+        if animated {
+            U.animate(0.3) {
+                self.cancelButton.layoutIfNeeded()
+            }
+        } else {
             self.cancelButton.layoutIfNeeded()
         }
     }
     
-    
+    public func showCancelButtonProgress(_ offset: CGFloat) {
+        
+        let defaultHidenButtonConstraintValue: CGFloat = -90
+        let defaultSpaceValue: CGFloat = 20
+        
+        if offset <= 60 {
+            cancelButton.alpha = (offset * 1.68) / 100
+            trailingButtonConstraint.constant = defaultHidenButtonConstraintValue + offset * 1.5
+            leadingButtonConstraint.constant = defaultSpaceValue - offset * 0.4
+        } else if offset > 0 {
+            trailingButtonConstraint.constant = defaultHidenButtonConstraintValue - offset * 1.5
+            leadingButtonConstraint.constant = defaultSpaceValue + offset * 0.4
+            cancelButton.alpha = 1.0 - (offset * 1.68) / 100
+        }
+        
+        
+        
+//        let defaultVaule: CGFloat = 60
+//        if offset <= 60 {
+//            self.navigationBar.containerView.alpha = 1.0  - (offset / 100) / 0.4
+//            searchBarTopConstraint.constant = defaultVaule - offset
+//            searchBarView.showCancelButtonProgress(offset)
+//
+//        } else if offset <= 0 {
+//            self.navigationBar.containerView.alpha = 0.0 + (offset / 100) / 0.4
+//            searchBarTopConstraint.constant = defaultVaule + offset
+//        } else if offset > 0 {
+////                searchBarTopConstraint.constant = 60  offset
+//        }
+  
+    }
+
     private func setupSearchBar() {
-    
-//        searchBar.searchBarStyle = .minimal
+
         searchBar.placeholder = "  search contacts here..."
         searchBar.barTintColor = theme.innerBackgroundColor
         searchBar.showsCancelButton = false
@@ -148,10 +173,7 @@ class SearchBarView: UIView {
     private func updateColors() {
         
         self.backgroundColor = theme.navigationBarBackgroundColor
-    
         helperExtraView.backgroundColor = theme.navigationBarBackgroundColor
         shadowView.backgroundColor = theme.navigationBarBackgroundColor
-        
-        
     }
 }
