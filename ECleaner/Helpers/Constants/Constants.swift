@@ -101,6 +101,10 @@ class Constants {
             static let allContactsCount = "deepCleanallContactsCount"
             static let emptyContactsCount = "deepCleanemptyContactsCount"
             static let duplicateContactsCount = "deepCleanduplicateContactsCount"
+            
+            /// contact scroll delegate scriklkub
+            static let scrollDidChangeValue = "scrollDidChangeValue"
+                ///
         }
     }
     
@@ -148,6 +152,7 @@ class Constants {
             static let groupFooterView = "GroupedAssetsReusableFooterView"
             static let contactGroupHeader = "GroupedContactsHeaderView"
             static let bottomButtonBarView = "BottomButtonBarView"
+            static let searchBar = "SearchBarView"
         }
         
         struct xibs {
@@ -164,6 +169,7 @@ class Constants {
             static let groupFooter = "GroupedAssetsReusableFooterView"
             static let contactGroupHeader = "GroupedContactsHeaderView"
             static let bottomButtonBarView = "BottomButtonBarView"
+            static let searchBar = "SearchBarView"
             
             static let carouselView = "CarouselItemView"
             static let datePickerContainer = "DateSelectebleView"

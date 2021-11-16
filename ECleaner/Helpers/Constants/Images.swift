@@ -22,7 +22,13 @@ class Images {
         struct defaultItems {
             static let share = UIImage(named: "share")!
         }
+        
+        struct backroundStatic {
+            static let spreadBackground = UIImage(named: "dateViewBackground")!
+        }
     }
+    
+    
     
     
     

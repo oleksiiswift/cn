@@ -60,11 +60,19 @@ extension ContactListDataSource: UITableViewDelegate, UITableViewDataSource {
 
         let header = view as! UITableViewHeaderFooterView
         header.contentView.backgroundColor = ThemeManager.theme.backgroundColor
-        header.textLabel?.textColor = ThemeManager.theme.titleTextColor
-        header.textLabel?.font = UIFont(font: FontManager.robotoBold, size: 18.0)
+        header.contentView.alpha = 0.8
+        header.textLabel?.textColor = ThemeManager.theme.sectionTitleTextColor
+        header.textLabel?.font = .systemFont(ofSize: 18, weight: .bold)
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 60
+        return 40
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let contentOffset = scrollView.contentOffset.y
+        
+        let userInfo = [C.key.notificationDictionary.scrollDidChangeValue: contentOffset]
+        U.notificationCenter.post(name: .searchBarDidChangeAppearance, object: nil, userInfo: userInfo)
     }
 }

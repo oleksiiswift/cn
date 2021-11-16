@@ -34,5 +34,5 @@ extension Notification.Name {
     
     /// `contacts`
     static let mergeContactsSelectionDidChange = Notification.Name(C.key.notification.mergeContactsSelectionDidChange)
-    
+    static let searchBarDidChangeAppearance = Notification.Name("searchBarDidScroll")
 }

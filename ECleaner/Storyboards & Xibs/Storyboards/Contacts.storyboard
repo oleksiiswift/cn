@@ -18,7 +18,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="hB7-Ph-8Z4">
-                                <rect key="frame" x="0.0" y="104" width="414" height="792"/>
+                                <rect key="frame" x="0.0" y="164" width="414" height="732"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </tableView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="GYO-7k-zWR" customClass="NavigationBar" customModule="ECleaner" customModuleProvider="target">
@@ -28,22 +28,35 @@
                                     <constraint firstAttribute="height" constant="60" id="92A-ib-dzr"/>
                                 </constraints>
                             </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wfo-kS-LRV" customClass="SearchBarView" customModule="ECleaner" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="104" width="414" height="60"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="60" id="m9h-Ly-B55"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="vDu-zF-Fre"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="GYO-7k-zWR" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" id="0DZ-5g-yxO"/>
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="GYO-7k-zWR" secondAttribute="trailing" id="8F4-zi-yj4"/>
+                            <constraint firstItem="wfo-kS-LRV" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" id="DbC-DQ-6N8"/>
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="hB7-Ph-8Z4" secondAttribute="trailing" id="F9w-Q8-xOP"/>
                             <constraint firstItem="hB7-Ph-8Z4" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" id="IWk-lL-Zsi"/>
+                            <constraint firstItem="wfo-kS-LRV" firstAttribute="top" secondItem="GYO-7k-zWR" secondAttribute="bottom" id="UyD-H6-dSN"/>
+                            <constraint firstItem="hB7-Ph-8Z4" firstAttribute="top" secondItem="wfo-kS-LRV" secondAttribute="bottom" id="VR7-v3-zyk"/>
                             <constraint firstItem="GYO-7k-zWR" firstAttribute="top" secondItem="vDu-zF-Fre" secondAttribute="top" id="aVi-SH-cgD"/>
-                            <constraint firstItem="hB7-Ph-8Z4" firstAttribute="top" secondItem="GYO-7k-zWR" secondAttribute="bottom" id="bC0-ia-xJn"/>
                             <constraint firstAttribute="bottom" secondItem="hB7-Ph-8Z4" secondAttribute="bottom" id="rLH-LL-TwM"/>
+                            <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="wfo-kS-LRV" secondAttribute="trailing" id="zFm-Pa-ZWb"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="aqw-vO-4Cc"/>
                     <connections>
                         <outlet property="navigationBar" destination="GYO-7k-zWR" id="7t8-Ew-jWw"/>
+                        <outlet property="navigationBarHeightConstraint" destination="92A-ib-dzr" id="1PK-DT-Z8Z"/>
+                        <outlet property="searchBarHeightConstraint" destination="m9h-Ly-B55" id="u31-UQ-LVa"/>
+                        <outlet property="searchBarView" destination="wfo-kS-LRV" id="uT6-0L-hTr"/>
                         <outlet property="tableView" destination="hB7-Ph-8Z4" id="Ba2-fD-RRL"/>
                     </connections>
                 </viewController>

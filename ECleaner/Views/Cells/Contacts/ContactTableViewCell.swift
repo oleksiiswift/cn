@@ -56,7 +56,7 @@ extension ContactTableViewCell {
             if !numbers.isEmpty {
                 contactTitleTextLabel.text = numbers.joined(separator: numbers.count > 1 ? ", " : "")
             } else {
-                contactTitleTextLabel.text = "empty contactact"
+                contactTitleTextLabel.text = "-"
             }
         } else {
             contactTitleTextLabel.text = contactFullName
@@ -77,10 +77,18 @@ extension ContactTableViewCell: Themeble {
     private func setupUI() {
         
         reuseShadowView.topShadowOffsetOriginY = -3
-        reuseShadowView.topAlpha = 0.8
-        
+        reuseShadowView.topShadowOffsetOriginX = -2
+        reuseShadowView.viewShadowOffsetOriginX = 6
+        reuseShadowView.viewShadowOffsetOriginY = 6
+        reuseShadowView.topBlurValue = 15
+        reuseShadowView.shadowBlurValue = 5
+    
         contactTitleTextLabel.font = .systemFont(ofSize: 16, weight: .bold)
         contactSubtitleTextLabel.font = .systemFont(ofSize: 14, weight: .bold)
+        
+        let backgroundView = UIView()
+        backgroundView.backgroundColor = .orange
+        selectedBackgroundView = backgroundView
     }
     
     func updateColors() {

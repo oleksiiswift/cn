@@ -55,7 +55,7 @@ class DateSelectebleView: UIView {
     
     U.mainBundle.loadNibNamed(C.identifiers.xibs.datePickerContainer, owner: self, options: nil)
     
-    dateSelectContainerView.backgroundColor = theme.dateViewBackgroundColor
+    dateSelectContainerView.backgroundColor = theme.innerBackgroundColor
     dateSelectContainerView.clipsToBounds = true
     dateSelectContainerView.layer.cornerRadius = 14
       
@@ -76,7 +76,7 @@ class DateSelectebleView: UIView {
     dateSelectContainerView.topAnchor.constraint(equalTo: margins.topAnchor, constant: 10).isActive = true
     dateSelectContainerView.bottomAnchor.constraint(equalTo: margins.bottomAnchor, constant: -10).isActive = true
       
-      dateSelectContainerView.layer.masksToBounds = true
+    dateSelectContainerView.layer.masksToBounds = true
   }
     
   public func setupDisplaysDate(startingDate: String, endingDate: String) {

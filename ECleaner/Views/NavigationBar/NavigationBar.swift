@@ -16,6 +16,8 @@ class NavigationBar: UIView {
     
     var delegate: NavigationBarDelegate?
     
+    public var setIsDropShadow: Bool = true
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         
@@ -45,7 +47,6 @@ class NavigationBar: UIView {
         
         containerView.backgroundColor = theme.navigationBarBackgroundColor
         
-        layer.setShadow(color: theme.bottomShadowColor, alpha: 1, x: 3, y: 0, blur: 10, spread: 0)
         backgroundColor = .clear
         addSubview(self.containerView)
         containerView.frame = self.bounds
@@ -61,6 +62,7 @@ class NavigationBar: UIView {
     public func setupNavigation(title: String?, leftBarButtonImage: UIImage?, rightBarButtonImage: UIImage?, mediaType: MediaContentType, leftButtonTitle: String? = nil, rightButtonTitle: String? = nil) {
         
         self.setAccentColorFor(buttonsTintColor: mediaType.screenAcentTintColor, title: theme.tintColor)
+        setDropShadow(visible: setIsDropShadow)
         
         if let title = title {
             titleTextLabel.text = title
@@ -88,6 +90,13 @@ class NavigationBar: UIView {
         } else {
             rightBarButtonItem.isHidden = true
         }
+    }
+    
+    
+    
+    public func setDropShadow(visible: Bool) {
+        
+        visible ? layer.setShadow(color: theme.bottomShadowColor, alpha: 1, x: 3, y: 0, blur: 10, spread: 0) : ()
     }
     
     public func changeHotLeftTitle(newTitle: String) {

@@ -22,12 +22,39 @@ enum Theme: Int {
     
 //    MARK: - backgroud colors -
     
+    var backgroundColor: UIColor {
+        switch self {
+            case .light:
+                return UIColor().colorFromHexString("E3E8F1")
+            case .dark:
+                return UIColor().colorFromHexString("E3E8F1")
+        }
+    }
+    
+    var navigationBarBackgroundColor: UIColor {
+        switch self {
+            case .light:
+                return UIColor().colorFromHexString("E3E8F1")
+            case .dark :
+                return UIColor().colorFromHexString("E3E8F1")
+        }
+    }
+    
     var cellBackGroundColor: UIColor {
         switch self {
             case .light:
                 return UIColor().colorFromHexString("ECF0F6")
             case .dark :
                 return UIColor().colorFromHexString("ECF0F6")
+        }
+    }
+    
+    var innerBackgroundColor: UIColor {
+        switch self {
+            case .light:
+                return UIColor().colorFromHexString("E1E8F0")
+            case .dark:
+                return UIColor().colorFromHexString("E1E8F0")
         }
     }
     
@@ -57,16 +84,7 @@ enum Theme: Int {
                 return UIColor().colorFromHexString("E9EFF2")
         }
     }
-    
-    var navigationBarBackgroundColor: UIColor {
-        switch self {
-            case .light:
-                return UIColor().colorFromHexString("E3E8F1")
-            case .dark :
-                return UIColor().colorFromHexString("E3E8F1")
-        }
-    }
-    
+
     var dropDownMenuBackgroundColor: UIColor {
         switch self {
             case .light:
@@ -186,7 +204,7 @@ enum Theme: Int {
         
         switch self {
             case .light:
-                return UIColor().colorFromHexString("8F97A7")
+                return UIColor().colorFromHexString("8D93A4")
             case .dark:
                 return UIColor().colorFromHexString("8F97A7")
         }
@@ -198,24 +216,6 @@ enum Theme: Int {
     
     #warning("check colors") 
 // MARK: - `neeed! Check colors for new aftet this linge!!!!!
-  
-    var backgroundColor: UIColor {
-        switch self {
-            case .light:
-                return UIColor().colorFromHexString("E3E8F1")
-            case .dark:
-                return UIColor().colorFromHexString("FFFFFF")
-        }
-    }
-    
-    var dateViewBackgroundColor: UIColor {
-        switch self {
-            case .light:
-                return UIColor().colorFromHexString("E1E8F0")
-            case .dark:
-                return UIColor().colorFromHexString("FFFFFF")
-        }
-    }
     
     var blueTextColor: UIColor {
         switch self {
