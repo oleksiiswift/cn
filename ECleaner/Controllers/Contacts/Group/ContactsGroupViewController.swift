@@ -42,7 +42,7 @@ class ContactsGroupViewController: UIViewController {
     }
     
     public var navigationTitle: String?
-    private var bottomButtonHeight: CGFloat = 56
+    private var bottomButtonHeight: CGFloat = 70
     
     override func viewDidLoad() {
         super.viewDidLoad()

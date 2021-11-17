@@ -102,6 +102,24 @@ enum Theme: Int {
                 return UIColor().colorFromHexString("30C08F")
         }
     }
+    
+    var shareViewButtonsColor: UIColor {
+        switch self {
+            case .light:
+                return UIColor().colorFromHexString("FF9500")
+            case .dark :
+                return UIColor().colorFromHexString("FF9500")
+        }
+    }
+    
+    var deleteViewButtonsColor: UIColor {
+        switch self {
+            case .light:
+                return UIColor().colorFromHexString("D94B43")
+            case .dark :
+                return UIColor().colorFromHexString("D94B43")
+        }
+    }
 
     
 //    MARK: - shadow colors -

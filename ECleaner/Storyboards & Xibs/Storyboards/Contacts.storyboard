@@ -35,24 +35,36 @@
                                     <constraint firstAttribute="height" constant="60" id="m9h-Ly-B55"/>
                                 </constraints>
                             </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="N4t-k5-JAN" customClass="BottomDoubleButtonBarView" customModule="ECleaner" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="802" width="414" height="94"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="94" id="xGM-zM-uas"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="vDu-zF-Fre"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="GYO-7k-zWR" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" id="0DZ-5g-yxO"/>
+                            <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="N4t-k5-JAN" secondAttribute="trailing" id="12r-ed-30M"/>
+                            <constraint firstAttribute="bottom" secondItem="hB7-Ph-8Z4" secondAttribute="bottom" id="5SQ-Sx-zQb"/>
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="GYO-7k-zWR" secondAttribute="trailing" id="8F4-zi-yj4"/>
                             <constraint firstItem="wfo-kS-LRV" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" id="DbC-DQ-6N8"/>
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="hB7-Ph-8Z4" secondAttribute="trailing" id="F9w-Q8-xOP"/>
                             <constraint firstItem="hB7-Ph-8Z4" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" id="IWk-lL-Zsi"/>
+                            <constraint firstAttribute="bottom" secondItem="N4t-k5-JAN" secondAttribute="bottom" id="LoP-YE-pYm"/>
+                            <constraint firstItem="N4t-k5-JAN" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" id="UrD-KD-2xa"/>
                             <constraint firstItem="hB7-Ph-8Z4" firstAttribute="top" secondItem="wfo-kS-LRV" secondAttribute="bottom" id="VR7-v3-zyk"/>
                             <constraint firstItem="GYO-7k-zWR" firstAttribute="top" secondItem="vDu-zF-Fre" secondAttribute="top" id="aVi-SH-cgD"/>
-                            <constraint firstAttribute="bottom" secondItem="hB7-Ph-8Z4" secondAttribute="bottom" id="rLH-LL-TwM"/>
                             <constraint firstItem="wfo-kS-LRV" firstAttribute="top" secondItem="vDu-zF-Fre" secondAttribute="top" constant="60" id="vhv-h3-lRS"/>
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="wfo-kS-LRV" secondAttribute="trailing" id="zFm-Pa-ZWb"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="aqw-vO-4Cc"/>
                     <connections>
+                        <outlet property="bottomDoubleButtonHeightConstraint" destination="xGM-zM-uas" id="Yo2-j3-eMc"/>
+                        <outlet property="bottomDoubleButtonView" destination="N4t-k5-JAN" id="Vd1-Ia-CsD"/>
                         <outlet property="navigationBar" destination="GYO-7k-zWR" id="7t8-Ew-jWw"/>
                         <outlet property="navigationBarHeightConstraint" destination="92A-ib-dzr" id="1PK-DT-Z8Z"/>
                         <outlet property="navigationBarTopConstraint" destination="aVi-SH-cgD" id="IrM-fY-7Ir"/>

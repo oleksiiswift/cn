@@ -17,6 +17,8 @@ class ContactsViewController: UIViewController {
     @IBOutlet weak var navigationBarTopConstraint: NSLayoutConstraint!
     @IBOutlet weak var searchBarTopConstraint: NSLayoutConstraint!
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var bottomDoubleButtonView: BottomDoubleButtonBarView!
+    @IBOutlet weak var bottomDoubleButtonHeightConstraint: NSLayoutConstraint!
     
     lazy var setEditingModeOptionItem = DropDownOptionsMenuItem(titleMenu: "edit",
                                                                 itemThumbnail: I.systemItems.selectItems.roundedCheckMark,
@@ -28,6 +30,7 @@ class ContactsViewController: UIViewController {
                                                               isSelected: false,
                                                               menuItem: .share)
     
+    private var bottomButtonHeight: CGFloat = 70
     public var contactContentIsEditing: Bool = false
     private var isSelectedAllItems: Bool {
         return contacts.count == self.tableView.indexPathsForSelectedRows?.count
@@ -39,6 +42,7 @@ class ContactsViewController: UIViewController {
     public var contacts: [CNContact] = []
     public var contentType: PhotoMediaType = .none
     public var mediaType: MediaContentType = .none
+    private var contactManager = ContactsManager.shared
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -50,6 +54,7 @@ class ContactsViewController: UIViewController {
         setupObserversAndDelegate()
         setupTableView()
         updateColors()
+        handleBottomButtonChangeAppearence()
     }
 }
 
@@ -89,7 +94,12 @@ extension ContactsViewController: Themeble {
         }
     }
     
-    private func setupUI() {}
+    private func setupUI() {
+        
+        bottomDoubleButtonView.setLeftButtonImage(I.systemItems.defaultItems.share)
+        bottomDoubleButtonView.setRightButtonImage(I.systemItems.defaultItems.delete)
+        bottomDoubleButtonView.setLeftButtonTitle("share selected")
+    }
     
     private func setupViewModel(contacts: [CNContact]) {
         self.contactListViewModel = ContactListViewModel(contacts: contacts)
@@ -97,7 +107,13 @@ extension ContactsViewController: Themeble {
     }
     
     func updateColors() {
+        
         self.view.backgroundColor = theme.backgroundColor
+        
+        bottomDoubleButtonView.tintColor = theme.activeTitleTextColor
+        bottomDoubleButtonView.rightButtonColor = theme.deleteViewButtonsColor
+        bottomDoubleButtonView.leftButtonColor = theme.shareViewButtonsColor
+        bottomDoubleButtonView.updateColorsSettings()
     }
     
     private func setupTableView() {
@@ -120,6 +136,7 @@ extension ContactsViewController: Themeble {
         
         navigationBar.delegate = self
         searchBarView.searchBar.delegate = self
+        bottomDoubleButtonView.delegate = self
         
         U.notificationCenter.addObserver(self, selector: #selector(handleSearchBarState), name: .searchBarDidCancel, object: nil)
         U.notificationCenter.addObserver(self, selector: #selector(searchBarDidMove(_:)), name: .scrollViewDidScroll, object: nil)
@@ -155,7 +172,7 @@ extension ContactsViewController {
             self.setContactsSelect(setSelect) {
                 P.hideIndicator()
                 self.navigationBar.handleChangeRightButtonSelectState(selectAll: setSelect)
-                self.handleSelectedCount()
+                self.handleBottomButtonChangeAppearence()
             }
         }
     }
@@ -181,23 +198,27 @@ extension ContactsViewController {
     }
     
     @objc func didSelectDeselectContact() {
-        handleSelectedCount()
+        handleBottomButtonChangeAppearence()
     }
     
-    private func handleSelectedCount() {
-        
-        
+    private func selectedItems() -> Int {
         if let selectedCount = tableView.indexPathsForSelectedRows?.count {
-            if selectedCount != 0 {
-                
-            } else {
-                
-            }
+            return selectedCount
+        } else {
+            return 0
         }
     }
     
     private func handleBottomButtonChangeAppearence() {
         
+        let calculatedBottomButtonHeight: CGFloat = bottomButtonHeight + U.bottomSafeAreaHeight
+        bottomDoubleButtonHeightConstraint.constant = selectedItems() != 0 ? calculatedBottomButtonHeight : 0
+        
+        let rightButtonTitle: String = "delete".uppercased() + " (\(selectedItems()))"
+        bottomDoubleButtonView.setRightButtonTitle(rightButtonTitle)
+        bottomDoubleButtonView.layoutIfNeeded()
+        
+        self.tableView.contentInset.bottom = selectedItems() != 0 ? calculatedBottomButtonHeight :  34
     }
 }
 
@@ -225,6 +246,22 @@ extension ContactsViewController {
     
     private func didTapShareSelectedContacts() {}
     
+    private func didTapDeleteSelectedContacts() {
+        
+        if let indexPaths = self.tableView.indexPathsForSelectedRows {
+            
+            let contacts = contactListViewModel.getContacts(at: indexPaths)
+            
+            contactManager.deleteContacts(contacts) { suxxessful, deletedCount in
+                if deletedCount == contacts.count {
+                    debugPrint("all deleted")
+                } else {
+                    debugPrint("errors count \(contacts.count - deletedCount)")
+                }
+            }
+        }
+    }
+    
     private func didTapOpenBurgerMenu() {
         
         presentDropDonwMenu(with: [[setEditingModeOptionItem, exportAllContactOptionItem]], from: navigationBar.rightBarButtonItem)
@@ -249,6 +286,16 @@ extension ContactsViewController {
     }
 }
 
+extension ContactsViewController: BottomDoubleActionButtonDelegate {
+    
+    func didTapLeftActionButton() {
+        self.didTapShareSelectedContacts()
+    }
+    
+    func didTapRightActionButton() {
+        self.didTapDeleteSelectedContacts()
+    }
+}
 
 extension ContactsViewController: SelectDropDownMenuDelegate {
     

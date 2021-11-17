@@ -50,6 +50,21 @@ extension ContactListViewModel {
         })
         return contacts?[indexPath.row]
     }
+    
+    public func getContacts(at indexPaths: [IndexPath]) -> [CNContact] {
+        
+        var cont: [CNContact] = []
+        
+        indexPaths.forEach { indexPath in
+            let key = self.contactsSections[indexPath.section]
+            
+            if let contacts = contactsData[key] {
+                let contact = contacts[indexPath.row]
+                cont.append(contact)
+            }
+        }
+        return cont
+    }
 }
 
 extension ContactListViewModel {

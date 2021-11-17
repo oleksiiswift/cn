@@ -153,6 +153,7 @@ class Constants {
             static let groupFooterView = "GroupedAssetsReusableFooterView"
             static let contactGroupHeader = "GroupedContactsHeaderView"
             static let bottomButtonBarView = "BottomButtonBarView"
+            static let bottomDoubleButtonBarView = "BottomDoubleButtonBarView"
             static let searchBar = "SearchBarView"
         }
         
@@ -170,6 +171,7 @@ class Constants {
             static let groupFooter = "GroupedAssetsReusableFooterView"
             static let contactGroupHeader = "GroupedContactsHeaderView"
             static let bottomButtonBarView = "BottomButtonBarView"
+            static let bottomDoubleButtonBarView = "BottomDoubleButtonBarView"
             static let searchBar = "SearchBarView"
             
             static let carouselView = "CarouselItemView"

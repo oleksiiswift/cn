@@ -22,6 +22,7 @@ class Images {
         struct defaultItems {
             static let share = UIImage(named: "share")!
             static let merge = UIImage(named: "mergeArrowTop")!
+            static let delete = UIImage(named: "deleteItem")!
         }
         
         struct backroundStaticItems {
