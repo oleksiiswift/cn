@@ -111,7 +111,7 @@ extension GroupContactTableViewCell {
         selectableButton.isEnabled = isShow
         
         if isShow {
-            selectableContactImageView.image = self.isSelectableSection ? I.personalElementsItems.selectableContactsCheckmark : I.personalElementsItems.emptyContactCheckmark
+            selectableContactImageView.image = self.isSelectableSection ? I.personalisation.contacts.sectionSelect : I.personalisation.contacts.deselectContact
             selectableContactImageView.isHidden = false
         } else {
             selectableContactImageView.image = nil

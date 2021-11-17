@@ -65,7 +65,7 @@ class SearchBarView: UIView {
         self.insertSubview(shadowView, at: 0)
         shadowView.layer.setShadow(color: theme.bottomShadowColor, alpha: 1, x: 3, y: 0, blur: 10, spread: 0)
         
-        let baseBackgroundImage: UIImageView = UIImageView(image: I.systemItems.backroundStatic.spreadBackground)
+        let baseBackgroundImage: UIImageView = UIImageView(image: I.systemItems.backroundStaticItems.spreadBackground)
         
         baseBackgroundImage.setCorner(14)
         baseView.addSubview(baseBackgroundImage)
@@ -114,37 +114,21 @@ class SearchBarView: UIView {
         }
     }
     
-    public func showCancelButtonProgress(_ offset: CGFloat) {
-        
-        let defaultHidenButtonConstraintValue: CGFloat = -90
-        let defaultSpaceValue: CGFloat = 20
-        
-        if offset <= 60 {
-            cancelButton.alpha = (offset * 1.68) / 100
-            trailingButtonConstraint.constant = defaultHidenButtonConstraintValue + offset * 1.5
-            leadingButtonConstraint.constant = defaultSpaceValue - offset * 0.4
-        } else if offset > 0 {
-            trailingButtonConstraint.constant = defaultHidenButtonConstraintValue - offset * 1.5
-            leadingButtonConstraint.constant = defaultSpaceValue + offset * 0.4
-            cancelButton.alpha = 1.0 - (offset * 1.68) / 100
-        }
-        
-        
-        
-//        let defaultVaule: CGFloat = 60
+//    public func showCancelButtonProgress(_ offset: CGFloat) {
+//        
+//        let defaultHidenButtonConstraintValue: CGFloat = -90
+//        let defaultSpaceValue: CGFloat = 20
+//        
 //        if offset <= 60 {
-//            self.navigationBar.containerView.alpha = 1.0  - (offset / 100) / 0.4
-//            searchBarTopConstraint.constant = defaultVaule - offset
-//            searchBarView.showCancelButtonProgress(offset)
-//
-//        } else if offset <= 0 {
-//            self.navigationBar.containerView.alpha = 0.0 + (offset / 100) / 0.4
-//            searchBarTopConstraint.constant = defaultVaule + offset
+//            cancelButton.alpha = (offset * 1.68) / 100
+//            trailingButtonConstraint.constant = defaultHidenButtonConstraintValue + offset * 1.5
+//            leadingButtonConstraint.constant = defaultSpaceValue - offset * 0.4
 //        } else if offset > 0 {
-////                searchBarTopConstraint.constant = 60  offset
+//            trailingButtonConstraint.constant = defaultHidenButtonConstraintValue - offset * 1.5
+//            leadingButtonConstraint.constant = defaultSpaceValue + offset * 0.4
+//            cancelButton.alpha = 1.0 - (offset * 1.68) / 100
 //        }
-  
-    }
+//    }
 
     private func setupSearchBar() {
 

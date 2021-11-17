@@ -71,8 +71,7 @@ class ContactsGroupViewController: UIViewController {
 extension ContactsGroupViewController: Themeble {
     
     func setupUI() {
-        
-        bottomButtonBarView.setImage(I.personalElementsItems.mergeArrowTop!)
+        bottomButtonBarView.setImage(I.systemItems.defaultItems.merge)
     }
     
     func setupNavigation() {

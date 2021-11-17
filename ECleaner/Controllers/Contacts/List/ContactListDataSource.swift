@@ -12,7 +12,9 @@ class ContactListDataSource: NSObject {
     public var contactListViewModel: ContactListViewModel
     
     public var isContactAvailable: ((Bool) -> (Void)) = {_ in}
-    public var didSelectContact: ((ContactListViewModel) -> Void) = {_ in }
+    public var didSelectContact: ((ContactListViewModel) -> Void) = {_ in}
+
+    public var contactContentIsEditing: Bool = false
     
     public var contentType: PhotoMediaType = .none
     
@@ -28,7 +30,12 @@ extension ContactListDataSource {
     private func cellConfigure(cell: ContactTableViewCell, at indexPath: IndexPath) {
     
         guard let contact = contactListViewModel.getContactOnRow(at: indexPath) else { return }
+        cell.contactEditingMode = self.contactContentIsEditing
         cell.updateContactCell(contact, contentType: self.contentType)
+    }
+    
+    private func didSelectDeselectContact() {
+        U.notificationCenter.post(name: .selectedContactsCountDidChange, object: nil)
     }
 }
 
@@ -70,9 +77,21 @@ extension ContactListDataSource: UITableViewDelegate, UITableViewDataSource {
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let contentOffset = scrollView.contentOffset.y
+        let contentOffset = scrollView.contentOffset
+        let contentInset = scrollView.contentInset
         
-        let userInfo = [C.key.notificationDictionary.scrollDidChangeValue: contentOffset]
-        U.notificationCenter.post(name: .searchBarDidChangeAppearance, object: nil, userInfo: userInfo)
+        let userInfo = [C.key.notificationDictionary.scrollViewInset: contentInset,
+                        C.key.notificationDictionary.scrollViewOffset: contentOffset] as [String : Any]
+        U.notificationCenter.post(name: .scrollViewDidScroll, object: nil, userInfo: userInfo)
+    }
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
+        self.didSelectDeselectContact()
+    }
+    
+    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: false)
+        self.didSelectDeselectContact()
     }
 }

@@ -13,6 +13,8 @@ class NavigationBar: UIView {
     @IBOutlet weak var leftBarButtonItem: UIButton!
     @IBOutlet weak var rightBarButtonItem: UIButton!
     @IBOutlet weak var titleTextLabel: UILabel!
+    @IBOutlet weak var leftButtonLeadingConstraint: NSLayoutConstraint!
+    @IBOutlet weak var rightButtonTrailingConstraint: NSLayoutConstraint!
     
     var delegate: NavigationBarDelegate?
     
@@ -72,9 +74,13 @@ class NavigationBar: UIView {
         }
         
         if let leftBarButtonImage = leftBarButtonImage {
+            leftButtonLeadingConstraint.constant = 5
+            leftBarButtonItem.setTitle(nil, for: .normal)
             leftBarButtonItem.setImage(leftBarButtonImage, for: .normal)
             leftBarButtonItem.isHidden = false
         } else if let leftTitle = leftButtonTitle {
+            leftButtonLeadingConstraint.constant = 20
+            leftBarButtonItem.setImage(nil, for: .normal)
             leftBarButtonItem.setTitle(leftTitle, for: .normal)
             leftBarButtonItem.isHidden = false
         } else {
@@ -82,17 +88,22 @@ class NavigationBar: UIView {
         }
         
         if let rightBarButtonImage = rightBarButtonImage {
+            rightButtonTrailingConstraint.constant = 5
+            rightBarButtonItem.setTitle(nil, for: .normal)
             rightBarButtonItem.setImage(rightBarButtonImage, for: .normal)
             rightBarButtonItem.isHidden = false
         } else if let rightTitle = rightButtonTitle {
+            rightButtonTrailingConstraint.constant = 20
+            rightBarButtonItem.setImage(nil, for: .normal)
             rightBarButtonItem.setTitle(rightTitle, for: .normal)
             rightBarButtonItem.isHidden = false
         } else {
             rightBarButtonItem.isHidden = true
         }
+        
+        leftBarButtonItem.layoutIfNeeded()
+        rightBarButtonItem.layoutIfNeeded()
     }
-    
-    
     
     public func setDropShadow(visible: Bool) {
         
@@ -119,19 +130,28 @@ class NavigationBar: UIView {
         titleTextLabel.font = .systemFont(ofSize: 17, weight: .bold)
     }
     
-
     private func actionButtonsSetup() {
         
         leftBarButtonItem.addTarget(self, action: #selector(didTapLeftBarButtonItem(_:)), for: .touchUpInside)
         rightBarButtonItem.addTarget(self, action: #selector(didTapRightBarButtonItem(_:)), for: .touchUpInside)
     }
-    
+
     @objc func didTapLeftBarButtonItem(_ sender: UIButton) {
         delegate?.didTapLeftBarButton(sender)
     }
     
     @objc func didTapRightBarButtonItem(_ sender: UIButton) {
         delegate?.didTapRightBarButton(sender)
+    }
+}
+
+extension NavigationBar {
+    
+    public func handleChangeRightButtonSelectState(selectAll: Bool) {
+        
+        let newtitle: String = !selectAll ? "select all" : "deselectAll"
+        
+        changeHotRightTitle(newTitle: newtitle)
     }
 }
 

@@ -613,3 +613,48 @@ import UIKit
 //        }
 //        return (assetGroups[section].assets[index], imageView)
 //    }
+
+
+
+
+//@objc func showNavigationBarShadow(_ notification: Notification) {
+//
+//        guard let userInfo = notification.userInfo else { return }
+//
+//////        let minimumSearchBarHeighValue: CGFloat = 40
+//////        let maximumSearchBarHeightValue: CGFloat = 80
+//////        let defaultSearchBarHeightValue: CGFloat = 60
+////
+////        if let offset = userInfo[C.key.notificationDictionary.scrollDidChangeValue] as? CGFloat {
+////            let defaultVaule: CGFloat = 60
+////            if offset <= 60 {
+////                self.navigationBar.containerView.alpha = 1.0  - (offset / 100) / 0.4
+////                searchBarTopConstraint.constant = defaultVaule - offset
+//////                searchBarView.showCancelButtonProgress(offset)
+////
+//////            } else if offset <= 0 {
+//////                self.navigationBar.containerView.alpha = 0.0 + (offset / 100) / 0.4
+//////                searchBarTopConstraint.constant = defaultVaule + offset
+////            } else if offset < 0 {
+////                searchBarTopConstraint.constant = 60 - offset
+////                self.view.layoutIfNeeded()
+////            }
+////            debugPrint(offset)
+////
+//////            containerViewHeight.constant = scrollView.contentInset.top
+//////                    let offsetY = -(scrollView.contentOffset.y + scrollView.contentInset.top)
+//////                    containerView.clipsToBounds = offsetY <= 0
+//////                    imageViewBottom.constant = offsetY >= 0 ? 0 : -offsetY / 2
+//////                    imageViewHeight.constant = max(offsetY + scrollView.contentInset.top, scrollView.contentInset.top)
+//////
+//////            if offset > 0 || offset < maximumSearchBarHeightValue {
+//////            searchBarHeightConstraint.constant = defaultSearchBarHeightValue + offset
+//////                searchBarView.layoutIfNeeded()
+//////            }
+////        }
+//
+////        if let showShadow = userInfo[C.key.notificationDictionary.scrollDidChangeBool] as? Bool {
+////            debugPrint("need sho shadow: \(showShadow)")
+////            navigationBar.setDropShadow(visible: showShadow)
+////        }
+//    }

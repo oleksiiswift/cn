@@ -11,6 +11,7 @@ enum DropDownMenuItems {
     case unselectAll
     case changeLayout
     case share
+    case edit
 }
 
 struct DropDownOptionsMenuItem {

@@ -93,6 +93,15 @@ enum Theme: Int {
                 return UIColor().colorFromHexString("F3F7FD")
         }
     }
+    
+    var contacSectionIndexColor: UIColor {
+        switch self {
+            case .light:
+                return UIColor().colorFromHexString("30C08F")
+            case .dark :
+                return UIColor().colorFromHexString("30C08F")
+        }
+    }
 
     
 //    MARK: - shadow colors -

@@ -47,10 +47,8 @@ class GroupedContactsHeaderView: UITableViewHeaderFooterView {
     }
     
     private func configureView() {
-        
-        deleteButton.setImage(I.personalElementsItems.crossContacts, for: .normal)
-        mergeButton.didset(righty: I.personalElementsItems.mergeArrow, with: "MERGE")
-        
+        deleteButton.setImage(I.personalisation.contacts.deleteContact, for: .normal)
+        mergeButton.didset(righty: I.personalisation.contacts.mergeContact, with: "MERGE")
         mergeButton.titleLabel!.font = .systemFont(ofSize: 12, weight: .heavy)
         headerTitleTextLabel.font = .systemFont(ofSize: 14, weight: .heavy)
     }

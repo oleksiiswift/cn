@@ -816,7 +816,7 @@
 			children = (
 				97CA4242273ECB59001FEA15 /* BottomButtonBarView */,
 				4F4A17B7271D80D400CAF157 /* NavigationBar */,
-				9776F57A27359382009D806A /* Layer */,
+				97B01A57274501C500DDE03C /* SearchBar */,
 				04467CE7270DC60C00DBBB39 /* DateSelectableView */,
 				049CC231268337360002F988 /* Cells */,
 				04CFFFF0268479D3000CA850 /* UIHelpersViews */,
@@ -825,8 +825,7 @@
 				9776F57727359362009D806A /* Carousel */,
 				9776F5822735949C009D806A /* ShadowView */,
 				97DC39B1273C091C00D487BE /* ShadowButtons */,
-				97A05B732743D4B600968459 /* SearchBarView.swift */,
-				97A05B752743D4C200968459 /* SearchBarView.xib */,
+				9776F57A27359382009D806A /* Layer */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -876,6 +875,7 @@
 		04E5836B267A414C00EDC3A3 /* Xibs */ = {
 			isa = PBXGroup;
 			children = (
+				97B01A56274501B300DDE03C /* SearchBar */,
 				97CE449E273D6AA300DF6114 /* NavigationBar */,
 				0459DF9626A57A8D0085EEDF /* Controllers */,
 				04649B37268C624F00336FE4 /* Views */,
@@ -1115,6 +1115,22 @@
 				97A61EDD2726AB8700F2E6DE /* ContactsManager.swift */,
 			);
 			path = Contacts;
+			sourceTree = "<group>";
+		};
+		97B01A56274501B300DDE03C /* SearchBar */ = {
+			isa = PBXGroup;
+			children = (
+				97A05B752743D4C200968459 /* SearchBarView.xib */,
+			);
+			path = SearchBar;
+			sourceTree = "<group>";
+		};
+		97B01A57274501C500DDE03C /* SearchBar */ = {
+			isa = PBXGroup;
+			children = (
+				97A05B732743D4B600968459 /* SearchBarView.swift */,
+			);
+			path = SearchBar;
 			sourceTree = "<group>";
 		};
 		97CA4242273ECB59001FEA15 /* BottomButtonBarView */ = {

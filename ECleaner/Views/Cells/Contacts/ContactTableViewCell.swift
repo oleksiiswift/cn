@@ -11,15 +11,16 @@ import Contacts
 class ContactTableViewCell: UITableViewCell {
     
     @IBOutlet weak var reuseShadowView: ReuseShadowView!
-    
     @IBOutlet weak var baseView: UIView!
     @IBOutlet weak var contactTitleTextLabel: UILabel!
     @IBOutlet weak var contactSubtitleTextLabel: UILabel!
-    
     @IBOutlet weak var shadowRoundedReuseView: ReuseShadowRoundedView!
-        
     @IBOutlet weak var topBaseViewConstraint: NSLayoutConstraint!
     @IBOutlet weak var bottomBaseViewConstraint: NSLayoutConstraint!
+    
+    private var contact: CNContact?
+    
+    public var contactEditingMode: Bool = false
     
     override func prepareForReuse() {
         super.prepareForReuse()
@@ -29,20 +30,35 @@ class ContactTableViewCell: UITableViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-     
+        
         setupUI()
         updateColors()
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
+        
+        if contactEditingMode {
+            self.handleSelectedContact()
+        }
     }
+    
+//    override func setEditing(_ editing: Bool, animated: Bool) {
+//        super.setEditing(editing, animated: animated)
+//
+//        debugPrint("editing: \(editing)")
+//        if editing {
+//            self.handleSelectedContact()
+//        }
+//    }
 }
 
 
 extension ContactTableViewCell {
     
     public func updateContactCell(_ contact: CNContact, contentType: PhotoMediaType) {
+        
+        self.contact = contact
         
         if contentType == .allContacts {
             contactSubtitleTextLabel.isHidden = true
@@ -62,12 +78,24 @@ extension ContactTableViewCell {
             contactTitleTextLabel.text = contactFullName
         }
         
-        if let imageData = contact.thumbnailImageData, let image = UIImage(data: imageData) {
-            shadowRoundedReuseView.setImage(image)
+        if contactEditingMode {
+            self.handleSelectedContact()
         } else {
-            shadowRoundedReuseView.setImage(I.mainMenuThumbItems.contacts)
+            if let imageData = contact.thumbnailImageData, let image = UIImage(data: imageData) {
+                shadowRoundedReuseView.setImage(image)
+            } else {
+                shadowRoundedReuseView.setImage(I.mainMenuThumbItems.contacts)
+            }
         }
+    }
+    
+    private func handleSelectedContact() {
         
+        if isSelected {
+            shadowRoundedReuseView.setImage(I.personalisation.contacts.selectContact)
+        } else {
+            shadowRoundedReuseView.setImage(I.personalisation.contacts.deselectContact)
+        }
     }
 }
 
@@ -87,7 +115,7 @@ extension ContactTableViewCell: Themeble {
         contactSubtitleTextLabel.font = .systemFont(ofSize: 14, weight: .bold)
         
         let backgroundView = UIView()
-        backgroundView.backgroundColor = .orange
+        backgroundView.backgroundColor = .clear
         selectedBackgroundView = backgroundView
     }
     
@@ -98,6 +126,8 @@ extension ContactTableViewCell: Themeble {
     }
     
     private func superPrepareForReuse() {
+        
+        accessoryType = .none
         
         contactTitleTextLabel.text = nil
         contactSubtitleTextLabel.text = nil

@@ -60,6 +60,7 @@ class Constants {
             
             /// `contacts notification`
             static let mergeContactsSelectionDidChange = "mergeContactsSelectionDidChange"
+            static let selectedContactsDidChange = "selectedContactsDidChange"
         }
         
 //        MARK: - notification dictionary progress identifiers -
@@ -103,8 +104,8 @@ class Constants {
             static let duplicateContactsCount = "deepCleanduplicateContactsCount"
             
             /// contact scroll delegate scriklkub
-            static let scrollDidChangeValue = "scrollDidChangeValue"
-                ///
+            static let scrollViewInset = "scrollViewInset"
+            static let scrollViewOffset = "scrollViewOffset"
         }
     }
     

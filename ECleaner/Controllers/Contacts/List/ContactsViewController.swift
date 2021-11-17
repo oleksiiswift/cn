@@ -16,12 +16,23 @@ class ContactsViewController: UIViewController {
     @IBOutlet weak var navigationBarHeightConstraint: NSLayoutConstraint!
     @IBOutlet weak var navigationBarTopConstraint: NSLayoutConstraint!
     @IBOutlet weak var searchBarTopConstraint: NSLayoutConstraint!
-    
     @IBOutlet weak var tableView: UITableView!
     
-//    private var searchBar = UISearchBar()
-//    private var scrollView = UIScrollView()
+    lazy var setEditingModeOptionItem = DropDownOptionsMenuItem(titleMenu: "edit",
+                                                                itemThumbnail: I.systemItems.selectItems.roundedCheckMark,
+                                                                isSelected: false,
+                                                                menuItem: .edit)
     
+    lazy var exportAllContactOptionItem = DropDownOptionsMenuItem(titleMenu: "export selected",
+                                                              itemThumbnail: I.systemItems.defaultItems.share,
+                                                              isSelected: false,
+                                                              menuItem: .share)
+    
+    public var contactContentIsEditing: Bool = false
+    private var isSelectedAllItems: Bool {
+        return contacts.count == self.tableView.indexPathsForSelectedRows?.count
+    }
+
     public var contactListViewModel: ContactListViewModel!
     public var contactListDataSource: ContactListDataSource!
     
@@ -29,17 +40,15 @@ class ContactsViewController: UIViewController {
     public var contentType: PhotoMediaType = .none
     public var mediaType: MediaContentType = .none
     
-    public var isEdinng: Bool = false
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         setupNavigation()
+        setNavigationEditMode(isEditing: false)
         setupViewModel(contacts: self.contacts)
         setupUI()
         setupObserversAndDelegate()
         setupTableView()
-//        setupSearchBar()
         updateColors()
     }
 }
@@ -50,12 +59,37 @@ extension ContactsViewController: Themeble {
         
         self.navigationController?.navigationBar.isHidden = true
         navigationBar.setIsDropShadow = false
-        navigationBar.setupNavigation(title: mediaType.navigationTitle, leftBarButtonImage: I.navigationItems.back, rightBarButtonImage: I.navigationItems.burgerDots, mediaType: .userContacts, leftButtonTitle: nil, rightButtonTitle: nil)
+        navigationBar.setupNavigation(title: mediaType.navigationTitle,
+                                      leftBarButtonImage: I.navigationItems.back,
+                                      rightBarButtonImage: I.navigationItems.burgerDots,
+                                      mediaType: .userContacts,
+                                      leftButtonTitle: nil,
+                                      rightButtonTitle: nil)
     }
     
-    private func setupUI() {
+    private func setNavigationEditMode(isEditing: Bool) {
         
+        if isEditing {
+            let rightNavigationTitle: String = isSelectedAllItems ? "deselect all" : "select all"
+            
+            navigationBar.setupNavigation(title: mediaType.navigationTitle,
+                                          leftBarButtonImage: nil,
+                                          rightBarButtonImage: nil,
+                                          mediaType: .userContacts,
+                                          leftButtonTitle: "cancel",
+                                          rightButtonTitle: rightNavigationTitle)
+            
+        } else {
+            navigationBar.setupNavigation(title: mediaType.navigationTitle,
+                                          leftBarButtonImage: I.navigationItems.back,
+                                          rightBarButtonImage: I.navigationItems.burgerDots,
+                                          mediaType: .userContacts,
+                                          leftButtonTitle: nil,
+                                          rightButtonTitle: nil)
+        }
     }
+    
+    private func setupUI() {}
     
     private func setupViewModel(contacts: [CNContact]) {
         self.contactListViewModel = ContactListViewModel(contacts: contacts)
@@ -66,14 +100,13 @@ extension ContactsViewController: Themeble {
         self.view.backgroundColor = theme.backgroundColor
     }
     
-    
     private func setupTableView() {
         
         tableView.register(UINib(nibName: C.identifiers.xibs.contactCell, bundle: nil), forCellReuseIdentifier: C.identifiers.cells.contactCell)
         tableView.delegate = contactListDataSource
         tableView.dataSource = contactListDataSource
         tableView.separatorStyle = .none
-        tableView.sectionIndexColor = UIColor().colorFromHexString("30C08F")
+        tableView.sectionIndexColor = theme.contacSectionIndexColor
         
         tableView.backgroundColor = theme.backgroundColor
         tableView.allowsSelection = false
@@ -81,51 +114,163 @@ extension ContactsViewController: Themeble {
         let view = UIView(frame: CGRect(origin: .zero, size: CGSize(width: U.screenWidth, height: 40)))
         view.backgroundColor = .clear
         tableView.tableHeaderView = view
-        
-//        let searchBar = UISearchBar()
-//        searchBar.showsCancelButton = true
-//        searchBar.searchBarStyle = UISearchBar.Style.default
-//        searchBar.placeholder = " Search Here....."
-//        searchBar.sizeToFit()
-//        searchBar.backgroundColor = .clear
-//        tableView.tableHeaderView = searchBar
     }
-    
-//    private func setupSearchBar() {
-//
-//        searchBar.frame = CGRect(x: 0, y: 0, width: U.screenWidth, height: 80)
-//        searchBar.searchBarStyle = .default
-//
-//        searchBar.placeholder = " search here .... "
-//        searchBar.sizeToFit()
-//
-//        tableView.tableHeaderView = searchBar
-//    }
-    
- 
-    
+        
     private func setupObserversAndDelegate() {
         
         navigationBar.delegate = self
         searchBarView.searchBar.delegate = self
         
         U.notificationCenter.addObserver(self, selector: #selector(handleSearchBarState), name: .searchBarDidCancel, object: nil)
-        U.notificationCenter.addObserver(self, selector: #selector(showNavigationBarShadow(_:)), name: .searchBarDidChangeAppearance, object: nil)
+        U.notificationCenter.addObserver(self, selector: #selector(searchBarDidMove(_:)), name: .scrollViewDidScroll, object: nil)
+        U.notificationCenter.addObserver(self, selector: #selector(didSelectDeselectContact), name: .selectedContactsCountDidChange, object: nil)
     }
 }
 
 extension ContactsViewController {
     
-    private func isSelected(enabled: Bool) {
-        
-        tableView.allowsSelection = enabled
+    private func setContactsEditingMode(enabled: Bool) {
+            
         tableView.allowsMultipleSelection = enabled
+        tableView.allowsSelection = enabled
+        
+        if let indexPaths = tableView.indexPathsForVisibleRows {
+            self.tableView.reloadRows(at: indexPaths, with: .none)
+        }
     }
+    
+    private func didTapSelectDeselectNavigationButton() {
+        
+        handleSelectDeselectAll(setSelect: !isSelectedAllItems)
+    }
+    
+    private func handleSelectDeselectAll(setSelect: Bool) {
+        
+        if contacts.count > 1000 {
+            U.UI {
+                P.showIndicator(in: self)
+            }
+        }
+        U.delay(0.5) {
+            self.setContactsSelect(setSelect) {
+                P.hideIndicator()
+                self.navigationBar.handleChangeRightButtonSelectState(selectAll: setSelect)
+                self.handleSelectedCount()
+            }
+        }
+    }
+    
+    private func setContactsSelect(_ allSelected: Bool, completionHandler: @escaping () -> Void) {
+        
+        for section in 0..<tableView.numberOfSections {
+            for row in 0..<tableView.numberOfRows(inSection: section) {
+                let indexPath = IndexPath(row: row, section: section)
+                debugPrint(indexPath)
+                if allSelected {
+                    _ = tableView.delegate?.tableView?(tableView, willSelectRowAt: indexPath)
+                    tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
+                    tableView.delegate?.tableView?(tableView, didSelectRowAt: indexPath)
+                } else {
+                    _ = tableView.delegate?.tableView?(tableView, willDeselectRowAt: indexPath)
+                    tableView.deselectRow(at: indexPath, animated: false)
+                    tableView.delegate?.tableView?(tableView, didDeselectRowAt: indexPath)
+                }
+            }
+        }
+        completionHandler()
+    }
+    
+    @objc func didSelectDeselectContact() {
+        handleSelectedCount()
+    }
+    
+    private func handleSelectedCount() {
+        
+        
+        if let selectedCount = tableView.indexPathsForSelectedRows?.count {
+            if selectedCount != 0 {
+                
+            } else {
+                
+            }
+        }
+    }
+    
+    private func handleBottomButtonChangeAppearence() {
+        
+    }
+}
+
+//      MARK: - handle actions buttons -
+extension ContactsViewController {
+    
+    private func didTapCancelEditingButton() {
+        
+        handleEdit()
+    }
+    
+    private func didTapSelectEditingMode() {
+        
+        handleEdit()
+    }
+    
+    private func handleEdit() {
+        contactContentIsEditing = !contactContentIsEditing
+        self.contactListDataSource.contactContentIsEditing = contactContentIsEditing
+        self.setContactsEditingMode(enabled: contactContentIsEditing)
+        self.setNavigationEditMode(isEditing: contactContentIsEditing)
+    }
+    
+    private func didTapShareAllContacts() {}
+    
+    private func didTapShareSelectedContacts() {}
+    
+    private func didTapOpenBurgerMenu() {
+        
+        presentDropDonwMenu(with: [[setEditingModeOptionItem, exportAllContactOptionItem]], from: navigationBar.rightBarButtonItem)
+    }
+
+    private func presentDropDonwMenu(with items: [[DropDownOptionsMenuItem]], from navigationButton: UIButton) {
+        let dropDownViewController = DropDownMenuViewController()
+        dropDownViewController.menuSectionItems = items
+        dropDownViewController.delegate = self
+        
+        guard let popoverPresentationController = dropDownViewController.popoverPresentationController else { return }
+        
+        popoverPresentationController.delegate = self
+        popoverPresentationController.sourceView = navigationButton
+        popoverPresentationController.sourceRect = CGRect(x: navigationButton.bounds.midX, y: navigationButton.bounds.maxY - 13, width: 0, height: 0)
+        popoverPresentationController.permittedArrowDirections = .up
+        self.present(dropDownViewController, animated: true, completion: nil)
+    }
+
+    private func closeController() {
+        self.navigationController?.popViewController(animated: true)
+    }
+}
+
+
+extension ContactsViewController: SelectDropDownMenuDelegate {
+    
+    func selectedItemListViewController(_ controller: DropDownMenuViewController, didSelectItem: DropDownMenuItems) {
+        
+        switch didSelectItem {
+            case .share:
+                self.didTapShareAllContacts()
+            case .edit:
+                self.didTapSelectEditingMode()
+            default:
+                return
+        }
+    }
+}
+
+//      MARK: - hadle search bar -
+extension ContactsViewController {
     
     private func setActiveSearchBar(setActive: Bool) {
         
         self.searchBarView.setShowCancelButton(setActive, animated: true)
-//        navigationBarTopConstraint.constant = setActive ? -60 : 0
         searchBarTopConstraint.constant = setActive ? 0 : 60
         U.animate(0.3) {
             self.navigationBar.containerView.alpha = setActive ? 0 : 1
@@ -138,53 +283,11 @@ extension ContactsViewController {
         
         setActiveSearchBar(setActive: false)
     }
-}
-
-
-extension ContactsViewController {
     
-    @objc func showNavigationBarShadow(_ notification: Notification) {
+    @objc func searchBarDidMove(_ notification: Notification) {
         
-        guard let userInfo = notification.userInfo else { return }
-        
-//        let minimumSearchBarHeighValue: CGFloat = 40
-//        let maximumSearchBarHeightValue: CGFloat = 80
-//        let defaultSearchBarHeightValue: CGFloat = 60
-        
-        if let offset = userInfo[C.key.notificationDictionary.scrollDidChangeValue] as? CGFloat {
-            let defaultVaule: CGFloat = 60
-            if offset <= 60 {
-                self.navigationBar.containerView.alpha = 1.0  - (offset / 100) / 0.4
-                searchBarTopConstraint.constant = defaultVaule - offset
-                searchBarView.showCancelButtonProgress(offset)
-                
-            } else if offset <= 0 {
-                self.navigationBar.containerView.alpha = 0.0 + (offset / 100) / 0.4
-                searchBarTopConstraint.constant = defaultVaule + offset
-            } else if offset > 0 {
-//                searchBarTopConstraint.constant = 60  offset
-            }
-            
-            
-//            containerViewHeight.constant = scrollView.contentInset.top
-//                    let offsetY = -(scrollView.contentOffset.y + scrollView.contentInset.top)
-//                    containerView.clipsToBounds = offsetY <= 0
-//                    imageViewBottom.constant = offsetY >= 0 ? 0 : -offsetY / 2
-//                    imageViewHeight.constant = max(offsetY + scrollView.contentInset.top, scrollView.contentInset.top)
-//
-//            if offset > 0 || offset < maximumSearchBarHeightValue {
-//            searchBarHeightConstraint.constant = defaultSearchBarHeightValue + offset
-//                searchBarView.layoutIfNeeded()
-//            }
-        }
-    
-//        if let showShadow = userInfo[C.key.notificationDictionary.scrollDidChangeBool] as? Bool {
-//            debugPrint("need sho shadow: \(showShadow)")
-//            navigationBar.setDropShadow(visible: showShadow)
-//        }
+//        guard let userInfo = notification.userInfo else { return }
     }
-    
-    
 }
 
 extension ContactsViewController: UISearchBarDelegate {
@@ -193,61 +296,62 @@ extension ContactsViewController: UISearchBarDelegate {
         
         self.setActiveSearchBar(setActive: true)
     }
-    
-    
-    
-    
-    
-    
-    
-//
-//    @available(iOS 2.0, *)
-//    optional func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool // return NO to not become first responder
-//
-//    @available(iOS 2.0, *)
-//    optional func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) // called when text starts editing
-//
-//    @available(iOS 2.0, *)
-//    optional func searchBarShouldEndEditing(_ searchBar: UISearchBar) -> Bool // return NO to not resign first responder
-//
-//    @available(iOS 2.0, *)
-//    optional func searchBarTextDidEndEditing(_ searchBar: UISearchBar) // called when text ends editing
-//
-//    @available(iOS 2.0, *)
-//    optional func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) // called when text changes (including clear)
-//
-//    @available(iOS 3.0, *)
-//    optional func searchBar(_ searchBar: UISearchBar, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool // called before text changes
-//
-//
-//    @available(iOS 2.0, *)
-//    optional func searchBarSearchButtonClicked(_ searchBar: UISearchBar) // called when keyboard search button pressed
-//
-//    @available(iOS 2.0, *)
-//    optional func searchBarBookmarkButtonClicked(_ searchBar: UISearchBar) // called when bookmark button pressed
-//
-//    @available(iOS 2.0, *)
-//    optional func searchBarCancelButtonClicked(_ searchBar: UISearchBar) // called when cancel button pressed
-//
-//    @available(iOS 3.2, *)
-//    optional func searchBarResultsListButtonClicked(_ searchBar: UISearchBar) // called when search results button pressed
-//
-//
-//    @available(iOS 3.0, *)
-//    optional func searchBar(_ searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int)
-    
-
 }
 
 extension ContactsViewController: NavigationBarDelegate {
     
     func didTapLeftBarButton(_ sender: UIButton) {
-        self.navigationController?.popViewController(animated: true)
+        
+        self.contactContentIsEditing ?  self.didTapCancelEditingButton() : self.closeController()
     }
     
     func didTapRightBarButton(_ sender: UIButton) {
         
-        self.isEdinng = !isEdinng
-        self.isSelected(enabled: self.isEdinng)
+        self.contactContentIsEditing ? self.didTapSelectDeselectNavigationButton() : self.didTapOpenBurgerMenu()
     }
 }
+
+
+extension ContactsViewController: UIPopoverPresentationControllerDelegate {
+    
+    func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
+        return .none
+    }
+}
+
+
+    //
+    //    @available(iOS 2.0, *)
+    //    optional func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool // return NO to not become first responder
+    //
+    //    @available(iOS 2.0, *)
+    //    optional func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) // called when text starts editing
+    //
+    //    @available(iOS 2.0, *)
+    //    optional func searchBarShouldEndEditing(_ searchBar: UISearchBar) -> Bool // return NO to not resign first responder
+    //
+    //    @available(iOS 2.0, *)
+    //    optional func searchBarTextDidEndEditing(_ searchBar: UISearchBar) // called when text ends editing
+    //
+    //    @available(iOS 2.0, *)
+    //    optional func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) // called when text changes (including clear)
+    //
+    //    @available(iOS 3.0, *)
+    //    optional func searchBar(_ searchBar: UISearchBar, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool // called before text changes
+    //
+    //
+    //    @available(iOS 2.0, *)
+    //    optional func searchBarSearchButtonClicked(_ searchBar: UISearchBar) // called when keyboard search button pressed
+    //
+    //    @available(iOS 2.0, *)
+    //    optional func searchBarBookmarkButtonClicked(_ searchBar: UISearchBar) // called when bookmark button pressed
+    //
+    //    @available(iOS 2.0, *)
+    //    optional func searchBarCancelButtonClicked(_ searchBar: UISearchBar) // called when cancel button pressed
+    //
+    //    @available(iOS 3.2, *)
+    //    optional func searchBarResultsListButtonClicked(_ searchBar: UISearchBar) // called when search results button pressed
+    //
+    //
+    //    @available(iOS 3.0, *)
+    //    optional func searchBar(_ searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int)
