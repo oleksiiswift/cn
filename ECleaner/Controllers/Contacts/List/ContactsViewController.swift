@@ -100,8 +100,8 @@ extension ContactsViewController: Themeble {
         bottomDoubleButtonView.setRightButtonImage(I.systemItems.defaultItems.delete)
         bottomDoubleButtonView.setLeftButtonTitle("share")
         
-        let keyboardHide = UITapGestureRecognizer(target: self, action: #selector(searchBarResignFirstResponder))
-        self.view.addGestureRecognizer(keyboardHide)
+//        let keyboardHide = UITapGestureRecognizer(target: self, action: #selector(searchBarResignFirstResponder))
+//        self.view.addGestureRecognizer(keyboardHide)
     }
     
     private func setupViewModel(contacts: [CNContact]) {
@@ -186,7 +186,6 @@ extension ContactsViewController {
     }
     
     private func setCancelAndDeselectAllItems() {
-        P.showIndicator()
         if let indexPaths = self.tableView.indexPathsForSelectedRows {
             indexPaths.forEach { indexPath in
                 _ = tableView.delegate?.tableView?(tableView, willDeselectRowAt: indexPath)
@@ -194,7 +193,6 @@ extension ContactsViewController {
                 tableView.delegate?.tableView?(tableView, didDeselectRowAt: indexPath)
             }
         }
-        P.hideIndicator()
     }
     
     private func setContactsSelect(_ allSelected: Bool, completionHandler: @escaping () -> Void) {
@@ -254,8 +252,9 @@ extension ContactsViewController {
 extension ContactsViewController {
     
     private func didTapCancelEditingButton() {
-        
+        P.showIndicator()
         setCancelAndDeselectAllItems()
+        P.hideIndicator()
         handleEdit()
     }
     
@@ -278,14 +277,30 @@ extension ContactsViewController {
     private func didTapDeleteSelectedContacts() {
         
         if let indexPaths = self.tableView.indexPathsForSelectedRows {
-            
             let contacts = contactListViewModel.getContacts(at: indexPaths)
-            
+            self.setCancelAndDeselectAllItems()
+            self.handleEdit()
+            P.showIndicator()
             contactManager.deleteContacts(contacts) { suxxessful, deletedCount in
+                debugPrint("deleted is \(suxxessful)")
                 if deletedCount == contacts.count {
                     debugPrint("all deleted")
                 } else {
                     debugPrint("errors count \(contacts.count - deletedCount)")
+                }
+                
+                self.contactManager.getAllContacts { allContacts in
+                    U.UI {
+                        if allContacts.count != 0 {
+                            P.hideIndicator()
+                            self.setupViewModel(contacts: allContacts)
+                            self.tableView.delegate = self.contactListDataSource
+                            self.tableView.dataSource = self.contactListDataSource
+                            self.tableView.reloadData()
+                        } else {
+                            self.closeController()
+                        }
+                    }
                 }
             }
         }
@@ -410,47 +425,9 @@ extension ContactsViewController: NavigationBarDelegate {
     }
 }
 
-
 extension ContactsViewController: UIPopoverPresentationControllerDelegate {
     
     func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
         return .none
     }
 }
-
-
-    //
-    //    @available(iOS 2.0, *)
-    //    optional func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool // return NO to not become first responder
-    //
-    //    @available(iOS 2.0, *)
-    //    optional func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) // called when text starts editing
-    //
-    //    @available(iOS 2.0, *)
-    //    optional func searchBarShouldEndEditing(_ searchBar: UISearchBar) -> Bool // return NO to not resign first responder
-    //
-    //    @available(iOS 2.0, *)
-    //    optional func searchBarTextDidEndEditing(_ searchBar: UISearchBar) // called when text ends editing
-    //
-    //    @available(iOS 2.0, *)
-    //    optional func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) // called when text changes (including clear)
-    //
-    //    @available(iOS 3.0, *)
-    //    optional func searchBar(_ searchBar: UISearchBar, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool // called before text changes
-    //
-    //
-    //    @available(iOS 2.0, *)
-    //    optional func searchBarSearchButtonClicked(_ searchBar: UISearchBar) // called when keyboard search button pressed
-    //
-    //    @available(iOS 2.0, *)
-    //    optional func searchBarBookmarkButtonClicked(_ searchBar: UISearchBar) // called when bookmark button pressed
-    //
-    //    @available(iOS 2.0, *)
-    //    optional func searchBarCancelButtonClicked(_ searchBar: UISearchBar) // called when cancel button pressed
-    //
-    //    @available(iOS 3.2, *)
-    //    optional func searchBarResultsListButtonClicked(_ searchBar: UISearchBar) // called when search results button pressed
-    //
-    //
-    //    @available(iOS 3.0, *)
-    //    optional func searchBar(_ searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int)

@@ -56,10 +56,7 @@ extension ContactListViewModel {
         var cont: [CNContact] = []
         
         indexPaths.forEach { indexPath in
-            let key = self.contactsSections[indexPath.section]
-            
-            if let contacts = contactsData[key] {
-                let contact = contacts[indexPath.row]
+            if let contact = self.getContactOnRow(at: indexPath) {
                 cont.append(contact)
             }
         }
