@@ -16,8 +16,8 @@ protocol BottomDoubleActionButtonDelegate: AnyObject {
 class BottomDoubleButtonBarView: UIView {
 
     @IBOutlet var contantView: UIView!
-    @IBOutlet weak var leftActionBottomButton: BottomBarButtonItem!
-    @IBOutlet weak var rightActionBottomButton: BottomBarButtonItem!
+    @IBOutlet weak var leftActionBottomButton: BottomSmallerBarButtonItem!
+    @IBOutlet weak var rightActionBottomButton: BottomSmallerBarButtonItem!
     @IBOutlet weak var buttonsStackHeightConstraint: NSLayoutConstraint!
     
     var delegate: BottomDoubleActionButtonDelegate?
@@ -76,19 +76,19 @@ class BottomDoubleButtonBarView: UIView {
     }
     
     public func setLeftButtonTitle(_ title: String) {
-        leftActionBottomButton.setTitle(title, for: .normal)
+        leftActionBottomButton.setTitle(title)
     }
     
     public func setRightButtonTitle(_ title: String) {
-        rightActionBottomButton.setTitle(title, for: .normal)
+        rightActionBottomButton.setTitle(title)
     }
     
     public func setLeftButtonImage(_ image: UIImage) {
-        leftActionBottomButton.setImage(image, for: .normal)
+        leftActionBottomButton.setButtonImage(image: image)
     }
     
     public func setRightButtonImage(_ image: UIImage) {
-        rightActionBottomButton.setImage(image, for: .normal)
+        rightActionBottomButton.setButtonImage(image: image)
     }
     
     @objc func didTapLeftButton() {
@@ -97,5 +97,36 @@ class BottomDoubleButtonBarView: UIView {
     
     @objc func didTapRightButton() {
         delegate?.didTapRightActionButton()
+    }
+}
+
+class BottomSmallerBarButtonItem: UIButton {
+    
+    public var imageSpacing: CGFloat = 10
+    public var imageSize: CGSize = CGSize(width: 18, height: 22)
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        configure()
+    }
+    
+    private func configure() {
+        
+        self.setCorner(14)
+        self.titleLabel?.font = .systemFont(ofSize: 16.8, weight: .bold)
+    }
+    
+    public func configureAppearance(buttonColor: UIColor, tintColor: UIColor) {
+        self.backgroundColor = buttonColor
+        self.tintColor = tintColor
+    }
+
+    public func setTitle(_ newTitle: String) {
+        self.setTitleWithoutAnimation(title: newTitle)
+    }
+    
+    public func setButtonImage(image: UIImage) {
+        self.addLeftImage(image: image, size: imageSize, spacing: imageSpacing)
     }
 }

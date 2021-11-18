@@ -52,7 +52,7 @@ class ContactsGroupViewController: UIViewController {
         setupNavigation()
         setupTableView()
         setupObserversAndDelegate()
-        handleMergeContactsAppearButton()
+        handleMergeContactsAppearButton(disableAnimation: true)
         updateColors()
         self.tableView.reloadData()
     }
@@ -327,15 +327,24 @@ extension ContactsGroupViewController {
         handleMergeContactsAppearButton()
     }
     
-    private func handleMergeContactsAppearButton() {
-    
+    private func handleMergeContactsAppearButton(disableAnimation: Bool = false) {
+        
         let calculatedBottomButtonHeight: CGFloat = bottomButtonHeight + U.bottomSafeAreaHeight
         bottomButtonHeightConstraint.constant = !self.contactGroupListDataSource.selectedSections.isEmpty ? calculatedBottomButtonHeight : 0
         
         let buttonTitle: String = "merge selected".uppercased() + " (\(self.contactGroupListDataSource.selectedSections.count))"
         self.bottomButtonBarView.title(buttonTitle)
-        self.bottomButtonBarView.layoutIfNeeded()
-        self.tableView.contentInset.bottom = !self.contactGroupListDataSource.selectedSections.isEmpty ? calculatedBottomButtonHeight :  34
+        
+        if disableAnimation {
+            self.bottomButtonBarView.layoutIfNeeded()
+            self.tableView.contentInset.bottom = !self.contactGroupListDataSource.selectedSections.isEmpty ? calculatedBottomButtonHeight :  34
+        } else {
+            U.animate(0.5) {
+                self.view.layoutIfNeeded()
+                self.bottomButtonBarView.layoutIfNeeded()
+                self.tableView.contentInset.bottom = !self.contactGroupListDataSource.selectedSections.isEmpty ? calculatedBottomButtonHeight :  34
+            }
+        }
     }
 }
 

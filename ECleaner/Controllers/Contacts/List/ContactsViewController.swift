@@ -54,7 +54,7 @@ class ContactsViewController: UIViewController {
         setupObserversAndDelegate()
         setupTableView()
         updateColors()
-        handleBottomButtonChangeAppearence()
+        handleBottomButtonChangeAppearence(disableAnimation: true)
     }
 }
 
@@ -96,9 +96,9 @@ extension ContactsViewController: Themeble {
     
     private func setupUI() {
         
-        bottomDoubleButtonView.setLeftButtonImage(I.systemItems.defaultItems.share)
+        bottomDoubleButtonView.setLeftButtonImage(I.systemItems.defaultItems.buttonShare)
         bottomDoubleButtonView.setRightButtonImage(I.systemItems.defaultItems.delete)
-        bottomDoubleButtonView.setLeftButtonTitle("share selected")
+        bottomDoubleButtonView.setLeftButtonTitle("share")
     }
     
     private func setupViewModel(contacts: [CNContact]) {
@@ -127,7 +127,7 @@ extension ContactsViewController: Themeble {
         tableView.backgroundColor = theme.backgroundColor
         tableView.allowsSelection = false
         /// add extra top inset 
-        let view = UIView(frame: CGRect(origin: .zero, size: CGSize(width: U.screenWidth, height: 40)))
+        let view = UIView(frame: CGRect(origin: .zero, size: CGSize(width: U.screenWidth, height: 20)))
         view.backgroundColor = .clear
         tableView.tableHeaderView = view
     }
@@ -177,6 +177,18 @@ extension ContactsViewController {
         }
     }
     
+    private func setCancelAndDeselectAllItems() {
+        P.showIndicator()
+        if let indexPaths = self.tableView.indexPathsForSelectedRows {
+            indexPaths.forEach { indexPath in
+                _ = tableView.delegate?.tableView?(tableView, willDeselectRowAt: indexPath)
+                tableView.deselectRow(at: indexPath, animated: false)
+                tableView.delegate?.tableView?(tableView, didDeselectRowAt: indexPath)
+            }
+        }
+        P.hideIndicator()
+    }
+    
     private func setContactsSelect(_ allSelected: Bool, completionHandler: @escaping () -> Void) {
         
         for section in 0..<tableView.numberOfSections {
@@ -209,16 +221,24 @@ extension ContactsViewController {
         }
     }
     
-    private func handleBottomButtonChangeAppearence() {
+    private func handleBottomButtonChangeAppearence(disableAnimation: Bool = false) {
         
         let calculatedBottomButtonHeight: CGFloat = bottomButtonHeight + U.bottomSafeAreaHeight
         bottomDoubleButtonHeightConstraint.constant = selectedItems() != 0 ? calculatedBottomButtonHeight : 0
         
-        let rightButtonTitle: String = "delete".uppercased() + " (\(selectedItems()))"
+        let rightButtonTitle: String = "delete" + " (\(selectedItems()))"
         bottomDoubleButtonView.setRightButtonTitle(rightButtonTitle)
-        bottomDoubleButtonView.layoutIfNeeded()
         
-        self.tableView.contentInset.bottom = selectedItems() != 0 ? calculatedBottomButtonHeight :  34
+        if disableAnimation {
+            self.bottomDoubleButtonView.layoutIfNeeded()
+            self.tableView.contentInset.bottom = self.selectedItems() != 0 ? calculatedBottomButtonHeight :  34
+        } else {
+            U.animate(0.5) {
+                self.view.layoutIfNeeded()
+                self.bottomDoubleButtonView.layoutIfNeeded()
+                self.tableView.contentInset.bottom = self.selectedItems() != 0 ? calculatedBottomButtonHeight :  34
+            }
+        }
     }
 }
 
@@ -227,6 +247,7 @@ extension ContactsViewController {
     
     private func didTapCancelEditingButton() {
         
+        setCancelAndDeselectAllItems()
         handleEdit()
     }
     

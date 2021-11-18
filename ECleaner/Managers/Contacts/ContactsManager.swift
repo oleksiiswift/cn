@@ -907,7 +907,10 @@ extension ContactsManager {
         
         U.BG {
             var deletedContactsCount = 0
-            contacts.forEach { contact in
+//            contacts.forEach { contact in
+            for contact in contacts {
+                
+            
                 self.deleteContact(contact) { success in
                     if success {
                         deletedContactsCount += 1

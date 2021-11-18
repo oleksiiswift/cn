@@ -12,8 +12,8 @@
             <connections>
                 <outlet property="buttonsStackHeightConstraint" destination="Thv-mN-NqH" id="e32-iX-KIL"/>
                 <outlet property="contantView" destination="iN0-l3-epB" id="xir-aH-LPQ"/>
-                <outlet property="leftActionBottomButton" destination="dJp-o3-kVB" id="2fZ-gO-QSn"/>
-                <outlet property="rightActionBottomButton" destination="Qo2-Le-3TX" id="zrz-Id-bGm"/>
+                <outlet property="leftActionBottomButton" destination="dJp-o3-kVB" id="Ylm-BT-YLK"/>
+                <outlet property="rightActionBottomButton" destination="Qo2-Le-3TX" id="ceR-8b-4d8"/>
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
@@ -27,12 +27,12 @@
                         <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="18" translatesAutoresizingMaskIntoConstraints="NO" id="P0q-Ba-c6L">
                             <rect key="frame" x="20" y="0.0" width="374" height="60"/>
                             <subviews>
-                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dJp-o3-kVB" customClass="BottomBarButtonItem" customModule="ECleaner" customModuleProvider="target">
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dJp-o3-kVB" customClass="BottomSmallerBarButtonItem" customModule="ECleaner" customModuleProvider="target">
                                     <rect key="frame" x="0.0" y="0.0" width="178" height="60"/>
                                     <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                     <state key="normal" title="Button"/>
                                 </button>
-                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Qo2-Le-3TX" customClass="BottomBarButtonItem" customModule="ECleaner" customModuleProvider="target">
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Qo2-Le-3TX" customClass="BottomSmallerBarButtonItem" customModule="ECleaner" customModuleProvider="target">
                                     <rect key="frame" x="196" y="0.0" width="178" height="60"/>
                                     <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                     <state key="normal" title="Button"/>
