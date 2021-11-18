@@ -55,9 +55,3 @@ extension ContactGroupListViewModel {
         return cont
     }
  }
-
-extension ContactGroupListViewModel {
-
-    private func reloadSections(_ contactsGroup: [ContactsGroup]) {}
-
-}
