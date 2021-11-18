@@ -92,6 +92,7 @@ class SearchBarView: UIView {
     }
     
     @objc func didTapCancelButton() {
+        searchBar.text = nil
         searchBar.endEditing(true)
         setShowCancelButton(false, animated: true)
         U.notificationCenter.post(name: .searchBarDidCancel, object: nil)

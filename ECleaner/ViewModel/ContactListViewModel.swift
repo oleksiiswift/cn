@@ -18,8 +18,8 @@ class ContactListViewModel {
     public var contactsSections: [String] = []
     private var contactsData: [String: [CNContact]] = [:]
     
-    private var searchContact = Dynamic<String>("")
-    private var isSearchEnabled = Dynamic<Bool>(false)
+    public var searchContact = Dynamic<String>("")
+    public var isSearchEnabled = Dynamic<Bool>(false)
     
     private var contactsManager = ContactsManager.shared
 
@@ -141,7 +141,7 @@ extension ContactListViewModel {
                 $0.familyName.lowercased().contains(searchContact.value.lowercased()) ||
                 $0.phoneNumbers.contains(where: {$0.value.stringValue.contains(searchContact.value.removeNonNumeric())})
             }
-            
+            debugPrint(filteredList.count)
             self.filteredContacts = filteredList
             reloadSections(contactsArray)
             isSearchEnabled.value = true
