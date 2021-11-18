@@ -165,6 +165,11 @@
 		97A61EDE2726AB8700F2E6DE /* ContactsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A61EDD2726AB8700F2E6DE /* ContactsManager.swift */; };
 		97B01A59274582F900DDE03C /* BottomDoubleButtonBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B01A58274582F900DDE03C /* BottomDoubleButtonBarView.swift */; };
 		97B01A5B2745830500DDE03C /* BottomDoubleButtonBarView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 97B01A5A2745830500DDE03C /* BottomDoubleButtonBarView.xib */; };
+		97B01A6D2746DA1200DDE03C /* EmtyContactsGroup.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97B01A6C2746DA1200DDE03C /* EmtyContactsGroup.storyboard */; };
+		97B01A6F2746DB3500DDE03C /* EmtyContactsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B01A6E2746DB3500DDE03C /* EmtyContactsViewController.swift */; };
+		97B01A712746DE3500DDE03C /* EmptyComtactGroupListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B01A702746DE3500DDE03C /* EmptyComtactGroupListViewModel.swift */; };
+		97B01A732746DF6300DDE03C /* EmptyContactListDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B01A722746DF6300DDE03C /* EmptyContactListDataSource.swift */; };
+		97B01A752746ED5D00DDE03C /* UIFont+Italic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B01A742746ED5D00DDE03C /* UIFont+Italic.swift */; };
 		97CA423F273EBBFA001FEA15 /* BottomButtonBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CA423E273EBBFA001FEA15 /* BottomButtonBarView.swift */; };
 		97CA4241273EBC33001FEA15 /* BottomButtonBarView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 97CA4240273EBC33001FEA15 /* BottomButtonBarView.xib */; };
 		97CB351127395803005DA881 /* SectionShadowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CB351027395802005DA881 /* SectionShadowView.swift */; };
@@ -360,6 +365,11 @@
 		97A61EDD2726AB8700F2E6DE /* ContactsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsManager.swift; sourceTree = "<group>"; };
 		97B01A58274582F900DDE03C /* BottomDoubleButtonBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomDoubleButtonBarView.swift; sourceTree = "<group>"; };
 		97B01A5A2745830500DDE03C /* BottomDoubleButtonBarView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BottomDoubleButtonBarView.xib; sourceTree = "<group>"; };
+		97B01A6C2746DA1200DDE03C /* EmtyContactsGroup.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = EmtyContactsGroup.storyboard; sourceTree = "<group>"; };
+		97B01A6E2746DB3500DDE03C /* EmtyContactsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmtyContactsViewController.swift; sourceTree = "<group>"; };
+		97B01A702746DE3500DDE03C /* EmptyComtactGroupListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyComtactGroupListViewModel.swift; sourceTree = "<group>"; };
+		97B01A722746DF6300DDE03C /* EmptyContactListDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyContactListDataSource.swift; sourceTree = "<group>"; };
+		97B01A742746ED5D00DDE03C /* UIFont+Italic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+Italic.swift"; sourceTree = "<group>"; };
 		97CA423E273EBBFA001FEA15 /* BottomButtonBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomButtonBarView.swift; sourceTree = "<group>"; };
 		97CA4240273EBC33001FEA15 /* BottomButtonBarView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BottomButtonBarView.xib; sourceTree = "<group>"; };
 		97CB351027395802005DA881 /* SectionShadowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionShadowView.swift; sourceTree = "<group>"; };
@@ -761,6 +771,7 @@
 				977BA0482733173B0018DF53 /* CNContacts */,
 				97CB351C273A972D005DA881 /* CALayer */,
 				97CB351F273A9775005DA881 /* TableView */,
+				97B01A742746ED5D00DDE03C /* UIFont+Italic.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -874,6 +885,7 @@
 				040E288A26A98C790019F372 /* DeepClean.storyboard */,
 				975AF43D2728987500744E3B /* Contacts.storyboard */,
 				977FE23A273072A2004DE4C3 /* ContactsGroup.storyboard */,
+				97B01A6C2746DA1200DDE03C /* EmtyContactsGroup.storyboard */,
 			);
 			path = Storyboards;
 			sourceTree = "<group>";
@@ -1045,6 +1057,7 @@
 			isa = PBXGroup;
 			children = (
 				975AF43A2728306C00744E3B /* ContactListDataSource.swift */,
+				97B01A722746DF6300DDE03C /* EmptyContactListDataSource.swift */,
 				975AF43F272898AE00744E3B /* ContactsViewController.swift */,
 			);
 			path = List;
@@ -1064,6 +1077,7 @@
 			children = (
 				975AF43027281DF700744E3B /* ContactListViewModel.swift */,
 				977FE23427302F57004DE4C3 /* ContactGroupListViewModel.swift */,
+				97B01A702746DE3500DDE03C /* EmptyComtactGroupListViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -1073,6 +1087,7 @@
 			children = (
 				9755500D2731411D00E54C5A /* List */,
 				9755500E2731412800E54C5A /* Group */,
+				97B01A6E2746DB3500DDE03C /* EmtyContactsViewController.swift */,
 			);
 			path = Contacts;
 			sourceTree = "<group>";
@@ -1342,6 +1357,7 @@
 				04649B36268C52B100336FE4 /* GroupedAssetsReusableFooterView.xib in Resources */,
 				97CA4241273EBC33001FEA15 /* BottomButtonBarView.xib in Resources */,
 				97A05B762743D4C200968459 /* SearchBarView.xib in Resources */,
+				97B01A6D2746DA1200DDE03C /* EmtyContactsGroup.storyboard in Resources */,
 				04CF00012685F0C3000CA850 /* ContentTypeTableViewCell.xib in Resources */,
 				049CC230268337310002F988 /* MediaTypeCollectionViewCell.xib in Resources */,
 				4FE4EA6B27217110005FBB68 /* Roboto-Black.ttf in Resources */,
@@ -1493,6 +1509,7 @@
 				04E09472267A06B500A69956 /* SceneDelegate.swift in Sources */,
 				97CC2F3E268743A80072EF8C /* SegueManager.swift in Sources */,
 				04649B35268C52B100336FE4 /* GroupedAssetsReusableFooterView.swift in Sources */,
+				97B01A6F2746DB3500DDE03C /* EmtyContactsViewController.swift in Sources */,
 				4FE56A9B27299A11006CD946 /* DeepCleanInfoView.swift in Sources */,
 				049CC217268221DE0002F988 /* MainViewController.swift in Sources */,
 				97DC39B0273C08ED00D487BE /* PrimaryShadowImageWithTextButton.swift in Sources */,
@@ -1518,6 +1535,7 @@
 				0447A68926B2A1E20074919B /* ConcurentPhotoProcessOperation.swift in Sources */,
 				0459DF9926A6C5E50085EEDF /* celBlock51area.swift in Sources */,
 				97CA423F273EBBFA001FEA15 /* BottomButtonBarView.swift in Sources */,
+				97B01A712746DE3500DDE03C /* EmptyComtactGroupListViewModel.swift in Sources */,
 				97238A0D2689EDFF00C523DC /* CustomActivityIndicator.swift in Sources */,
 				04649B24268B2F3900336FE4 /* UpdatingChangesInOpenedScreensListeners.swift in Sources */,
 				04E58377267B323E00EDC3A3 /* Constants.swift in Sources */,
@@ -1541,6 +1559,7 @@
 				977FE23727306355004DE4C3 /* ContactsGroupViewController.swift in Sources */,
 				4F4A17A4271D73E900CAF157 /* Font.swift in Sources */,
 				975AF43B2728306C00744E3B /* ContactListDataSource.swift in Sources */,
+				97B01A752746ED5D00DDE03C /* UIFont+Italic.swift in Sources */,
 				97CC2F3A2683D00F0072EF8C /* UpdateContentDataBaseListener.swift in Sources */,
 				9776F57E27359406009D806A /* ShadowRoundedView.swift in Sources */,
 				047DE61C26AAD5F000733CD5 /* DeepCleanManager.swift in Sources */,
@@ -1551,6 +1570,7 @@
 				4F4A17A8271D745300CAF157 /* UIFont+Extension.swift in Sources */,
 				9784D3A82742CDDB00340D97 /* ReuseShadowView.swift in Sources */,
 				04EE29FB269891F30013837D /* PHasset+Thumbnail.swift in Sources */,
+				97B01A732746DF6300DDE03C /* EmptyContactListDataSource.swift in Sources */,
 				049CC23A2683761B0002F988 /* String+ConvertInteger.swift in Sources */,
 				04649B3E268DDDE700336FE4 /* UICollectionView+SelectAll.swift in Sources */,
 				04E5836F267A47FB00EDC3A3 /* Utils.swift in Sources */,
