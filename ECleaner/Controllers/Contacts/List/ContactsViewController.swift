@@ -99,11 +99,19 @@ extension ContactsViewController: Themeble {
         bottomDoubleButtonView.setLeftButtonImage(I.systemItems.defaultItems.buttonShare)
         bottomDoubleButtonView.setRightButtonImage(I.systemItems.defaultItems.delete)
         bottomDoubleButtonView.setLeftButtonTitle("share")
+        
+        let keyboardHide = UITapGestureRecognizer(target: self, action: #selector(searchBarResignFirstResponder))
+        self.view.addGestureRecognizer(keyboardHide)
     }
     
     private func setupViewModel(contacts: [CNContact]) {
         self.contactListViewModel = ContactListViewModel(contacts: contacts)
         self.contactListDataSource = ContactListDataSource(contactListViewModel: self.contactListViewModel, contentType: self.contentType)
+        
+        self.contactListViewModel.isSearchEnabled.bindAndFire { _ in
+            _ = self.contactListViewModel.contactsArray
+            self.tableView.reloadData()
+        }
     }
     
     func updateColors() {
@@ -349,6 +357,8 @@ extension ContactsViewController {
     
     @objc func handleSearchBarState() {
         
+        self.contactListViewModel.searchContact.value = ""
+        self.contactListViewModel.updateSearchState()
         setActiveSearchBar(setActive: false)
     }
     
@@ -356,13 +366,34 @@ extension ContactsViewController {
         
 //        guard let userInfo = notification.userInfo else { return }
     }
+    
+    @objc func searchBarResignFirstResponder() {
+        searchBarView.searchBar.resignFirstResponder()
+        setActiveSearchBar(setActive: false)
+    }
 }
 
 extension ContactsViewController: UISearchBarDelegate {
     
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
-        
         self.setActiveSearchBar(setActive: true)
+    }
+    
+    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+        self.searchBarView.searchBar.resignFirstResponder()
+    }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        self.contactListViewModel.searchContact.value = searchText
+        self.contactListViewModel.updateSearchState()
+    }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        if let text = searchBar.text, text != "" {
+            self.contactListViewModel.searchContact.value = text
+            self.contactListViewModel.updateSearchState()
+        }
+        searchBarResignFirstResponder()
     }
 }
 
