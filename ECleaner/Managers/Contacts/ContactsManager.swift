@@ -1046,3 +1046,60 @@ extension ContactsManager {
         return sortedIdentificators.sorted(by: {$0.value > $1.value}).first?.key ?? ""
     }
 }
+
+extension ContactsManager {
+    
+   
+    public func d(_ contacts: [CNContact], completionHandler: @escaping ([CNContact]) -> Void) {
+        
+        var duplicates: [CNContact] = []
+        
+        
+        
+        
+        let p = Dictionary(grouping: contacts, by: {String($0.familyName.lowercased().removeWhitespace())})
+       
+        debugPrint(p.count)
+        let z = p.map({$0.key})
+        debugPrint(z)
+        let f = p.map({$0.value})
+        debugPrint(f)
+    
+        let fliter = p.filter({$0.value.count > 1})
+        
+        
+        
+        let cn = fliter.map({$0.value})
+        
+        debugPrint(cn)
+        
+//        for i in 0...contacts.count - 1 {
+//            debugPrint("name duplicate index: \(i)")
+//            if duplicates.contains(contacts[i]) {
+//                continue
+//            }
+//            let contact = contacts[i]
+//            let duplicatedContacts: [CNContact] = contacts.filter({ $0 != contacts[i]}).filter({$0.givenName.removeWhitespace() + $0.familyName.removeWhitespace() == contact.givenName.removeWhitespace() + contact.familyName.removeWhitespace()}) //.filter({$0.familyName == contact.familyName})
+//
+//            duplicatedContacts.forEach({
+//
+//                let name = $0.givenName.removeWhitespace() + $0.familyName.removeWhitespace() + $0.middleName.removeWhitespace()
+//
+//                guard !name.isEmpty else { return }
+//
+//                debugPrint("each")
+//                if !duplicates.contains(contact) {
+//                    debugPrint(contact)
+//                    duplicates.append(contact)
+//                }
+//
+//                if !duplicates.contains($0) {
+//                    debugPrint($0)
+//                    duplicates.append($0)
+//                }
+//            })
+//        }
+        completionHandler(duplicates)
+    }
+    
+}

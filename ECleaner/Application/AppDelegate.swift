@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Contacts
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -41,8 +42,14 @@ extension AppDelegate {
         ContactsManager.shared.checkStatus { res in }
         
 //        ContactsManager.shared.deleteAllContacts()
+        
+//        ContactsManager.shared.getAllContacts { con in
+//            ContactsManager.shared.d(con) { con in
+//
+//            }
+//        }
     }
-    
+
     private func setDefaults() {
         
         S.endingSavedDate = U.getString(from: Date(), format: C.dateFormat.fullDmy)

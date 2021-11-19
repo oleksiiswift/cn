@@ -658,3 +658,19 @@ import UIKit
 ////            navigationBar.setDropShadow(visible: showShadow)
 ////        }
 //    }
+
+class z {
+    
+    func x() {
+ContactsManager.shared.getAllContacts { contacts in
+    
+    let p = Dictionary(grouping: contacts, by: {String($0.familyName.lowercased().removeWhitespace())})
+   
+    debugPrint(p.count)
+    let z = p.map({$0.key})
+    debugPrint(z)
+    let f = p.map({$0.value})
+    debugPrint(f)
+}
+}
+}

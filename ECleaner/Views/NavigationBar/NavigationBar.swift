@@ -81,7 +81,7 @@ class NavigationBar: UIView {
         } else if let leftTitle = leftButtonTitle {
             leftButtonLeadingConstraint.constant = 20
             leftBarButtonItem.setImage(nil, for: .normal)
-            leftBarButtonItem.setTitle(leftTitle, for: .normal)
+            leftBarButtonItem.setTitleWithoutAnimation(title: leftTitle)
             leftBarButtonItem.isHidden = false
         } else {
             leftBarButtonItem.isHidden = true
@@ -95,7 +95,7 @@ class NavigationBar: UIView {
         } else if let rightTitle = rightButtonTitle {
             rightButtonTrailingConstraint.constant = 20
             rightBarButtonItem.setImage(nil, for: .normal)
-            rightBarButtonItem.setTitle(rightTitle, for: .normal)
+            rightBarButtonItem.setTitleWithoutAnimation(title: rightTitle)
             rightBarButtonItem.isHidden = false
         } else {
             rightBarButtonItem.isHidden = true
@@ -113,13 +113,13 @@ class NavigationBar: UIView {
     public func changeHotLeftTitle(newTitle: String) {
         leftBarButtonItem.setImage(nil, for: .normal)
         leftBarButtonItem.sizeToFit()
-        leftBarButtonItem.setTitle(newTitle, for: .normal)
+        leftBarButtonItem.setTitleWithoutAnimation(title: newTitle)
     }
     
     public func changeHotRightTitle(newTitle: String) {
         rightBarButtonItem.setImage(nil, for: .normal)
         rightBarButtonItem.sizeToFit()
-        rightBarButtonItem.setTitle(newTitle, for: .normal)
+        rightBarButtonItem.setTitleWithoutAnimation(title: newTitle)
     }
 
     private func setAccentColorFor(buttonsTintColor: UIColor, title: UIColor) {

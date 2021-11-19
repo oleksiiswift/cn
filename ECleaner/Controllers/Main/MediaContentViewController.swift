@@ -280,10 +280,11 @@ extension MediaContentViewController {
         self.navigationController?.pushViewController(viewController, animated: true)
     }
     
-    private func showContactViewController(contacts: [CNContact], contentType: PhotoMediaType) {
+    private func showContactViewController(contacts: [CNContact] = [], contactGroup: [ContactsGroup] = [], contentType: PhotoMediaType) {
         let storyboard = UIStoryboard(name: C.identifiers.storyboards.contacts, bundle: nil)
         let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.contacts) as! ContactsViewController
         viewController.contacts = contacts
+        viewController.contactGroup = contactGroup
         viewController.mediaType = .userContacts
         viewController.contentType = contentType
         self.navigationController?.pushViewController(viewController, animated: true)
@@ -486,7 +487,12 @@ extension MediaContentViewController {
         self.contactsManager.getEmptyContacts { contactsGroup in
             U.UI {
                 P.hideIndicator()
-                debugPrint(contactsGroup)
+                let totalContacts = contactsGroup.map({$0.contacts}).count
+                let group = contactsGroup.filter({!$0.contacts.isEmpty})
+                
+                if totalContacts != 0 {
+                    self.showContactViewController(contactGroup: group, contentType: .emptyContacts)
+                }
             }
         }
     }

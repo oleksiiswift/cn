@@ -11,6 +11,7 @@ import Contacts
 class ContactGroupListViewModel {
     
     public let groupSection: [ContactsGroup]
+    private var contactsData: [String: [CNContact]] = [:]
     
     private var contactsManager = ContactsManager.shared
     
@@ -19,7 +20,6 @@ class ContactGroupListViewModel {
         self.groupSection = contactsGroup
     }
 }
-
 
 extension ContactGroupListViewModel {
     
@@ -35,15 +35,23 @@ extension ContactGroupListViewModel {
         
         return groupSection[indexPath.section].contacts[indexPath.row]
     }
-}
-
-extension ContactGroupListViewModel {
     
-    
-    
-    private func reloadSections(_ contactsGroup: [ContactsGroup]) {
-        
-        
+    public func setSectionTitle(for section: Int) -> String {
+        return groupSection[section].groupType.rawValue
     }
     
-}
+    public func getContactOnRow(at indexPath: IndexPath) -> CNContact? {
+        return groupSection[indexPath.section].contacts[indexPath.row]
+    }
+    
+    public func getContacts(at indexPaths: [IndexPath]) -> [CNContact] {
+        var cont: [CNContact] = []
+        
+        indexPaths.forEach { indexPath in
+            if let contact = self.getContact(at: indexPath) {
+                cont.append(contact)
+            }
+        }
+        return cont
+    }
+ }
