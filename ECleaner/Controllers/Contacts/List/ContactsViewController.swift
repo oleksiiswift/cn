@@ -35,7 +35,14 @@ class ContactsViewController: UIViewController {
     private var bottomButtonHeight: CGFloat = 70
     public var contactContentIsEditing: Bool = false
     private var isSelectedAllItems: Bool {
-        return contacts.count == self.tableView.indexPathsForSelectedRows?.count
+        switch contentType {
+            case .allContacts:
+                return contacts.count == self.tableView.indexPathsForSelectedRows?.count
+            case .emptyContacts:
+                return contactGroup.flatMap({$0.contacts}).count == self.tableView.indexPathsForSelectedRows?.count
+            default:
+                return false
+        }
     }
 
     public var contacts: [CNContact] = []
@@ -77,16 +84,20 @@ extension ContactsViewController: Themeble {
         
         if contentType == .allContacts {
             navigationBar.setIsDropShadow = false
+            navigationBar.setupNavigation(title: contentType.mediaTypeName,
+                                          leftBarButtonImage: I.navigationItems.back,
+                                          rightBarButtonImage: I.navigationItems.burgerDots,
+                                          mediaType: .userContacts,
+                                          leftButtonTitle: nil,
+                                          rightButtonTitle: nil)
         } else if contentType == .emptyContacts {
             setSearchBarIsHiden()
+            navigationBar.setupNavigation(title: contentType.mediaTypeName,
+                                          leftBarButtonImage: I.navigationItems.back,
+                                          rightBarButtonImage: nil,
+                                          mediaType: .userContacts,
+                                          leftButtonTitle: nil, rightButtonTitle: "edit")
         }
-        
-        navigationBar.setupNavigation(title: mediaType.navigationTitle,
-                                      leftBarButtonImage: I.navigationItems.back,
-                                      rightBarButtonImage: I.navigationItems.burgerDots,
-                                      mediaType: .userContacts,
-                                      leftButtonTitle: nil,
-                                      rightButtonTitle: nil)
     }
     
     private func setSearchBarIsHiden() {
@@ -108,12 +119,7 @@ extension ContactsViewController: Themeble {
                                           rightButtonTitle: rightNavigationTitle)
             
         } else {
-            navigationBar.setupNavigation(title: mediaType.navigationTitle,
-                                          leftBarButtonImage: I.navigationItems.back,
-                                          rightBarButtonImage: I.navigationItems.burgerDots,
-                                          mediaType: .userContacts,
-                                          leftButtonTitle: nil,
-                                          rightButtonTitle: nil)
+            setupNavigation()
         }
     }
     
@@ -164,7 +170,6 @@ extension ContactsViewController: Themeble {
             tableView.delegate = contactListDataSource
             tableView.dataSource = contactListDataSource
         } else if contentType == .emptyContacts {
-            
             tableView.delegate = emptyContactGroupListDataSource
             tableView.dataSource = emptyContactGroupListDataSource
         }
@@ -542,7 +547,11 @@ extension ContactsViewController: NavigationBarDelegate {
     
     func didTapRightBarButton(_ sender: UIButton) {
         
-        self.contactContentIsEditing ? self.didTapSelectDeselectNavigationButton() : self.didTapOpenBurgerMenu()
+        if contentType == .allContacts {
+            self.contactContentIsEditing ? self.didTapSelectDeselectNavigationButton() : self.didTapOpenBurgerMenu()
+        } else if contentType == .emptyContacts {
+            self.contactContentIsEditing ? self.didTapSelectDeselectNavigationButton() : self.didTapSelectEditingMode()
+        }
     }
 }
 

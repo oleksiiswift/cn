@@ -119,6 +119,14 @@ extension ContactTableViewCell {
             contactSubtitleTextLabel.text = numbers.joined(separator: numbers.count > 1 ? ", " : "")
             contactSubtitleTextLabel.font = .systemFont(ofSize: 14, weight: .bold)
             contactSubtitleTextLabel.textColor = theme.titleTextColor
+        } else if emails.count != 0 {
+            contactTitleTextLabel.text = emails.joined(separator: numbers.count > 1 ? ", " : "")
+            contactTitleTextLabel.font = .systemFont(ofSize: 16, weight: .bold)
+            contactTitleTextLabel.textColor = theme.titleTextColor
+            
+            contactSubtitleTextLabel.text = "all data missing"
+            contactSubtitleTextLabel.font = .italicSystemFont(ofSize: 14, weight: .regular)
+            contactSubtitleTextLabel.textColor = theme.subTitleTextColor
         }
     }
     
@@ -136,7 +144,7 @@ extension ContactTableViewCell: Themeble {
     
     private func setupUI() {
         
-        reuseShadowView.topShadowOffsetOriginY = -3
+        reuseShadowView.topShadowOffsetOriginY = -2
         reuseShadowView.topShadowOffsetOriginX = -2
         reuseShadowView.viewShadowOffsetOriginX = 6
         reuseShadowView.viewShadowOffsetOriginY = 6
