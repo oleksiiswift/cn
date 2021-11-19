@@ -14,7 +14,7 @@ enum MediaContentType {
     case userContacts
     case none
     
-    var navTitle: String {
+    var navigationTitle: String {
         switch self {
             case .userPhoto:
             return "PHOTOS_NAV_TITLE".localized()

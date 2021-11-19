@@ -21,8 +21,39 @@ class Images {
         
         struct defaultItems {
             static let share = UIImage(named: "share")!
+            static let buttonShare = UIImage(named: "defaultButtonShare")!
+            static let merge = UIImage(named: "mergeArrowTop")!
+            static let delete = UIImage(named: "deleteItem")!
+        }
+        
+        struct backroundStaticItems {
+            static let spreadBackground = UIImage(named: "dateViewBackground")!
         }
     }
+    
+    struct personalisation {
+        
+        struct contacts {
+            static let sectionSelect = UIImage(named: "contactSectionSelect")!
+            static let selectContact = UIImage(named: "selectContact")
+            static let deselectContact = UIImage(named: "deselectContact")
+            static let deleteContact = UIImage(named: "contactWithCross")!
+            static let mergeContact = UIImage(named: "mergeContactArrowRight")!
+        }
+        
+        struct photo {
+            
+        }
+        
+        struct video {
+            
+        }
+    }
+    
+    
+    
+    
+    
     
     
     
@@ -59,14 +90,5 @@ class Images {
     struct cellElementsItems {
         static let fullScreen = UIImage(systemName: "arrow.up.backward.and.arrow.down.forward")
         static let trashBin = UIImage(systemName: "trash")
-    }
-    
-    
-    struct personalElementsItems {
-        static let crossContacts = UIImage(named: "crossContacts")
-        static let mergeArrow = UIImage(named: "mergeArrow")!
-        static let selectableContactsCheckmark = UIImage(named: "activeCheckmark")
-        static let emptyContactCheckmark = UIImage(named: "emptyCheckmark")
-        static let mergeArrowTop = UIImage(named: "mergeTopArrow")
     }
 }

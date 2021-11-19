@@ -13,8 +13,12 @@ class NavigationBar: UIView {
     @IBOutlet weak var leftBarButtonItem: UIButton!
     @IBOutlet weak var rightBarButtonItem: UIButton!
     @IBOutlet weak var titleTextLabel: UILabel!
+    @IBOutlet weak var leftButtonLeadingConstraint: NSLayoutConstraint!
+    @IBOutlet weak var rightButtonTrailingConstraint: NSLayoutConstraint!
     
     var delegate: NavigationBarDelegate?
+    
+    public var setIsDropShadow: Bool = true
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -45,7 +49,6 @@ class NavigationBar: UIView {
         
         containerView.backgroundColor = theme.navigationBarBackgroundColor
         
-        layer.setShadow(color: theme.bottomShadowColor, alpha: 1, x: 3, y: 0, blur: 10, spread: 0)
         backgroundColor = .clear
         addSubview(self.containerView)
         containerView.frame = self.bounds
@@ -61,6 +64,7 @@ class NavigationBar: UIView {
     public func setupNavigation(title: String?, leftBarButtonImage: UIImage?, rightBarButtonImage: UIImage?, mediaType: MediaContentType, leftButtonTitle: String? = nil, rightButtonTitle: String? = nil) {
         
         self.setAccentColorFor(buttonsTintColor: mediaType.screenAcentTintColor, title: theme.tintColor)
+        setDropShadow(visible: setIsDropShadow)
         
         if let title = title {
             titleTextLabel.text = title
@@ -70,36 +74,52 @@ class NavigationBar: UIView {
         }
         
         if let leftBarButtonImage = leftBarButtonImage {
+            leftButtonLeadingConstraint.constant = 5
+            leftBarButtonItem.setTitle(nil, for: .normal)
             leftBarButtonItem.setImage(leftBarButtonImage, for: .normal)
             leftBarButtonItem.isHidden = false
         } else if let leftTitle = leftButtonTitle {
-            leftBarButtonItem.setTitle(leftTitle, for: .normal)
+            leftButtonLeadingConstraint.constant = 20
+            leftBarButtonItem.setImage(nil, for: .normal)
+            leftBarButtonItem.setTitleWithoutAnimation(title: leftTitle)
             leftBarButtonItem.isHidden = false
         } else {
             leftBarButtonItem.isHidden = true
         }
         
         if let rightBarButtonImage = rightBarButtonImage {
+            rightButtonTrailingConstraint.constant = 5
+            rightBarButtonItem.setTitle(nil, for: .normal)
             rightBarButtonItem.setImage(rightBarButtonImage, for: .normal)
             rightBarButtonItem.isHidden = false
         } else if let rightTitle = rightButtonTitle {
-            rightBarButtonItem.setTitle(rightTitle, for: .normal)
+            rightButtonTrailingConstraint.constant = 20
+            rightBarButtonItem.setImage(nil, for: .normal)
+            rightBarButtonItem.setTitleWithoutAnimation(title: rightTitle)
             rightBarButtonItem.isHidden = false
         } else {
             rightBarButtonItem.isHidden = true
         }
+        
+        leftBarButtonItem.layoutIfNeeded()
+        rightBarButtonItem.layoutIfNeeded()
+    }
+    
+    public func setDropShadow(visible: Bool) {
+        
+        visible ? layer.setShadow(color: theme.bottomShadowColor, alpha: 1, x: 3, y: 0, blur: 10, spread: 0) : ()
     }
     
     public func changeHotLeftTitle(newTitle: String) {
         leftBarButtonItem.setImage(nil, for: .normal)
         leftBarButtonItem.sizeToFit()
-        leftBarButtonItem.setTitle(newTitle, for: .normal)
+        leftBarButtonItem.setTitleWithoutAnimation(title: newTitle)
     }
     
     public func changeHotRightTitle(newTitle: String) {
         rightBarButtonItem.setImage(nil, for: .normal)
         rightBarButtonItem.sizeToFit()
-        rightBarButtonItem.setTitle(newTitle, for: .normal)
+        rightBarButtonItem.setTitleWithoutAnimation(title: newTitle)
     }
 
     private func setAccentColorFor(buttonsTintColor: UIColor, title: UIColor) {
@@ -110,19 +130,28 @@ class NavigationBar: UIView {
         titleTextLabel.font = .systemFont(ofSize: 17, weight: .bold)
     }
     
-
     private func actionButtonsSetup() {
         
         leftBarButtonItem.addTarget(self, action: #selector(didTapLeftBarButtonItem(_:)), for: .touchUpInside)
         rightBarButtonItem.addTarget(self, action: #selector(didTapRightBarButtonItem(_:)), for: .touchUpInside)
     }
-    
+
     @objc func didTapLeftBarButtonItem(_ sender: UIButton) {
         delegate?.didTapLeftBarButton(sender)
     }
     
     @objc func didTapRightBarButtonItem(_ sender: UIButton) {
         delegate?.didTapRightBarButton(sender)
+    }
+}
+
+extension NavigationBar {
+    
+    public func handleChangeRightButtonSelectState(selectAll: Bool) {
+        
+        let newtitle: String = !selectAll ? "select all" : "deselectAll"
+        
+        changeHotRightTitle(newTitle: newtitle)
     }
 }
 

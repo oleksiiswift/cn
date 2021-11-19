@@ -60,6 +60,7 @@ class Constants {
             
             /// `contacts notification`
             static let mergeContactsSelectionDidChange = "mergeContactsSelectionDidChange"
+            static let selectedContactsDidChange = "selectedContactsDidChange"
         }
         
 //        MARK: - notification dictionary progress identifiers -
@@ -101,6 +102,10 @@ class Constants {
             static let allContactsCount = "deepCleanallContactsCount"
             static let emptyContactsCount = "deepCleanemptyContactsCount"
             static let duplicateContactsCount = "deepCleanduplicateContactsCount"
+            
+            /// contact scroll delegate scriklkub
+            static let scrollViewInset = "scrollViewInset"
+            static let scrollViewOffset = "scrollViewOffset"
         }
     }
     
@@ -148,6 +153,8 @@ class Constants {
             static let groupFooterView = "GroupedAssetsReusableFooterView"
             static let contactGroupHeader = "GroupedContactsHeaderView"
             static let bottomButtonBarView = "BottomButtonBarView"
+            static let bottomDoubleButtonBarView = "BottomDoubleButtonBarView"
+            static let searchBar = "SearchBarView"
         }
         
         struct xibs {
@@ -157,12 +164,15 @@ class Constants {
             static let photoSimpleCell = "PhotoCollectionViewCell"
             static let dropDownCell = "DropDownMenuTableViewCell"
             static let cleanInfoCell = "DeepCleanInfoTableViewCell"
-            static let contactCell = "GroupContactTableViewCell"
+            static let contactCell = "ContactTableViewCell"
+            static let groupContactCell = "GroupContactTableViewCell"
             /// `views`
             static let groupHeader = "GroupedAssetsReusableHeaderView"
             static let groupFooter = "GroupedAssetsReusableFooterView"
             static let contactGroupHeader = "GroupedContactsHeaderView"
             static let bottomButtonBarView = "BottomButtonBarView"
+            static let bottomDoubleButtonBarView = "BottomDoubleButtonBarView"
+            static let searchBar = "SearchBarView"
             
             static let carouselView = "CarouselItemView"
             static let datePickerContainer = "DateSelectebleView"

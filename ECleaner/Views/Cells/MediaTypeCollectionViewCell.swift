@@ -34,28 +34,7 @@ class MediaTypeCollectionViewCell: UICollectionViewCell {
         
         setupUI()
         updateColors()
-      
-      switch Screen.size {
-        case .small:
-          debugPrint("")
-
-        case .medium:
-          debugPrint("")
-          
-        case .plus:
-          debugPrint("")
-          contentViewHeightConstraint.constant = 200
-        case .large:
-          debugPrint("")
-          contentViewHeightConstraint.constant = 200
-        case .modern:
-          debugPrint("")
-          contentViewHeightConstraint.constant = 200
-        case .max:
-          debugPrint("")
-        case .madMax:
-          debugPrint("")
-      }
+        handleContentSize()
     }
 }
 
@@ -118,6 +97,29 @@ extension MediaTypeCollectionViewCell: Themeble {
                 infoSpaceStackView.layoutIfNeeded()
             case .none:
                 debugPrint("none")
+        }
+    }
+    
+    private func handleContentSize() {
+        
+        switch Screen.size {
+          case .small:
+            debugPrint("")
+          case .medium:
+            debugPrint("")
+          case .plus:
+            debugPrint("")
+            contentViewHeightConstraint.constant = 200
+          case .large:
+            debugPrint("")
+            contentViewHeightConstraint.constant = 200
+          case .modern:
+            debugPrint("")
+            contentViewHeightConstraint.constant = 200
+          case .max:
+            debugPrint("")
+          case .madMax:
+            debugPrint("")
         }
     }
     

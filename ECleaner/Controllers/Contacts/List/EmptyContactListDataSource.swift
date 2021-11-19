@@ -1,35 +1,33 @@
 //
-//  ContactListDataSource.swift
+//  EmptyContactListDataSource.swift
 //  ECleaner
 //
-//  Created by alexey sorochan on 26.10.2021.
+//  Created by alexey sorochan on 18.11.2021.
 //
 
+import Foundation
 import UIKit
 
-class ContactListDataSource: NSObject {
+class EmptyContactListDataSource: NSObject {
     
-    public var contactListViewModel: ContactListViewModel
+    public var emptyContactGroupListViewModel: ContactGroupListViewModel
     
     public var isContactAvailable: ((Bool) -> (Void)) = {_ in}
     public var didSelectContact: ((ContactListViewModel) -> Void) = {_ in}
-
     public var contactContentIsEditing: Bool = false
-    
     public var contentType: PhotoMediaType = .none
     
-    init(contactListViewModel: ContactListViewModel, contentType: PhotoMediaType) {
-        
-        self.contactListViewModel = contactListViewModel
+    init(viewModel: ContactGroupListViewModel, contentType: PhotoMediaType) {
+        self.emptyContactGroupListViewModel = viewModel
         self.contentType = contentType
     }
 }
 
-extension ContactListDataSource {
+extension EmptyContactListDataSource {
     
     private func cellConfigure(cell: ContactTableViewCell, at indexPath: IndexPath) {
     
-        guard let contact = contactListViewModel.getContactOnRow(at: indexPath) else { return }
+        guard let contact = emptyContactGroupListViewModel.getContact(at: indexPath) else { return }
         cell.contactEditingMode = self.contactContentIsEditing
         cell.updateContactCell(contact, contentType: self.contentType)
     }
@@ -39,32 +37,29 @@ extension ContactListDataSource {
     }
 }
 
-extension ContactListDataSource: UITableViewDelegate, UITableViewDataSource {
+extension EmptyContactListDataSource: UITableViewDelegate, UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return contactListViewModel.contactsSections.count
+        return self.emptyContactGroupListViewModel.numbersOfSections()
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return contactListViewModel.numbersOfRows(at: section)
+        return self.emptyContactGroupListViewModel.numbersOfRows(at: section)
     }
-    
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
         let cell = tableView.dequeueReusableCell(withIdentifier: C.identifiers.cells.contactCell, for: indexPath) as! ContactTableViewCell
+        
         self.cellConfigure(cell: cell, at: indexPath)
         return cell
     }
     
-    func sectionIndexTitles(for tableView: UITableView) -> [String]? {
-        return contactListViewModel.contactsSections
-    }
-
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return contactListViewModel.titleOFHeader(at: section)
+        return emptyContactGroupListViewModel.setSectionTitle(for: section)
     }
-
+    
     func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
-
         let header = view as! UITableViewHeaderFooterView
         header.contentView.backgroundColor = ThemeManager.theme.backgroundColor
         header.contentView.alpha = 0.8
@@ -76,15 +71,6 @@ extension ContactListDataSource: UITableViewDelegate, UITableViewDataSource {
         return 40
     }
     
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let contentOffset = scrollView.contentOffset
-        let contentInset = scrollView.contentInset
-        
-        let userInfo = [C.key.notificationDictionary.scrollViewInset: contentInset,
-                        C.key.notificationDictionary.scrollViewOffset: contentOffset] as [String : Any]
-        U.notificationCenter.post(name: .scrollViewDidScroll, object: nil, userInfo: userInfo)
-    }
-
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
         self.didSelectDeselectContact()
