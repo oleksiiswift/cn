@@ -167,6 +167,8 @@
 		97B01A5B2745830500DDE03C /* BottomDoubleButtonBarView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 97B01A5A2745830500DDE03C /* BottomDoubleButtonBarView.xib */; };
 		97B01A732746DF6300DDE03C /* EmptyContactListDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B01A722746DF6300DDE03C /* EmptyContactListDataSource.swift */; };
 		97B01A752746ED5D00DDE03C /* UIFont+Italic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B01A742746ED5D00DDE03C /* UIFont+Italic.swift */; };
+		97B01A7C2747CB3A00DDE03C /* ExportContact.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97B01A7B2747CB3A00DDE03C /* ExportContact.storyboard */; };
+		97B01A7F2747CB8C00DDE03C /* ExportContactsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B01A7E2747CB8C00DDE03C /* ExportContactsViewController.swift */; };
 		97CA423F273EBBFA001FEA15 /* BottomButtonBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CA423E273EBBFA001FEA15 /* BottomButtonBarView.swift */; };
 		97CA4241273EBC33001FEA15 /* BottomButtonBarView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 97CA4240273EBC33001FEA15 /* BottomButtonBarView.xib */; };
 		97CB351127395803005DA881 /* SectionShadowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CB351027395802005DA881 /* SectionShadowView.swift */; };
@@ -364,6 +366,8 @@
 		97B01A5A2745830500DDE03C /* BottomDoubleButtonBarView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BottomDoubleButtonBarView.xib; sourceTree = "<group>"; };
 		97B01A722746DF6300DDE03C /* EmptyContactListDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyContactListDataSource.swift; sourceTree = "<group>"; };
 		97B01A742746ED5D00DDE03C /* UIFont+Italic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+Italic.swift"; sourceTree = "<group>"; };
+		97B01A7B2747CB3A00DDE03C /* ExportContact.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ExportContact.storyboard; sourceTree = "<group>"; };
+		97B01A7E2747CB8C00DDE03C /* ExportContactsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportContactsViewController.swift; sourceTree = "<group>"; };
 		97CA423E273EBBFA001FEA15 /* BottomButtonBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomButtonBarView.swift; sourceTree = "<group>"; };
 		97CA4240273EBC33001FEA15 /* BottomButtonBarView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BottomButtonBarView.xib; sourceTree = "<group>"; };
 		97CB351027395802005DA881 /* SectionShadowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionShadowView.swift; sourceTree = "<group>"; };
@@ -877,8 +881,7 @@
 				04467CE1270D9B1200DBBB39 /* DatePicker.storyboard */,
 				04E0947A267A06B900A69956 /* LaunchScreen.storyboard */,
 				040E288A26A98C790019F372 /* DeepClean.storyboard */,
-				975AF43D2728987500744E3B /* Contacts.storyboard */,
-				977FE23A273072A2004DE4C3 /* ContactsGroup.storyboard */,
+				97B01A7D2747CB4100DDE03C /* Contacts */,
 			);
 			path = Storyboards;
 			sourceTree = "<group>";
@@ -1079,6 +1082,7 @@
 			children = (
 				9755500D2731411D00E54C5A /* List */,
 				9755500E2731412800E54C5A /* Group */,
+				97B01A802747CB9100DDE03C /* Export */,
 			);
 			path = Contacts;
 			sourceTree = "<group>";
@@ -1151,6 +1155,24 @@
 				97B01A58274582F900DDE03C /* BottomDoubleButtonBarView.swift */,
 			);
 			path = BottomDoubleButtonBarView;
+			sourceTree = "<group>";
+		};
+		97B01A7D2747CB4100DDE03C /* Contacts */ = {
+			isa = PBXGroup;
+			children = (
+				975AF43D2728987500744E3B /* Contacts.storyboard */,
+				977FE23A273072A2004DE4C3 /* ContactsGroup.storyboard */,
+				97B01A7B2747CB3A00DDE03C /* ExportContact.storyboard */,
+			);
+			path = Contacts;
+			sourceTree = "<group>";
+		};
+		97B01A802747CB9100DDE03C /* Export */ = {
+			isa = PBXGroup;
+			children = (
+				97B01A7E2747CB8C00DDE03C /* ExportContactsViewController.swift */,
+			);
+			path = Export;
 			sourceTree = "<group>";
 		};
 		97CA4242273ECB59001FEA15 /* BottomButtonBarView */ = {
@@ -1363,6 +1385,7 @@
 				4F4A17B9271D812400CAF157 /* StartingNavigationBar.xib in Resources */,
 				047DE61A26AAA53100733CD5 /* DeepCleanInfoTableViewCell.xib in Resources */,
 				97DAB62F272C164A00F05CEA /* GroupContactTableViewCell.xib in Resources */,
+				97B01A7C2747CB3A00DDE03C /* ExportContact.storyboard in Resources */,
 				97CB3517273A9129005DA881 /* ContactTableViewCell.xib in Resources */,
 				97CE449B273D307700DF6114 /* NavigationBar.xib in Resources */,
 				044282022693034600B6B47C /* DropDownMenuTableViewCell.xib in Resources */,
@@ -1466,6 +1489,7 @@
 				4F4A17BB271D819F00CAF157 /* StartingNavigationBar.swift in Sources */,
 				97FC789A2688D907000D7F26 /* SimpleColumnFlowLayout.swift in Sources */,
 				977BA0472733171F0018DF53 /* CNContacts+FillRows.swift in Sources */,
+				97B01A7F2747CB8C00DDE03C /* ExportContactsViewController.swift in Sources */,
 				0459DF9F26A702AF0085EEDF /* PhotoViewController.swift in Sources */,
 				97238A072689BD8000C523DC /* PhotoMediaType.swift in Sources */,
 				04CFFFF42684B23D000CA850 /* String+Whitespaces.swift in Sources */,
