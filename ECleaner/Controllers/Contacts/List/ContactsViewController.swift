@@ -19,7 +19,7 @@ enum ExportContactsAvailibleFormat {
             case .first:
                 return "FIRTS"
             case .second:
-                return "SECOND"
+                return "VCF"
             default:
                 return "hello chao"
         }
@@ -236,6 +236,17 @@ extension ContactsViewController: Themeble {
         if let exportContactsViewController = segue.destination as? ExportContactsViewController {
             exportContactsViewController.leftExportFileFormat = .first
             exportContactsViewController.rightExportFileFormat = .second
+            
+            exportContactsViewController.selectExportFormatCompletion = { format in
+                switch format {
+                    case .first:
+                        self.exportAllContactsVCF()
+                    case .second:
+                        self.exportAllContactsVCF()
+                    case .none:
+                        return
+                }
+            }
         }
     }
 }
@@ -494,6 +505,17 @@ extension ContactsViewController {
     }
 }
 
+extension ContactsViewController {
+    
+    private func exportAllContactsVCF() {
+        
+        self.contactManager.exportAllVcfFile { fileURL in
+            
+            debugPrint(fileURL)
+        }
+    }
+}
+
 extension ContactsViewController: BottomDoubleActionButtonDelegate {
     
     func didTapLeftActionButton() {
@@ -606,3 +628,14 @@ extension ContactsViewController: UIPopoverPresentationControllerDelegate {
         return .none
     }
 }
+
+
+//let transition = CATransition()
+//transition.type = CATransitionType.push
+//transition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
+//transition.fillMode = CAMediaTimingFillMode.forwards
+//transition.duration = 0.5
+//transition.subtype = CATransitionSubtype.fromTop
+//self.tableView.layer.add(transition, forKey: "UITableViewReloadDataAnimationKey")
+//// Update your data source here
+//self.tableView.reloadData()

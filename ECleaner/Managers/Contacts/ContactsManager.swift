@@ -1047,16 +1047,46 @@ extension ContactsManager {
     }
 }
 
+
+//      MARK: - exportContacts contacts -
+
+extension ContactsManager {
+    
+    public func exportAllVcfFile(_ completion: @escaping(_ fileURL: URL?) -> Void) {
+        
+        getAllContacts { contacts in
+            let fileManager = FileManager.default
+            do {
+                var data = Data()
+                try data = CNContactVCardSerialization.dataWithImage(contacts: contacts)
+                do {
+                    let documentDirectory = try fileManager.url(for: .documentDirectory, in: .userDomainMask, appropriateFor:nil, create:false)
+                    let fileURL = documentDirectory.appendingPathComponent("someName").appendingPathExtension("vcf")
+                    if fileManager.fileExists(atPath: fileURL.absoluteString) {
+                        try fileManager.removeItem(at: fileURL)
+                    }
+                    try data.write(to: fileURL)
+                    completion(fileURL)
+                } catch {
+                    completion(nil)
+                    debugPrint(error.localizedDescription)
+                }
+            } catch {
+                completion(nil)
+                debugPrint(error.localizedDescription)
+            }
+            completion(nil)
+        }
+    }
+}
+
 extension ContactsManager {
     
    
     public func d(_ contacts: [CNContact], completionHandler: @escaping ([CNContact]) -> Void) {
         
         var duplicates: [CNContact] = []
-        
-        
-        
-        
+
         let p = Dictionary(grouping: contacts, by: {String($0.familyName.lowercased().removeWhitespace())})
        
         debugPrint(p.count)
@@ -1102,4 +1132,23 @@ extension ContactsManager {
         completionHandler(duplicates)
     }
     
+}
+
+
+extension CNContactVCardSerialization {
+    
+    class func dataWithImage(contacts: [CNContact]) throws -> Data {
+        var text: String = ""
+        for contact in contacts {
+            let data = try CNContactVCardSerialization.data(with: [contact])
+            var str = String(data: data, encoding: .utf8)!
+            
+            if let imageData = contact.thumbnailImageData {
+                let base64 = imageData.base64EncodedString()
+                str = str.replacingOccurrences(of: "END:VCARD", with: "PHOTO;ENCODING=b;TYPE=JPEG:\(base64)\nEND:VCARD")
+            }
+            text = text.appending(str)
+        }
+        return text.data(using: .utf8)!
+    }
 }
