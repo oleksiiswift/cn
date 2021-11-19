@@ -228,12 +228,20 @@ enum Theme: Int {
     }
     
     var sectionTitleTextColor: UIColor {
-        
         switch self {
             case .light:
                 return UIColor().colorFromHexString("8D93A4")
             case .dark:
                 return UIColor().colorFromHexString("8F97A7")
+        }
+    }
+    
+    var secondaryTintColor: UIColor {
+        switch self {
+            case .light:
+                return UIColor().colorFromHexString("BCC4D5")
+            case .dark:
+                return UIColor().colorFromHexString("BCC4D5")
         }
     }
     

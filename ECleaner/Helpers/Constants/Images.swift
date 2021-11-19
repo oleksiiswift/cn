@@ -24,6 +24,7 @@ class Images {
             static let buttonShare = UIImage(named: "defaultButtonShare")!
             static let merge = UIImage(named: "mergeArrowTop")!
             static let delete = UIImage(named: "deleteItem")!
+            static let refresh = UIImage(named: "circleArrow")!
         }
         
         struct backroundStaticItems {

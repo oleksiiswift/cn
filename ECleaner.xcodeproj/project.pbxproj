@@ -669,10 +669,10 @@
 		04B20F03269C4F9A00C6BC14 /* ModalControllers */ = {
 			isa = PBXGroup;
 			children = (
+				97B01A802747CB9100DDE03C /* Export */,
 				97CC2F3B26873A7D0072EF8C /* DateSelectorViewController.swift */,
 				044281FB2692F95A00B6B47C /* DropDownMenuViewController.swift */,
-				04B20F01269C4F6A00C6BC14 /* AssetContextPreviewViewController.swift */,
-				0405AA5A269D9BD6004AC07A /* PreviewAVController.swift */,
+				979998D82747F4CC00175DE5 /* Preview */,
 			);
 			path = ModalControllers;
 			sourceTree = "<group>";
@@ -1082,7 +1082,6 @@
 			children = (
 				9755500D2731411D00E54C5A /* List */,
 				9755500E2731412800E54C5A /* Group */,
-				97B01A802747CB9100DDE03C /* Export */,
 			);
 			path = Contacts;
 			sourceTree = "<group>";
@@ -1123,6 +1122,15 @@
 				977BA0462733171F0018DF53 /* CNContacts+FillRows.swift */,
 			);
 			path = CNContacts;
+			sourceTree = "<group>";
+		};
+		979998D82747F4CC00175DE5 /* Preview */ = {
+			isa = PBXGroup;
+			children = (
+				04B20F01269C4F6A00C6BC14 /* AssetContextPreviewViewController.swift */,
+				0405AA5A269D9BD6004AC07A /* PreviewAVController.swift */,
+			);
+			path = Preview;
 			sourceTree = "<group>";
 		};
 		97A61EDF2726AB8B00F2E6DE /* Contacts */ = {

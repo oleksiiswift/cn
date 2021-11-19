@@ -9,6 +9,23 @@ import UIKit
 import Contacts
 import SwiftMessages
 
+enum ExportContactsAvailibleFormat {
+    case first
+    case second
+    case none
+    
+    var formatRowValue: String {
+        switch self {
+            case .first:
+                return "FIRTS"
+            case .second:
+                return "SECOND"
+            default:
+                return "hello chao"
+        }
+    }
+}
+
 class ContactsViewController: UIViewController {
     
     @IBOutlet weak var navigationBar: NavigationBar!
@@ -214,11 +231,11 @@ extension ContactsViewController: Themeble {
         segue.dimMode = .gray(interactive: true)
         segue.interactiveHide = false
         segue.messageView.setupForShadow(shadowColor: theme.bottomShadowColor, cornerRadius: 14, shadowOffcet: CGSize(width: 6, height: 6), shadowOpacity: 10, shadowRadius: 14)
-        segue.messageView.configureDropShadow()
-        segue.messageView.backgroundHeight = Device.isSafeAreaiPhone ? 400 : 380
+        segue.messageView.configureNoDropShadow()
         
         if let exportContactsViewController = segue.destination as? ExportContactsViewController {
-            
+            exportContactsViewController.leftExportFileFormat = .first
+            exportContactsViewController.rightExportFileFormat = .second
         }
     }
 }
