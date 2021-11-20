@@ -171,6 +171,7 @@
 		97B01A7F2747CB8C00DDE03C /* ExportContactsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B01A7E2747CB8C00DDE03C /* ExportContactsViewController.swift */; };
 		97C909CA2748F68B00BC2E47 /* ECFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97C909C92748F68B00BC2E47 /* ECFileManager.swift */; };
 		97C909CC2748FA5300BC2E47 /* ShareManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97C909CB2748FA5300BC2E47 /* ShareManager.swift */; };
+		97C909CE274950D300BC2E47 /* DepricatedMethods.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97C909CD274950D300BC2E47 /* DepricatedMethods.swift */; };
 		97CA423F273EBBFA001FEA15 /* BottomButtonBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CA423E273EBBFA001FEA15 /* BottomButtonBarView.swift */; };
 		97CA4241273EBC33001FEA15 /* BottomButtonBarView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 97CA4240273EBC33001FEA15 /* BottomButtonBarView.xib */; };
 		97CB351127395803005DA881 /* SectionShadowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CB351027395802005DA881 /* SectionShadowView.swift */; };
@@ -372,6 +373,7 @@
 		97B01A7E2747CB8C00DDE03C /* ExportContactsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportContactsViewController.swift; sourceTree = "<group>"; };
 		97C909C92748F68B00BC2E47 /* ECFileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ECFileManager.swift; sourceTree = "<group>"; };
 		97C909CB2748FA5300BC2E47 /* ShareManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareManager.swift; sourceTree = "<group>"; };
+		97C909CD274950D300BC2E47 /* DepricatedMethods.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DepricatedMethods.swift; sourceTree = "<group>"; };
 		97CA423E273EBBFA001FEA15 /* BottomButtonBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomButtonBarView.swift; sourceTree = "<group>"; };
 		97CA4240273EBC33001FEA15 /* BottomButtonBarView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BottomButtonBarView.xib; sourceTree = "<group>"; };
 		97CB351027395802005DA881 /* SectionShadowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionShadowView.swift; sourceTree = "<group>"; };
@@ -736,6 +738,7 @@
 				04E58361267A3ED000EDC3A3 /* Protocols */,
 				04E58367267A3F8F00EDC3A3 /* Assets */,
 				04E0947D267A06B900A69956 /* Info.plist */,
+				97C909CD274950D300BC2E47 /* DepricatedMethods.swift */,
 			);
 			path = ECleaner;
 			sourceTree = "<group>";
@@ -1515,6 +1518,7 @@
 				0459DF9B26A6CDCC0085EEDF /* PHCachingImageManager+RequestExtension.swift in Sources */,
 				04CF0003268602DE000CA850 /* MediaContentType.swift in Sources */,
 				04E5837C267B3E2A00EDC3A3 /* PhotoManager.swift in Sources */,
+				97C909CE274950D300BC2E47 /* DepricatedMethods.swift in Sources */,
 				04467CE0270D929D00DBBB39 /* HorizontalProgressBar.swift in Sources */,
 				97CE449D273D311400DF6114 /* NavigationBarDelegate.swift in Sources */,
 				044281FE2692F9B800B6B47C /* SelectDropDownMenuDelegate.swift in Sources */,

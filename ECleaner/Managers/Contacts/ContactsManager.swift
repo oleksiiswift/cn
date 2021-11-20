@@ -441,63 +441,31 @@ extension ContactsManager {
         completionHandler(group)
     }
     
-    
         /// `names duplicated contacts`
-    private func namesDuplicated(_ contacts: [CNContact], completionHandler: @escaping ([CNContact]) -> Void) {
+    private func namesDuplicated(_ contacts: [CNContact], completionHandler: @escaping ([String : [CNContact]]) -> Void) {
         
-        var duplicates: [CNContact] = []
+        var contactsDictionary = Dictionary(grouping: contacts, by: {String($0.familyName.removeWhitespace() + $0.givenName.removeWhitespace())})
+        contactsDictionary.removeValue(forKey: "")
+        let filterDictionary = contactsDictionary.filter({$0.value.count > 1})
         
-        for i in 0...contacts.count - 1 {
-            debugPrint("name duplicate index: \(i)")
-            if duplicates.contains(contacts[i]) {
-                continue
-            }
-            let contact = contacts[i]
-            let duplicatedContacts: [CNContact] = contacts.filter({ $0 != contacts[i]}).filter({$0.givenName.removeWhitespace() + $0.familyName.removeWhitespace() == contact.givenName.removeWhitespace() + contact.familyName.removeWhitespace()}) //.filter({$0.familyName == contact.familyName})
-            
-            duplicatedContacts.forEach({
-                
-                let name = $0.givenName.removeWhitespace() + $0.familyName.removeWhitespace() + $0.middleName.removeWhitespace()
-                
-                guard !name.isEmpty else { return }
-                
-                debugPrint("each")
-                if !duplicates.contains(contact) {
-                    debugPrint(contact)
-                    duplicates.append(contact)
-                }
-                
-                if !duplicates.contains($0) {
-                    debugPrint($0)
-                    duplicates.append($0)
-                }
-            })
-        }
-        completionHandler(duplicates)
+        completionHandler(filterDictionary)
     }
     
-        /// `names duplicated group`
-    private func namesDuplicatesGroup(_ contacts: [CNContact], completionHandler: @escaping ([ContactsGroup]) -> Void) {
+    private func namesDuplicatesGroup(_ contacts: [String : [CNContact]], completionHandler: @escaping ([ContactsGroup]) -> Void) {
+        
         var group: [ContactsGroup] = []
         
-        for contact in contacts {
-            debugPrint("names group index: \(String(describing: contacts.firstIndex(of: contact)))")
-            if group.filter({$0.name.removeWhitespace() == contact.givenName.removeWhitespace() + contact.familyName.removeWhitespace()}).count == 0 {
-                let itentifier = self.getRegionIdentifier(from: contact)
-                group.append(ContactsGroup(name: contact.givenName.removeWhitespace() + contact.familyName.removeWhitespace(), contacts: [], groupType: .duplicatedContactName, countryIdentifier: itentifier))
-            }
+        for (contactName, similarContacts) in contacts {
+            debugPrint(contactName)
+            let phoneNumbers = similarContacts.map({$0.phoneNumbers}).reduce([], +)
+            let stringNumbers = phoneNumbers.map({$0.value.stringValue})
+            let itentifier = self.checkRegionIdentifier(from: stringNumbers)
+
+            group.append(ContactsGroup(name: contactName, contacts: similarContacts, groupType: .duplicatedContactName, countryIdentifier: itentifier))
         }
-        
-        for contact in contacts {
-            debugPrint("extra filer index: \(String(describing: contacts.firstIndex(of: contact)))")
-            group.filter({$0.name.removeWhitespace() == contact.givenName.removeWhitespace() + contact.familyName.removeWhitespace()})[0].contacts.append(contact)
-        }
-        
         group.forEach({ $0.contacts = self.esctimateBestContactIn($0.contacts )})
-        
         completionHandler(group)
     }
-    
     
         /// `duplicates by email`
     private func emailDuplicates(_ contacts: [CNContact], completionHandler: @escaping ([CNContact]) -> Void) {
@@ -1041,6 +1009,19 @@ extension ContactsManager {
         }
     }
     
+    
+    public func checkRegionIdentifier(from contactPhoneNumbers: [String]) -> ContactsCountryIdentifier {
+    
+        if !contactPhoneNumbers.isEmpty {
+            let phoneNumbers = phoneNumberKit.parse(contactPhoneNumbers)
+            let phoneCountryCode = self.getCommonIdentificators(from: phoneNumbers.map({String($0.countryCode)}))
+            let regionID = self.getCommonIdentificators(from: phoneNumbers.map({$0.regionID}).compactMap({$0}))
+            return ContactsCountryIdentifier(region: regionID, countryCode: phoneCountryCode)
+        } else {
+            return ContactsCountryIdentifier(region: "", countryCode: "")
+        }
+    }
+    
     private func getCommonIdentificators(from stingIndentifiers: [String]) -> String {
         let identificatorDictionary = Dictionary(grouping: stingIndentifiers, by: {$0})
         let sortedIdentificators = identificatorDictionary.mapValues({$0.count})
@@ -1157,19 +1138,19 @@ extension ContactsManager {
 
 extension ContactsManager {
     
-   
+    
     public func d(_ contacts: [CNContact], completionHandler: @escaping ([CNContact]) -> Void) {
         
         var duplicates: [CNContact] = []
-
+        
         let p = Dictionary(grouping: contacts, by: {String($0.familyName.lowercased().removeWhitespace())})
-       
+        
         debugPrint(p.count)
         let z = p.map({$0.key})
         debugPrint(z)
         let f = p.map({$0.value})
         debugPrint(f)
-    
+        
         let fliter = p.filter({$0.value.count > 1})
         
         
@@ -1178,32 +1159,32 @@ extension ContactsManager {
         
         debugPrint(cn)
         
-//        for i in 0...contacts.count - 1 {
-//            debugPrint("name duplicate index: \(i)")
-//            if duplicates.contains(contacts[i]) {
-//                continue
-//            }
-//            let contact = contacts[i]
-//            let duplicatedContacts: [CNContact] = contacts.filter({ $0 != contacts[i]}).filter({$0.givenName.removeWhitespace() + $0.familyName.removeWhitespace() == contact.givenName.removeWhitespace() + contact.familyName.removeWhitespace()}) //.filter({$0.familyName == contact.familyName})
-//
-//            duplicatedContacts.forEach({
-//
-//                let name = $0.givenName.removeWhitespace() + $0.familyName.removeWhitespace() + $0.middleName.removeWhitespace()
-//
-//                guard !name.isEmpty else { return }
-//
-//                debugPrint("each")
-//                if !duplicates.contains(contact) {
-//                    debugPrint(contact)
-//                    duplicates.append(contact)
-//                }
-//
-//                if !duplicates.contains($0) {
-//                    debugPrint($0)
-//                    duplicates.append($0)
-//                }
-//            })
-//        }
+            //        for i in 0...contacts.count - 1 {
+            //            debugPrint("name duplicate index: \(i)")
+            //            if duplicates.contains(contacts[i]) {
+            //                continue
+            //            }
+            //            let contact = contacts[i]
+            //            let duplicatedContacts: [CNContact] = contacts.filter({ $0 != contacts[i]}).filter({$0.givenName.removeWhitespace() + $0.familyName.removeWhitespace() == contact.givenName.removeWhitespace() + contact.familyName.removeWhitespace()}) //.filter({$0.familyName == contact.familyName})
+            //
+            //            duplicatedContacts.forEach({
+            //
+            //                let name = $0.givenName.removeWhitespace() + $0.familyName.removeWhitespace() + $0.middleName.removeWhitespace()
+            //
+            //                guard !name.isEmpty else { return }
+            //
+            //                debugPrint("each")
+            //                if !duplicates.contains(contact) {
+            //                    debugPrint(contact)
+            //                    duplicates.append(contact)
+            //                }
+            //
+            //                if !duplicates.contains($0) {
+            //                    debugPrint($0)
+            //                    duplicates.append($0)
+            //                }
+            //            })
+            //        }
         completionHandler(duplicates)
     }
     
