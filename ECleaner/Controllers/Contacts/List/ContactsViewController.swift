@@ -10,16 +10,16 @@ import Contacts
 import SwiftMessages
 
 enum ExportContactsAvailibleFormat {
-    case first
-    case second
+    case vcf
+    case csv
     case none
     
     var formatRowValue: String {
         switch self {
-            case .first:
-                return "FIRTS"
-            case .second:
+            case .vcf:
                 return "VCF"
+            case .csv:
+                return "CSV"
             default:
                 return "hello chao"
         }
@@ -45,13 +45,14 @@ class ContactsViewController: UIViewController {
                                                                 isSelected: false,
                                                                 menuItem: .edit)
     
-    lazy var exportAllContactOptionItem = DropDownOptionsMenuItem(titleMenu: "export selected",
+    lazy var exportAllContactOptionItem = DropDownOptionsMenuItem(titleMenu: "export",
                                                               itemThumbnail: I.systemItems.defaultItems.share,
                                                               isSelected: false,
                                                               menuItem: .share)
     
     private var bottomButtonHeight: CGFloat = 70
     public var contactContentIsEditing: Bool = false
+    
     private var isSelectedAllItems: Bool {
         switch contentType {
             case .allContacts:
@@ -74,6 +75,7 @@ class ContactsViewController: UIViewController {
     public var contentType: PhotoMediaType = .none
     public var mediaType: MediaContentType = .none
     private var contactManager = ContactsManager.shared
+    private var shareManager = ShareManager.shared
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -144,7 +146,6 @@ extension ContactsViewController: Themeble {
                                           mediaType: .userContacts,
                                           leftButtonTitle: "cancel",
                                           rightButtonTitle: rightNavigationTitle)
-            
         } else {
             setupNavigation()
         }
@@ -234,17 +235,14 @@ extension ContactsViewController: Themeble {
         segue.messageView.configureNoDropShadow()
         
         if let exportContactsViewController = segue.destination as? ExportContactsViewController {
-            exportContactsViewController.leftExportFileFormat = .first
-            exportContactsViewController.rightExportFileFormat = .second
+            exportContactsViewController.leftExportFileFormat = .vcf
+            exportContactsViewController.rightExportFileFormat = .csv
             
             exportContactsViewController.selectExportFormatCompletion = { format in
-                switch format {
-                    case .first:
-                        self.exportAllContactsVCF()
-                    case .second:
-                        self.exportAllContactsVCF()
-                    case .none:
-                        return
+                if self.contactContentIsEditing {
+                    self.exportSelectedContacts(with: format)
+                } else {
+                    self.exportAllContacts(with: format)
                 }
             }
         }
@@ -411,7 +409,9 @@ extension ContactsViewController {
         self.performSegue(withIdentifier: C.identifiers.segue.showExportContacts, sender: self)
     }
     
-    private func didTapExportSelectedContacts() {}
+    private func didTapExportSelectedContacts() {
+        self.performSegue(withIdentifier: C.identifiers.segue.showExportContacts, sender: self)
+    }
     
     private func didTapDeleteSelectedContacts() {
         
@@ -507,11 +507,42 @@ extension ContactsViewController {
 
 extension ContactsViewController {
     
-    private func exportAllContactsVCF() {
+    private func exportAllContacts(with format: ExportContactsAvailibleFormat) {
+        P.showIndicator()
+        shareManager.shareAllContacts(format) { fileCreate in
+            if !fileCreate {
+//                TODO: Error alert
+            }
+        }
+    }
+    
+    private func exportSelectedContacts(with format: ExportContactsAvailibleFormat) {
         
-        self.contactManager.exportAllVcfFile { fileURL in
+        if isSelectedAllItems {
+            exportAllContacts(with: format)
+            self.setCancelAndDeselectAllItems()
+            self.handleEdit()
+        } else {
             
-            debugPrint(fileURL)
+            if let indexPaths = self.tableView.indexPathsForSelectedRows {
+                var contacts: [CNContact] = []
+                
+                if contentType == .allContacts {
+                    contacts = contactListViewModel.getContacts(at: indexPaths)
+                }
+                
+                self.setCancelAndDeselectAllItems()
+                self.handleEdit()
+                
+                if !contacts.isEmpty {
+                    P.showIndicator()
+                    shareManager.shareContacts(contacts, of: format) { fileCreated in
+                        if !fileCreated {
+//                            TODO show alert
+                        }
+                    }
+                }
+            }
         }
     }
 }
