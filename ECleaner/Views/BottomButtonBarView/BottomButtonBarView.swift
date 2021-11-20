@@ -22,6 +22,9 @@ class BottomButtonBarView: UIView {
     
     public var buttonColor: UIColor = .red
     public var buttonTintColor: UIColor = .white
+    public var buttonTitleColor: UIColor?
+    
+    public var configureShadow: Bool = false
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -54,11 +57,20 @@ class BottomButtonBarView: UIView {
         containerView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         
         self.backgroundColor = .clear
-        actionButton.configureAppearance(buttonColor: self.buttonColor, tintColor: self.buttonTintColor)
+        
+        let buttonBackgroundColor: UIColor = configureShadow ? .clear : self.buttonColor
+        
+        actionButton.configureAppearance(buttonColor: buttonBackgroundColor, tintColor: self.buttonTintColor)
     }
     
     public func updateColorsSettings() {
-        actionButton.configureAppearance(buttonColor: self.buttonColor, tintColor: self.buttonTintColor)
+        
+        let buttonBackgroundColor: UIColor = configureShadow ? .clear : self.buttonColor
+        
+        actionButton.configureAppearance(buttonColor: buttonBackgroundColor, tintColor: self.buttonTintColor)
+        if let color = buttonTitleColor {
+            actionButton.setTitleColor(color, for: .normal)
+        }
     }
     
     private func actionButtonSetup() {
@@ -112,3 +124,19 @@ class BottomBarButtonItem: UIButton {
         self.addLeftImageWithFixLeft(spacing: imageSpacing, size: imageSize, image: image)
     }
 }
+
+
+extension BottomButtonBarView {
+    
+    public func addButtonShadow() {
+        
+        let topShadow = ReuseShadowView()
+        self.insertSubview(topShadow, at: 0)
+        topShadow.translatesAutoresizingMaskIntoConstraints = false
+        topShadow.leadingAnchor.constraint(equalTo: actionButton.leadingAnchor).isActive = true
+        topShadow.trailingAnchor.constraint(equalTo: actionButton.trailingAnchor).isActive = true
+        topShadow.bottomAnchor.constraint(equalTo: actionButton.bottomAnchor).isActive = true
+        topShadow.topAnchor.constraint(equalTo: actionButton.topAnchor).isActive = true
+    }
+}
+

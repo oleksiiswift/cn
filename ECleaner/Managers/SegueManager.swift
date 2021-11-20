@@ -18,3 +18,13 @@ class ShowDatePickerSelectorViewControllerSegue: SwiftMessagesSegue {
     }
 }
 
+class ShowExportContactsViewControllerSegue: SwiftMessagesSegue {
+    
+    override public init(identifier: String?, source: UIViewController, destination: UIViewController) {
+        super.init(identifier: identifier, source: source, destination: destination)
+        configure(layout: .bottomMessage)
+        dimMode = .gray(interactive: false)
+        messageView.configureNoDropShadow()
+        messageView.configureDropShadow()
+    }
+}

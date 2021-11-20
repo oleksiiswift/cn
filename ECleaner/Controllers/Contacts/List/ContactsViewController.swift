@@ -7,6 +7,24 @@
 
 import UIKit
 import Contacts
+import SwiftMessages
+
+enum ExportContactsAvailibleFormat {
+    case vcf
+    case csv
+    case none
+    
+    var formatRowValue: String {
+        switch self {
+            case .vcf:
+                return "VCF"
+            case .csv:
+                return "CSV"
+            default:
+                return "hello chao"
+        }
+    }
+}
 
 class ContactsViewController: UIViewController {
     
@@ -27,13 +45,14 @@ class ContactsViewController: UIViewController {
                                                                 isSelected: false,
                                                                 menuItem: .edit)
     
-    lazy var exportAllContactOptionItem = DropDownOptionsMenuItem(titleMenu: "export selected",
+    lazy var exportAllContactOptionItem = DropDownOptionsMenuItem(titleMenu: "export",
                                                               itemThumbnail: I.systemItems.defaultItems.share,
                                                               isSelected: false,
                                                               menuItem: .share)
     
     private var bottomButtonHeight: CGFloat = 70
     public var contactContentIsEditing: Bool = false
+    
     private var isSelectedAllItems: Bool {
         switch contentType {
             case .allContacts:
@@ -56,6 +75,7 @@ class ContactsViewController: UIViewController {
     public var contentType: PhotoMediaType = .none
     public var mediaType: MediaContentType = .none
     private var contactManager = ContactsManager.shared
+    private var shareManager = ShareManager.shared
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -73,6 +93,15 @@ class ContactsViewController: UIViewController {
         setupTableView()
         updateColors()
         handleBottomButtonChangeAppearence(disableAnimation: true)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        switch segue.identifier {
+            case C.identifiers.segue.showExportContacts:
+                self.setupShowExportContactController(segue: segue)
+            default:
+                return
+        }
     }
 }
 
@@ -117,7 +146,6 @@ extension ContactsViewController: Themeble {
                                           mediaType: .userContacts,
                                           leftButtonTitle: "cancel",
                                           rightButtonTitle: rightNavigationTitle)
-            
         } else {
             setupNavigation()
         }
@@ -194,6 +222,30 @@ extension ContactsViewController: Themeble {
         U.notificationCenter.addObserver(self, selector: #selector(handleSearchBarState), name: .searchBarDidCancel, object: nil)
         U.notificationCenter.addObserver(self, selector: #selector(searchBarDidMove(_:)), name: .scrollViewDidScroll, object: nil)
         U.notificationCenter.addObserver(self, selector: #selector(didSelectDeselectContact), name: .selectedContactsCountDidChange, object: nil)
+    }
+    
+    private func setupShowExportContactController(segue: UIStoryboardSegue) {
+        
+        guard let segue = segue as? SwiftMessagesSegue else { return }
+        
+        segue.configure(layout: .bottomMessage)
+        segue.dimMode = .gray(interactive: true)
+        segue.interactiveHide = false
+        segue.messageView.setupForShadow(shadowColor: theme.bottomShadowColor, cornerRadius: 14, shadowOffcet: CGSize(width: 6, height: 6), shadowOpacity: 10, shadowRadius: 14)
+        segue.messageView.configureNoDropShadow()
+        
+        if let exportContactsViewController = segue.destination as? ExportContactsViewController {
+            exportContactsViewController.leftExportFileFormat = .vcf
+            exportContactsViewController.rightExportFileFormat = .csv
+            
+            exportContactsViewController.selectExportFormatCompletion = { format in
+                if self.contactContentIsEditing {
+                    self.exportSelectedContacts(with: format)
+                } else {
+                    self.exportAllContacts(with: format)
+                }
+            }
+        }
     }
 }
 
@@ -353,9 +405,13 @@ extension ContactsViewController {
         self.setNavigationEditMode(isEditing: contactContentIsEditing)
     }
     
-    private func didTapShareAllContacts() {}
+    private func didTapExportAllContacts() {
+        self.performSegue(withIdentifier: C.identifiers.segue.showExportContacts, sender: self)
+    }
     
-    private func didTapShareSelectedContacts() {}
+    private func didTapExportSelectedContacts() {
+        self.performSegue(withIdentifier: C.identifiers.segue.showExportContacts, sender: self)
+    }
     
     private func didTapDeleteSelectedContacts() {
         
@@ -449,10 +505,52 @@ extension ContactsViewController {
     }
 }
 
+extension ContactsViewController {
+    
+    private func exportAllContacts(with format: ExportContactsAvailibleFormat) {
+        P.showIndicator()
+        shareManager.shareAllContacts(format) { fileCreate in
+            if !fileCreate {
+//                TODO: Error alert
+            }
+        }
+    }
+    
+    private func exportSelectedContacts(with format: ExportContactsAvailibleFormat) {
+        
+        if isSelectedAllItems {
+            exportAllContacts(with: format)
+            self.setCancelAndDeselectAllItems()
+            self.handleEdit()
+        } else {
+            
+            if let indexPaths = self.tableView.indexPathsForSelectedRows {
+                var contacts: [CNContact] = []
+                
+                if contentType == .allContacts {
+                    contacts = contactListViewModel.getContacts(at: indexPaths)
+                }
+                
+                self.setCancelAndDeselectAllItems()
+                self.handleEdit()
+                
+                if !contacts.isEmpty {
+                    P.showIndicator()
+                    shareManager.shareContacts(contacts, of: format) { fileCreated in
+                        if !fileCreated {
+//                            TODO show alert
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 extension ContactsViewController: BottomDoubleActionButtonDelegate {
     
     func didTapLeftActionButton() {
-        self.didTapShareSelectedContacts()
+        self.didTapExportSelectedContacts()
     }
     
     func didTapRightActionButton() {
@@ -473,7 +571,7 @@ extension ContactsViewController: SelectDropDownMenuDelegate {
         
         switch didSelectItem {
             case .share:
-                self.didTapShareAllContacts()
+                self.didTapExportAllContacts()
             case .edit:
                 self.didTapSelectEditingMode()
             default:
@@ -561,3 +659,14 @@ extension ContactsViewController: UIPopoverPresentationControllerDelegate {
         return .none
     }
 }
+
+
+//let transition = CATransition()
+//transition.type = CATransitionType.push
+//transition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
+//transition.fillMode = CAMediaTimingFillMode.forwards
+//transition.duration = 0.5
+//transition.subtype = CATransitionSubtype.fromTop
+//self.tableView.layer.add(transition, forKey: "UITableViewReloadDataAnimationKey")
+//// Update your data source here
+//self.tableView.reloadData()

@@ -123,6 +123,7 @@ class Constants {
             static let deep = "DeepClean"
             static let contacts = "Contacts"
             static let contactsGroup = "ContactsGroup"
+            static let exportContacts = "ExportContact"
         }
         
         struct viewControllers {
@@ -135,6 +136,7 @@ class Constants {
             static let contacts = "ContactsViewController"
             static let deepClean = "DeepCleaningViewController"
             static let contactsGroup = "ContactsGroupViewController"
+            static let expordContacts = "ExportContactsViewController"
         }
         
         struct cells {
@@ -187,6 +189,7 @@ class Constants {
         
         struct segue {
             static let showDatePicker = "ShowDatePickerSelectorViewControllerSegue"
+            static let showExportContacts = "ShowExportContactsViewControllerSegue"
         }
     }
     

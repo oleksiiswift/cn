@@ -84,11 +84,22 @@
                         <outlet property="searchBarTopConstraint" destination="vhv-h3-lRS" id="bWw-Vq-W6A"/>
                         <outlet property="searchBarView" destination="wfo-kS-LRV" id="uT6-0L-hTr"/>
                         <outlet property="tableView" destination="hB7-Ph-8Z4" id="Ba2-fD-RRL"/>
+                        <segue destination="kKO-4T-gEg" kind="show" identifier="ShowExportContactsViewControllerSegue" customClass="ShowDatePickerSelectorViewControllerSegue" customModule="ECleaner" customModuleProvider="target" id="ps5-PK-2Uu"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ief-a0-LHa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1042.0289855072465" y="116.51785714285714"/>
+        </scene>
+        <!--ExportContact-->
+        <scene sceneID="r61-ol-v1H">
+            <objects>
+                <viewControllerPlaceholder storyboardName="ExportContact" id="kKO-4T-gEg" sceneMemberID="viewController">
+                    <navigationItem key="navigationItem" id="ac3-aj-bkh"/>
+                </viewControllerPlaceholder>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="MH7-kW-DJl" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1896" y="349"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="a83-Vn-IYx">
