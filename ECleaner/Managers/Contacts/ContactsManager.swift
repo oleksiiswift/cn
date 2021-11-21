@@ -412,6 +412,7 @@ extension ContactsManager {
         completionHandler(duplicates)
     }
     
+    
         /// `phone duplicated group`
     private func phoneDuplicatedGroup(_ contacts: [CNContact], completionHandler: @escaping ([ContactsGroup]) -> Void) {
         
@@ -447,7 +448,6 @@ extension ContactsManager {
         var contactsDictionary = Dictionary(grouping: contacts, by: {String($0.familyName.removeWhitespace() + $0.givenName.removeWhitespace())})
         contactsDictionary.removeValue(forKey: "")
         let filterDictionary = contactsDictionary.filter({$0.value.count > 1})
-        
         completionHandler(filterDictionary)
     }
     
@@ -621,7 +621,7 @@ extension ContactsManager {
 }
 
 extension ContactsManager  {
-    
+
     private func smartNamesDuplicated(_ contacts: [CNContact], completionHandler: @escaping ([CNContact]) -> Void) {
         
         var duplicates: [CNContact] = []
@@ -1136,61 +1136,6 @@ extension ContactsManager {
 }
 
 
-extension ContactsManager {
-    
-    
-    public func d(_ contacts: [CNContact], completionHandler: @escaping ([CNContact]) -> Void) {
-        
-        var duplicates: [CNContact] = []
-        
-        let p = Dictionary(grouping: contacts, by: {String($0.familyName.lowercased().removeWhitespace())})
-        
-        debugPrint(p.count)
-        let z = p.map({$0.key})
-        debugPrint(z)
-        let f = p.map({$0.value})
-        debugPrint(f)
-        
-        let fliter = p.filter({$0.value.count > 1})
-        
-        
-        
-        let cn = fliter.map({$0.value})
-        
-        debugPrint(cn)
-        
-            //        for i in 0...contacts.count - 1 {
-            //            debugPrint("name duplicate index: \(i)")
-            //            if duplicates.contains(contacts[i]) {
-            //                continue
-            //            }
-            //            let contact = contacts[i]
-            //            let duplicatedContacts: [CNContact] = contacts.filter({ $0 != contacts[i]}).filter({$0.givenName.removeWhitespace() + $0.familyName.removeWhitespace() == contact.givenName.removeWhitespace() + contact.familyName.removeWhitespace()}) //.filter({$0.familyName == contact.familyName})
-            //
-            //            duplicatedContacts.forEach({
-            //
-            //                let name = $0.givenName.removeWhitespace() + $0.familyName.removeWhitespace() + $0.middleName.removeWhitespace()
-            //
-            //                guard !name.isEmpty else { return }
-            //
-            //                debugPrint("each")
-            //                if !duplicates.contains(contact) {
-            //                    debugPrint(contact)
-            //                    duplicates.append(contact)
-            //                }
-            //
-            //                if !duplicates.contains($0) {
-            //                    debugPrint($0)
-            //                    duplicates.append($0)
-            //                }
-            //            })
-            //        }
-        completionHandler(duplicates)
-    }
-    
-}
-
-
 extension CNContactVCardSerialization {
     
     class func dataWithImage(contacts: [CNContact]) throws -> Data {
@@ -1206,5 +1151,86 @@ extension CNContactVCardSerialization {
             text = text.appending(str)
         }
         return text.data(using: .utf8)!
+    }
+}
+
+extension ContactsManager {
+    
+    public func numbersDuplicates() {
+        getAllContacts { contacts in
+            
+            
+            let dict = Dictionary(grouping: contacts, by: {$0.phoneNumbers.map({$0.value.stringValue.removeWhitespace().removeNonNumeric()})})
+            
+            let wholeNumbers = contacts.map({$0.phoneNumbers.map({$0.value})}).reduce([], +)
+            
+//            let dictionary = Dictionary(grouping: contacts, by: {
+//                $0.phoneNumbers.forEach { number in
+//                    number.value.stringValue.removeWhitespace().removeNonNumeric()
+//                }
+//            })
+            
+            
+            
+            
+            let contactStore = CNContactStore()
+            
+            var hh: [String : [CNContact]] = [:]
+            var z = wholeNumbers.count
+                for i in 0...wholeNumbers.count - 1 {
+                    z -= 1
+                    debugPrint(z)
+                let number = wholeNumbers[i]
+                let fetchPredicate = CNContact.predicateForContacts(matching: number)
+                do {
+                    let containerResulte = try contactStore.unifiedContacts(matching: fetchPredicate, keysToFetch: self.fetchingKeys)
+                    if !containerResulte.isEmpty && containerResulte.count != 1 {
+                        hh[number.stringValue] = containerResulte
+                    }
+                } catch {
+                    debugPrint(error)
+                }
+            }
+            
+            debugPrint(hh)
+        
+            
+        
+//            for container in allContainers {
+//                let containerName = getAppropriateName(for: container)
+//
+//                if containerName == C.contacts.contactsContainer.iCloud {
+//                    let fetchPredicate = CNContact.predicateForContactsInContainer(withIdentifier: container.identifier)
+//                    do {
+//                        let containerResults = try contactStore.unifiedContacts(matching: fetchPredicate, keysToFetch: self.fetchingKeys)
+//                        return containerResults
+//
+//
+//
+            
+ 
+            
+            
+            let fileter = dict.filter({$0.value.count > 1})
+            
+            
+        
+        
+//            let z: [String : CNContact] = []
+            
+            for k in fileter {
+                
+                if k.key.count > 1 {
+                    k.key.forEach { kk in
+                        
+                    }
+                }
+                
+                
+                debugPrint(k.key.count > 1)
+//                debugPrint(k.value)
+                
+            }
+        }
     }
 }

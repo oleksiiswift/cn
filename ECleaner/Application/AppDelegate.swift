@@ -48,6 +48,8 @@ extension AppDelegate {
 //
 //            }
 //        }
+        
+//        ContactsManager.shared.numbersDuplicates()
     }
 
     private func setDefaults() {
