@@ -8,15 +8,6 @@
 import UIKit
 import Contacts
 
-enum ConttactMissingDataType {
-    case noName
-    case noPhone
-    case noNameNoPhone
-    case noEmail
-    case noData
-    case none
-}
-
 class ContactTableViewCell: UITableViewCell {
     
     @IBOutlet weak var reuseShadowView: ReuseShadowView!
@@ -89,12 +80,12 @@ extension ContactTableViewCell {
         if contactFullName == nil {
             if numbers.isEmpty {
                 if emails.count == 0 {
-                    setupForMissingData(type: .noData, textData: "all missing data")
+                    setupForMissingData(type: .wholeEmpty, textData: "all missing data")
                 } else {
-                    setupForMissingData(type: .noNameNoPhone, textData: emails.joined(separator: emails.count > 1 ? ", " : ""))
+                    setupForMissingData(type: .onlyEmail, textData: emails.joined(separator: emails.count > 1 ? ", " : ""))
                 }
             } else {
-                setupForMissingData(type: .noName, textData: numbers.joined(separator: numbers.count > 1 ? ", " : ""))
+                setupForMissingData(type: .onlyPhone, textData: numbers.joined(separator: numbers.count > 1 ? ", " : ""))
             }
         } else {
             if let contactFullName = contactFullName {
@@ -103,16 +94,16 @@ extension ContactTableViewCell {
         }
     }
     
-    private func setupForMissingData(type: ConttactMissingDataType, textData: String) {
+    private func setupForMissingData(type: ContactasCleaningType, textData: String) {
         
         switch type {
-            case .noData:
+            case .wholeEmpty:
                 
                 contactTitleTextLabel.text = "-"
                 contactSubtitleTextLabel.isHidden = true
                 contactTitleTextLabel.font = .italicSystemFont(ofSize: 16, weight: .regular)
                 contactTitleTextLabel.textColor = theme.subTitleTextColor
-            case .noNameNoPhone:
+            case .onlyEmail:
                 contactTitleTextLabel.text = "-"
                 contactTitleTextLabel.textColor = theme.titleTextColor
                 contactTitleTextLabel.font = .systemFont(ofSize: 16, weight: .bold)

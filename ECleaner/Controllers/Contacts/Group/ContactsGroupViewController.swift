@@ -161,7 +161,6 @@ extension ContactsGroupViewController {
                         deletedIndexesCount += 1
                     } else {
                         errorsCount += deletetCount
-                        self.contactGroupListDataSource.selectedSections.remove(at: index)
                     }
                     
                     if totalIndexesCount == deletedIndexesCount {

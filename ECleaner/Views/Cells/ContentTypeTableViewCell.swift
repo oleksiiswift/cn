@@ -99,7 +99,7 @@ extension ContentTypeTableViewCell {
                     contentSubtitleTextLabel.text = phasetCount != 0 ?  String("\(phasetCount) \("FILES".localized())") : "no files"
                 case .allContacts, .emptyContacts:
                     contentSubtitleTextLabel.text  = phasetCount != 0 ? String("\(phasetCount) contacts") : ""
-                case .duplicatedContacts:
+                case .duplicatedContacts, .duplicatedPhoneNumbers, .duplicatedEmails:
                     contentSubtitleTextLabel.isHidden = true
                 case .compress:
                     contentSubtitleTextLabel.text = ""
