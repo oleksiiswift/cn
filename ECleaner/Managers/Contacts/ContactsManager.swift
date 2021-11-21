@@ -251,7 +251,7 @@ extension ContactsManager {
     }
     
     public func getSortAndGroupContacts(_ contacts: [CNContact]) -> [String : [CNContact]] {
-        return Dictionary(grouping: contacts, by: {String($0.givenName.uppercased().prefix(1))})
+        return Dictionary(grouping: contacts, by: {String(($0.givenName + $0.familyName).uppercased().prefix(1))})
     }
     
         /// `all containers`
@@ -390,7 +390,8 @@ extension ContactsManager {
             do {
                 let containerResults = try contactsStore.unifiedContacts(matching: fetchPredicate, keysToFetch: self.fetchingKeys)
                 if containerResults.count > 1 {
-                    let identifier = self.checkRegionIdentifier(from: [phoneNunber.stringValue])
+//                    let identifier = self.checkRegionIdentifier(from: [phoneNunber.stringValue])
+                    let identifier = ContactsCountryIdentifier(region: "", countryCode: "")
                     duplicatedContacts.append(ContactsGroup(name: phoneNunber.stringValue, contacts: containerResults, groupType: .duplicatedPhoneNumnber, countryIdentifier: identifier))
                 }
             } catch {

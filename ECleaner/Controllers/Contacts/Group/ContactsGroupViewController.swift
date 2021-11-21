@@ -36,6 +36,7 @@ class ContactsGroupViewController: UIViewController {
     public var contactGroupListViewModel: ContactGroupListViewModel!
     public var contactGroupListDataSource: ContactsGroupDataSource!
     public var mediaType: MediaContentType = .none
+    public var contentType: PhotoMediaType = .none
     
     private var isSelectedAllItems: Bool {
         return contactGroup.count == contactGroupListDataSource.selectedSections.count
@@ -81,9 +82,9 @@ extension ContactsGroupViewController: Themeble {
     }
     
     func setupViewModel(contacts: [ContactsGroup]) {
-        
         self.contactGroupListViewModel = ContactGroupListViewModel(contactsGroup: contacts)
         self.contactGroupListDataSource = ContactsGroupDataSource(viewModel: self.contactGroupListViewModel)
+        self.contactGroupListDataSource.contentType = self.contentType
     }
     
     func setupTableView() {
