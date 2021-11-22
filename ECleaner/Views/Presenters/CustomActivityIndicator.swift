@@ -11,7 +11,7 @@ open class CustomActivityIndicator: NSObject {
     
     public static let sharedObject = CustomActivityIndicator()
     
-    internal static let theme = ThemeManager.currentTheme
+    internal static let theme = ThemeManager.theme
     
     internal static var activityIndicatorView = UIActivityIndicatorView()
     
@@ -80,8 +80,6 @@ open class CustomActivityIndicator: NSObject {
                     controllerToPresent.view.bringSubviewToFront(activityIndicatorContainer)
                     isActivityIndicatorShow = true
             }
-        } else {
-            hideActivityIndicator()
         }
     }
     

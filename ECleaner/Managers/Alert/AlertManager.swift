@@ -14,6 +14,21 @@ enum AlertType {
     case allowPhotoLibrary
     case allowDeleteSelectedPhotos
     case withCancel
+    
+    case noSimiliarPhoto
+    case noDuplicatesPhoto
+    case noScreenShots
+    case noSelfie
+    case noLivePhoto
+    case noLargeVideo
+    case noDuplicatesVideo
+    case noSimilarVideo
+    case noScreenRecording
+    
+    case noRecentlyDeletedPhotos
+    case noRecentlyDeletedVideos
+    
+    
     case none
     
     /// alert title
@@ -28,10 +43,32 @@ enum AlertType {
                 return "locomark set title for photo library"
             case .withCancel:
                 return ""
-            case .none:
-                return ""
             case .allowDeleteSelectedPhotos:
                 return "locomark delete assets?"
+            case .noSimiliarPhoto:
+                return "locomark no similar photos"
+            case .noDuplicatesPhoto:
+                return "locomark no duplicates photo"
+            case .noScreenShots:
+                return "locomark no screen shots"
+            case .noSelfie:
+                return "locomark no selfie"
+            case .noLivePhoto:
+                return "locomark no live photo"
+            case .none:
+                return ""
+            case .noLargeVideo:
+                return "locomark no large video files"
+            case .noDuplicatesVideo:
+                return "locomark no duplicated video"
+            case .noSimilarVideo:
+                return "locomark no similiar video"
+            case .noScreenRecording:
+                return "locomark no screen recordings"
+            case .noRecentlyDeletedPhotos:
+                return "locomark no recently deleted photos"
+            case .noRecentlyDeletedVideos:
+                return "locomark no recently deleted vides"
         }
     }
     
@@ -51,6 +88,13 @@ enum AlertType {
                 return "none"
             case .allowDeleteSelectedPhotos:
                 return "delete selecteds assets are you shure????"
+            
+            case .noSimiliarPhoto, .noDuplicatesPhoto, .noScreenShots, .noSelfie, .noLivePhoto, .noLargeVideo, .noDuplicatesVideo, .noSimilarVideo, .noScreenRecording:
+                return "locomark no content"
+            case .noRecentlyDeletedPhotos:
+                return "recently deleted photos empty"
+            case .noRecentlyDeletedVideos:
+                return "recently deleted videos empty"
         }
     }
     
@@ -92,6 +136,12 @@ class AlertManager: NSObject {
         topController()?.present(alert, animated: true, completion: nil)
     }
     
+    static func showCantFindMediaContent(by type: AlertType) {
+        
+        let alertAction = UIAlertAction(title: "ok", style: .default) { _ in }
+        showAlert(type.alertTitle, message: type.alertMessage, actions: [alertAction], withCancel: false, completion: nil)
+    }
+    
     private static func showPermissionAlert(alerttype: AlertType, actions: [UIAlertAction], cancelAction: @escaping (_ isDennyAccess: Bool) -> Void) {
         
         let alertController = UIAlertController(title: alerttype.alertTitle, message: alerttype.alertMessage, preferredStyle: alerttype.alertStyle)
@@ -110,7 +160,6 @@ class AlertManager: NSObject {
         }
     }
 }
-
 
 extension AlertManager {
     

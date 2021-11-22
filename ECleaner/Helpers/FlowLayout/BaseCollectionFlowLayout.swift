@@ -11,10 +11,10 @@ class BaseCarouselFlowLayout: UICollectionViewLayout {
 
     private var chacheIndexPathAttributes: [IndexPath: UICollectionViewLayoutAttributes] = [:]
     
-    public var itemSize: CGSize = CGSize(width: 163, height: 290)
+    public var itemSize: CGSize = CGSize(width: 210, height: 280)
     
-    private let spacing: CGFloat = 6
-    private let focusedSpacing: CGFloat = 10
+    private var spacing: CGFloat = -25//6
+    private var focusedSpacing: CGFloat = -25//10
     
     private var focusIndex: CGFloat {
         guard let collectionView = collectionView else { return 0}
@@ -30,8 +30,37 @@ class BaseCarouselFlowLayout: UICollectionViewLayout {
     
     private func updateInsets() {
         guard let collectionView = collectionView else { return }
-        collectionView.contentInset.left = 16
-        collectionView.contentInset.right = 16
+        collectionView.contentInset.left = 0//16
+        collectionView.contentInset.right = 0//16
+      
+      switch Screen.size {
+        case .small:
+          debugPrint("")
+
+          
+        case .medium:
+          debugPrint("")
+
+        case .plus:
+          spacing = -30
+          focusedSpacing = -30
+          itemSize = CGSize(width: 200, height: 260)
+
+        case .large:
+          debugPrint("")
+          spacing = -30
+          focusedSpacing = -30
+          itemSize = CGSize(width: 200, height: 260)
+        case .modern:
+          debugPrint("")
+          spacing = -30
+          focusedSpacing = -30
+          itemSize = CGSize(width: 200, height: 260)
+        case .max:
+          debugPrint("")
+        case .madMax:
+          debugPrint("")
+      }
     }
     
     override open func prepare() {

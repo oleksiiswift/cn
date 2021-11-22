@@ -8,13 +8,14 @@
 import Foundation
 import AppsFlyerLib
 import StoreKit
+import AppTrackingTransparency
 
 class AppsFlayerManager: NSObject {
     
     internal static let shared = AppsFlayerManager()
     
-    private let subscriptionIds = ["1weeksub", "1month", "1year", "45464748", "35363738", "23534342", "435345434", "274368", "274367", "274369", "1_month_premium", "1_week_premium", "monthsubscription", "yearsubscription", "1_year_prem", "3_month_prem", ""]
-    private let purchaseIds     = ["full", "remove_ads", "noadspurchase", "removeads", "lifetime_prem", "removeadds"]
+    private let subscriptionIds = ["1weeksub", "1month", "1year", "45464748", "35363738", "23534342", "435345434", "274368", "274367", "274369", "1_month_premium", "1_week_premium", "monthsubscription", "yearsubscription", "1_year_prem", "3_month_prem", "", "month_rec", "year_rec", "week_rec", "weekly_sub", "week", "sub3months"]
+    private let purchaseIds     = ["full", "remove_ads", "noadspurchase", "removeads", "lifetime_prem", "removeadds", "lifetimepremium"]
     
     private var appId: String? = UserDefaults.standard.string(forKey: "app_id") {
         didSet {
@@ -30,14 +31,23 @@ class AppsFlayerManager: NSObject {
     override init() {
         super.init()
         
-        AppsFlyerTracker.shared().delegate = self
-        AppsFlyerTracker.shared().appsFlyerDevKey = "bKpzhfkT7SDDVPGpGg2RaJ"
+        AppsFlyerLib.shared().appsFlyerDevKey = "bKpzhfkT7SDDVPGpGg2RaJ"
+        AppsFlyerLib.shared().delegate = self
+        AppsFlyerLib.shared().isDebug = false
+        
+        if AppsFlayerManager.isAppReadyForTrackingAuthorizationStatus() {
+            if #available(iOS 14, *), ATTrackingManager.trackingAuthorizationStatus == .notDetermined {
+                AppsFlyerLib.shared().waitForATTUserAuthorization(timeoutInterval: 100)
+            } else {
+                AppsFlyerLib.shared().waitForATTUserAuthorization(timeoutInterval: 60)
+            }
+        }
         
         AppSwizzle.shared().applicationDidBecomeActiveHandler { (application) in
             if self.appId == nil {
                 self.shouldTrackAppLaunch = (application)
             } else {
-                AppsFlyerTracker.shared().trackAppLaunch()
+                AppsFlyerLib.shared().start()
             }
         }
         
@@ -45,7 +55,7 @@ class AppsFlayerManager: NSObject {
             if self.appId == nil {
                 self.shouldOpenUrl = (application, url, options)
             } else {
-                AppsFlyerTracker.shared().handleOpen(url, options: options)
+                AppsFlyerLib.shared().handleOpen(url, options: options)
             }
         }
         
@@ -53,20 +63,20 @@ class AppsFlayerManager: NSObject {
             if self.appId == nil {
                 self.shouldContineuUserActivity = (application, userActivity)
             } else {
-                AppsFlyerTracker.shared().continue(userActivity, restorationHandler: nil)
+                AppsFlyerLib.shared().continue(userActivity, restorationHandler: nil)
             }
         }
         
         if self.appId != nil {
-            AppsFlyerTracker.shared().appleAppID = self.appId!
+            AppsFlyerLib.shared().appleAppID = self.appId!
         } else {
             self.iterateThroughAvailableCountries(bundle: Bundle.mainBundle.bundleIdentifier!) { (appId) in
                 if appId.count > 0 {
                     self.appId = appId
-                    AppsFlyerTracker.shared().appleAppID = appId
-                    if self.shouldTrackAppLaunch != nil { AppsFlyerTracker.shared().trackAppLaunch() }
-                    if self.shouldOpenUrl != nil { AppsFlyerTracker.shared().handleOpen(self.shouldOpenUrl!.1, options: self.shouldOpenUrl!.2) }
-                    if self.shouldContineuUserActivity != nil { AppsFlyerTracker.shared().continue(self.shouldContineuUserActivity!.1, restorationHandler: nil) }
+                    AppsFlyerLib.shared().appleAppID = self.appId!
+                    if self.shouldTrackAppLaunch != nil { AppsFlyerLib.shared().start() }
+                    if self.shouldOpenUrl != nil { AppsFlyerLib.shared().handleOpen(self.shouldOpenUrl!.1, options: self.shouldOpenUrl!.2) }
+                    if self.shouldContineuUserActivity != nil { AppsFlyerLib.shared().continue(self.shouldContineuUserActivity!.1, restorationHandler: nil) }
                 }
                 self.shouldTrackAppLaunch = nil
                 self.shouldOpenUrl = nil
@@ -74,6 +84,17 @@ class AppsFlayerManager: NSObject {
             }
         }
         
+    }
+    
+    func requestTrackingAuthorization(alertShowed: Cisua.BoolResultCompletion? = nil) {
+        if #available(iOS 14, *) {
+            if ATTrackingManager.trackingAuthorizationStatus == .notDetermined {
+                alertShowed?(true)
+                ATTrackingManager.requestTrackingAuthorization { (status) in }
+                return
+            }
+        }
+        alertShowed?(false)
     }
     
     private func iterateThroughAvailableCountries(bundle: String, countries: [String] = ["us", "ru", "gb", "ch", "sg", "au", "se", "ca", "mx", "cn", "nl", "tr", "br", "es", "be", "at", "de", "fr", "jp", "kr", "nz", "ie", "ae", "hu", "cl", "ro", "cz", "il", "ua", "kw", "co", "gr", "la", "sa", "id", "th", "hk", "dk", "no", "fi", "in", "pt", "it", "tw", "vn", "za", "my", "ph", "kz"], completion: ((String) -> ())? = nil) {
@@ -125,11 +146,18 @@ class AppsFlayerManager: NSObject {
     
 }
 
-extension AppsFlayerManager: AppsFlyerTrackerDelegate {
-    func onConversionDataSuccess(_ conversionInfo: [AnyHashable : Any]) { }
-    func onConversionDataFail(_ error: Error) { }
-    func onAppOpenAttribution(_ attributionData: [AnyHashable : Any]) { }
-    func onAppOpenAttributionFailure(_ error: Error) { }
+extension AppsFlayerManager {
+    class internal func isAppReadyForTrackingAuthorizationStatus() -> Bool {
+        if Bundle.mainBundle.object(forInfoDictionaryKey: "NSUserTrackingUsageDescription") as? String != nil {
+            return true
+        }
+        return false
+    }
+}
+
+extension AppsFlayerManager: AppsFlyerLibDelegate {
+    func onConversionDataSuccess(_ conversionInfo: [AnyHashable : Any]) {}
+    func onConversionDataFail(_ error: Error) {}
 }
 
 extension AppsFlayerManager {
@@ -186,7 +214,7 @@ extension AppsFlayerManager {
                 
                 if UserDefaults.standard.bool(forKey: "\(product.productIdentifier)_trial") == false {
                     
-                    AppsFlyerTracker.shared().trackEvent(
+                    AppsFlyerLib.shared().logEvent(
                         AFEventStartTrial,
                         withValues: [
                             AFEventParamContentId: product.productIdentifier,
@@ -258,7 +286,7 @@ extension AppsFlayerManager {
                 {
                     
                     if UserDefaults.standard.bool(forKey: UserDefaults.standard.string(forKey: "last_subscription") ?? "") {
-                        AppsFlyerTracker.shared().trackEvent(
+                        AppsFlyerLib.shared().logEvent(
                             AFEventSubscribe,
                             withValues: [
                                 AFEventParamContentId: product.productIdentifier,
@@ -269,7 +297,7 @@ extension AppsFlayerManager {
                             ]
                         )
                     } else {
-                        AppsFlyerTracker.shared().trackEvent(
+                        AppsFlyerLib.shared().logEvent(
                             AFEventSubscribe,
                             withValues: [
                                 AFEventParamContentId: product.productIdentifier,
@@ -288,7 +316,7 @@ extension AppsFlayerManager {
             }
             
         } else if UserDefaults.standard.bool(forKey: product.productIdentifier) == false {
-            AppsFlyerTracker.shared().trackEvent(
+            AppsFlyerLib.shared().logEvent(
                 AFEventPurchase,
                 withValues: [
                     AFEventParamContentId: product.productIdentifier,
@@ -308,7 +336,7 @@ extension AppsFlayerManager {
             product.productIdentifier.lowercased().contains("purchase") {
             
             if UserDefaults.standard.bool(forKey: product.productIdentifier) == false {
-                AppsFlyerTracker.shared().trackEvent(
+                AppsFlyerLib.shared().logEvent(
                     AFEventPurchase,
                     withValues: [
                         AFEventParamContentId: product.productIdentifier,
@@ -325,7 +353,7 @@ extension AppsFlayerManager {
             if isTrial {
                 if UserDefaults.standard.bool(forKey: "\(product.productIdentifier)_trial") == false {
                     
-                    AppsFlyerTracker.shared().trackEvent(
+                    AppsFlyerLib.shared().logEvent(
                         AFEventStartTrial,
                         withValues: [
                             AFEventParamContentId: product.productIdentifier,
@@ -349,7 +377,7 @@ extension AppsFlayerManager {
                     UserDefaults.standard.bool(forKey: keyPrev) == false &&
                     UserDefaults.standard.bool(forKey: keyNext) == false {
                     if UserDefaults.standard.bool(forKey: UserDefaults.standard.string(forKey: "last_subscription") ?? "") {
-                        AppsFlyerTracker.shared().trackEvent(
+                        AppsFlyerLib.shared().logEvent(
                             AFEventSubscribe,
                             withValues: [
                                 AFEventParamContentId: product.productIdentifier,
@@ -360,7 +388,8 @@ extension AppsFlayerManager {
                             ]
                         )
                     } else {
-                        AppsFlyerTracker.shared().trackEvent(
+                        
+                        AppsFlyerLib.shared().logEvent(
                             AFEventSubscribe,
                             withValues: [
                                 AFEventParamContentId: product.productIdentifier,
