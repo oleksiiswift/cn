@@ -77,6 +77,8 @@ class ContactsViewController: UIViewController {
     private var contactManager = ContactsManager.shared
     private var shareManager = ShareManager.shared
     
+    var progressAlert = AlertProgressAlertController.shared
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -93,6 +95,12 @@ class ContactsViewController: UIViewController {
         setupTableView()
         updateColors()
         handleBottomButtonChangeAppearence(disableAnimation: true)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+//        self.showProgress()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -218,7 +226,9 @@ extension ContactsViewController: Themeble {
         searchBarView.searchBar.delegate = self
         bottomDoubleButtonView.delegate = self
         bottomButtonView.delegate = self
+        progressAlert.delegate = self
         
+        U.notificationCenter.addObserver(self, selector: #selector(progressNotification(_:)), name: .progressAlertDidChangeProgress, object: nil)
         U.notificationCenter.addObserver(self, selector: #selector(handleSearchBarState), name: .searchBarDidCancel, object: nil)
         U.notificationCenter.addObserver(self, selector: #selector(searchBarDidMove(_:)), name: .scrollViewDidScroll, object: nil)
         U.notificationCenter.addObserver(self, selector: #selector(didSelectDeselectContact), name: .selectedContactsCountDidChange, object: nil)
@@ -414,7 +424,7 @@ extension ContactsViewController {
     }
     
     private func didTapDeleteSelectedContacts() {
-        
+        P.showIndicator()
         if let indexPaths = self.tableView.indexPathsForSelectedRows {
             
             var removableContacts: [CNContact] = []
@@ -426,16 +436,20 @@ extension ContactsViewController {
             }
             self.setCancelAndDeselectAllItems()
             self.handleEdit()
-            P.showIndicator()
             
             self.deleteContacts(removableContacts) {
-                self.reloadContactsAfterRefactor()
+                U.UI {
+                    self.reloadContactsAfterRefactor()                    
+                }
             }
+        } else {
+            P.hideIndicator()
         }
     }
     
     private func deleteContacts(_ contacts: [CNContact], completion: @escaping() -> Void) {
-        
+        P.hideIndicator()
+        self.showDeleteProgressAlert()
         contactManager.deleteContacts(contacts) { suxxessful, deletedCount in
             debugPrint("deleted is \(suxxessful)")
             if deletedCount == contacts.count {
@@ -448,7 +462,7 @@ extension ContactsViewController {
     }
     
     private func reloadContactsAfterRefactor() {
-        
+        P.showIndicator()
         if contentType == .allContacts {
             self.contactManager.getAllContacts { allContacts in
                 U.UI {
@@ -662,13 +676,29 @@ extension ContactsViewController: UIPopoverPresentationControllerDelegate {
     }
 }
 
+extension ContactsViewController: ProgressAlertControllerDelegate {
+    
+    private func showDeleteProgressAlert() {
+        progressAlert.showDeleteContactsProgressAlert()
+    }
+    
+    func didAutoCloseController() {}
+    
+    func didTapCancelOperation() {
+//        TODO: cancel deleting operations
+        debugPrint("abort dissmiss")
+    }
 
-//let transition = CATransition()
-//transition.type = CATransitionType.push
-//transition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
-//transition.fillMode = CAMediaTimingFillMode.forwards
-//transition.duration = 0.5
-//transition.subtype = CATransitionSubtype.fromTop
-//self.tableView.layer.add(transition, forKey: "UITableViewReloadDataAnimationKey")
-//// Update your data source here
-//self.tableView.reloadData()
+    @objc func progressNotification(_ notification: Notification) {
+
+        guard let userInfo = notification.userInfo else { return }
+        
+        if let progress = userInfo[C.key.notificationDictionary.progrssAlertValue] as? CGFloat, let totalFilesCount = userInfo[C.key.notificationDictionary.progressAlertFilesCount] as? String {
+            U.UI {
+                self.progressAlert.setProgress(progress / 100, totalFilesProcessong: totalFilesCount)
+            }
+        }
+    }
+}
+
+

@@ -326,7 +326,7 @@ extension MediaContentViewController {
             if !similarGroup.isEmpty {
                 self.showGropedContoller(assets: "similar photo", grouped: similarGroup, photoContent: .similarPhotos)
             } else {
-                AlertManager.showCantFindMediaContent(by: .noSimiliarPhoto)
+                AlertManager.showCantFindMediaContent(by: .noSimiliarPhoto) {}
             }
         }
     }
@@ -337,7 +337,7 @@ extension MediaContentViewController {
             if !asset.isEmpty {
                 self.showAssetViewController(assets: "live photos", collection: asset, photoContent: .singleLivePhotos)
             } else {
-                AlertManager.showCantFindMediaContent(by: .noLivePhoto)
+                AlertManager.showCantFindMediaContent(by: .noLivePhoto) {}
             }
         }
     }
@@ -347,7 +347,7 @@ extension MediaContentViewController {
             if !duplicateGroup.isEmpty {
                 self.showGropedContoller(assets: "duplicate photo", grouped: duplicateGroup, photoContent: .duplicatedPhotos)
             } else {
-                AlertManager.showCantFindMediaContent(by: .noDuplicatesPhoto)
+                AlertManager.showCantFindMediaContent(by: .noDuplicatesPhoto) {}
             }
         }
     }
@@ -357,7 +357,7 @@ extension MediaContentViewController {
             if selfies.count != 0 {
                 self.showAssetViewController(assets: "selfies", collection: selfies, photoContent: .singleSelfies)
             } else {
-                AlertManager.showCantFindMediaContent(by: .noSelfie)
+                AlertManager.showCantFindMediaContent(by: .noSelfie) {}
             }
         }
     }
@@ -367,7 +367,7 @@ extension MediaContentViewController {
             if screenshots.count != 0 {
                 self.showAssetViewController(assets: "screenshots", collection: screenshots, photoContent: .singleScreenShots)
             } else {
-                AlertManager.showCantFindMediaContent(by: .noScreenShots)
+                AlertManager.showCantFindMediaContent(by: .noScreenShots) {}
             }
         }
     }
@@ -377,7 +377,7 @@ extension MediaContentViewController {
             if deletedPhotos.count != 0 {
                 self.showAssetViewController(assets: "recently deleted photos", collection: deletedPhotos, photoContent: .singleRecentlyDeletedPhotos)
             } else {
-                AlertManager.showCantFindMediaContent(by: .noRecentlyDeletedPhotos)
+                AlertManager.showCantFindMediaContent(by: .noRecentlyDeletedPhotos) {}
             }
         }
     }
@@ -387,7 +387,7 @@ extension MediaContentViewController {
             if deletedVideos.count != 0 {
                 self.showAssetViewController(assets: "resently deleted Videos", collection: deletedVideos, photoContent: .singleRecentlyDeletedVideos)
             } else {
-                AlertManager.showCantFindMediaContent(by: .noRecentlyDeletedVideos)
+                AlertManager.showCantFindMediaContent(by: .noRecentlyDeletedVideos) {}
             }
         }
     }
@@ -426,7 +426,7 @@ extension MediaContentViewController {
             if videos.count != 0 {
                 self.showAssetViewController(assets: "large videos", collection: videos, photoContent: .singleLargeVideos)
             } else {
-                AlertManager.showCantFindMediaContent(by: .noLargeVideo)
+                AlertManager.showCantFindMediaContent(by: .noLargeVideo) {}
             }
         }
     }
@@ -438,7 +438,7 @@ extension MediaContentViewController {
             if videoGrouped.count != 0 {
                 self.showGropedContoller(assets: "duplicated video", grouped: videoGrouped, photoContent: .duplicatedVideos)
             } else {
-                AlertManager.showCantFindMediaContent(by: .noDuplicatesVideo)
+                AlertManager.showCantFindMediaContent(by: .noDuplicatesVideo) {}
             }
         }
     }
@@ -450,7 +450,7 @@ extension MediaContentViewController {
             if videos.count != 0 {
                 self.showGropedContoller(assets: "similar videos", grouped: videos, photoContent: .similarVideos)
             } else {
-                AlertManager.showCantFindMediaContent(by: .noSimilarVideo)
+                AlertManager.showCantFindMediaContent(by: .noSimilarVideo) {}
             }
         }
     }
@@ -462,7 +462,7 @@ extension MediaContentViewController {
             if videos.count != 0 {
                 self.showAssetViewController(assets: "screen records", collection: videos, photoContent: .singleScreenRecordings)
             } else {
-                AlertManager.showCantFindMediaContent(by: .noScreenRecording)
+                AlertManager.showCantFindMediaContent(by: .noScreenRecording) {}
             }
         }
     }
