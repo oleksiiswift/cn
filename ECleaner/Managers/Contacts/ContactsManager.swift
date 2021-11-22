@@ -802,6 +802,13 @@ extension ContactsManager {
                 self.deleteContact(contact) { success in
                     if success {
                         deletedContactsCount += 1
+                        
+                        let calculateprogress: Float = Float(100 * deletedContactsCount / contacts.count)
+                        
+                        let userInfo: [String: Any] = [Constants.key.notificationDictionary.progrssAlertValue: calculateprogress,
+                                                       Constants.key.notificationDictionary.progressAlertFilesCount: "\(deletedContactsCount) / \(contacts.count)"]
+                        
+                        NotificationCenter.default.post(name: .progressAlertDidChangeProgress, object: nil, userInfo: userInfo)
                         debugPrint(deletedContactsCount)
                     }
                 }

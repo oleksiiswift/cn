@@ -106,6 +106,9 @@ class Constants {
             /// contact scroll delegate scriklkub
             static let scrollViewInset = "scrollViewInset"
             static let scrollViewOffset = "scrollViewOffset"
+            
+            static let progrssAlertValue = "progressAlertValue"
+            static let progressAlertFilesCount = "progressAlertFilesCount"
         }
     }
     

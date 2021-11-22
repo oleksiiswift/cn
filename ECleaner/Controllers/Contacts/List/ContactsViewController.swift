@@ -76,6 +76,12 @@ class ContactsViewController: UIViewController {
     public var mediaType: MediaContentType = .none
     private var contactManager = ContactsManager.shared
     private var shareManager = ShareManager.shared
+
+    var prgoressDelegate: ProgressAlertControllerDelegate?
+    
+    var progressAlert = AlertProgressAlertController.shared
+//    var progressAlert = AlertHandler.shared
+    let (alertController, progressView) = AlertController.createAlertControllerWithProgressView(withTitle: NSLocalizedString("Please wait...", comment: ""), withMessage: nil)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -93,6 +99,17 @@ class ContactsViewController: UIViewController {
         setupTableView()
         updateColors()
         handleBottomButtonChangeAppearence(disableAnimation: true)
+        
+        prgoressDelegate = self
+        
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(self.progressNotification(_:)), name: .progressAlertDidChangeProgress, object: nil)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+//        self.showProgress()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -436,6 +453,7 @@ extension ContactsViewController {
     
     private func deleteContacts(_ contacts: [CNContact], completion: @escaping() -> Void) {
         
+        self.showProgress()
         contactManager.deleteContacts(contacts) { suxxessful, deletedCount in
             debugPrint("deleted is \(suxxessful)")
             if deletedCount == contacts.count {
@@ -661,6 +679,30 @@ extension ContactsViewController: UIPopoverPresentationControllerDelegate {
         return .none
     }
 }
+
+extension ContactsViewController: ProgressAlertControllerDelegate {
+    
+    func didTapCancelOperation() {
+        debugPrint("abort dissmiss")
+    }
+
+    @objc func progressNotification(_ notification: Notification) {
+
+        guard let userInfo = notification.userInfo else { return }
+        
+        if let progress = userInfo[C.key.notificationDictionary.progrssAlertValue] as? Float, let totalFilesCount = userInfo[C.key.notificationDictionary.progressAlertFilesCount] as? String {
+            U.UI {
+                self.progressAlert.handleDeleteContactsProgress(progress: progress / 100, message: totalFilesCount)
+            }
+        }
+    }
+        
+
+    func showProgress() {
+        progressAlert.showDeleteContactsProgressAlert()
+    }
+}
+
 
 
 //let transition = CATransition()
