@@ -76,8 +76,7 @@ class ContactsViewController: UIViewController {
     public var mediaType: MediaContentType = .none
     private var contactManager = ContactsManager.shared
     private var shareManager = ShareManager.shared
-    
-    var progressAlert = AlertProgressAlertController.shared
+    private var progressAlert = AlertProgressAlertController.shared
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -228,7 +227,7 @@ extension ContactsViewController: Themeble {
         bottomButtonView.delegate = self
         progressAlert.delegate = self
         
-        U.notificationCenter.addObserver(self, selector: #selector(progressNotification(_:)), name: .progressAlertDidChangeProgress, object: nil)
+        U.notificationCenter.addObserver(self, selector: #selector(progressNotification(_:)), name: .progressDeleteContactsAlertDidChangeProgress, object: nil)
         U.notificationCenter.addObserver(self, selector: #selector(handleSearchBarState), name: .searchBarDidCancel, object: nil)
         U.notificationCenter.addObserver(self, selector: #selector(searchBarDidMove(_:)), name: .scrollViewDidScroll, object: nil)
         U.notificationCenter.addObserver(self, selector: #selector(didSelectDeselectContact), name: .selectedContactsCountDidChange, object: nil)

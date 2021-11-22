@@ -39,5 +39,6 @@ extension Notification.Name {
     static let searchBarDidCancel = Notification.Name("searchBarDidCancel")
     
     /// `progress alert notification`
-    static let progressAlertDidChangeProgress = Notification.Name("progoressCalculationDidChange")
+    static let progressDeleteContactsAlertDidChangeProgress = Notification.Name("progressDeleteContactsAlertDidChangeProgress")
+    static let progressMergeContactsAlertDidChangeProgress = Notification.Name("progressMergeContactsAlertDidChangeProgress")
 }

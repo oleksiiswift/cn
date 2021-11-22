@@ -31,16 +31,19 @@ class ContactsGroupViewController: UIViewController {
                                                               menuItem: .share)
     
     private var contactsManager = ContactsManager.shared
-    
+    private var progressAlert = AlertProgressAlertController.shared
     public var contactGroup: [ContactsGroup] = []
     public var contactGroupListViewModel: ContactGroupListViewModel!
     public var contactGroupListDataSource: ContactsGroupDataSource!
     public var mediaType: MediaContentType = .none
     public var contentType: PhotoMediaType = .none
+
     
     private var isSelectedAllItems: Bool {
         return contactGroup.count == contactGroupListDataSource.selectedSections.count
     }
+    
+    private var isMergeContactsProcessing: Bool = true
     
     public var navigationTitle: String?
     private var bottomButtonHeight: CGFloat = 70
@@ -101,9 +104,11 @@ extension ContactsGroupViewController: Themeble {
         
         navigationBar.delegate = self
         bottomButtonBarView.delegate = self
+        progressAlert.delegate = self
         
         SingleContactsGroupOperationMediator.instance.setListener(listener: self)
         U.notificationCenter.addObserver(self, selector: #selector(mergeContactsDidChange(_:)), name: .mergeContactsSelectionDidChange, object: nil)
+        U.notificationCenter.addObserver(self, selector: #selector(progressDeleteNotification(_:)), name: .progressDeleteContactsAlertDidChangeProgress, object: nil)
     }
     
     func updateColors() {
@@ -145,40 +150,54 @@ extension ContactsGroupViewController {
         
         let totalIndexesCount = contactGroupListDataSource.selectedSections.count
         var errorsCount: Int = 0
-        var deletedIndexesCount: Int = 0
+        var deletedSectionsCount: Int = 0
         
         let mergedIndexes = contactGroupListDataSource.selectedSections
-       
-        U.UI {
-            self.forceDeselectAllItems()
-        }
-                
-        for index in mergedIndexes {
 
-            self.contactsManager.smartMergeContacts(in: self.contactGroup[index]) { deletingContacts in
-                self.contactsManager.deleteContacts(deletingContacts) { suxxess, deletetCount in
-                    
-                    if suxxess {
-                        deletedIndexesCount += 1
-                    } else {
-                        errorsCount += deletetCount
-                    }
-                    
-                    if totalIndexesCount == deletedIndexesCount {
-                        P.hideIndicator()
-                        if deletedIndexesCount == self.contactGroup.count {
-                            U.UI {
-                                debugPrint("totdo clean complete alert")
-                                self.closeController()
-                            }
+        self.forceDeselectAllItems()
+        
+        P.hideIndicator()
+        
+        self.showMergeProgressAlert()
+        
+        self.updateProgressMergeAlert(with: 0, total: "0 / \(totalIndexesCount)")
+        
+        U.GLB(qos: .background) {
+            
+            mergedIndexes.forEach { index in
+                
+                self.contactsManager.smartMergeContacts(in: self.contactGroup[index]) { deletingContacts in
+                    self.contactsManager.deleteContacts(deletingContacts) { suxxess, deletetCount in
+                        
+                        if suxxess {
+                            deletedSectionsCount += 1
                         } else {
-                            let removableSections: [Int] = self.contactGroupListDataSource.selectedSections
-                            if errorsCount == 0 {
-                                debugPrint("todo alerr all contacts remove without errors")
-                                self.updateRemovedIndexes(removableSections, errorsCount: errorsCount)
+                            errorsCount += deletetCount
+                        }
+                        
+                        let calculatedProgress: CGFloat = CGFloat(100 * deletedSectionsCount / totalIndexesCount) / 100
+                        let totalFilesProcessing: String = "\(deletedSectionsCount) / \(totalIndexesCount)"
+                        
+                        U.UI {
+                            self.updateProgressMergeAlert(with: calculatedProgress, total: totalFilesProcessing)
+                        }
+                        sleep(UInt32(0.1))
+                        
+                        if totalIndexesCount == deletedSectionsCount {
+                            if deletedSectionsCount == self.contactGroup.count {
+                                U.UI {
+                                    debugPrint("totdo clean complete alert")
+                                    self.closeController()
+                                }
                             } else {
-                                debugPrint("TODO show alert delete with errors")
-                                self.updateRemovedIndexes(removableSections, errorsCount: 0)
+                                let removableSections: [Int] = self.contactGroupListDataSource.selectedSections
+                                if errorsCount == 0 {
+                                    debugPrint("todo alerr all contacts remove without errors")
+                                    self.updateRemovedIndexes(removableSections, errorsCount: errorsCount)
+                                } else {
+                                    debugPrint("TODO show alert delete with errors")
+                                    self.updateRemovedIndexes(removableSections, errorsCount: 0)
+                                }
                             }
                         }
                     }
@@ -210,10 +229,11 @@ extension ContactsGroupViewController {
     }
     
     private func deleteContacts(in section: Int) {
-        
+        showDeleteProgressAlert()
         let contacts = self.contactGroup[section].contacts
         
         self.contactsManager.deleteContacts(contacts) { suxxess, contactsCount in
+            self.isMergeContactsProcessing = false
             if suxxess {
                 if contacts.count == contactsCount {
                     if self.contactGroup.count != 1 {
@@ -249,6 +269,43 @@ extension ContactsGroupViewController {
                 self.contactsManager.deleteContacts(deletingContacts) { suxxess, deletetCount in
                     
                 }
+            }
+        }
+    }
+}
+
+extension ContactsGroupViewController: ProgressAlertControllerDelegate {
+    
+    private func showDeleteProgressAlert() {
+        self.isMergeContactsProcessing = false
+        progressAlert.showDeleteContactsProgressAlert()
+    }
+    
+    private func showMergeProgressAlert() {
+        self.isMergeContactsProcessing = true
+        progressAlert.showMergeContactsProgressAlert()
+    }
+    
+    private func updateProgressMergeAlert(with progress: CGFloat, total filesProcessing: String) {
+        U.UI {
+            self.progressAlert.setProgress(progress, totalFilesProcessong: filesProcessing)
+        }
+    }
+    
+    func didTapCancelOperation() {
+        
+    }
+    
+    func didAutoCloseController() {
+        
+    }
+    
+    @objc func progressDeleteNotification(_ notification: Notification) {
+        guard !isMergeContactsProcessing else { return }
+        guard let userInfo = notification.userInfo else { return }
+        if let progress = userInfo[C.key.notificationDictionary.progrssAlertValue] as? CGFloat, let totalFilesCount = userInfo[C.key.notificationDictionary.progressAlertFilesCount] as? String {
+            U.UI {
+                self.progressAlert.setProgress(progress / 100, totalFilesProcessong: totalFilesCount)
             }
         }
     }

@@ -484,12 +484,13 @@ extension MediaContentViewController {
     private func showAllContacts() {
         P.showIndicator()
         self.contactsManager.getAllContacts { contacts in
+            self.allContacts = contacts
             U.UI {
                 P.hideIndicator()
                 if !contacts.isEmpty {
                     self.showContactViewController(contacts: contacts, contentType: .allContacts)
                 } else {
-                    
+                    A.showEmptyContactsToPresent(of: .contactsIsEmpty) {}
                 }
             }
         }
@@ -505,6 +506,8 @@ extension MediaContentViewController {
                 
                 if totalContacts != 0 {
                     self.showContactViewController(contactGroup: group, contentType: .emptyContacts)
+                } else {
+                    A.showEmptyContactsToPresent(of: .emptyContactsIsEmpty) {}
                 }
             }
         }
@@ -512,36 +515,45 @@ extension MediaContentViewController {
                  
     private func showDuplicatedNamesContacts() {
         P.showIndicator()
-        
         self.contactsManager.getDuplicatedContacts(of: .duplicatedContactName) { contactsGroup in
             U.UI {
                 P.hideIndicator()
-                let group = contactsGroup.sorted(by: {$0.name < $1.name})
-                self.showGroupedContactsViewController(contacts: group, group: .duplicatedContactName, content: .duplicatedContacts)
+                if contactsGroup.count != 0 {
+                    let group = contactsGroup.sorted(by: {$0.name < $1.name})
+                    self.showGroupedContactsViewController(contacts: group, group: .duplicatedContactName, content: .duplicatedContacts)
+                } else {
+                    A.showEmptyContactsToPresent(of: .duplicatesNamesIsEmpty) {}
+                }
             }
         }
     }
     
     private func showDuplicatedPhoneNumbersContacts() {
         P.showIndicator()
-        
         self.contactsManager.getDuplicatedContacts(of: .duplicatedPhoneNumnber) { contactsGroup in
             U.UI {
                 P.hideIndicator()
-                let group = contactsGroup.sorted(by: {$0.name < $1.name})
-                self.showGroupedContactsViewController(contacts: group, group: .duplicatedPhoneNumnber, content: .duplicatedPhoneNumbers)
+                if contactsGroup.count != 0 {
+                    let group = contactsGroup.sorted(by: {$0.name < $1.name})
+                    self.showGroupedContactsViewController(contacts: group, group: .duplicatedPhoneNumnber, content: .duplicatedPhoneNumbers)
+                } else {
+                    A.showEmptyContactsToPresent(of: .duplicatesNumbersIsEmpty) {}
+                }
             }
         }
     }
     
     private func showDuplicatedEmailsContacts() {
         P.showIndicator()
-        
         self.contactsManager.getDuplicatedContacts(of: .duplicatedEmail) { contactsGroup in
             U.UI {
                 P.hideIndicator()
-                let group = contactsGroup.sorted(by: {$0.name < $1.name})
-                self.showGroupedContactsViewController(contacts: group, group: .duplicatedEmail, content: .duplicatedEmails)
+                if contactsGroup.count != 0 {
+                    let group = contactsGroup.sorted(by: {$0.name < $1.name})
+                    self.showGroupedContactsViewController(contacts: group, group: .duplicatedEmail, content: .duplicatedEmails)
+                } else {
+                    A.showEmptyContactsToPresent(of: .duplicatesEmailsIsEmpty) {}
+                }
             }
         }
     }

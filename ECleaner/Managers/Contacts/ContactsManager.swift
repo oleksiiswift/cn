@@ -668,7 +668,7 @@ extension ContactsManager  {
             
             mutableContact.jobTitle = jobTitle.bestElement ?? ""
             mutableContact.departmentName = departmentName.bestElement ?? ""
-        
+            
             phoneNumbers.forEach { mutableContact.phoneNumbers.append($0) }
             emailAddresses.forEach { mutableContact.emailAddresses.append($0) }
             postalAddresses.forEach { mutableContact.postalAddresses.append($0) }
@@ -683,11 +683,9 @@ extension ContactsManager  {
                 }
             }
             
-            U.BGD(after: 1) {
-                self.update(contact: mutableContact) { result in
-                    contactsDuplicates = contactsDuplicates.filter({ $0.identifier != mutableContact.identifier })
-                    deletingContactsCompletion(contactsDuplicates)
-                }
+            self.update(contact: mutableContact) { result in
+                contactsDuplicates = contactsDuplicates.filter({ $0.identifier != mutableContact.identifier })
+                deletingContactsCompletion(contactsDuplicates)
             }
         }
     }
@@ -808,7 +806,7 @@ extension ContactsManager {
                         let userInfo: [String: Any] = [Constants.key.notificationDictionary.progrssAlertValue: calculateprogress,
                                                        Constants.key.notificationDictionary.progressAlertFilesCount: "\(deletedContactsCount) / \(contacts.count)"]
                         
-                        U.notificationCenter.post(name: .progressAlertDidChangeProgress, object: nil, userInfo: userInfo)
+                        U.notificationCenter.post(name: .progressDeleteContactsAlertDidChangeProgress, object: nil, userInfo: userInfo)
                         debugPrint(deletedContactsCount)
                     }
                 }
