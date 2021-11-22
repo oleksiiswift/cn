@@ -6,113 +6,14 @@
 //
 
 import UIKit
+import cisua
 
-enum AlertType {
-    
-    case allowNotification
-    case allowConstacStore
-    case allowPhotoLibrary
-    case allowDeleteSelectedPhotos
-    case withCancel
-    
-    case noSimiliarPhoto
-    case noDuplicatesPhoto
-    case noScreenShots
-    case noSelfie
-    case noLivePhoto
-    case noLargeVideo
-    case noDuplicatesVideo
-    case noSimilarVideo
-    case noScreenRecording
-    
-    case noRecentlyDeletedPhotos
-    case noRecentlyDeletedVideos
-    
-    
-    case none
-    
-    /// alert title
-    var alertTitle: String? {
-        switch self {
-
-            case .allowNotification:
-                return "locomark set title for allow notification"
-            case .allowConstacStore:
-                return "locomark set title for contacts"
-            case .allowPhotoLibrary:
-                return "locomark set title for photo library"
-            case .withCancel:
-                return ""
-            case .allowDeleteSelectedPhotos:
-                return "locomark delete assets?"
-            case .noSimiliarPhoto:
-                return "locomark no similar photos"
-            case .noDuplicatesPhoto:
-                return "locomark no duplicates photo"
-            case .noScreenShots:
-                return "locomark no screen shots"
-            case .noSelfie:
-                return "locomark no selfie"
-            case .noLivePhoto:
-                return "locomark no live photo"
-            case .none:
-                return ""
-            case .noLargeVideo:
-                return "locomark no large video files"
-            case .noDuplicatesVideo:
-                return "locomark no duplicated video"
-            case .noSimilarVideo:
-                return "locomark no similiar video"
-            case .noScreenRecording:
-                return "locomark no screen recordings"
-            case .noRecentlyDeletedPhotos:
-                return "locomark no recently deleted photos"
-            case .noRecentlyDeletedVideos:
-                return "locomark no recently deleted vides"
-        }
-    }
-    
-    /// alert message
-    var alertMessage: String? {
-        
-        switch self {
-            case .allowNotification:
-                return "locomark notification message"
-            case .allowConstacStore:
-                return "locomark contacts message"
-            case .allowPhotoLibrary:
-                return "locomark library photo"
-            case .withCancel:
-                return "cancel"
-            case .none:
-                return "none"
-            case .allowDeleteSelectedPhotos:
-                return "delete selecteds assets are you shure????"
-            
-            case .noSimiliarPhoto, .noDuplicatesPhoto, .noScreenShots, .noSelfie, .noLivePhoto, .noLargeVideo, .noDuplicatesVideo, .noSimilarVideo, .noScreenRecording:
-                return "locomark no content"
-            case .noRecentlyDeletedPhotos:
-                return "recently deleted photos empty"
-            case .noRecentlyDeletedVideos:
-                return "recently deleted videos empty"
-        }
-    }
-    
-//    /// alert or action sheet
-    var alertStyle: UIAlertController.Style {
-        if U.isIpad {
-            return .alert
-        } else {
-            return .alert
-        }
-    }
-}
-
+typealias A = AlertManager
 class AlertManager: NSObject {
     
-    private static func showAlert(type: AlertType, actions: [UIAlertAction], withCance: Bool = true, cancelCompletion: (() -> Void)? = nil) {
+    private static func showAlert(type: AlertType, actions: [UIAlertAction], withCancel: Bool = true, cancelCompletion: (() -> Void)? = nil) {
         
-        showAlert(type.alertTitle, message: type.alertMessage, actions: actions, withCancel: withCance) {
+        showAlert(type.alertTitle, message: type.alertMessage, actions: actions, withCancel: withCancel) {
             cancelCompletion?()
         }
     }
@@ -136,9 +37,11 @@ class AlertManager: NSObject {
         topController()?.present(alert, animated: true, completion: nil)
     }
     
-    static func showCantFindMediaContent(by type: AlertType) {
+    static func showCantFindMediaContent(by type: AlertType, completion: @escaping () -> Void)  {
         
-        let alertAction = UIAlertAction(title: "ok", style: .default) { _ in }
+        let alertAction = UIAlertAction(title: "ok", style: .default) { _ in
+            completion()
+        }
         showAlert(type.alertTitle, message: type.alertMessage, actions: [alertAction], withCancel: false, completion: nil)
     }
     
@@ -179,6 +82,7 @@ extension AlertManager {
     }
 }
 
+//    MARK: - PHASSET ALERTS -
 extension AlertManager {
     
     static func showDeletePhotoAssetsAlert(completion: @escaping () -> Void) {
@@ -187,6 +91,35 @@ extension AlertManager {
             completion()
         }
         
-        showAlert(type: .allowDeleteSelectedPhotos, actions: [allowDeleteAction], withCance: true) {}
+        showAlert(type: .allowDeleteSelectedPhotos, actions: [allowDeleteAction], withCancel: true) {}
+    }
+}
+
+//      MARK: - CONTACTS ALERT -
+extension AlertManager {
+    
+    static func showDeleteContactsAlerts(completion: @escaping () -> Void) {
+        
+        let allowDeleteAction = UIAlertAction(title: "delete", style: .default) { _ in
+            completion()
+        }
+        
+        showAlert(type: .deleteContacts, actions: [allowDeleteAction])
+    }
+    
+    static func showMergeContactsAlert(comletion: @escaping () -> Void) {
+        
+        let allowMergeContactsAction = UIAlertAction(title: "merge", style: .default) { _ in
+            comletion()
+        }
+        
+        showAlert(type: .mergeContacts, actions: [allowMergeContactsAction])
+    }
+    
+    static func showEmptyContactsToPresent(of type: AlertType, completion: @escaping () -> Void) {
+        
+        self.showCantFindMediaContent(by: type) {
+            completion()
+        }
     }
 }

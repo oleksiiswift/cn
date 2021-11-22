@@ -1,0 +1,162 @@
+//
+//  AlertType.swift
+//  ECleaner
+//
+//  Created by alexey sorochan on 22.11.2021.
+//
+
+import UIKit
+
+enum AlertType {
+    
+    case allowNotification
+    case allowConstacStore
+    case allowPhotoLibrary
+    case allowDeleteSelectedPhotos
+    case withCancel
+    
+    case noSimiliarPhoto
+    case noDuplicatesPhoto
+    case noScreenShots
+    case noSelfie
+    case noLivePhoto
+    case noLargeVideo
+    case noDuplicatesVideo
+    case noSimilarVideo
+    case noScreenRecording
+    
+    case noRecentlyDeletedPhotos
+    case noRecentlyDeletedVideos
+    
+    case contactsIsEmpty
+    case emptyContactsIsEmpty
+    case duplicatesNamesIsEmpty
+    case duplicatesNumbersIsEmpty
+    case duplicatesEmailsIsEmpty
+    
+    case deleteContacts
+    case mergeContacts
+    
+    case none
+    
+    /// alert title
+    var alertTitle: String? {
+        switch self {
+
+            case .allowNotification:
+                return "locomark set title for allow notification"
+            case .allowConstacStore:
+                return "locomark set title for contacts"
+            case .allowPhotoLibrary:
+                return "locomark set title for photo library"
+            case .withCancel:
+                return ""
+            case .allowDeleteSelectedPhotos:
+                return "locomark delete assets?"
+            case .noSimiliarPhoto:
+                return "locomark no similar photos"
+            case .noDuplicatesPhoto:
+                return "locomark no duplicates photo"
+            case .noScreenShots:
+                return "locomark no screen shots"
+            case .noSelfie:
+                return "locomark no selfie"
+            case .noLivePhoto:
+                return "locomark no live photo"
+            case .none:
+                return ""
+            case .noLargeVideo:
+                return "locomark no large video files"
+            case .noDuplicatesVideo:
+                return "locomark no duplicated video"
+            case .noSimilarVideo:
+                return "locomark no similiar video"
+            case .noScreenRecording:
+                return "locomark no screen recordings"
+            case .noRecentlyDeletedPhotos:
+                return "locomark no recently deleted photos"
+            case .noRecentlyDeletedVideos:
+                return "locomark no recently deleted vides"
+            case .contactsIsEmpty:
+                return "contacts book is empty"
+            case .emptyContactsIsEmpty:
+                return "no empty contacts"
+            case .duplicatesNamesIsEmpty:
+                return "no duplicates"
+            case .duplicatesNumbersIsEmpty:
+                return "no duplicates"
+            case .duplicatesEmailsIsEmpty:
+                return "no duplicates"
+            case .deleteContacts:
+                return "delete contacts"
+            case .mergeContacts:
+                return "merge selected"
+        }
+    }
+    
+    /// alert message
+    var alertMessage: String? {
+        
+        switch self {
+            case .allowNotification:
+                return "locomark notification message"
+            case .allowConstacStore:
+                return "locomark contacts message"
+            case .allowPhotoLibrary:
+                return "locomark library photo"
+            case .withCancel:
+                return "cancel"
+            case .none:
+                return "none"
+            case .allowDeleteSelectedPhotos:
+                return "delete selecteds assets are you shure????"
+            case .noSimiliarPhoto, .noDuplicatesPhoto, .noScreenShots, .noSelfie, .noLivePhoto, .noLargeVideo, .noDuplicatesVideo, .noSimilarVideo, .noScreenRecording:
+                return "locomark no content"
+            case .noRecentlyDeletedPhotos:
+                return "recently deleted photos empty"
+            case .noRecentlyDeletedVideos:
+                return "recently deleted videos empty"
+            case .contactsIsEmpty:
+                return "contacts book is empty"
+            case .emptyContactsIsEmpty:
+                return "no empty contacts"
+            case .duplicatesNamesIsEmpty:
+                return "no duplicates"
+            case .duplicatesNumbersIsEmpty:
+                return "no duplicates"
+            case .duplicatesEmailsIsEmpty:
+                return "no duplicates"
+            case .deleteContacts:
+                return "delete contacts"
+            case .mergeContacts:
+                return "merge selected"
+        }
+    }
+    
+//    /// alert or action sheet
+    var alertStyle: UIAlertController.Style {
+        if U.isIpad {
+            return .alert
+        } else {
+            return .alert
+        }
+    }
+    
+    var withCancel: Bool {
+        switch self {
+                
+            case .allowNotification, .allowConstacStore, .allowPhotoLibrary, .allowDeleteSelectedPhotos, .withCancel:
+                return true
+            case .noSimiliarPhoto, .noDuplicatesPhoto, .noScreenShots, .noRecentlyDeletedPhotos, .noSelfie, .noLivePhoto:
+                return false
+            case .noLargeVideo, .noDuplicatesVideo, .noSimilarVideo, .noScreenRecording, .noRecentlyDeletedVideos:
+                return false
+            case .contactsIsEmpty, .emptyContactsIsEmpty, .duplicatesNamesIsEmpty, .duplicatesNumbersIsEmpty, .duplicatesEmailsIsEmpty:
+                return false
+            case .deleteContacts, .mergeContacts:
+                return true
+            case .none:
+                return false
+        }
+    }
+}

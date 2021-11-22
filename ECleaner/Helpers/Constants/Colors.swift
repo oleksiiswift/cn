@@ -120,6 +120,24 @@ enum Theme: Int {
                 return UIColor().colorFromHexString("D94B43")
         }
     }
+    
+    var alertProgressBackgroundColor: UIColor {
+        switch self {
+            case .light:
+                return UIColor().colorFromHexString("586778")
+            case .dark :
+                return UIColor().colorFromHexString("586778")
+        }
+    }
+    
+    var alertProgressBorderColor: UIColor {
+        switch self {
+            case .light:
+                return UIColor().colorFromHexString("373E44")
+            case .dark :
+                return UIColor().colorFromHexString("373E44")
+        }
+    }
 
     
 //    MARK: - shadow colors -
