@@ -25,9 +25,13 @@ enum PhotoMediaType: String {
     case singleRecentlyDeletedPhotos = "singleRecentlyDeletedPhotos"
     case singleRecentlyDeletedVideos = "singleRecentlyDeletedVideos"
     
+    case compress = "compress video"
+    
     case allContacts = "allContacts"
     case emptyContacts = "emptyContacts"
     case duplicatedContacts = "duplicatedContacts"
+    case duplicatedPhoneNumbers = "duplicatedPhoneNumbers"
+    case duplicatedEmails = "duplicatedEmails"
     
     case none = ""
     
@@ -57,6 +61,10 @@ enum PhotoMediaType: String {
                 return IndexPath(row: 1, section: 3)
             case .duplicatedContacts:
                 return IndexPath(row: 2, section: 3)
+            case .duplicatedPhoneNumbers:
+                return IndexPath(row: 3, section: 3)
+            case .duplicatedEmails:
+                return IndexPath(row: 4, section: 3)
             default:
                 return IndexPath()
         }
@@ -95,8 +103,14 @@ enum PhotoMediaType: String {
                 return "empty contacts"
             case .duplicatedContacts:
                 return "duplicated contacts"
+            case .duplicatedPhoneNumbers:
+                return "duplicated Numbers"
+            case .duplicatedEmails:
+                return "duplicated emails"
             case .none:
                 return ""
+            case .compress:
+                return "compress video"
         }
     }
 }
@@ -144,6 +158,10 @@ class MediaType {
                         return .emptyContacts
                     case 2:
                         return .duplicatedContacts
+                    case 3:
+                        return .duplicatedPhoneNumbers
+                    case 4:
+                        return .duplicatedEmails
                     default:
                         return .none
                 }

@@ -1,5 +1,6 @@
 ${PODS_ROOT}/Target Support Files/Pods-ECleaner/Pods-ECleaner-frameworks.sh
 ${BUILT_PRODUCTS_DIR}/CocoaImageHashing/CocoaImageHashing.framework
+${BUILT_PRODUCTS_DIR}/PhoneNumberKit/PhoneNumberKit.framework
 ${BUILT_PRODUCTS_DIR}/SwiftDate/SwiftDate.framework
 ${BUILT_PRODUCTS_DIR}/SwiftMessages/SwiftMessages.framework
 ${BUILT_PRODUCTS_DIR}/SwiftyContacts/SwiftyContacts.framework

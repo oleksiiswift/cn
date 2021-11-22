@@ -17,6 +17,8 @@ protocol DeepCleanSelectableAssetsDelegate: AnyObject {
 
 class DeepCleaningViewController: UIViewController {
      
+     @IBOutlet weak var customNavBar: StartingNavigationBar!
+     
      @IBOutlet weak var dateSelectContainerView: UIView!
      @IBOutlet weak var tableView: UITableView!
      @IBOutlet weak var bottomMenuView: UIView!
@@ -27,7 +29,6 @@ class DeepCleaningViewController: UIViewController {
      
      var dateSelectableView = DateSelectebleView()
      
-     lazy var backBarButtonItem = UIBarButtonItem(image: I.navigationItems.leftShevronBack, style: .plain, target: self, action: #selector(didTapBackButton))
      lazy var processingButtonActivityIndicator = UIActivityIndicatorView(style: .medium)
      
      /// managers∂
@@ -153,7 +154,7 @@ extension DeepCleaningViewController {
           
           guard let options = scansOptions else { return }
           
-          backBarButtonItem.isEnabled = false
+//          backBarButtonItem.isEnabled = false
           
           deepCleanManager.startDeepCleaningFetch(options, startingFetchingDate: startingDate, endingFetchingDate: endingDate) { mediaType in
                self.scansOptions = mediaType
@@ -230,7 +231,7 @@ extension DeepCleaningViewController {
                self.processing = false
                
                U.UI {
-                    self.backBarButtonItem.isEnabled = true
+//                    self.backBarButtonItem.isEnabled = true
                }
                
                debugPrint("done")
@@ -300,10 +301,6 @@ extension DeepCleaningViewController {
 
 
 extension DeepCleaningViewController: DateSelectebleViewDelegate {
-     
-     @objc func didTapBackButton() {
-          self.navigationController?.popViewController(animated: true)
-     }
      
      func didSelectStartingDate() {
           self.isStartingDateSelected = true
@@ -777,13 +774,16 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
      }
      
      func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-          return indexPath.section == 0 ? 125 : UITableView.automaticDimension
+          return indexPath.section == 0 ? 151 : 100//UITableView.automaticDimension
      }
      
      func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
           
           let view = UIView(frame: CGRect(x: 0, y: 0, width: U.screenWidth, height: 30))
           let sectionTitleTextLabel = UILabel()
+          
+          sectionTitleTextLabel.font = UIFont(font: FontManager.robotoBlack, size: 16.0)
+          sectionTitleTextLabel.textColor = theme.titleTextColor
           
           view.addSubview(sectionTitleTextLabel)
           sectionTitleTextLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -793,15 +793,16 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
           sectionTitleTextLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
           
           view.layoutIfNeeded()
+          
           switch section {
                case 0:
                     view.frame = CGRect(x: 0, y: 0, width: U.screenWidth, height: 0)
                case 1:
-                    sectionTitleTextLabel.text = "photo"
+                    sectionTitleTextLabel.text = "PHOTOS_NAV_TITLE".localized()
                case 2:
-                    sectionTitleTextLabel.text = "video"
+                    sectionTitleTextLabel.text = "VIDEOS_NAV_TITLE".localized()
                default:
-                    sectionTitleTextLabel.text = "contacts"
+                    sectionTitleTextLabel.text = "CONTACTS_NAV_TITLE".localized()
           }
           return view
      }
@@ -822,8 +823,8 @@ extension DeepCleaningViewController {
           dateSelectableView.topAnchor.constraint(equalTo: dateSelectContainerView.topAnchor).isActive = true
           
           
-          processingButtonView.setCorner(12)
-          processingButtonTextLabel.font = .systemFont(ofSize: 17, weight: .bold)
+          processingButtonView.setCorner(14)
+          processingButtonTextLabel.font = UIFont(font: FontManager.robotoBlack, size: 16.0)
      }
      
      private func setupDateInterval() {
@@ -845,11 +846,13 @@ extension DeepCleaningViewController {
           
           dateSelectableView.delegate = self
           selectableAssetsDelegate = self
+          customNavBar.delegate = self
      }
      
      private func setupNavigation() {
           
-          self.navigationItem.leftBarButtonItem = backBarButtonItem
+          self.navigationController?.navigationBar.isHidden = true
+          customNavBar.setUpNavigation(title: "DEEP_CLEEN".localized(), leftImage: I.navigationItems.back, rightImage: nil)
      }
      
      private func setupShowDatePickerSelectorController(segue: UIStoryboardSegue) {
@@ -898,8 +901,8 @@ extension DeepCleaningViewController {
           }
           
           if isStartingDeepCleanProcess {
-               
-               processingButtonTextLabel.text = deepCleanFirstRunProcessingIsStart ? "re start deep clean" : "start deep clean"
+
+               processingButtonTextLabel.text = deepCleanFirstRunProcessingIsStart ? "RE_START_CLEANING".localized() : "START_CLEANING".localized()
                
           } else {
                
@@ -921,11 +924,23 @@ extension DeepCleaningViewController: Themeble {
      
      func updateColors() {
           
-          bottomMenuView.backgroundColor = .clear
-          processingButtonView.backgroundColor = theme.accentBackgroundColor
+          self.view.backgroundColor = theme.backgroundColor
+          tableView.backgroundColor = .clear
+          bottomMenuView.backgroundColor = theme.backgroundColor
+          processingButtonView.backgroundColor = theme.customRedColor
           processingButtonTextLabel.textColor = theme.activeTitleTextColor
           processingButtonActivityIndicator.color = theme.backgroundColor
+          customNavBar.backgroundColor = theme.backgroundColor
      }
+}
+
+extension DeepCleaningViewController: StartingNavigationBarDelegate {
+     
+     func didTapLeftBarButton(_sender: UIButton) {
+          self.navigationController?.popViewController(animated: true)
+     }
+     
+     func didTapRightBarButton(_sender: UIButton) {}
 }
 
 

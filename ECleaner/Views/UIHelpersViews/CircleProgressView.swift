@@ -256,30 +256,30 @@ class CircleProgressView: UIView {
     // MARK: - Layout
 
     open override func layoutSubviews() {
-
+        
         super.layoutSubviews()
-
+        
         backgroundShape.frame = bounds
         progressShape.frame   = bounds
-
+        
         let rect = rectForShape()
         backgroundShape.path = pathForShape(rect: rect).cgPath
         progressShape.path   = pathForShape(rect: rect).cgPath
-      
-      gradientLayer.frame = bounds
-      gradientLayer.colors = [startColor, endColor].map { $0.cgColor }
-
-      let path = progressShape.path
-      if let mask = progressShape {
-        mask.fillColor = UIColor.clear.cgColor
-        mask.strokeColor = UIColor.white.cgColor
-        mask.lineWidth = lineWidth
-        mask.path = path
-        gradientLayer.mask = mask
-      }
+        
+        gradientLayer.frame = bounds
+        gradientLayer.colors = [startColor, endColor].map { $0.cgColor }
+        
+        let path = progressShape.path
+        if let mask = progressShape {
+            mask.fillColor = UIColor.clear.cgColor
+            mask.strokeColor = UIColor.white.cgColor
+            mask.lineWidth = lineWidth
+            mask.path = path
+            gradientLayer.mask = mask
+        }
         percentLabel.frame = CGRect(x: (self.bounds.size.width - titleLabelWidth) / 2, y: self.bounds.midY - percentLabelCenterInset, width: titleLabelWidth, height: 61)
         self.titleLabel.frame = CGRect(x: (self.bounds.size.width - titleLabelWidth) / 2, y: self.percentLabel.frame.maxY, width: titleLabelWidth, height: 42)
-
+        
         updateShapes()
     }
 

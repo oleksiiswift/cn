@@ -14,13 +14,13 @@ class MediaTypeCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var mediaContentTitleTextLabel: UILabel!
     @IBOutlet weak var mediaContentSubTitleTextLabel: UILabel!
     @IBOutlet weak var mediaSpaceTitleTextLabel: UILabel!
-  
+    @IBOutlet weak var infoSpaceStackView: UIStackView!
+    @IBOutlet weak var diskSpaceImageView: UIImageView!
+    
     @IBOutlet weak var contentViewHeightConstraint: NSLayoutConstraint!
     
     private var photoManager = PhotoManager()
     public var mediaTypeCell: MediaContentType = .none
-  
-  var imV = ShadowRoundedView()
     
     override func prepareForReuse() {
         super.prepareForReuse()
@@ -34,28 +34,7 @@ class MediaTypeCollectionViewCell: UICollectionViewCell {
         
         setupUI()
         updateColors()
-      
-      switch Screen.size {
-        case .small:
-          debugPrint("")
-
-        case .medium:
-          debugPrint("")
-          
-        case .plus:
-          debugPrint("")
-          contentViewHeightConstraint.constant = 200
-        case .large:
-          debugPrint("")
-          contentViewHeightConstraint.constant = 200
-        case .modern:
-          debugPrint("")
-          contentViewHeightConstraint.constant = 200
-        case .max:
-          debugPrint("")
-        case .madMax:
-          debugPrint("")
-      }
+        handleContentSize()
     }
 }
 
@@ -71,7 +50,6 @@ extension MediaTypeCollectionViewCell: Themeble {
     
     public func configureCell(mediaType: MediaContentType, contentCount: Int?, diskSpace: Int64?) {
         
-        #warning("LOCO add localization in future")
         switch mediaType {
             case .userPhoto:
                 mediaContentView.imageView.image = I.mainMenuThumbItems.photo
@@ -103,8 +81,45 @@ extension MediaTypeCollectionViewCell: Themeble {
                 } else {
                     mediaContentSubTitleTextLabel.text = "O CONTACTS"
                 }
+                
+                mediaSpaceTitleTextLabel.isHidden = true
+                diskSpaceImageView.isHidden = true
+                
+                let spaceView = UIView()
+                spaceView.frame = CGRect(x: 0, y: 0, width: 25, height: 25)
+                infoSpaceStackView.addSubview(spaceView)
+                spaceView.translatesAutoresizingMaskIntoConstraints = false
+                spaceView.leadingAnchor.constraint(equalTo: infoSpaceStackView.leadingAnchor).isActive = true
+                spaceView.trailingAnchor.constraint(equalTo: infoSpaceStackView.trailingAnchor).isActive = true
+                spaceView.topAnchor.constraint(equalTo: infoSpaceStackView.topAnchor).isActive = true
+                spaceView.bottomAnchor.constraint(equalTo: infoSpaceStackView.bottomAnchor).isActive = true
+                spaceView.heightAnchor.constraint(equalToConstant: 25).isActive = true
+                infoSpaceStackView.layoutIfNeeded()
             case .none:
                 debugPrint("none")
+        }
+    }
+    
+    private func handleContentSize() {
+        
+        switch Screen.size {
+          case .small:
+            debugPrint("")
+          case .medium:
+            debugPrint("")
+          case .plus:
+            debugPrint("")
+            contentViewHeightConstraint.constant = 200
+          case .large:
+            debugPrint("")
+            contentViewHeightConstraint.constant = 200
+          case .modern:
+            debugPrint("")
+            contentViewHeightConstraint.constant = 200
+          case .max:
+            debugPrint("")
+          case .madMax:
+            debugPrint("")
         }
     }
     

@@ -13,6 +13,8 @@ class Utils {
     
 //    MARK: - DEFAULT VALUES -
     
+    static let appName: String = Bundle.main.appName
+    
     static let userDefaults: UserDefaults = .standard
     
     static let application: UIApplication = .shared
@@ -248,5 +250,26 @@ extension Utils {
     
     static func getDateFrom(string date: String, format: String) -> Date? {
         return Date().getDateFromString(stringDate: date, format: format)
+    }
+}
+
+//  TODO: temp get name from bundle, for future get localized app name
+internal extension Bundle {
+    
+    var appName: String {
+        if let bundleName = self.object(forInfoDictionaryKey: kCFBundleNameKey as String) as? String {
+            return bundleName
+        }
+        return ""
+    }
+}
+
+
+class Hello: NSObject {
+    
+    private static let shared = Hello()
+    
+    static var sharedInstance: Hello {
+        return self.shared
     }
 }

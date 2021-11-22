@@ -8,10 +8,11 @@
 import UIKit
 import Photos
 import SwiftMessages
+import Contacts
 
 class MainViewController: UIViewController {
   
-    @IBOutlet weak var customNavBar: CustomNavigationBar!
+    @IBOutlet weak var customNavBar: StartingNavigationBar!
     
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var circleTotlaSpaceView: CircleProgressView!
@@ -56,6 +57,10 @@ class MainViewController: UIViewController {
     
     private var allRecentlyDeletedPhotos: [PHAsset] = []
     private var allRecentlyDeletedVideos: [PHAsset] = []
+    
+    private var allContacts: [CNContact] = []
+    private var allEmptyContacts: [ContactsGroup] = []
+    private var allDuplicatedContacts: [ContactsGroup] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -180,6 +185,7 @@ extension MainViewController: UpdateContentDataBaseListener {
     func getContactsCount(count: Int) {
         
         self.allContactsCount = count
+        
         if let cell = mediaCollectionView.cellForItem(at: IndexPath(item: 2, section: 0)) as? MediaTypeCollectionViewCell {
             cell.configureCell(mediaType: .userContacts, contentCount: count, diskSpace: 0)
         }
@@ -191,6 +197,18 @@ extension MainViewController: UpdateContentDataBaseListener {
     
     func getRecentlyDeletedVideoAssets(_ assts: [PHAsset]) {
         self.allRecentlyDeletedVideos = assts
+    }
+    
+    func getAllCNContacts(_ contacts: [CNContact]) {
+        self.allContacts = contacts
+    }
+    
+    func getAllEmptyContacts(_ contacts: [ContactsGroup]) {
+        self.allEmptyContacts = contacts
+    }
+    
+    func getAllDuplicatedContacts(_ contacts: [ContactsGroup]) {
+        self.allDuplicatedContacts = contacts
     }
 }
 
@@ -210,6 +228,10 @@ extension MainViewController {
                 viewController.allLargeVideos = self.allLargeVidoes
                 viewController.allScreenRecords = self.allScreenRecordsVideos
                 viewController.allRecentlyDeletedVideos = self.allRecentlyDeletedVideos
+            case .userContacts:
+                viewController.allContacts = self.allContacts
+                viewController.allEmptyContacts = self.allEmptyContacts
+                viewController.allDuplicatedContacts = self.allDuplicatedContacts
             default:
                 return
         }
@@ -311,16 +333,11 @@ extension MainViewController: UpdateColorsDelegate {
 //        self.navigationItem.backButtonTitle = ""
     }
     
-    #warning("LOCO add loco")
     private func setupUI() {
                 
         scrollView.alwaysBounceVertical = true
-        deepCleaningButtonView.setCorner(12)
         deepCleaningButtonTextLabel.font = UIFont(font: FontManager.robotoBlack, size: 16.0)
         deepCleaningButtonTextLabel.text = "DEEP_CLEANING_BUTTON_TITLE".localized()
-      
-        deepCleaningButtonView.clipsToBounds = true
-        deepCleaningButtonView.layer.cornerRadius = 14
     }
     
     func updateColors() {

@@ -8,9 +8,11 @@
 import UIKit
 import Photos
 import SwiftMessages
+import Contacts
 
 class MediaContentViewController: UIViewController {
-
+  
+    @IBOutlet weak var navigationBar: NavigationBar!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var dateSelectContainerView: UIView!
     @IBOutlet weak var dateSelectContainerHeigntConstraint: NSLayoutConstraint!
@@ -19,6 +21,7 @@ class MediaContentViewController: UIViewController {
     
     public var contentType: MediaContentType = .none
     private var photoManager = PhotoManager()
+    private var contactsManager = ContactsManager.shared
     
     private var startingDate: String {
         get {
@@ -48,7 +51,13 @@ class MediaContentViewController: UIViewController {
     public var allDuplicatesVideos: [PHAsset] = []
     public var allScreenRecords: [PHAsset] = []
     public var allRecentlyDeletedVideos: [PHAsset] = []
-
+    
+    public var allContacts: [CNContact] = []
+    public var allEmptyContacts: [ContactsGroup] = []
+    public var allDuplicatedContacts: [ContactsGroup] = []
+    public var allDuplicatedPhoneNumbers: [ContactsGroup] = []
+    public var allDuplicatedEmailAdresses: [ContactsGroup] = []
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -85,23 +94,32 @@ extension MediaContentViewController: UITableViewDelegate, UITableViewDataSource
         tableView.dataSource = self
         tableView.separatorStyle = .none
         tableView.register(UINib(nibName: C.identifiers.xibs.contentTypeCell, bundle: nil), forCellReuseIdentifier: C.identifiers.cells.contentTypeCell)
-        tableView.contentInset = UIEdgeInsets(top: 8, left: 0, bottom: 0, right: 0)
+        tableView.contentInset.top = 20
     }
     
     func configure(_ cell: ContentTypeTableViewCell, at indexPath: IndexPath) {
         
         var assetContentCount: Int = 0
+        var photoMediaType: PhotoMediaType = .none
     
         switch self.contentType {
             case .userPhoto:
                 switch indexPath.row {
+                    case 0:
+                        photoMediaType = .similarPhotos
+                    case 1:
+                        photoMediaType = .duplicatedPhotos
                     case 2:
+                        photoMediaType = .singleScreenShots
                         assetContentCount = self.allScreenShots.count
                     case 3:
+                        photoMediaType = .singleSelfies
                         assetContentCount = self.allSelfies.count
                     case 4:
+                        photoMediaType = .singleLivePhotos
                         assetContentCount = self.allLiveFotos.count
                     case 5:
+                        photoMediaType = .singleRecentlyDeletedPhotos
                         assetContentCount = self.allRecentlyDeletedPhotos.count
                     default:
                         debugPrint("")
@@ -109,25 +127,50 @@ extension MediaContentViewController: UITableViewDelegate, UITableViewDataSource
             case .userVideo:
                 switch indexPath.row {
                     case 0:
+                        photoMediaType = .singleLargeVideos
                         assetContentCount = self.allLargeVideos.count
                     case 1:
+                        photoMediaType = .duplicatedVideos
                         assetContentCount = self.allDuplicatesVideos.count
                     case 2:
+                        photoMediaType = .similarVideos
                         assetContentCount = self.allSimmilarVideos.count
                     case 3:
+                        photoMediaType = .singleScreenRecordings
                         assetContentCount = self.allScreenRecords.count
+                    case 4:
+                        photoMediaType = .compress
                     case 5:
+                        photoMediaType = .singleRecentlyDeletedVideos
                         assetContentCount = self.allRecentlyDeletedVideos.count
                     default:
                         debugPrint("")
                 }
             case .userContacts:
-                debugPrint("")
+                switch indexPath.row {
+                    case 0:
+                        photoMediaType = .allContacts
+                        assetContentCount = self.allContacts.count
+                    case 1:
+                        photoMediaType = .emptyContacts
+                        assetContentCount = self.allEmptyContacts.count
+                    case 2:
+                        photoMediaType = .duplicatedContacts
+                        assetContentCount = self.allDuplicatedContacts.count
+                    case 3:
+                        photoMediaType = .duplicatedPhoneNumbers
+                        assetContentCount = self.allDuplicatedPhoneNumbers.count
+                    case 4:
+                        photoMediaType = .duplicatedEmails
+                        assetContentCount = self.allDuplicatedEmailAdresses.count
+                    default:
+                        return                        
+                }
             default:
                 return
         }
         
-        cell.cellConfig(contentType: contentType, indexPath: indexPath, phasetCount: assetContentCount, progress: 0)
+        cell.cellConfig(contentType: self.contentType, photoMediaType: photoMediaType, indexPath: indexPath, phasetCount: assetContentCount, progress: 0)
     }
         
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -145,7 +188,7 @@ extension MediaContentViewController: UITableViewDelegate, UITableViewDataSource
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 67
+        return 100
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -168,6 +211,11 @@ extension MediaContentViewController {
     /// `2` - similar videos
     /// `3` - screen records files
     /// `4` - recently deleted files
+    
+    /// `0` - all contacts
+    /// `1` - empty contacts
+    /// `2` - duplicated contacts
+        
         
     private func showMediaContent(by selectedType: MediaContentType, selected index: Int) {
         
@@ -207,7 +255,20 @@ extension MediaContentViewController {
                         return
                 }
             case .userContacts:
-                debugPrint("show contacts")
+                switch index {
+                    case 0:
+                        self.showAllContacts()
+                    case 1:
+                        self.showEmptyGroupsContacts()
+                    case 2:
+                        self.showDuplicatedNamesContacts()
+                    case 3:
+                        self.showDuplicatedPhoneNumbersContacts()
+                    case 4:
+                        self.showDuplicatedEmailsContacts()
+                    default:
+                        return
+                }
             case .none:
                 return
         }
@@ -228,6 +289,26 @@ extension MediaContentViewController {
         viewController.title = title
         viewController.assetCollection = collection
         viewController.mediaType = type
+        self.navigationController?.pushViewController(viewController, animated: true)
+    }
+    
+    private func showContactViewController(contacts: [CNContact] = [], contactGroup: [ContactsGroup] = [], contentType: PhotoMediaType) {
+        let storyboard = UIStoryboard(name: C.identifiers.storyboards.contacts, bundle: nil)
+        let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.contacts) as! ContactsViewController
+        viewController.contacts = contacts
+        viewController.contactGroup = contactGroup
+        viewController.mediaType = .userContacts
+        viewController.contentType = contentType
+        self.navigationController?.pushViewController(viewController, animated: true)
+    }
+        
+    private func showGroupedContactsViewController(contacts group: [ContactsGroup], group type: ContactasCleaningType, content: PhotoMediaType) {
+        let storyboard = UIStoryboard(name: C.identifiers.storyboards.contactsGroup, bundle: nil)
+        let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.contactsGroup) as! ContactsGroupViewController
+        viewController.contactGroup = group
+        viewController.navigationTitle = content.mediaTypeName
+        viewController.contentType = content
+        viewController.mediaType = .userContacts
         self.navigationController?.pushViewController(viewController, animated: true)
     }
 }
@@ -397,6 +478,75 @@ extension MediaContentViewController {
     }
 }
 
+//      MARK: - contacts content -
+extension MediaContentViewController {
+    
+    private func showAllContacts() {
+        P.showIndicator()
+        self.contactsManager.getAllContacts { contacts in
+            U.UI {
+                P.hideIndicator()
+                if !contacts.isEmpty {
+                    self.showContactViewController(contacts: contacts, contentType: .allContacts)
+                } else {
+                    
+                }
+            }
+        }
+    }
+    
+    private func showEmptyGroupsContacts() {
+        P.showIndicator()
+        self.contactsManager.getEmptyContacts { contactsGroup in
+            U.UI {
+                P.hideIndicator()
+                let totalContacts = contactsGroup.map({$0.contacts}).count
+                let group = contactsGroup.filter({!$0.contacts.isEmpty})
+                
+                if totalContacts != 0 {
+                    self.showContactViewController(contactGroup: group, contentType: .emptyContacts)
+                }
+            }
+        }
+    }
+                 
+    private func showDuplicatedNamesContacts() {
+        P.showIndicator()
+        
+        self.contactsManager.getDuplicatedContacts(of: .duplicatedContactName) { contactsGroup in
+            U.UI {
+                P.hideIndicator()
+                let group = contactsGroup.sorted(by: {$0.name < $1.name})
+                self.showGroupedContactsViewController(contacts: group, group: .duplicatedContactName, content: .duplicatedContacts)
+            }
+        }
+    }
+    
+    private func showDuplicatedPhoneNumbersContacts() {
+        P.showIndicator()
+        
+        self.contactsManager.getDuplicatedContacts(of: .duplicatedPhoneNumnber) { contactsGroup in
+            U.UI {
+                P.hideIndicator()
+                let group = contactsGroup.sorted(by: {$0.name < $1.name})
+                self.showGroupedContactsViewController(contacts: group, group: .duplicatedPhoneNumnber, content: .duplicatedPhoneNumbers)
+            }
+        }
+    }
+    
+    private func showDuplicatedEmailsContacts() {
+        P.showIndicator()
+        
+        self.contactsManager.getDuplicatedContacts(of: .duplicatedEmail) { contactsGroup in
+            U.UI {
+                P.hideIndicator()
+                let group = contactsGroup.sorted(by: {$0.name < $1.name})
+                self.showGroupedContactsViewController(contacts: group, group: .duplicatedEmail, content: .duplicatedEmails)
+            }
+        }
+    }
+}
+
 extension MediaContentViewController: DateSelectebleViewDelegate {
     
     func didSelectStartingDate() {
@@ -412,21 +562,23 @@ extension MediaContentViewController: DateSelectebleViewDelegate {
     }
 }
 
+extension MediaContentViewController: NavigationBarDelegate {
+    
+    func didTapLeftBarButton(_ sender: UIButton) {
+        self.navigationController?.popViewController(animated: true)
+    }
+    
+    func didTapRightBarButton(_ sender: UIButton) {}
+}
+
+
 extension MediaContentViewController: Themeble {
     
     private func setupUI() {
         
-        switch contentType {
-            case .userPhoto:
-                title = "title photo"
-            case .userVideo:
-                title = "title video"
-            case .userContacts:
-                title = "title contact"
-                dateSelectContainerHeigntConstraint.constant = 0
-                dateSelectContainerView.isHidden = true
-            case .none:
-                debugPrint("")
+        if contentType == .userContacts {
+            dateSelectContainerHeigntConstraint.constant = 0
+            dateSelectContainerView.isHidden = true
         }
         
         dateSelectableView.frame = dateSelectContainerView.bounds
@@ -442,13 +594,20 @@ extension MediaContentViewController: Themeble {
     }
     
     private func setupNavigation() {
-        self.navigationController?.updateNavigationColors()
-        self.navigationItem.backButtonTitle = ""
+        
+        self.navigationController?.navigationBar.isHidden = true
+        navigationBar.setupNavigation(title: contentType.navigationTitle,
+                                      leftBarButtonImage: I.navigationItems.back,
+                                      rightBarButtonImage: nil,
+                                      mediaType: contentType,
+                                      leftButtonTitle: nil,
+                                      rightButtonTitle: nil)
     }
     
     private func setupObserversAndDelegate() {
         
         self.dateSelectableView.delegate = self
+        self.navigationBar.delegate = self
     }
     
     private func setupDateInterval() {
@@ -458,7 +617,7 @@ extension MediaContentViewController: Themeble {
     
     func updateColors() {
         
-        dateSelectContainerView.addBottomBorder(with: theme.contentBackgroundColor, andWidth: 1)
+        self.view.backgroundColor = theme.backgroundColor
     }
     
     private func setupShowDatePickerSelectorController(segue: UIStoryboardSegue) {

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 typealias C = Constants
 class Constants {
@@ -56,6 +57,10 @@ class Constants {
             static let deepCleanAllContactsScan = "deepCleanAllContactsScan"
             static let deepCleanEmptyContactsScan = "deepCleanEmptyContactsScan"
             static let deepCleanDuplicateContacts = "deepCleanDuplicatedContactsScan"
+            
+            /// `contacts notification`
+            static let mergeContactsSelectionDidChange = "mergeContactsSelectionDidChange"
+            static let selectedContactsDidChange = "selectedContactsDidChange"
         }
         
 //        MARK: - notification dictionary progress identifiers -
@@ -97,16 +102,28 @@ class Constants {
             static let allContactsCount = "deepCleanallContactsCount"
             static let emptyContactsCount = "deepCleanemptyContactsCount"
             static let duplicateContactsCount = "deepCleanduplicateContactsCount"
+            
+            /// contact scroll delegate scriklkub
+            static let scrollViewInset = "scrollViewInset"
+            static let scrollViewOffset = "scrollViewOffset"
         }
     }
     
 //    MARK: - public identifiers -
     struct identifiers {
         
+        struct navigation {
+            static let main = "StartingNavigationBar"
+            static let navigationBar = "NavigationBar"
+        }
+        
         struct storyboards {
             static let main = "Main"
             static let media = "MediaContent"
             static let deep = "DeepClean"
+            static let contacts = "Contacts"
+            static let contactsGroup = "ContactsGroup"
+            static let exportContacts = "ExportContact"
         }
         
         struct viewControllers {
@@ -116,8 +133,10 @@ class Constants {
             static let datePicker = "DateSelectorViewController"
             static let assetsList = "SimpleAssetsListViewController"
             static let groupedList = "GroupedAssetListViewController"
-            
+            static let contacts = "ContactsViewController"
             static let deepClean = "DeepCleaningViewController"
+            static let contactsGroup = "ContactsGroupViewController"
+            static let expordContacts = "ExportContactsViewController"
         }
         
         struct cells {
@@ -127,11 +146,17 @@ class Constants {
             static let dropDownCell = "DropDownMenuTableViewCell"
             static let carouselCell = "CarouselCollectionViewCell"
             static let cleanInfoCell = "DeepCleanInfoTableViewCell"
+            static let contactCell = "ContactTableViewCell"
+            static let groupContactCell = "GroupContactTableViewCell"
         }
         
         struct views {
             static let groupHeaderView = "GroupedAssetsReusableHeaderView"
             static let groupFooterView = "GroupedAssetsReusableFooterView"
+            static let contactGroupHeader = "GroupedContactsHeaderView"
+            static let bottomButtonBarView = "BottomButtonBarView"
+            static let bottomDoubleButtonBarView = "BottomDoubleButtonBarView"
+            static let searchBar = "SearchBarView"
         }
         
         struct xibs {
@@ -141,13 +166,22 @@ class Constants {
             static let photoSimpleCell = "PhotoCollectionViewCell"
             static let dropDownCell = "DropDownMenuTableViewCell"
             static let cleanInfoCell = "DeepCleanInfoTableViewCell"
+            static let contactCell = "ContactTableViewCell"
+            static let groupContactCell = "GroupContactTableViewCell"
             /// `views`
             static let groupHeader = "GroupedAssetsReusableHeaderView"
             static let groupFooter = "GroupedAssetsReusableFooterView"
+            static let contactGroupHeader = "GroupedContactsHeaderView"
+            static let bottomButtonBarView = "BottomButtonBarView"
+            static let bottomDoubleButtonBarView = "BottomDoubleButtonBarView"
+            static let searchBar = "SearchBarView"
             
             static let carouselView = "CarouselItemView"
-            
             static let datePickerContainer = "DateSelectebleView"
+            
+            /// `navigation`
+            static let startingNavigationBar = "StartingNavigationBar"
+            static let navigationBar = "NavigationBar"
             
             /// controllers
 //            static let photoPreview = "PhotoPreviewViewController"
@@ -155,6 +189,7 @@ class Constants {
         
         struct segue {
             static let showDatePicker = "ShowDatePickerSelectorViewControllerSegue"
+            static let showExportContacts = "ShowExportContactsViewControllerSegue"
         }
     }
     
@@ -169,4 +204,18 @@ class Constants {
     struct defaultValues {
         static let dateNow = Date()
     }
+    
+    struct contacts {
+        
+        struct contactsContainer{
+            static let card = "Card"
+            static let iCloud = "iCloud"
+            static let addressBook = "Address Book"
+            static let google = "Google"
+            static let contancts = "Contacts"
+            static let yahoo = "Yahoo"
+            static let facebook = "Facebook"
+        }
+    }
 }
+

@@ -9,10 +9,12 @@ import UIKit
 
 class DeepCleanInfoTableViewCell: UITableViewCell {
     
-    @IBOutlet weak var mainInfoView: UIView!
-    @IBOutlet weak var infoTitleTextLabel: UILabel!
-    @IBOutlet weak var infoCheckettotalFilesCountTextLabel: UILabel!
+    @IBOutlet weak var infoTotalFilesTextLabel: UILabel!
+    @IBOutlet weak var infoTotalFilesTitleLabel: UILabel!
+    
     @IBOutlet weak var totalSpaceTextLabel: UILabel!
+    @IBOutlet weak var totalSpaceTitleLabel: UILabel!
+    
     @IBOutlet weak var progressContainerView: UIView!
     
     var progressRing: CircularProgressBar!
@@ -29,20 +31,17 @@ extension DeepCleanInfoTableViewCell {
     
     func setProgress(files count: Int) {
         
-        let totalCheckedFilesComponentFont: UIFont = .systemFont(ofSize: 13, weight: .heavy)
-        let totolCheckedFilesComponentTextColor: UIColor = theme.subTitleTextColor
-        
-        let totalCheckedFilesFont: UIFont = .systemFont(ofSize: 16, weight: .bold)
+        let totalCheckedFilesFont: UIFont = UIFont(font: FontManager.robotoBold, size: 18.0)!
         let totalCheckedFilesColor: UIColor = theme.titleTextColor
         
         let totalFilesAttributes = [NSAttributedString.Key.font: totalCheckedFilesFont, NSAttributedString.Key.foregroundColor: totalCheckedFilesColor]
-        let componentChecketAttributes = [NSAttributedString.Key.font: totalCheckedFilesComponentFont, NSAttributedString.Key.foregroundColor: totolCheckedFilesComponentTextColor]
         
         let textTitle = NSMutableAttributedString(string: String(count), attributes: totalFilesAttributes)
-        textTitle.append(NSMutableAttributedString(string: " " + "files", attributes: componentChecketAttributes))
         
-        infoCheckettotalFilesCountTextLabel.attributedText = textTitle
+        infoTotalFilesTextLabel.attributedText = textTitle
         totalSpaceTextLabel.text = "100 Gb"
+        totalSpaceTitleLabel.text = "MEMORY".localized()
+        infoTotalFilesTitleLabel.text = "FILES".localized()
     }
     
     func setRoundedProgress(value: CGFloat) {
@@ -53,37 +52,36 @@ extension DeepCleanInfoTableViewCell {
 extension DeepCleanInfoTableViewCell: Themeble {
     
     func setupUI() {
-        
-        mainInfoView.setCorner(12)
-        
-        infoTitleTextLabel.text = "checked"
-        infoTitleTextLabel.font = .systemFont(ofSize: 12, weight: .regular)
-        totalSpaceTextLabel.font = .systemFont(ofSize: 13, weight: .heavy)
 
         let xPosition = progressContainerView.center.x
         let yPosition = progressContainerView.center.y
         let position = CGPoint(x: xPosition, y: yPosition)
         
-        progressRing = CircularProgressBar(radius: 30,
+        progressRing = CircularProgressBar(radius: 33,
                                            position: position,
-                                           innerTrackColor: theme.titleTextColor,
+                                           innerTrackColor: UIColor().colorFromHexString("FF845A"),//theme.titleTextColor,
                                            outerTrackColor: theme.progressBackgroundColor,
-                                           lineWidth: 6)
+                                           lineWidth: 13)
         
-        progressRing.progressLabel.textColor = theme.titleTextColor
-        progressRing.progressLabel.font = .systemFont(ofSize: 13, weight: .bold)
+        progressRing.progressLabel.textColor = UIColor().colorFromHexString("FF845A")//theme.titleTextColor
+        progressRing.progressLabel.font = UIFont(font: FontManager.robotoBold, size: 22.0)
         progressRing.progressLabel.translatesAutoresizingMaskIntoConstraints = false
-        progressRing.progressLabel.frame = CGRect(origin: .zero, size: CGSize(width: 50, height: 20))
+        progressRing.progressLabel.frame = CGRect(origin: .zero, size: CGSize(width: 50, height: 30))
         progressRing.progressLabel.center = position
         progressRing.progressLabel.textAlignment = .center
         
         progressContainerView.layer.addSublayer(progressRing)
+        
+        infoTotalFilesTitleLabel.font = UIFont(font: FontManager.robotoMedium, size: 14.0)!
+        totalSpaceTextLabel.font = UIFont(font: FontManager.robotoBold, size: 18.0)!
+        totalSpaceTitleLabel.font = UIFont(font: FontManager.robotoMedium, size: 14.0)!
     }
     
     func updateColors() {
         
-        mainInfoView.backgroundColor = theme.contentBackgroundColor
-        infoTitleTextLabel.textColor = theme.subTitleTextColor
-        totalSpaceTextLabel.textColor = theme.subTitleTextColor
+        infoTotalFilesTextLabel.textColor = theme.titleTextColor
+        infoTotalFilesTitleLabel.textColor = theme.subTitleTextColor
+        totalSpaceTextLabel.textColor = theme.titleTextColor
+        totalSpaceTitleLabel.textColor = theme.subTitleTextColor
     }
 }
