@@ -39,6 +39,36 @@ extension AppDelegate {
         ContactsManager.shared.checkStatus { res in }
         
 //        ContactsManager.shared.deleteAllContacts()
+//        U.delay(10) {
+//            NotificationCenter.default.addObserver(forName: nil, object: nil, queue: nil) { notification in
+//                debugPrint(notification)
+//            }
+        
+//        AlertManager.showMergeContactsAlert {
+//            debugPrint("allow merged")
+//            AlertManager.showDeleteContactsAlerts {
+//                debugPrint("allow delete")
+//                AlertManager.showEmptyContactsToPresent(of: .contactsIsEmpty) {
+//                    debugPrint("whatever")
+//                    AlertManager.showEmptyContactsToPresent(of: .emptyContactsIsEmpty) {
+//                        debugPrint("whatever")
+//                        AlertManager.showEmptyContactsToPresent(of: .duplicatesNamesIsEmpty) {
+//                            debugPrint("whatever")
+//                            AlertManager.showEmptyContactsToPresent(of: .duplicatesNumbersIsEmpty) {
+//                                debugPrint("whatever")
+//                                AlertManager.showEmptyContactsToPresent(of: .emptyContactsIsEmpty) {
+//                                    debugPrint("whatever")
+//                                }
+//                            }
+//                        }
+//                    }
+//
+//                }
+//            }
+//        }
+
+      
+//        }
     }
 
     private func setDefaults() {
