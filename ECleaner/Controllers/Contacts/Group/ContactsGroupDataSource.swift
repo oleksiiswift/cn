@@ -19,6 +19,7 @@ class ContactsGroupDataSource: NSObject {
     public var contactGroupListViewModel: ContactGroupListViewModel
     
     public var selectedSections: [Int] = []
+    public var contentType: PhotoMediaType = .none
 
     init(viewModel: ContactGroupListViewModel) {
         self.contactGroupListViewModel = viewModel
@@ -39,14 +40,22 @@ extension ContactsGroupDataSource {
     
     private func configureHeader(view: GroupedContactsHeaderView, at section: Int) {
         let group = self.contactGroupListViewModel.groupSection[section]
-        let countryCode = group.countryIdentifier.countryCode
-        let region = group.countryIdentifier.region
         
-        if countryCode != "", let country = U.locale.localizedString(forRegionCode: region) {
-            let futureText = "+ \(countryCode) (\(country))"
-            view.configure(futureText, index: section)
-        } else {
-            view.configure("-", index: section)
+        switch contentType {
+            case .duplicatedContacts:
+                let countryCode = group.countryIdentifier.countryCode
+                let region = group.countryIdentifier.region
+                
+                if countryCode != "", let country = U.locale.localizedString(forRegionCode: region) {
+                    let futureText = "+ \(countryCode) (\(country))"
+                    view.configure(futureText, index: section)
+                } else {
+                    view.configure("-", index: section)
+                }
+            case .duplicatedPhoneNumbers, .duplicatedEmails:
+                view.configure(group.name, index: section)
+            default:
+                return
         }
     }
 }

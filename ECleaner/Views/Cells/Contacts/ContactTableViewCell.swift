@@ -75,22 +75,52 @@ extension ContactTableViewCell {
         
         let contactFullName = CNContactFormatter.string(from: contact, style: .fullName)
         let numbers = contact.phoneNumbers.map({$0.value.stringValue})
+        let emails = contact.emailAddresses.map({$0.value as String})
     
         if contactFullName == nil {
-            if !numbers.isEmpty {
-                contactTitleTextLabel.text = numbers.joined(separator: numbers.count > 1 ? ", " : "")
+            if numbers.isEmpty {
+                if emails.count == 0 {
+                    setupForMissingData(type: .wholeEmpty, textData: "all missing data")
+                } else {
+                    setupForMissingData(type: .onlyEmail, textData: emails.joined(separator: emails.count > 1 ? ", " : ""))
+                }
             } else {
-                contactTitleTextLabel.text = "-"
+                setupForMissingData(type: .onlyPhone, textData: numbers.joined(separator: numbers.count > 1 ? ", " : ""))
             }
         } else {
-            contactTitleTextLabel.text = contactFullName
+            if let contactFullName = contactFullName {
+                setupForMissingData(type: .none, textData: contactFullName)
+            }
         }
-        
-        contactSubtitleTextLabel.isHidden = true
-        contactTitleTextLabel.textColor = theme.titleTextColor
-        contactTitleTextLabel.font = .systemFont(ofSize: 16, weight: .bold)
     }
     
+    private func setupForMissingData(type: ContactasCleaningType, textData: String) {
+        
+        switch type {
+            case .wholeEmpty:
+                
+                contactTitleTextLabel.text = "-"
+                contactSubtitleTextLabel.isHidden = true
+                contactTitleTextLabel.font = .italicSystemFont(ofSize: 16, weight: .regular)
+                contactTitleTextLabel.textColor = theme.subTitleTextColor
+            case .onlyEmail:
+                contactTitleTextLabel.text = "-"
+                contactTitleTextLabel.textColor = theme.titleTextColor
+                contactTitleTextLabel.font = .systemFont(ofSize: 16, weight: .bold)
+                
+                contactSubtitleTextLabel.text = textData
+                contactSubtitleTextLabel.textColor = theme.subTitleTextColor
+                contactSubtitleTextLabel.font = .italicSystemFont(ofSize: 14, weight: .regular)
+                contactSubtitleTextLabel.isHidden = false
+                
+            default:
+                contactTitleTextLabel.text = textData
+                contactSubtitleTextLabel.isHidden = true
+                contactTitleTextLabel.textColor = theme.titleTextColor
+                contactTitleTextLabel.font = .systemFont(ofSize: 16, weight: .bold)
+        }
+    }
+
     private func setupEmptyContactCell(_ contact: CNContact) {
         
         let contactFullName = CNContactFormatter.string(from: contact, style: .fullName)
@@ -127,6 +157,11 @@ extension ContactTableViewCell {
             contactSubtitleTextLabel.text = "all data missing"
             contactSubtitleTextLabel.font = .italicSystemFont(ofSize: 14, weight: .regular)
             contactSubtitleTextLabel.textColor = theme.subTitleTextColor
+        } else {
+            contactSubtitleTextLabel.isHidden = true
+            contactTitleTextLabel.font = .italicSystemFont(ofSize: 14, weight: .regular)
+            contactTitleTextLabel.text = "all data missing"
+            contactTitleTextLabel.textColor = theme.subTitleTextColor
         }
     }
     

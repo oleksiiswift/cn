@@ -55,6 +55,8 @@ class MediaContentViewController: UIViewController {
     public var allContacts: [CNContact] = []
     public var allEmptyContacts: [ContactsGroup] = []
     public var allDuplicatedContacts: [ContactsGroup] = []
+    public var allDuplicatedPhoneNumbers: [ContactsGroup] = []
+    public var allDuplicatedEmailAdresses: [ContactsGroup] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -155,6 +157,12 @@ extension MediaContentViewController: UITableViewDelegate, UITableViewDataSource
                     case 2:
                         photoMediaType = .duplicatedContacts
                         assetContentCount = self.allDuplicatedContacts.count
+                    case 3:
+                        photoMediaType = .duplicatedPhoneNumbers
+                        assetContentCount = self.allDuplicatedPhoneNumbers.count
+                    case 4:
+                        photoMediaType = .duplicatedEmails
+                        assetContentCount = self.allDuplicatedEmailAdresses.count
                     default:
                         return                        
                 }
@@ -254,6 +262,10 @@ extension MediaContentViewController {
                         self.showEmptyGroupsContacts()
                     case 2:
                         self.showDuplicatedNamesContacts()
+                    case 3:
+                        self.showDuplicatedPhoneNumbersContacts()
+                    case 4:
+                        self.showDuplicatedEmailsContacts()
                     default:
                         return
                 }
@@ -290,11 +302,12 @@ extension MediaContentViewController {
         self.navigationController?.pushViewController(viewController, animated: true)
     }
         
-    private func showGroupedContactsViewController(contacts group: [ContactsGroup], group type: ContactasCleaningType) {
+    private func showGroupedContactsViewController(contacts group: [ContactsGroup], group type: ContactasCleaningType, content: PhotoMediaType) {
         let storyboard = UIStoryboard(name: C.identifiers.storyboards.contactsGroup, bundle: nil)
         let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.contactsGroup) as! ContactsGroupViewController
         viewController.contactGroup = group
-        viewController.navigationTitle = "simillar contacts"
+        viewController.navigationTitle = content.mediaTypeName
+        viewController.contentType = content
         viewController.mediaType = .userContacts
         self.navigationController?.pushViewController(viewController, animated: true)
     }
@@ -496,19 +509,7 @@ extension MediaContentViewController {
             }
         }
     }
-    
-    private func showDubplicatedPhoneNumbersContacts() {
-        P.showIndicator()
-        
-        self.contactsManager.getDuplicatedContacts(of: .duplicatedPhoneNumnber) { contactsGroup in
-            U.UI {
-                P.hideIndicator()
-                let group = contactsGroup.sorted(by: {$0.name < $1.name})
-                self.showGroupedContactsViewController(contacts: group, group: .duplicatedPhoneNumnber)
-            }
-        }
-    }
-
+                 
     private func showDuplicatedNamesContacts() {
         P.showIndicator()
         
@@ -516,7 +517,31 @@ extension MediaContentViewController {
             U.UI {
                 P.hideIndicator()
                 let group = contactsGroup.sorted(by: {$0.name < $1.name})
-                self.showGroupedContactsViewController(contacts: group, group: .duplicatedContactName)
+                self.showGroupedContactsViewController(contacts: group, group: .duplicatedContactName, content: .duplicatedContacts)
+            }
+        }
+    }
+    
+    private func showDuplicatedPhoneNumbersContacts() {
+        P.showIndicator()
+        
+        self.contactsManager.getDuplicatedContacts(of: .duplicatedPhoneNumnber) { contactsGroup in
+            U.UI {
+                P.hideIndicator()
+                let group = contactsGroup.sorted(by: {$0.name < $1.name})
+                self.showGroupedContactsViewController(contacts: group, group: .duplicatedPhoneNumnber, content: .duplicatedPhoneNumbers)
+            }
+        }
+    }
+    
+    private func showDuplicatedEmailsContacts() {
+        P.showIndicator()
+        
+        self.contactsManager.getDuplicatedContacts(of: .duplicatedEmail) { contactsGroup in
+            U.UI {
+                P.hideIndicator()
+                let group = contactsGroup.sorted(by: {$0.name < $1.name})
+                self.showGroupedContactsViewController(contacts: group, group: .duplicatedEmail, content: .duplicatedEmails)
             }
         }
     }

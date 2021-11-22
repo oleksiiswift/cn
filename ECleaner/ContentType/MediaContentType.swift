@@ -49,7 +49,9 @@ enum MediaContentType {
             case .userContacts:
                 return [0: [0: "all contacts",
                             1: "empty",
-                            2: "duplicates"]]
+                            2: "duplicates names",
+                            3: "duplicates phones",
+                            4: "duplicated emails"]]
             case .none:
                 return [0: [0: ""]]
         }
@@ -66,7 +68,7 @@ enum MediaContentType {
             case .userVideo:
                 return 6
             case .userContacts:
-                return 3
+                return 5
             case .none:
                 return 0
         }
@@ -132,7 +134,11 @@ enum MediaContentType {
                     case 1:
                         return "empty"
                     case 2:
-                        return "duplicates"
+                        return "duplicates names"
+                    case 3:
+                        return "duplicate numbers"
+                    case 4:
+                        return "duplicated emails"
                     default:
                         return ""
                 }

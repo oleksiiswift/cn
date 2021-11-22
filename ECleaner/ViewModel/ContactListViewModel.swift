@@ -70,7 +70,7 @@ extension ContactListViewModel {
         
         self.contactsData = contactsManager.getSortAndGroupContacts(contacts)
         var sortedSections = Array(self.contactsData.keys)
-        
+    
         sortedSections = sortedSections.sorted(by: { first, second in
             if first.isEmpty || first == " " {
                 return false

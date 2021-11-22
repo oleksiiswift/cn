@@ -36,6 +36,7 @@ class ContactsGroupViewController: UIViewController {
     public var contactGroupListViewModel: ContactGroupListViewModel!
     public var contactGroupListDataSource: ContactsGroupDataSource!
     public var mediaType: MediaContentType = .none
+    public var contentType: PhotoMediaType = .none
     
     private var isSelectedAllItems: Bool {
         return contactGroup.count == contactGroupListDataSource.selectedSections.count
@@ -81,9 +82,9 @@ extension ContactsGroupViewController: Themeble {
     }
     
     func setupViewModel(contacts: [ContactsGroup]) {
-        
         self.contactGroupListViewModel = ContactGroupListViewModel(contactsGroup: contacts)
         self.contactGroupListDataSource = ContactsGroupDataSource(viewModel: self.contactGroupListViewModel)
+        self.contactGroupListDataSource.contentType = self.contentType
     }
     
     func setupTableView() {
@@ -132,6 +133,12 @@ extension ContactsGroupViewController {
         self.handleMergeContactsAppearButton()
     }
     
+    private func forceDeselectAllItems() {
+        contactGroupListDataSource.selectedSections.removeAll()
+        self.tableView.reloadData()
+        self.handleMergeContactsAppearButton()
+    }
+    
     private func mergeSelectedItems() {
         
         guard !contactGroupListDataSource.selectedSections.isEmpty else { return }
@@ -140,7 +147,14 @@ extension ContactsGroupViewController {
         var errorsCount: Int = 0
         var deletedIndexesCount: Int = 0
         
-        contactGroupListDataSource.selectedSections.forEach { index in
+        let mergedIndexes = contactGroupListDataSource.selectedSections
+       
+        U.UI {
+            self.forceDeselectAllItems()
+        }
+                
+        for index in mergedIndexes {
+
             self.contactsManager.smartMergeContacts(in: self.contactGroup[index]) { deletingContacts in
                 self.contactsManager.deleteContacts(deletingContacts) { suxxess, deletetCount in
                     
@@ -148,10 +162,10 @@ extension ContactsGroupViewController {
                         deletedIndexesCount += 1
                     } else {
                         errorsCount += deletetCount
-                        self.contactGroupListDataSource.selectedSections.remove(at: index)
                     }
                     
                     if totalIndexesCount == deletedIndexesCount {
+                        P.hideIndicator()
                         if deletedIndexesCount == self.contactGroup.count {
                             U.UI {
                                 debugPrint("totdo clean complete alert")
@@ -176,9 +190,10 @@ extension ContactsGroupViewController {
     private func mergeContacts(in section: Int) {
         
         let mergedSingleGroup = contactGroup[section]
-        
+        P.showIndicator()
         self.contactsManager.smartMergeContacts(in: mergedSingleGroup) { contactsToDelete in
             self.contactsManager.deleteContacts(contactsToDelete) { suxxess, deletedCount in
+                P.hideIndicator()
                 if suxxess {
                     if self.contactGroup.count == 1 {
                         U.UI {
@@ -316,6 +331,8 @@ extension ContactsGroupViewController: BottomActionButtonDelegate {
     func didTapActionButton() {
         debugPrint("merge indexes")
         debugPrint(self.contactGroupListDataSource.selectedSections)
+        P.showIndicator()
+        
         self.mergeSelectedItems()
     }
 }
@@ -340,10 +357,9 @@ extension ContactsGroupViewController {
             self.tableView.contentInset.bottom = !self.contactGroupListDataSource.selectedSections.isEmpty ? calculatedBottomButtonHeight :  34
         } else {
             U.animate(0.5) {
-                self.view.layoutIfNeeded()
                 self.bottomButtonBarView.layoutIfNeeded()
-                self.tableView.contentInset.bottom = !self.contactGroupListDataSource.selectedSections.isEmpty ? calculatedBottomButtonHeight :  34
             }
+            self.tableView.contentInset.bottom = !self.contactGroupListDataSource.selectedSections.isEmpty ? calculatedBottomButtonHeight :  34
         }
     }
 }

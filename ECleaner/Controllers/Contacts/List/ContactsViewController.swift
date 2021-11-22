@@ -459,6 +459,7 @@ extension ContactsViewController {
                         self.tableView.dataSource = self.contactListDataSource
                         self.tableView.reloadData()
                     } else {
+                        P.hideIndicator()
                         self.closeController()
                     }
                 }
@@ -474,6 +475,7 @@ extension ContactsViewController {
                         self.tableView.dataSource = self.emptyContactGroupListDataSource
                         self.tableView.reloadData()
                     } else {
+                        P.hideIndicator()
                         self.closeController()
                     }
                 }
