@@ -78,6 +78,9 @@ class ContactsViewController: UIViewController {
         setupTableView()
         updateColors()
         handleBottomButtonChangeAppearence(disableAnimation: true)
+        
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dissmissKeyboardResponder))
+        self.view.addGestureRecognizer(tapGestureRecognizer)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -89,8 +92,6 @@ class ContactsViewController: UIViewController {
         }
     }
 }
-
-
 
 extension ContactsViewController {
     
@@ -279,6 +280,7 @@ extension ContactsViewController {
         }
         self.setCancelAndDeselectAllItems()
         self.handleEdit()
+        self.handleSearchBarState()
         self.deleteContacts(removableContacts) {
             U.UI {
                 self.reloadContactsAfterRefactor()
@@ -291,7 +293,7 @@ extension ContactsViewController {
         self.showDeleteProgressAlert()
         
         contactManager.deleteContacts(contacts) { suxxessful, deletedCount in
-            U.UI {
+            U.delay(0.5) {
                 if deletedCount == contacts.count {
                     A.showSuxxessfullDeleted(for: deletedCount > 1 ? .many : .one)
                 } else {
@@ -301,7 +303,7 @@ extension ContactsViewController {
             }
         }
     }
-    
+                    
     private func reloadContactsAfterRefactor() {
         P.showIndicator()
         if contentType == .allContacts {
@@ -452,10 +454,12 @@ extension ContactsViewController {
     }
     
     @objc func handleSearchBarState() {
-        
-        self.contactListViewModel.searchContact.value = ""
-        self.contactListViewModel.updateSearchState()
-        setActiveSearchBar(setActive: false)
+        U.UI {
+            self.contactListViewModel.searchContact.value = ""
+            self.searchBarView.searchBar.text = ""
+            self.contactListViewModel.updateSearchState()
+            self.setActiveSearchBar(setActive: false)
+        }
     }
     
     @objc func searchBarDidMove(_ notification: Notification) {
@@ -464,6 +468,11 @@ extension ContactsViewController {
     }
     
     @objc func searchBarResignFirstResponder() {
+        searchBarView.searchBar.resignFirstResponder()
+        setActiveSearchBar(setActive: false)
+    }
+    
+    @objc func dissmissKeyboardResponder() {
         searchBarView.searchBar.resignFirstResponder()
         setActiveSearchBar(setActive: false)
     }
@@ -535,7 +544,7 @@ extension ContactsViewController: ProgressAlertControllerDelegate {
         
         if let progress = userInfo[C.key.notificationDictionary.progrssAlertValue] as? CGFloat, let totalFilesCount = userInfo[C.key.notificationDictionary.progressAlertFilesCount] as? String {
             U.UI {
-                self.progressAlert.setProgress(progress / 100, totalFilesProcessong: totalFilesCount)
+                self.progressAlert.setProgress(progress, totalFilesProcessong: totalFilesCount)
             }
         }
     }
@@ -640,7 +649,7 @@ extension ContactsViewController: Themeble {
         }
         tableView.separatorStyle = .none
         tableView.sectionIndexColor = theme.contacSectionIndexColor
-        
+        tableView.keyboardDismissMode = .onDrag
         tableView.backgroundColor = theme.backgroundColor
         tableView.allowsSelection = false
             /// add extra top inset
