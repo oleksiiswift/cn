@@ -9,23 +9,6 @@ import UIKit
 import Contacts
 import SwiftMessages
 
-enum ExportContactsAvailibleFormat {
-    case vcf
-    case csv
-    case none
-    
-    var formatRowValue: String {
-        switch self {
-            case .vcf:
-                return "VCF"
-            case .csv:
-                return "CSV"
-            default:
-                return "hello chao"
-        }
-    }
-}
-
 class ContactsViewController: UIViewController {
     
     @IBOutlet weak var navigationBar: NavigationBar!
@@ -83,6 +66,7 @@ class ContactsViewController: UIViewController {
         
         setupNavigation()
         setNavigationEditMode(isEditing: false)
+        
         if contentType == .allContacts {
             setupViewModel(contacts: self.contacts)
         } else if contentType == .emptyContacts {
@@ -96,12 +80,6 @@ class ContactsViewController: UIViewController {
         handleBottomButtonChangeAppearence(disableAnimation: true)
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
-//        self.showProgress()
-    }
-    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         switch segue.identifier {
             case C.identifiers.segue.showExportContacts:
@@ -112,151 +90,7 @@ class ContactsViewController: UIViewController {
     }
 }
 
-extension ContactsViewController: Themeble {
-    
-    private func setupNavigation() {
-        
-        self.navigationController?.navigationBar.isHidden = true
-        
-        if contentType == .allContacts {
-            navigationBar.setIsDropShadow = false
-            navigationBar.setupNavigation(title: contentType.mediaTypeName,
-                                          leftBarButtonImage: I.navigationItems.back,
-                                          rightBarButtonImage: I.navigationItems.burgerDots,
-                                          mediaType: .userContacts,
-                                          leftButtonTitle: nil,
-                                          rightButtonTitle: nil)
-        } else if contentType == .emptyContacts {
-            setSearchBarIsHiden()
-            navigationBar.setupNavigation(title: contentType.mediaTypeName,
-                                          leftBarButtonImage: I.navigationItems.back,
-                                          rightBarButtonImage: nil,
-                                          mediaType: .userContacts,
-                                          leftButtonTitle: nil, rightButtonTitle: "edit")
-        }
-    }
-    
-    private func setSearchBarIsHiden() {
-        
-        searchBarHeightConstraint.constant = 0
-        searchBarView.isHidden = true
-    }
-    
-    private func setNavigationEditMode(isEditing: Bool) {
-        
-        if isEditing {
-            let rightNavigationTitle: String = isSelectedAllItems ? "deselect all" : "select all"
-            
-            navigationBar.setupNavigation(title: mediaType.navigationTitle,
-                                          leftBarButtonImage: nil,
-                                          rightBarButtonImage: nil,
-                                          mediaType: .userContacts,
-                                          leftButtonTitle: "cancel",
-                                          rightButtonTitle: rightNavigationTitle)
-        } else {
-            setupNavigation()
-        }
-    }
-    
-    private func setupUI() {
-        
-        bottomDoubleButtonView.setLeftButtonImage(I.systemItems.defaultItems.buttonShare)
-        bottomDoubleButtonView.setRightButtonImage(I.systemItems.defaultItems.delete)
-        bottomDoubleButtonView.setLeftButtonTitle("share")
-        
-        bottomButtonView.setImage(I.systemItems.defaultItems.delete)
-    }
-    
-    private func setupViewModel(contacts: [CNContact]) {
-        self.contactListViewModel = ContactListViewModel(contacts: contacts)
-        self.contactListDataSource = ContactListDataSource(contactListViewModel: self.contactListViewModel, contentType: self.contentType)
-        
-        self.contactListViewModel.isSearchEnabled.bindAndFire { _ in
-            _ = self.contactListViewModel.contactsArray
-            self.tableView.reloadData()
-        }
-    }
-    
-    private func setupGroupViemodel(contacts: [ContactsGroup]) {
-        self.emptyContactGroupListViewModel = ContactGroupListViewModel(contactsGroup: contacts)
-        self.emptyContactGroupListDataSource = EmptyContactListDataSource(viewModel: self.emptyContactGroupListViewModel, contentType: self.contentType)
-    }
-    
-    func updateColors() {
-        
-        self.view.backgroundColor = theme.backgroundColor
-        
-        if contentType == .allContacts {
-            bottomDoubleButtonView.tintColor = theme.activeTitleTextColor
-            bottomDoubleButtonView.rightButtonColor = theme.deleteViewButtonsColor
-            bottomDoubleButtonView.leftButtonColor = theme.shareViewButtonsColor
-            bottomDoubleButtonView.updateColorsSettings()
-        } else if contentType == .emptyContacts {
-            bottomButtonView.tintColor = theme.activeTitleTextColor
-            bottomButtonView.buttonColor = theme.contactsTintColor
-            bottomButtonView.updateColorsSettings()
-        }
-    }
-    
-    private func setupTableView() {
-            
-        tableView.register(UINib(nibName: C.identifiers.xibs.contactCell, bundle: nil), forCellReuseIdentifier: C.identifiers.cells.contactCell)
-        if contentType == .allContacts {
-            tableView.delegate = contactListDataSource
-            tableView.dataSource = contactListDataSource
-        } else if contentType == .emptyContacts {
-            tableView.delegate = emptyContactGroupListDataSource
-            tableView.dataSource = emptyContactGroupListDataSource
-        }
-        tableView.separatorStyle = .none
-        tableView.sectionIndexColor = theme.contacSectionIndexColor
-        
-        tableView.backgroundColor = theme.backgroundColor
-        tableView.allowsSelection = false
-        /// add extra top inset 
-        let view = UIView(frame: CGRect(origin: .zero, size: CGSize(width: U.screenWidth, height: 20)))
-        view.backgroundColor = .clear
-        tableView.tableHeaderView = view
-    }
-        
-    private func setupObserversAndDelegate() {
-        
-        navigationBar.delegate = self
-        searchBarView.searchBar.delegate = self
-        bottomDoubleButtonView.delegate = self
-        bottomButtonView.delegate = self
-        progressAlert.delegate = self
-        
-        U.notificationCenter.addObserver(self, selector: #selector(progressNotification(_:)), name: .progressDeleteContactsAlertDidChangeProgress, object: nil)
-        U.notificationCenter.addObserver(self, selector: #selector(handleSearchBarState), name: .searchBarDidCancel, object: nil)
-        U.notificationCenter.addObserver(self, selector: #selector(searchBarDidMove(_:)), name: .scrollViewDidScroll, object: nil)
-        U.notificationCenter.addObserver(self, selector: #selector(didSelectDeselectContact), name: .selectedContactsCountDidChange, object: nil)
-    }
-    
-    private func setupShowExportContactController(segue: UIStoryboardSegue) {
-        
-        guard let segue = segue as? SwiftMessagesSegue else { return }
-        
-        segue.configure(layout: .bottomMessage)
-        segue.dimMode = .gray(interactive: true)
-        segue.interactiveHide = false
-        segue.messageView.setupForShadow(shadowColor: theme.bottomShadowColor, cornerRadius: 14, shadowOffcet: CGSize(width: 6, height: 6), shadowOpacity: 10, shadowRadius: 14)
-        segue.messageView.configureNoDropShadow()
-        
-        if let exportContactsViewController = segue.destination as? ExportContactsViewController {
-            exportContactsViewController.leftExportFileFormat = .vcf
-            exportContactsViewController.rightExportFileFormat = .csv
-            
-            exportContactsViewController.selectExportFormatCompletion = { format in
-                if self.contactContentIsEditing {
-                    self.exportSelectedContacts(with: format)
-                } else {
-                    self.exportAllContacts(with: format)
-                }
-            }
-        }
-    }
-}
+
 
 extension ContactsViewController {
     
@@ -283,9 +117,9 @@ extension ContactsViewController {
             }
         }
         U.delay(0.5) {
+            self.navigationBar.handleChangeRightButtonSelectState(selectAll: setSelect)
             self.setContactsSelect(setSelect) {
                 P.hideIndicator()
-                self.navigationBar.handleChangeRightButtonSelectState(selectAll: setSelect)
                 self.handleBottomButtonChangeAppearence()
             }
         }
@@ -306,7 +140,7 @@ extension ContactsViewController {
         for section in 0..<tableView.numberOfSections {
             for row in 0..<tableView.numberOfRows(inSection: section) {
                 let indexPath = IndexPath(row: row, section: section)
-                debugPrint(indexPath)
+                
                 if allSelected {
                     _ = tableView.delegate?.tableView?(tableView, willSelectRowAt: indexPath)
                     tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
@@ -422,41 +256,49 @@ extension ContactsViewController {
         self.performSegue(withIdentifier: C.identifiers.segue.showExportContacts, sender: self)
     }
     
-    private func didTapDeleteSelectedContacts() {
+    private func showDeleteContactsAlert() {
         P.showIndicator()
-        if let indexPaths = self.tableView.indexPathsForSelectedRows {
-            
-            var removableContacts: [CNContact] = []
-            
-            if contentType == .allContacts {
-                removableContacts = contactListViewModel.getContacts(at: indexPaths)
-            } else if contentType == .emptyContacts {
-                removableContacts = emptyContactGroupListViewModel.getContacts(at: indexPaths)
-            }
-            self.setCancelAndDeselectAllItems()
-            self.handleEdit()
-            
-            self.deleteContacts(removableContacts) {
-                U.UI {
-                    self.reloadContactsAfterRefactor()                    
-                }
-            }
-        } else {
+        guard let indexPaths = self.tableView.indexPathsForSelectedRows else {
             P.hideIndicator()
+            return
+        }
+        P.hideIndicator()
+        A.showDeleteContactsAlerts(for: indexPaths.count > 1 ? .many : .one) {
+            self.deleteSelectedContacts(at: indexPaths)
+        }
+    }
+    
+    private func deleteSelectedContacts(at indexPaths: [IndexPath]) {
+        
+        var removableContacts: [CNContact] = []
+        
+        if contentType == .allContacts {
+            removableContacts = contactListViewModel.getContacts(at: indexPaths)
+        } else if contentType == .emptyContacts {
+            removableContacts = emptyContactGroupListViewModel.getContacts(at: indexPaths)
+        }
+        self.setCancelAndDeselectAllItems()
+        self.handleEdit()
+        self.deleteContacts(removableContacts) {
+            U.UI {
+                self.reloadContactsAfterRefactor()
+            }
         }
     }
     
     private func deleteContacts(_ contacts: [CNContact], completion: @escaping() -> Void) {
         P.hideIndicator()
         self.showDeleteProgressAlert()
+        
         contactManager.deleteContacts(contacts) { suxxessful, deletedCount in
-            debugPrint("deleted is \(suxxessful)")
-            if deletedCount == contacts.count {
-                debugPrint("all deleted")
-            } else {
-                debugPrint("errors count \(contacts.count - deletedCount)")
+            U.UI {
+                if deletedCount == contacts.count {
+                    A.showSuxxessfullDeleted(for: deletedCount > 1 ? .many : .one)
+                } else {
+                    ErrorHandler.shared.showDeleteAlertError(contacts.count - deletedCount > 1 ? .errorDeleteContacts : .errorDeleteContact)
+                }
+                completion()
             }
-            completion()
         }
     }
     
@@ -526,7 +368,7 @@ extension ContactsViewController {
         P.showIndicator()
         shareManager.shareAllContacts(format) { fileCreate in
             if !fileCreate {
-//                TODO: Error alert
+                ErrorHandler.shared.showLoadAlertError(.errorCreateExportFile)
             }
         }
     }
@@ -553,7 +395,7 @@ extension ContactsViewController {
                     P.showIndicator()
                     shareManager.shareContacts(contacts, of: format) { fileCreated in
                         if !fileCreated {
-//                            TODO show alert
+                            ErrorHandler.shared.showLoadAlertError(.errorCreateExportFile)
                         }
                     }
                 }
@@ -569,14 +411,14 @@ extension ContactsViewController: BottomDoubleActionButtonDelegate {
     }
     
     func didTapRightActionButton() {
-        self.didTapDeleteSelectedContacts()
+        self.showDeleteContactsAlert()
     }
 }
 
 extension ContactsViewController: BottomActionButtonDelegate {
     
     func didTapActionButton() {
-        self.didTapDeleteSelectedContacts()
+        self.showDeleteContactsAlert()
     }
 }
 
@@ -684,8 +526,7 @@ extension ContactsViewController: ProgressAlertControllerDelegate {
     func didAutoCloseController() {}
     
     func didTapCancelOperation() {
-//        TODO: cancel deleting operations
-        debugPrint("abort dissmiss")
+        contactManager.setProcess(.delete, state: .disable)
     }
 
     @objc func progressNotification(_ notification: Notification) {
@@ -701,3 +542,148 @@ extension ContactsViewController: ProgressAlertControllerDelegate {
 }
 
 
+extension ContactsViewController: Themeble {
+    
+    private func setupNavigation() {
+        
+        self.navigationController?.navigationBar.isHidden = true
+        
+        if contentType == .allContacts {
+            navigationBar.setIsDropShadow = false
+            navigationBar.setupNavigation(title: contentType.mediaTypeName,
+                                          leftBarButtonImage: I.navigationItems.back,
+                                          rightBarButtonImage: I.navigationItems.burgerDots,
+                                          mediaType: .userContacts,
+                                          leftButtonTitle: nil,
+                                          rightButtonTitle: nil)
+        } else if contentType == .emptyContacts {
+            setSearchBarIsHiden()
+            navigationBar.setupNavigation(title: contentType.mediaTypeName,
+                                          leftBarButtonImage: I.navigationItems.back,
+                                          rightBarButtonImage: nil,
+                                          mediaType: .userContacts,
+                                          leftButtonTitle: nil, rightButtonTitle: "edit")
+        }
+    }
+    
+    private func setSearchBarIsHiden() {
+        
+        searchBarHeightConstraint.constant = 0
+        searchBarView.isHidden = true
+    }
+    
+    private func setNavigationEditMode(isEditing: Bool) {
+        
+        if isEditing {
+            let rightNavigationTitle: String = isSelectedAllItems ? "deselect all" : "select all"
+            
+            navigationBar.setupNavigation(title: mediaType.navigationTitle,
+                                          leftBarButtonImage: nil,
+                                          rightBarButtonImage: nil,
+                                          mediaType: .userContacts,
+                                          leftButtonTitle: "cancel",
+                                          rightButtonTitle: rightNavigationTitle)
+        } else {
+            setupNavigation()
+        }
+    }
+    
+    private func setupUI() {
+        
+        bottomDoubleButtonView.setLeftButtonImage(I.systemItems.defaultItems.buttonShare)
+        bottomDoubleButtonView.setRightButtonImage(I.systemItems.defaultItems.delete)
+        bottomDoubleButtonView.setLeftButtonTitle("share")
+        
+        bottomButtonView.setImage(I.systemItems.defaultItems.delete)
+    }
+    
+    private func setupViewModel(contacts: [CNContact]) {
+        self.contactListViewModel = ContactListViewModel(contacts: contacts)
+        self.contactListDataSource = ContactListDataSource(contactListViewModel: self.contactListViewModel, contentType: self.contentType)
+        
+        self.contactListViewModel.isSearchEnabled.bindAndFire { _ in
+            _ = self.contactListViewModel.contactsArray
+            self.tableView.reloadData()
+        }
+    }
+    
+    private func setupGroupViemodel(contacts: [ContactsGroup]) {
+        self.emptyContactGroupListViewModel = ContactGroupListViewModel(contactsGroup: contacts)
+        self.emptyContactGroupListDataSource = EmptyContactListDataSource(viewModel: self.emptyContactGroupListViewModel, contentType: self.contentType)
+    }
+    
+    func updateColors() {
+        
+        self.view.backgroundColor = theme.backgroundColor
+        
+        if contentType == .allContacts {
+            bottomDoubleButtonView.tintColor = theme.activeTitleTextColor
+            bottomDoubleButtonView.rightButtonColor = theme.deleteViewButtonsColor
+            bottomDoubleButtonView.leftButtonColor = theme.shareViewButtonsColor
+            bottomDoubleButtonView.updateColorsSettings()
+        } else if contentType == .emptyContacts {
+            bottomButtonView.tintColor = theme.activeTitleTextColor
+            bottomButtonView.buttonColor = theme.contactsTintColor
+            bottomButtonView.updateColorsSettings()
+        }
+    }
+    
+    private func setupTableView() {
+        
+        tableView.register(UINib(nibName: C.identifiers.xibs.contactCell, bundle: nil), forCellReuseIdentifier: C.identifiers.cells.contactCell)
+        if contentType == .allContacts {
+            tableView.delegate = contactListDataSource
+            tableView.dataSource = contactListDataSource
+        } else if contentType == .emptyContacts {
+            tableView.delegate = emptyContactGroupListDataSource
+            tableView.dataSource = emptyContactGroupListDataSource
+        }
+        tableView.separatorStyle = .none
+        tableView.sectionIndexColor = theme.contacSectionIndexColor
+        
+        tableView.backgroundColor = theme.backgroundColor
+        tableView.allowsSelection = false
+            /// add extra top inset
+        let view = UIView(frame: CGRect(origin: .zero, size: CGSize(width: U.screenWidth, height: 20)))
+        view.backgroundColor = .clear
+        tableView.tableHeaderView = view
+    }
+    
+    private func setupObserversAndDelegate() {
+        
+        navigationBar.delegate = self
+        searchBarView.searchBar.delegate = self
+        bottomDoubleButtonView.delegate = self
+        bottomButtonView.delegate = self
+        progressAlert.delegate = self
+        
+        U.notificationCenter.addObserver(self, selector: #selector(progressNotification(_:)), name: .progressDeleteContactsAlertDidChangeProgress, object: nil)
+        U.notificationCenter.addObserver(self, selector: #selector(handleSearchBarState), name: .searchBarDidCancel, object: nil)
+        U.notificationCenter.addObserver(self, selector: #selector(searchBarDidMove(_:)), name: .scrollViewDidScroll, object: nil)
+        U.notificationCenter.addObserver(self, selector: #selector(didSelectDeselectContact), name: .selectedContactsCountDidChange, object: nil)
+    }
+    
+    private func setupShowExportContactController(segue: UIStoryboardSegue) {
+        
+        guard let segue = segue as? SwiftMessagesSegue else { return }
+        
+        segue.configure(layout: .bottomMessage)
+        segue.dimMode = .gray(interactive: true)
+        segue.interactiveHide = false
+        segue.messageView.setupForShadow(shadowColor: theme.bottomShadowColor, cornerRadius: 14, shadowOffcet: CGSize(width: 6, height: 6), shadowOpacity: 10, shadowRadius: 14)
+        segue.messageView.configureNoDropShadow()
+        
+        if let exportContactsViewController = segue.destination as? ExportContactsViewController {
+            exportContactsViewController.leftExportFileFormat = .vcf
+            exportContactsViewController.rightExportFileFormat = .csv
+            
+            exportContactsViewController.selectExportFormatCompletion = { format in
+                if self.contactContentIsEditing {
+                    self.exportSelectedContacts(with: format)
+                } else {
+                    self.exportAllContacts(with: format)
+                }
+            }
+        }
+    }
+}

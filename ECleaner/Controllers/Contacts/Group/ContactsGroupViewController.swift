@@ -37,7 +37,6 @@ class ContactsGroupViewController: UIViewController {
     public var contactGroupListDataSource: ContactsGroupDataSource!
     public var mediaType: MediaContentType = .none
     public var contentType: PhotoMediaType = .none
-
     
     private var isSelectedAllItems: Bool {
         return contactGroup.count == contactGroupListDataSource.selectedSections.count
@@ -72,54 +71,6 @@ class ContactsGroupViewController: UIViewController {
     }
 }
 
-extension ContactsGroupViewController: Themeble {
-    
-    func setupUI() {
-        bottomButtonBarView.setImage(I.systemItems.defaultItems.merge)
-    }
-    
-    func setupNavigation() {
-        
-        self.navigationController?.navigationBar.isHidden = true
-        navigationBar.setupNavigation(title: navigationTitle, leftBarButtonImage: I.navigationItems.back, rightBarButtonImage: I.navigationItems.burgerDots, mediaType: mediaType)
-    }
-    
-    func setupViewModel(contacts: [ContactsGroup]) {
-        self.contactGroupListViewModel = ContactGroupListViewModel(contactsGroup: contacts)
-        self.contactGroupListDataSource = ContactsGroupDataSource(viewModel: self.contactGroupListViewModel)
-        self.contactGroupListDataSource.contentType = self.contentType
-    }
-    
-    func setupTableView() {
-        tableView.register(UINib(nibName: C.identifiers.xibs.contactGroupHeader, bundle: nil), forHeaderFooterViewReuseIdentifier: C.identifiers.views.contactGroupHeader)
-        tableView.register(UINib(nibName: C.identifiers.xibs.groupContactCell, bundle: nil), forCellReuseIdentifier: C.identifiers.cells.groupContactCell)
-        tableView.delegate = contactGroupListDataSource
-        tableView.dataSource = contactGroupListDataSource
-        tableView.separatorStyle = .none
-        tableView.backgroundColor = .clear
-        tableView.contentInset.top = 20
-    }
-    
-    private func setupObserversAndDelegate() {
-        
-        navigationBar.delegate = self
-        bottomButtonBarView.delegate = self
-        progressAlert.delegate = self
-        
-        SingleContactsGroupOperationMediator.instance.setListener(listener: self)
-        U.notificationCenter.addObserver(self, selector: #selector(mergeContactsDidChange(_:)), name: .mergeContactsSelectionDidChange, object: nil)
-        U.notificationCenter.addObserver(self, selector: #selector(progressDeleteNotification(_:)), name: .progressDeleteContactsAlertDidChangeProgress, object: nil)
-    }
-    
-    func updateColors() {
-        
-        self.view.backgroundColor = theme.backgroundColor
-        bottomButtonBarView.buttonTintColor = theme.activeTitleTextColor
-        bottomButtonBarView.buttonColor = theme.contactsTintColor
-        bottomButtonBarView.updateColorsSettings()
-    }
-}
-
 //      MARK: - operations with contacts methods -
 extension ContactsGroupViewController {
     
@@ -149,63 +100,50 @@ extension ContactsGroupViewController {
         guard !contactGroupListDataSource.selectedSections.isEmpty else { return }
         
         let totalIndexesCount = contactGroupListDataSource.selectedSections.count
-        var errorsCount: Int = 0
-        var deletedSectionsCount: Int = 0
-        
-        let mergedIndexes = contactGroupListDataSource.selectedSections
+        let indexesForMerged = contactGroupListDataSource.selectedSections
 
         self.forceDeselectAllItems()
-        
         P.hideIndicator()
-        
-        self.showMergeProgressAlert()
-        
+        indexesForMerged.count > 1 ?  self.showMergeProgressAlert() : ()
+    
         self.updateProgressMergeAlert(with: 0, total: "0 / \(totalIndexesCount)")
         
-        U.GLB(qos: .background) {
+        self.contactsManager.mergeContacts(in: self.contactGroup, merged: indexesForMerged) { suxxess, mergedIndexes  in
             
-            mergedIndexes.forEach { index in
-                
-                self.contactsManager.smartMergeContacts(in: self.contactGroup[index]) { deletingContacts in
-                    self.contactsManager.deleteContacts(deletingContacts) { suxxess, deletetCount in
-                        
-                        if suxxess {
-                            deletedSectionsCount += 1
+            if suxxess {
+                if self.contactGroup.count == mergedIndexes.count {
+                    U.UI {
+                        A.showSuxxessFullMerged(for: .many) {
+                            self.closeController()
+                        }
+                    }
+                } else {
+                    let errorsCont = indexesForMerged.count - mergedIndexes.count
+                    U.UI {
+                        if errorsCont == 0 {
+                            A.showSuxxessFullMerged(for: .many) {
+                                self.updateRemovedIndexes(mergedIndexes, errorsCount: 0)
+                            }
                         } else {
-                            errorsCount += deletetCount
-                        }
-                        
-                        let calculatedProgress: CGFloat = CGFloat(100 * deletedSectionsCount / totalIndexesCount) / 100
-                        let totalFilesProcessing: String = "\(deletedSectionsCount) / \(totalIndexesCount)"
-                        
-                        U.UI {
-                            self.updateProgressMergeAlert(with: calculatedProgress, total: totalFilesProcessing)
-                        }
-                        sleep(UInt32(0.1))
-                        
-                        if totalIndexesCount == deletedSectionsCount {
-                            if deletedSectionsCount == self.contactGroup.count {
-                                U.UI {
-                                    debugPrint("totdo clean complete alert")
-                                    self.closeController()
-                                }
-                            } else {
-                                let removableSections: [Int] = self.contactGroupListDataSource.selectedSections
-                                if errorsCount == 0 {
-                                    debugPrint("todo alerr all contacts remove without errors")
-                                    self.updateRemovedIndexes(removableSections, errorsCount: errorsCount)
-                                } else {
-                                    debugPrint("TODO show alert delete with errors")
-                                    self.updateRemovedIndexes(removableSections, errorsCount: 0)
-                                }
+                            A.showSuxxessFullMerged(for: .many) {
+                                self.updateRemovedIndexes(mergedIndexes, errorsCount: errorsCont)
                             }
                         }
                     }
                 }
+            } else {
+                U.UI {
+                    A.showSuxxessFullMerged(for: .many) {
+                        self.updateRemovedIndexes(mergedIndexes, errorsCount: 0)
+                    }
+                }
             }
+            
+            self.contactsManager.setProcess(.merge, state: .availible)
         }
     }
     
+    /// `merge single section`
     private func mergeContacts(in section: Int) {
         
         let mergedSingleGroup = contactGroup[section]
@@ -215,14 +153,22 @@ extension ContactsGroupViewController {
                 P.hideIndicator()
                 if suxxess {
                     if self.contactGroup.count == 1 {
-                        U.UI {
-                            self.closeController()
+                        A.showSuxxessFullMerged(for: .one) {
+                            U.UI {
+                                self.closeController()
+                            }
                         }
                     } else {
-                        self.updateRemovedIndexes([section], errorsCount: 0)
+                        U.UI {
+                            A.showSuxxessFullMerged(for: .one) {
+                                self.updateRemovedIndexes([section], errorsCount: 0)
+                            }
+                        }
                     }
                 } else {
-                    debugPrint("TODO alert merge error")
+                    U.UI {
+                        ErrorHandler.shared.showMergeAlertError(.errorMergeContact)
+                    }
                 }
             }
         }
@@ -239,14 +185,17 @@ extension ContactsGroupViewController {
                     if self.contactGroup.count != 1 {
                             self.updateRemovedIndexes([section], errorsCount: 0)
                     } else {
-                        debugPrint("delete suxxess")
-                        U.UI {
-                            self.closeController()                            
+                        A.showSuxxessfullDeleted(for: .one) {
+                            U.UI {
+                                self.closeController()
+                            }
                         }
                     }
                 }
             } else {
-                debugPrint("todo delete alert error")
+                U.UI {
+                    ErrorHandler.shared.showDeleteAlertError(.errorDeleteContacts)
+                }
             }
         }
     }
@@ -293,19 +242,31 @@ extension ContactsGroupViewController: ProgressAlertControllerDelegate {
     }
     
     func didTapCancelOperation() {
-        
+        contactsManager.setProcess(self.isMergeContactsProcessing ? .merge : .delete, state: .disable)
     }
     
     func didAutoCloseController() {
         
     }
     
-    @objc func progressDeleteNotification(_ notification: Notification) {
+    @objc func progressDeleteAlertNotification(_ notification: Notification) {
         guard !isMergeContactsProcessing else { return }
         guard let userInfo = notification.userInfo else { return }
+        self.handleProcessNotoficationInf0(userInfo)
+       
+    }
+    
+    @objc func progressMergeAlertNotification(_ notification: Notification) {
+        guard let userInfo = notification.userInfo else { return }
+        self.handleProcessNotoficationInf0(userInfo)
+    }
+    
+    
+    private func handleProcessNotoficationInf0(_ userInfo: [AnyHashable: Any]) {
+        
         if let progress = userInfo[C.key.notificationDictionary.progrssAlertValue] as? CGFloat, let totalFilesCount = userInfo[C.key.notificationDictionary.progressAlertFilesCount] as? String {
             U.UI {
-                self.progressAlert.setProgress(progress / 100, totalFilesProcessong: totalFilesCount)
+                self.progressAlert.setProgress(progress, totalFilesProcessong: totalFilesCount)
             }
         }
     }
@@ -348,14 +309,21 @@ extension ContactsGroupViewController: SelectDropDownMenuDelegate {
     }
 }
 
+//  MARK: - header delegate -
 extension ContactsGroupViewController: SingleContactsGroupOperationsListener {
     
+    /// `merge single section contacts`
     func didMergeContacts(in section: Int) {
-        self.mergeContacts(in: section)
+        A.showMergeContactsAlert(for: .one) {
+            self.mergeContacts(in: section)
+        }
     }
     
+    /// `delete singe section contacts`
     func didDeleteFullContactsGroup(in section: Int) {
-        self.deleteContacts(in: section)
+        A.showDeleteContactsAlerts(for: .many) {
+            self.deleteContacts(in: section)
+        }
     }
     
     func didRefactorContactsGroup(in section: Int, with indexPath: IndexPath) {}
@@ -385,12 +353,12 @@ extension ContactsGroupViewController: NavigationBarDelegate {
 
 extension ContactsGroupViewController: BottomActionButtonDelegate {
     
+    /// `merge contacts from bottom button`
     func didTapActionButton() {
-        debugPrint("merge indexes")
-        debugPrint(self.contactGroupListDataSource.selectedSections)
-        P.showIndicator()
-        
-        self.mergeSelectedItems()
+        A.showMergeContactsAlert(for: self.contactGroupListDataSource.selectedSections.count > 1 ? .many : .one) {
+            P.showIndicator()
+            self.mergeSelectedItems()
+        }
     }
 }
 
@@ -422,3 +390,51 @@ extension ContactsGroupViewController {
 }
 
 
+extension ContactsGroupViewController: Themeble {
+    
+    func setupUI() {
+        bottomButtonBarView.setImage(I.systemItems.defaultItems.merge)
+    }
+    
+    func setupNavigation() {
+        
+        self.navigationController?.navigationBar.isHidden = true
+        navigationBar.setupNavigation(title: navigationTitle, leftBarButtonImage: I.navigationItems.back, rightBarButtonImage: I.navigationItems.burgerDots, mediaType: mediaType)
+    }
+    
+    func setupViewModel(contacts: [ContactsGroup]) {
+        self.contactGroupListViewModel = ContactGroupListViewModel(contactsGroup: contacts)
+        self.contactGroupListDataSource = ContactsGroupDataSource(viewModel: self.contactGroupListViewModel)
+        self.contactGroupListDataSource.contentType = self.contentType
+    }
+    
+    func setupTableView() {
+        tableView.register(UINib(nibName: C.identifiers.xibs.contactGroupHeader, bundle: nil), forHeaderFooterViewReuseIdentifier: C.identifiers.views.contactGroupHeader)
+        tableView.register(UINib(nibName: C.identifiers.xibs.groupContactCell, bundle: nil), forCellReuseIdentifier: C.identifiers.cells.groupContactCell)
+        tableView.delegate = contactGroupListDataSource
+        tableView.dataSource = contactGroupListDataSource
+        tableView.separatorStyle = .none
+        tableView.backgroundColor = .clear
+        tableView.contentInset.top = 20
+    }
+    
+    private func setupObserversAndDelegate() {
+        
+        navigationBar.delegate = self
+        bottomButtonBarView.delegate = self
+        progressAlert.delegate = self
+        
+        SingleContactsGroupOperationMediator.instance.setListener(listener: self)
+        U.notificationCenter.addObserver(self, selector: #selector(mergeContactsDidChange(_:)), name: .mergeContactsSelectionDidChange, object: nil)
+        U.notificationCenter.addObserver(self, selector: #selector(progressDeleteAlertNotification(_:)), name: .progressDeleteContactsAlertDidChangeProgress, object: nil)
+        U.notificationCenter.addObserver(self, selector: #selector(progressMergeAlertNotification(_:)), name: .progressMergeContactsAlertDidChangeProgress, object: nil)
+    }
+    
+    func updateColors() {
+        
+        self.view.backgroundColor = theme.backgroundColor
+        bottomButtonBarView.buttonTintColor = theme.activeTitleTextColor
+        bottomButtonBarView.buttonColor = theme.contactsTintColor
+        bottomButtonBarView.updateColorsSettings()
+    }
+}

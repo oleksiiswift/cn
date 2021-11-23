@@ -32,6 +32,7 @@ extension ContactListDataSource {
         guard let contact = contactListViewModel.getContactOnRow(at: indexPath) else { return }
         cell.contactEditingMode = self.contactContentIsEditing
         cell.updateContactCell(contact, contentType: self.contentType)
+        debugPrint(contact.givenName)
     }
     
     private func didSelectDeselectContact() {

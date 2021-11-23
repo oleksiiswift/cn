@@ -59,14 +59,14 @@ extension ContactTableViewCell {
             default:
                 return
         }
-
+        
         if contactEditingMode {
             self.handleSelectedContact()
         } else {
             if let imageData = contact.thumbnailImageData, let image = UIImage(data: imageData) {
                 shadowRoundedReuseView.setImage(image)
             } else {
-                shadowRoundedReuseView.setImage(I.mainMenuThumbItems.contacts)
+                shadowRoundedReuseView.setImage(I.personalisation.contacts.contactPhoto)
             }
         }
     }
@@ -194,7 +194,7 @@ extension ContactTableViewCell: Themeble {
     func updateColors() {
         
         baseView.backgroundColor = .clear
-        shadowRoundedReuseView.setShadowColor(for: theme.topShadowColor, and: theme.bottomShadowColor)
+        shadowRoundedReuseView.setShadowColor(for: theme.topShadowColor, and: theme.bottomShadowColor.withAlphaComponent(0.5))
     }
     
     private func superPrepareForReuse() {
@@ -202,5 +202,6 @@ extension ContactTableViewCell: Themeble {
         accessoryType = .none
         contactTitleTextLabel.text = nil
         contactSubtitleTextLabel.text = nil
+        shadowRoundedReuseView.setImage(nil)
     }
 }

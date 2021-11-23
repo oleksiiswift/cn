@@ -40,6 +40,7 @@ class Images {
             static let deselectContact = UIImage(named: "deselectContact")
             static let deleteContact = UIImage(named: "contactWithCross")!
             static let mergeContact = UIImage(named: "mergeContactArrowRight")!
+            static let contactPhoto = UIImage(named: "contactWithoutPhoto")!
         }
         
         struct photo {

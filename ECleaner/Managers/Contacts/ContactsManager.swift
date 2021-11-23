@@ -14,6 +14,7 @@ enum AlphabeticalContactsResults {
     case error(error: Error)
 }
 
+
 enum ContactasCleaningType {
     case onlyName
     case onlyPhone
@@ -98,6 +99,10 @@ class ContactsManager {
     private var phoneNumberKit = PhoneNumberKit()
     private var fileManager = FileManager.default
     
+    private var deleteContactsTaskContinue: Bool = true
+    private var mergeContactsTaskContinue: Bool = true
+    private var searchContactsTaskContinue: Bool = true
+
     private let contactsDuplicatesOperationQueue = OperationPhotoProcessingQueuer(name: "Contacts Duplicates Queuer", maxConcurrentOperationCount: 10, qualityOfService: .utility)
     
     private let fetchingKeys: [CNKeyDescriptor] = [
@@ -595,6 +600,48 @@ extension ContactsManager  {
         completionHandler(group)
     }
     
+    public func mergeContacts(in group: [ContactsGroup], merged indexes: [Int], completionHandler: @escaping (Bool, [Int]) -> Void) {
+        
+        var errorsCount: Int = 0
+        var deleteSelectionIndexCount: Int = 0
+        var indexesForUpdate: [Int] = []
+        U.GLB(qos: .background) {
+            
+            for index in indexes {
+                
+                guard self.mergeContactsTaskContinue else {
+                    completionHandler(true, indexesForUpdate)
+                    return
+                }
+                
+                self.smartMergeContacts(in: group[index]) { deleteContacts in
+                    self.deleteContacts(deleteContacts) { suxxess, deleteCount in
+                        if suxxess {
+                            deleteSelectionIndexCount += 1
+                            indexesForUpdate.append(index)
+                        } else {
+                            let errors = deleteContacts.count - deleteCount
+                            errorsCount += errors
+                        }
+                        
+                        let calculetedProgress: CGFloat = CGFloat(100 * deleteSelectionIndexCount / indexes.count) / 100
+                        let totalProcessing: String = "\(deleteSelectionIndexCount) / \(indexes.count)"
+                        
+                        let userInfo: [String : Any] = [C.key.notificationDictionary.progrssAlertValue: calculetedProgress,
+                                                        C.key.notificationDictionary.progressAlertFilesCount: totalProcessing]
+                        
+                        U.notificationCenter.post(name: .progressMergeContactsAlertDidChangeProgress, object: nil, userInfo: userInfo)
+                        sleep(UInt32(0.1))
+                        
+                        if indexes.count == deleteSelectionIndexCount {
+                            completionHandler(true, indexesForUpdate)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     public func smartMergeContacts(in group: ContactsGroup, deletingContactsCompletion: @escaping ([CNContact]) -> Void) {
         
         var contactsDuplicates: [CNContact] = group.contacts
@@ -796,15 +843,22 @@ extension ContactsManager {
         
         U.BG {
             var deletedContactsCount = 0
-            contacts.forEach { contact in
+            
+            for contact in contacts {
+                
+                guard self.deleteContactsTaskContinue else {
+                    completionHandler(false, deletedContactsCount)
+                    return
+                }
+                
                 self.deleteContact(contact) { success in
                     if success {
                         deletedContactsCount += 1
                         
-                        let calculateprogress: CGFloat = CGFloat(100 * deletedContactsCount / contacts.count)
+                        let calculateprogress: CGFloat = CGFloat(100 * deletedContactsCount / contacts.count) / 100
                         
-                        let userInfo: [String: Any] = [Constants.key.notificationDictionary.progrssAlertValue: calculateprogress,
-                                                       Constants.key.notificationDictionary.progressAlertFilesCount: "\(deletedContactsCount) / \(contacts.count)"]
+                        let userInfo: [String: Any] = [C.key.notificationDictionary.progrssAlertValue: calculateprogress,
+                                                       C.key.notificationDictionary.progressAlertFilesCount: "\(deletedContactsCount) / \(contacts.count)"]
                         
                         U.notificationCenter.post(name: .progressDeleteContactsAlertDidChangeProgress, object: nil, userInfo: userInfo)
                         debugPrint(deletedContactsCount)
@@ -1081,3 +1135,74 @@ extension CNContactVCardSerialization {
     }
 }
 
+
+enum ContactOperationProcessing {
+    case merge
+    case delete
+    case search
+}
+
+enum ProcessingState {
+    case availible
+    case disable
+    case undefined
+}
+
+extension ContactsManager {
+    
+    public func setProcess(_ operationProcess: ContactOperationProcessing, state: ProcessingState) {
+        switch operationProcess {
+            case .merge:
+                switch state {
+                    case .availible:
+                        self.setAvailibleMergeProcessing()
+                    case .disable:
+                        self.setStopMergeProcessing()
+                    case .undefined:
+                        return
+                }
+            case .delete:
+                switch state {
+                    case .availible:
+                        self.setAvailibleDeleteProcessing()
+                    case .disable:
+                        self.setStopDeleteProcessing()
+                    case .undefined:
+                        return
+                }
+            case .search:
+                switch state {
+                    case .availible:
+                        self.setAvailibleSearchProcessing()
+                    case .disable:
+                        self.setStopSearchProcessing()
+                    case .undefined:
+                        return
+                }
+        }
+    }
+    
+    public func setStopDeleteProcessing() {
+        deleteContactsTaskContinue = false
+    }
+    
+    public func setAvailibleDeleteProcessing() {
+        deleteContactsTaskContinue = true
+    }
+    
+    public func setStopMergeProcessing() {
+        mergeContactsTaskContinue = false
+    }
+    
+    public func setAvailibleMergeProcessing() {
+        mergeContactsTaskContinue = true
+    }
+    
+    public func setAvailibleSearchProcessing() {
+        searchContactsTaskContinue = true
+    }
+    
+    public func setStopSearchProcessing() {
+        searchContactsTaskContinue = false
+    }
+}

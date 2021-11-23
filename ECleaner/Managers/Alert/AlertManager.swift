@@ -8,6 +8,12 @@
 import UIKit
 import cisua
 
+enum ElementhCount {
+    case one
+    case many
+    case other
+}
+
 typealias A = AlertManager
 class AlertManager: NSObject {
     
@@ -23,17 +29,25 @@ class AlertManager: NSObject {
     
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         
-        let cancelAction = UIAlertAction(title: "loco cancel", style: .cancel) { action in
+        let cancelAction = UIAlertAction(title: "cancel", style: .cancel) { action in
             completion?()
         }
         
-        actions.forEach { (action) in
-            alert.addAction(action)
+        if actions.isEmpty {
+            let alertAction = UIAlertAction(title: "ok", style: .default) { _ in
+                completion?()
+            }
+            alert.addAction(alertAction)
+        } else {
+            actions.forEach { (action) in
+                alert.addAction(action)
+            }
         }
         
         if withCancel {
             alert.addAction(cancelAction)
         }
+        
         topController()?.present(alert, animated: true, completion: nil)
     }
     
@@ -97,23 +111,44 @@ extension AlertManager {
 
 //      MARK: - CONTACTS ALERT -
 extension AlertManager {
-    
-    static func showDeleteContactsAlerts(completion: @escaping () -> Void) {
+ 
+    /// `delete section`
+    static func showSuxxessfullDeleted(for contacts: ElementhCount, completion: (() -> Void)? = nil) {
         
-        let allowDeleteAction = UIAlertAction(title: "delete", style: .default) { _ in
+        let alertType: AlertType = contacts == .many ? .suxxessDeleteContacts : .suxxessDeleteContact
+        showAlert(type: alertType, actions: [], withCancel: alertType.withCancel) {
+            completion?()
+        }
+    }
+    
+    static func showDeleteContactsAlerts(for contacts: ElementhCount, completion: @escaping () -> Void) {
+    
+        let alertType: AlertType = contacts == .one ? .deleteContact : .deleteContacts
+        
+        let allowDeleteAction = UIAlertAction(title: "ok", style: .default) { _ in
             completion()
         }
         
-        showAlert(type: .deleteContacts, actions: [allowDeleteAction])
+        showAlert(type: alertType, actions: [allowDeleteAction], withCancel: alertType.withCancel)
     }
     
-    static func showMergeContactsAlert(comletion: @escaping () -> Void) {
+    /// `merge section`
+    static func showSuxxessFullMerged(for section: ElementhCount, completion: (() -> Void)? = nil) {
+        let alertType: AlertType = section == .many ? .suxxessMergedContacts : .suxxessMergedContact
+        showAlert(type: alertType, actions: [], withCancel: alertType.withCancel) {
+            completion?()
+        }
+    }
+    
+    static func showMergeContactsAlert(for sections: ElementhCount, comletion: @escaping () -> Void) {
         
-        let allowMergeContactsAction = UIAlertAction(title: "merge", style: .default) { _ in
+        let alertType: AlertType = sections == .one ? .mergeContact : .mergeContacts
+        
+        let allowMergeContacts = UIAlertAction(title: "ok", style: .default) { _ in
             comletion()
         }
         
-        showAlert(type: .mergeContacts, actions: [allowMergeContactsAction])
+        showAlert(type: alertType, actions: [allowMergeContacts], withCancel: alertType.withCancel)
     }
     
     static func showEmptyContactsToPresent(of type: AlertType, completion: @escaping () -> Void) {

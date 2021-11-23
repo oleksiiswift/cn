@@ -148,6 +148,8 @@
 		975AF43E2728987500744E3B /* Contacts.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 975AF43D2728987500744E3B /* Contacts.storyboard */; };
 		975AF440272898AE00744E3B /* ContactsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 975AF43F272898AE00744E3B /* ContactsViewController.swift */; };
 		976465D42727055200F8CDA6 /* String+Alphabetical+Range.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976465D32727055200F8CDA6 /* String+Alphabetical+Range.swift */; };
+		9770C805274D183F0046EF84 /* ErrorHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9770C804274D183F0046EF84 /* ErrorHandler.swift */; };
+		9770C808274D34A90046EF84 /* FileFormats.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9770C807274D34A90046EF84 /* FileFormats.swift */; };
 		9776F5792735937E009D806A /* InnerShadowLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9776F5782735937E009D806A /* InnerShadowLayer.swift */; };
 		9776F57C273593CF009D806A /* DeepCleanBackgroundShadowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9776F57B273593CF009D806A /* DeepCleanBackgroundShadowView.swift */; };
 		9776F57E27359406009D806A /* ShadowRoundedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9776F57D27359406009D806A /* ShadowRoundedView.swift */; };
@@ -353,6 +355,8 @@
 		975AF43D2728987500744E3B /* Contacts.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Contacts.storyboard; sourceTree = "<group>"; };
 		975AF43F272898AE00744E3B /* ContactsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsViewController.swift; sourceTree = "<group>"; };
 		976465D32727055200F8CDA6 /* String+Alphabetical+Range.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Alphabetical+Range.swift"; sourceTree = "<group>"; };
+		9770C804274D183F0046EF84 /* ErrorHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorHandler.swift; sourceTree = "<group>"; };
+		9770C807274D34A90046EF84 /* FileFormats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileFormats.swift; sourceTree = "<group>"; };
 		9776F5782735937E009D806A /* InnerShadowLayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InnerShadowLayer.swift; sourceTree = "<group>"; };
 		9776F57B273593CF009D806A /* DeepCleanBackgroundShadowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepCleanBackgroundShadowView.swift; sourceTree = "<group>"; };
 		9776F57D27359406009D806A /* ShadowRoundedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowRoundedView.swift; sourceTree = "<group>"; };
@@ -801,6 +805,7 @@
 				049CC22826831D540002F988 /* Constants */,
 				049CC2382683730E0002F988 /* FlowLayout */,
 				04CFFFEA26846A3E000CA850 /* Device */,
+				9770C807274D34A90046EF84 /* FileFormats.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -811,6 +816,7 @@
 				97A61EDF2726AB8B00F2E6DE /* Contacts */,
 				049CC21026821D560002F988 /* Photo */,
 				049CC21126821D5F0002F988 /* Alert */,
+				9770C806274D18420046EF84 /* ErrorHandler */,
 				049CC22B268321D30002F988 /* Settings */,
 				049CC2222683179E0002F988 /* ThemeManager */,
 				049CC22C268321DC0002F988 /* NotificationManager */,
@@ -1102,6 +1108,14 @@
 				9755500E2731412800E54C5A /* Group */,
 			);
 			path = Contacts;
+			sourceTree = "<group>";
+		};
+		9770C806274D18420046EF84 /* ErrorHandler */ = {
+			isa = PBXGroup;
+			children = (
+				9770C804274D183F0046EF84 /* ErrorHandler.swift */,
+			);
+			path = ErrorHandler;
 			sourceTree = "<group>";
 		};
 		9776F57727359362009D806A /* Carousel */ = {
@@ -1521,6 +1535,7 @@
 				97238A072689BD8000C523DC /* PhotoMediaType.swift in Sources */,
 				04CFFFF42684B23D000CA850 /* String+Whitespaces.swift in Sources */,
 				044A6FBB270F1B5300CF0D17 /* CGfloat+RemoveDecimals.swift in Sources */,
+				9770C805274D183F0046EF84 /* ErrorHandler.swift in Sources */,
 				04CFFFFD2685E571000CA850 /* UIView+Borders.swift in Sources */,
 				049CC2372683730A0002F988 /* BaseCollectionFlowLayout.swift in Sources */,
 				978FEF14274BC21A00ADE1D9 /* ProgressAlertController.swift in Sources */,
@@ -1543,6 +1558,7 @@
 				97CC2F3C26873A7D0072EF8C /* DateSelectorViewController.swift in Sources */,
 				04E09470267A06B500A69956 /* AppDelegate.swift in Sources */,
 				04B20F02269C4F6A00C6BC14 /* AssetContextPreviewViewController.swift in Sources */,
+				9770C808274D34A90046EF84 /* FileFormats.swift in Sources */,
 				044A6FB9270F1B1000CF0D17 /* CircleProgressBar.swift in Sources */,
 				4F56074227205AF300CA19E9 /* WindowBuilder.swift in Sources */,
 				97E54A86268BB16A00C7FD54 /* SNCollectionViewLayout.swift in Sources */,
