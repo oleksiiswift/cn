@@ -41,14 +41,17 @@ class Images {
             static let deleteContact = UIImage(named: "contactWithCross")!
             static let mergeContact = UIImage(named: "mergeContactArrowRight")!
             static let contactPhoto = UIImage(named: "contactWithoutPhoto")!
+            static let processingThumb = UIImage(named: "contactsProcessingEmptyItem")!
         }
         
         struct photo {
             
+            static let processingThumb = UIImage(named: "photoProcessingEmptyItem")!
         }
         
         struct video {
             
+            static let processingThumb = UIImage(named: "videoProcessingEmptyItem")!
         }
     }
     

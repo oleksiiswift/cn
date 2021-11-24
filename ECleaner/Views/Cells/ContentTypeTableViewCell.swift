@@ -8,6 +8,11 @@
 import UIKit
 import Photos
 
+enum ProcessingPresentType {
+    case deepCleen
+    case singleSearch
+}
+
 class ContentTypeTableViewCell: UITableViewCell {
     
     @IBOutlet weak var baseView: UIView!
@@ -69,43 +74,64 @@ extension ContentTypeTableViewCell {
      - `cellConfig`use for default cell config
      - `setupCellSelected` use in deep cleaning part for show selected checkmark for clean
     */
-    
-    public func cellConfig(contentType: MediaContentType, photoMediaType: PhotoMediaType = .none, indexPath: IndexPath, phasetCount: Int, isDeepCleanController: Bool = false, progress: CGFloat, isProcessingComplete: Bool = false) {
-        reuseShadowRoundedView.setImage(contentType.imageOfRows)
-        contentTypeTextLabel.text = isDeepCleanController ? contentType.getDeepCellTitle(index: indexPath.row) : contentType.getCellTitle(index: indexPath.row)
+
+    public func cellConfig(contentType: MediaContentType,
+                           photoMediaType: PhotoMediaType = .none,
+                           indexPath: IndexPath,
+                           phasetCount: Int,
+                           presentingType: ProcessingPresentType,
+                           progress: CGFloat,
+                           isProcessingComplete: Bool = false) {
         
-        if isDeepCleanController {
-            
-            horizontalProgressView.progress = progress / 100
-            
-            let progressStringText = isProcessingComplete ? "processing wait" : String("progress - \(progress.rounded().cleanValue) %")
-            let updatingCountValuesDeepClean: String = isDeepCleanController ? progressStringText : "0 \("FILES".localized())"
-            let updatingCountValuesContactDeepClean: String = isDeepCleanController ?  progressStringText : "0 contacts"
-            
-            switch contentType {
-                case .userPhoto, .userVideo:
-                    contentSubtitleTextLabel.text = isProcessingComplete ? phasetCount != 0 ? String("\(phasetCount) \("FILES".localized())") : "no files to clean" : updatingCountValuesDeepClean
-                case .userContacts:
+        switch presentingType {
+            case .deepCleen:
+                contentTypeTextLabel.text = contentType.getDeepCellTitle(index: indexPath.row)
+                reuseShadowRoundedView.setImage(contentType.imageOfRows)
+                horizontalProgressView.progress = progress / 100
+                
+                let progressStringText = isProcessingComplete ? "processing wait" : String("progress - \(progress.rounded().cleanValue) %")
+                let updatingCountValuesDeepClean: String = progressStringText
+                    //                : "0 \("FILES".localized())"
+                let updatingCountValuesContactDeepClean: String = progressStringText
+                    //                : "0 contacts"
+                
+                switch contentType {
+                    case .userPhoto, .userVideo:
+                        contentSubtitleTextLabel.text = isProcessingComplete ? phasetCount != 0 ? String("\(phasetCount) \("FILES".localized())") : "no files to clean" : updatingCountValuesDeepClean
+                    case .userContacts:
                         contentSubtitleTextLabel.text = isProcessingComplete ? phasetCount != 0 ? String("\(phasetCount) \("contacts")") : "no contacts to clean" : updatingCountValuesContactDeepClean
-                case .none:
-                    contentSubtitleTextLabel.text = ""
-            }
-        } else {
-            
-            switch photoMediaType {
-                case .similarPhotos, .duplicatedPhotos, .similarVideos, .duplicatedVideos:
-                    contentSubtitleTextLabel.text = ""
-                case .singleScreenShots, .singleSelfies, .singleLivePhotos, .singleLargeVideos, .singleScreenRecordings, .singleRecentlyDeletedPhotos, .singleRecentlyDeletedVideos:
-                    contentSubtitleTextLabel.text = phasetCount != 0 ?  String("\(phasetCount) \("FILES".localized())") : "no files"
-                case .allContacts, .emptyContacts:
-                    contentSubtitleTextLabel.text  = phasetCount != 0 ? String("\(phasetCount) contacts") : ""
-                case .duplicatedContacts, .duplicatedPhoneNumbers, .duplicatedEmails:
-                    contentSubtitleTextLabel.isHidden = true
-                case .compress:
-                    contentSubtitleTextLabel.text = ""
-                default:
-                    return
-            }
+                    case .none:
+                        contentSubtitleTextLabel.text = ""
+                }
+                
+            case .singleSearch:
+                contentTypeTextLabel.text = contentType.getCellTitle(index: indexPath.row)
+                
+                if !isProcessingComplete || progress == 1{
+                    horizontalProgressView.progress = 0
+                    self.reuseShadowRoundedView.setImage(contentType.imageOfRows)
+                    reuseShadowRoundedView.hideIndicator()
+                } else {
+                    self.reuseShadowRoundedView.setImage(contentType.processingImageOfRows)
+                    reuseShadowRoundedView.showIndicator()
+                    horizontalProgressView.progress = progress
+                }
+                
+                switch photoMediaType {
+                        
+                    case .similarPhotos, .duplicatedPhotos, .similarVideos, .duplicatedVideos:
+                        contentSubtitleTextLabel.text = ""
+                    case .singleScreenShots, .singleSelfies, .singleLivePhotos, .singleLargeVideos, .singleScreenRecordings, .singleRecentlyDeletedPhotos, .singleRecentlyDeletedVideos:
+                        contentSubtitleTextLabel.text = phasetCount != 0 ?  String("\(phasetCount) \("FILES".localized())") : "no files"
+                    case .allContacts, .emptyContacts:
+                        contentSubtitleTextLabel.text  = phasetCount != 0 ? String("\(phasetCount) contacts") : ""
+                    case .duplicatedContacts, .duplicatedPhoneNumbers, .duplicatedEmails:
+                        contentSubtitleTextLabel.isHidden = true
+                    case .compress:
+                        contentSubtitleTextLabel.text = ""
+                    default:
+                        return
+                }
         }
     }
 

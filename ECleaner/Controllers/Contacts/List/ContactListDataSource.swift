@@ -98,8 +98,8 @@ extension ContactListDataSource: UIScrollViewDelegate {
         let contentOffset = scrollView.contentOffset
         let contentInset = scrollView.contentInset
         
-        let userInfo = [C.key.notificationDictionary.scrollViewInset: contentInset,
-                        C.key.notificationDictionary.scrollViewOffset: contentOffset] as [String : Any]
+        let userInfo = [C.key.notificationDictionary.scroll.scrollViewInset: contentInset,
+                        C.key.notificationDictionary.scroll.scrollViewOffset: contentOffset] as [String : Any]
         U.notificationCenter.post(name: .scrollViewDidScroll, object: nil, userInfo: userInfo)
     }
 }

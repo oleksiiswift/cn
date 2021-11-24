@@ -14,7 +14,6 @@ enum AlphabeticalContactsResults {
     case error(error: Error)
 }
 
-
 enum ContactasCleaningType {
     case onlyName
     case onlyPhone
@@ -98,6 +97,7 @@ class ContactsManager {
     
     private var phoneNumberKit = PhoneNumberKit()
     private var fileManager = FileManager.default
+    private var notificationManager = SingleSearchNitificationManager.instance
     
     private var deleteContactsTaskContinue: Bool = true
     private var mergeContactsTaskContinue: Bool = true
@@ -409,6 +409,8 @@ extension ContactsManager {
         /// `names duplicated contacts`
     private func namesDuplicated(_ contacts: [CNContact], completionHandler: @escaping ([String : [CNContact]]) -> Void) {
         
+        self.notificationManager.sendSingleSearchProgressNotification(notificationtype: .duplicatesNames, totalProgressItems: Int(0.01), currentProgressItem: contacts.count)
+        
         var contactsDictionary = Dictionary(grouping: contacts, by: {String($0.familyName.removeWhitespace() + $0.givenName.removeWhitespace())})
         contactsDictionary.removeValue(forKey: "")
         let filterDictionary = contactsDictionary.filter({$0.value.count > 1})
@@ -418,9 +420,14 @@ extension ContactsManager {
     private func namesDuplicatesGroup(_ contacts: [String : [CNContact]], completionHandler: @escaping ([ContactsGroup]) -> Void) {
         
         var group: [ContactsGroup] = []
+        var currentProcessingIndex: Int = 0
         
         for (contactName, similarContacts) in contacts {
             debugPrint(contactName)
+            currentProcessingIndex += 1
+            
+            self.notificationManager.sendSingleSearchProgressNotification(notificationtype: .duplicatesNames, totalProgressItems: contacts.count, currentProgressItem: currentProcessingIndex)
+            sleep(UInt32(0.1))
             let phoneNumbers = similarContacts.map({$0.phoneNumbers}).reduce([], +)
             let stringNumbers = phoneNumbers.map({$0.value.stringValue})
             let itentifier = self.checkRegionIdentifier(from: stringNumbers)
@@ -627,8 +634,8 @@ extension ContactsManager  {
                         let calculetedProgress: CGFloat = CGFloat(100 * deleteSelectionIndexCount / indexes.count) / 100
                         let totalProcessing: String = "\(deleteSelectionIndexCount) / \(indexes.count)"
                         
-                        let userInfo: [String : Any] = [C.key.notificationDictionary.progrssAlertValue: calculetedProgress,
-                                                        C.key.notificationDictionary.progressAlertFilesCount: totalProcessing]
+                        let userInfo: [String : Any] = [C.key.notificationDictionary.progressAlert.progrssAlertValue: calculetedProgress,
+                                                        C.key.notificationDictionary.progressAlert.progressAlertFilesCount: totalProcessing]
                         
                         U.notificationCenter.post(name: .progressMergeContactsAlertDidChangeProgress, object: nil, userInfo: userInfo)
                         sleep(UInt32(0.1))
@@ -857,8 +864,8 @@ extension ContactsManager {
                         
                         let calculateprogress: CGFloat = CGFloat(100 * deletedContactsCount / contacts.count) / 100
                         
-                        let userInfo: [String: Any] = [C.key.notificationDictionary.progrssAlertValue: calculateprogress,
-                                                       C.key.notificationDictionary.progressAlertFilesCount: "\(deletedContactsCount) / \(contacts.count)"]
+                        let userInfo: [String: Any] = [C.key.notificationDictionary.progressAlert.progrssAlertValue: calculateprogress,
+                                                       C.key.notificationDictionary.progressAlert.progressAlertFilesCount: "\(deletedContactsCount) / \(contacts.count)"]
                         
                         U.notificationCenter.post(name: .progressDeleteContactsAlertDidChangeProgress, object: nil, userInfo: userInfo)
                         debugPrint(deletedContactsCount)

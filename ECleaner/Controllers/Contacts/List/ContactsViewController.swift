@@ -554,7 +554,7 @@ extension ContactsViewController: ProgressAlertControllerDelegate {
 
         guard let userInfo = notification.userInfo else { return }
         
-        if let progress = userInfo[C.key.notificationDictionary.progrssAlertValue] as? CGFloat, let totalFilesCount = userInfo[C.key.notificationDictionary.progressAlertFilesCount] as? String {
+        if let progress = userInfo[C.key.notificationDictionary.progressAlert.progrssAlertValue] as? CGFloat, let totalFilesCount = userInfo[C.key.notificationDictionary.progressAlert.progressAlertFilesCount] as? String {
             U.UI {
                 self.progressAlert.setProgress(progress, totalFilesProcessong: totalFilesCount)
             }

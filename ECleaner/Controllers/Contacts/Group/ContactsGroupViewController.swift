@@ -252,19 +252,20 @@ extension ContactsGroupViewController: ProgressAlertControllerDelegate {
     @objc func progressDeleteAlertNotification(_ notification: Notification) {
         guard !isMergeContactsProcessing else { return }
         guard let userInfo = notification.userInfo else { return }
-        self.handleProcessNotoficationInf0(userInfo)
+        self.handleProcessNotoficationInfo(userInfo)
        
     }
     
     @objc func progressMergeAlertNotification(_ notification: Notification) {
         guard let userInfo = notification.userInfo else { return }
-        self.handleProcessNotoficationInf0(userInfo)
+        self.handleProcessNotoficationInfo(userInfo)
     }
     
     
-    private func handleProcessNotoficationInf0(_ userInfo: [AnyHashable: Any]) {
+    private func handleProcessNotoficationInfo(_ userInfo: [AnyHashable: Any]) {
         
-        if let progress = userInfo[C.key.notificationDictionary.progrssAlertValue] as? CGFloat, let totalFilesCount = userInfo[C.key.notificationDictionary.progressAlertFilesCount] as? String {
+        if let progress = userInfo[C.key.notificationDictionary.progressAlert.progrssAlertValue] as? CGFloat,
+           let totalFilesCount = userInfo[C.key.notificationDictionary.progressAlert.progressAlertFilesCount] as? String {
             U.UI {
                 self.progressAlert.setProgress(progress, totalFilesProcessong: totalFilesCount)
             }

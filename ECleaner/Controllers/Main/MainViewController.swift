@@ -236,7 +236,7 @@ extension MainViewController {
                 return
         }
         
-        viewController.contentType = type
+        viewController.mediaContentType = type
         self.navigationController?.pushViewController(viewController, animated: true)
     }
     
