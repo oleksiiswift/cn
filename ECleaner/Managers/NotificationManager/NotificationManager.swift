@@ -36,6 +36,7 @@ extension Notification.Name {
     static let mergeContactsSelectionDidChange = Notification.Name(C.key.notification.mergeContactsSelectionDidChange)
     static let selectedContactsCountDidChange = Notification.Name(C.key.notification.selectedContactsDidChange)
     static let scrollViewDidScroll = Notification.Name("scrollViewDidScroll")
+    static let scrollViewDidBegingDragging = Notification.Name("scrollViewDidBeginDragging")
     static let searchBarDidCancel = Notification.Name("searchBarDidCancel")
     
     /// `progress alert notification`

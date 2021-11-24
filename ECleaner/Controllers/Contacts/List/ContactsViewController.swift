@@ -32,7 +32,6 @@ class ContactsViewController: UIViewController {
                                                               itemThumbnail: I.systemItems.defaultItems.share,
                                                               isSelected: false,
                                                               menuItem: .share)
-    
     private var bottomButtonHeight: CGFloat = 70
     public var contactContentIsEditing: Bool = false
     
@@ -78,9 +77,6 @@ class ContactsViewController: UIViewController {
         setupTableView()
         updateColors()
         handleBottomButtonChangeAppearence(disableAnimation: true)
-        
-        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dissmissKeyboardResponder))
-        self.view.addGestureRecognizer(tapGestureRecognizer)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -443,7 +439,7 @@ extension ContactsViewController: SelectDropDownMenuDelegate {
 extension ContactsViewController {
     
     private func setActiveSearchBar(setActive: Bool) {
-        
+        self.searchBarView.searchBarIsActive = setActive
         self.searchBarView.setShowCancelButton(setActive, animated: true)
         searchBarTopConstraint.constant = setActive ? 0 : 60
         U.animate(0.3) {
@@ -452,7 +448,7 @@ extension ContactsViewController {
             self.view.layoutIfNeeded()
         }
     }
-    
+
     @objc func handleSearchBarState() {
         U.UI {
             self.contactListViewModel.searchContact.value = ""
@@ -462,9 +458,25 @@ extension ContactsViewController {
         }
     }
     
+    @objc func contentDidBeginDraging() {
+        
+        guard searchBarTopConstraint.constant != 60 else { return }
+        
+        if searchBarView.searchBar.text == "" {
+            setActiveSearchBar(setActive: false)
+        } else {
+            searchBarTopConstraint.constant = 60
+            U.animate(0.3) {
+                self.navigationBar.containerView.alpha = 1
+                self.navigationBar.layoutIfNeeded()
+                self.view.layoutIfNeeded()
+            }
+        }
+    }
+    
     @objc func searchBarDidMove(_ notification: Notification) {
         
-//        guard let userInfo = notification.userInfo else { return }
+        guard let _ = notification.userInfo else { return }
     }
     
     @objc func searchBarResignFirstResponder() {
@@ -550,7 +562,6 @@ extension ContactsViewController: ProgressAlertControllerDelegate {
     }
 }
 
-
 extension ContactsViewController: Themeble {
     
     private func setupNavigation() {
@@ -604,6 +615,8 @@ extension ContactsViewController: Themeble {
         bottomDoubleButtonView.setLeftButtonTitle("share")
         
         bottomButtonView.setImage(I.systemItems.defaultItems.delete)
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dissmissKeyboardResponder))
+        self.view.addGestureRecognizer(tapGestureRecognizer)
     }
     
     private func setupViewModel(contacts: [CNContact]) {
@@ -669,6 +682,7 @@ extension ContactsViewController: Themeble {
         U.notificationCenter.addObserver(self, selector: #selector(progressNotification(_:)), name: .progressDeleteContactsAlertDidChangeProgress, object: nil)
         U.notificationCenter.addObserver(self, selector: #selector(handleSearchBarState), name: .searchBarDidCancel, object: nil)
         U.notificationCenter.addObserver(self, selector: #selector(searchBarDidMove(_:)), name: .scrollViewDidScroll, object: nil)
+        U.notificationCenter.addObserver(self, selector: #selector(contentDidBeginDraging), name: .scrollViewDidBegingDragging, object: nil)
         U.notificationCenter.addObserver(self, selector: #selector(didSelectDeselectContact), name: .selectedContactsCountDidChange, object: nil)
     }
     
