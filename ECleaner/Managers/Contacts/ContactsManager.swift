@@ -14,55 +14,6 @@ enum AlphabeticalContactsResults {
     case error(error: Error)
 }
 
-enum ContactasCleaningType {
-    case onlyName
-    case onlyPhone
-    case onlyEmail
-    case emptyName
-    case wholeEmpty
-    case none
-    
-    case duplicatedPhoneNumnber
-    case duplicatedContactName
-    case duplicatedEmail
-    
-    var rawValue: String {
-        switch self {
-            case .onlyName:
-                return "only name"
-            case .onlyPhone:
-                return "only phone"
-            case .onlyEmail:
-                return "only mail"
-            case .emptyName:
-                return "incomplete name"
-            case .wholeEmpty:
-                return "whole Empty phone"
-            default:
-                return ""
-        }
-    }
-}
-
-enum ContactsContainerType {
-    case none
-    case card
-    case adressBook
-    case contacts
-    
-    var rawValue: String? {
-        switch self {
-            case .none:
-                return nil
-            case .card:
-                return C.contacts.contactsContainer.card
-            case .adressBook:
-                return C.contacts.contactsContainer.addressBook
-            case .contacts:
-                return C.contacts.contactsContainer.contancts
-        }
-    }
-}
 
 class ContactsCountryIdentifier {
     var region: String
@@ -394,6 +345,7 @@ extension ContactsManager {
             let fetchPredicate = CNContact.predicateForContacts(matching: phoneNunber)
             do {
                 let containerResults = try contactsStore.unifiedContacts(matching: fetchPredicate, keysToFetch: self.fetchingKeys)
+                self.notificationManager.sendSingleSearchProgressNotification(notificationtype: .duplicatesNumbers, totalProgressItems: phoneNumbers.count, currentProgressItem: i)
                 if containerResults.count > 1 {
 //                    let identifier = self.checkRegionIdentifier(from: [phoneNunber.stringValue])
                     let identifier = ContactsCountryIdentifier(region: "", countryCode: "")
@@ -449,6 +401,7 @@ extension ContactsManager {
             let email = emailsList[i]
             do {
                 let fetchPredicate = CNContact.predicateForContacts(matchingEmailAddress: email)
+                self.notificationManager.sendSingleSearchProgressNotification(notificationtype: .duplicatesEmails, totalProgressItems: emailsList.count, currentProgressItem: i)
                 let containerResult = try contactsStore.unifiedContacts(matching: fetchPredicate, keysToFetch: self.fetchingKeys)
                 if containerResult.count > 1 {
                     let identifier = ContactsCountryIdentifier(region: "", countryCode: "")

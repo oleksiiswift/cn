@@ -107,8 +107,9 @@ extension ContentTypeTableViewCell {
             case .singleSearch:
                 contentTypeTextLabel.text = contentType.getCellTitle(index: indexPath.row)
                 
-                if !isProcessingComplete || progress == 1{
-                    horizontalProgressView.progress = 0
+                if !isProcessingComplete || progress == 1 {
+                    self.horizontalProgressView.progress = progress
+                    self.horizontalProgressView.progress = 0
                     self.reuseShadowRoundedView.setImage(contentType.imageOfRows)
                     reuseShadowRoundedView.hideIndicator()
                 } else {
@@ -126,7 +127,7 @@ extension ContentTypeTableViewCell {
                     case .allContacts, .emptyContacts:
                         contentSubtitleTextLabel.text  = phasetCount != 0 ? String("\(phasetCount) contacts") : ""
                     case .duplicatedContacts, .duplicatedPhoneNumbers, .duplicatedEmails:
-                        contentSubtitleTextLabel.isHidden = true
+                        contentSubtitleTextLabel.text = phasetCount != 0 ? String("\(phasetCount) duplicated groups") : "-"
                     case .compress:
                         contentSubtitleTextLabel.text = ""
                     default:

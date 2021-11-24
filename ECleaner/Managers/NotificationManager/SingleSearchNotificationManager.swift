@@ -17,6 +17,8 @@ enum SingleContentSearchNotificationType {
     case duplicatesNumbers
     case duplicatesEmails
     
+    case none
+    
     var dictionaryCountName: String {
         
         switch self {
@@ -30,6 +32,8 @@ enum SingleContentSearchNotificationType {
                 return C.key.notificationDictionary.count.duplicateNumbersContactsCount
             case .duplicatesEmails:
                 return C.key.notificationDictionary.count.duplicateEmailsContactsCount
+            case .none:
+                return ""
         }
     }
     
@@ -45,6 +49,8 @@ enum SingleContentSearchNotificationType {
                 return C.key.notificationDictionary.index.duplicateNumbersContactsIndex
             case .duplicatesEmails:
                 return C.key.notificationDictionary.index.duplicateEmailContactsIndex
+            case .none:
+                return ""
         }
     }
     
@@ -61,6 +67,8 @@ enum SingleContentSearchNotificationType {
                 return .singleSearchDuplicatesNumbersContactsScan
             case .duplicatesEmails:
                 return .singleSearchDupliatesEmailsContactsScan
+            case .none:
+                return Notification.Name("")
         }
     }
     
@@ -77,6 +85,8 @@ enum SingleContentSearchNotificationType {
                 return .duplicatedPhoneNumbers
             case .duplicatesEmails:
                 return .duplicatedEmails
+            case .none:
+                return .none
         }
     }
 }

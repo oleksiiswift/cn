@@ -38,7 +38,7 @@ class MediaContentViewController: UIViewController {
             S.endingSavedDate = newValue
         }
     }
-    
+    private var scanningProcessIsRunning: Bool = false
     private var isStartingDateSelected: Bool = false
     
     public var allScreenShots: [PHAsset] = []
@@ -204,6 +204,8 @@ extension MediaContentViewController {
         
     private func showMediaContent(by selectedType: MediaContentType, selected index: Int) {
         
+        guard !scanningProcessIsRunning else { return }
+        
         switch selectedType {
             case .userPhoto:
                 switch index {
@@ -246,11 +248,11 @@ extension MediaContentViewController {
                     case 1:
                         self.showEmptyGroupsContacts()
                     case 2:
-                        self.showDuplicatedNamesContacts()
+                        self.showContactCleanController(cleanType: .duplicatedContactName)
                     case 3:
-                        self.showDuplicatedPhoneNumbersContacts()
+                        self.showContactCleanController(cleanType: .duplicatedPhoneNumnber)
                     case 4:
-                        self.showDuplicatedEmailsContacts()
+                        self.showContactCleanController(cleanType: .duplicatedEmail)
                     default:
                         return
                 }
@@ -484,6 +486,7 @@ extension MediaContentViewController {
     private func showEmptyGroupsContacts() {
         P.showIndicator()
         self.contactsManager.getEmptyContacts { contactsGroup in
+            
             U.UI {
                 P.hideIndicator()
                 let totalContacts = contactsGroup.map({$0.contacts}).count
@@ -497,50 +500,36 @@ extension MediaContentViewController {
             }
         }
     }
-                 
-    private func showDuplicatedNamesContacts() {
-        self.contactsManager.getDuplicatedContacts(of: .duplicatedContactName) { contactsGroup in
-            U.delay(1) {
-                
-                SingleSearchNitificationManager.instance.sendSingleSearchProgressNotification(notificationtype: .duplicatesNames, totalProgressItems: 1, currentProgressItem: 1)
-                
+    
+    private func showContactCleanController(cleanType: ContactasCleaningType) {
+        self.scanningProcessIsRunning = !scanningProcessIsRunning
+        
+        self.contactsManager.getDuplicatedContacts(of: cleanType) { contactsGroup in
+            self.updateContactsCleanSearchCount(groupType: cleanType, contactsGroup: contactsGroup)
+            U.delay(0.5) {
+                SingleSearchNitificationManager.instance.sendSingleSearchProgressNotification(notificationtype: cleanType.notificationType, totalProgressItems: 1, currentProgressItem: 1)
                 U.delay(0.5) {
+                    self.scanningProcessIsRunning = !self.scanningProcessIsRunning
                     if contactsGroup.count != 0 {
                         let group = contactsGroup.sorted(by: {$0.name < $1.name})
-                        self.showGroupedContactsViewController(contacts: group, group: .duplicatedContactName, content: .duplicatedContacts)
+                        self.showGroupedContactsViewController(contacts: group, group: cleanType, content:  cleanType.photoMediaType)
                     } else {
-                        A.showEmptyContactsToPresent(of: .duplicatesNamesIsEmpty) {}
+                        A.showEmptyContactsToPresent(of: cleanType.alertEmptyType) {}
                     }
                 }
             }
         }
     }
     
-    private func showDuplicatedPhoneNumbersContacts() {
-        P.showIndicator()
-        self.contactsManager.getDuplicatedContacts(of: .duplicatedPhoneNumnber) { contactsGroup in
-            U.UI {
-                P.hideIndicator()
-                if contactsGroup.count != 0 {
-                    let group = contactsGroup.sorted(by: {$0.name < $1.name})
-                    self.showGroupedContactsViewController(contacts: group, group: .duplicatedPhoneNumnber, content: .duplicatedPhoneNumbers)
-                } else {
-                    A.showEmptyContactsToPresent(of: .duplicatesNumbersIsEmpty) {}
-                }
-            }
-        }
-    }
-    
-    private func showDuplicatedEmailsContacts() {
-        self.contactsManager.getDuplicatedContacts(of: .duplicatedEmail) { contactsGroup in
-            U.delay(1) {
-                if contactsGroup.count != 0 {
-                    let group = contactsGroup.sorted(by: {$0.name < $1.name})
-                    self.showGroupedContactsViewController(contacts: group, group: .duplicatedEmail, content: .duplicatedEmails)
-                } else {
-                    A.showEmptyContactsToPresent(of: .duplicatesEmailsIsEmpty) {}
-                }
-            }
+    private func updateContactsCleanSearchCount(groupType: ContactasCleaningType, contactsGroup: [ContactsGroup]) {
+        switch groupType {
+            case .duplicatedPhoneNumnber:
+                self.allDuplicatedPhoneNumbers = contactsGroup
+            case .duplicatedContactName:
+                self.allDuplicatedContacts = contactsGroup
+            case .duplicatedEmail:
+                self.allDuplicatedEmailAdresses = contactsGroup
+            default: return
         }
     }
 }
@@ -600,6 +589,9 @@ extension MediaContentViewController {
                 totalSearchFindContactsCointIn[3] = count
             case .duplicatesEmails:
                 totalSearchFindContactsCointIn[4] = count
+            default:
+                return
+                
         }
     }
     
@@ -627,6 +619,8 @@ extension MediaContentViewController {
                 self.singleSearchContactsProgress[3] = progrss
             case .duplicatesEmails:
                 self.singleSearchContactsProgress[4] = progrss
+            default:
+                return
         }
         
         guard !indexPath.isEmpty else { return }
