@@ -442,6 +442,7 @@ extension ContactsViewController {
         self.searchBarView.searchBarIsActive = setActive
         self.searchBarView.setShowCancelButton(setActive, animated: true)
         searchBarTopConstraint.constant = setActive ? 0 : 60
+        contactListDataSource.searchBarIsFirstResponder = setActive
         U.animate(0.3) {
             self.navigationBar.containerView.alpha = setActive ? 0 : 1
             self.navigationBar.layoutIfNeeded()
@@ -511,6 +512,10 @@ extension ContactsViewController: UISearchBarDelegate {
             self.contactListViewModel.updateSearchState()
         }
         searchBarResignFirstResponder()
+    }
+    
+    func searchBarShouldEndEditing(_ searchBar: UISearchBar) -> Bool {
+        self.searchBarView.searchBar.resignFirstResponder()
     }
 }
 
@@ -615,8 +620,6 @@ extension ContactsViewController: Themeble {
         bottomDoubleButtonView.setLeftButtonTitle("share")
         
         bottomButtonView.setImage(I.systemItems.defaultItems.delete)
-        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dissmissKeyboardResponder))
-        self.view.addGestureRecognizer(tapGestureRecognizer)
     }
     
     private func setupViewModel(contacts: [CNContact]) {
@@ -664,7 +667,7 @@ extension ContactsViewController: Themeble {
         tableView.sectionIndexColor = theme.contacSectionIndexColor
         tableView.keyboardDismissMode = .onDrag
         tableView.backgroundColor = theme.backgroundColor
-        tableView.allowsSelection = false
+//        tableView.allowsSelection = false
             /// add extra top inset
         let view = UIView(frame: CGRect(origin: .zero, size: CGSize(width: U.screenWidth, height: 20)))
         view.backgroundColor = .clear
@@ -684,6 +687,7 @@ extension ContactsViewController: Themeble {
         U.notificationCenter.addObserver(self, selector: #selector(searchBarDidMove(_:)), name: .scrollViewDidScroll, object: nil)
         U.notificationCenter.addObserver(self, selector: #selector(contentDidBeginDraging), name: .scrollViewDidBegingDragging, object: nil)
         U.notificationCenter.addObserver(self, selector: #selector(didSelectDeselectContact), name: .selectedContactsCountDidChange, object: nil)
+        U.notificationCenter.addObserver(self, selector: #selector(searchBarResignFirstResponder), name: .searchBarShouldResign, object: nil)
     }
     
     private func setupShowExportContactController(segue: UIStoryboardSegue) {

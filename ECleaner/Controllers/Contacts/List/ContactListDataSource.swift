@@ -15,6 +15,7 @@ class ContactListDataSource: NSObject {
     public var didSelectContact: ((ContactListViewModel) -> Void) = {_ in}
 
     public var contactContentIsEditing: Bool = false
+    public var searchBarIsFirstResponder: Bool = false
     
     public var contentType: PhotoMediaType = .none
     
@@ -78,8 +79,12 @@ extension ContactListDataSource: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
-        self.didSelectDeselectContact()
+        if contactContentIsEditing != false {
+            tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
+            self.didSelectDeselectContact()
+        } else if searchBarIsFirstResponder {
+            U.notificationCenter.post(name: .searchBarShouldResign, object: nil, userInfo: nil)
+        }
     }
     
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
