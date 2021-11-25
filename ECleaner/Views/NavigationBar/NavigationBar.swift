@@ -15,6 +15,8 @@ class NavigationBar: UIView {
     @IBOutlet weak var titleTextLabel: UILabel!
     @IBOutlet weak var leftButtonLeadingConstraint: NSLayoutConstraint!
     @IBOutlet weak var rightButtonTrailingConstraint: NSLayoutConstraint!
+    @IBOutlet weak var rightButtonWidthConstraint: NSLayoutConstraint!
+    @IBOutlet weak var leftButtonWidthConstraint: NSLayoutConstraint!
     
     var delegate: NavigationBarDelegate?
     
@@ -88,12 +90,14 @@ class NavigationBar: UIView {
         }
         
         if let rightBarButtonImage = rightBarButtonImage {
-            rightButtonTrailingConstraint.constant = 5
+            rightButtonWidthConstraint.constant = 50
+            rightButtonTrailingConstraint.constant = 10
             rightBarButtonItem.setTitle(nil, for: .normal)
             rightBarButtonItem.setImage(rightBarButtonImage, for: .normal)
             rightBarButtonItem.isHidden = false
         } else if let rightTitle = rightButtonTitle {
-            rightButtonTrailingConstraint.constant = 20
+            rightButtonWidthConstraint.constant = 100
+            rightButtonTrailingConstraint.constant = 10
             rightBarButtonItem.setImage(nil, for: .normal)
             rightBarButtonItem.setTitleWithoutAnimation(title: rightTitle)
             rightBarButtonItem.isHidden = false
@@ -118,7 +122,7 @@ class NavigationBar: UIView {
     
     public func changeHotRightTitle(newTitle: String) {
         rightBarButtonItem.setImage(nil, for: .normal)
-        rightBarButtonItem.sizeToFit()
+//        rightBarButtonItem.sizeToFit()
         rightBarButtonItem.setTitleWithoutAnimation(title: newTitle)
     }
 

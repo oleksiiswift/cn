@@ -13,22 +13,20 @@ import Contacts
 class MainViewController: UIViewController {
   
     @IBOutlet weak var customNavBar: StartingNavigationBar!
-    
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var circleTotlaSpaceView: CircleProgressView!
     @IBOutlet weak var circleProgressView: MMTGradientArcView!
     @IBOutlet weak var mediaCollectionView: UICollectionView!
     @IBOutlet weak var deepCleaningButtonView: ShadowView!
     @IBOutlet weak var deepCleaningButtonTextLabel: UILabel!
-  
     @IBOutlet weak var collectionViewHeightConstraint: NSLayoutConstraint!
     
-    lazy var premiumButton = UIBarButtonItem(image: I.navigationItems.premium, style: .plain, target: self, action: #selector(premiumButtonPressed))
-    lazy var settingsButton = UIBarButtonItem(image: I.navigationItems.settings, style: .plain, target: self, action: #selector(settingsButtonPressed))
+    private let baseCarouselLayout = BaseCarouselFlowLayout()
+    private lazy var premiumButton = UIBarButtonItem(image: I.navigationItems.premium, style: .plain, target: self, action: #selector(premiumButtonPressed))
+    private lazy var settingsButton = UIBarButtonItem(image: I.navigationItems.settings, style: .plain, target: self, action: #selector(settingsButtonPressed))
     
     private var photoMenager = PhotoManager()
     
-    private let baseCarouselLayout = BaseCarouselFlowLayout()
     
     private var allPhotoCount: Int?
     private var allVideosCount: Int?
@@ -58,9 +56,14 @@ class MainViewController: UIViewController {
     private var allRecentlyDeletedPhotos: [PHAsset] = []
     private var allRecentlyDeletedVideos: [PHAsset] = []
     
+    
+    
+        /// `contacts values`
     private var allContacts: [CNContact] = []
     private var allEmptyContacts: [ContactsGroup] = []
     private var allDuplicatedContacts: [ContactsGroup] = []
+    private var allDuplicatedPhoneNumbers: [ContactsGroup] = []
+    private var allDuplicatedEmailAdresses: [ContactsGroup] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -86,6 +89,7 @@ class MainViewController: UIViewController {
         super.viewWillAppear(animated)
         
         setupNavigation()
+        updateContactsCount()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -185,9 +189,10 @@ extension MainViewController: UpdateContentDataBaseListener {
     func getContactsCount(count: Int) {
         
         self.allContactsCount = count
-        
-        if let cell = mediaCollectionView.cellForItem(at: IndexPath(item: 2, section: 0)) as? MediaTypeCollectionViewCell {
-            cell.configureCell(mediaType: .userContacts, contentCount: count, diskSpace: 0)
+        U.UI {
+            if let cell = self.mediaCollectionView.cellForItem(at: IndexPath(item: 2, section: 0)) as? MediaTypeCollectionViewCell {
+                cell.configureCell(mediaType: .userContacts, contentCount: count, diskSpace: 0)
+            }
         }
     }
     
@@ -203,13 +208,26 @@ extension MainViewController: UpdateContentDataBaseListener {
         self.allContacts = contacts
     }
     
+    func getAllDuplicatedContacts(_ contacts: [ContactsGroup]) {
+        self.allDuplicatedContacts = contacts
+    }
+    
     func getAllEmptyContacts(_ contacts: [ContactsGroup]) {
         self.allEmptyContacts = contacts
     }
     
-    func getAllDuplicatedContacts(_ contacts: [ContactsGroup]) {
-        self.allDuplicatedContacts = contacts
+    func getAllDuplicatedContactsGroup(_ contctsGroup: [ContactsGroup]) {
+        self.allDuplicatedContacts = contctsGroup
     }
+    
+    func getAllDuplicatedNumbersContactsGroup(_ contctsGroup: [ContactsGroup]) {
+        self.allDuplicatedPhoneNumbers = contctsGroup
+    }
+    
+    func getAllDuplicatedEmailsContactsGroup(_ contctsGroup: [ContactsGroup]) {
+        self.allDuplicatedEmailAdresses = contctsGroup
+    }
+    
 }
 
 extension MainViewController {
@@ -232,11 +250,13 @@ extension MainViewController {
                 viewController.allContacts = self.allContacts
                 viewController.allEmptyContacts = self.allEmptyContacts
                 viewController.allDuplicatedContacts = self.allDuplicatedContacts
+                viewController.allDuplicatedPhoneNumbers = self.allDuplicatedPhoneNumbers
+                viewController.allDuplicatedEmailAdresses = self.allDuplicatedEmailAdresses
             default:
                 return
         }
         
-        viewController.contentType = type
+        viewController.mediaContentType = type
         self.navigationController?.pushViewController(viewController, animated: true)
     }
     
@@ -254,6 +274,18 @@ extension MainViewController {
         self.navigationController?.pushViewController(viewController, animated: true)
     }
 }
+
+extension MainViewController {
+    
+    private func updateContactsCount() {
+    
+        ContactsManager.shared.getAllContacts { contacts in
+            self.getAllCNContacts(contacts)
+            self.getContactsCount(count: contacts.count)
+        }
+    }
+}
+
 
 //
 extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSource {
@@ -275,6 +307,7 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
             case 1:
                 self.openMediaController(type: .userVideo)
             case 2:
+                ContactsManager.shared.setStopSearchProcessing()
                 self.openMediaController(type: .userContacts)
             default:
                 return

@@ -82,7 +82,16 @@ class UpdateContentDataBaseMediator {
         listener?.getAllEmptyContacts(contacts)
     }
     
-    func getAllDuplicatedContacts(_ contacts: [ContactsGroup]) {
-        listener?.getAllDuplicatedContacts(contacts)
+    func getAllDuplicatedContactsGroup(_ contactsGroup: [ContactsGroup]) {
+        listener?.getAllDuplicatedContactsGroup(contactsGroup)
     }
+    
+    func getAllDuplicatedNumbersContactsGroup(_ contactsGroup: [ContactsGroup]) {
+        listener?.getAllDuplicatedNumbersContactsGroup(contactsGroup)
+    }
+    
+    func getAllDuplicatedEmailsContactsGroup(_ contactsGroup: [ContactsGroup]) {
+        listener?.getAllDuplicatedEmailsContactsGroup(contactsGroup)
+    }
+
 }

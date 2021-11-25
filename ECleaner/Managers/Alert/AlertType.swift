@@ -34,8 +34,17 @@ enum AlertType {
     case duplicatesNumbersIsEmpty
     case duplicatesEmailsIsEmpty
     
+    /// `contacts module`
+        /// ask
     case deleteContacts
+    case deleteContact
     case mergeContacts
+    case mergeContact
+        /// done
+    case suxxessDeleteContact
+    case suxxessDeleteContacts
+    case suxxessMergedContact
+    case suxxessMergedContacts
     
     case none
     
@@ -89,8 +98,16 @@ enum AlertType {
                 return "no duplicates"
             case .deleteContacts:
                 return "delete contacts"
+            case .deleteContact:
+                return "delete contact"
             case .mergeContacts:
                 return "merge selected"
+            case .mergeContact:
+                return "merge contact"
+            case .suxxessDeleteContact, .suxxessDeleteContacts:
+                return "good need locale"
+            case .suxxessMergedContact, .suxxessMergedContacts:
+                return "good merged locale"
         }
     }
     
@@ -127,9 +144,21 @@ enum AlertType {
             case .duplicatesEmailsIsEmpty:
                 return "no duplicates"
             case .deleteContacts:
-                return "delete contacts"
+                return "shure delete contacts"
+            case .deleteContact:
+                return "shure delete contact"
             case .mergeContacts:
-                return "merge selected"
+                return "merge selected contacts"
+            case .mergeContact:
+                return "merge contacts"
+            case .suxxessDeleteContact:
+                return "contact deleted"
+            case .suxxessDeleteContacts:
+                return "contacts deleted"
+            case .suxxessMergedContact:
+                return "cintact suxx merged"
+            case .suxxessMergedContacts:
+                return "contacts suxx merged"
         }
     }
     
@@ -153,8 +182,10 @@ enum AlertType {
                 return false
             case .contactsIsEmpty, .emptyContactsIsEmpty, .duplicatesNamesIsEmpty, .duplicatesNumbersIsEmpty, .duplicatesEmailsIsEmpty:
                 return false
-            case .deleteContacts, .mergeContacts:
+            case .deleteContacts, .mergeContacts, .deleteContact, .mergeContact:
                 return true
+            case .suxxessDeleteContact, .suxxessDeleteContacts, .suxxessMergedContact, .suxxessMergedContacts:
+                return false
             case .none:
                 return false
         }

@@ -18,8 +18,10 @@
                 <outlet property="containerView" destination="EFo-4y-Iu0" id="s6N-bS-VQe"/>
                 <outlet property="leftBarButtonItem" destination="YxE-95-yZz" id="Cfe-sd-N4S"/>
                 <outlet property="leftButtonLeadingConstraint" destination="Gp0-z5-cVj" id="v2v-p3-eYV"/>
+                <outlet property="leftButtonWidthConstraint" destination="YA3-4U-9SI" id="ES0-uE-akT"/>
                 <outlet property="rightBarButtonItem" destination="ebL-5N-jGx" id="oOY-O6-RbC"/>
                 <outlet property="rightButtonTrailingConstraint" destination="oDM-pC-Oob" id="ngE-T9-d5p"/>
+                <outlet property="rightButtonWidthConstraint" destination="hKY-Tz-aUm" id="D81-VR-twE"/>
                 <outlet property="titleTextLabel" destination="SbH-cJ-wAs" id="dWU-76-vZp"/>
             </connections>
         </placeholder>

@@ -102,7 +102,7 @@ extension GroupContactTableViewCell {
         if let imageData = contact.thumbnailImageData, let image = UIImage(data: imageData) {
             shadowRoundedReuseView.setImage(image)
         } else {
-            shadowRoundedReuseView.setImage(I.mainMenuThumbItems.contacts)
+            shadowRoundedReuseView.setImage(I.personalisation.contacts.contactPhoto)
         }
     }
     
@@ -148,7 +148,7 @@ extension GroupContactTableViewCell: Themeble {
         customSeparator.backgroundColor = theme.separatorMainColor
         helperSeparatorView.backgroundColor = theme.separatorHelperColor
         
-        shadowRoundedReuseView.setShadowColor(for: theme.topShadowColor, and: theme.bottomShadowColor)
+        shadowRoundedReuseView.setShadowColor(for: theme.topShadowColor, and: theme.bottomShadowColor.withAlphaComponent(0.5))
     }
     
     /// `inset` for first and last cell in section for extra shadow
