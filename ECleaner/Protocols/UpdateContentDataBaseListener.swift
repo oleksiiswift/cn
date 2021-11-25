@@ -27,6 +27,8 @@ protocol UpdateContentDataBaseListener {
     func getRecentlyDeletedVideoAssets(_ assts: [PHAsset])
     
     func getAllCNContacts(_ contacts: [CNContact])
-    func getAllEmptyContacts(_ contacts: [ContactsGroup])
-    func getAllDuplicatedContacts(_ contacts: [ContactsGroup])
+    func getAllEmptyContacts(_ contctsGroup: [ContactsGroup])
+    func getAllDuplicatedContactsGroup(_ contctsGroup: [ContactsGroup])
+    func getAllDuplicatedNumbersContactsGroup(_ contctsGroup: [ContactsGroup])
+    func getAllDuplicatedEmailsContactsGroup(_ contctsGroup: [ContactsGroup])
 }

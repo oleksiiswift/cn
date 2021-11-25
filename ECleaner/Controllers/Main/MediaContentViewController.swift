@@ -65,13 +65,16 @@ class MediaContentViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.contactsManager.setProcess(.search, state: .availible) /// set update of contacts availible
+            
         checkForAssetsCount()
         setupUI()
         setupDateInterval()
         updateColors()
         setupNavigation()
         setupTableView()
-        setupObserversAndDelegate()
+        setupDelegate()
+        setupObserver(for: self.mediaContentType)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -185,22 +188,24 @@ extension MediaContentViewController: UITableViewDelegate, UITableViewDataSource
 //      MARK: - show content controller -
 extension MediaContentViewController {
     
-    /// `0` - simmilar photos
-    /// `1` - duplicates
-    /// `2` - screenshots
-    /// `3` - selfies
-    /// `4` - live photos
-    /// `5` - recently deleted
+        /// `0` - simmilar photos
+        /// `1` - duplicates
+        /// `2` - screenshots
+        /// `3` - selfies
+        /// `4` - live photos
+        /// `5` - recently deleted
     
-    /// `0` - large video files
-    /// `1` - duplicates
-    /// `2` - similar videos
-    /// `3` - screen records files
-    /// `4` - recently deleted files
+        /// `0` - large video files
+        /// `1` - duplicates
+        /// `2` - similar videos
+        /// `3` - screen records files
+        /// `4` - recently deleted files
     
-    /// `0` - all contacts
-    /// `1` - empty contacts
-    /// `2` - duplicated contacts
+        /// `0` - all contacts
+        /// `1` - empty contacts
+        /// `2` - duplicated contacts names
+        /// `3` - duplicated contacts phones
+        /// `4` - duplicated contacts emails
         
     private func showMediaContent(by selectedType: MediaContentType, selected index: Int) {
         
@@ -486,7 +491,6 @@ extension MediaContentViewController {
     private func showEmptyGroupsContacts() {
         P.showIndicator()
         self.contactsManager.getEmptyContacts { contactsGroup in
-            
             U.UI {
                 P.hideIndicator()
                 let totalContacts = contactsGroup.map({$0.contacts}).count
@@ -530,6 +534,29 @@ extension MediaContentViewController {
             case .duplicatedEmail:
                 self.allDuplicatedEmailAdresses = contactsGroup
             default: return
+        }
+    }
+    
+    
+    @objc func handleChangeContactsContainers(_ notification: Notification) {
+        
+        contactsManager.getUpdatingContactsAfterContainerDidChange {
+            self.tableView.reloadData()
+        } allContacts: { contacts in
+            self.allContacts = contacts
+            self.updateValues(of: .allContacts)
+        } emptyContacts: { contactsGrop in
+            self.allEmptyContacts = contactsGrop
+            self.updateValues(of: .emptyContacts)
+        } duplicatedNames: { contactsGroup in
+            self.allDuplicatedContacts = contactsGroup
+            self.updateValues(of: .duplicatedContacts)
+        } duplicatedPhoneNumbers: { contactsGroup in
+            self.allDuplicatedPhoneNumbers = contactsGroup
+            self.updateValues(of: .duplicatedPhoneNumbers)
+        } duplicatedEmailGrops: { contactsGroup in
+            self.allDuplicatedEmailAdresses = contactsGroup
+            self.updateValues(of: .duplicatedEmails)
         }
     }
 }
@@ -591,7 +618,6 @@ extension MediaContentViewController {
                 totalSearchFindContactsCointIn[4] = count
             default:
                 return
-                
         }
     }
     
@@ -629,6 +655,16 @@ extension MediaContentViewController {
         let isSearchStarted = progrss != 0 || progrss != 1.0
         
         self.configure(cell, at: indexPath, isSearchingStarted: isSearchStarted)
+    }
+    
+    private func updateValues(of type: PhotoMediaType) {
+        
+        let indexPath = type.singleSearchIndexPath
+        U.UI {
+            UIView.performWithoutAnimation {
+                self.tableView.reloadRows(at: [indexPath], with: .none)
+            }
+        }
     }
 }
 
@@ -691,18 +727,32 @@ extension MediaContentViewController: Themeble {
     }
     
         
-    private func setupObserversAndDelegate() {
+    private func setupDelegate() {
         
         self.dateSelectableView.delegate = self
         self.navigationBar.delegate = self
-        
-            /// `contacts notification updates`
-        U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchAllContactsScan, object: nil)
-        U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchEmptyContactsScan, object: nil)
-        U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchDuplicatesNamesContactsScan, object: nil)
-        U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchDuplicatesNumbersContactsScan, object: nil)
-        U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchDupliatesEmailsContactsScan, object: nil)
     }
+    
+    private func setupObserver(for contentType: MediaContentType) {
+        
+        switch contentType {
+            case .userPhoto:
+                debugPrint("")
+            case .userVideo:
+                debugPrint("")
+            case .userContacts:
+                    /// `contacts notification updates`
+                U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchAllContactsScan, object: nil)
+                U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchEmptyContactsScan, object: nil)
+                U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchDuplicatesNamesContactsScan, object: nil)
+                U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchDuplicatesNumbersContactsScan, object: nil)
+                U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchDupliatesEmailsContactsScan, object: nil)
+                U.notificationCenter.addObserver(self, selector: #selector(handleChangeContactsContainers(_:)), name: .CNContactStoreDidChange, object: nil)
+            case .none:
+                return
+        }
+    }
+    
     
     private func setupDateInterval() {
         
