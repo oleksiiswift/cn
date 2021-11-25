@@ -50,7 +50,7 @@ class AlertProgressAlertController: Themeble {
     
     private func setProgress(controllerType: MediaContentType, title: String) {
         contentProgressType = .userContacts
-        alertController = UIAlertController(title: title, message: nil, preferredStyle: .alert)
+        alertController = UIAlertController(title: title, message: " ", preferredStyle: .alert)
         
         let cancelAction = UIAlertAction(title: "cancel", style: .cancel) { _ in
             
@@ -79,10 +79,10 @@ class AlertProgressAlertController: Themeble {
     }
     
     public func setProgress(_ progress: CGFloat, totalFilesProcessong: String) {
-        
+        debugPrint("set Progress: \(progress)")
         alertController.message = totalFilesProcessong
         progressBar.progress = CGFloat(progress)
-        if progress == 100 {
+        if progress == 1 {
             self.closeAlertController()
         }
     }

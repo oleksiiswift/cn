@@ -14,55 +14,6 @@ enum AlphabeticalContactsResults {
     case error(error: Error)
 }
 
-enum ContactasCleaningType {
-    case onlyName
-    case onlyPhone
-    case onlyEmail
-    case emptyName
-    case wholeEmpty
-    case none
-    
-    case duplicatedPhoneNumnber
-    case duplicatedContactName
-    case duplicatedEmail
-    
-    var rawValue: String {
-        switch self {
-            case .onlyName:
-                return "only name"
-            case .onlyPhone:
-                return "only phone"
-            case .onlyEmail:
-                return "only mail"
-            case .emptyName:
-                return "incomplete name"
-            case .wholeEmpty:
-                return "whole Empty phone"
-            default:
-                return ""
-        }
-    }
-}
-
-enum ContactsContainerType {
-    case none
-    case card
-    case adressBook
-    case contacts
-    
-    var rawValue: String? {
-        switch self {
-            case .none:
-                return nil
-            case .card:
-                return C.contacts.contactsContainer.card
-            case .adressBook:
-                return C.contacts.contactsContainer.addressBook
-            case .contacts:
-                return C.contacts.contactsContainer.contancts
-        }
-    }
-}
 
 class ContactsCountryIdentifier {
     var region: String
@@ -97,8 +48,14 @@ class ContactsManager {
     
     private var phoneNumberKit = PhoneNumberKit()
     private var fileManager = FileManager.default
+    private var notificationManager = SingleSearchNitificationManager.instance
     
+    private var deleteContactsTaskContinue: Bool = true
+    private var mergeContactsTaskContinue: Bool = true
+    private var searchContactsTaskContinue: Bool = true
+
     private let contactsDuplicatesOperationQueue = OperationPhotoProcessingQueuer(name: "Contacts Duplicates Queuer", maxConcurrentOperationCount: 10, qualityOfService: .utility)
+    public let operationConcurrentQueue = OperationPhotoProcessingQueuer(name: "firstCheckRunContacts", maxConcurrentOperationCount: 4, qualityOfService: .utility)
     
     private let fetchingKeys: [CNKeyDescriptor] = [
         CNContactVCardSerialization.descriptorForRequiredKeys(),
@@ -144,8 +101,28 @@ extension ContactsManager {
         }
     }
     
+    private func isStoreOpen() -> Bool {
+        
+        switch CNContactStore.authorizationStatus(for: .contacts) {
+                
+            case .denied, .restricted:
+                return false
+            case .notDetermined:
+                self.requestAccesss { granted, error in }
+                return false
+            case .authorized:
+                return true
+            @unknown default:
+                self.showRestrictedAlert()
+        }
+        return false
+    }
+    
         /// fetch all contacts
     public func getAllContacts(_ completionHandler: @escaping ([CNContact]) -> Void) {
+        
+        guard isStoreOpen() else { return }
+        
         U.BG {
             self.fetchContacts(keys: self.fetchingKeys) { result in
                 switch result {
@@ -155,17 +132,6 @@ extension ContactsManager {
                     case .failure:
                         completionHandler([])
                         break
-                }
-            }
-        }
-    }
-    
-    public func getDuplicatedContacts(_ completionHandler: @escaping ([ContactsGroup]) -> Void) {
-        
-        self.getAllContacts { contacts in
-            self.namesDuplicated(contacts) { duplicatedContacts in
-                self.namesDuplicatesGroup(duplicatedContacts) { contactsGroup in
-                    completionHandler(contactsGroup)
                 }
             }
         }
@@ -242,12 +208,32 @@ extension ContactsManager {
     
     private func resultProcessing(_ contacts: [CNContact]) {
         
-        
-        self.groupingMissingIncompleteContacts(contacts) { emptyContacts in
-            UpdateContentDataBaseMediator.instance.getAllEmptyContacts(emptyContacts)
+        let concurrentOperationContacts = ConcurrentPhotoProcessOperation { _ in
+            UpdateContentDataBaseMediator.instance.updateContacts(contacts.count)
+            UpdateContentDataBaseMediator.instance.getAllContacts(contacts)
         }
-        UpdateContentDataBaseMediator.instance.updateContacts(contacts.count)
-        UpdateContentDataBaseMediator.instance.getAllContacts(contacts)
+        
+        let concurrentOperationEmptyContacts = ConcurrentPhotoProcessOperation { _ in
+            self.getEmptyContacts(contacts)
+        }
+        
+        let concurrentOperationNamesContacts = ConcurrentPhotoProcessOperation { _ in
+            self.getDuplicatedNames(contacts)
+        }
+        
+        let concurrentOperationPhonesContacts = ConcurrentPhotoProcessOperation { _ in
+            self.getDuplicatedPhones(contacts)
+        }
+        
+        let concurrentOperationEmailsContacts = ConcurrentPhotoProcessOperation { _ in
+            self.getDuplicatedEmails(contacts)
+        }
+    
+        operationConcurrentQueue.addOperation(concurrentOperationContacts)
+        operationConcurrentQueue.addOperation(concurrentOperationEmptyContacts)
+        operationConcurrentQueue.addOperation(concurrentOperationNamesContacts)
+        operationConcurrentQueue.addOperation(concurrentOperationPhonesContacts)
+        operationConcurrentQueue.addOperation(concurrentOperationEmailsContacts)
     }
     
     public func getSortAndGroupContacts(_ contacts: [CNContact]) -> [String : [CNContact]] {
@@ -377,7 +363,7 @@ extension ContactsManager {
         /// `groupingMissingIncompleteContacts` - checj for empty fields
 
         /// `phone duplicated contacts` `phone duplicated group`
-    private func phoneDuplicatesGroup(_ contacts: [CNContact], completionHandler: @escaping ([ContactsGroup]) -> Void) {
+    private func phoneDuplicatesGroup(_ contacts: [CNContact], enableSingleNotification: Bool = true, enableDeepCleanNotification: Bool = false, completionHandler: @escaping ([ContactsGroup]) -> Void) {
         
         let contactsStore = CNContactStore()
         let phoneNumbers = Array(Set(contacts.map({$0.phoneNumbers.map({$0.value})}).reduce([], +)))
@@ -385,10 +371,25 @@ extension ContactsManager {
         var duplicatedContacts: [ContactsGroup] = []
         
         for i in 0...phoneNumbers.count - 1 {
+            
+            guard searchContactsTaskContinue else {
+                completionHandler([])
+                return
+            }
+            
             let phoneNunber = phoneNumbers[i]
             let fetchPredicate = CNContact.predicateForContacts(matching: phoneNunber)
             do {
                 let containerResults = try contactsStore.unifiedContacts(matching: fetchPredicate, keysToFetch: self.fetchingKeys)
+                
+                if enableSingleNotification {
+                    self.notificationManager.sendSingleSearchProgressNotification(notificationtype: .duplicatesNumbers, totalProgressItems: phoneNumbers.count, currentProgressItem: i)
+                }
+                
+                if enableSingleNotification {
+//                    TODO: deep clean notification
+                }
+                
                 if containerResults.count > 1 {
 //                    let identifier = self.checkRegionIdentifier(from: [phoneNunber.stringValue])
                     let identifier = ContactsCountryIdentifier(region: "", countryCode: "")
@@ -404,18 +405,38 @@ extension ContactsManager {
         /// `names duplicated contacts`
     private func namesDuplicated(_ contacts: [CNContact], completionHandler: @escaping ([String : [CNContact]]) -> Void) {
         
+        self.notificationManager.sendSingleSearchProgressNotification(notificationtype: .duplicatesNames, totalProgressItems: Int(0.01), currentProgressItem: contacts.count)
+        
         var contactsDictionary = Dictionary(grouping: contacts, by: {String($0.familyName.removeWhitespace() + $0.givenName.removeWhitespace())})
         contactsDictionary.removeValue(forKey: "")
         let filterDictionary = contactsDictionary.filter({$0.value.count > 1})
         completionHandler(filterDictionary)
     }
     
-    private func namesDuplicatesGroup(_ contacts: [String : [CNContact]], completionHandler: @escaping ([ContactsGroup]) -> Void) {
+    private func namesDuplicatesGroup(_ contacts: [String : [CNContact]], enableSingleNotification: Bool = true, enableDeepCleanNotification: Bool = false, completionHandler: @escaping ([ContactsGroup]) -> Void) {
         
         var group: [ContactsGroup] = []
+        var currentProcessingIndex: Int = 0
         
         for (contactName, similarContacts) in contacts {
-            debugPrint(contactName)
+            
+            guard searchContactsTaskContinue else {
+                completionHandler([])
+                return
+            }
+            
+            currentProcessingIndex += 1
+            
+            if enableSingleNotification {
+                self.notificationManager.sendSingleSearchProgressNotification(notificationtype: .duplicatesNames, totalProgressItems: contacts.count, currentProgressItem: currentProcessingIndex)
+            }
+            
+            if enableDeepCleanNotification {
+//                TODO: add deep clean notification
+            }
+            
+            
+            sleep(UInt32(0.1))
             let phoneNumbers = similarContacts.map({$0.phoneNumbers}).reduce([], +)
             let stringNumbers = phoneNumbers.map({$0.value.stringValue})
             let itentifier = self.checkRegionIdentifier(from: stringNumbers)
@@ -427,16 +448,30 @@ extension ContactsManager {
     }
     
         /// `duplicates by email` /// `email duplicates group`
-    private func emailDuplicatesGroup(_ contacts: [CNContact], completionHandler: @escaping ([ContactsGroup]) -> Void) {
+    private func emailDuplicatesGroup(_ contacts: [CNContact], enableSingleNotification: Bool = true, enableDeepCleanNotification: Bool = false, completionHandler: @escaping ([ContactsGroup]) -> Void) {
         
         let contactsStore = CNContactStore()
         let emailsList = Array(Set(contacts.map({$0.emailAddresses.map({$0.value as String})}).reduce([], +)))
         var duplicatedContacts: [ContactsGroup] = []
         
         for i in 0...emailsList.count - 1 {
+            
+            guard searchContactsTaskContinue else {
+                completionHandler([])
+                return
+            }
+            
             let email = emailsList[i]
             do {
                 let fetchPredicate = CNContact.predicateForContacts(matchingEmailAddress: email)
+                
+                if enableSingleNotification {
+                    self.notificationManager.sendSingleSearchProgressNotification(notificationtype: .duplicatesEmails, totalProgressItems: emailsList.count, currentProgressItem: i)
+                }
+                if enableDeepCleanNotification {
+//                    TODO: add depp clean notification
+                }
+                
                 let containerResult = try contactsStore.unifiedContacts(matching: fetchPredicate, keysToFetch: self.fetchingKeys)
                 if containerResult.count > 1 {
                     let identifier = ContactsCountryIdentifier(region: "", countryCode: "")
@@ -595,6 +630,48 @@ extension ContactsManager  {
         completionHandler(group)
     }
     
+    public func mergeContacts(in group: [ContactsGroup], merged indexes: [Int], completionHandler: @escaping (Bool, [Int]) -> Void) {
+        
+        var errorsCount: Int = 0
+        var deleteSelectionIndexCount: Int = 0
+        var indexesForUpdate: [Int] = []
+        U.GLB(qos: .background) {
+            
+            for index in indexes {
+                
+                guard self.mergeContactsTaskContinue else {
+                    completionHandler(true, indexesForUpdate)
+                    return
+                }
+                
+                self.smartMergeContacts(in: group[index]) { deleteContacts in
+                    self.deleteContacts(deleteContacts) { suxxess, deleteCount in
+                        if suxxess {
+                            deleteSelectionIndexCount += 1
+                            indexesForUpdate.append(index)
+                        } else {
+                            let errors = deleteContacts.count - deleteCount
+                            errorsCount += errors
+                        }
+                        
+                        let calculetedProgress: CGFloat = CGFloat(100 * deleteSelectionIndexCount / indexes.count) / 100
+                        let totalProcessing: String = "\(deleteSelectionIndexCount) / \(indexes.count)"
+                        
+                        let userInfo: [String : Any] = [C.key.notificationDictionary.progressAlert.progrssAlertValue: calculetedProgress,
+                                                        C.key.notificationDictionary.progressAlert.progressAlertFilesCount: totalProcessing]
+                        
+                        U.notificationCenter.post(name: .progressMergeContactsAlertDidChangeProgress, object: nil, userInfo: userInfo)
+                        sleep(UInt32(0.1))
+                        
+                        if indexes.count == deleteSelectionIndexCount {
+                            completionHandler(true, indexesForUpdate)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     public func smartMergeContacts(in group: ContactsGroup, deletingContactsCompletion: @escaping ([CNContact]) -> Void) {
         
         var contactsDuplicates: [CNContact] = group.contacts
@@ -668,7 +745,7 @@ extension ContactsManager  {
             
             mutableContact.jobTitle = jobTitle.bestElement ?? ""
             mutableContact.departmentName = departmentName.bestElement ?? ""
-        
+            
             phoneNumbers.forEach { mutableContact.phoneNumbers.append($0) }
             emailAddresses.forEach { mutableContact.emailAddresses.append($0) }
             postalAddresses.forEach { mutableContact.postalAddresses.append($0) }
@@ -683,11 +760,9 @@ extension ContactsManager  {
                 }
             }
             
-            U.BGD(after: 1) {
-                self.update(contact: mutableContact) { result in
-                    contactsDuplicates = contactsDuplicates.filter({ $0.identifier != mutableContact.identifier })
-                    deletingContactsCompletion(contactsDuplicates)
-                }
+            self.update(contact: mutableContact) { result in
+                contactsDuplicates = contactsDuplicates.filter({ $0.identifier != mutableContact.identifier })
+                deletingContactsCompletion(contactsDuplicates)
             }
         }
     }
@@ -798,17 +873,24 @@ extension ContactsManager {
         
         U.BG {
             var deletedContactsCount = 0
-            contacts.forEach { contact in
+            
+            for contact in contacts {
+                
+                guard self.deleteContactsTaskContinue else {
+                    completionHandler(false, deletedContactsCount)
+                    return
+                }
+                
                 self.deleteContact(contact) { success in
                     if success {
                         deletedContactsCount += 1
                         
-                        let calculateprogress: CGFloat = CGFloat(100 * deletedContactsCount / contacts.count)
+                        let calculateprogress: CGFloat = CGFloat(100 * deletedContactsCount / contacts.count) / 100
                         
-                        let userInfo: [String: Any] = [Constants.key.notificationDictionary.progrssAlertValue: calculateprogress,
-                                                       Constants.key.notificationDictionary.progressAlertFilesCount: "\(deletedContactsCount) / \(contacts.count)"]
+                        let userInfo: [String: Any] = [C.key.notificationDictionary.progressAlert.progrssAlertValue: calculateprogress,
+                                                       C.key.notificationDictionary.progressAlert.progressAlertFilesCount: "\(deletedContactsCount) / \(contacts.count)"]
                         
-                        U.notificationCenter.post(name: .progressAlertDidChangeProgress, object: nil, userInfo: userInfo)
+                        U.notificationCenter.post(name: .progressDeleteContactsAlertDidChangeProgress, object: nil, userInfo: userInfo)
                         debugPrint(deletedContactsCount)
                     }
                 }
@@ -1083,3 +1165,183 @@ extension CNContactVCardSerialization {
     }
 }
 
+
+enum ContactOperationProcessing {
+    case merge
+    case delete
+    case search
+}
+
+enum ProcessingState {
+    case availible
+    case disable
+    case undefined
+}
+
+extension ContactsManager {
+    
+    public func setProcess(_ operationProcess: ContactOperationProcessing, state: ProcessingState) {
+        switch operationProcess {
+            case .merge:
+                switch state {
+                    case .availible:
+                        self.setAvailibleMergeProcessing()
+                    case .disable:
+                        self.setStopMergeProcessing()
+                    case .undefined:
+                        return
+                }
+            case .delete:
+                switch state {
+                    case .availible:
+                        self.setAvailibleDeleteProcessing()
+                    case .disable:
+                        self.setStopDeleteProcessing()
+                    case .undefined:
+                        return
+                }
+            case .search:
+                switch state {
+                    case .availible:
+                        self.setAvailibleSearchProcessing()
+                    case .disable:
+                        self.setStopSearchProcessing()
+                    case .undefined:
+                        return
+                }
+        }
+    }
+    
+    public func setStopDeleteProcessing() {
+        deleteContactsTaskContinue = false
+    }
+    
+    public func setAvailibleDeleteProcessing() {
+        deleteContactsTaskContinue = true
+    }
+    
+    public func setStopMergeProcessing() {
+        mergeContactsTaskContinue = false
+    }
+    
+    public func setAvailibleMergeProcessing() {
+        mergeContactsTaskContinue = true
+    }
+    
+    public func setAvailibleSearchProcessing() {
+        searchContactsTaskContinue = true
+    }
+    
+    public func setStopSearchProcessing() {
+        searchContactsTaskContinue = false
+    }
+}
+
+
+extension ContactsManager {
+
+        /// `` - send notificatons to main screen updating contacts values
+        /// - Parameter contacts: recieved all contacts and statint processing
+    private func getEmptyContacts(_ contacts: [CNContact]) {
+        self.groupingMissingIncompleteContacts(contacts) { contactsGroup in
+            UpdateContentDataBaseMediator.instance.getAllEmptyContacts(contactsGroup)
+        }
+    }
+    
+
+    private func getDuplicatedNames(_ contacts: [CNContact]) {
+        self.getDuplicatedContacts(of: .duplicatedContactName) { contactsGroup in
+            UpdateContentDataBaseMediator.instance.getAllDuplicatedContactsGroup(contactsGroup)
+        }
+    }
+    
+    private func getDuplicatedPhones(_ contacts: [CNContact]) {
+        self.getDuplicatedContacts(of: .duplicatedPhoneNumnber) { contactsGroup in
+            UpdateContentDataBaseMediator.instance.getAllDuplicatedNumbersContactsGroup(contactsGroup)
+        }
+    }
+    
+    private func getDuplicatedEmails(_ contacts: [CNContact]) {
+        self.getDuplicatedContacts(of: .duplicatedEmail) { contactsGroup in
+            UpdateContentDataBaseMediator.instance.getAllDuplicatedEmailsContactsGroup(contactsGroup)
+        }
+    }
+}
+
+extension ContactsManager {
+    
+        ///  `` - updating contacts with completions
+        /// - Parameters:
+        ///   - `withSingleNotification:` optional notification for single screens ui update
+        ///   - `withDeepCleanNotification:` optional
+        ///   - `completionHandler:` completion for complete all operation
+        ///   - `allContacts:` fetching all contacts
+        ///   - `emptyContacts:` empty contacts
+        ///   - `duplicatedNames:` duplicated names numbers group
+        ///   - `duplicatedPhoneNumbers:` duplicated phone numbers group
+        ///   - `duplicatedEmailGrops:` - duplicated emails groups
+    public func getUpdatingContactsAfterContainerDidChange(withSingleNotification: Bool = false,
+                                                           withDeepCleanNotification: Bool = false,
+                                                           completionHandler: @escaping () -> Void,
+                                                           allContacts: @escaping ([CNContact]) -> Void,
+                                                           emptyContacts: @escaping ([ContactsGroup]) -> Void,
+                                                           duplicatedNames: @escaping ([ContactsGroup]) -> Void,
+                                                           duplicatedPhoneNumbers: @escaping ([ContactsGroup]) -> Void,
+                                                           duplicatedEmailGrops: @escaping ([ContactsGroup]) -> Void) {
+        U.GLB(qos: .background) {
+            
+            self.getAllContacts { contacts in
+                var numbersOfOperations = 4
+                    /// returned contacts all containers
+                allContacts(contacts)
+                
+                let emptyOperation = ConcurrentPhotoProcessOperation { _ in
+                    self.groupingMissingIncompleteContacts(contacts) { contactsGroup in
+                        emptyContacts(contactsGroup)
+                        numbersOfOperations += 1
+                        if numbersOfOperations == 4 {
+                            completionHandler()
+                        }
+                    }
+                }
+                
+                let namesOperation = ConcurrentPhotoProcessOperation { _ in
+                    self.namesDuplicated(contacts) { duplicatedContacts in
+                        self.namesDuplicatesGroup(duplicatedContacts, enableSingleNotification: withSingleNotification, enableDeepCleanNotification: withDeepCleanNotification) { contactsGroup in
+                            duplicatedNames(contactsGroup)
+                            numbersOfOperations += 1
+                            if numbersOfOperations == 4 {
+                                completionHandler()
+                            }
+                        }
+                    }
+                }
+                
+                let phonesOperation = ConcurrentPhotoProcessOperation { _ in
+                    self.phoneDuplicatesGroup(contacts, enableSingleNotification: withSingleNotification, enableDeepCleanNotification: withDeepCleanNotification) { contactsGroup in
+                        duplicatedPhoneNumbers(contactsGroup)
+                        numbersOfOperations += 1
+                        if numbersOfOperations == 4 {
+                            completionHandler()
+                        }
+                    }
+                }
+                
+                let emailsOperation = ConcurrentPhotoProcessOperation { _ in
+                    self.emailDuplicatesGroup(contacts, enableSingleNotification: withSingleNotification, enableDeepCleanNotification: withDeepCleanNotification) { contactsGroup in
+                        duplicatedEmailGrops(contactsGroup)
+                        numbersOfOperations += 1
+                        if numbersOfOperations == 4 {
+                            completionHandler()
+                        }
+                    }
+                }
+                
+                self.operationConcurrentQueue.addOperation(emptyOperation)
+                self.operationConcurrentQueue.addOperation(namesOperation)
+                self.operationConcurrentQueue.addOperation(phonesOperation)
+                self.operationConcurrentQueue.addOperation(emailsOperation)
+            }
+        }
+    }
+}

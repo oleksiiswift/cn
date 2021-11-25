@@ -15,6 +15,7 @@ class ContactListDataSource: NSObject {
     public var didSelectContact: ((ContactListViewModel) -> Void) = {_ in}
 
     public var contactContentIsEditing: Bool = false
+    public var searchBarIsFirstResponder: Bool = false
     
     public var contentType: PhotoMediaType = .none
     
@@ -22,6 +23,7 @@ class ContactListDataSource: NSObject {
         
         self.contactListViewModel = contactListViewModel
         self.contentType = contentType
+        
     }
 }
 
@@ -76,22 +78,33 @@ extension ContactListDataSource: UITableViewDelegate, UITableViewDataSource {
         return 40
     }
     
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let contentOffset = scrollView.contentOffset
-        let contentInset = scrollView.contentInset
-        
-        let userInfo = [C.key.notificationDictionary.scrollViewInset: contentInset,
-                        C.key.notificationDictionary.scrollViewOffset: contentOffset] as [String : Any]
-        U.notificationCenter.post(name: .scrollViewDidScroll, object: nil, userInfo: userInfo)
-    }
-
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
-        self.didSelectDeselectContact()
+        if contactContentIsEditing != false {
+            tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
+            self.didSelectDeselectContact()
+        } else if searchBarIsFirstResponder {
+            U.notificationCenter.post(name: .searchBarShouldResign, object: nil, userInfo: nil)
+        }
     }
     
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: false)
         self.didSelectDeselectContact()
+    }
+}
+
+extension ContactListDataSource: UIScrollViewDelegate {
+
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        U.notificationCenter.post(name: .scrollViewDidBegingDragging, object: nil, userInfo: nil)
+    }
+
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let contentOffset = scrollView.contentOffset
+        let contentInset = scrollView.contentInset
+        
+        let userInfo = [C.key.notificationDictionary.scroll.scrollViewInset: contentInset,
+                        C.key.notificationDictionary.scroll.scrollViewOffset: contentOffset] as [String : Any]
+        U.notificationCenter.post(name: .scrollViewDidScroll, object: nil, userInfo: userInfo)
     }
 }

@@ -19,12 +19,12 @@
                     <rect key="frame" x="0.0" y="0.0" width="414" height="40"/>
                     <subviews>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zkg-LE-TtI">
-                            <rect key="frame" x="20" y="9.5" width="41.5" height="21"/>
+                            <rect key="frame" x="20" y="9.5" width="218" height="21"/>
                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>
                         </label>
-                        <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="8xW-ur-5iS" customClass="PrimaryShadowButton" customModule="ECleaner" customModuleProvider="target">
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8xW-ur-5iS" customClass="PrimaryShadowButton" customModule="ECleaner" customModuleProvider="target">
                             <rect key="frame" x="248" y="5" width="30" height="30"/>
                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             <constraints>
@@ -32,18 +32,19 @@
                                 <constraint firstAttribute="height" constant="30" id="Uqr-My-ExS"/>
                             </constraints>
                         </view>
-                        <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lnR-h5-IRN" customClass="PrimaryShadowImageWithTextButton" customModule="ECleaner" customModuleProvider="target">
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lnR-h5-IRN" customClass="PrimaryShadowImageWithTextButton" customModule="ECleaner" customModuleProvider="target">
                             <rect key="frame" x="298" y="5" width="96" height="30"/>
                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="30" id="gxN-Ui-Rk8"/>
-                                <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="96" id="hcl-mo-Hr8"/>
+                                <constraint firstAttribute="width" constant="96" id="hcl-mo-Hr8"/>
                             </constraints>
                         </view>
                     </subviews>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
                         <constraint firstAttribute="trailing" secondItem="lnR-h5-IRN" secondAttribute="trailing" constant="20" id="2PF-W9-F4m"/>
+                        <constraint firstItem="8xW-ur-5iS" firstAttribute="leading" secondItem="zkg-LE-TtI" secondAttribute="trailing" constant="10" id="MIv-1j-Dq9"/>
                         <constraint firstItem="lnR-h5-IRN" firstAttribute="centerY" secondItem="IqL-K2-tVR" secondAttribute="centerY" id="Ort-XU-SF4"/>
                         <constraint firstItem="zkg-LE-TtI" firstAttribute="centerY" secondItem="IqL-K2-tVR" secondAttribute="centerY" id="R5c-uA-nm1"/>
                         <constraint firstItem="8xW-ur-5iS" firstAttribute="centerY" secondItem="lnR-h5-IRN" secondAttribute="centerY" id="UOH-8l-NB0"/>

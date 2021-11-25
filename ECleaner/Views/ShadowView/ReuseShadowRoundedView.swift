@@ -16,6 +16,10 @@ class ReuseShadowRoundedView: UIView {
     public var topShadowColor: UIColor = .red
     public var bottomShadowColor: UIColor = .black
     
+    private var activityIndicatorView = UIActivityIndicatorView()
+    
+    public var isActivityIndicatorShow: Bool = false
+    
     override func layoutSubviews() {
         super.layoutSubviews()
         
@@ -36,8 +40,37 @@ class ReuseShadowRoundedView: UIView {
     private func setupView() {
         
         self.backgroundColor = .clear
+        activityIndicatorView.backgroundColor = .clear
+        activityIndicatorView.color = theme.backgroundColor
+        
+        activityIndicatorView.frame = CGRect(x: 0, y: 0, width: self.frame.width / 2, height: self.frame.height / 2)
+        activityIndicatorView.center = self.imageView.center
+        activityIndicatorView.style = .medium
     }
     
+    public func showIndicator() {
+        
+        guard !isActivityIndicatorShow else { return }
+        
+        U.UI {
+            self.imageView.addSubview(self.activityIndicatorView)
+            self.imageView.bringSubviewToFront(self.activityIndicatorView)
+            self.activityIndicatorView.startAnimating()
+            self.isActivityIndicatorShow = !self.isActivityIndicatorShow
+        }
+    }
+    
+    public func hideIndicator() {
+        
+        guard isActivityIndicatorShow else { return }
+        
+        U.UI {
+            self.activityIndicatorView.stopAnimating()
+            self.activityIndicatorView.removeFromSuperview()
+            self.isActivityIndicatorShow = false
+        }
+    }
+
     private func setupImageView() {
         
         imageView.frame = CGRect(x: 0, y: 0, width: self.frame.width, height: self.frame.height)

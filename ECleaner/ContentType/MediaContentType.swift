@@ -87,6 +87,19 @@ enum MediaContentType {
         }
     }
     
+    var processingImageOfRows: UIImage {
+        switch self {
+            case .userPhoto:
+                return I.personalisation.photo.processingThumb
+            case .userVideo:
+                return I.personalisation.video.processingThumb
+            case .userContacts:
+                return I.personalisation.contacts.processingThumb
+            case .none:
+                return UIImage()
+        }
+    }
+    
     public func getCellTitle(index: Int) -> String {
         switch self {
             case .userPhoto:

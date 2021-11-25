@@ -27,27 +27,27 @@ enum DeepCleanNotificationType {
         switch self {
      
             case .similarPhoto:
-                return C.key.notificationDictionary.similarPhotoCount
+                return C.key.notificationDictionary.count.similarPhotoCount
             case .duplicatePhoto:
-                return C.key.notificationDictionary.duplicatePhotoCount
+                return C.key.notificationDictionary.count.duplicatePhotoCount
             case .screenshots:
-                return C.key.notificationDictionary.screenShotsCount
+                return C.key.notificationDictionary.count.screenShotsCount
             case .similarLivePhoto:
-                return C.key.notificationDictionary.livePhotosSimilarCount
+                return C.key.notificationDictionary.count.livePhotosSimilarCount
             case .largeVideo:
-                return C.key.notificationDictionary.largeVideoCount
+                return C.key.notificationDictionary.count.largeVideoCount
             case .duplicateVideo:
-                return C.key.notificationDictionary.duplicateVideoCount
+                return C.key.notificationDictionary.count.duplicateVideoCount
             case .similarVideo:
-                return C.key.notificationDictionary.similarVideoCount
+                return C.key.notificationDictionary.count.similarVideoCount
             case .screenRecordings:
-                return C.key.notificationDictionary.screenRecordingsCount
+                return C.key.notificationDictionary.count.screenRecordingsCount
             case .allContacts:
-                return C.key.notificationDictionary.allContactsCount
+                return C.key.notificationDictionary.count.allContactsCount
             case .emptyContacts:
-                return C.key.notificationDictionary.emptyContactsCount
+                return C.key.notificationDictionary.count.emptyContactsCount
             case .duplicateContacts:
-                return C.key.notificationDictionary.duplicateContactsCount
+                return C.key.notificationDictionary.count.duplicateNamesContactsCount
         }
     }
     
@@ -56,27 +56,27 @@ enum DeepCleanNotificationType {
         switch self {
         
             case .similarPhoto:
-                return C.key.notificationDictionary.similarPhotoIndex
+                return C.key.notificationDictionary.index.similarPhotoIndex
             case .duplicatePhoto:
-                return C.key.notificationDictionary.duplicatePhotoIndex
+                return C.key.notificationDictionary.index.duplicatePhotoIndex
             case .screenshots:
-                return C.key.notificationDictionary.screenShotsIndex
+                return C.key.notificationDictionary.index.screenShotsIndex
             case .similarLivePhoto:
-                return C.key.notificationDictionary.livePhotosIndex
+                return C.key.notificationDictionary.index.livePhotosIndex
             case .largeVideo:
-                return C.key.notificationDictionary.largeVideoIndex
+                return C.key.notificationDictionary.index.largeVideoIndex
             case .duplicateVideo:
-                return C.key.notificationDictionary.duplicateVideoIndex
+                return C.key.notificationDictionary.index.duplicateVideoIndex
             case .similarVideo:
-                return C.key.notificationDictionary.similarVideoIndex
+                return C.key.notificationDictionary.index.similarVideoIndex
             case .screenRecordings:
-                return C.key.notificationDictionary.screenRecordingsIndex
+                return C.key.notificationDictionary.index.screenRecordingsIndex
             case .allContacts:
-                return C.key.notificationDictionary.allContactsIndex
+                return C.key.notificationDictionary.index.allContactsIndex
             case .emptyContacts:
-                return C.key.notificationDictionary.emptyContactsIndex
+                return C.key.notificationDictionary.index.emptyContactsIndex
             case .duplicateContacts:
-                return C.key.notificationDictionary.duplicateContactsIndex
+                return C.key.notificationDictionary.index.duplicateNamesContactsIndex
         }
     }
     

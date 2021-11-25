@@ -18,6 +18,8 @@ class SearchBarView: UIView {
     
     private var shadowView = UIView()
     private var helperExtraView = UIView()
+    
+    public var searchBarIsActive: Bool = false
 
     override func awakeFromNib() {
         super.awakeFromNib()
