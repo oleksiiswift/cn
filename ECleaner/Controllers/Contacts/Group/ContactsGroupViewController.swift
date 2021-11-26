@@ -109,37 +109,33 @@ extension ContactsGroupViewController {
         self.updateProgressMergeAlert(with: 0, total: "0 / \(totalIndexesCount)")
         
         self.contactsManager.mergeContacts(in: self.contactGroup, merged: indexesForMerged) { suxxess, mergedIndexes  in
+            let errorsCount = indexesForMerged.count - mergedIndexes.count
             
-            if suxxess {
-                if self.contactGroup.count == mergedIndexes.count {
-                    U.UI {
+            mergedIndexes.count != 0 ? self.updateRemovedIndexes(mergedIndexes, errorsCount: errorsCount) : ()
+            
+            U.delay(1) {
+                if suxxess {
+                    if self.contactGroup.count == mergedIndexes.count {
                         A.showSuxxessFullMerged(for: .many) {
-                            self.closeController()
+                            U.delay(1) {
+                                self.closeController()
+                            }
+                        }
+                    } else {
+                        
+                        if errorsCount == 0 {
+                            A.showSuxxessFullMerged(for: .many) {}
+                        } else {
+                            A.showSuxxessFullMerged(for: .many) {}
                         }
                     }
                 } else {
-                    let errorsCont = indexesForMerged.count - mergedIndexes.count
-                    U.UI {
-                        if errorsCont == 0 {
-                            A.showSuxxessFullMerged(for: .many) {
-                                self.updateRemovedIndexes(mergedIndexes, errorsCount: 0)
-                            }
-                        } else {
-                            A.showSuxxessFullMerged(for: .many) {
-                                self.updateRemovedIndexes(mergedIndexes, errorsCount: errorsCont)
-                            }
-                        }
-                    }
+                    ErrorHandler.shared.showMergeAlertError(.errorMergeContacts) {}
                 }
-            } else {
-                U.UI {
-                    A.showSuxxessFullMerged(for: .many) {
-                        self.updateRemovedIndexes(mergedIndexes, errorsCount: 0)
-                    }
+                U.delay(0.5) {
+                    self.contactsManager.setProcess(.merge, state: .availible)
                 }
             }
-            
-            self.contactsManager.setProcess(.merge, state: .availible)
         }
     }
     
@@ -147,27 +143,26 @@ extension ContactsGroupViewController {
     private func mergeContacts(in section: Int) {
         
         let mergedSingleGroup = contactGroup[section]
-        P.showIndicator()
+        self.showMergeProgressAlert()
+        self.updateProgressMergeAlert(with: 0, total: "0 / 1")
         self.contactsManager.smartMergeContacts(in: mergedSingleGroup) { contactsToDelete in
             self.contactsManager.deleteContacts(contactsToDelete) { suxxess, deletedCount in
-                P.hideIndicator()
-                if suxxess {
-                    if self.contactGroup.count == 1 {
-                        A.showSuxxessFullMerged(for: .one) {
-                            U.UI {
-                                self.closeController()
+                U.delay(0.5) {
+                    self.updateProgressMergeAlert(with: 1, total: "1 / 1")
+                    U.delay(0.5) {
+                        self.updateRemovedIndexes([section], errorsCount: 0)
+                        if suxxess {
+                            if self.contactGroup.count == 1 {
+                                A.showSuxxessFullMerged(for: .one) {
+                                    self.closeController()
+                                }
+                            } else {
+                                A.showSuxxessFullMerged(for: .one) {}
                             }
+                        } else {
+                            ErrorHandler.shared.showMergeAlertError(.errorMergeContact)
+                            
                         }
-                    } else {
-                        U.UI {
-                            A.showSuxxessFullMerged(for: .one) {
-                                self.updateRemovedIndexes([section], errorsCount: 0)
-                            }
-                        }
-                    }
-                } else {
-                    U.UI {
-                        ErrorHandler.shared.showMergeAlertError(.errorMergeContact)
                     }
                 }
             }
@@ -207,7 +202,13 @@ extension ContactsGroupViewController {
             self.tableView.delegate = self.contactGroupListDataSource
             self.tableView.dataSource = self.contactGroupListDataSource
             self.handleMergeContactsAppearButton()
-            self.tableView.reloadData()
+            
+            
+            UIView.transition(with: self.tableView, duration: 0.35, options: .transitionCrossDissolve) {
+                self.tableView.reloadData()
+            } completion: { _ in
+                debugPrint("data source reloaded")
+            }
         }
     }
     
@@ -409,7 +410,7 @@ extension ContactsGroupViewController: Themeble {
         self.contactGroupListDataSource.contentType = self.contentType
     }
     
-    func setupTableView() {
+    private func setupTableView() {
         tableView.register(UINib(nibName: C.identifiers.xibs.contactGroupHeader, bundle: nil), forHeaderFooterViewReuseIdentifier: C.identifiers.views.contactGroupHeader)
         tableView.register(UINib(nibName: C.identifiers.xibs.groupContactCell, bundle: nil), forCellReuseIdentifier: C.identifiers.cells.groupContactCell)
         tableView.delegate = contactGroupListDataSource
