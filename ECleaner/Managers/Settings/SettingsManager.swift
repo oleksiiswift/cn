@@ -75,7 +75,7 @@ class SettingsManager {
 //  MARK: file sizez String values
     /// `phassetPhotoFilesSizes` -> disk space for all photos assets
     /// `phassetVideoFilesSizes` -> disk space for all videos assets
-    /// `phassetPhotoVideoSizes` -> disk space for all phassets
+    /// `phassetFilesSize` -> disk space for all phassets
 
 extension SettingsManager {
     
@@ -103,7 +103,7 @@ extension SettingsManager {
         }
     }
     
-    static var phassetPhotoVideoSizes: Int64? {
+    static var phassetFilesSize: Int64? {
         get {
             return U.userDefaults.value(forKey: C.key.settings.allMediaSpace) as? Int64
         } set {
@@ -112,6 +112,32 @@ extension SettingsManager {
             do {
                 U.notificationCenter.post(name: .mediaSpaceDidChange, object: nil, userInfo: info as [AnyHashable : Any])
             }
+        }
+    }
+    
+    static func getDiskSpaceFiles(of type: MediaContentType) -> Int64? {
+        switch type {
+            case .userPhoto:
+                return S.phassetPhotoFilesSizes
+            case .userVideo:
+                return S.phassetVideoFilesSizes
+            case .userContacts:
+                return 0
+            case .none:
+                return S.phassetFilesSize
+        }
+    }
+    
+    static func setDiskSpaceFiles(of type: MediaContentType, newValue: Int64) {
+        switch type {
+            case .userPhoto:
+                S.phassetPhotoFilesSizes = newValue
+            case .userVideo:
+                S.phassetVideoFilesSizes = newValue
+            case .none:
+                S.phassetFilesSize = newValue
+            default:
+                return
         }
     }
 }

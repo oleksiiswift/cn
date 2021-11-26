@@ -27,7 +27,22 @@ enum MediaContentType {
         }
     }
     
-    /// `SECTION PROPERTIES`
+    
+        /// `` MAIN SCREEN CONTENT TYPE PROPERTIES
+    var mainScreenIndexPath: IndexPath {
+        switch self {
+            case .userPhoto:
+                return IndexPath(row: 0, section: 0)
+            case .userVideo:
+                return IndexPath(row: 1, section: 0)
+            case .userContacts:
+                return IndexPath(row: 2, section: 0)
+            case .none:
+                return IndexPath()
+        }
+    }
+        
+        /// `` SECTION PROPERTIES
     var cellTitle: [Int: [Int : String]] {
         switch self {
             case .userPhoto:
@@ -77,11 +92,11 @@ enum MediaContentType {
     var imageOfRows: UIImage {
         switch self {
         case .userPhoto:
-            return I.mainMenuThumbItems.photo
+            return I.mainStaticItems.photo
         case .userVideo:
-            return I.mainMenuThumbItems.video
+            return I.mainStaticItems.video
         case .userContacts:
-            return I.mainMenuThumbItems.contacts
+            return I.mainStaticItems.contacts
         case .none:
             return UIImage()
         }
@@ -233,6 +248,4 @@ enum MediaContentType {
                 return ""
         }
     }
-    
-    
 }

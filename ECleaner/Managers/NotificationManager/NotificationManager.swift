@@ -15,9 +15,10 @@ extension Notification.Name {
     static let premiumDidChange = Notification.Name("premiumDidChange")
     
         /// `disk space`
-    static let photoSpaceDidChange = Notification.Name("photoSpaceDidChange")
-    static let videoSpaceDidChange = Notification.Name("videoSpaceDidChange")
-    static let mediaSpaceDidChange = Notification.Name("mediaSpaceDidChange")
+    static let photoSpaceDidChange = Notification.Name(C.key.notification.photoSpaceNotificationName)
+    static let videoSpaceDidChange = Notification.Name(C.key.notification.videoSpaceNotificationName)
+    static let mediaSpaceDidChange = Notification.Name(C.key.notification.mediaSpaceNotificationName)
+    static let contactsCountDidChange = Notification.Name(C.key.notification.contactsCountNotificationName)
     
         /// `deep clean progress notification`
     static let deepCleanSimilarPhotoPhassetScan = Notification.Name(C.key.notification.deepClean.deepCleanSimilarPhotoPhassetScan)

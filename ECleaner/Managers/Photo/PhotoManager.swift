@@ -89,7 +89,7 @@ class PhotoManager: NSObject {
             debugPrint("end calculated fils size")
             S.phassetPhotoFilesSizes = photoSize
             S.phassetVideoFilesSizes = videoSize
-            S.phassetPhotoVideoSizes = totalSize
+            S.phassetFilesSize = totalSize
         }
     }
     
@@ -116,7 +116,7 @@ class PhotoManager: NSObject {
         self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumVideos, by: PHAssetMediaType.video.rawValue) { assets in
             U.UI {
                 debugPrint("done with video count")
-                UpdateContentDataBaseMediator.instance.updateVideos(assets.count, calculatedSpace: 0)
+                UpdateContentDataBaseMediator.instance.updateContentStoreCount(mediaType: .userVideo, itemsCount: assets.count, calculatedSpace: nil)
             }
         }
     }
@@ -126,7 +126,7 @@ class PhotoManager: NSObject {
         self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumUserLibrary, by: PHAssetMediaType.image.rawValue) { assets in
             U.UI {
                 debugPrint("done with gallery count")
-                UpdateContentDataBaseMediator.instance.updatePhotos(assets.count, calculatedSpace: 0)
+                UpdateContentDataBaseMediator.instance.updateContentStoreCount(mediaType: .userPhoto, itemsCount: assets.count, calculatedSpace: nil)
             }
         }
     }

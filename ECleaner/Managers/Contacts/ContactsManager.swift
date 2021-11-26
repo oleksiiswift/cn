@@ -209,7 +209,7 @@ extension ContactsManager {
     private func resultProcessing(_ contacts: [CNContact]) {
         
         let concurrentOperationContacts = ConcurrentPhotoProcessOperation { _ in
-            UpdateContentDataBaseMediator.instance.updateContacts(contacts.count)
+            UpdateContentDataBaseMediator.instance.updateContentStoreCount(mediaType: .userContacts, itemsCount: contacts.count, calculatedSpace: 0)
             UpdateContentDataBaseMediator.instance.getAllContacts(contacts)
         }
         
@@ -434,7 +434,6 @@ extension ContactsManager {
             if enableDeepCleanNotification {
 //                TODO: add deep clean notification
             }
-            
             
             sleep(UInt32(0.1))
             let phoneNumbers = similarContacts.map({$0.phoneNumbers}).reduce([], +)
@@ -787,7 +786,6 @@ extension ContactsManager  {
         }
         
         if let contact = bestContact {
-            debugPrint("refacor group")
             refactorContactGroup.bringToFront(item: contact)
             return refactorContactGroup
         }

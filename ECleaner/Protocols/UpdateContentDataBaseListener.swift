@@ -10,10 +10,8 @@ import Photos
 import Contacts
 
 protocol UpdateContentDataBaseListener {
-    func getPhotoLibraryCount(count: Int, calculatedSpace: Int64)
-    func getVideoCount(count: Int, calculatedSpace: Int64)
-    func getContactsCount(count: Int)
     
+    func updateContentStoreCount(mediaType: MediaContentType, itemsCount: Int, calculatedSpace: Int64?)    
     func getScreenAssets(_ assets: [PHAsset])
     func getLivePhotosAssets(_ assets: [PHAsset])
     func getFrontCameraAssets(_ assets: [PHAsset])
