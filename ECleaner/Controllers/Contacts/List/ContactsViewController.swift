@@ -97,7 +97,7 @@ extension ContactsViewController {
         tableView.allowsSelection = enabled
         
         if let indexPaths = tableView.indexPathsForVisibleRows {
-            self.tableView.reloadRows(at: indexPaths, with: .none)
+            self.tableView.reloadRows(at: indexPaths, with: .fade)
         }
     }
     
@@ -260,8 +260,10 @@ extension ContactsViewController {
             return
         }
         P.hideIndicator()
-        A.showDeleteContactsAlerts(for: indexPaths.count > 1 ? .many : .one) {
-            self.deleteSelectedContacts(at: indexPaths)
+        U.delay(0.33) {
+            A.showDeleteContactsAlerts(for: indexPaths.count > 1 ? .many : .one) {
+                self.deleteSelectedContacts(at: indexPaths)
+            }
         }
     }
     
@@ -274,11 +276,9 @@ extension ContactsViewController {
         } else if contentType == .emptyContacts {
             removableContacts = emptyContactGroupListViewModel.getContacts(at: indexPaths)
         }
-        self.setCancelAndDeselectAllItems()
-        self.handleEdit()
-        self.handleSearchBarState()
+        
         self.deleteContacts(removableContacts) {
-            U.UI {
+            U.delay(0.5) {
                 self.reloadContactsAfterRefactor()
             }
         }
@@ -305,12 +305,18 @@ extension ContactsViewController {
         if contentType == .allContacts {
             self.contactManager.getAllContacts { allContacts in
                 U.UI {
+                    
+                    self.setCancelAndDeselectAllItems()
+                    self.handleEdit()
+                    self.handleSearchBarState()
+                    
                     if allContacts.count != 0 {
                         P.hideIndicator()
                         self.setupViewModel(contacts: allContacts)
                         self.tableView.delegate = self.contactListDataSource
                         self.tableView.dataSource = self.contactListDataSource
                         self.tableView.reloadData()
+                        
                     } else {
                         P.hideIndicator()
                         self.closeController()
@@ -320,6 +326,11 @@ extension ContactsViewController {
         } else if contentType == .emptyContacts {
             self.contactManager.getEmptyContacts { contactsGroups in
                 U.UI {
+                    
+                    self.setCancelAndDeselectAllItems()
+                    self.handleEdit()
+                    self.handleSearchBarState()
+                    
                     if contactsGroups.map({$0.contacts}).count != 0 {
                         let group = contactsGroups.filter({!$0.contacts.isEmpty})
                         P.hideIndicator()
@@ -335,7 +346,7 @@ extension ContactsViewController {
             }
         }
     }
-    
+        
     private func didTapOpenBurgerMenu() {
         
         presentDropDonwMenu(with: [[setEditingModeOptionItem, exportAllContactOptionItem]], from: navigationBar.rightBarButtonItem)
@@ -628,7 +639,7 @@ extension ContactsViewController: Themeble {
         
         self.contactListViewModel.isSearchEnabled.bindAndFire { _ in
             _ = self.contactListViewModel.contactsArray
-            self.tableView.reloadData()
+            self.smoothReloadData()
         }
     }
     
@@ -672,6 +683,23 @@ extension ContactsViewController: Themeble {
         let view = UIView(frame: CGRect(origin: .zero, size: CGSize(width: U.screenWidth, height: 20)))
         view.backgroundColor = .clear
         tableView.tableHeaderView = view
+    }
+    
+    private func smoothReloadData() {
+        
+        UIView.transition(with: self.tableView, duration: 0.35, options: .transitionCrossDissolve) {
+            self.tableView.reloadData()
+        } completion: { _ in
+            debugPrint("data source reloaded")
+        }
+    }
+    
+    private func smoothReloadData(at indexPaths: [IndexPath]) {
+        UIView.transition(with: self.tableView, duration: 0.35, options: .transitionCrossDissolve) {
+            self.tableView.reloadRows(at: indexPaths, with: .none)
+        } completion: { _ in
+            debugPrint("data source reloaded")
+        }
     }
     
     private func setupObserversAndDelegate() {
