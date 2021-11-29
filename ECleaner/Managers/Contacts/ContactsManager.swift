@@ -354,14 +354,16 @@ extension ContactsManager {
     //      MARK: - contacts managers - work with contacts
 extension ContactsManager {
     
-        /// `phoneDuplicates` - find duplicates by existing phone numbers
-        /// `phoneDuplicatedGroup` - get section phone duplicated contacts
-        /// `namesDuplicated` - find duplicated contacts by name
-        /// `namesDuplicatesGroup` - get sections of duplicated contacts by names
-        /// `emailDuplicates` - find duplicated contacts by emails
-        /// `mailListDuplicatedGroup` -  get sections of duplicated contacts by emails
-        /// `groupingMissingIncompleteContacts` - checj for empty fields
+        /// ``phoneDuplicatedGroup`` - find duplicates by existing phone numbers - get section phone duplicated contacts
+        ///
+        /// ``namesDuplicated`` - find duplicated contacts by name
+        /// ``namesDuplicatesGroup`` - get sections of duplicated contacts by names
+        ///
+        /// ``emailDuplicatesGroup`` - find duplicated contacts by emails  -  get sections of duplicated contacts by emails
+        ///
+        /// ``groupingMissingIncompleteContacts`` - check for empty fields
 
+    
         /// `phone duplicated contacts` `phone duplicated group`
     private func phoneDuplicatesGroup(_ contacts: [CNContact], enableSingleNotification: Bool = true, enableDeepCleanNotification: Bool = false, completionHandler: @escaping ([ContactsGroup]) -> Void) {
         
@@ -370,33 +372,36 @@ extension ContactsManager {
         
         var duplicatedContacts: [ContactsGroup] = []
         
-        for i in 0...phoneNumbers.count - 1 {
+        if phoneNumbers.isEmpty {
             
-            guard searchContactsTaskContinue else {
-                completionHandler([])
-                return
-            }
-            
-            let phoneNunber = phoneNumbers[i]
-            let fetchPredicate = CNContact.predicateForContacts(matching: phoneNunber)
-            do {
-                let containerResults = try contactsStore.unifiedContacts(matching: fetchPredicate, keysToFetch: self.fetchingKeys)
+            for i in 0...phoneNumbers.count - 1 {
                 
-                if enableSingleNotification {
-                    self.notificationManager.sendSingleSearchProgressNotification(notificationtype: .duplicatesNumbers, totalProgressItems: phoneNumbers.count, currentProgressItem: i)
+                guard searchContactsTaskContinue else {
+                    completionHandler([])
+                    return
                 }
                 
-                if enableSingleNotification {
-//                    TODO: deep clean notification
+                let phoneNunber = phoneNumbers[i]
+                let fetchPredicate = CNContact.predicateForContacts(matching: phoneNunber)
+                do {
+                    let containerResults = try contactsStore.unifiedContacts(matching: fetchPredicate, keysToFetch: self.fetchingKeys)
+                    
+                    if enableSingleNotification {
+                        self.notificationManager.sendSingleSearchProgressNotification(notificationtype: .duplicatesNumbers, totalProgressItems: phoneNumbers.count, currentProgressItem: i)
+                    }
+                    
+                    if enableDeepCleanNotification {
+                            //                    TODO: deep clean notification
+                    }
+                    
+                    if containerResults.count > 1 {
+                            //                    let identifier = self.checkRegionIdentifier(from: [phoneNunber.stringValue])
+                        let identifier = ContactsCountryIdentifier(region: "", countryCode: "")
+                        duplicatedContacts.append(ContactsGroup(name: phoneNunber.stringValue, contacts: containerResults, groupType: .duplicatedPhoneNumnber, countryIdentifier: identifier))
+                    }
+                } catch {
+                    debugPrint(error.localizedDescription)
                 }
-                
-                if containerResults.count > 1 {
-//                    let identifier = self.checkRegionIdentifier(from: [phoneNunber.stringValue])
-                    let identifier = ContactsCountryIdentifier(region: "", countryCode: "")
-                    duplicatedContacts.append(ContactsGroup(name: phoneNunber.stringValue, contacts: containerResults, groupType: .duplicatedPhoneNumnber, countryIdentifier: identifier))
-                }
-            } catch {
-                debugPrint(error.localizedDescription)
             }
         }
         completionHandler(duplicatedContacts)
@@ -453,31 +458,34 @@ extension ContactsManager {
         let emailsList = Array(Set(contacts.map({$0.emailAddresses.map({$0.value as String})}).reduce([], +)))
         var duplicatedContacts: [ContactsGroup] = []
         
-        for i in 0...emailsList.count - 1 {
+        if !emailsList.isEmpty {
             
-            guard searchContactsTaskContinue else {
-                completionHandler([])
-                return
-            }
-            
-            let email = emailsList[i]
-            do {
-                let fetchPredicate = CNContact.predicateForContacts(matchingEmailAddress: email)
+            for i in 0...emailsList.count - 1 {
                 
-                if enableSingleNotification {
-                    self.notificationManager.sendSingleSearchProgressNotification(notificationtype: .duplicatesEmails, totalProgressItems: emailsList.count, currentProgressItem: i)
-                }
-                if enableDeepCleanNotification {
-//                    TODO: add depp clean notification
+                guard searchContactsTaskContinue else {
+                    completionHandler([])
+                    return
                 }
                 
-                let containerResult = try contactsStore.unifiedContacts(matching: fetchPredicate, keysToFetch: self.fetchingKeys)
-                if containerResult.count > 1 {
-                    let identifier = ContactsCountryIdentifier(region: "", countryCode: "")
-                    duplicatedContacts.append(ContactsGroup(name: email, contacts: containerResult, groupType: .duplicatedEmail, countryIdentifier: identifier))
+                let email = emailsList[i]
+                do {
+                    let fetchPredicate = CNContact.predicateForContacts(matchingEmailAddress: email)
+                    
+                    if enableSingleNotification {
+                        self.notificationManager.sendSingleSearchProgressNotification(notificationtype: .duplicatesEmails, totalProgressItems: emailsList.count, currentProgressItem: i)
+                    }
+                    if enableDeepCleanNotification {
+                            //                    TODO: add depp clean notification
+                    }
+                    
+                    let containerResult = try contactsStore.unifiedContacts(matching: fetchPredicate, keysToFetch: self.fetchingKeys)
+                    if containerResult.count > 1 {
+                        let identifier = ContactsCountryIdentifier(region: "", countryCode: "")
+                        duplicatedContacts.append(ContactsGroup(name: email, contacts: containerResult, groupType: .duplicatedEmail, countryIdentifier: identifier))
+                    }
+                } catch {
+                    debugPrint(error.localizedDescription)
                 }
-            } catch {
-                debugPrint(error.localizedDescription)
             }
         }
         completionHandler(duplicatedContacts)
@@ -527,107 +535,11 @@ extension ContactsManager {
         
         completionHandler(contactsGroup)
     }
-    
-    public func getDuplicatedAllContacts(_ contacts: [CNContact], completion: @escaping ([ContactasCleaningType : [ContactsGroup]]) -> Void) {
-        
-        var totalProcessingOperation = 0
-        var allGroupsDuplicated: [ContactasCleaningType : [ContactsGroup]] = [:]
-        
-        let phoneDuplicatesFindOperation = ConcurrentPhotoProcessOperation { _ in
-            
-            self.phoneDuplicatesGroup(contacts) { contactsGroup in
-                totalProcessingOperation += 1
-                allGroupsDuplicated[.duplicatedPhoneNumnber] = contactsGroup
-                if totalProcessingOperation == 3 {
-                    completion(allGroupsDuplicated)
-                }
-            }
-        }
-        
-        let nameDuplicatedFindOperation = ConcurrentPhotoProcessOperation { _ in
-            
-            self.namesDuplicated(contacts) { duplicatedContacts in
-                
-                self.namesDuplicatesGroup(duplicatedContacts) { contactsGroup in
-                    totalProcessingOperation += 1
-                    allGroupsDuplicated[.duplicatedContactName] = contactsGroup
-                    if totalProcessingOperation == 3 {
-                        completion(allGroupsDuplicated)
-                    }
-                }
-            }
-        }
-        
-        let emailDuplicatedFindOperation = ConcurrentPhotoProcessOperation { _ in
-            
-            self.emailDuplicatesGroup(contacts) { contactsGroup in
-                
-                totalProcessingOperation += 1
-                allGroupsDuplicated[.duplicatedEmail] = contactsGroup
-                if totalProcessingOperation == 3 {
-                    completion(allGroupsDuplicated)
-                }
-            }
-        }
-        
-        contactsDuplicatesOperationQueue.addOperation(nameDuplicatedFindOperation)
-        contactsDuplicatesOperationQueue.addOperation(phoneDuplicatesFindOperation)
-        contactsDuplicatesOperationQueue.addOperation(emailDuplicatedFindOperation)
-    }
 }
 
-extension ContactsManager  {
 
-    private func smartNamesDuplicated(_ contacts: [CNContact], completionHandler: @escaping ([CNContact]) -> Void) {
-        
-        var duplicates: [CNContact] = []
-        
-        for i in 0...contacts.count - 1 {
-            debugPrint("name duplicate index: \(i)")
-            if duplicates.contains(contacts[i]) {
-                continue
-            }
-            let contact = contacts[i]
-            let duplicatedContacts: [CNContact] = contacts.filter({ $0 != contacts[i]}).filter({$0.givenName.removeWhitespace() + $0.familyName.removeWhitespace() == contact.givenName.removeWhitespace() + contact.familyName.removeWhitespace()}) //.filter({$0.familyName == contact.familyName})
-            
-            duplicatedContacts.forEach({
-                debugPrint("each")
-                if !duplicates.contains(contact) {
-                    debugPrint(contact)
-                    duplicates.append(contact)
-                }
-                
-                if !duplicates.contains($0) {
-                    debugPrint($0)
-                    duplicates.append($0)
-                }
-            })
-        }
-        
-        completionHandler(duplicates)
-    }
-    
-        /// `names duplicated group`
-    private func smartNamesDuplicatesGroup(_ contacts: [CNContact], completionHandler: @escaping ([ContactsGroup]) -> Void) {
-        var group: [ContactsGroup] = []
-        
-        for contact in contacts {
-            debugPrint("names group index: \(String(describing: contacts.firstIndex(of: contact)))")
-            if group.filter({$0.name.removeWhitespace().lowercased() == contact.givenName.removeWhitespace().lowercased() + contact.familyName.removeWhitespace().lowercased()}).count == 0 {
-                let countryIdentifier = self.getRegionIdentifier(from: contact)
-                group.append(ContactsGroup(name: contact.givenName.removeWhitespace().lowercased() + contact.familyName.removeWhitespace().lowercased(), contacts: [], groupType: .duplicatedContactName, countryIdentifier: countryIdentifier))
-            }
-        }
-        
-        for contact in contacts {
-            debugPrint("extra filer index: \(String(describing: contacts.firstIndex(of: contact)))")
-            group.filter({$0.name.removeWhitespace().lowercased() == contact.givenName.removeWhitespace().lowercased() + contact.familyName.removeWhitespace().lowercased()})[0].contacts.append(contact)
-        }
-    
-        group.forEach({ $0.contacts = self.esctimateBestContactIn($0.contacts )})
-    
-        completionHandler(group)
-    }
+//  MARK: - MERGE CONTACTS -
+extension ContactsManager  {
     
     public func mergeContacts(in group: [ContactsGroup], merged indexes: [Int], completionHandler: @escaping (Bool, [Int]) -> Void) {
         
@@ -860,11 +772,11 @@ extension ContactsManager  {
                 }
             }
         }
-        
         return bestImageData
     }
 }
 
+//      MARK: - DELETE, CREATE, UPDATE CONTACTS METHODS -
 extension ContactsManager {
     
     public func deleteContacts(_ contacts: [CNContact],_ completionHandler: @escaping ((Bool, Int) -> Void)) {
@@ -1341,5 +1253,52 @@ extension ContactsManager {
                 self.operationConcurrentQueue.addOperation(emailsOperation)
             }
         }
+    }
+    
+    public func getDuplicatedAllContacts(_ contacts: [CNContact], completion: @escaping ([ContactasCleaningType : [ContactsGroup]]) -> Void) {
+        
+        var totalProcessingOperation = 0
+        var allGroupsDuplicated: [ContactasCleaningType : [ContactsGroup]] = [:]
+        
+        let phoneDuplicatesFindOperation = ConcurrentPhotoProcessOperation { _ in
+            
+            self.phoneDuplicatesGroup(contacts) { contactsGroup in
+                totalProcessingOperation += 1
+                allGroupsDuplicated[.duplicatedPhoneNumnber] = contactsGroup
+                if totalProcessingOperation == 3 {
+                    completion(allGroupsDuplicated)
+                }
+            }
+        }
+        
+        let nameDuplicatedFindOperation = ConcurrentPhotoProcessOperation { _ in
+            
+            self.namesDuplicated(contacts) { duplicatedContacts in
+                
+                self.namesDuplicatesGroup(duplicatedContacts) { contactsGroup in
+                    totalProcessingOperation += 1
+                    allGroupsDuplicated[.duplicatedContactName] = contactsGroup
+                    if totalProcessingOperation == 3 {
+                        completion(allGroupsDuplicated)
+                    }
+                }
+            }
+        }
+        
+        let emailDuplicatedFindOperation = ConcurrentPhotoProcessOperation { _ in
+            
+            self.emailDuplicatesGroup(contacts) { contactsGroup in
+                
+                totalProcessingOperation += 1
+                allGroupsDuplicated[.duplicatedEmail] = contactsGroup
+                if totalProcessingOperation == 3 {
+                    completion(allGroupsDuplicated)
+                }
+            }
+        }
+        
+        contactsDuplicatesOperationQueue.addOperation(nameDuplicatedFindOperation)
+        contactsDuplicatesOperationQueue.addOperation(phoneDuplicatesFindOperation)
+        contactsDuplicatesOperationQueue.addOperation(emailDuplicatedFindOperation)
     }
 }

@@ -166,6 +166,7 @@
 		978FEF12274BB73700ADE1D9 /* AlertType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978FEF11274BB73700ADE1D9 /* AlertType.swift */; };
 		978FEF14274BC21A00ADE1D9 /* ProgressAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978FEF13274BC21A00ADE1D9 /* ProgressAlertController.swift */; };
 		978FEF1A274C1C5400ADE1D9 /* UIAlertController+Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978FEF19274C1C5400ADE1D9 /* UIAlertController+Colors.swift */; };
+		9797D7AC2754E6F300F2B030 /* ContactManagerDeprocatedMethods.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9797D7AB2754E6F300F2B030 /* ContactManagerDeprocatedMethods.swift */; };
 		97A05B742743D4B600968459 /* SearchBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A05B732743D4B600968459 /* SearchBarView.swift */; };
 		97A05B762743D4C200968459 /* SearchBarView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 97A05B752743D4C200968459 /* SearchBarView.xib */; };
 		97A61EDE2726AB8700F2E6DE /* ContactsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A61EDD2726AB8700F2E6DE /* ContactsManager.swift */; };
@@ -377,6 +378,7 @@
 		978FEF11274BB73700ADE1D9 /* AlertType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertType.swift; sourceTree = "<group>"; };
 		978FEF13274BC21A00ADE1D9 /* ProgressAlertController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressAlertController.swift; sourceTree = "<group>"; };
 		978FEF19274C1C5400ADE1D9 /* UIAlertController+Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIAlertController+Colors.swift"; sourceTree = "<group>"; };
+		9797D7AB2754E6F300F2B030 /* ContactManagerDeprocatedMethods.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactManagerDeprocatedMethods.swift; sourceTree = "<group>"; };
 		97A05B732743D4B600968459 /* SearchBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBarView.swift; sourceTree = "<group>"; };
 		97A05B752743D4C200968459 /* SearchBarView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SearchBarView.xib; sourceTree = "<group>"; };
 		97A61EDD2726AB8700F2E6DE /* ContactsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsManager.swift; sourceTree = "<group>"; };
@@ -1179,6 +1181,7 @@
 			isa = PBXGroup;
 			children = (
 				97A61EDD2726AB8700F2E6DE /* ContactsManager.swift */,
+				9797D7AB2754E6F300F2B030 /* ContactManagerDeprocatedMethods.swift */,
 				97C44FBC274EF959001B61AB /* ContactsContainerType.swift */,
 				97C44FBA274EF93B001B61AB /* ContactasCleaningType.swift */,
 			);
@@ -1562,6 +1565,7 @@
 				97CE449D273D311400DF6114 /* NavigationBarDelegate.swift in Sources */,
 				044281FE2692F9B800B6B47C /* SelectDropDownMenuDelegate.swift in Sources */,
 				97CB351E273A9746005DA881 /* TableView+IndexPath.swift in Sources */,
+				9797D7AC2754E6F300F2B030 /* ContactManagerDeprocatedMethods.swift in Sources */,
 				4F56073E27205AF300CA19E9 /* ProgressView.swift in Sources */,
 				04CACE1E26A7FF62006489FA /* CarouselItemView.swift in Sources */,
 				97CB3516273A9129005DA881 /* ContactTableViewCell.swift in Sources */,
