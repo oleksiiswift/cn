@@ -7,6 +7,7 @@
 
 import Foundation
 import Photos
+import Contacts
 
 
 class UpdateContentDataBaseMediator {
@@ -25,16 +26,8 @@ class UpdateContentDataBaseMediator {
         self.listener = listener
     }
     
-    func updatePhotos(_ count: Int, calculatedSpace: Int64) {
-        listener?.getPhotoLibraryCount(count: count, calculatedSpace: calculatedSpace)
-    }
-    
-    func updateVideos(_ count: Int, calculatedSpace: Int64) {
-        listener?.getVideoCount(count: count, calculatedSpace: calculatedSpace)
-    }
-    
-    func updateContacts(_ count: Int) {
-        listener?.getContactsCount(count: count)
+    func updateContentStoreCount(mediaType: MediaContentType, itemsCount: Int, calculatedSpace: Int64?) {
+        listener?.updateContentStoreCount(mediaType: mediaType, itemsCount: itemsCount, calculatedSpace: calculatedSpace)
     }
     
     func getFrontCameraAssets(_ assets: [PHAsset]) {
@@ -72,4 +65,25 @@ class UpdateContentDataBaseMediator {
     func getRecentlyDeletedVideosAssets(_ assets: [PHAsset]) {
         listener?.getRecentlyDeletedVideoAssets(assets)
     }
+    
+    func getAllContacts(_ contacts: [CNContact]) {
+        listener?.getAllCNContacts(contacts)
+    }
+    
+    func getAllEmptyContacts(_ contacts: [ContactsGroup]) {
+        listener?.getAllEmptyContacts(contacts)
+    }
+    
+    func getAllDuplicatedContactsGroup(_ contactsGroup: [ContactsGroup]) {
+        listener?.getAllDuplicatedContactsGroup(contactsGroup)
+    }
+    
+    func getAllDuplicatedNumbersContactsGroup(_ contactsGroup: [ContactsGroup]) {
+        listener?.getAllDuplicatedNumbersContactsGroup(contactsGroup)
+    }
+    
+    func getAllDuplicatedEmailsContactsGroup(_ contactsGroup: [ContactsGroup]) {
+        listener?.getAllDuplicatedEmailsContactsGroup(contactsGroup)
+    }
+
 }

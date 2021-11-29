@@ -44,7 +44,7 @@ extension AdvertisementViewController: UpdateColorsDelegate {
     }
     
     func updateColors() {
-//        self.view.backgroundColor = .clear
+        self.view.backgroundColor = theme.backgroundColor
     }
     
     func setupNavigation() {

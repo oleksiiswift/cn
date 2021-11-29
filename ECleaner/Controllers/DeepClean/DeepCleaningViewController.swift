@@ -17,6 +17,8 @@ protocol DeepCleanSelectableAssetsDelegate: AnyObject {
 
 class DeepCleaningViewController: UIViewController {
      
+     @IBOutlet weak var customNavBar: StartingNavigationBar!
+     
      @IBOutlet weak var dateSelectContainerView: UIView!
      @IBOutlet weak var tableView: UITableView!
      @IBOutlet weak var bottomMenuView: UIView!
@@ -27,7 +29,6 @@ class DeepCleaningViewController: UIViewController {
      
      var dateSelectableView = DateSelectebleView()
      
-     lazy var backBarButtonItem = UIBarButtonItem(image: I.navigationItems.leftShevronBack, style: .plain, target: self, action: #selector(didTapBackButton))
      lazy var processingButtonActivityIndicator = UIActivityIndicatorView(style: .medium)
      
      /// managers∂
@@ -153,7 +154,7 @@ extension DeepCleaningViewController {
           
           guard let options = scansOptions else { return }
           
-          backBarButtonItem.isEnabled = false
+//          backBarButtonItem.isEnabled = false
           
           deepCleanManager.startDeepCleaningFetch(options, startingFetchingDate: startingDate, endingFetchingDate: endingDate) { mediaType in
                self.scansOptions = mediaType
@@ -230,7 +231,7 @@ extension DeepCleaningViewController {
                self.processing = false
                
                U.UI {
-                    self.backBarButtonItem.isEnabled = true
+//                    self.backBarButtonItem.isEnabled = true
                }
                
                debugPrint("done")
@@ -279,10 +280,10 @@ extension DeepCleaningViewController {
      private func updateCellInfoCount(by type: MediaContentType, mediaType: PhotoMediaType, assetsCount: Int) {
           
           if Thread.isMainThread {
-               self.updateAssetsFieldCount(at: mediaType.indexPath, assetsCount: assetsCount, mediaType: mediaType)
+               self.updateAssetsFieldCount(at: mediaType.deepCleanIndexPath, assetsCount: assetsCount, mediaType: mediaType)
           } else {
                U.UI {
-                    self.updateAssetsFieldCount(at: mediaType.indexPath, assetsCount: assetsCount, mediaType: mediaType)
+                    self.updateAssetsFieldCount(at: mediaType.deepCleanIndexPath, assetsCount: assetsCount, mediaType: mediaType)
                }
           }
      }
@@ -301,10 +302,6 @@ extension DeepCleaningViewController {
 
 extension DeepCleaningViewController: DateSelectebleViewDelegate {
      
-     @objc func didTapBackButton() {
-          self.navigationController?.popViewController(animated: true)
-     }
-     
      func didSelectStartingDate() {
           self.isStartingDateSelected = true
           performSegue(withIdentifier: C.identifiers.segue.showDatePicker, sender: self)
@@ -321,13 +318,13 @@ extension DeepCleaningViewController: DeepCleanSelectableAssetsDelegate {
      
      func didSelect(assetsListIds: [String], mediaType: PhotoMediaType) {
           
-          if let cell = self.tableView.cellForRow(at: mediaType.indexPath) as? ContentTypeTableViewCell {
+          if let cell = self.tableView.cellForRow(at: mediaType.deepCleanIndexPath) as? ContentTypeTableViewCell {
                let isSelected = !assetsListIds.isEmpty
                self.handleSelectedAssetsForRowMediatype[mediaType] = isSelected
                self.selectedAssetsCollectionID[mediaType] = assetsListIds
                
                U.UI {
-                    cell.setupCellSelected(at: mediaType.indexPath, isSelected: isSelected)
+                    cell.setupCellSelected(at: mediaType.deepCleanIndexPath, isSelected: isSelected)
                     self.checkStartCleaningButtonState(true)
                }
           }
@@ -340,27 +337,27 @@ extension DeepCleaningViewController {
      @objc func flowRoatingHandleNotification(_ notification: Notification) {
           
           switch notification.name.rawValue {
-               case C.key.notification.deepCleanSimilarPhotoPhassetScan:
+               case C.key.notification.deepClean.deepCleanSimilarPhotoPhassetScan:
                     self.recieveNotification(by: .similarPhoto, info: notification.userInfo)
-               case C.key.notification.deepCleanDuplicatedPhotoPhassetScan:
+               case C.key.notification.deepClean.deepCleanDuplicatedPhotoPhassetScan:
                     self.recieveNotification(by: .duplicatePhoto, info: notification.userInfo)
-               case C.key.notification.deepCleanScreenShotsPhotoPhassetScan:
+               case C.key.notification.deepClean.deepCleanScreenShotsPhotoPhassetScan:
                     self.recieveNotification(by: .screenshots, info: notification.userInfo)
-               case C.key.notification.deepCleanSimilarLivePhotosPhassetScan:
+               case C.key.notification.deepClean.deepCleanSimilarLivePhotosPhassetScan:
                     self.recieveNotification(by: .similarLivePhoto, info: notification.userInfo)
-               case C.key.notification.deepCleanLargeVideoPhassetScan:
+               case C.key.notification.deepClean.deepCleanLargeVideoPhassetScan:
                     self.recieveNotification(by: .largeVideo, info: notification.userInfo)
-               case C.key.notification.deepCleanDuplicateVideoPhassetScan:
+               case C.key.notification.deepClean.deepCleanDuplicateVideoPhassetScan:
                     self.recieveNotification(by: .duplicateVideo, info: notification.userInfo)
-               case C.key.notification.deepCleanSimilarVideoPhassetScan:
+               case C.key.notification.deepClean.deepCleanSimilarVideoPhassetScan:
                     self.recieveNotification(by: .similarVideo, info: notification.userInfo)
-               case C.key.notification.deepCleanScreenRecordingsPhassetScan:
+               case C.key.notification.deepClean.deepCleanScreenRecordingsPhassetScan:
                     self.recieveNotification(by: .screenRecordings, info: notification.userInfo)
-               case C.key.notification.deepCleanAllContactsScan:
+               case C.key.notification.deepClean.deepCleanAllContactsScan:
                     self.recieveNotification(by: .allContacts, info: notification.userInfo)
-               case C.key.notification.deepCleanEmptyContactsScan:
+               case C.key.notification.deepClean.deepCleanEmptyContactsScan:
                     self.recieveNotification(by: .emptyContacts, info: notification.userInfo)
-               case C.key.notification.deepCleanDuplicateContacts:
+               case C.key.notification.deepClean.deepCleanDuplicateContacts:
                     self.recieveNotification(by: .duplicateContacts, info: notification.userInfo)
                default:
                     return
@@ -435,7 +432,7 @@ extension DeepCleaningViewController {
      
      private func progressUpdate(_ notificationType: DeepCleanNotificationType, progress: CGFloat, title: String) {
           
-          let indexPath = notificationType.mediaTypeRawValue.indexPath
+          let indexPath = notificationType.mediaTypeRawValue.deepCleanIndexPath
           self.currentProgressForRawMediatype[notificationType.mediaTypeRawValue] = progress
           
           switch notificationType {
@@ -628,7 +625,7 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
      
      private func configure(_ cell: ContentTypeTableViewCell, at indexPath: IndexPath) {
           
-          let contentType = MediaType.getMediaContentType(from: indexPath)
+          let contentType = MediaType.getDeepCleanMediaContentType(from: indexPath)
           let isSelected = self.handleSelectedAssetsForRowMediatype[contentType] ?? false
           cell.setupCellSelected(at: indexPath, isSelected: isSelected)
           
@@ -636,17 +633,18 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
                case 1:
                     switch indexPath.row {
                          case 0:
+                              
                               cell.cellConfig(contentType: .userPhoto,
                                               indexPath: indexPath,
                                               phasetCount: self.similarPhotosCount,
-                                              isDeepCleanController: true,
+                                              presentingType: .deepCleen,
                                               progress: self.currentProgressForRawMediatype[.similarPhotos] ?? 0,
                                               isProcessingComplete: doneProcessingDeepCleanForMedia[.similarPhotos] ?? false)
                          case 1:
                               cell.cellConfig(contentType: .userPhoto,
                                               indexPath: indexPath,
                                               phasetCount: self.duplicatedPhotosCount,
-                                              isDeepCleanController: true,
+                                              presentingType: .deepCleen,
                                               progress: self.currentProgressForRawMediatype[.duplicatedPhotos] ?? 0,
                                               isProcessingComplete: doneProcessingDeepCleanForMedia[.duplicatedPhotos] ?? false)
                               
@@ -654,7 +652,7 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
                               cell.cellConfig(contentType: .userPhoto,
                                               indexPath: indexPath,
                                               phasetCount: self.screenShots.count,
-                                              isDeepCleanController: true,
+                                              presentingType: .deepCleen,
                                               progress: self.currentProgressForRawMediatype[.singleScreenShots] ?? 0,
                                               isProcessingComplete: doneProcessingDeepCleanForMedia[.singleScreenShots] ?? false)
                          case 3:
@@ -662,7 +660,7 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
                               cell.cellConfig(contentType: .userPhoto,
                                               indexPath: indexPath,
                                               phasetCount: self.similarLivePhotosCount,
-                                              isDeepCleanController: true,
+                                              presentingType: .deepCleen,
                                               progress: self.currentProgressForRawMediatype[.similarLivePhotos] ?? 0,
                                               isProcessingComplete: doneProcessingDeepCleanForMedia[.similarLivePhotos] ?? false)
                          default:
@@ -674,7 +672,7 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
                               cell.cellConfig(contentType: .userVideo,
                                               indexPath: indexPath,
                                               phasetCount: self.largeVideos.count,
-                                              isDeepCleanController: true,
+                                              presentingType: .deepCleen,
                                               progress: self.currentProgressForRawMediatype[.singleLargeVideos] ?? 0,
                                               isProcessingComplete: doneProcessingDeepCleanForMedia[.singleLargeVideos] ?? false)
                               
@@ -682,14 +680,14 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
                               cell.cellConfig(contentType: .userVideo,
                                               indexPath: indexPath,
                                               phasetCount: self.duplicatedVideosCount,
-                                              isDeepCleanController: true,
+                                              presentingType: .deepCleen,
                                               progress: self.currentProgressForRawMediatype[.duplicatedVideos] ?? 0,
                                               isProcessingComplete: doneProcessingDeepCleanForMedia[.duplicatedVideos] ?? false)
                          case 2:
                               cell.cellConfig(contentType: .userVideo,
                                               indexPath: indexPath,
                                               phasetCount: self.similarVideoCount,
-                                              isDeepCleanController: true,
+                                              presentingType: .deepCleen,
                                               progress: self.currentProgressForRawMediatype[.similarVideos] ?? 0,
                                               isProcessingComplete: doneProcessingDeepCleanForMedia[.similarVideos] ?? false)
                               
@@ -697,7 +695,7 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
                               cell.cellConfig(contentType: .userVideo,
                                               indexPath: indexPath,
                                               phasetCount: self.screenRecordings.count,
-                                              isDeepCleanController: true,
+                                              presentingType: .deepCleen,
                                               progress: self.currentProgressForRawMediatype[.singleScreenRecordings] ?? 0,
                                               isProcessingComplete: doneProcessingDeepCleanForMedia[.singleScreenRecordings] ?? false)
                          default:
@@ -709,19 +707,19 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
                               cell.cellConfig(contentType: .userContacts,
                                               indexPath: indexPath,
                                               phasetCount: self.allContacts.count,
-                                              isDeepCleanController: true,
+                                              presentingType: .deepCleen,
                                               progress: self.currentProgressForRawMediatype[.allContacts] ?? 0)
                          case 1:
                               cell.cellConfig(contentType: .userContacts,
                                               indexPath: indexPath,
                                               phasetCount: self.emptyContacts.count,
-                                              isDeepCleanController: true,
+                                              presentingType: .deepCleen,
                                               progress: self.currentProgressForRawMediatype[.emptyContacts] ?? 0)
                          case 2:
                               cell.cellConfig(contentType: .userContacts,
                                               indexPath: indexPath,
                                               phasetCount: self.duplicatedContacts.count,
-                                              isDeepCleanController: true,
+                                              presentingType: .deepCleen,
                                               progress: self.currentProgressForRawMediatype[.duplicatedContacts] ?? 0)
                          default:
                               return
@@ -777,13 +775,16 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
      }
      
      func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-          return indexPath.section == 0 ? 125 : UITableView.automaticDimension
+          return indexPath.section == 0 ? 151 : 100//UITableView.automaticDimension
      }
      
      func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
           
           let view = UIView(frame: CGRect(x: 0, y: 0, width: U.screenWidth, height: 30))
           let sectionTitleTextLabel = UILabel()
+          
+          sectionTitleTextLabel.font = UIFont(font: FontManager.robotoBlack, size: 16.0)
+          sectionTitleTextLabel.textColor = theme.titleTextColor
           
           view.addSubview(sectionTitleTextLabel)
           sectionTitleTextLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -793,15 +794,16 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
           sectionTitleTextLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
           
           view.layoutIfNeeded()
+          
           switch section {
                case 0:
                     view.frame = CGRect(x: 0, y: 0, width: U.screenWidth, height: 0)
                case 1:
-                    sectionTitleTextLabel.text = "photo"
+                    sectionTitleTextLabel.text = "PHOTOS_NAV_TITLE".localized()
                case 2:
-                    sectionTitleTextLabel.text = "video"
+                    sectionTitleTextLabel.text = "VIDEOS_NAV_TITLE".localized()
                default:
-                    sectionTitleTextLabel.text = "contacts"
+                    sectionTitleTextLabel.text = "CONTACTS_NAV_TITLE".localized()
           }
           return view
      }
@@ -822,8 +824,8 @@ extension DeepCleaningViewController {
           dateSelectableView.topAnchor.constraint(equalTo: dateSelectContainerView.topAnchor).isActive = true
           
           
-          processingButtonView.setCorner(12)
-          processingButtonTextLabel.font = .systemFont(ofSize: 17, weight: .bold)
+          processingButtonView.setCorner(14)
+          processingButtonTextLabel.font = UIFont(font: FontManager.robotoBlack, size: 16.0)
      }
      
      private func setupDateInterval() {
@@ -845,11 +847,13 @@ extension DeepCleaningViewController {
           
           dateSelectableView.delegate = self
           selectableAssetsDelegate = self
+          customNavBar.delegate = self
      }
      
      private func setupNavigation() {
           
-          self.navigationItem.leftBarButtonItem = backBarButtonItem
+          self.navigationController?.navigationBar.isHidden = true
+          customNavBar.setUpNavigation(title: "DEEP_CLEEN".localized(), leftImage: I.navigationItems.back, rightImage: nil)
      }
      
      private func setupShowDatePickerSelectorController(segue: UIStoryboardSegue) {
@@ -898,8 +902,8 @@ extension DeepCleaningViewController {
           }
           
           if isStartingDeepCleanProcess {
-               
-               processingButtonTextLabel.text = deepCleanFirstRunProcessingIsStart ? "re start deep clean" : "start deep clean"
+
+               processingButtonTextLabel.text = deepCleanFirstRunProcessingIsStart ? "RE_START_CLEANING".localized() : "START_CLEANING".localized()
                
           } else {
                
@@ -921,11 +925,23 @@ extension DeepCleaningViewController: Themeble {
      
      func updateColors() {
           
-          bottomMenuView.backgroundColor = .clear
-          processingButtonView.backgroundColor = theme.accentBackgroundColor
+          self.view.backgroundColor = theme.backgroundColor
+          tableView.backgroundColor = .clear
+          bottomMenuView.backgroundColor = theme.backgroundColor
+          processingButtonView.backgroundColor = theme.customRedColor
           processingButtonTextLabel.textColor = theme.activeTitleTextColor
           processingButtonActivityIndicator.color = theme.backgroundColor
+          customNavBar.backgroundColor = theme.backgroundColor
      }
+}
+
+extension DeepCleaningViewController: StartingNavigationBarDelegate {
+     
+     func didTapLeftBarButton(_sender: UIButton) {
+          self.navigationController?.popViewController(animated: true)
+     }
+     
+     func didTapRightBarButton(_sender: UIButton) {}
 }
 
 

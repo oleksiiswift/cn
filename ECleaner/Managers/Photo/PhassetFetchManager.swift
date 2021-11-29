@@ -189,7 +189,7 @@ extension PHAssetFetchManager {
         let assets = PHAsset.fetchAssets(with: fetchOption)
         
         assets.enumerateObjects { object, index, stopped in
-            debugPrint("calculated space at index: ", index)
+//            debugPrint("calculated space at index: ", index)
             if object.mediaType == .image {
                 allSpaceSize += object.imageSize
                 photoPhassetSpace += object.imageSize
@@ -295,10 +295,11 @@ extension PHAssetFetchManager {
             for photoAssetPosition in 1...photoResult.count {
                 photoAssets.append(photoResult[photoAssetPosition - 1])
             }
-            
-            for videoAssetPosion in 1...videoResult.count {
-                videoAssets.append(videoResult[videoAssetPosion - 1])
-            }
+          
+            #warning("EC-23")
+//            for videoAssetPosion in 1...videoResult.count {
+//                videoAssets.append(videoResult[videoAssetPosion - 1])
+//            }
             
             U.UI {
                 completionHandler(photoAssets, videoAssets)

@@ -19,18 +19,22 @@ extension UIButton {
         self.contentEdgeInsets = UIEdgeInsets(top: 0, left: inset, bottom: 0, right: inset)
     }
     
+    func addLeftImageWithFixLeft(spacing: CGFloat, size: CGSize, image: UIImage) {
+        addImageWithFix(spacing: spacing, isLeft: true, imageWidth: size.width, imageHeight: size.height, image: image)
+    }
     
+    func addRighttImageWithFixRight(spacing: CGFloat, size: CGSize, image: UIImage) {
+        addImageWithFix(spacing: spacing, isLeft: false, imageWidth: size.width, imageHeight: size.height, image: image)
+    }
+
     func addLeftImage(image: UIImage, size: CGSize, spacing: CGFloat) {
-        
         addImage(image: image, imageWidth: size.width, imageHeight: size.height, spacing: spacing, isLeft: true)
     }
     
     
     func addRightImage(image: UIImage, size: CGSize, spacing: CGFloat) {
-        
         addImage(image: image, imageWidth: size.width, imageHeight: size.height, spacing: spacing, isLeft: false)
     }
-    
     
     func addCenterImage(image: UIImage, imageWidth: CGFloat, imageHeight: CGFloat, spacing: CGFloat = 0) {
         
@@ -50,27 +54,38 @@ extension UIButton {
     private func addImage(image: UIImage, imageWidth: CGFloat, imageHeight: CGFloat, spacing: CGFloat, isLeft: Bool) {
         
         let imageView = UIImageView(image: image)
-        
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        
         self.addSubview(imageView)
         
         if isLeft {
             titleEdgeInsets.left += imageWidth
-            
             imageView.trailingAnchor.constraint(equalTo: self.titleLabel!.leadingAnchor, constant: -spacing).isActive = true
             
         } else {
             titleEdgeInsets.right += imageWidth
-            
             imageView.leadingAnchor.constraint(equalTo: self.titleLabel!.trailingAnchor, constant: spacing).isActive = true
         }
+    
+        imageView.centerYAnchor.constraint(equalTo: self.titleLabel!.centerYAnchor, constant: 0).isActive = true
+        imageView.widthAnchor.constraint(equalToConstant: imageWidth).isActive = true
+        imageView.heightAnchor.constraint(equalToConstant: imageHeight).isActive = true
+    }
+
+    private func addImageWithFix(spacing: CGFloat, isLeft: Bool, imageWidth: CGFloat, imageHeight: CGFloat, image: UIImage) {
         
+        let imageView = UIImageView(image: image)
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        self.addSubview(imageView)
         
-        NSLayoutConstraint.activate([
-                                        imageView.centerYAnchor.constraint(equalTo: self.titleLabel!.centerYAnchor, constant: 0),
-                                        imageView.widthAnchor.constraint(equalToConstant: imageWidth),
-                                        imageView.heightAnchor.constraint(equalToConstant: imageHeight)])
+        if isLeft {
+            imageView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: spacing).isActive = true
+        } else {
+            imageView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: spacing).isActive = true
+        }
+        
+        imageView.centerYAnchor.constraint(equalTo: self.titleLabel!.centerYAnchor, constant: 0).isActive = true
+        imageView.widthAnchor.constraint(equalToConstant: imageWidth).isActive = true
+        imageView.heightAnchor.constraint(equalToConstant: imageHeight).isActive = true
     }
 }
 

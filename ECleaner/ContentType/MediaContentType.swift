@@ -14,7 +14,35 @@ enum MediaContentType {
     case userContacts
     case none
     
-    /// `SECTION PROPERTIES`
+    var navigationTitle: String {
+        switch self {
+            case .userPhoto:
+            return "PHOTOS_NAV_TITLE".localized()
+            case .userVideo:
+            return "VIDEOS_NAV_TITLE".localized()
+            case .userContacts:
+            return "CONTACTS_NAV_TITLE".localized()
+            case .none:
+                return ""
+        }
+    }
+    
+    
+        /// `` MAIN SCREEN CONTENT TYPE PROPERTIES
+    var mainScreenIndexPath: IndexPath {
+        switch self {
+            case .userPhoto:
+                return IndexPath(row: 0, section: 0)
+            case .userVideo:
+                return IndexPath(row: 1, section: 0)
+            case .userContacts:
+                return IndexPath(row: 2, section: 0)
+            case .none:
+                return IndexPath()
+        }
+    }
+        
+        /// `` SECTION PROPERTIES
     var cellTitle: [Int: [Int : String]] {
         switch self {
             case .userPhoto:
@@ -36,7 +64,9 @@ enum MediaContentType {
             case .userContacts:
                 return [0: [0: "all contacts",
                             1: "empty",
-                            2: "duplicates"]]
+                            2: "duplicates names",
+                            3: "duplicates phones",
+                            4: "duplicated emails"]]
             case .none:
                 return [0: [0: ""]]
         }
@@ -53,9 +83,35 @@ enum MediaContentType {
             case .userVideo:
                 return 6
             case .userContacts:
-                return 3
+                return 5
             case .none:
                 return 0
+        }
+    }
+    
+    var imageOfRows: UIImage {
+        switch self {
+        case .userPhoto:
+            return I.mainStaticItems.photo
+        case .userVideo:
+            return I.mainStaticItems.video
+        case .userContacts:
+            return I.mainStaticItems.contacts
+        case .none:
+            return UIImage()
+        }
+    }
+    
+    var processingImageOfRows: UIImage {
+        switch self {
+            case .userPhoto:
+                return I.personalisation.photo.processingThumb
+            case .userVideo:
+                return I.personalisation.video.processingThumb
+            case .userContacts:
+                return I.personalisation.contacts.processingThumb
+            case .none:
+                return UIImage()
         }
     }
     
@@ -64,38 +120,38 @@ enum MediaContentType {
             case .userPhoto:
                 switch index {
                     case 0:
-                        return "simmilar photo"
+                    return "SIMILAR_PHOTO".localized()
                     case 1:
-                        return "dublicates photo"
+                        return "DUBLICATES_PHOTO".localized()
                     case 2:
-                        return "screenshots"
+                        return "SCREENSHOTS".localized()
                     case 3:
-                        return "selfie"
+                        return "SELFIE".localized()
                     case 4:
-                        return "live photos"
+                        return "LIVE_PHOTO".localized()
                     case 5:
-                        return "recently deleted photo"
+                        return "RECENTLY_DEL_PHOTO".localized()
                     case 6:
-                        return "face" /// do not in use
+                        return "FACE".localized() /// do not in use
                     case 7:
-                        return "location" /// do not in use
+                        return "LOCATION".localized() /// do not in use
                     default:
                         return ""
                 }
             case .userVideo:
                 switch index {
                     case 0:
-                        return "large video"
+                        return "LARGE_VIDEO".localized()
                     case 1:
-                        return "duplicate video"
+                        return "DUPLICATE_VIDEO".localized()
                     case 2:
-                        return "similar video"
+                        return "SIMILAR_VIDEO".localized()
                     case 3:
-                        return "screen recording"
+                        return "SCREEN_RECORDING".localized()
                     case 4:
-                        return "compress video"
+                        return "COMPRESS_VIDEO".localized()
                     case 5:
-                        return "recently deleted video"
+                        return "RECENTLY_DEL_VIDEO".localized()
                     default:
                         return ""
                 }
@@ -106,12 +162,32 @@ enum MediaContentType {
                     case 1:
                         return "empty"
                     case 2:
-                        return "duplicates"
+                        return "duplicates names"
+                    case 3:
+                        return "duplicate numbers"
+                    case 4:
+                        return "duplicated emails"
                     default:
                         return ""
                 }
             case .none:
                 return ""
+        }
+    }
+    
+    var screenAcentTintColor: UIColor {
+        
+        let theme = ThemeManager.theme
+        
+        switch self {
+            case .userPhoto:
+                return theme.phoneTintColor
+            case .userVideo:
+                return theme.videosTintColor
+            case .userContacts:
+                return theme.contactsTintColor
+            case .none:
+                return theme.defaulTintColor
         }
     }
     
@@ -134,26 +210,26 @@ enum MediaContentType {
             case .userPhoto:
                 switch index {
                     case 0:
-                        return "simmilar photo"
+                        return "SIMILAR_PHOTO".localized()
                     case 1:
-                        return "dublicates photo"
+                        return "DUBLICATES_PHOTO".localized()
                     case 2:
-                        return "screenshots"
+                        return "SCREENSHOTS".localized()
                     case 3:
-                        return "similar allive photos"
+                        return "SIMILAR_ALLIVE_PHOTOS".localized()
                     default:
                         return ""
                 }
             case .userVideo:
                 switch index {
                     case 0:
-                        return "large video"
+                        return "LARGE_VIDEO".localized()
                     case 1:
-                        return "duplicate video"
+                        return "DUPLICATE_VIDEO".localized()
                     case 2:
-                        return "similar video"
+                        return "SIMILAR_VIDEO".localized()
                     case 3:
-                        return "screen recording"
+                        return "SCREEN_RECORDING".localized()
                     default:
                         return ""
                 }

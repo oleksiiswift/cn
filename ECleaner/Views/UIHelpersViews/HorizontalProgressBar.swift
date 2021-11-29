@@ -43,6 +43,7 @@ import UIKit
     override func draw(_ rect: CGRect) {
         
         let progressFrame: CGRect = CGRect(origin: .zero, size: CGSize(width: rect.width * progress, height: rect.height))
+//        progressView.setCorner(14)
         progressView.backgroundColor = progressColor
         progressView.frame = progressFrame
     }
