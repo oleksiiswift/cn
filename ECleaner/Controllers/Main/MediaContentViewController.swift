@@ -106,7 +106,7 @@ extension MediaContentViewController: UITableViewDelegate, UITableViewDataSource
     
     func configure(_ cell: ContentTypeTableViewCell, at indexPath: IndexPath, isSearchingStarted: Bool = false) {
     
-        let  photoMediaType: PhotoMediaType = MediaType.getSingleSearchMediaContentType(from: indexPath, type: mediaContentType)
+        let  photoMediaType: PhotoMediaType = .getSingleSearchMediaContentType(from: indexPath, type: mediaContentType)
         
         var assetContentCount: Int {
             switch photoMediaType {

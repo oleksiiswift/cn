@@ -7,24 +7,24 @@
 
 import Foundation
 
+    
 enum PhotoMediaType: String {
     
+        /// `photo section`
     case similarPhotos = "similarPhotos"
     case duplicatedPhotos = "duplicatedPhotos"
     case singleScreenShots = "singleScreenShots"
     case singleLivePhotos = "singleLivePhotos"
     case similarLivePhotos = "similarLivePhotos"
+    case singleSelfies = "singleSelfies"
+    case singleRecentlyDeletedPhotos = "singleRecentlyDeletedPhotos"
 
+        /// `video section section`
     case singleLargeVideos = "singleLargeVideos"
     case duplicatedVideos = "duplicatedVideos"
     case similarVideos = "similarVideos"
-    
-    case singleSelfies = "singleSelfies"
     case singleScreenRecordings = "singleScreenRecordings"
-    
-    case singleRecentlyDeletedPhotos = "singleRecentlyDeletedPhotos"
     case singleRecentlyDeletedVideos = "singleRecentlyDeletedVideos"
-    
     case compress = "compress video"
         
         /// `contacts section`
@@ -81,7 +81,7 @@ enum PhotoMediaType: String {
         }
     }
     
-        /// `use this only for deep clea screen section:
+        /// `use this only for deep clean screen section:
     var deepCleanIndexPath: IndexPath {
      
         switch self {
@@ -101,16 +101,14 @@ enum PhotoMediaType: String {
                 return IndexPath(row: 2, section: 2)
             case .singleScreenRecordings:
                 return IndexPath(row: 3, section: 2)
-            case .allContacts:
-                return IndexPath(row: 0, section: 3)
             case .emptyContacts:
-                return IndexPath(row: 1, section: 3)
+                return IndexPath(row: 0, section: 3)
             case .duplicatedContacts:
-                return IndexPath(row: 2, section: 3)
+                return IndexPath(row: 1, section: 3)
             case .duplicatedPhoneNumbers:
-                return IndexPath(row: 3, section: 3)
+                return IndexPath(row: 2, section: 3)
             case .duplicatedEmails:
-                return IndexPath(row: 4, section: 3)
+                return IndexPath(row: 3, section: 3)
             default:
                 return IndexPath()
         }
@@ -162,9 +160,6 @@ enum PhotoMediaType: String {
                 return IndexPath()
         }
     }
-}
-
-class MediaType {
     
     /// `use this only for deep clean screen section:
     public static func getDeepCleanMediaContentType(from indexPath: IndexPath) -> PhotoMediaType {
@@ -202,14 +197,12 @@ class MediaType {
                 /// `contats section`
                 switch indexPath.row {
                     case 0:
-                        return .allContacts
-                    case 1:
                         return .emptyContacts
-                    case 2:
+                    case 1:
                         return .duplicatedContacts
-                    case 3:
+                    case 2:
                         return .duplicatedPhoneNumbers
-                    case 4:
+                    case 3:
                         return .duplicatedEmails
                     default:
                         return .none

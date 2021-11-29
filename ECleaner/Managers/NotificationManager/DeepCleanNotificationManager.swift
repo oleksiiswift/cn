@@ -19,9 +19,10 @@ enum DeepCleanNotificationType {
     case similarVideo
     case screenRecordings
     
-    case allContacts
     case emptyContacts
     case duplicateContacts
+    case duplicatedPhoneNumbers
+    case duplicatedEmails
     
     var dictionaryCountName: String {
         switch self {
@@ -42,12 +43,14 @@ enum DeepCleanNotificationType {
                 return C.key.notificationDictionary.count.similarVideoCount
             case .screenRecordings:
                 return C.key.notificationDictionary.count.screenRecordingsCount
-            case .allContacts:
-                return C.key.notificationDictionary.count.allContactsCount
             case .emptyContacts:
                 return C.key.notificationDictionary.count.emptyContactsCount
             case .duplicateContacts:
                 return C.key.notificationDictionary.count.duplicateNamesContactsCount
+            case .duplicatedPhoneNumbers:
+                return C.key.notificationDictionary.count.duplicateNumbersContactsCount
+            case .duplicatedEmails:
+                return C.key.notificationDictionary.count.duplicateEmailsContactsCount
         }
     }
     
@@ -71,12 +74,14 @@ enum DeepCleanNotificationType {
                 return C.key.notificationDictionary.index.similarVideoIndex
             case .screenRecordings:
                 return C.key.notificationDictionary.index.screenRecordingsIndex
-            case .allContacts:
-                return C.key.notificationDictionary.index.allContactsIndex
             case .emptyContacts:
                 return C.key.notificationDictionary.index.emptyContactsIndex
             case .duplicateContacts:
                 return C.key.notificationDictionary.index.duplicateNamesContactsIndex
+            case .duplicatedPhoneNumbers:
+                return C.key.notificationDictionary.index.duplicateNumbersContactsIndex
+            case .duplicatedEmails:
+                return C.key.notificationDictionary.index.duplicateEmailContactsIndex
         }
     }
     
@@ -98,12 +103,14 @@ enum DeepCleanNotificationType {
                 return .deepCleanSimilarVideoPhassetScan
             case .screenRecordings:
                 return .deepCleanScreenRecordingsPhassetScan
-            case .allContacts:
-                return .deepCleanAllContactsScan
             case .emptyContacts:
                 return .deepCleanEmptyContactsScan
             case .duplicateContacts:
                 return .deepCleanDuplicatedContactsScan
+            case .duplicatedPhoneNumbers:
+                return .deepCleanDuplicatedPhoneNumbersScan
+            case .duplicatedEmails:
+                return .deepCleanDupLicatedMailsScan
         }
     }
     
@@ -125,12 +132,14 @@ enum DeepCleanNotificationType {
                 return .similarVideos
             case .screenRecordings:
                 return .singleScreenRecordings
-            case .allContacts:
-                return .allContacts
             case .emptyContacts:
                 return .emptyContacts
             case .duplicateContacts:
                 return .duplicatedContacts
+            case .duplicatedPhoneNumbers:
+                return .duplicatedPhoneNumbers
+            case .duplicatedEmails:
+                return .duplicatedEmails
         }
     }
 }
@@ -149,6 +158,7 @@ class DeepCleanNotificationManager {
         
         let infoDictionary = [notificationType.dictionaryIndexName: currentProgressItem,
                               notificationType.dictionaryCountName: totalProgressItems]
+        sleep(UInt32(0.1))
         NotificationCenter.default.post(name: notificationType.notificationName, object: nil, userInfo: infoDictionary)
     }
 }

@@ -11,6 +11,7 @@ import Photos
 class DeepCleanManager {
     
     private var photoManager = PhotoManager.manager
+    private var contactManager = ContactsManager.shared
     
     let deepCleanOperationQue = OperationPhotoProcessingQueuer(name: "Deep Clean Queuer", maxConcurrentOperationCount: 1, qualityOfService: .default)
         
@@ -24,6 +25,10 @@ class DeepCleanManager {
                                        similarVideo: @escaping ([PhassetGroup]) -> Void,
                                        duplicatedVideo: @escaping ([PhassetGroup]) -> Void,
                                        screenRecordings: @escaping ([PHAsset]) -> Void,
+                                       emptyContacts: @escaping ([ContactsGroup]) -> Void,
+                                       duplicatedContats: @escaping ([ContactsGroup]) -> Void,
+                                       duplicatedPhoneNumbers: @escaping ([ContactsGroup]) -> Void,
+                                       duplicatedEmails: @escaping ([ContactsGroup]) -> Void,
                                        completionHandler: @escaping () -> Void) {
         
         var totalResultCount = 0
@@ -139,6 +144,8 @@ class DeepCleanManager {
                 }
             }
         }
+        
+//        MARK: - duplicated conta
         
         deepCleanOperationQue.addOperation(duplicatedPhotoFetchOperation)
         deepCleanOperationQue.addOperation(similarPhotoFetchOperation)

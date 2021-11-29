@@ -344,6 +344,7 @@ extension PhotoManager {
                         
                         /// adding notification to handle progress similar photos processing
                         if isDeepCleanScan {
+                            
                             self.progressNotificationManager.sendDeepProgressNotificatin(notificationType: .similarPhoto,
                                                                                          totalProgressItems: photosInGallery.count,
                                                                                          currentProgressItem: index)
