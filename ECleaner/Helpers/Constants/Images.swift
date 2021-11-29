@@ -12,6 +12,13 @@ class Images {
 
     static let blank = UIImage(named: "")
     
+    struct mainStaticItems {
+        static let clean = UIImage(named: "clean")!
+        static let photo = UIImage(named: "photo")!
+        static let video = UIImage(named: "video")!
+        static let contacts = UIImage(named: "contact")!
+    }
+    
     struct systemItems {
         
         struct selectItems {
@@ -74,12 +81,6 @@ class Images {
         static let leftShevronBack = UIImage(systemName: "chevron.left")
         static let rightShevronBack = UIImage(named: "chevron")!
         static let burgerDots = UIImage(named: "burgerDots")
-    }
-    
-    struct mainMenuThumbItems {
-        static let photo = UIImage(named: "photo")!
-        static let video = UIImage(named: "video")!
-        static let contacts = UIImage(named: "contact")!
     }
     
     struct systemElementsItems {

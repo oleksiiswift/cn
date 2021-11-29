@@ -26,16 +26,8 @@ class UpdateContentDataBaseMediator {
         self.listener = listener
     }
     
-    func updatePhotos(_ count: Int, calculatedSpace: Int64) {
-        listener?.getPhotoLibraryCount(count: count, calculatedSpace: calculatedSpace)
-    }
-    
-    func updateVideos(_ count: Int, calculatedSpace: Int64) {
-        listener?.getVideoCount(count: count, calculatedSpace: calculatedSpace)
-    }
-    
-    func updateContacts(_ count: Int) {
-        listener?.getContactsCount(count: count)
+    func updateContentStoreCount(mediaType: MediaContentType, itemsCount: Int, calculatedSpace: Int64?) {
+        listener?.updateContentStoreCount(mediaType: mediaType, itemsCount: itemsCount, calculatedSpace: calculatedSpace)
     }
     
     func getFrontCameraAssets(_ assets: [PHAsset]) {

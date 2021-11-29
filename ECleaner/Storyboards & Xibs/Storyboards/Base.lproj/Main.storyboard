@@ -9,11 +9,6 @@
         <capability name="collection view cell content view" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
-    <customFonts key="customFonts">
-        <array key="Roboto-Black.ttf">
-            <string>Roboto-Black</string>
-        </array>
-    </customFonts>
     <scenes>
         <!--Advertisement View Controller-->
         <scene sceneID="lE8-8V-0TF">
@@ -149,54 +144,11 @@
                                                 <color key="pageIndicatorTintColor" red="0.80784313725490198" green="0.83529411764705885" blue="0.87450980392156863" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <color key="currentPageIndicatorTintColor" red="0.57647058823529407" green="0.60784313725490191" blue="0.65490196078431373" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             </pageControl>
-                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="poS-86-x66">
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="poS-86-x66" customClass="BottomButtonBarView" customModule="ECleaner" customModuleProvider="target">
                                                 <rect key="frame" x="0.0" y="648" width="414" height="160"/>
-                                                <subviews>
-                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="70r-WS-60s" customClass="ShadowView" customModule="ECleaner" customModuleProvider="target">
-                                                        <rect key="frame" x="20" y="10" width="374" height="60"/>
-                                                        <subviews>
-                                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="clean" translatesAutoresizingMaskIntoConstraints="NO" id="sZ3-7b-Tpx">
-                                                                <rect key="frame" x="50" y="17.5" width="25" height="25"/>
-                                                                <constraints>
-                                                                    <constraint firstAttribute="width" secondItem="sZ3-7b-Tpx" secondAttribute="height" multiplier="1:1" id="toA-GK-VvF"/>
-                                                                </constraints>
-                                                            </imageView>
-                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7t5-6G-mDG">
-                                                                <rect key="frame" x="167.5" y="0.0" width="39.5" height="60"/>
-                                                                <fontDescription key="fontDescription" name="Roboto-Black" family="Roboto" pointSize="16"/>
-                                                                <nil key="textColor"/>
-                                                                <nil key="highlightedColor"/>
-                                                            </label>
-                                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jQH-Sg-yGu">
-                                                                <rect key="frame" x="0.0" y="0.0" width="374" height="60"/>
-                                                                <connections>
-                                                                    <action selector="didTapStartDeepCleaningActionButton:" destination="ql3-s6-hd9" eventType="touchUpInside" id="Jmo-4l-bYx"/>
-                                                                </connections>
-                                                            </button>
-                                                        </subviews>
-                                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                                                        <constraints>
-                                                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="7t5-6G-mDG" secondAttribute="trailing" constant="10" id="IgZ-Ke-yp0"/>
-                                                            <constraint firstAttribute="trailing" secondItem="jQH-Sg-yGu" secondAttribute="trailing" id="Jf2-TZ-nlB"/>
-                                                            <constraint firstItem="7t5-6G-mDG" firstAttribute="centerX" secondItem="70r-WS-60s" secondAttribute="centerX" id="NI8-f9-lBn"/>
-                                                            <constraint firstAttribute="bottom" secondItem="jQH-Sg-yGu" secondAttribute="bottom" id="O9a-me-USh"/>
-                                                            <constraint firstItem="jQH-Sg-yGu" firstAttribute="leading" secondItem="70r-WS-60s" secondAttribute="leading" id="a2R-QD-Rul"/>
-                                                            <constraint firstItem="jQH-Sg-yGu" firstAttribute="top" secondItem="70r-WS-60s" secondAttribute="top" id="hfg-22-Opw"/>
-                                                            <constraint firstItem="sZ3-7b-Tpx" firstAttribute="leading" secondItem="70r-WS-60s" secondAttribute="leading" constant="50" id="ifc-dK-OhX"/>
-                                                            <constraint firstAttribute="height" constant="60" id="lJC-px-9Ko"/>
-                                                            <constraint firstItem="7t5-6G-mDG" firstAttribute="top" secondItem="70r-WS-60s" secondAttribute="top" id="nDM-mR-BgW"/>
-                                                            <constraint firstAttribute="bottom" secondItem="7t5-6G-mDG" secondAttribute="bottom" id="q9p-P6-6cG"/>
-                                                            <constraint firstItem="7t5-6G-mDG" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="sZ3-7b-Tpx" secondAttribute="trailing" constant="10" id="qhC-Ta-OqY"/>
-                                                            <constraint firstItem="sZ3-7b-Tpx" firstAttribute="centerY" secondItem="70r-WS-60s" secondAttribute="centerY" id="rmQ-aE-Vjj"/>
-                                                        </constraints>
-                                                    </view>
-                                                </subviews>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <constraints>
-                                                    <constraint firstItem="70r-WS-60s" firstAttribute="top" secondItem="poS-86-x66" secondAttribute="top" constant="10" id="A3I-80-Rde"/>
-                                                    <constraint firstItem="70r-WS-60s" firstAttribute="leading" secondItem="poS-86-x66" secondAttribute="leading" constant="20" id="JQr-sy-StC"/>
                                                     <constraint firstAttribute="height" constant="160" id="fAQ-ep-UWf"/>
-                                                    <constraint firstAttribute="trailing" secondItem="70r-WS-60s" secondAttribute="trailing" constant="20" id="fh9-EN-3rd"/>
                                                 </constraints>
                                             </view>
                                         </subviews>
@@ -248,13 +200,12 @@
                     <navigationItem key="navigationItem" id="mIn-Xu-8Lg"/>
                     <nil key="simulatedTopBarMetrics"/>
                     <connections>
+                        <outlet property="bottomButtonBarView" destination="poS-86-x66" id="PmH-38-pJ8"/>
                         <outlet property="circleProgressView" destination="oeD-qr-sj7" id="Jaj-lB-HAO"/>
                         <outlet property="circleTotlaSpaceView" destination="FiS-cX-K1W" id="P5d-7m-G2J"/>
                         <outlet property="collectionViewHeightConstraint" destination="U1g-Ww-fyt" id="6u2-Dc-SMa"/>
-                        <outlet property="customNavBar" destination="o3N-4y-HyM" id="aEi-5X-SLo"/>
-                        <outlet property="deepCleaningButtonTextLabel" destination="7t5-6G-mDG" id="v6q-pD-LxJ"/>
-                        <outlet property="deepCleaningButtonView" destination="70r-WS-60s" id="1Qf-mB-dyU"/>
                         <outlet property="mediaCollectionView" destination="Dg3-qT-o61" id="p6Y-t8-dtI"/>
+                        <outlet property="navigationBar" destination="o3N-4y-HyM" id="uvu-lf-Okl"/>
                         <outlet property="scrollView" destination="7Yr-dc-Kkh" id="StV-gn-MkC"/>
                     </connections>
                 </viewController>
@@ -282,7 +233,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="clean" width="25" height="25"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

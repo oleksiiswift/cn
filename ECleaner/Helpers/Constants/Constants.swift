@@ -45,6 +45,7 @@ class Constants {
             static let photoSpaceNotificationName = "photoSpaceDidChange"
             static let videoSpaceNotificationName = "videoSpaceDidChange"
             static let mediaSpaceNotificationName = "mediaSpaceDidChange"
+            static let contactsCountNotificationName = "contactsCountDidChange"
             
                 /// `deep clean update progress notification name`
             struct deepClean {

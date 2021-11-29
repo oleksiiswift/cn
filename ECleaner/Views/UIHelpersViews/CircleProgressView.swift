@@ -146,6 +146,18 @@ class CircleProgressView: UIView {
             updateShapes()
         }
     }
+    
+    public var startColor: UIColor = UIColor().colorFromHexString("66CDFF") {
+        didSet {
+            setNeedsLayout()
+        }
+    }
+    
+    public var endColor:   UIColor = UIColor().colorFromHexString("3677FF") {
+        didSet {
+            setNeedsLayout()
+        }
+    }
 
     /// Returns the current progress.
     private(set) var progress: CGFloat {
@@ -163,18 +175,16 @@ class CircleProgressView: UIView {
     private var backgroundShape: CAShapeLayer!
     private var progressShape: CAShapeLayer!
     private var progressAnimation: CABasicAnimation!
+
   
-  var startColor: UIColor = UIColor().colorFromHexString("66CDFF") { didSet { setNeedsLayout() } }
-  var endColor:   UIColor = UIColor().colorFromHexString("3677FF")  { didSet { setNeedsLayout() } }
-  
-  private let gradientLayer: CAGradientLayer = {
-    let gradientLayer = CAGradientLayer()
-    gradientLayer.type = .axial
-//    gradientLayer.locations = [0.2,0.5,0.75,1]
-    gradientLayer.startPoint = CGPoint(x: 0.0, y: 0.0)
-    gradientLayer.endPoint = CGPoint(x: 1.0, y: 0.0)
-    return gradientLayer
-  }()
+    private let gradientLayer: CAGradientLayer = {
+        let gradientLayer = CAGradientLayer()
+        gradientLayer.type = .axial
+//        gradientLayer.locations = [0.2,0.5,0.75,1]
+        gradientLayer.startPoint = CGPoint(x: 0.0, y: 0.0)
+        gradientLayer.endPoint = CGPoint(x: 1.0, y: 0.0)
+        return gradientLayer
+    }()
 
     // MARK: - Init
 
@@ -367,61 +377,84 @@ class CircleProgressView: UIView {
 
 
 class MMTGradientArcView: UIView {
-  
-  var lineWidth: CGFloat = 47              { didSet { setNeedsDisplay(bounds) } }
-  var startColor = UIColor().colorFromHexString("66CDFF")          { didSet { setNeedsDisplay(bounds) } }
-  var endColor = UIColor().colorFromHexString("3677FF")            { didSet { setNeedsDisplay(bounds) } }
-  var startAngle:CGFloat = 0              { didSet { setNeedsDisplay(bounds) } }
-  var endAngle:CGFloat = 360                { didSet { setNeedsDisplay(bounds) } }
-  
-  override func draw(_ rect: CGRect) {
     
-    let gradations = 360 //My School Number
-    
-    var startColorR:CGFloat = 0
-    var startColorG:CGFloat = 0
-    var startColorB:CGFloat = 0
-    var startColorA:CGFloat = 0
-    
-    var endColorR:CGFloat = 0
-    var endColorG:CGFloat = 0
-    var endColorB:CGFloat = 0
-    var endColorA:CGFloat = 0
-    
-    startColor.getRed(&startColorR, green: &startColorG, blue: &startColorB, alpha: &startColorA)
-    endColor.getRed(&endColorR, green: &endColorG, blue: &endColorB, alpha: &endColorA)
-    
-    let startAngle:CGFloat = 90
-    let endAngle:CGFloat = 360
-    
-//    let startAngle = CGFloat(0 * .pi / 180.0) + (0.5 * .pi)
-//    let endAngle = CGFloat((360.0 - 0) * (.pi / 180.0)) + (0.5 * .pi)
-
-    let center = CGPoint(x: bounds.midX, y: bounds.midY)
-    let radius = (min(bounds.width, bounds.height) - lineWidth) / 2
-    var angle = startAngle
-    
-    for i in 1 ... gradations {
-      let extraAngle = (endAngle - startAngle) / CGFloat(gradations)
-      let currentStartAngle = angle
-      let currentEndAngle = currentStartAngle + extraAngle
-      
-      let currentR = ((endColorR - startColorR) / CGFloat(gradations - 1)) * CGFloat(i - 1) + startColorR
-      let currentG = ((endColorG - startColorG) / CGFloat(gradations - 1)) * CGFloat(i - 1) + startColorG
-      let currentB = ((endColorB - startColorB) / CGFloat(gradations - 1)) * CGFloat(i - 1) + startColorB
-      let currentA = ((endColorA - startColorA) / CGFloat(gradations - 1)) * CGFloat(i - 1) + startColorA
-      
-      let currentColor = UIColor.init(red: currentR, green: currentG, blue: currentB, alpha: currentA)
-      
-      let path = UIBezierPath()
-      path.lineWidth = lineWidth
-      path.lineCapStyle = .round
-      path.addArc(withCenter: center, radius: radius, startAngle: currentStartAngle * CGFloat(Double.pi / 180.0), endAngle: currentEndAngle * CGFloat(Double.pi / 180.0), clockwise: true)
-      
-      currentColor.setStroke()
-      path.stroke()
-      angle = currentEndAngle
+    var lineWidth: CGFloat = 47 {
+        didSet {
+            setNeedsDisplay(bounds)
+        }
     }
-  }
+    var startColor = UIColor().colorFromHexString("66CDFF") {
+        didSet {
+            setNeedsDisplay(bounds)
+        }
+    }
+    
+    var endColor = UIColor().colorFromHexString("3677FF") {
+        didSet {
+            setNeedsDisplay(bounds)
+        }
+    }
+    
+    var startAngle:CGFloat = 0 {
+        didSet {
+            setNeedsDisplay(bounds)
+        }
+    }
+    
+    var endAngle:CGFloat = 360 {
+        didSet {
+            setNeedsDisplay(bounds)
+        }
+    }
+    
+    override func draw(_ rect: CGRect) {
+        
+        let gradations = 360 //My School Number
+        
+        var startColorR:CGFloat = 0
+        var startColorG:CGFloat = 0
+        var startColorB:CGFloat = 0
+        var startColorA:CGFloat = 0
+        
+        var endColorR:CGFloat = 0
+        var endColorG:CGFloat = 0
+        var endColorB:CGFloat = 0
+        var endColorA:CGFloat = 0
+        
+        startColor.getRed(&startColorR, green: &startColorG, blue: &startColorB, alpha: &startColorA)
+        endColor.getRed(&endColorR, green: &endColorG, blue: &endColorB, alpha: &endColorA)
+        
+        let startAngle:CGFloat = 90
+        let endAngle:CGFloat = 360
+        
+            //    let startAngle = CGFloat(0 * .pi / 180.0) + (0.5 * .pi)
+            //    let endAngle = CGFloat((360.0 - 0) * (.pi / 180.0)) + (0.5 * .pi)
+        
+        let center = CGPoint(x: bounds.midX, y: bounds.midY)
+        let radius = (min(bounds.width, bounds.height) - lineWidth) / 2
+        var angle = startAngle
+        
+        for i in 1 ... gradations {
+            let extraAngle = (endAngle - startAngle) / CGFloat(gradations)
+            let currentStartAngle = angle
+            let currentEndAngle = currentStartAngle + extraAngle
+            
+            let currentR = ((endColorR - startColorR) / CGFloat(gradations - 1)) * CGFloat(i - 1) + startColorR
+            let currentG = ((endColorG - startColorG) / CGFloat(gradations - 1)) * CGFloat(i - 1) + startColorG
+            let currentB = ((endColorB - startColorB) / CGFloat(gradations - 1)) * CGFloat(i - 1) + startColorB
+            let currentA = ((endColorA - startColorA) / CGFloat(gradations - 1)) * CGFloat(i - 1) + startColorA
+            
+            let currentColor = UIColor.init(red: currentR, green: currentG, blue: currentB, alpha: currentA)
+            
+            let path = UIBezierPath()
+            path.lineWidth = lineWidth
+            path.lineCapStyle = .round
+            path.addArc(withCenter: center, radius: radius, startAngle: currentStartAngle * CGFloat(Double.pi / 180.0), endAngle: currentEndAngle * CGFloat(Double.pi / 180.0), clockwise: true)
+            
+            currentColor.setStroke()
+            path.stroke()
+            angle = currentEndAngle
+        }
+    }
 }
 
