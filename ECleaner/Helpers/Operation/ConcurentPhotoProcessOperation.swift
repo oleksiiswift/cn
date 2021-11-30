@@ -1,5 +1,5 @@
 //
-//  ConcurrentPhotoProcessOperation.swift
+//  ConcurrentProcessOperation.swift
 //  ECleaner
 //
 //  Created by alekseii sorochan on 29.07.2021.
@@ -7,9 +7,9 @@
 
 import Foundation
 
-class ConcurrentPhotoProcessOperation: Operation {
+class ConcurrentProcessOperation: Operation {
     
-    public var executionBlock: ((_ operation: ConcurrentPhotoProcessOperation) -> Void)?
+    public var executionBlock: ((_ operation: ConcurrentProcessOperation) -> Void)?
     
     override open var isAsynchronous: Bool {
         return true
@@ -51,7 +51,7 @@ class ConcurrentPhotoProcessOperation: Operation {
         }
     }
     
-    public init(operationName: String? = nil, executionBlock: ((_ operation: ConcurrentPhotoProcessOperation) -> Void)? = nil) {
+    public init(operationName: String? = nil, executionBlock: ((_ operation: ConcurrentProcessOperation) -> Void)? = nil) {
         super.init()
         
         self.name = name
@@ -96,7 +96,7 @@ class ConcurrentPhotoProcessOperation: Operation {
     open func resume() {}
 }
 
-extension ConcurrentPhotoProcessOperation {
+extension ConcurrentProcessOperation {
     
     func addToQueuer(_ queue: OperationPhotoProcessingQueuer) {
         queue.addOperation(self)

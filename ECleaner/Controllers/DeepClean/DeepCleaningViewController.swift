@@ -134,7 +134,6 @@ extension DeepCleaningViewController {
           }
      }
      
-          
      private func startDeepCleanScan() {
           
           guard let options = scansOptions else { return }
@@ -286,6 +285,35 @@ extension DeepCleaningViewController {
      private func getContactsCount(for groups: [ContactsGroup]) -> Int {
           return groups.map({$0.contacts}).map({$0}).count
      }
+     
+     private func getPhassetTotalCount(for contentType: PhotoMediaType) -> Int {
+
+          switch contentType {
+               case .singleScreenShots, .singleLargeVideos, .singleScreenRecordings:
+                    if let firstGroup = photoVideoFlowGroup[contentType] {
+                         if let assets = firstGroup.first {
+                              return assets.assets.count
+                         }
+                    } else {
+                         return 0
+                    }
+               case .similarPhotos, .duplicatedPhotos, .similarLivePhotos, .similarVideos, .duplicatedVideos:
+                    if let phassetGroup = photoVideoFlowGroup[contentType] {
+                         return getAssetsCount(for: phassetGroup)
+                    } else {
+                         return 0
+                    }
+               case .emptyContacts, .duplicatedContacts, .duplicatedPhoneNumbers, .duplicatedEmails:
+                    if let contactsGroup = contactsFlowGroups[contentType] {
+                         return getContactsCount(for: contactsGroup)
+                    } else {
+                         return 0
+                    }
+               default:
+                    return 0
+          }
+          return 0
+     }
 }
 
 
@@ -369,7 +397,7 @@ extension DeepCleaningViewController {
      }
      
      private func recieveNotification(by type: DeepCleanNotificationType, info: [AnyHashable: Any]?) {
-          
+
           guard let userInfo = info,
                 let totalProcessingAssetsCount = userInfo[type.dictionaryCountName] as? Int,
                 let index = userInfo[type.dictionaryIndexName] as? Int else { return }
@@ -448,7 +476,7 @@ extension DeepCleaningViewController {
           
           let indexPath = notificationType.mediaTypeRawValue.deepCleanIndexPath
           self.currentProgressForRawMediatype[notificationType.mediaTypeRawValue] = progress
-          
+  
           switch notificationType {
                case .similarPhoto:
                     self.totalDeepCleanProgress[0] = progress
@@ -611,21 +639,14 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
           cell.setupCellSelected(at: indexPath, isSelected: isSelected)
           
           var phassetMediaTupeCount: Int {
-               switch contentType {
-                    case .userPhoto:
-//                         return photoVideoFlowGroup[photoMediaType]?.count ??
-                         return 0
-                    case .userVideo:
-                         return 0
-                    case .userContacts:
-                         
-                         if let contactsGroup = contactsFlowGroups[photoMediaType] {
-                              return contactsGroup.map({$0.contacts}).reduce([], +).count
-                         } else {
-                              return 0
-                         }
-                    case .none:
-                         return 0
+               return getPhassetTotalCount(for: photoMediaType)
+          }
+          
+          var progress: CGFloat {
+               if let currentProgress = self.currentProgressForRawMediatype[photoMediaType] {
+                    return currentProgress
+               } else {
+                    return 0
                }
           }
           
@@ -753,6 +774,11 @@ extension DeepCleaningViewController {
           U.notificationCenter.addObserver(self, selector: #selector(flowRoatingHandleNotification(_:)), name: .deepCleanSimilarVideoPhassetScan, object: nil)
           U.notificationCenter.addObserver(self, selector: #selector(flowRoatingHandleNotification(_:)), name: .deepCleanScreenRecordingsPhassetScan, object: nil)
           
+          U.notificationCenter.addObserver(self, selector: #selector(flowRoatingHandleNotification(_:)), name: .deepCleanEmptyContactsScan, object: nil)
+          U.notificationCenter.addObserver(self, selector: #selector(flowRoatingHandleNotification(_:)), name: .deepCleanDuplicatedContactsScan, object: nil)
+          U.notificationCenter.addObserver(self, selector: #selector(flowRoatingHandleNotification(_:)), name: .deepCleanDuplicatedPhoneNumbersScan, object: nil)
+          U.notificationCenter.addObserver(self, selector: #selector(flowRoatingHandleNotification(_:)), name: .deepCleanDupLicatedMailsScan, object: nil)
+          
           dateSelectableView.delegate = self
           selectableAssetsDelegate = self
           customNavBar.delegate = self
@@ -827,8 +853,6 @@ extension DeepCleaningViewController {
      }
 }
 
-
-
 extension DeepCleaningViewController: Themeble {
      
      func updateColors() {
@@ -851,6 +875,3 @@ extension DeepCleaningViewController: StartingNavigationBarDelegate {
      
      func didTapRightBarButton(_sender: UIButton) {}
 }
-
-
-

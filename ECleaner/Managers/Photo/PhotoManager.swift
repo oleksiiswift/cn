@@ -229,39 +229,39 @@ class PhotoManager: NSObject {
 
     private func getPhotoLibrary() {
         
-        let concurrentOperationFirst = ConcurrentPhotoProcessOperation { _ in
+        let concurrentOperationFirst = ConcurrentProcessOperation { _ in
             self.calculateAssetsDiskSpace()
         }
         
-        let concurrentOperationSecond = ConcurrentPhotoProcessOperation { _ in
+        let concurrentOperationSecond = ConcurrentProcessOperation { _ in
             self.calculateLargeVideosCount()
         }
         
-        let concurrentOperationThird = ConcurrentPhotoProcessOperation { _ in
+        let concurrentOperationThird = ConcurrentProcessOperation { _ in
             self.calculateRecentlyDeleted()
         }
         
-        let concurrentOperationFourth = ConcurrentPhotoProcessOperation { _ in
+        let concurrentOperationFourth = ConcurrentProcessOperation { _ in
             self.calculateVideoCount()
         }
         
-        let concurrentOperationFifth = ConcurrentPhotoProcessOperation { _ in
+        let concurrentOperationFifth = ConcurrentProcessOperation { _ in
             self.calculatePhotoCount()
         }
         
-        let concurrentOperationSixth = ConcurrentPhotoProcessOperation { _ in
+        let concurrentOperationSixth = ConcurrentProcessOperation { _ in
             self.calculateScreenRecordsCout()
         }
         
-        let concurrentOperationSeventh = ConcurrentPhotoProcessOperation { _ in
+        let concurrentOperationSeventh = ConcurrentProcessOperation { _ in
             self.calculateScreenShotsCount()
         }
         
-        let concurrentOperationEighth = ConcurrentPhotoProcessOperation { _ in
+        let concurrentOperationEighth = ConcurrentProcessOperation { _ in
             self.calculateLivePhotoCount()
         }
         
-        let concurrentOperationNinth = ConcurrentPhotoProcessOperation { _ in
+        let concurrentOperationNinth = ConcurrentProcessOperation { _ in
             self.calculateSelfiesCount()
         }
 
@@ -890,7 +890,7 @@ extension PhotoManager {
                             let imageTuple = OSTuple<NSString, NSData>(first: "image\(index)" as NSString, andSecond: data as NSData)
                             videos.append(imageTuple)
                         } else {
-                            return
+//                            return
                         }
                     }
                     
