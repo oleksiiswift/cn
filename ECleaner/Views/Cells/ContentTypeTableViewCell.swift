@@ -85,20 +85,23 @@ extension ContentTypeTableViewCell {
         
         switch presentingType {
             case .deepCleen:
+        
                 contentTypeTextLabel.text = contentType.getDeepCellTitle(index: indexPath.row)
-                reuseShadowRoundedView.setImage(contentType.imageOfRows)
-                horizontalProgressView.progress = progress / 100
+                
+                let processingCellImage = isProcessingComplete ? contentType.imageOfRows : contentType.unAbleImageOfRows
+                
+                reuseShadowRoundedView.setImage(processingCellImage)
                 
                 let progressStringText = isProcessingComplete ? "processing wait" : String("progress - \(progress.rounded().cleanValue) %")
                 let updatingCountValuesDeepClean: String = progressStringText
-                    //                : "0 \("FILES".localized())"
                 let updatingCountValuesContactDeepClean: String = progressStringText
-                    //                : "0 contacts"
+                horizontalProgressView.progress = progress / 100
                 
                 switch contentType {
                     case .userPhoto, .userVideo:
                         contentSubtitleTextLabel.text = isProcessingComplete ? phasetCount != 0 ? String("\(phasetCount) \("FILES".localized())") : "no files to clean" : updatingCountValuesDeepClean
                     case .userContacts:
+                
                         contentSubtitleTextLabel.text = isProcessingComplete ? phasetCount != 0 ? String("\(phasetCount) \("contacts")") : "no contacts to clean" : updatingCountValuesContactDeepClean
                     case .none:
                         contentSubtitleTextLabel.text = ""
@@ -153,7 +156,7 @@ extension ContentTypeTableViewCell: Themeble {
         baseView.setCorner(14)
         contentTypeTextLabel.font = UIFont(font: FontManager.robotoBold, size: 18.0)
         contentSubtitleTextLabel.font = UIFont(font: FontManager.robotoMedium, size: 14.0)
-        rightArrowImageView.image = I.navigationItems.rightShevronBack
+        rightArrowImageView.image = I.systemItems.navigationBarItems.forward
     }
     
     func updateColors() {

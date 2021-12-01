@@ -60,9 +60,11 @@ class Constants {
                 static let deepCleanSimilarVideoPhassetScan = "deepCleanSimilarVideoPhassetScan"
                 static let deepCleanScreenRecordingsPhassetScan = "deepCleanScreenRecordingsPhassetScant"
                     /// contacts
-                static let deepCleanAllContactsScan = "deepCleanAllContactsScan"
+                
                 static let deepCleanEmptyContactsScan = "deepCleanEmptyContactsScan"
-                static let deepCleanDuplicateContacts = "deepCleanDuplicatedContactsScan"
+                static let deepCleanDuplicatedContactsScan = "deepCleanDuplicatedContactsScan"
+                static let deepCleanDuplicatedPhoneNumbersScan = "deepCleanDuplicatedPhoneNumbersScan"
+                static let deepCleanDupLicatedMailsScan = "deepCleanDupLicatedEmaailScan"
             }
             
                 /// `single Search update progress notification name`

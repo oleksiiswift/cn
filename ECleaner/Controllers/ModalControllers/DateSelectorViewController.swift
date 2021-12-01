@@ -49,7 +49,7 @@ class DateSelectorViewController: UIViewController {
     
     func setupNavigation() {
         
-        customNavBar.setUpNavigation(title: "SELECT_PERIOD".localized(), leftImage: nil, rightImage: I.navigationItems.dissmiss)
+        customNavBar.setUpNavigation(title: "SELECT_PERIOD".localized(), leftImage: nil, rightImage: I.systemItems.navigationBarItems.dissmiss)
     }
     
     func setupObserversAndDelegate() {

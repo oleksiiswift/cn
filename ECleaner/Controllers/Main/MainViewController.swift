@@ -335,7 +335,7 @@ extension MainViewController: UpdateColorsDelegate {
     private func setupNavigation() {
             
         self.navigationController?.navigationBar.isHidden = true
-        navigationBar.setUpNavigation(title: nil, leftImage: I.navigationItems.premium, rightImage: I.navigationItems.settings)
+        navigationBar.setUpNavigation(title: nil, leftImage: I.systemItems.navigationBarItems.premium, rightImage: I.systemItems.navigationBarItems.settings)
     }
     
     private func setupUI() {

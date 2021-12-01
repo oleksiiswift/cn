@@ -138,6 +138,15 @@ enum Theme: Int {
                 return UIColor().colorFromHexString("373E44")
         }
     }
+    
+    var progressBackgroundColor: UIColor {
+        switch self {
+            case .light:
+                return UIColor().colorFromHexString("DFE6F1")
+            case .dark:
+                return UIColor().colorFromHexString("DFE6F1")
+        }
+    }
 
     
 //    MARK: - shadow colors -
@@ -310,14 +319,7 @@ enum Theme: Int {
 //        }
 //    }
     
-    var progressBackgroundColor: UIColor {
-        switch self {
-            case .light:
-                return UIColor().colorFromHexString("DCE3EB")
-            case .dark:
-                return UIColor().colorFromHexString("DCE3EB")
-        }
-    }
+
     
     
     

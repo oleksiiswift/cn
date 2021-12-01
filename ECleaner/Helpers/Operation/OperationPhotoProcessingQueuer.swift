@@ -52,7 +52,7 @@ public class OperationPhotoProcessingQueuer {
         
         operationQueue.isSuspended = true
         for operations in operationQueue.operations {
-            if let concurrentOperation = operations as? ConcurrentPhotoProcessOperation {
+            if let concurrentOperation = operations as? ConcurrentProcessOperation {
                 concurrentOperation.pause()
             }
         }
@@ -62,7 +62,7 @@ public class OperationPhotoProcessingQueuer {
         operationQueue.isSuspended = false
         
         for operations in operationQueue.operations {
-            if let concurrentOperation = operations as? ConcurrentPhotoProcessOperation {
+            if let concurrentOperation = operations as? ConcurrentProcessOperation {
                 concurrentOperation.resume()
             }
         }
@@ -126,7 +126,7 @@ public extension OperationPhotoProcessingQueuer {
         var operations: QList = []
         
         for operation in queue.operations {
-            if let concurrentOperation = operation as? ConcurrentPhotoProcessOperation,
+            if let concurrentOperation = operation as? ConcurrentProcessOperation,
                let operationName = concurrentOperation.name {
                 operations.append(OperationState(name: operationName, progress: concurrentOperation.progress, dependencies: operation.dependencies.compactMap { $0.name }))
             }
