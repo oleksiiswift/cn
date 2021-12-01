@@ -719,7 +719,7 @@ extension MediaContentViewController: Themeble {
         
         self.navigationController?.navigationBar.isHidden = true
         navigationBar.setupNavigation(title: mediaContentType.navigationTitle,
-                                      leftBarButtonImage: I.navigationItems.back,
+                                      leftBarButtonImage: I.systemItems.navigationBarItems.back,
                                       rightBarButtonImage: nil,
                                       mediaType: mediaContentType,
                                       leftButtonTitle: nil,

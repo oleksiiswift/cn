@@ -787,7 +787,7 @@ extension DeepCleaningViewController {
      private func setupNavigation() {
           
           self.navigationController?.navigationBar.isHidden = true
-          customNavBar.setUpNavigation(title: "DEEP_CLEEN".localized(), leftImage: I.navigationItems.back, rightImage: nil)
+          customNavBar.setUpNavigation(title: "DEEP_CLEEN".localized(), leftImage: I.systemItems.navigationBarItems.back, rightImage: nil)
      }
      
      private func setupShowDatePickerSelectorController(segue: UIStoryboardSegue) {

@@ -373,7 +373,9 @@ extension ContactsManager {
         
         var duplicatedContacts: [ContactsGroup] = []
         
-        if phoneNumbers.isEmpty {
+        enableDeepCleanNotification ? self.deepCleanNotificationManager.sendDeepProgressNotificatin(notificationType: .duplicatedPhoneNumbers, totalProgressItems: contacts.count, currentProgressItem: 0) : ()
+        
+        if !phoneNumbers.isEmpty {
             
             for i in 0...phoneNumbers.count - 1 {
                 
@@ -402,6 +404,8 @@ extension ContactsManager {
                     debugPrint(error.localizedDescription)
                 }
             }
+        } else {
+            enableDeepCleanNotification ? self.deepCleanNotificationManager.sendDeepProgressNotificatin(notificationType: .duplicatedPhoneNumbers, totalProgressItems: 1, currentProgressItem: 1) : ()
         }
         completionHandler(duplicatedContacts)
     }
@@ -422,29 +426,36 @@ extension ContactsManager {
         var group: [ContactsGroup] = []
         var currentProcessingIndex: Int = 0
         
-        for (contactName, similarContacts) in contacts {
+        enableDeepCleanNotification ? self.deepCleanNotificationManager.sendDeepProgressNotificatin(notificationType: .duplicateContacts, totalProgressItems: 1, currentProgressItem: 0) : ()
+        
+        if !contacts.isEmpty {
             
-            guard searchContactsTaskContinue else {
-                completionHandler([])
-                return
+            for (contactName, similarContacts) in contacts {
+                
+                guard searchContactsTaskContinue else {
+                    completionHandler([])
+                    return
+                }
+                
+                currentProcessingIndex += 1
+                
+                if enableSingleNotification {
+                    self.notificationManager.sendSingleSearchProgressNotification(notificationtype: .duplicatesNames, totalProgressItems: contacts.count, currentProgressItem: currentProcessingIndex)
+                } else if enableDeepCleanNotification {
+                    self.deepCleanNotificationManager.sendDeepProgressNotificatin(notificationType: .duplicateContacts, totalProgressItems: contacts.count, currentProgressItem: currentProcessingIndex)
+                }
+                
+                sleep(UInt32(0.1))
+                let phoneNumbers = similarContacts.map({$0.phoneNumbers}).reduce([], +)
+                let stringNumbers = phoneNumbers.map({$0.value.stringValue})
+                let itentifier = self.checkRegionIdentifier(from: stringNumbers)
+                
+                group.append(ContactsGroup(name: contactName, contacts: similarContacts, groupType: .duplicatedContactName, countryIdentifier: itentifier))
             }
-            
-            currentProcessingIndex += 1
-            
-            if enableSingleNotification {
-                self.notificationManager.sendSingleSearchProgressNotification(notificationtype: .duplicatesNames, totalProgressItems: contacts.count, currentProgressItem: currentProcessingIndex)
-            } else if enableDeepCleanNotification {
-                self.deepCleanNotificationManager.sendDeepProgressNotificatin(notificationType: .duplicateContacts, totalProgressItems: contacts.count, currentProgressItem: currentProcessingIndex)
-            }
-            
-            sleep(UInt32(0.1))
-            let phoneNumbers = similarContacts.map({$0.phoneNumbers}).reduce([], +)
-            let stringNumbers = phoneNumbers.map({$0.value.stringValue})
-            let itentifier = self.checkRegionIdentifier(from: stringNumbers)
-
-            group.append(ContactsGroup(name: contactName, contacts: similarContacts, groupType: .duplicatedContactName, countryIdentifier: itentifier))
+            group.forEach({ $0.contacts = self.esctimateBestContactIn($0.contacts )})
+        } else {
+            enableDeepCleanNotification ? self.deepCleanNotificationManager.sendDeepProgressNotificatin(notificationType: .duplicateContacts, totalProgressItems: 1, currentProgressItem: 1) : ()
         }
-        group.forEach({ $0.contacts = self.esctimateBestContactIn($0.contacts )})
         completionHandler(group)
     }
     
@@ -454,6 +465,8 @@ extension ContactsManager {
         let contactsStore = CNContactStore()
         let emailsList = Array(Set(contacts.map({$0.emailAddresses.map({$0.value as String})}).reduce([], +)))
         var duplicatedContacts: [ContactsGroup] = []
+        
+        enableDeepCleanNotification ? self.deepCleanNotificationManager.sendDeepProgressNotificatin(notificationType: .duplicatedEmails, totalProgressItems: contacts.count, currentProgressItem: 0) : ()
         
         if !emailsList.isEmpty {
             
@@ -483,6 +496,8 @@ extension ContactsManager {
                     debugPrint(error.localizedDescription)
                 }
             }
+        } else {
+            enableDeepCleanNotification ? self.deepCleanNotificationManager.sendDeepProgressNotificatin(notificationType: .duplicatedEmails, totalProgressItems: 1, currentProgressItem: 1) : ()
         }
         completionHandler(duplicatedContacts)
     }

@@ -159,7 +159,7 @@ extension ContentTypeTableViewCell: Themeble {
         baseView.setCorner(14)
         contentTypeTextLabel.font = UIFont(font: FontManager.robotoBold, size: 18.0)
         contentSubtitleTextLabel.font = UIFont(font: FontManager.robotoMedium, size: 14.0)
-        rightArrowImageView.image = I.navigationItems.rightShevronBack
+        rightArrowImageView.image = I.systemItems.navigationBarItems.forward
     }
     
     func updateColors() {

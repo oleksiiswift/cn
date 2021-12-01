@@ -401,7 +401,7 @@ extension ContactsGroupViewController: Themeble {
     func setupNavigation() {
         
         self.navigationController?.navigationBar.isHidden = true
-        navigationBar.setupNavigation(title: navigationTitle, leftBarButtonImage: I.navigationItems.back, rightBarButtonImage: I.navigationItems.burgerDots, mediaType: mediaType)
+        navigationBar.setupNavigation(title: navigationTitle, leftBarButtonImage: I.systemItems.navigationBarItems.back, rightBarButtonImage: I.systemItems.navigationBarItems.burgerDots, mediaType: mediaType)
     }
     
     func setupViewModel(contacts: [ContactsGroup]) {
