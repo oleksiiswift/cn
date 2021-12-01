@@ -58,19 +58,19 @@ class Images {
             static let mergeContact = UIImage(named: "mergeContactArrowRight")!
             static let contactPhoto = UIImage(named: "contactWithoutPhoto")!
             static let processingThumb = UIImage(named: "contactsProcessingEmptyItem")!
-            static let unavailibleThumb = UIImage(named: "contactsThumbUnselect")
+            static let unavailibleThumb = UIImage(named: "contactsThumbUnselect")!
         }
         
         struct photo {
             
             static let processingThumb = UIImage(named: "photoProcessingEmptyItem")!
-            static let unavailibleThumb = UIImage(named: "photoThumbUnselect")
+            static let unavailibleThumb = UIImage(named: "photoThumbUnselect")!
         }
         
         struct video {
             
             static let processingThumb = UIImage(named: "videoProcessingEmptyItem")!
-            static let unavailibleThumb = UIImage(named: "videoThumbUnselect")
+            static let unavailibleThumb = UIImage(named: "videoThumbUnselect")!
         }
     }
 

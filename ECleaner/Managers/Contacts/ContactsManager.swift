@@ -356,12 +356,9 @@ extension ContactsManager {
 extension ContactsManager {
     
         /// ``phoneDuplicatedGroup`` - find duplicates by existing phone numbers - get section phone duplicated contacts
-        ///
         /// ``namesDuplicated`` - find duplicated contacts by name
         /// ``namesDuplicatesGroup`` - get sections of duplicated contacts by names
-        ///
         /// ``emailDuplicatesGroup`` - find duplicated contacts by emails  -  get sections of duplicated contacts by emails
-        ///
         /// ``groupingMissingIncompleteContacts`` - check for empty fields
 
     
@@ -496,6 +493,7 @@ extension ContactsManager {
                     debugPrint(error.localizedDescription)
                 }
             }
+            enableDeepCleanNotification ? self.deepCleanNotificationManager.sendDeepProgressNotificatin(notificationType: .duplicatedEmails, totalProgressItems: emailsList.count, currentProgressItem: emailsList.count) : ()
         } else {
             enableDeepCleanNotification ? self.deepCleanNotificationManager.sendDeepProgressNotificatin(notificationType: .duplicatedEmails, totalProgressItems: 1, currentProgressItem: 1) : ()
         }

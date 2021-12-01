@@ -122,14 +122,27 @@ enum MediaContentType {
     
     var imageOfRows: UIImage {
         switch self {
-        case .userPhoto:
-            return I.mainStaticItems.photo
-        case .userVideo:
-            return I.mainStaticItems.video
-        case .userContacts:
-            return I.mainStaticItems.contacts
-        case .none:
-            return UIImage()
+            case .userPhoto:
+                return I.mainStaticItems.photo
+            case .userVideo:
+                return I.mainStaticItems.video
+            case .userContacts:
+                return I.mainStaticItems.contacts
+            case .none:
+                return UIImage()
+        }
+    }
+    
+    var unAbleImageOfRows: UIImage {
+        switch self {
+            case .userPhoto:
+                return I.personalisation.photo.unavailibleThumb
+            case .userVideo:
+                return I.personalisation.video.unavailibleThumb
+            case .userContacts:
+                return I.personalisation.contacts.unavailibleThumb
+            case .none:
+                return UIImage()
         }
     }
     

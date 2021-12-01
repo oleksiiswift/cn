@@ -85,16 +85,12 @@ extension ContentTypeTableViewCell {
         
         switch presentingType {
             case .deepCleen:
+        
                 contentTypeTextLabel.text = contentType.getDeepCellTitle(index: indexPath.row)
-                reuseShadowRoundedView.setImage(contentType.imageOfRows)
                 
-                #warning("reffactor or this")
-//                if progress == 0 || progress == 100 {
-//                    horizontalProgressView.progress = 0
-//                } else {
-//                    horizontalProgressView.progress = progress / 100
-//
-//                }
+                let processingCellImage = isProcessingComplete ? contentType.imageOfRows : contentType.unAbleImageOfRows
+                
+                reuseShadowRoundedView.setImage(processingCellImage)
                 
                 let progressStringText = isProcessingComplete ? "processing wait" : String("progress - \(progress.rounded().cleanValue) %")
                 let updatingCountValuesDeepClean: String = progressStringText
@@ -105,6 +101,7 @@ extension ContentTypeTableViewCell {
                     case .userPhoto, .userVideo:
                         contentSubtitleTextLabel.text = isProcessingComplete ? phasetCount != 0 ? String("\(phasetCount) \("FILES".localized())") : "no files to clean" : updatingCountValuesDeepClean
                     case .userContacts:
+                
                         contentSubtitleTextLabel.text = isProcessingComplete ? phasetCount != 0 ? String("\(phasetCount) \("contacts")") : "no contacts to clean" : updatingCountValuesContactDeepClean
                     case .none:
                         contentSubtitleTextLabel.text = ""

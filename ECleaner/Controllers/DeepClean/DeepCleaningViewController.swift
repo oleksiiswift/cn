@@ -388,25 +388,28 @@ extension DeepCleaningViewController {
                     self.recieveNotification(by: .duplicatedPhoneNumbers,
                                              info: notification.userInfo)
                case .deepCleanDupLicatedMailsScan:
-                    self.recieveNotification(by: .duplicateContacts,
+                    self.recieveNotification(by: .duplicatedEmails,
                                              info: notification.userInfo)
-                    
                default:
                     return
           }
      }
      
      private func recieveNotification(by type: DeepCleanNotificationType, info: [AnyHashable: Any]?) {
-
+     
           guard let userInfo = info,
                 let totalProcessingAssetsCount = userInfo[type.dictionaryCountName] as? Int,
                 let index = userInfo[type.dictionaryIndexName] as? Int else { return }
           sleep(UInt32(0.1))
           handleTotalFilesChecked(by: type, files: index)
-          
+ 
           calculateProgressPercentage(total: totalProcessingAssetsCount, current: index) { title, progress in
-               U.UI {
+               if Thread.isMainThread {
                     self.progressUpdate(type, progress: progress, title: title)
+               } else {
+                    U.UI {
+                         self.progressUpdate(type, progress: progress, title: title)
+                    }
                }
           }
      }
@@ -455,7 +458,7 @@ extension DeepCleaningViewController {
           if self.totalFilesOnDevice == 0 {
                totalPercentageCalculated = 0
           } else {
-               totalPercentageCalculated = self.totalDeepCleanProgress.sum() / 8
+               totalPercentageCalculated = self.totalDeepCleanProgress.sum() / 12
           }
           
           if let cell = self.tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? DeepCleanInfoTableViewCell {
@@ -504,10 +507,14 @@ extension DeepCleaningViewController {
                     self.totalDeepCleanProgress[11] = progress
           }
           
+          if notificationType == .duplicatedEmails {
+               debugPrint("====>>>> \(progress)")
+          }
+          
           guard !indexPath.isEmpty else { return }
           
           guard let cell = tableView.cellForRow(at: indexPath) as? ContentTypeTableViewCell else { return }
-          self.configure(cell, at: indexPath)
+          self.configure(cell, at: indexPath, currentProgress: progress)
           updateTotalFilesTitleChecked(0)
      }
      
@@ -630,7 +637,7 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
           tableView.separatorStyle = .none
      }
      
-     private func configure(_ cell: ContentTypeTableViewCell, at indexPath: IndexPath) {
+     private func configure(_ cell: ContentTypeTableViewCell, at indexPath: IndexPath, currentProgress: CGFloat? = nil) {
           
           let photoMediaType: PhotoMediaType = .getDeepCleanMediaContentType(from: indexPath)
           let contentType: MediaContentType = .getDeepCleanSectionType(indexPath: indexPath)
@@ -643,13 +650,15 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
           }
           
           var progress: CGFloat {
-               if let currentProgress = self.currentProgressForRawMediatype[photoMediaType] {
+               if let currentProgress = currentProgress {
+                    return currentProgress
+               } else if let currentProgress = self.currentProgressForRawMediatype[photoMediaType] {
                     return currentProgress
                } else {
                     return 0
                }
           }
-          
+
           cell.cellConfig(contentType: contentType,
                           photoMediaType: photoMediaType,
                           indexPath: indexPath,
