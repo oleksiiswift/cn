@@ -11,6 +11,15 @@ import Photos
 import CocoaImageHashing
 import AVKit
 
+
+enum AssetsGroupType {
+    case photo
+    case screenShots
+    case livePhotos
+    case video
+    case screenRecordings
+}
+
 class PhassetGroup {
     var name: String
     var assets: [PHAsset]
@@ -29,24 +38,29 @@ class PhassetGroup {
 /// `getSimilarLivePhotos` - load simmilar live photos
 /// `getScreenShots` `getSelfiePhotos` `getLivePhotos` -  fetch photos by type
 
-
     /**
     - parameter isDeepCleanScan in methods used for completion stay in background if `false` completion of methods needs move to main thread
     */
 
 class PhotoManager: NSObject {
     
+    enum Strictness {
+        case similar
+        case closeToIdentical
+    }
+    
     private static let shared = PhotoManager()
     
     var assetCollection: PHAssetCollection?
     
-//    let operationQueue = AssetsOperationQueue()
+    let operationConcurrentQueue = OperationPhotoProcessingQueuer(name: "photoGrabber", maxConcurrentOperationCount: 4, qualityOfService: .default)
     
     static var manager: PhotoManager {
         return self.shared
     }
     
     private var fetchManager = PHAssetFetchManager.shared
+    private var progressNotificationManager = DeepCleanNotificationManager.instance
     
     public override init() {
         super.init()
@@ -68,98 +82,199 @@ class PhotoManager: NSObject {
         }
     }
     
+    
+    public func calculateAssetsDiskSpace() {
+        debugPrint("start calculated file size")
+        self.fetchManager.gitAllCalculatedPhassetsSize { photoSize, videoSize, totalSize in
+            debugPrint("end calculated fils size")
+            S.phassetPhotoFilesSizes = photoSize
+            S.phassetVideoFilesSizes = videoSize
+            S.phassetFilesSize = totalSize
+        }
+    }
+    
+    public func calculateLargeVideosCount() {
+        debugPrint("start large")
+        self.getLargevideoContent { assets in
+            debugPrint("done with large videos")
+            UpdateContentDataBaseMediator.instance.getLargeVideosAssets(assets)
+        }
+    }
+    
+    public func calculateRecentlyDeleted() {
+        debugPrint("try fetch recently deleted photos videos")
+        self.getSortedRecentlyDeletedAssets { photos, videos in
+            debugPrint("done with photos and videos")
+        
+            UpdateContentDataBaseMediator.instance.getRecentlyDeletedPhotosAssets(photos)
+            UpdateContentDataBaseMediator.instance.getRecentlyDeletedVideosAssets(videos)
+        }
+    }
+    
+    public func calculateVideoCount() {
+        debugPrint("start video count")
+        self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumVideos, by: PHAssetMediaType.video.rawValue) { assets in
+            U.UI {
+                debugPrint("done with video count")
+                UpdateContentDataBaseMediator.instance.updateContentStoreCount(mediaType: .userVideo, itemsCount: assets.count, calculatedSpace: nil)
+            }
+        }
+    }
+    
+    public func calculatePhotoCount() {
+        debugPrint("start photo count")
+        self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumUserLibrary, by: PHAssetMediaType.image.rawValue) { assets in
+            U.UI {
+                debugPrint("done with gallery count")
+                UpdateContentDataBaseMediator.instance.updateContentStoreCount(mediaType: .userPhoto, itemsCount: assets.count, calculatedSpace: nil)
+            }
+        }
+    }
+    
+    
+    public func getPhotoAssetsCount(from startDate: String, to endDate: String, completion: @escaping (Int) -> Void) {
+        
+        self.fetchManager.fetchTotalAssetsCount(from: startDate, to: endDate) { totalCount in
+            completion(totalCount)
+        }
+    }
+    
+    public func getPartitionalMediaAssetsCount(from startDate: String, to endDate: String, completion: @escaping ([AssetsGroupType: Int]) -> Void) {
+        
+        var totalProcessingProcess = 0
+        
+        var totalPartitinAssetsCount: [AssetsGroupType : Int] = [.photo : 0, // get all photo count
+                                                                 .screenShots : 0, // get all screenshots
+                                                                 .livePhotos : 0, // get all live photosCount
+                                                                 .video : 0, // get all videos
+                                                                 .screenRecordings : 0] // get all screen recordings
+        
+        self.fetchManager.fetchPhotoCount(from: startDate, to: endDate) { photoCount in
+            totalPartitinAssetsCount[.photo] = photoCount
+            
+            totalProcessingProcess += 1
+            if totalProcessingProcess == 5 {
+                completion(totalPartitinAssetsCount)
+            }
+        }
+        
+        self.fetchManager.fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumVideos, by: PHAssetMediaType.video.rawValue) { result in
+            totalPartitinAssetsCount[.video] = result.count
+            
+            totalProcessingProcess += 1
+            if totalProcessingProcess == 5 {
+                completion(totalPartitinAssetsCount)
+            }
+        }
+        
+        self.getScreenShots(from: startDate, to: endDate, isDeepCleanScan: false) { assets in
+            totalPartitinAssetsCount[.screenShots] = assets.count
+            
+            totalProcessingProcess += 1
+            if totalProcessingProcess == 5 {
+                completion(totalPartitinAssetsCount)
+            }
+        }
+        
+        self.fetchManager.fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumLivePhotos, by: PHAssetMediaType.image.rawValue) { result in
+            totalPartitinAssetsCount[.livePhotos] = result.count
+            
+            totalProcessingProcess += 1
+            if totalProcessingProcess == 5 {
+                completion(totalPartitinAssetsCount)
+            }
+        }
+        
+        self.getScreenRecordsVideos(from: startDate, to: endDate, isDeepCleanScan: false) { screenRecordsAssets in
+            totalPartitinAssetsCount[.screenRecordings] = screenRecordsAssets.count
+            
+            totalProcessingProcess += 1
+            if totalProcessingProcess == 5 {
+                completion(totalPartitinAssetsCount)
+            }
+        }
+    }
+    
+    public func calculateScreenRecordsCout() {
+        debugPrint("start screen records")
+        self.getScreenRecordsVideos { assets in
+            debugPrint("done with screenrecords")
+            UpdateContentDataBaseMediator.instance.getScreenRecordsVideosAssets(assets)
+        }
+    }
+    
+    public func calculateScreenShotsCount() {
+        debugPrint("start get screenshots")
+        self.getScreenShots { assets in
+            debugPrint("done with screenshots")
+            UpdateContentDataBaseMediator.instance.getScreenshots(assets)
+        }
+    }
+    
+    public func calculateLivePhotoCount() {
+        debugPrint("start live photos")
+        self.getLivePhotos { assets in
+            debugPrint("done with livephoto")
+            UpdateContentDataBaseMediator.instance.getLivePhotosAssets(assets)
+        }
+    }
+    
+    public func calculateSelfiesCount() {
+        debugPrint("start selfie")
+        self.getSelfiePhotos { assets in
+            debugPrint("done with selfies")
+            UpdateContentDataBaseMediator.instance.getFrontCameraAssets(assets)
+        }
+    }
+
     private func getPhotoLibrary() {
         
-        let operationQueue: OperationQueue = {
+        let concurrentOperationFirst = ConcurrentProcessOperation { _ in
+            self.calculateAssetsDiskSpace()
+        }
+        
+        let concurrentOperationSecond = ConcurrentProcessOperation { _ in
+            self.calculateLargeVideosCount()
+        }
+        
+        let concurrentOperationThird = ConcurrentProcessOperation { _ in
+            self.calculateRecentlyDeleted()
+        }
+        
+        let concurrentOperationFourth = ConcurrentProcessOperation { _ in
+            self.calculateVideoCount()
+        }
+        
+        let concurrentOperationFifth = ConcurrentProcessOperation { _ in
+            self.calculatePhotoCount()
+        }
+        
+        let concurrentOperationSixth = ConcurrentProcessOperation { _ in
+            self.calculateScreenRecordsCout()
+        }
+        
+        let concurrentOperationSeventh = ConcurrentProcessOperation { _ in
+            self.calculateScreenShotsCount()
+        }
+        
+        let concurrentOperationEighth = ConcurrentProcessOperation { _ in
+            self.calculateLivePhotoCount()
+        }
+        
+        let concurrentOperationNinth = ConcurrentProcessOperation { _ in
+            self.calculateSelfiesCount()
+        }
 
-            let operation = OperationQueue()
-            operation.qualityOfService = .background
-            operation.maxConcurrentOperationCount = 10
-
-            return operation
-        }()
-  
-        operationQueue.addOperation {
-            debugPrint("start calculated file size")
-            self.fetchManager.gitAllCalculatedPhassetsSize { photoSize, videoSize, totalSize in
-                debugPrint("end calculated fils size")
-                S.phassetPhotoFilesSizes = photoSize
-                S.phassetVideoFilesSizes = videoSize
-                S.phassetPhotoVideoSizes = totalSize
-            }
-        }
+        operationConcurrentQueue.addOperation(concurrentOperationFirst)
+        operationConcurrentQueue.addOperation(concurrentOperationSecond)
+        operationConcurrentQueue.addOperation(concurrentOperationThird)
+        operationConcurrentQueue.addOperation(concurrentOperationFourth)
+        operationConcurrentQueue.addOperation(concurrentOperationFifth)
+        operationConcurrentQueue.addOperation(concurrentOperationSixth)
+        operationConcurrentQueue.addOperation(concurrentOperationSeventh)
+        operationConcurrentQueue.addOperation(concurrentOperationEighth)
+        operationConcurrentQueue.addOperation(concurrentOperationNinth)
         
-        operationQueue.addOperation {
-            debugPrint("start video count")
-            self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumVideos, by: PHAssetMediaType.video.rawValue) { assets in
-                U.UI {
-                    debugPrint("done with video count")
-                    UpdateContentDataBaseMediator.instance.updateVideos(assets.count, calculatedSpace: 0)
-                }
-            }
-        }
-        
-        operationQueue.addOperation {
-            debugPrint("start photo count")
-            self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumUserLibrary, by: PHAssetMediaType.image.rawValue) { assets in
-                U.UI {
-                    debugPrint("done with gallery count")
-                    UpdateContentDataBaseMediator.instance.updatePhotos(assets.count, calculatedSpace: 0)
-                }
-            }
-        }
-        
-        operationQueue.addOperation {
-            debugPrint("start screen records")
-            self.getScreenRecordsVideos { assets in
-                debugPrint("done with screenrecords")
-                UpdateContentDataBaseMediator.instance.getScreenRecordsVideosAssets(assets)
-            }
-        }
-        
-        operationQueue.addOperation {
-            
-            debugPrint("start get screenshots")
-            self.getScreenShots { assets in
-                debugPrint("done with screenshots")
-                UpdateContentDataBaseMediator.instance.getScreenshots(assets)
-            }
-        }
-        
-        operationQueue.addOperation {
-            debugPrint("start live photos")
-            self.getLivePhotos { assets in
-                debugPrint("done with livephoto")
-                UpdateContentDataBaseMediator.instance.getLivePhotosAssets(assets)
-            }
-        }
-        
-        operationQueue.addOperation {
-            debugPrint("start selfie")
-            self.getSelfiePhotos { assets in
-                debugPrint("done with selfies")
-                UpdateContentDataBaseMediator.instance.getFrontCameraAssets(assets)
-            }
-        }
-        
-        operationQueue.addOperation {
-            debugPrint("start large")
-            self.getLargevideoContent { assets in
-                debugPrint("done with large videos")
-                UpdateContentDataBaseMediator.instance.getLargeVideosAssets(assets)
-            }
-        }
-        
-        operationQueue.addOperation {
-            debugPrint("try fetch recently deleted photos videos")
-            
-            self.getSortedRecentlyDeletedAssets { photos, videos in
-                debugPrint("done with photos and videos")
-            
-                UpdateContentDataBaseMediator.instance.getRecentlyDeletedPhotosAssets(photos)
-                UpdateContentDataBaseMediator.instance.getRecentlyDeletedVideosAssets(videos)
-            }
-        }
     }
     
 //    MARK: - authentification
@@ -222,20 +337,22 @@ extension PhotoManager {
             
             U.BG {
                 if photosInGallery.count != 0 {
-
+                    
                     for index in 1...photosInGallery.count {
                         debugPrint("index preocessing duplicate")
                         debugPrint("index \(index)")
                         
                         /// adding notification to handle progress similar photos processing
+                        if isDeepCleanScan {
+                            
+                            self.progressNotificationManager.sendDeepProgressNotificatin(notificationType: .similarPhoto,
+                                                                                         totalProgressItems: photosInGallery.count,
+                                                                                         currentProgressItem: index)
+                        }
                         
-                        let info = [C.key.notificationDictionary.deepCleanSimilarPhotoPrecessingIndex: index,
-                                    C.key.notificationDictionary.deepCleanSimilarPhotoTotalAsssetsCount: photosInGallery.count]
-                        U.notificationCenter.post(name: .deepCleanSimilarPhotoPhassetScan, object: nil, userInfo: info)
-                  
-                    similarPhotos.append((asset: photosInGallery[index - 1],
-                                          date: Int64(photosInGallery[index - 1].creationDate!.timeIntervalSince1970),
-                                          imageSize: fileSizeCheck ? photosInGallery[index - 1].imageSize : 0))
+                        similarPhotos.append((asset: photosInGallery[index - 1],
+                                              date: Int64(photosInGallery[index - 1].creationDate!.timeIntervalSince1970),
+                                              imageSize: fileSizeCheck ? photosInGallery[index - 1].imageSize : 0))
                     }
                     
                     similarPhotos.sort { similarPhotoNumberOne, similarPhotoNumberTwo in
@@ -304,10 +421,13 @@ extension PhotoManager {
                     for photoPos in 1...photoGallery.count {
                         debugPrint("loading duplicate")
                         debugPrint("photoposition \(photoPos)")
-                        let info = [C.key.notificationDictionary.deepCleanDuplicatePhotoTotalAssetsCount: photoGallery.count,
-                                    C.key.notificationDictionary.deepCleanDuplicatePhotoProcessingIndex: photoPos]
                         
-                        U.notificationCenter.post(name: .deepCleanDuplicatedPhotoPhassetScan, object: nil, userInfo: info)
+                        /// adding notification to handle progress similar photos processing
+                        if isDeepCleanScan {
+                            self.progressNotificationManager.sendDeepProgressNotificatin(notificationType: .duplicatePhoto,
+                                                                                     totalProgressItems: photoGallery.count,
+                                                                                     currentProgressItem: photoPos)
+                        }
                         
                         let image = self.fetchManager.getThumbnail(from: photoGallery[photoPos - 1], size: CGSize(width: 150, height: 150))
                         if let data = image.jpegData(compressionQuality: 0.8) {
@@ -346,6 +466,13 @@ extension PhotoManager {
                 if livePhotoGallery.count != 0 {
                     for livePosition in 1...livePhotoGallery.count {
                         debugPrint("live photo position", livePosition)
+                        
+                        if isDeepCleanScan {
+                            self.progressNotificationManager.sendDeepProgressNotificatin(notificationType: .similarLivePhoto,
+                                                                                     totalProgressItems: livePhotoGallery.count,
+                                                                                     currentProgressItem: livePosition)
+                        }
+                        
                         let image = self.fetchManager.getThumbnail(from: livePhotoGallery[livePosition - 1], size: CGSize(width: 150, height: 150))
                         if let data = image.jpegData(compressionQuality: 0.8) {
                             let tuple = OSTuple<NSString, NSData>(first: "image\(livePosition)" as NSString, andSecond: data as NSData)
@@ -536,6 +663,12 @@ extension PhotoManager {
                 
                 for screensPos in 1...screensShotsLibrary.count {
                     screens.append(screensShotsLibrary[screensPos - 1])
+                    if isDeepCleanScan {
+                        debugPrint("screen shots index -> ", screensPos)
+                        self.progressNotificationManager.sendDeepProgressNotificatin(notificationType: .screenshots,
+                                                                                 totalProgressItems: screensShotsLibrary.count,
+                                                                                 currentProgressItem: screensPos)
+                    }
                 }
                 
                 if !isDeepCleanScan {
@@ -572,8 +705,16 @@ extension PhotoManager {
                 }
                 
                 for videosPosition in 1...videoContent.count {
+                    #warning("TODO: set videos sizes smaller")
+//                    debugPrint("large video processing at index: ", videosPosition)
                     if videoContent[videosPosition - 1].imageSize > 15000000 { //550000000 
                         videos.append(videoContent[videosPosition - 1])
+                    }
+                    
+                    if isDeepCleanScan {
+                        self.progressNotificationManager.sendDeepProgressNotificatin(notificationType: .largeVideo,
+                                                                                 totalProgressItems: videoContent.count,
+                                                                                 currentProgressItem: videosPosition)
                     }
                 }
                 if !isDeepCleanScan {
@@ -610,13 +751,14 @@ extension PhotoManager {
                     assets.append(asset)
                 }
                 
-                let z = FindDuplicatesUsingThumbnail.findDupes(assets: assets, strictness: .closeToIdentical)
+                let similarVideoPhassetGroup = self.findDupes(assets: assets, strictness: .similar, isDeepCleanScan: isDeepCleanScan)
+                
                 if !isDeepCleanScan {
                     U.UI {
-                        completionHandler(z)
+                        completionHandler(similarVideoPhassetGroup)
                     }
                 } else {
-                    completionHandler(z)
+                    completionHandler(similarVideoPhassetGroup)
                 }
             }
         }
@@ -699,10 +841,17 @@ extension PhotoManager {
                 
                 for videosPosition in 1...videoAssets.count {
                     let asset = videoAssets[videosPosition - 1]
+                        
                     if let assetResource = PHAssetResource.assetResources(for: asset).first {
                         if assetResource.originalFilename.contains("RPReplay") {
                             screenRecords.append(asset)
                         }
+                    }
+                    
+                    if isDeepCleanScan {
+                        self.progressNotificationManager.sendDeepProgressNotificatin(notificationType: .screenRecordings,
+                                                                                     totalProgressItems: videoAssets.count,
+                                                                                     currentProgressItem: videosPosition)
                     }
                 }
                 
@@ -729,12 +878,19 @@ extension PhotoManager {
             U.BG {
                 if videoCollection.count != 0 {
                     for index in 1...videoCollection.count {
+                        
+                        if isDeepCleanScan {
+                            self.progressNotificationManager.sendDeepProgressNotificatin(notificationType: .duplicateVideo,
+                                                                                     totalProgressItems: videoCollection.count,
+                                                                                     currentProgressItem: index)
+                        }
+                        
                         let image = self.fetchManager.getThumbnail(from: videoCollection[index - 1], size: CGSize(width: 150, height: 150))
                         if let data = image.jpegData(compressionQuality: 0.8) {
                             let imageTuple = OSTuple<NSString, NSData>(first: "image\(index)" as NSString, andSecond: data as NSData)
                             videos.append(imageTuple)
                         } else {
-                            return
+//                            return
                         }
                     }
                     
@@ -819,6 +975,69 @@ extension PhotoManager {
             }
         }
     }
+    
+    /// similar close to identical videos algoritm
+    public func findDupes(assets: [PHAsset], strictness: Strictness, isDeepCleanScan: Bool) -> [PhassetGroup] {
+        
+        var phassetGroup: [PhassetGroup] = []
+        
+        let rawTuples: [OSTuple<NSString, NSData>] = assets.enumerated().map { (index, asset) -> OSTuple<NSString, NSData> in
+            let imageData = asset.thumbnailSync?.pngData()
+            return OSTuple<NSString, NSData>.init(first: "\(index)" as NSString, andSecond: imageData as NSData?)
+        }
+        
+        let toCheckTuples = rawTuples.filter({ $0.second != nil })
+        
+        let providerId = OSImageHashingProviderIdForHashingQuality(.medium)
+        let provider = OSImageHashingProviderFromImageHashingProviderId(providerId);
+        let defaultHashDistanceTreshold = provider.hashDistanceSimilarityThreshold()
+        let hashDistanceTreshold: Int64
+        
+        switch strictness {
+            case .similar:
+                hashDistanceTreshold = defaultHashDistanceTreshold
+            case .closeToIdentical:
+                hashDistanceTreshold = 1
+        }
+        
+        let similarImageIdsAsTuples = OSImageHashing.sharedInstance().similarImages(withProvider: providerId, withHashDistanceThreshold: hashDistanceTreshold, forImages: toCheckTuples)
+        
+        var assetToGroupIndex = [PHAsset: Int]()
+        
+        var notificationStarterIndex = 1
+        
+        for pair in similarImageIdsAsTuples {
+            
+            if isDeepCleanScan {
+                self.progressNotificationManager.sendDeepProgressNotificatin(notificationType: .similarVideo,
+                                                                             totalProgressItems: notificationStarterIndex,
+                                                                             currentProgressItem: similarImageIdsAsTuples.count)
+                notificationStarterIndex += 1
+            }
+            
+            let assetIndex1 = Int(pair.first! as String)!
+            let assetIndex2 = Int(pair.second! as String)!
+            let asset1 = assets[assetIndex1]
+            let asset2 = assets[assetIndex2]
+            let groupIndex1 = assetToGroupIndex[asset1]
+            let groupIndex2 = assetToGroupIndex[asset2]
+            if groupIndex1 == nil && groupIndex2 == nil {
+                
+                let group = PhassetGroup.init(name: "", assets: [asset1, asset2])
+                phassetGroup.append(group)
+                let groupIndex = phassetGroup.count - 1
+                assetToGroupIndex[asset1] = groupIndex
+                assetToGroupIndex[asset2] = groupIndex
+            } else if groupIndex1 == nil && groupIndex2 != nil {
+                phassetGroup[groupIndex2!].assets.append(asset1)
+                assetToGroupIndex[asset1] = groupIndex2!
+            } else if groupIndex1 != nil && groupIndex2 == nil {
+                phassetGroup[groupIndex1!].assets.append(asset2)
+                assetToGroupIndex[asset2] = groupIndex1!
+            }
+        }
+        return phassetGroup
+    }
 }
 
 //      MARK: - delete selected assets -
@@ -865,64 +1084,6 @@ extension PhotoManager: PHPhotoLibraryChangeObserver {
             UpdatingChangesInOpenedScreensMediator.instance.updatingChangedScreenShots()
             UpdatingChangesInOpenedScreensMediator.instance.updatingChangedSelfies()
         }
-    }
-}
-
-//      MARK:  find duplicates close to similar
-class FindDuplicatesUsingThumbnail {
-    
-    enum Strictness {
-        case similar
-        case closeToIdentical
-    }
-    
-    public class func findDupes(assets: [PHAsset], strictness: Strictness) -> [PhassetGroup] {
-        
-        var phassetGroup: [PhassetGroup] = []
-        
-        let rawTuples: [OSTuple<NSString, NSData>] = assets.enumerated().map { (index, asset) -> OSTuple<NSString, NSData> in
-            let imageData = asset.thumbnailSync?.pngData()
-            
-            return OSTuple<NSString, NSData>.init(first: "\(index)" as NSString, andSecond: imageData as NSData?)
-        }
-        
-        let toCheckTuples = rawTuples.filter({ $0.second != nil })
-        
-        let providerId = OSImageHashingProviderIdForHashingQuality(.medium)
-        let provider = OSImageHashingProviderFromImageHashingProviderId(providerId);
-        let defaultHashDistanceTreshold = provider.hashDistanceSimilarityThreshold()
-        let hashDistanceTreshold: Int64
-        switch strictness {
-            case .similar: hashDistanceTreshold = defaultHashDistanceTreshold
-            case .closeToIdentical: hashDistanceTreshold = 1
-        }
-        
-        let similarImageIdsAsTuples = OSImageHashing.sharedInstance().similarImages(withProvider: providerId, withHashDistanceThreshold: hashDistanceTreshold, forImages: toCheckTuples)
-    
-        var assetToGroupIndex = [PHAsset: Int]()
-        for pair in similarImageIdsAsTuples {
-            let assetIndex1 = Int(pair.first! as String)!
-            let assetIndex2 = Int(pair.second! as String)!
-            let asset1 = assets[assetIndex1]
-            let asset2 = assets[assetIndex2]
-            let groupIndex1 = assetToGroupIndex[asset1]
-            let groupIndex2 = assetToGroupIndex[asset2]
-            if groupIndex1 == nil && groupIndex2 == nil {
-                
-                let group = PhassetGroup.init(name: "", assets: [asset1, asset2])
-                phassetGroup.append(group)
-                let groupIndex = phassetGroup.count - 1
-                assetToGroupIndex[asset1] = groupIndex
-                assetToGroupIndex[asset2] = groupIndex
-            } else if groupIndex1 == nil && groupIndex2 != nil {
-                phassetGroup[groupIndex2!].assets.append(asset1)
-                assetToGroupIndex[asset1] = groupIndex2!
-            } else if groupIndex1 != nil && groupIndex2 == nil {
-                phassetGroup[groupIndex1!].assets.append(asset2)
-                assetToGroupIndex[asset2] = groupIndex1!
-            }
-        }
-        return phassetGroup
     }
 }
 

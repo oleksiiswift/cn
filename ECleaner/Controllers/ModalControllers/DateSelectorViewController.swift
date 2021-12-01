@@ -11,13 +11,14 @@ class DateSelectorViewController: UIViewController {
     
     @IBOutlet weak var periodDatePicker: UIDatePicker!
     @IBOutlet weak var mainContainerView: UIView!
-    @IBOutlet weak var titleTextLabel: UILabel!
-    @IBOutlet weak var dissmissButtonImageView: UIImageView!
+    @IBOutlet weak var customNavBar: StartingNavigationBar!
     @IBOutlet weak var autoDatePickButton: UIButton!
+    @IBOutlet weak var autoDatePickBackgroundImageView: UIImageView!
     @IBOutlet weak var autoDatePickImageView: UIImageView!
     @IBOutlet weak var autoDatePickTextLabel: UILabel!
-    @IBOutlet weak var submitButtonView: UIView!
-    @IBOutlet weak var submitButton: UIButton!
+    @IBOutlet weak var submitButtonView: ShadowView!
+    @IBOutlet weak var submitButtonTextLabel: UILabel!
+    
     @IBOutlet weak var mainContainerViewHeightConstraint: NSLayoutConstraint!
     
     private var autoPickCheckIsOn: Bool = false
@@ -34,6 +35,8 @@ class DateSelectorViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        setupNavigation()
+        setupObserversAndDelegate()
         setupUI()
         updateColors()
     }
@@ -44,11 +47,21 @@ class DateSelectorViewController: UIViewController {
         mainContainerView.cornerSelectRadiusView(corners: [.topLeft, .topRight], radius: 20)
     }
     
+    func setupNavigation() {
+        
+        customNavBar.setUpNavigation(title: "SELECT_PERIOD".localized(), leftImage: nil, rightImage: I.systemItems.navigationBarItems.dissmiss)
+    }
+    
+    func setupObserversAndDelegate() {
+
+        customNavBar.delegate = self
+    }
+    
     
     @IBAction func didTapSetPickerAutoSettingsActionButton(_ sender: Any) {
         
             autoPickCheckIsOn = !autoPickCheckIsOn
-            autoDatePickImageView.image = autoPickCheckIsOn ? I.systemElementsItems.checkBoxIsChecked : I.systemElementsItems.checkBox
+            autoDatePickImageView.isHidden = !autoPickCheckIsOn//image = autoPickCheckIsOn ? I.systemElementsItems.checkBoxIsChecked : I.systemElementsItems.checkBox
         
         if isStartingDateSelected {
             if let lastPickDate = S.lastSmartCleanDate, let date = U.getDateFrom(string: lastPickDate, format: C.dateFormat.fullDmy) {
@@ -59,11 +72,6 @@ class DateSelectorViewController: UIViewController {
                 periodDatePicker.setDate(Date(), animated: true)
             }
         }
-    }
-    
-
-    @IBAction func didTapDissmissViewControllerActionButton(_ sender: Any) {
-        self.dismiss(animated: true, completion: nil)
     }
     
     @IBAction func didTapSubmitActionButton(_ sender: Any) {
@@ -118,26 +126,48 @@ extension DateSelectorViewController: Themeble {
         self.view.frame = CGRect(x: 0, y: 0, width: U.screenWidth, height: containerHeight)
         mainContainerViewHeightConstraint.constant = containerHeight
         
-        submitButtonView.setCorner(12)
-        submitButton.setTitle("submit", for: .normal)
-        dissmissButtonImageView.image = I.systemElementsItems.crissCross
+        submitButtonTextLabel.text = "SUBMIT".localized()
+        submitButtonTextLabel.font = UIFont(font: FontManager.robotoBlack, size: 16.0)
         
-        titleTextLabel.text = "select period"
-        
-        autoDatePickTextLabel.text = isStartingDateSelected ? "since the last cleaning" : "now is the time for"
-        autoDatePickTextLabel.font = .systemFont(ofSize: 17, weight: .regular)
+        autoDatePickTextLabel.text = isStartingDateSelected ? "SINCE_THE_LAST_CLEANING".localized() : "NOW_IS_THE_TIME_FOR".localized()
+        autoDatePickTextLabel.font = UIFont(font: FontManager.robotoBold, size: 14.0)
         autoDatePickImageView.image = I.systemElementsItems.checkBox
         periodDatePicker.maximumDate = Date()
+        
+        autoDatePickBackgroundImageView.layer.applySketchShadow(
+            color: UIColor().colorFromHexString("D8DFEB"),
+            alpha: 1.0,
+            x: 6,
+            y: 6,
+            blur: 10,
+            spread: 0)
+        
+        autoDatePickImageView.isHidden = !autoPickCheckIsOn
+        
+        periodDatePicker.setValue(false, forKey: "highlightsToday")
+        periodDatePicker.setValue(theme.titleTextColor, forKeyPath: "textColor")
+        if periodDatePicker.subviews[0].subviews.count >= 2 {
+            periodDatePicker.subviews[0].subviews[1].backgroundColor = UIColor.clear
+        }
     }
     
     func updateColors() {
         
         self.view.backgroundColor = .clear
-        mainContainerView.backgroundColor = currentTheme.backgroundColor
-        submitButtonView.backgroundColor = currentTheme.accentBackgroundColor
-        submitButton.setTitleColor(currentTheme.backgroundColor, for: .normal)
-        dissmissButtonImageView.tintColor = currentTheme.tintColor
-        autoDatePickTextLabel.textColor = currentTheme.titleTextColor
-        autoDatePickImageView.tintColor = currentTheme.titleTextColor
+        mainContainerView.backgroundColor = theme.backgroundColor
+        submitButtonTextLabel.textColor = theme.blueTextColor
+        autoDatePickTextLabel.textColor = theme.subTitleTextColor
     }
+}
+
+extension DateSelectorViewController: StartingNavigationBarDelegate {
+    
+    func didTapLeftBarButton(_sender: UIButton) {}
+    
+    func didTapRightBarButton(_sender: UIButton) {
+        
+        self.dismiss(animated: true, completion: nil)
+    }
+    
+    
 }

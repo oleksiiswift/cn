@@ -8,25 +8,20 @@
 import UIKit
 import Photos
 import SwiftMessages
+import Contacts
 
 class MediaContentViewController: UIViewController {
-
-    @IBOutlet weak var startingDateTitileTextLabel: UILabel!
-    @IBOutlet weak var endingDateTitleTextLabel: UILabel!
-    @IBOutlet weak var startingDateTextLabel: UILabel!
-    @IBOutlet weak var endingDateTextLabel: UILabel!
+  
+    @IBOutlet weak var navigationBar: NavigationBar!
     @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var startingDateButtonView: UIView!
-    @IBOutlet weak var endingDateButtonView: UIView!
-    
     @IBOutlet weak var dateSelectContainerView: UIView!
     @IBOutlet weak var dateSelectContainerHeigntConstraint: NSLayoutConstraint!
     
-    @IBOutlet weak var startingDateStackView: UIStackView!
-    @IBOutlet weak var endingDateStackView: UIStackView!
+    var dateSelectableView = DateSelectebleView()
     
-    public var contentType: MediaContentType = .none
+    public var mediaContentType: MediaContentType = .none
     private var photoManager = PhotoManager()
+    private var contactsManager = ContactsManager.shared
     
     private var startingDate: String {
         get {
@@ -43,7 +38,7 @@ class MediaContentViewController: UIViewController {
             S.endingSavedDate = newValue
         }
     }
-    
+    private var scanningProcessIsRunning: Bool = false
     private var isStartingDateSelected: Bool = false
     
     public var allScreenShots: [PHAsset] = []
@@ -56,15 +51,30 @@ class MediaContentViewController: UIViewController {
     public var allDuplicatesVideos: [PHAsset] = []
     public var allScreenRecords: [PHAsset] = []
     public var allRecentlyDeletedVideos: [PHAsset] = []
-
+    
+    public var allContacts: [CNContact] = []
+    public var allEmptyContacts: [ContactsGroup] = []
+    public var allDuplicatedContacts: [ContactsGroup] = []
+    public var allDuplicatedPhoneNumbers: [ContactsGroup] = []
+    public var allDuplicatedEmailAdresses: [ContactsGroup] = []
+    
+    private var singleSearchContactsProgress: [CGFloat] = [0,0,0,0,0]
+    private var totalSearchFindContactsCointIn: [Int] = [0,0,0,0,0]
+    private var currentProgressForMediaType: [PhotoMediaType : CGFloat] = [:]
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.contactsManager.setProcess(.search, state: .availible) /// set update of contacts availible
+            
         checkForAssetsCount()
         setupUI()
+        setupDateInterval()
         updateColors()
         setupNavigation()
         setupTableView()
+        setupDelegate()
+        setupObserver(for: self.mediaContentType)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -81,16 +91,6 @@ class MediaContentViewController: UIViewController {
                 break
         }
     }
-
-    @IBAction func didTapSelectStartDateActionButton(_ sender: Any) {
-        self.isStartingDateSelected = true
-        performSegue(withIdentifier: C.identifiers.segue.showDatePicker, sender: self)
-    }
-    
-    @IBAction func didTapSelectEndDateActionButton(_ sender: Any) {
-        self.isStartingDateSelected = false
-        performSegue(withIdentifier: C.identifiers.segue.showDatePicker, sender: self)
-    }
 }
 
 extension MediaContentViewController: UITableViewDelegate, UITableViewDataSource {
@@ -101,53 +101,69 @@ extension MediaContentViewController: UITableViewDelegate, UITableViewDataSource
         tableView.dataSource = self
         tableView.separatorStyle = .none
         tableView.register(UINib(nibName: C.identifiers.xibs.contentTypeCell, bundle: nil), forCellReuseIdentifier: C.identifiers.cells.contentTypeCell)
-        tableView.contentInset = UIEdgeInsets(top: 8, left: 0, bottom: 0, right: 0)
+        tableView.contentInset.top = 20
     }
     
-    func configure(_ cell: ContentTypeTableViewCell, at indexPath: IndexPath) {
-        
-        var assetContentCount: Int = 0
+    func configure(_ cell: ContentTypeTableViewCell, at indexPath: IndexPath, isSearchingStarted: Bool = false) {
     
-        switch self.contentType {
-            case .userPhoto:
-                switch indexPath.row {
-                    case 2:
-                        assetContentCount = self.allScreenShots.count
-                    case 3:
-                        assetContentCount = self.allSelfies.count
-                    case 4:
-                        assetContentCount = self.allLiveFotos.count
-                    case 5:
-                        assetContentCount = self.allRecentlyDeletedPhotos.count
-                    default:
-                        debugPrint("")
-                }
-            case .userVideo:
-                switch indexPath.row {
-                    case 0:
-                        assetContentCount = self.allLargeVideos.count
-                    case 1:
-                        assetContentCount = self.allDuplicatesVideos.count
-                    case 2:
-                        assetContentCount = self.allSimmilarVideos.count
-                    case 3:
-                        assetContentCount = self.allScreenRecords.count
-                    case 5:
-                        assetContentCount = self.allRecentlyDeletedVideos.count
-                    default:
-                        debugPrint("")
-                }
-            case .userContacts:
-                debugPrint("")
-            default:
-                return
+        let  photoMediaType: PhotoMediaType = .getSingleSearchMediaContentType(from: indexPath, type: mediaContentType)
+        
+        var assetContentCount: Int {
+            switch photoMediaType {
+                case .similarPhotos:
+                    return 0
+                case .duplicatedPhotos:
+                    return 0
+                case .singleScreenShots:
+                    return self.allScreenShots.count
+                case .singleLivePhotos:
+                    return self.allLiveFotos.count
+                case .similarLivePhotos:
+                    return 0
+                case .singleLargeVideos:
+                    return self.allLargeVideos.count
+                case .duplicatedVideos:
+                    return self.allDuplicatesVideos.count
+                case .similarVideos:
+                    return self.allSimmilarVideos.count
+                case .singleSelfies:
+                    return self.allSelfies.count
+                case .singleScreenRecordings:
+                    return self.allScreenRecords.count
+                case .singleRecentlyDeletedPhotos:
+                    return self.allRecentlyDeletedPhotos.count
+                case .singleRecentlyDeletedVideos:
+                    return self.allRecentlyDeletedVideos.count
+                case .compress:
+                    return 0
+                case .allContacts:
+                    return self.allContacts.count
+                case .emptyContacts:
+                    return self.allEmptyContacts.count
+                case .duplicatedContacts:
+                    return self.allDuplicatedContacts.count
+                case .duplicatedPhoneNumbers:
+                    return self.allDuplicatedPhoneNumbers.count
+                case .duplicatedEmails:
+                    return self.allDuplicatedEmailAdresses.count
+                case .none:
+                    return 0
+            }
         }
         
-        cell.cellConfig(contentType: contentType, indexPath: indexPath, phasetCount: assetContentCount)
+        let progress = self.currentProgressForMediaType[photoMediaType] ?? 0
+        
+        cell.cellConfig(contentType: self.mediaContentType,
+                        photoMediaType: photoMediaType,
+                        indexPath: indexPath,
+                        phasetCount: assetContentCount,
+                        presentingType: .singleSearch,
+                        progress: progress,
+                        isProcessingComplete: isSearchingStarted)
     }
         
     func numberOfSections(in tableView: UITableView) -> Int {
-        return contentType.numberOfSection
+        return mediaContentType.numberOfSection
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -157,30 +173,43 @@ extension MediaContentViewController: UITableViewDelegate, UITableViewDataSource
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return contentType.numberOfRows
+        return mediaContentType.numberOfRows
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 67
+        return 100
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        self.showMediaContent(by: contentType, selected: indexPath.row)
+        self.showMediaContent(by: mediaContentType, selected: indexPath.row)
     }
 }
 
 //      MARK: - show content controller -
 extension MediaContentViewController {
     
-    /// `0` - simmilar photos
-    /// `1` - duplicates
-    /// `2` - screenshots
-    /// `3` - selfies
-    /// `4` - live photos
-    /// `5` - recently deleted
-    /// `6` - 
+        /// `0` - simmilar photos
+        /// `1` - duplicates
+        /// `2` - screenshots
+        /// `3` - selfies
+        /// `4` - live photos
+        /// `5` - recently deleted
     
+        /// `0` - large video files
+        /// `1` - duplicates
+        /// `2` - similar videos
+        /// `3` - screen records files
+        /// `4` - recently deleted files
+    
+        /// `0` - all contacts
+        /// `1` - empty contacts
+        /// `2` - duplicated contacts names
+        /// `3` - duplicated contacts phones
+        /// `4` - duplicated contacts emails
+        
     private func showMediaContent(by selectedType: MediaContentType, selected index: Int) {
+        
+        guard !scanningProcessIsRunning else { return }
         
         switch selectedType {
             case .userPhoto:
@@ -218,7 +247,20 @@ extension MediaContentViewController {
                         return
                 }
             case .userContacts:
-                debugPrint("show contacts")
+                switch index {
+                    case 0:
+                        self.showAllContacts()
+                    case 1:
+                        self.showEmptyGroupsContacts()
+                    case 2:
+                        self.showContactCleanController(cleanType: .duplicatedContactName)
+                    case 3:
+                        self.showContactCleanController(cleanType: .duplicatedPhoneNumnber)
+                    case 4:
+                        self.showContactCleanController(cleanType: .duplicatedEmail)
+                    default:
+                        return
+                }
             case .none:
                 return
         }
@@ -241,10 +283,31 @@ extension MediaContentViewController {
         viewController.mediaType = type
         self.navigationController?.pushViewController(viewController, animated: true)
     }
+    
+    private func showContactViewController(contacts: [CNContact] = [], contactGroup: [ContactsGroup] = [], contentType: PhotoMediaType) {
+        let storyboard = UIStoryboard(name: C.identifiers.storyboards.contacts, bundle: nil)
+        let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.contacts) as! ContactsViewController
+        viewController.contacts = contacts
+        viewController.contactGroup = contactGroup
+        viewController.mediaType = .userContacts
+        viewController.contentType = contentType
+        self.navigationController?.pushViewController(viewController, animated: true)
+    }
+        
+    private func showGroupedContactsViewController(contacts group: [ContactsGroup], group type: ContactasCleaningType, content: PhotoMediaType) {
+        let storyboard = UIStoryboard(name: C.identifiers.storyboards.contactsGroup, bundle: nil)
+        let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.contactsGroup) as! ContactsGroupViewController
+        viewController.contactGroup = group
+        viewController.navigationTitle = content.mediaTypeName
+        viewController.contentType = content
+        viewController.mediaType = .userContacts
+        self.navigationController?.pushViewController(viewController, animated: true)
+    }
 }
 
 //      MARK: - photo content -
 extension MediaContentViewController {
+    
     /**
      - parameter
      - parameter
@@ -255,7 +318,7 @@ extension MediaContentViewController {
             if !similarGroup.isEmpty {
                 self.showGropedContoller(assets: "similar photo", grouped: similarGroup, photoContent: .similarPhotos)
             } else {
-                AlertManager.showCantFindMediaContent(by: .noSimiliarPhoto)
+                AlertManager.showCantFindMediaContent(by: .noSimiliarPhoto) {}
             }
         }
     }
@@ -266,7 +329,7 @@ extension MediaContentViewController {
             if !asset.isEmpty {
                 self.showAssetViewController(assets: "live photos", collection: asset, photoContent: .singleLivePhotos)
             } else {
-                AlertManager.showCantFindMediaContent(by: .noLivePhoto)
+                AlertManager.showCantFindMediaContent(by: .noLivePhoto) {}
             }
         }
     }
@@ -276,7 +339,7 @@ extension MediaContentViewController {
             if !duplicateGroup.isEmpty {
                 self.showGropedContoller(assets: "duplicate photo", grouped: duplicateGroup, photoContent: .duplicatedPhotos)
             } else {
-                AlertManager.showCantFindMediaContent(by: .noDuplicatesPhoto)
+                AlertManager.showCantFindMediaContent(by: .noDuplicatesPhoto) {}
             }
         }
     }
@@ -286,7 +349,7 @@ extension MediaContentViewController {
             if selfies.count != 0 {
                 self.showAssetViewController(assets: "selfies", collection: selfies, photoContent: .singleSelfies)
             } else {
-                AlertManager.showCantFindMediaContent(by: .noSelfie)
+                AlertManager.showCantFindMediaContent(by: .noSelfie) {}
             }
         }
     }
@@ -296,7 +359,7 @@ extension MediaContentViewController {
             if screenshots.count != 0 {
                 self.showAssetViewController(assets: "screenshots", collection: screenshots, photoContent: .singleScreenShots)
             } else {
-                AlertManager.showCantFindMediaContent(by: .noScreenShots)
+                AlertManager.showCantFindMediaContent(by: .noScreenShots) {}
             }
         }
     }
@@ -306,7 +369,7 @@ extension MediaContentViewController {
             if deletedPhotos.count != 0 {
                 self.showAssetViewController(assets: "recently deleted photos", collection: deletedPhotos, photoContent: .singleRecentlyDeletedPhotos)
             } else {
-                AlertManager.showCantFindMediaContent(by: .noRecentlyDeletedPhotos)
+                AlertManager.showCantFindMediaContent(by: .noRecentlyDeletedPhotos) {}
             }
         }
     }
@@ -316,7 +379,7 @@ extension MediaContentViewController {
             if deletedVideos.count != 0 {
                 self.showAssetViewController(assets: "resently deleted Videos", collection: deletedVideos, photoContent: .singleRecentlyDeletedVideos)
             } else {
-                AlertManager.showCantFindMediaContent(by: .noRecentlyDeletedVideos)
+                AlertManager.showCantFindMediaContent(by: .noRecentlyDeletedVideos) {}
             }
         }
     }
@@ -355,7 +418,7 @@ extension MediaContentViewController {
             if videos.count != 0 {
                 self.showAssetViewController(assets: "large videos", collection: videos, photoContent: .singleLargeVideos)
             } else {
-                AlertManager.showCantFindMediaContent(by: .noLargeVideo)
+                AlertManager.showCantFindMediaContent(by: .noLargeVideo) {}
             }
         }
     }
@@ -367,7 +430,7 @@ extension MediaContentViewController {
             if videoGrouped.count != 0 {
                 self.showGropedContoller(assets: "duplicated video", grouped: videoGrouped, photoContent: .duplicatedVideos)
             } else {
-                AlertManager.showCantFindMediaContent(by: .noDuplicatesVideo)
+                AlertManager.showCantFindMediaContent(by: .noDuplicatesVideo) {}
             }
         }
     }
@@ -379,7 +442,7 @@ extension MediaContentViewController {
             if videos.count != 0 {
                 self.showGropedContoller(assets: "similar videos", grouped: videos, photoContent: .similarVideos)
             } else {
-                AlertManager.showCantFindMediaContent(by: .noSimilarVideo)
+                AlertManager.showCantFindMediaContent(by: .noSimilarVideo) {}
             }
         }
     }
@@ -391,7 +454,7 @@ extension MediaContentViewController {
             if videos.count != 0 {
                 self.showAssetViewController(assets: "screen records", collection: videos, photoContent: .singleScreenRecordings)
             } else {
-                AlertManager.showCantFindMediaContent(by: .noScreenRecording)
+                AlertManager.showCantFindMediaContent(by: .noScreenRecording) {}
             }
         }
     }
@@ -407,82 +470,317 @@ extension MediaContentViewController {
     }
 }
 
+//      MARK: - contacts content -
+extension MediaContentViewController {
+    
+    private func showAllContacts() {
+        P.showIndicator()
+        self.contactsManager.getAllContacts { contacts in
+            self.allContacts = contacts
+            U.UI {
+                P.hideIndicator()
+                if !contacts.isEmpty {
+                    self.showContactViewController(contacts: contacts, contentType: .allContacts)
+                } else {
+                    A.showEmptyContactsToPresent(of: .contactsIsEmpty) {}
+                }
+            }
+        }
+    }
+    
+    private func showEmptyGroupsContacts() {
+        P.showIndicator()
+        self.contactsManager.getEmptyContacts { contactsGroup in
+            U.UI {
+                P.hideIndicator()
+                let totalContacts = contactsGroup.map({$0.contacts}).count
+                let group = contactsGroup.filter({!$0.contacts.isEmpty})
+                
+                if totalContacts != 0 {
+                    self.showContactViewController(contactGroup: group, contentType: .emptyContacts)
+                } else {
+                    A.showEmptyContactsToPresent(of: .emptyContactsIsEmpty) {}
+                }
+            }
+        }
+    }
+    
+    private func showContactCleanController(cleanType: ContactasCleaningType) {
+        self.scanningProcessIsRunning = !scanningProcessIsRunning
+        
+        self.contactsManager.getDuplicatedContacts(of: cleanType) { contactsGroup in
+            self.updateContactsCleanSearchCount(groupType: cleanType, contactsGroup: contactsGroup)
+            U.delay(0.5) {
+                SingleSearchNitificationManager.instance.sendSingleSearchProgressNotification(notificationtype: cleanType.notificationType, totalProgressItems: 1, currentProgressItem: 1)
+                U.delay(0.5) {
+                    self.scanningProcessIsRunning = !self.scanningProcessIsRunning
+                    if contactsGroup.count != 0 {
+                        let group = contactsGroup.sorted(by: {$0.name < $1.name})
+                        self.showGroupedContactsViewController(contacts: group, group: cleanType, content:  cleanType.photoMediaType)
+                    } else {
+                        A.showEmptyContactsToPresent(of: cleanType.alertEmptyType) {}
+                    }
+                }
+            }
+        }
+    }
+    
+    private func updateContactsCleanSearchCount(groupType: ContactasCleaningType, contactsGroup: [ContactsGroup]) {
+        switch groupType {
+            case .duplicatedPhoneNumnber:
+                self.allDuplicatedPhoneNumbers = contactsGroup
+            case .duplicatedContactName:
+                self.allDuplicatedContacts = contactsGroup
+            case .duplicatedEmail:
+                self.allDuplicatedEmailAdresses = contactsGroup
+            default: return
+        }
+    }
+    
+    
+    @objc func handleChangeContactsContainers(_ notification: Notification) {
+        
+        contactsManager.getUpdatingContactsAfterContainerDidChange {
+            self.tableView.reloadData()
+        } allContacts: { contacts in
+            self.allContacts = contacts
+            self.updateValues(of: .allContacts)
+        } emptyContacts: { contactsGrop in
+            self.allEmptyContacts = contactsGrop
+            self.updateValues(of: .emptyContacts)
+        } duplicatedNames: { contactsGroup in
+            self.allDuplicatedContacts = contactsGroup
+            self.updateValues(of: .duplicatedContacts)
+        } duplicatedPhoneNumbers: { contactsGroup in
+            self.allDuplicatedPhoneNumbers = contactsGroup
+            self.updateValues(of: .duplicatedPhoneNumbers)
+        } duplicatedEmailGrops: { contactsGroup in
+            self.allDuplicatedEmailAdresses = contactsGroup
+            self.updateValues(of: .duplicatedEmails)
+        }
+    }
+}
+
+//      MARK: - handle progressUpdating cell content
+
+extension MediaContentViewController {
+    
+    @objc func handleContentProgressUpdateNotification(_ notification: Notification) {
+        
+        guard let userInfo = notification.userInfo else { return }
+        
+        switch notification.name {
+                
+                    /// `contacts`
+            case .singleSearchAllContactsScan:
+                recieveNotification(by: .allContacts, userInfo: userInfo)
+            case .singleSearchEmptyContactsScan:
+                recieveNotification(by: .emptyContacts, userInfo: userInfo)
+            case .singleSearchDuplicatesNamesContactsScan:
+                recieveNotification(by: .duplicatesNames, userInfo: userInfo)
+            case .singleSearchDuplicatesNumbersContactsScan:
+                recieveNotification(by: .duplicatesNumbers, userInfo: userInfo)
+            case .singleSearchDupliatesEmailsContactsScan:
+                recieveNotification(by: .duplicatesEmails, userInfo: userInfo)
+            default:
+                return
+        }
+    }
+    
+    private func recieveNotification(by type: SingleContentSearchNotificationType, userInfo: [AnyHashable: Any]) {
+        
+        guard let totalProcessingCount = userInfo[type.dictionaryCountName] as? Int,
+              let currentIndex = userInfo[type.dictioanartyIndexName] as? Int else { return }
+        
+        handleSearchProgress(by: type, files: currentIndex)
+        
+        calculateProgressPercentage(total: totalProcessingCount, current: currentIndex) { optionalTitle, progress in
+            U.UI {
+                self.progressUpdate(type, progrss: progress, title: optionalTitle)
+            }
+        }
+    }
+    
+    private func handleSearchProgress(by type: SingleContentSearchNotificationType, files count: Int) {
+        
+        switch type {
+                
+                    /// `Contacts:
+            case .allContacts:
+                totalSearchFindContactsCointIn[0] = count
+            case .emptyContacts:
+                totalSearchFindContactsCointIn[1] = count
+            case .duplicatesNames:
+                totalSearchFindContactsCointIn[2] = count
+            case .duplicatesNumbers:
+                totalSearchFindContactsCointIn[3] = count
+            case .duplicatesEmails:
+                totalSearchFindContactsCointIn[4] = count
+            default:
+                return
+        }
+    }
+    
+    private func calculateProgressPercentage(total: Int, current: Int, completionHandler: @escaping (String, CGFloat) -> Void) {
+        
+        let percentString: String = "%. f %%"
+        let totalPercent = CGFloat(Double(current) / Double(total))
+        let stringFormat = String(format: percentString, totalPercent)
+        completionHandler(stringFormat, totalPercent)
+    }
+    
+    private func progressUpdate(_ notificationType: SingleContentSearchNotificationType, progrss: CGFloat, title: String) {
+        
+        let indexPath = notificationType.mediaTypeRawValue.singleSearchIndexPath
+        self.currentProgressForMediaType[notificationType.mediaTypeRawValue] = progrss
+        
+        switch notificationType {
+            case .allContacts:
+                self.singleSearchContactsProgress[0] = progrss
+            case .emptyContacts:
+                self.singleSearchContactsProgress[1] = progrss
+            case .duplicatesNames:
+                self.singleSearchContactsProgress[2] = progrss
+            case .duplicatesNumbers:
+                self.singleSearchContactsProgress[3] = progrss
+            case .duplicatesEmails:
+                self.singleSearchContactsProgress[4] = progrss
+            default:
+                return
+        }
+        
+        guard !indexPath.isEmpty else { return }
+        guard let cell = tableView.cellForRow(at: indexPath) as? ContentTypeTableViewCell else { return }
+        
+        let isSearchStarted = progrss != 0 || progrss != 1.0
+        
+        self.configure(cell, at: indexPath, isSearchingStarted: isSearchStarted)
+    }
+    
+    private func updateValues(of type: PhotoMediaType) {
+        
+        let indexPath = type.singleSearchIndexPath
+        U.UI {
+            UIView.performWithoutAnimation {
+                self.tableView.reloadRows(at: [indexPath], with: .none)
+            }
+        }
+    }
+}
+
+
+extension MediaContentViewController: DateSelectebleViewDelegate {
+    
+    func didSelectStartingDate() {
+        
+        self.isStartingDateSelected = true
+        performSegue(withIdentifier: C.identifiers.segue.showDatePicker, sender: self)
+    }
+    
+    func didSelectEndingDate() {
+        
+        self.isStartingDateSelected = false
+        performSegue(withIdentifier: C.identifiers.segue.showDatePicker, sender: self)
+    }
+}
+
+extension MediaContentViewController: NavigationBarDelegate {
+    
+    func didTapLeftBarButton(_ sender: UIButton) {
+        self.navigationController?.popViewController(animated: true)
+    }
+    
+    func didTapRightBarButton(_ sender: UIButton) {}
+}
+
+
 extension MediaContentViewController: Themeble {
     
     private func setupUI() {
         
-        switch contentType {
-            case .userPhoto:
-                title = "title photo"
-            case .userVideo:
-                title = "title video"
-            case .userContacts:
-                title = "title contact"
-                dateSelectContainerHeigntConstraint.constant = 0
-                dateSelectContainerView.isHidden = true
-            case .none:
-                debugPrint("")
+        if mediaContentType == .userContacts {
+            dateSelectContainerHeigntConstraint.constant = 0
+            dateSelectContainerView.isHidden = true
         }
         
-        startingDateStackView.layoutMargins = UIEdgeInsets(top: 10, left: 0, bottom: 10, right: 0)
-        startingDateStackView.isLayoutMarginsRelativeArrangement = true
-        endingDateStackView.layoutMargins = UIEdgeInsets(top: 10, left: 0, bottom: 10, right: 0)
-        endingDateStackView.isLayoutMarginsRelativeArrangement = true
-    
-        startingDateButtonView.setCorner(12)
-        endingDateButtonView.setCorner(12)
+        dateSelectableView.frame = dateSelectContainerView.bounds
+        dateSelectContainerView.addSubview(dateSelectableView)
         
-        startingDateTitileTextLabel.text = "from"
-        endingDateTitleTextLabel.text = "to"
+        dateSelectableView.translatesAutoresizingMaskIntoConstraints = false
         
-        startingDateTextLabel.text = U.displayDate(from: startingDate)
-        endingDateTextLabel.text = U.displayDate(from: endingDate)
-        
-        startingDateTextLabel.font = .systemFont(ofSize: 15, weight: .regular)
-        endingDateTextLabel.font = .systemFont(ofSize: 15, weight: .regular)
-        startingDateTitileTextLabel.font = .systemFont(ofSize: 15, weight: .medium)
-        endingDateTextLabel.font = .systemFont(ofSize: 15, weight: .medium)
+        NSLayoutConstraint.activate([
+            dateSelectableView.leadingAnchor.constraint(equalTo: dateSelectContainerView.leadingAnchor),
+            dateSelectableView.trailingAnchor.constraint(equalTo: dateSelectContainerView.trailingAnchor),
+            dateSelectableView.bottomAnchor.constraint(equalTo: dateSelectContainerView.bottomAnchor),
+            dateSelectableView.topAnchor.constraint(equalTo: dateSelectContainerView.topAnchor)])
     }
     
     private func setupNavigation() {
-        self.navigationController?.updateNavigationColors()
-        self.navigationItem.backButtonTitle = ""
+        
+        self.navigationController?.navigationBar.isHidden = true
+        navigationBar.setupNavigation(title: mediaContentType.navigationTitle,
+                                      leftBarButtonImage: I.systemItems.navigationBarItems.back,
+                                      rightBarButtonImage: nil,
+                                      mediaType: mediaContentType,
+                                      leftButtonTitle: nil,
+                                      rightButtonTitle: nil)
+    }
+    
+        
+    private func setupDelegate() {
+        
+        self.dateSelectableView.delegate = self
+        self.navigationBar.delegate = self
+    }
+    
+    private func setupObserver(for contentType: MediaContentType) {
+        
+        switch contentType {
+            case .userPhoto:
+                debugPrint("")
+            case .userVideo:
+                debugPrint("")
+            case .userContacts:
+                    /// `contacts notification updates`
+                U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchAllContactsScan, object: nil)
+                U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchEmptyContactsScan, object: nil)
+                U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchDuplicatesNamesContactsScan, object: nil)
+                U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchDuplicatesNumbersContactsScan, object: nil)
+                U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchDupliatesEmailsContactsScan, object: nil)
+                U.notificationCenter.addObserver(self, selector: #selector(handleChangeContactsContainers(_:)), name: .CNContactStoreDidChange, object: nil)
+            case .none:
+                return
+        }
+    }
+    
+    
+    private func setupDateInterval() {
+        
+        self.dateSelectableView.setupDisplaysDate(startingDate: self.startingDate, endingDate: self.endingDate)
     }
     
     func updateColors() {
-        dateSelectContainerView.addBottomBorder(with: currentTheme.contentBackgroundColor, andWidth: 1)
-        startingDateButtonView.backgroundColor = currentTheme.contentBackgroundColor
-        endingDateButtonView.backgroundColor = currentTheme.contentBackgroundColor
         
-        startingDateTitileTextLabel.textColor = currentTheme.titleTextColor
-        endingDateTextLabel.textColor = currentTheme.titleTextColor
-        
-        startingDateTitileTextLabel.textColor = currentTheme.subTitleTextColor
-        endingDateTitleTextLabel.textColor = currentTheme.subTitleTextColor
+        self.view.backgroundColor = theme.backgroundColor
     }
     
     private func setupShowDatePickerSelectorController(segue: UIStoryboardSegue) {
         
-        if let segue = segue as? SwiftMessagesSegue {
-            segue.configure(layout: .bottomMessage)
-            segue.dimMode = .gray(interactive: false)
-            segue.interactiveHide = false
-            segue.messageView.configureNoDropShadow()
-            segue.messageView.backgroundHeight = Device.isSafeAreaiPhone ? 458 : 438
+        guard let segue = segue as? SwiftMessagesSegue else { return }
+        
+        segue.configure(layout: .bottomMessage)
+        segue.dimMode = .gray(interactive: false)
+        segue.interactiveHide = false
+        segue.messageView.configureNoDropShadow()
+        segue.messageView.backgroundHeight = Device.isSafeAreaiPhone ? 458 : 438
+        
+        if let dateSelectorController = segue.destination as? DateSelectorViewController {
+            dateSelectorController.isStartingDateSelected = self.isStartingDateSelected
+            dateSelectorController.setPicker(self.isStartingDateSelected ? self.startingDate : self.endingDate)
             
-            if let dateSelectorController = segue.destination as? DateSelectorViewController {
-                dateSelectorController.isStartingDateSelected = self.isStartingDateSelected
-                dateSelectorController.setPicker(self.isStartingDateSelected ? self.startingDate : self.endingDate)
-                
-                dateSelectorController.selectedDateCompletion = { selectedDate in
-                    if self.isStartingDateSelected {
-                        self.startingDate = selectedDate
-                        self.startingDateTextLabel.text = U.displayDate(from: selectedDate)
-                    } else {
-                        self.endingDate = selectedDate
-                        self.endingDateTextLabel.text = U.displayDate(from: selectedDate)
-                    }
-                }
+            dateSelectorController.selectedDateCompletion = { selectedDate in
+                self.isStartingDateSelected ? (self.startingDate = selectedDate) : (self.endingDate = selectedDate)
+                self.dateSelectableView.setupDisplaysDate(startingDate: self.startingDate, endingDate: self.endingDate)
             }
         }
     }

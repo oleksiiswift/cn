@@ -33,6 +33,19 @@ enum SortingDesriptionKey {
 class PHAssetFetchManager {
     
     static let shared = PHAssetFetchManager()
+
+    public func fetchTotalAssetsCount(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", completionHandler: @escaping (Int) -> Void) {
+        
+        let fetchOptions = PHFetchOptions()
+        fetchOptions.sortDescriptors = [NSSortDescriptor(key: SortingDesriptionKey.creationDate.value, ascending: false)]
+        fetchOptions.predicate = NSPredicate(format: "mediaType = %d || mediaType = %d", PHAssetMediaType.image.rawValue, PHAssetMediaType.video.rawValue, "\(SDKey.mediaType.value) = %d AND (\(SDKey.creationDate.value) >= %@) AND (\(SDKey.creationDate.value) <= %@)",
+                                                         startDate.NSDateConverter(format: C.dateFormat.fullDmy),
+                                                         endDate.NSDateConverter(format: C.dateFormat.fullDmy))
+        
+        let pholeAssets = PHAsset.fetchAssets(with: fetchOptions)
+        
+        completionHandler(pholeAssets.count)
+    }
     
     public func fetchFromGallery(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", collectiontype: PHAssetCollectionSubtype, by type: Int, completionHandler: @escaping ((_ result: PHFetchResult<PHAsset>) -> Void)) {
         let fetchOptions = PHFetchOptions()
@@ -141,7 +154,6 @@ extension PHAssetFetchManager {
     }
     
 //    MARK: - all assets size -
-    
     public func calculateAllAssetsSize(result: PHFetchResult<PHAsset>) -> Int64 {
         var allSize: Int64 = 0
 
@@ -177,6 +189,7 @@ extension PHAssetFetchManager {
         let assets = PHAsset.fetchAssets(with: fetchOption)
         
         assets.enumerateObjects { object, index, stopped in
+//            debugPrint("calculated space at index: ", index)
             if object.mediaType == .image {
                 allSpaceSize += object.imageSize
                 photoPhassetSpace += object.imageSize
@@ -187,7 +200,6 @@ extension PHAssetFetchManager {
         }
         completionHandler(photoPhassetSpace, videoPhassetSpace, allSpaceSize)
     }
-    
     
     public func assetSizeFromData(asset: PHAsset, completion: @escaping ((_ result: Int64) -> Void)) {
         var fileSize: Int64 = 0
@@ -223,7 +235,6 @@ extension PHAssetFetchManager {
     }
 }
             
-
 //  MARK: recentle deleted assets fetch methods
 extension PHAssetFetchManager {
  
@@ -284,10 +295,11 @@ extension PHAssetFetchManager {
             for photoAssetPosition in 1...photoResult.count {
                 photoAssets.append(photoResult[photoAssetPosition - 1])
             }
-            
-            for videoAssetPosion in 1...videoResult.count {
-                videoAssets.append(videoResult[videoAssetPosion - 1])
-            }
+          
+            #warning("EC-23")
+//            for videoAssetPosion in 1...videoResult.count {
+//                videoAssets.append(videoResult[videoAssetPosion - 1])
+//            }
             
             U.UI {
                 completionHandler(photoAssets, videoAssets)
@@ -308,8 +320,6 @@ extension PHAssetFetchManager {
         }
     }
 }
-
-
 
 extension PHAsset {
     
