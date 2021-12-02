@@ -10,6 +10,13 @@ import Photos
 import PhotosUI
 import SwiftMessages
 
+enum DeepCleaningState {
+	 case redyForStartingCleaning
+     case willStartCleaning
+     case didCleaning
+     case willAvailibleDelete
+}
+
 protocol DeepCleanSelectableAssetsDelegate: AnyObject {
      
      func didSelect(assetsListIds: [String], mediaType: PhotoMediaType)
@@ -17,20 +24,13 @@ protocol DeepCleanSelectableAssetsDelegate: AnyObject {
 
 class DeepCleaningViewController: UIViewController {
      
-     @IBOutlet weak var customNavBar: StartingNavigationBar!
-     
-     @IBOutlet weak var dateSelectContainerView: UIView!
+     @IBOutlet weak var navigationBar: NavigationBar!
+     @IBOutlet weak var bottomButtonView: BottomButtonBarView!
+     @IBOutlet weak var dateSelectPickerView: DateSelectebleView!
      @IBOutlet weak var tableView: UITableView!
-     @IBOutlet weak var bottomMenuView: UIView!
-     @IBOutlet weak var processingButtonView: UIView!
-     @IBOutlet weak var processingButtonTextLabel: UILabel!
      @IBOutlet weak var dateSelectContainerHeigntConstraint: NSLayoutConstraint!
      @IBOutlet weak var bottomContainerHeightConstraint: NSLayoutConstraint!
-     
-     var dateSelectableView = DateSelectebleView()
-     
-     lazy var processingButtonActivityIndicator = UIActivityIndicatorView(style: .medium)
-     
+
      /// managers∂
      private var deepCleanManager = DeepCleanManager()
      private var photoManager = PhotoManager()
@@ -39,13 +39,15 @@ class DeepCleaningViewController: UIViewController {
      weak var selectableAssetsDelegate: DeepCleanSelectableAssetsDelegate?
      
      /// properties
-     public var scansOptions: [PhotoMediaType]?
      
      private var bottomMenuHeight: CGFloat = 80
      private var processing: Bool = false
      private var isStartingDateSelected: Bool = false
-     private var deepCleanFirstRunProcessingIsStart: Bool = false
-     
+
+	 
+	 public var scansOptions: [PhotoMediaType]?
+     private var deepCleaningState: DeepCleaningState = .willStartCleaning
+
      private var startingDate: String {
           get {
                return S.startingSavedDate
@@ -87,14 +89,13 @@ class DeepCleaningViewController: UIViewController {
           super.viewDidLoad()
           
           setupUI()
-          setupProcessingActionButton()
+          setProcessingActionButton(.redyForStartingCleaning)
           setupNavigation()
           setupTableView()
           setupDateInterval()
           updateTotalFilesTitleChecked(0)
           setupObserversAndDelegate()
           updateColors()
-          setupProcessingButtonActivityIndicator()
      }
      
      override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -103,17 +104,6 @@ class DeepCleaningViewController: UIViewController {
                     self.setupShowDatePickerSelectorController(segue: segue)
                default:
                     break
-          }
-     }
-     
-     @IBAction func didTapProcessingActionButton(_ sender: Any) {
-          
-          if !deepCleanFirstRunProcessingIsStart {
-               deepCleanFirstRunProcessingIsStart = !deepCleanFirstRunProcessingIsStart
-               prepareButtonsStateStartingProcessing(activate: true)
-               prepareStartDeepCleanProcessing()
-          } else {
-               debugPrint("try delete assets -> ")
           }
      }
 }
@@ -127,18 +117,22 @@ extension DeepCleaningViewController {
                self.totalFilesOnDevice = allAssetsCount
                
                self.photoManager.getPartitionalMediaAssetsCount(from: self.startingDate, to: self.endingDate) { assetGroupPartitionCount in
+					self.setProcessingActionButton(.didCleaning)
                     self.totalPartitinAssetsCount = assetGroupPartitionCount
-                    self.checkStartCleaningButtonState(true)
                     self.startDeepCleanScan()
                }
           }
      }
+	 
+	 private func stopAllCleaningOperation() {
+		  
+	 }
      
      private func startDeepCleanScan() {
           
           guard let options = scansOptions else { return }
-          
-//          backBarButtonItem.isEnabled = false
+		  
+		  navigationBar.temporaryLockLeftButton(true)
           
           deepCleanManager.startDeepCleaningFetch(options, startingFetchingDate: startingDate, endingFetchingDate: endingDate) { mediaType in
                self.scansOptions = mediaType
@@ -215,13 +209,12 @@ extension DeepCleaningViewController {
                debugPrint(contactsGroup.count, contentType.rawValue)
                self.updateContactsProcessing(group: contactsGroup, contentType: contentType, contactsCount: contactsCount)
           } completionHandler: {
-               
                self.processing = false
-               
                U.UI {
-//                    self.backBarButtonItem.isEnabled = true
+					self.setProcessingActionButton(.willAvailibleDelete)
+					self.checkCleaningButtonState()
+					self.navigationBar.temporaryLockLeftButton(false)
                }
-               P.hideIndicator()
           }
           
           U.delay(1) {
@@ -239,25 +232,6 @@ extension DeepCleaningViewController {
           self.doneProcessingDeepCleanForMedia[contentType] = true
           self.contactsFlowGroups[contentType] = group
           self.updateCellInfoCount(by: .userContacts, contentType: contentType, assetsCount: contactsCount)
-     }
-     
-     private func checkStartCleaningButtonState(_ animate: Bool) {
-          
-          let selectedAssetsCount = selectedAssetsCollectionID.values.compactMap({$0}).flatMap({$0}).count
-          bottomContainerHeightConstraint.constant = selectedAssetsCount > 0 ? (bottomMenuHeight + U.bottomSafeAreaHeight - 5) : 0
-          self.tableView.contentInset.bottom = selectedAssetsCount > 0 ? 10 : 5
-          
-          if animate {
-               U.animate(0.5) {
-                    self.tableView.layoutIfNeeded()
-                    self.view.layoutIfNeeded()
-               }
-          } else {
-               U.UI {
-                    self.tableView.layoutIfNeeded()
-                    self.view.layoutIfNeeded()
-               }
-          }
      }
      
      private func updateAssetsFieldCount(at indexPath: IndexPath, assetsCount: Int) {
@@ -342,7 +316,7 @@ extension DeepCleaningViewController: DeepCleanSelectableAssetsDelegate {
                
                U.UI {
                     cell.setupCellSelected(at: mediaType.deepCleanIndexPath, isSelected: isSelected)
-                    self.checkStartCleaningButtonState(true)
+//                    self.checkStartCleaningButtonState(true)
                }
           }
      }
@@ -422,7 +396,6 @@ extension DeepCleaningViewController {
           switch type {
                case .similarPhoto:
                     self.totalDeepCleanFilesCountIn[0] = count
-                    
                case .duplicatePhoto:
                     self.totalDeepCleanFilesCountIn[1] = count
                case .screenshots:
@@ -505,10 +478,6 @@ extension DeepCleaningViewController {
                     self.totalDeepCleanProgress[10] = progress
                case .duplicatedEmails:
                     self.totalDeepCleanProgress[11] = progress
-          }
-          
-          if notificationType == .duplicatedEmails {
-               debugPrint("====>>>> \(progress)")
           }
           
           guard !indexPath.isEmpty else { return }
@@ -635,6 +604,8 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
           tableView.register(UINib(nibName: C.identifiers.xibs.contentTypeCell, bundle: nil), forCellReuseIdentifier: C.identifiers.cells.contentTypeCell)
           tableView.register(UINib(nibName: C.identifiers.xibs.cleanInfoCell, bundle: nil), forCellReuseIdentifier: C.identifiers.cells.cleanInfoCell)
           tableView.separatorStyle = .none
+          tableView.contentInset.top = 30
+          tableView.contentInset.bottom = 40
      }
      
      private func configure(_ cell: ContentTypeTableViewCell, at indexPath: IndexPath, currentProgress: CGFloat? = nil) {
@@ -713,7 +684,7 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
      }
      
      func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-          return indexPath.section == 0 ? 151 : 100//UITableView.automaticDimension
+          return indexPath.section == 0 ? 151 : 100
      }
      
      func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -750,25 +721,13 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
 extension DeepCleaningViewController {
      
      private func setupUI() {
-          
-          dateSelectableView.frame = dateSelectContainerView.bounds
-          dateSelectContainerView.addSubview(dateSelectableView)
-          
-          dateSelectableView.translatesAutoresizingMaskIntoConstraints = false
-          
-          dateSelectableView.leadingAnchor.constraint(equalTo: dateSelectContainerView.leadingAnchor).isActive = true
-          dateSelectableView.trailingAnchor.constraint(equalTo: dateSelectContainerView.trailingAnchor).isActive = true
-          dateSelectableView.bottomAnchor.constraint(equalTo: dateSelectContainerView.bottomAnchor).isActive = true
-          dateSelectableView.topAnchor.constraint(equalTo: dateSelectContainerView.topAnchor).isActive = true
-          
-          
-          processingButtonView.setCorner(14)
-          processingButtonTextLabel.font = UIFont(font: FontManager.robotoBlack, size: 16.0)
+     
+          dateSelectContainerHeigntConstraint.constant = 60
      }
      
      private func setupDateInterval() {
           
-          dateSelectableView.setupDisplaysDate(startingDate: self.startingDate, endingDate: self.endingDate)
+          dateSelectPickerView.setupDisplaysDate(startingDate: self.startingDate, endingDate: self.endingDate)
      }
      
      private func setupObserversAndDelegate() {
@@ -788,15 +747,23 @@ extension DeepCleaningViewController {
           U.notificationCenter.addObserver(self, selector: #selector(flowRoatingHandleNotification(_:)), name: .deepCleanDuplicatedPhoneNumbersScan, object: nil)
           U.notificationCenter.addObserver(self, selector: #selector(flowRoatingHandleNotification(_:)), name: .deepCleanDupLicatedMailsScan, object: nil)
           
-          dateSelectableView.delegate = self
+          dateSelectPickerView.delegate = self
+          bottomButtonView.delegate = self
           selectableAssetsDelegate = self
-          customNavBar.delegate = self
+          navigationBar.delegate = self
      }
      
      private func setupNavigation() {
           
           self.navigationController?.navigationBar.isHidden = true
-          customNavBar.setUpNavigation(title: "DEEP_CLEEN".localized(), leftImage: I.systemItems.navigationBarItems.back, rightImage: nil)
+          
+          navigationBar.setIsDropShadow = false
+          navigationBar.setupNavigation(title: "DEEP_CLEEN".localized(),
+                                        leftBarButtonImage: I.systemItems.navigationBarItems.back,
+                                        rightBarButtonImage: I.systemItems.navigationBarItems.magic,
+                                        mediaType: .none,
+                                        leftButtonTitle: nil,
+                                        rightButtonTitle: nil)
      }
      
      private func setupShowDatePickerSelectorController(segue: UIStoryboardSegue) {
@@ -815,50 +782,68 @@ extension DeepCleaningViewController {
                
                dateSelectorController.selectedDateCompletion = { selectedDate in
                     self.isStartingDateSelected ? (self.startingDate = selectedDate) : (self.endingDate = selectedDate)
-                    self.dateSelectableView.setupDisplaysDate(startingDate: self.startingDate, endingDate: self.endingDate)
+                    self.dateSelectPickerView.setupDisplaysDate(startingDate: self.startingDate, endingDate: self.endingDate)
                }
           }
      }
      
-     private func setupProcessingButtonActivityIndicator() {
-          
-          processingButtonActivityIndicator.isHidden = true
-          
-          processingButtonView.addSubview(processingButtonActivityIndicator)
-          processingButtonActivityIndicator.translatesAutoresizingMaskIntoConstraints = false
-          
-          NSLayoutConstraint.activate([
-               processingButtonActivityIndicator.centerXAnchor.constraint(equalTo: processingButtonView.centerXAnchor),
-               processingButtonActivityIndicator.centerYAnchor.constraint(equalTo: processingButtonView.centerYAnchor),
-               processingButtonActivityIndicator.widthAnchor.constraint(equalToConstant: 20),
-               processingButtonActivityIndicator.heightAnchor.constraint(equalToConstant: 20)
-          ])
+     private func setProcessingActionButton(_ state: DeepCleaningState) {
+		  
+		  deepCleaningState = state
+		  
+		  switch state {
+		  case .redyForStartingCleaning:
+			   bottomButtonView.setButtonProcess(false)
+			   bottomButtonView.setImage(I.systemItems.defaultItems.deepClean, with: CGSize(width: 24, height: 22))
+			   bottomButtonView.title("start cleaning".uppercased())
+		  case .willStartCleaning:
+			   bottomButtonView.setButtonProcess(true)
+		  case .didCleaning:
+			   bottomButtonView.setImage(I.systemItems.defaultItems.refreshFull, with: CGSize(width: 24, height: 22))
+			   bottomButtonView.title("stop".uppercased())
+			   bottomButtonView.setButtonProcess(false)
+		  case .willAvailibleDelete:
+			   bottomButtonView.title("delete".uppercased())
+			   bottomButtonView.setButtonProcess(false)
+			   bottomButtonView.setImage(I.systemItems.defaultItems.delete, with: CGSize(width: 18, height: 24))
+		  }
      }
-     
-     private func setupProcessingActionButton(_ isStartingDeepCleanProcess: Bool = true) {
-                    
-          if !deepCleanFirstRunProcessingIsStart {
-               bottomContainerHeightConstraint.constant = (bottomMenuHeight + U.bottomSafeAreaHeight - 5)
-               self.tableView.contentInset.bottom = 10
-          } else {
-               checkStartCleaningButtonState(false)
-          }
-          
-          if isStartingDeepCleanProcess {
+	 
+	 private func checkCleaningButtonState() {
+		  
+		  if deepCleaningState == .willAvailibleDelete {
+			   handleButtonStateActive()
+		  } else {
+			   
+		  }
+	 }
+	 
+	 private func handleButtonStateActive() {
+		  
+		  let selectedAssetsCount = selectedAssetsCollectionID.values.compactMap({$0}).flatMap({$0}).count
+		  bottomContainerHeightConstraint.constant = selectedAssetsCount > 0 ? (bottomMenuHeight + U.bottomSafeAreaHeight - 5) : 0
+		  self.tableView.contentInset.bottom = selectedAssetsCount > 0 ? 10 : 5
+		  
+		  U.animate(0.5) {
+			   self.tableView.layoutIfNeeded()
+			   self.view.layoutIfNeeded()
+		  }
+	 }
+}
 
-               processingButtonTextLabel.text = deepCleanFirstRunProcessingIsStart ? "RE_START_CLEANING".localized() : "START_CLEANING".localized()
-               
-          } else {
-               
-               processingButtonTextLabel.text = "delete"
-          }
-     }
+extension DeepCleaningViewController: BottomActionButtonDelegate {
      
-     private func prepareButtonsStateStartingProcessing(activate: Bool) {
+     func didTapActionButton() {
           
-          processingButtonTextLabel.isHidden = activate
-          activate ? processingButtonActivityIndicator.startAnimating() : processingButtonActivityIndicator.stopAnimating()
-          processingButtonActivityIndicator.isHidden = !activate
+		  if deepCleaningState == .redyForStartingCleaning {
+			   setProcessingActionButton(.willStartCleaning)
+			   prepareStartDeepCleanProcessing()
+		  } else  if deepCleaningState == .didCleaning {
+			   setProcessingActionButton(.redyForStartingCleaning)
+			   stopAllCleaningOperation()
+		  } else if deepCleaningState == .willAvailibleDelete {
+			   debugPrint("start delete")
+		  }
      }
 }
 
@@ -868,19 +853,22 @@ extension DeepCleaningViewController: Themeble {
           
           self.view.backgroundColor = theme.backgroundColor
           tableView.backgroundColor = .clear
-          bottomMenuView.backgroundColor = theme.backgroundColor
-          processingButtonView.backgroundColor = theme.customRedColor
-          processingButtonTextLabel.textColor = theme.activeTitleTextColor
-          processingButtonActivityIndicator.color = theme.backgroundColor
-          customNavBar.backgroundColor = theme.backgroundColor
+          bottomButtonView.backgroundColor = .clear
+          bottomButtonView.buttonColor = theme.customRedColor
+          bottomButtonView.buttonTintColor = theme.activeTitleTextColor
+          bottomButtonView.buttonTitleColor = theme.activeTitleTextColor
+          bottomButtonView.activityIndicatorColor = theme.backgroundColor
+          bottomButtonView.updateColorsSettings()
      }
 }
 
-extension DeepCleaningViewController: StartingNavigationBarDelegate {
+extension DeepCleaningViewController: NavigationBarDelegate {
      
-     func didTapLeftBarButton(_sender: UIButton) {
+     func didTapLeftBarButton(_ sender: UIButton) {
           self.navigationController?.popViewController(animated: true)
      }
      
-     func didTapRightBarButton(_sender: UIButton) {}
+     func didTapRightBarButton(_ sender: UIButton) {
+          debugPrint("show magic")
+     }
 }

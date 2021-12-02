@@ -18,13 +18,23 @@ class BottomButtonBarView: UIView {
     @IBOutlet weak var actionButton: BottomBarButtonItem!
     @IBOutlet weak var buttonHeightConstraint: NSLayoutConstraint!
     
+    private lazy var activityIndicatorView = UIActivityIndicatorView(style: .medium)
+    
     var delegate: BottomActionButtonDelegate?
     
     public var buttonColor: UIColor = .red
     public var buttonTintColor: UIColor = .white
     public var buttonTitleColor: UIColor?
+    public var activityIndicatorColor: UIColor = .white
     
     public var configureShadow: Bool = false
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        
+        self.configure()
+        self.actionButtonSetup()
+    }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -38,13 +48,6 @@ class BottomButtonBarView: UIView {
         self.commonInit()
     }
 
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        
-        self.configure()
-        self.actionButtonSetup()
-    }
-    
     private func commonInit() {
         
         U.mainBundle.loadNibNamed(C.identifiers.xibs.bottomButtonBarView, owner: self, options: nil)
@@ -57,74 +60,105 @@ class BottomButtonBarView: UIView {
         containerView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         
         self.backgroundColor = .clear
-        
+		self.activityIndicatorView.color = activityIndicatorColor
+		self.activityIndicatorView.isHidden = true
+		
         let buttonBackgroundColor: UIColor = configureShadow ? .clear : self.buttonColor
-        
         actionButton.configureAppearance(buttonColor: buttonBackgroundColor, tintColor: self.buttonTintColor)
     }
-    
+
     public func updateColorsSettings() {
         
         let buttonBackgroundColor: UIColor = configureShadow ? .clear : self.buttonColor
         
+        activityIndicatorView.color = activityIndicatorColor
         actionButton.configureAppearance(buttonColor: buttonBackgroundColor, tintColor: self.buttonTintColor)
         if let color = buttonTitleColor {
             actionButton.setTitleColor(color, for: .normal)
         }
     }
     
-    private func actionButtonSetup() {
-        
-        actionButton.addTarget(self, action: #selector(didTapActionButton), for: .touchUpInside)
+    public func setButtonProcess(_ isStarting: Bool) {
+		U.UI {
+			self.actionButton.processingButton(isStarting)
+			self.activityIndicatorView.isHidden = !isStarting
+			self.setActivityIndicator(isStarting)
+		}
     }
-    
-    public func title(_ title: String) {
-        actionButton.setTitle(title)
-    }
-    
-    public func setImage(_ image: UIImage) {
-        actionButton.setButtonImage(image: image)
-    }
-    
-    @objc func didTapActionButton() {
-        delegate?.didTapActionButton()
-    }
+	
+	private func setActivityIndicator(_ isStarting: Bool) {
+		
+		if isStarting {
+			self.addSubview(activityIndicatorView)
+			activityIndicatorView.isHidden = false
+			activityIndicatorView.translatesAutoresizingMaskIntoConstraints = false
+			activityIndicatorView.centerXAnchor.constraint(equalTo: actionButton.centerXAnchor).isActive = true
+			activityIndicatorView.centerYAnchor.constraint(equalTo: actionButton.centerYAnchor).isActive = true
+			activityIndicatorView.widthAnchor.constraint(equalToConstant: 20).isActive = true
+			activityIndicatorView.heightAnchor.constraint(equalToConstant: 20).isActive = true
+			activityIndicatorView.startAnimating()
+		} else {
+			activityIndicatorView.stopAnimating()
+			activityIndicatorView.removeFromSuperview()
+		}
+		activityIndicatorView.layoutIfNeeded()
+	}
+
+	private func actionButtonSetup() {
+		
+		actionButton.addTarget(self, action: #selector(didTapActionButton), for: .touchUpInside)
+	}
+	
+	public func title(_ title: String) {
+		actionButton.setTitle(title)
+	}
+	
+	public func setImage(_ image: UIImage, with size: CGSize = CGSize(width: 18, height: 22) ) {
+		actionButton.setButtonImage(image: image, size: size)
+	}
+	
+	@objc func didTapActionButton() {
+		delegate?.didTapActionButton()
+	}
 }
 
 //      MARK: -bottom action button -
-
-
 class BottomBarButtonItem: UIButton {
-    
-    public var imageSpacing: CGFloat = 26
-    public var imageSize: CGSize = CGSize(width: 18, height: 22)
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        
-        configure()
-    }
-    
-    private func configure() {
-        
-        self.setCorner(14)
-        self.titleLabel?.font = .systemFont(ofSize: 16.8, weight: .bold)
-    }
-    
-    public func configureAppearance(buttonColor: UIColor, tintColor: UIColor) {
-        self.backgroundColor = buttonColor
-        self.tintColor = tintColor
-    }
-
-    public func setTitle(_ newTitle: String) {
-        self.setTitleWithoutAnimation(title: newTitle)
-    }
-    
-    public func setButtonImage(image: UIImage) {
-        self.addLeftImageWithFixLeft(spacing: imageSpacing, size: imageSize, image: image)
-    }
+	
+	public var imageSpacing: CGFloat = 26
+	public var imageSize: CGSize = CGSize(width: 18, height: 22)
+	
+	override func layoutSubviews() {
+		super.layoutSubviews()
+		
+		configure()
+	}
+	
+	private func configure() {
+		
+		self.setCorner(14)
+		self.titleLabel?.font = .systemFont(ofSize: 16.8, weight: .bold)
+	}
+	
+	public func processingButton(_ isStart: Bool) {
+		
+		isStart ? self.setTitleColor(.clear, for: .normal) : self.setTitleColor(tintColor, for: .normal)
+		self.hideTemporaryImage(isStart)
+	}
+	
+	public func configureAppearance(buttonColor: UIColor, tintColor: UIColor) {
+		self.backgroundColor = buttonColor
+		self.tintColor = tintColor
+	}
+	
+	public func setTitle(_ newTitle: String) {
+		self.setTitleWithoutAnimation(title: newTitle)
+	}
+	
+	public func setButtonImage(image: UIImage, size: CGSize = CGSize(width: 18, height: 22)) {
+		self.addLeftImageWithFixLeft(spacing: imageSpacing, size: size, image: image)
+	}
 }
-
 
 extension BottomButtonBarView {
     
