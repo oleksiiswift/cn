@@ -141,3 +141,13 @@ extension SettingsManager {
         }
     }
 }
+extension SettingsManager {
+	
+	public static var isProcessingRunning: Bool {
+		get {
+			U.userDefaults.bool(forKey: "isProcessingRunning")
+		} set {
+			U.userDefaults.setValue(newValue, forKey: "isProcessingRunning")
+		}
+	}
+}

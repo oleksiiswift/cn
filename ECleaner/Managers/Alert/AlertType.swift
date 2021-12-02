@@ -27,6 +27,8 @@ enum AlertType {
     
     case noRecentlyDeletedPhotos
     case noRecentlyDeletedVideos
+	
+	case setBreakDeepCleanSearch
     
     case contactsIsEmpty
     case emptyContactsIsEmpty
@@ -108,7 +110,9 @@ enum AlertType {
                 return "good need locale"
             case .suxxessMergedContact, .suxxessMergedContacts:
                 return "good merged locale"
-        }
+			case .setBreakDeepCleanSearch:
+				return "stop search process?"
+		}
     }
     
     /// alert message
@@ -159,7 +163,9 @@ enum AlertType {
                 return "cintact suxx merged"
             case .suxxessMergedContacts:
                 return "contacts suxx merged"
-        }
+			case .setBreakDeepCleanSearch:
+				return "this will reset all search progress"
+		}
     }
     
 //    /// alert or action sheet
@@ -180,6 +186,8 @@ enum AlertType {
                 return false
             case .noLargeVideo, .noDuplicatesVideo, .noSimilarVideo, .noScreenRecording, .noRecentlyDeletedVideos:
                 return false
+			case .setBreakDeepCleanSearch:
+				return true
             case .contactsIsEmpty, .emptyContactsIsEmpty, .duplicatesNamesIsEmpty, .duplicatesNumbersIsEmpty, .duplicatesEmailsIsEmpty:
                 return false
             case .deleteContacts, .mergeContacts, .deleteContact, .mergeContact:
