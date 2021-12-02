@@ -74,6 +74,7 @@ extension UIButton {
     private func addImageWithFix(spacing: CGFloat, isLeft: Bool, imageWidth: CGFloat, imageHeight: CGFloat, image: UIImage) {
         
         let imageView = UIImageView(image: image)
+        imageView.tag = 66613
         imageView.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(imageView)
         
@@ -86,6 +87,13 @@ extension UIButton {
         imageView.centerYAnchor.constraint(equalTo: self.titleLabel!.centerYAnchor, constant: 0).isActive = true
         imageView.widthAnchor.constraint(equalToConstant: imageWidth).isActive = true
         imageView.heightAnchor.constraint(equalToConstant: imageHeight).isActive = true
+    }
+    
+    public func hideTemporaryImage(_ hide: Bool) {
+        
+        if let imageView = self.subviews.first(where: {$0.tag == 66613}) as? UIImageView {
+            imageView.isHidden = hide
+        }
     }
 }
 
