@@ -15,7 +15,7 @@ class Images {
     struct mainStaticItems {
         static let clean = UIImage(named: "clean")!
         static let photo = UIImage(named: "photo")!
-        static let video = UIImage(named: "video")!
+        static let video =  UIImage(named: "video")!
         static let contacts = UIImage(named: "contact")!
     }
     
@@ -28,6 +28,7 @@ class Images {
             static let premium = UIImage(named: "premium")!
             static let settings = UIImage(named: "settings")!
             static let burgerDots = UIImage(named: "burgerDots")!
+            static let magic = UIImage(named: "magicSparcle")!
         }
         
         struct selectItems {
@@ -41,6 +42,8 @@ class Images {
             static let merge = UIImage(named: "mergeArrowTop")!
             static let delete = UIImage(named: "deleteItem")!
             static let refresh = UIImage(named: "circleArrow")!
+            static let deepClean = UIImage(named: "deepClean")!
+            static let refreshFull = UIImage(named: "circleRoundedArrows")!
         }
         
         struct backroundStaticItems {

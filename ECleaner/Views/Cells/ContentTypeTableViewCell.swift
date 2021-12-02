@@ -161,7 +161,6 @@ extension ContentTypeTableViewCell: Themeble {
     
     func updateColors() {
         baseView.backgroundColor = .clear
-        
         reuseShadowRoundedView.setShadowColor(for: theme.topShadowColor, and: theme.bottomShadowColor)
         contentTypeTextLabel.textColor = theme.titleTextColor
         contentSubtitleTextLabel.textColor = theme.subTitleTextColor
