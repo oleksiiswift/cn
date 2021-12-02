@@ -150,6 +150,17 @@ class NavigationBar: UIView {
 }
 
 extension NavigationBar {
+	
+	public func temporaryLockLeftButton(_ isLock: Bool) {
+		leftBarButtonItem.isEnabled = !isLock
+	}
+	
+	public func temporaryLockRightButton(_ isLock: Bool) {
+		rightBarButtonItem.isEnabled = !isLock
+	}
+}
+
+extension NavigationBar {
     
     public func handleChangeRightButtonSelectState(selectAll: Bool) {
         

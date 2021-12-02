@@ -10,6 +10,13 @@ import Photos
 import PhotosUI
 import SwiftMessages
 
+enum DeepCleaningState {
+	 case redyForStartingCleaning
+     case willStartCleaning
+     case didCleaning
+     case willAvailibleDelete
+}
+
 protocol DeepCleanSelectableAssetsDelegate: AnyObject {
      
      func didSelect(assetsListIds: [String], mediaType: PhotoMediaType)
@@ -32,13 +39,15 @@ class DeepCleaningViewController: UIViewController {
      weak var selectableAssetsDelegate: DeepCleanSelectableAssetsDelegate?
      
      /// properties
-     public var scansOptions: [PhotoMediaType]?
      
      private var bottomMenuHeight: CGFloat = 80
      private var processing: Bool = false
      private var isStartingDateSelected: Bool = false
-     private var deepCleanFirstRunProcessingIsStart: Bool = false
-     
+
+	 
+	 public var scansOptions: [PhotoMediaType]?
+     private var deepCleaningState: DeepCleaningState = .willStartCleaning
+
      private var startingDate: String {
           get {
                return S.startingSavedDate
@@ -80,7 +89,7 @@ class DeepCleaningViewController: UIViewController {
           super.viewDidLoad()
           
           setupUI()
-          setupProcessingActionButton()
+          setProcessingActionButton(.redyForStartingCleaning)
           setupNavigation()
           setupTableView()
           setupDateInterval()
@@ -108,18 +117,22 @@ extension DeepCleaningViewController {
                self.totalFilesOnDevice = allAssetsCount
                
                self.photoManager.getPartitionalMediaAssetsCount(from: self.startingDate, to: self.endingDate) { assetGroupPartitionCount in
+					self.setProcessingActionButton(.didCleaning)
                     self.totalPartitinAssetsCount = assetGroupPartitionCount
-                    self.checkStartCleaningButtonState(true)
                     self.startDeepCleanScan()
                }
           }
      }
+	 
+	 private func stopAllCleaningOperation() {
+		  
+	 }
      
      private func startDeepCleanScan() {
           
           guard let options = scansOptions else { return }
-          
-//          backBarButtonItem.isEnabled = false
+		  
+		  navigationBar.temporaryLockLeftButton(true)
           
           deepCleanManager.startDeepCleaningFetch(options, startingFetchingDate: startingDate, endingFetchingDate: endingDate) { mediaType in
                self.scansOptions = mediaType
@@ -196,13 +209,12 @@ extension DeepCleaningViewController {
                debugPrint(contactsGroup.count, contentType.rawValue)
                self.updateContactsProcessing(group: contactsGroup, contentType: contentType, contactsCount: contactsCount)
           } completionHandler: {
-               
                self.processing = false
-               
                U.UI {
-//                    self.backBarButtonItem.isEnabled = true
+					self.setProcessingActionButton(.willAvailibleDelete)
+					self.checkCleaningButtonState()
+					self.navigationBar.temporaryLockLeftButton(false)
                }
-               P.hideIndicator()
           }
           
           U.delay(1) {
@@ -220,25 +232,6 @@ extension DeepCleaningViewController {
           self.doneProcessingDeepCleanForMedia[contentType] = true
           self.contactsFlowGroups[contentType] = group
           self.updateCellInfoCount(by: .userContacts, contentType: contentType, assetsCount: contactsCount)
-     }
-     
-     private func checkStartCleaningButtonState(_ animate: Bool) {
-          
-//          let selectedAssetsCount = selectedAssetsCollectionID.values.compactMap({$0}).flatMap({$0}).count
-//          bottomContainerHeightConstraint.constant = selectedAssetsCount > 0 ? (bottomMenuHeight + U.bottomSafeAreaHeight - 5) : 0
-//          self.tableView.contentInset.bottom = selectedAssetsCount > 0 ? 10 : 5
-          
-//          if animate {
-//               U.animate(0.5) {
-//                    self.tableView.layoutIfNeeded()
-//                    self.view.layoutIfNeeded()
-//               }
-//          } else {
-//               U.UI {
-//                    self.tableView.layoutIfNeeded()
-//                    self.view.layoutIfNeeded()
-//               }
-//          }
      }
      
      private func updateAssetsFieldCount(at indexPath: IndexPath, assetsCount: Int) {
@@ -323,7 +316,7 @@ extension DeepCleaningViewController: DeepCleanSelectableAssetsDelegate {
                
                U.UI {
                     cell.setupCellSelected(at: mediaType.deepCleanIndexPath, isSelected: isSelected)
-                    self.checkStartCleaningButtonState(true)
+//                    self.checkStartCleaningButtonState(true)
                }
           }
      }
@@ -403,7 +396,6 @@ extension DeepCleaningViewController {
           switch type {
                case .similarPhoto:
                     self.totalDeepCleanFilesCountIn[0] = count
-                    
                case .duplicatePhoto:
                     self.totalDeepCleanFilesCountIn[1] = count
                case .screenshots:
@@ -486,10 +478,6 @@ extension DeepCleaningViewController {
                     self.totalDeepCleanProgress[10] = progress
                case .duplicatedEmails:
                     self.totalDeepCleanProgress[11] = progress
-          }
-          
-          if notificationType == .duplicatedEmails {
-               debugPrint("====>>>> \(progress)")
           }
           
           guard !indexPath.isEmpty else { return }
@@ -735,8 +723,6 @@ extension DeepCleaningViewController {
      private func setupUI() {
      
           dateSelectContainerHeigntConstraint.constant = 60
-          bottomButtonView.setImage(I.systemItems.defaultItems.deepClean, with: CGSize(width: 24, height: 22))
-          bottomButtonView.title("start cleaning".uppercased())
      }
      
      private func setupDateInterval() {
@@ -800,42 +786,64 @@ extension DeepCleaningViewController {
                }
           }
      }
-          
-     private func setupProcessingActionButton(_ isStartingDeepCleanProcess: Bool = true) {
-                    
-//          if !deepCleanFirstRunProcessingIsStart {
-//               bottomContainerHeightConstraint.constant = (bottomMenuHeight + U.bottomSafeAreaHeight - 5)
-//               self.tableView.contentInset.bottom = 10
-//          } else {
-//               checkStartCleaningButtonState(false)
-//          }
-//          
-          if isStartingDeepCleanProcess {
-
-//               processingButtonTextLabel.text = deepCleanFirstRunProcessingIsStart ? "RE_START_CLEANING".localized() : "START_CLEANING".localized()
-               
-          } else {
-               
-//               processingButtonTextLabel.text = "delete"
-          }
-     }
      
-     private func prepareButtonsStateStartingProcessing(activate: Bool) {
-
-          bottomButtonView.setButtonProcess(activate)
+     private func setProcessingActionButton(_ state: DeepCleaningState) {
+		  
+		  deepCleaningState = state
+		  
+		  switch state {
+		  case .redyForStartingCleaning:
+			   bottomButtonView.setButtonProcess(false)
+			   bottomButtonView.setImage(I.systemItems.defaultItems.deepClean, with: CGSize(width: 24, height: 22))
+			   bottomButtonView.title("start cleaning".uppercased())
+		  case .willStartCleaning:
+			   bottomButtonView.setButtonProcess(true)
+		  case .didCleaning:
+			   bottomButtonView.setImage(I.systemItems.defaultItems.refreshFull, with: CGSize(width: 24, height: 22))
+			   bottomButtonView.title("stop".uppercased())
+			   bottomButtonView.setButtonProcess(false)
+		  case .willAvailibleDelete:
+			   bottomButtonView.title("delete".uppercased())
+			   bottomButtonView.setButtonProcess(false)
+			   bottomButtonView.setImage(I.systemItems.defaultItems.delete, with: CGSize(width: 18, height: 24))
+		  }
      }
+	 
+	 private func checkCleaningButtonState() {
+		  
+		  if deepCleaningState == .willAvailibleDelete {
+			   handleButtonStateActive()
+		  } else {
+			   
+		  }
+	 }
+	 
+	 private func handleButtonStateActive() {
+		  
+		  let selectedAssetsCount = selectedAssetsCollectionID.values.compactMap({$0}).flatMap({$0}).count
+		  bottomContainerHeightConstraint.constant = selectedAssetsCount > 0 ? (bottomMenuHeight + U.bottomSafeAreaHeight - 5) : 0
+		  self.tableView.contentInset.bottom = selectedAssetsCount > 0 ? 10 : 5
+		  
+		  U.animate(0.5) {
+			   self.tableView.layoutIfNeeded()
+			   self.view.layoutIfNeeded()
+		  }
+	 }
 }
 
 extension DeepCleaningViewController: BottomActionButtonDelegate {
      
      func didTapActionButton() {
-          if !deepCleanFirstRunProcessingIsStart {
-               deepCleanFirstRunProcessingIsStart = !deepCleanFirstRunProcessingIsStart
-               prepareButtonsStateStartingProcessing(activate: true)
-               prepareStartDeepCleanProcessing()
-          } else {
-               debugPrint("try delete assets -> ")
-          }
+          
+		  if deepCleaningState == .redyForStartingCleaning {
+			   setProcessingActionButton(.willStartCleaning)
+			   prepareStartDeepCleanProcessing()
+		  } else  if deepCleaningState == .didCleaning {
+			   setProcessingActionButton(.redyForStartingCleaning)
+			   stopAllCleaningOperation()
+		  } else if deepCleaningState == .willAvailibleDelete {
+			   debugPrint("start delete")
+		  }
      }
 }
 
