@@ -134,15 +134,16 @@ extension DeepCleaningViewController {
 	 
 	 private func stopAllCleaningOperation() {
 		  
-		  photoManager.setStopSearchProcessing()
-		  contactsManager.setStopSearchProcessing()
-		  resetAllValues()
-		  U.delay(1) {
-			   self.setProcessingActionButton(.redyForStartingCleaning)
-//			   self.contactsManager.setAvailibleSearchProcessing()
-			   self.photoManager.setAvailibleSearchProcessing()
-			   self.navigationBar.temporaryLockLeftButton(false)
-		  }
+		  deepCleanManager.cancelAllOperation()
+//		  photoManager.setStopSearchProcessing()
+//		  contactsManager.setStopSearchProcessing()
+//		  resetAllValues()
+//		  U.delay(1) {
+//			   self.setProcessingActionButton(.redyForStartingCleaning)
+//
+//			   self.photoManager.setAvailibleSearchProcessing()
+//			   self.navigationBar.temporaryLockLeftButton(false)
+//		  }
 	 }
 	 
 	 private func resetAllValues() {
@@ -167,7 +168,6 @@ extension DeepCleaningViewController {
           guard let options = scansOptions else { return }
 		  
 		  navigationBar.temporaryLockLeftButton(true)
-		  S.isProcessingRunning = true
           
           deepCleanManager.startDeepCleaningFetch(options, startingFetchingDate: startingDate, endingFetchingDate: endingDate) { mediaType in
                self.scansOptions = mediaType

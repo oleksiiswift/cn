@@ -61,9 +61,6 @@ class PhotoManager: NSObject {
     
     private var fetchManager = PHAssetFetchManager.shared
     private var progressNotificationManager = DeepCleanNotificationManager.instance
-	private var searchMediaTaskContinue: Bool {
-		return S.isProcessingRunning
-	}
     
     public override init() {
         super.init()
@@ -344,12 +341,7 @@ extension PhotoManager {
                     for index in 1...photosInGallery.count {
                         debugPrint("index preocessing duplicate")
                         debugPrint("index \(index)")
-						
-						guard self.searchMediaTaskContinue else {
-							completionHandler([])
-							return
-						}
-                        
+			
                         /// adding notification to handle progress similar photos processing
                         if isDeepCleanScan {
                             
@@ -372,12 +364,7 @@ extension PhotoManager {
                         var similarIndex = index + 1
                         if containsAdd.contains(index) { continue }
                         var similar: [PHAsset] = []
-						
-						guard self.searchMediaTaskContinue else {
-							completionHandler([])
-							return
-						}
-						
+				
                         if (similarIndex < similarPhotos.count && abs(similarPhotos[index].date - similarPhotos[similarIndex].date) <= 10) {
                             similar.append(similarPhotos[index].asset)
                             containsAdd.append(index)
@@ -434,12 +421,7 @@ extension PhotoManager {
                     for photoPos in 1...photoGallery.count {
                         debugPrint("loading duplicate")
                         debugPrint("photoposition \(photoPos)")
-						
-						guard self.searchMediaTaskContinue else {
-							completionHandler([])
-							return
-						}
-                        
+					
                         /// adding notification to handle progress similar photos processing
                         if isDeepCleanScan {
                             self.progressNotificationManager.sendDeepProgressNotificatin(notificationType: .duplicatePhoto,
@@ -485,11 +467,6 @@ extension PhotoManager {
                     for livePosition in 1...livePhotoGallery.count {
                         debugPrint("live photo position", livePosition)
 						
-						guard self.searchMediaTaskContinue else {
-							completionHandler([])
-							return
-						}
-                        
                         if isDeepCleanScan {
                             self.progressNotificationManager.sendDeepProgressNotificatin(notificationType: .similarLivePhoto,
                                                                                      totalProgressItems: livePhotoGallery.count,
@@ -541,12 +518,7 @@ extension PhotoManager {
             for currentPosition in 1...duplicatedIDS.count {
                 let duplicatedTuple = duplicatedIDS[currentPosition - 1]
                 var group: [PHAsset] = []
-				
-				guard !self.searchMediaTaskContinue else {
-					completionHandler([])
-					return
-				}
-                
+	
                 debugPrint("checkDuplicated")
                 debugPrint("position \(currentPosition)")
                 
@@ -690,12 +662,7 @@ extension PhotoManager {
                 }
                 
                 for screensPos in 1...screensShotsLibrary.count {
-					
-					guard self.searchMediaTaskContinue else {
-						completionHandler([])
-						return
-					}
-					
+				
                     screens.append(screensShotsLibrary[screensPos - 1])
                     if isDeepCleanScan {
                         debugPrint("screen shots index -> ", screensPos)
@@ -740,11 +707,6 @@ extension PhotoManager {
                 
                 for videosPosition in 1...videoContent.count {
 					
-					guard self.searchMediaTaskContinue else {
-						completionHandler([])
-						return
-					}
-					
                     if videoContent[videosPosition - 1].imageSize > 55000000 {
                         videos.append(videoContent[videosPosition - 1])
                     }
@@ -788,11 +750,6 @@ extension PhotoManager {
                 for videoPosition in 1...videoContent.count {
                     let asset = videoContent[videoPosition - 1]
                     assets.append(asset)
-					
-					guard self.searchMediaTaskContinue else {
-						completionHandler([])
-						return
-					}
                 }
                 
                 let similarVideoPhassetGroup = self.findDupes(assets: assets, strictness: .similar, isDeepCleanScan: isDeepCleanScan)
@@ -885,11 +842,6 @@ extension PhotoManager {
                 
                 for videosPosition in 1...videoAssets.count {
 					
-					guard self.searchMediaTaskContinue else {
-						completionHandler([])
-						return
-					}
-					
                     let asset = videoAssets[videosPosition - 1]
                         
                     if let assetResource = PHAssetResource.assetResources(for: asset).first {
@@ -928,12 +880,7 @@ extension PhotoManager {
             U.BG {
                 if videoCollection.count != 0 {
                     for index in 1...videoCollection.count {
-                        
-						guard self.searchMediaTaskContinue else {
-							completionHandler([])
-							return
-						}
-						
+			
                         if isDeepCleanScan {
                             self.progressNotificationManager.sendDeepProgressNotificatin(notificationType: .duplicateVideo,
                                                                                      totalProgressItems: videoCollection.count,
@@ -965,11 +912,6 @@ extension PhotoManager {
                     }
                     
                     for index in 1...duplicateVideoIDasTuples.count {
-						
-						guard self.searchMediaTaskContinue else {
-							completionHandler([])
-							return
-						}
 						
                         let tuple = duplicateVideoIDasTuples[index - 1]
                         var groupAssets: [PHAsset] = []
@@ -1104,13 +1046,11 @@ extension PhotoManager {
 extension PhotoManager {
 	
 	public func setAvailibleSearchProcessing() {
-//		self.searchMediaTaskContinue = true
+
 	}
 	
 	public func setStopSearchProcessing() {
-		S.isProcessingRunning = false
-		sleep(UInt32(1))
-		debugPrint(self.searchMediaTaskContinue)
+
 	}
 }
 

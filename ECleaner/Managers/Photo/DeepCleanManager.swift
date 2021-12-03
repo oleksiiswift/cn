@@ -13,7 +13,7 @@ class DeepCleanManager {
     private var photoManager = PhotoManager.manager
     private var contactManager = ContactsManager.shared
     
-    let deepCleanOperationQue = OperationPhotoProcessingQueuer(name: "Deep Clean Queuer", maxConcurrentOperationCount: 10, qualityOfService: .default)
+    let deepCleanOperationQue = OperationPhotoProcessingQueuer(name: "Deep Clean Queuer", maxConcurrentOperationCount: 1, qualityOfService: .default)
         
     public func startDeepCleaningFetch(_ optionMediaType: [PhotoMediaType], startingFetchingDate: String, endingFetchingDate: String,
                                        handler: @escaping ([PhotoMediaType]) -> Void,
@@ -192,6 +192,12 @@ class DeepCleanManager {
                 }
             }
         }
+		
+		let llop = ConcurrentProcessOperation {_ in
+			for i in 0...Int.max {
+				debugPrint(i)
+			}
+		}
         
         deepCleanOperationQue.addOperation(duplicatedPhotoFetchOperation)
         deepCleanOperationQue.addOperation(similarPhotoFetchOperation)
@@ -205,5 +211,10 @@ class DeepCleanManager {
         deepCleanOperationQue.addOperation(duplicatedContactsFetchOperation)
         deepCleanOperationQue.addOperation(duplicatedPhoneNumbersContactsFetchOperation)
         deepCleanOperationQue.addOperation(duplicatedEmailContactsFetchOperation)
+		deepCleanOperationQue.addOperation(llop)
     }
+	
+	public func cancelAllOperation() {
+		deepCleanOperationQue.cancelAll()
+	}
 }
