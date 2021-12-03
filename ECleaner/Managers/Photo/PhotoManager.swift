@@ -52,8 +52,8 @@ class PhotoManager: NSObject {
     private static let shared = PhotoManager()
     
     var assetCollection: PHAssetCollection?
-    
-    let operationConcurrentQueue = OperationPhotoProcessingQueuer(name: "photoGrabber", maxConcurrentOperationCount: 4, qualityOfService: .default)
+	
+    let operationConcurrentQueue = OperationProcessingQueuer(name: "photoGrabber", maxConcurrentOperationCount: 4, qualityOfService: .default)
     
     static var manager: PhotoManager {
         return self.shared

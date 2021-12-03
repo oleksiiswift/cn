@@ -15,6 +15,7 @@ enum ContactasCleaningType {
     case wholeEmpty
     case none
     
+	case emptyContacts
     case duplicatedPhoneNumnber
     case duplicatedContactName
     case duplicatedEmail

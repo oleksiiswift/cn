@@ -38,7 +38,7 @@ extension AppDelegate {
         PhotoManager().getPhotoLibraryAccess()
         ContactsManager.shared.checkStatus { res in }
         
-//        ContactsManager.shared.deleteAllContacts()
+//        ContactsManagerOLD.shared.deleteAllContacts()
 //        U.delay(10) {
 //            NotificationCenter.default.addObserver(forName: nil, object: nil, queue: nil) { notification in
 //                debugPrint(notification)

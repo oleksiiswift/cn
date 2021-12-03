@@ -29,6 +29,29 @@ class ErrorHandler {
         case errorLoadContacts
         case errorCreateExportFile
     }
+	
+	enum AccessRestrictedError {
+		case contactsRestrictedError
+		case photoLibraryRestrictedError
+		
+		var title: String {
+			switch self {
+				case .contactsRestrictedError:
+					return "permission denied"
+				case .photoLibraryRestrictedError:
+					return "permission denied"
+			}
+		}
+		
+		var errorRawValue: String {
+			switch self {
+				case .contactsRestrictedError:
+					return "\(U.appName) does not have access to contacts. Please, allow the application to access to your contacts."
+				case .photoLibraryRestrictedError:
+					return "\(U.appName) does not have access to photo library. Please, allow the application to access to your photo library."
+			}
+		}
+	}
     
     
     private func deleteErrorForKey(_ error: DeleteError) -> String {

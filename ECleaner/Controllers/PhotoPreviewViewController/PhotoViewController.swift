@@ -14,7 +14,7 @@ class PhotoViewController: UIViewController, PhassetPreviewPageProtocol {
     public var delegate: PhassetPreviewPageDelegate?
     
     /// managers
-    public var fetchingAssetsQueue: AssetsOperationQueue?
+    public var fetchingAssetsQueue: OperationServiceQueue?
     
     /// elementh
     var image: UIImage?
@@ -38,7 +38,7 @@ class PhotoViewController: UIViewController, PhassetPreviewPageProtocol {
     public var index: Int
     public var itemCount: Int
     
-    public init(index: Int, itemCount: Int, asset: PHAsset, fetchingQueue: AssetsOperationQueue) {
+    public init(index: Int, itemCount: Int, asset: PHAsset, fetchingQueue: OperationServiceQueue) {
         
         self.index = index
         self.itemCount = itemCount

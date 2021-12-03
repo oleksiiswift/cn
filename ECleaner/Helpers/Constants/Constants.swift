@@ -81,6 +81,26 @@ class Constants {
             static let mergeContactsSelectionDidChange = "mergeContactsSelectionDidChange"
             static let selectedContactsDidChange = "selectedContactsDidChange"
         }
+		
+		struct operation {
+			
+			struct queue {
+				static let contacts = "contactsCleanSearchOperationQueuer"
+				static let phassets = "phassetsCleanSearchOperationQueuer"
+			}
+			
+			struct name {
+				static let updateContectContacts = "updateBaseContactsOperation"
+				static let mergeContacts = "mergeContactsOperation"
+				static let deleteContacts = "deleteContactsOperation"
+				
+				static let emptyContacts = "emptyContactsOperation"
+				static let duplicatedContacts = "duplicatedContactsOperation"
+				static let phoneDuplicated = "phoneDuplicatedOperation"
+				static let emailDuplicated = "emailDuplicatedOperation"
+			}
+		
+		}
         
 //        MARK: - notification dictionary progress identifiers -
         /**

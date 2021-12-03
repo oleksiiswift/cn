@@ -65,8 +65,7 @@ class MediaContentViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.contactsManager.setProcess(.search, state: .availible) /// set update of contacts availible
-            
+		self.contactsManager.setProcess(.search, state: .availible)
         checkForAssetsCount()
         setupUI()
         setupDateInterval()
@@ -490,7 +489,7 @@ extension MediaContentViewController {
     
     private func showEmptyGroupsContacts() {
         P.showIndicator()
-        self.contactsManager.getEmptyContacts { contactsGroup in
+		self.contactsManager.getSingleDuplicatedCleaningContacts(of: .emptyContacts) { contactsGroup in
             U.UI {
                 P.hideIndicator()
                 let totalContacts = contactsGroup.map({$0.contacts}).count
@@ -508,7 +507,7 @@ extension MediaContentViewController {
     private func showContactCleanController(cleanType: ContactasCleaningType) {
         self.scanningProcessIsRunning = !scanningProcessIsRunning
         
-        self.contactsManager.getDuplicatedContacts(of: cleanType) { contactsGroup in
+		self.contactsManager.getSingleDuplicatedCleaningContacts(of: cleanType) { contactsGroup in
             self.updateContactsCleanSearchCount(groupType: cleanType, contactsGroup: contactsGroup)
             U.delay(0.5) {
                 SingleSearchNitificationManager.instance.sendSingleSearchProgressNotification(notificationtype: cleanType.notificationType, totalProgressItems: 1, currentProgressItem: 1)

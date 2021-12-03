@@ -13,7 +13,7 @@ class DeepCleanManager {
     private var photoManager = PhotoManager.manager
     private var contactManager = ContactsManager.shared
     
-    let deepCleanOperationQue = OperationPhotoProcessingQueuer(name: "Deep Clean Queuer", maxConcurrentOperationCount: 1, qualityOfService: .default)
+    let deepCleanOperationQue = OperationProcessingQueuer(name: "Deep Clean Queuer", maxConcurrentOperationCount: 1, qualityOfService: .default)
         
     public func startDeepCleaningFetch(_ optionMediaType: [PhotoMediaType], startingFetchingDate: String, endingFetchingDate: String,
                                        handler: @escaping ([PhotoMediaType]) -> Void,
@@ -146,58 +146,54 @@ class DeepCleanManager {
         }
 
 //        MARK: - mark fetch contacts -
-        let emptyContactsFetchOperation = ConcurrentProcessOperation { _ in
-            debugPrint("start fetch empty Contacts")
-            self.contactManager.deepCleanEmptySearchContacts { contactsGroup in
-                emptyContacts(contactsGroup)
-                totalResultCount += 1
-                if totalResultCount == 12 {
-                    completionHandler()
-                }
-            }
-        }
-        
-//        MARK: - duplicated contacts -
-        let duplicatedContactsFetchOperation = ConcurrentProcessOperation { _ in
-            debugPrint("start fetch duplicated contacts Contacts")
-            self.contactManager.deepCleanDuplicatedContactsSearchContacts { contactsGroup in
-                duplicatedContats(contactsGroup)
-                totalResultCount += 1
-                if totalResultCount == 12 {
-                    completionHandler()
-                }
-            }
-        }
-
-//        MARK: - duplicated phone numbers contacts -
-        let duplicatedPhoneNumbersContactsFetchOperation = ConcurrentProcessOperation { _ in
-            debugPrint("start fetch phonenumbers duplicated Contacts")
-            self.contactManager.deepCleanDuplicatedPhoneNumbersSearchContacts { contacstsGroup in
-                duplicatedPhoneNumbers(contacstsGroup)
-                totalResultCount += 1
-                if totalResultCount == 12 {
-                    completionHandler()
-                }
-            }
-        }
-
-//        MARK: - duplicated email contact s-
-        let duplicatedEmailContactsFetchOperation = ConcurrentProcessOperation { _ in
-            debugPrint("start fetch emails duplicated Contacts")
-            self.contactManager.deepCleanDuplicatedEmailsSearchSearchContacts { contacstsGroup in
-                duplicatedEmails(contacstsGroup)
-                totalResultCount += 1
-                if totalResultCount == 12 {
-                    completionHandler()
-                }
-            }
-        }
+//        let emptyContactsFetchOperation = ConcurrentProcessOperation { _ in
+//            debugPrint("start fetch empty Contacts")
+//            self.contactManager.deepCleanEmptySearchContacts { contactsGroup in
+//                emptyContacts(contactsGroup)
+//                totalResultCount += 1
+//                if totalResultCount == 12 {
+//                    completionHandler()
+//                }
+//            }
+//        }
+//
+////        MARK: - duplicated contacts -
+//        let duplicatedContactsFetchOperation = ConcurrentProcessOperation { _ in
+//            debugPrint("start fetch duplicated contacts Contacts")
+//            self.contactManager.deepCleanDuplicatedContactsSearchContacts { contactsGroup in
+//                duplicatedContats(contactsGroup)
+//                totalResultCount += 1
+//                if totalResultCount == 12 {
+//                    completionHandler()
+//                }
+//            }
+//        }
+//
+////        MARK: - duplicated phone numbers contacts -
+//        let duplicatedPhoneNumbersContactsFetchOperation = ConcurrentProcessOperation { _ in
+//            debugPrint("start fetch phonenumbers duplicated Contacts")
+//            self.contactManager.deepCleanDuplicatedPhoneNumbersSearchContacts { contacstsGroup in
+//                duplicatedPhoneNumbers(contacstsGroup)
+//                totalResultCount += 1
+//                if totalResultCount == 12 {
+//                    completionHandler()
+//                }
+//            }
+//        }
+//
+////        MARK: - duplicated email contact s-
+//        let duplicatedEmailContactsFetchOperation = ConcurrentProcessOperation { _ in
+//            debugPrint("start fetch emails duplicated Contacts")
+//            self.contactManager.deepCleanDuplicatedEmailsSearchSearchContacts { contacstsGroup in
+//                duplicatedEmails(contacstsGroup)
+//                totalResultCount += 1
+//                if totalResultCount == 12 {
+//                    completionHandler()
+//                }
+//            }
+//        }
 		
-		let llop = ConcurrentProcessOperation {_ in
-			for i in 0...Int.max {
-				debugPrint(i)
-			}
-		}
+
         
         deepCleanOperationQue.addOperation(duplicatedPhotoFetchOperation)
         deepCleanOperationQue.addOperation(similarPhotoFetchOperation)
@@ -207,11 +203,10 @@ class DeepCleanManager {
         deepCleanOperationQue.addOperation(screenRecordingsFethcOperation)
         deepCleanOperationQue.addOperation(screenshotsFetchOperation)
         deepCleanOperationQue.addOperation(similarLivePhotoFetchOperation)
-        deepCleanOperationQue.addOperation(emptyContactsFetchOperation)
-        deepCleanOperationQue.addOperation(duplicatedContactsFetchOperation)
-        deepCleanOperationQue.addOperation(duplicatedPhoneNumbersContactsFetchOperation)
-        deepCleanOperationQue.addOperation(duplicatedEmailContactsFetchOperation)
-		deepCleanOperationQue.addOperation(llop)
+//        deepCleanOperationQue.addOperation(emptyContactsFetchOperation)
+//        deepCleanOperationQue.addOperation(duplicatedContactsFetchOperation)
+//        deepCleanOperationQue.addOperation(duplicatedPhoneNumbersContactsFetchOperation)
+//        deepCleanOperationQue.addOperation(duplicatedEmailContactsFetchOperation)
     }
 	
 	public func cancelAllOperation() {
