@@ -158,3 +158,16 @@ extension AlertManager {
         }
     }
 }
+
+//		MARK: - stop search alerts -
+extension AlertManager {
+	
+	static func showStopDeepCleanSearchProcess(_ completion: @escaping () -> Void) {
+		
+		let stopDeepCleanAlertAction = UIAlertAction(title: "ok", style: .default) { _ in
+			completion()
+		}
+		
+		showAlert(type: .setBreakDeepCleanSearch, actions: [stopDeepCleanAlertAction], withCancel: true, cancelCompletion: nil)
+	}
+}

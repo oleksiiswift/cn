@@ -341,7 +341,7 @@ extension PhotoManager {
                     for index in 1...photosInGallery.count {
                         debugPrint("index preocessing duplicate")
                         debugPrint("index \(index)")
-                        
+			
                         /// adding notification to handle progress similar photos processing
                         if isDeepCleanScan {
                             
@@ -364,7 +364,7 @@ extension PhotoManager {
                         var similarIndex = index + 1
                         if containsAdd.contains(index) { continue }
                         var similar: [PHAsset] = []
-                        
+				
                         if (similarIndex < similarPhotos.count && abs(similarPhotos[index].date - similarPhotos[similarIndex].date) <= 10) {
                             similar.append(similarPhotos[index].asset)
                             containsAdd.append(index)
@@ -421,7 +421,7 @@ extension PhotoManager {
                     for photoPos in 1...photoGallery.count {
                         debugPrint("loading duplicate")
                         debugPrint("photoposition \(photoPos)")
-                        
+					
                         /// adding notification to handle progress similar photos processing
                         if isDeepCleanScan {
                             self.progressNotificationManager.sendDeepProgressNotificatin(notificationType: .duplicatePhoto,
@@ -466,7 +466,7 @@ extension PhotoManager {
                 if livePhotoGallery.count != 0 {
                     for livePosition in 1...livePhotoGallery.count {
                         debugPrint("live photo position", livePosition)
-                        
+						
                         if isDeepCleanScan {
                             self.progressNotificationManager.sendDeepProgressNotificatin(notificationType: .similarLivePhoto,
                                                                                      totalProgressItems: livePhotoGallery.count,
@@ -518,7 +518,7 @@ extension PhotoManager {
             for currentPosition in 1...duplicatedIDS.count {
                 let duplicatedTuple = duplicatedIDS[currentPosition - 1]
                 var group: [PHAsset] = []
-                
+	
                 debugPrint("checkDuplicated")
                 debugPrint("position \(currentPosition)")
                 
@@ -662,6 +662,7 @@ extension PhotoManager {
                 }
                 
                 for screensPos in 1...screensShotsLibrary.count {
+				
                     screens.append(screensShotsLibrary[screensPos - 1])
                     if isDeepCleanScan {
                         debugPrint("screen shots index -> ", screensPos)
@@ -705,9 +706,8 @@ extension PhotoManager {
                 }
                 
                 for videosPosition in 1...videoContent.count {
-                    #warning("TODO: set videos sizes smaller")
-//                    debugPrint("large video processing at index: ", videosPosition)
-                    if videoContent[videosPosition - 1].imageSize > 15000000 { //550000000 
+					
+                    if videoContent[videosPosition - 1].imageSize > 55000000 {
                         videos.append(videoContent[videosPosition - 1])
                     }
                     
@@ -717,6 +717,7 @@ extension PhotoManager {
                                                                                  currentProgressItem: videosPosition)
                     }
                 }
+				
                 if !isDeepCleanScan {
                     U.UI {
                         completionHandler(videos)
@@ -840,6 +841,7 @@ extension PhotoManager {
                 }
                 
                 for videosPosition in 1...videoAssets.count {
+					
                     let asset = videoAssets[videosPosition - 1]
                         
                     if let assetResource = PHAssetResource.assetResources(for: asset).first {
@@ -878,7 +880,7 @@ extension PhotoManager {
             U.BG {
                 if videoCollection.count != 0 {
                     for index in 1...videoCollection.count {
-                        
+			
                         if isDeepCleanScan {
                             self.progressNotificationManager.sendDeepProgressNotificatin(notificationType: .duplicateVideo,
                                                                                      totalProgressItems: videoCollection.count,
@@ -910,6 +912,7 @@ extension PhotoManager {
                     }
                     
                     for index in 1...duplicateVideoIDasTuples.count {
+						
                         let tuple = duplicateVideoIDasTuples[index - 1]
                         var groupAssets: [PHAsset] = []
                         if let first = tuple.first as String?, let second = tuple.second as String? {
@@ -1038,6 +1041,17 @@ extension PhotoManager {
         }
         return phassetGroup
     }
+}
+
+extension PhotoManager {
+	
+	public func setAvailibleSearchProcessing() {
+
+	}
+	
+	public func setStopSearchProcessing() {
+
+	}
 }
 
 //      MARK: - delete selected assets -

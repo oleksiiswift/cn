@@ -34,6 +34,7 @@ class DeepCleaningViewController: UIViewController {
      /// managers∂
      private var deepCleanManager = DeepCleanManager()
      private var photoManager = PhotoManager()
+	 private var contactsManager = ContactsManager.shared
      
      /// protocols and delegates
      weak var selectableAssetsDelegate: DeepCleanSelectableAssetsDelegate?
@@ -124,8 +125,42 @@ extension DeepCleaningViewController {
           }
      }
 	 
+	 private func showStopDeepCleanScanAlert() {
+		  
+		  A.showStopDeepCleanSearchProcess {
+			   self.stopAllCleaningOperation()
+		  }
+	 }
+	 
 	 private func stopAllCleaningOperation() {
 		  
+		  deepCleanManager.cancelAllOperation()
+//		  photoManager.setStopSearchProcessing()
+//		  contactsManager.setStopSearchProcessing()
+//		  resetAllValues()
+//		  U.delay(1) {
+//			   self.setProcessingActionButton(.redyForStartingCleaning)
+//
+//			   self.photoManager.setAvailibleSearchProcessing()
+//			   self.navigationBar.temporaryLockLeftButton(false)
+//		  }
+	 }
+	 
+	 private func resetAllValues() {
+		  
+		  totalFilesOnDevice = 0
+		  totalFilesChecked = 0
+		  totalPercentageCalculated = 0
+		  totalPartitinAssetsCount = [:]
+		  totalDeepCleanProgress = [0,0,0,0,0,0,0,0,0,0,0,0]
+		  totalDeepCleanFilesCountIn = [0,0,0,0,0,0,0,0,0,0,0,0]
+		  handleSelectedAssetsForRowMediatype = [:]
+		  doneProcessingDeepCleanForMedia = [:]
+		  currentProgressForRawMediatype = [:]
+		  photoVideoFlowGroup = [:]
+		  contactsFlowGroups = [:]
+		  
+		  self.tableView.reloadData()
 	 }
      
      private func startDeepCleanScan() {
@@ -316,7 +351,7 @@ extension DeepCleaningViewController: DeepCleanSelectableAssetsDelegate {
                
                U.UI {
                     cell.setupCellSelected(at: mediaType.deepCleanIndexPath, isSelected: isSelected)
-//                    self.checkStartCleaningButtonState(true)
+					self.checkCleaningButtonState()
                }
           }
      }
@@ -790,22 +825,23 @@ extension DeepCleaningViewController {
      private func setProcessingActionButton(_ state: DeepCleaningState) {
 		  
 		  deepCleaningState = state
-		  
-		  switch state {
-		  case .redyForStartingCleaning:
-			   bottomButtonView.setButtonProcess(false)
-			   bottomButtonView.setImage(I.systemItems.defaultItems.deepClean, with: CGSize(width: 24, height: 22))
-			   bottomButtonView.title("start cleaning".uppercased())
-		  case .willStartCleaning:
-			   bottomButtonView.setButtonProcess(true)
-		  case .didCleaning:
-			   bottomButtonView.setImage(I.systemItems.defaultItems.refreshFull, with: CGSize(width: 24, height: 22))
-			   bottomButtonView.title("stop".uppercased())
-			   bottomButtonView.setButtonProcess(false)
-		  case .willAvailibleDelete:
-			   bottomButtonView.title("delete".uppercased())
-			   bottomButtonView.setButtonProcess(false)
-			   bottomButtonView.setImage(I.systemItems.defaultItems.delete, with: CGSize(width: 18, height: 24))
+		  U.UI {
+			   switch state {
+					case .redyForStartingCleaning:
+						 self.bottomButtonView.setButtonProcess(false)
+						 self.bottomButtonView.setImage(I.systemItems.defaultItems.deepClean, with: CGSize(width: 24, height: 22))
+						 self.bottomButtonView.title("start cleaning".uppercased())
+					case .willStartCleaning:
+						 self.bottomButtonView.setButtonProcess(true)
+					case .didCleaning:
+						 self.bottomButtonView.setImage(I.systemItems.defaultItems.refreshFull, with: CGSize(width: 24, height: 22))
+						 self.bottomButtonView.title("stop".uppercased())
+						 self.bottomButtonView.setButtonProcess(false)
+					case .willAvailibleDelete:
+						 self.bottomButtonView.title("delete".uppercased())
+						 self.bottomButtonView.setButtonProcess(false)
+						 self.bottomButtonView.setImage(I.systemItems.defaultItems.delete, with: CGSize(width: 18, height: 24))
+			   }
 		  }
      }
 	 
@@ -839,8 +875,8 @@ extension DeepCleaningViewController: BottomActionButtonDelegate {
 			   setProcessingActionButton(.willStartCleaning)
 			   prepareStartDeepCleanProcessing()
 		  } else  if deepCleaningState == .didCleaning {
-			   setProcessingActionButton(.redyForStartingCleaning)
-			   stopAllCleaningOperation()
+			   self.showStopDeepCleanScanAlert()
+			   
 		  } else if deepCleaningState == .willAvailibleDelete {
 			   debugPrint("start delete")
 		  }
