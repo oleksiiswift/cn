@@ -1,13 +1,12 @@
 //
-//  SingleSearchNotificationManager.swift
+//  SingleContentSearchNotificationType.swift
 //  ECleaner
 //
-//  Created by alexey sorochan on 24.11.2021.
+//  Created by alexey sorochan on 04.12.2021.
 //
 
 import Foundation
 
-    
 enum SingleContentSearchNotificationType {
 	
 	/// `photo search`
@@ -24,19 +23,19 @@ enum SingleContentSearchNotificationType {
 	case similarVideo
 	case screenRecordings
 	case recentlyDeletedVideo
-    
-    ///  `contacts search`
-    case allContacts
-    case emptyContacts
-    case duplicatesNames
-    case duplicatesNumbers
-    case duplicatesEmails
-    
-    case none
-    
-    var dictionaryCountName: String {
-        
-        switch self {
+	
+	///  `contacts search`
+	case allContacts
+	case emptyContacts
+	case duplicatesNames
+	case duplicatesNumbers
+	case duplicatesEmails
+	
+	case none
+	
+	var dictionaryCountName: String {
+		
+		switch self {
 				/// `photo`
 			case .similarPhoto:
 				return C.key.notificationDictionary.count.similarPhotoCount
@@ -62,23 +61,23 @@ enum SingleContentSearchNotificationType {
 			case .recentlyDeletedVideo:
 				return C.key.notificationDictionary.count.recentlyDeletedVideoCount
 				/// `contacts`
-            case .allContacts:
-                return C.key.notificationDictionary.count.allContactsCount
-            case .emptyContacts:
-                return C.key.notificationDictionary.count.emptyContactsCount
-            case .duplicatesNames:
-                return C.key.notificationDictionary.count.duplicateNamesContactsCount
-            case .duplicatesNumbers:
-                return C.key.notificationDictionary.count.duplicateNumbersContactsCount
-            case .duplicatesEmails:
-                return C.key.notificationDictionary.count.duplicateEmailsContactsCount
-            case .none:
-                return ""
+			case .allContacts:
+				return C.key.notificationDictionary.count.allContactsCount
+			case .emptyContacts:
+				return C.key.notificationDictionary.count.emptyContactsCount
+			case .duplicatesNames:
+				return C.key.notificationDictionary.count.duplicateNamesContactsCount
+			case .duplicatesNumbers:
+				return C.key.notificationDictionary.count.duplicateNumbersContactsCount
+			case .duplicatesEmails:
+				return C.key.notificationDictionary.count.duplicateEmailsContactsCount
+			case .none:
+				return ""
 		}
-    }
-    
-    var dictioanartyIndexName: String {
-        switch self {
+	}
+	
+	var dictioanartyIndexName: String {
+		switch self {
 				/// `photo`
 			case .similarPhoto:
 				return C.key.notificationDictionary.index.similarPhotoIndex
@@ -104,24 +103,24 @@ enum SingleContentSearchNotificationType {
 			case .recentlyDeletedVideo:
 				return C.key.notificationDictionary.index.recentrlyDeletedVideoIndex
 				/// `contacts`
-            case .allContacts:
-                return C.key.notificationDictionary.index.allContactsIndex
-            case .emptyContacts:
-                return C.key.notificationDictionary.index.emptyContactsIndex
-            case .duplicatesNames:
-                return C.key.notificationDictionary.index.duplicateNamesContactsIndex
-            case .duplicatesNumbers:
-                return C.key.notificationDictionary.index.duplicateNumbersContactsIndex
-            case .duplicatesEmails:
-                return C.key.notificationDictionary.index.duplicateEmailContactsIndex
-            case .none:
-                return ""
+			case .allContacts:
+				return C.key.notificationDictionary.index.allContactsIndex
+			case .emptyContacts:
+				return C.key.notificationDictionary.index.emptyContactsIndex
+			case .duplicatesNames:
+				return C.key.notificationDictionary.index.duplicateNamesContactsIndex
+			case .duplicatesNumbers:
+				return C.key.notificationDictionary.index.duplicateNumbersContactsIndex
+			case .duplicatesEmails:
+				return C.key.notificationDictionary.index.duplicateEmailContactsIndex
+			case .none:
+				return ""
 		}
-    }
-    
-    var notificationName: Notification.Name {
-        
-        switch self {
+	}
+	
+	var notificationName: Notification.Name {
+		
+		switch self {
 				/// `photo`
 			case .similarPhoto:
 				return .singleSearchSimilarPhotoScan
@@ -147,25 +146,25 @@ enum SingleContentSearchNotificationType {
 			case .recentlyDeletedVideo:
 				return .singleSearchRecentlyDeletedVideoScan
 				/// `contacts`
-            case .allContacts:
-                return .singleSearchAllContactsScan
-            case .emptyContacts:
-                return .singleSearchEmptyContactsScan
-            case .duplicatesNames:
-                return .singleSearchDuplicatesNamesContactsScan
-            case .duplicatesNumbers:
-                return .singleSearchDuplicatesNumbersContactsScan
-            case .duplicatesEmails:
-                return .singleSearchDupliatesEmailsContactsScan
-            case .none:
-                return Notification.Name("")
+			case .allContacts:
+				return .singleSearchAllContactsScan
+			case .emptyContacts:
+				return .singleSearchEmptyContactsScan
+			case .duplicatesNames:
+				return .singleSearchDuplicatesNamesContactsScan
+			case .duplicatesNumbers:
+				return .singleSearchDuplicatesNumbersContactsScan
+			case .duplicatesEmails:
+				return .singleSearchDupliatesEmailsContactsScan
+			case .none:
+				return Notification.Name("")
 
 		}
-    }
-    
-    var mediaTypeRawValue: PhotoMediaType {
-        
-        switch self {
+	}
+	
+	var mediaTypeRawValue: PhotoMediaType {
+		
+		switch self {
 			case .similarPhoto:
 				return .similarPhotos
 			case .duplicatedPhoto:
@@ -188,37 +187,19 @@ enum SingleContentSearchNotificationType {
 				return .singleScreenRecordings
 			case .recentlyDeletedVideo:
 				return .singleRecentlyDeletedVideos
-            case .allContacts:
-                return .allContacts
-            case .emptyContacts:
-                return .emptyContacts
-            case .duplicatesNames:
-                return .duplicatedContacts
-            case .duplicatesNumbers:
-                return .duplicatedPhoneNumbers
-            case .duplicatesEmails:
-                return .duplicatedEmails
-            case .none:
-                return .none
+			case .allContacts:
+				return .allContacts
+			case .emptyContacts:
+				return .emptyContacts
+			case .duplicatesNames:
+				return .duplicatedContacts
+			case .duplicatesNumbers:
+				return .duplicatedPhoneNumbers
+			case .duplicatesEmails:
+				return .duplicatedEmails
+			case .none:
+				return .none
 
 		}
-    }
-}
-
-class SingleSearchNitificationManager {
-    
-    class var instance: SingleSearchNitificationManager {
-        struct Static {
-            static let instance: SingleSearchNitificationManager = SingleSearchNitificationManager()
-        }
-        return Static.instance
-    }
-    
-    public func sendSingleSearchProgressNotification(notificationtype: SingleContentSearchNotificationType, totalProgressItems: Int, currentProgressItem: Int) {
-        
-        let userInfo = [notificationtype.dictioanartyIndexName: currentProgressItem,
-                        notificationtype.dictionaryCountName: totalProgressItems]
-        
-        NotificationCenter.default.post(name: notificationtype.notificationName, object: nil, userInfo: userInfo)
-    }
+	}
 }

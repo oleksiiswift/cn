@@ -114,6 +114,19 @@ class Constants {
 				static let emailDuplicated = "emailDuplicatedOperation"
 				
 				static let phassetSizes = "calculatedAllPhassetSpaceOperation"
+				
+				static let largeVideo = "largeVideoOperation"
+				static let recentlyDeletedAlbums = "recentlyDeletedAlbumFetchOperation"
+				static let recentlyDeletedSortedAlbums = "recentlyDeletedSortedAlbumsFetchOperation"
+				static let videoCountOperation = "calculateTotalVideoProcessingOperation"
+				static let photoCouuntOperation = "calculateTotlaPhotoProcessingOperation"
+				static let screenRecordingOperation = "screenRecordsVideosOperation"
+				static let screenShotsOperation = "screenShotsOperation"
+				static let livePhotoOperation = "livePhotoOperation"
+				static let photoSelfiesOperation = "photoSelfiesOperation"
+				
+				
+				static let deletePhassetsOperation = "deletePhassetsOperation"
 			}
 		
 		}

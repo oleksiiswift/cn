@@ -23,8 +23,7 @@ class ContactsManager {
 	
 		/// `private section`
 	private var phoneNumberKit = PhoneNumberKit()
-	private var singleSearchNotificationManager = SingleSearchNitificationManager.instance
-	private var deepCleanNotificationManager = DeepCleanNotificationManager.instance
+	private var progressSearchNotificationManager = ProgressSearchNotificationManager.instance
 	
 	private var deleteContactsTaskContinue: Bool = true
 	private var mergeContactsTaskContinue: Bool = true
@@ -549,11 +548,11 @@ extension ContactsManager {
 			
 			if enableDeepCleanNotification {
 				for i in 0...contacts.count - 1 {
-					self.deepCleanNotificationManager.sendDeepProgressNotificatin(notificationType: .emptyContacts, totalProgressItems: contacts.count, currentProgressItem: i)
+					self.progressSearchNotificationManager.sendDeepProgressNotificatin(notificationType: .emptyContacts, totalProgressItems: contacts.count, currentProgressItem: i)
 				}
 			} else if enableSingleNotification {
 				for i in 0...contacts.count - 1 {
-					self.singleSearchNotificationManager.sendSingleSearchProgressNotification(notificationtype: .emptyContacts, totalProgressItems: contacts.count, currentProgressItem: i)
+					self.progressSearchNotificationManager.sendSingleSearchProgressNotification(notificationtype: .emptyContacts, totalProgressItems: contacts.count, currentProgressItem: i)
 				}
 			}
 			completionHandler(contactsGroup)
@@ -574,9 +573,9 @@ extension ContactsManager {
 			
 			
 			if enableSingleNotification {
-				self.singleSearchNotificationManager.sendSingleSearchProgressNotification(notificationtype: .duplicatesNames, totalProgressItems: Int(0.01), currentProgressItem: contacts.count)
+				self.progressSearchNotificationManager.sendSingleSearchProgressNotification(notificationtype: .duplicatesNames, totalProgressItems: Int(0.01), currentProgressItem: contacts.count)
 			} else if enableDeepCleanNotification {
-				self.deepCleanNotificationManager.sendDeepProgressNotificatin(notificationType: .duplicateContacts, totalProgressItems: 1, currentProgressItem: 0)
+				self.progressSearchNotificationManager.sendDeepProgressNotificatin(notificationType: .duplicateContacts, totalProgressItems: 1, currentProgressItem: 0)
 			}
 			
 			var contactsDictionary = Dictionary(grouping: contacts, by: {String($0.familyName.removeWhitespace() + $0.givenName.removeWhitespace())})
@@ -595,9 +594,9 @@ extension ContactsManager {
 					currentProcessingIndex += 1
 					
 					if enableSingleNotification {
-						self.singleSearchNotificationManager.sendSingleSearchProgressNotification(notificationtype: .duplicatesNames, totalProgressItems: filterDictionary.count, currentProgressItem: currentProcessingIndex)
+						self.progressSearchNotificationManager.sendSingleSearchProgressNotification(notificationtype: .duplicatesNames, totalProgressItems: filterDictionary.count, currentProgressItem: currentProcessingIndex)
 					} else if enableDeepCleanNotification {
-						self.deepCleanNotificationManager.sendDeepProgressNotificatin(notificationType: .duplicateContacts, totalProgressItems: filterDictionary.count, currentProgressItem: currentProcessingIndex)
+						self.progressSearchNotificationManager.sendDeepProgressNotificatin(notificationType: .duplicateContacts, totalProgressItems: filterDictionary.count, currentProgressItem: currentProcessingIndex)
 					}
 					
 					sleep(UInt32(0.1))
@@ -609,7 +608,7 @@ extension ContactsManager {
 				}
 				group.forEach({ $0.contacts = self.esctimateBestContactIn($0.contacts )})
 			} else {
-				enableDeepCleanNotification ? self.deepCleanNotificationManager.sendDeepProgressNotificatin(notificationType: .duplicateContacts, totalProgressItems: 1, currentProgressItem: 1) : ()
+				enableDeepCleanNotification ? self.progressSearchNotificationManager.sendDeepProgressNotificatin(notificationType: .duplicateContacts, totalProgressItems: 1, currentProgressItem: 1) : ()
 			}
 			completionHandler(group)
 		}
@@ -627,7 +626,7 @@ extension ContactsManager {
 			
 			var duplicatedContacts: [ContactsGroup] = []
 			
-			enableDeepCleanNotification ? self.deepCleanNotificationManager.sendDeepProgressNotificatin(notificationType: .duplicatedPhoneNumbers, totalProgressItems: contacts.count, currentProgressItem: 0) : ()
+			enableDeepCleanNotification ? self.progressSearchNotificationManager.sendDeepProgressNotificatin(notificationType: .duplicatedPhoneNumbers, totalProgressItems: contacts.count, currentProgressItem: 0) : ()
 			
 			if !phoneNumbers.isEmpty {
 				
@@ -644,9 +643,9 @@ extension ContactsManager {
 						let containerResults = try contactsStore.unifiedContacts(matching: fetchPredicate, keysToFetch: self.fetchingKeys)
 						
 						if enableSingleNotification {
-							self.singleSearchNotificationManager.sendSingleSearchProgressNotification(notificationtype: .duplicatesNumbers, totalProgressItems: phoneNumbers.count, currentProgressItem: i)
+							self.progressSearchNotificationManager.sendSingleSearchProgressNotification(notificationtype: .duplicatesNumbers, totalProgressItems: phoneNumbers.count, currentProgressItem: i)
 						} else if enableDeepCleanNotification {
-							self.deepCleanNotificationManager.sendDeepProgressNotificatin(notificationType: .duplicatedPhoneNumbers, totalProgressItems: phoneNumbers.count, currentProgressItem: i)
+							self.progressSearchNotificationManager.sendDeepProgressNotificatin(notificationType: .duplicatedPhoneNumbers, totalProgressItems: phoneNumbers.count, currentProgressItem: i)
 						}
 						
 						if containerResults.count > 1 {
@@ -658,7 +657,7 @@ extension ContactsManager {
 					}
 				}
 			} else {
-				enableDeepCleanNotification ? self.deepCleanNotificationManager.sendDeepProgressNotificatin(notificationType: .duplicatedPhoneNumbers, totalProgressItems: 1, currentProgressItem: 1) : ()
+				enableDeepCleanNotification ? self.progressSearchNotificationManager.sendDeepProgressNotificatin(notificationType: .duplicatedPhoneNumbers, totalProgressItems: 1, currentProgressItem: 1) : ()
 			}
 			completionHandler(duplicatedContacts)
 		}
@@ -675,7 +674,7 @@ extension ContactsManager {
 			let emailsList = Array(Set(contacts.map({$0.emailAddresses.map({$0.value as String})}).reduce([], +)))
 			var duplicatedContacts: [ContactsGroup] = []
 			
-			enableDeepCleanNotification ? self.deepCleanNotificationManager.sendDeepProgressNotificatin(notificationType: .duplicatedEmails, totalProgressItems: contacts.count, currentProgressItem: 0) : ()
+			enableDeepCleanNotification ? self.progressSearchNotificationManager.sendDeepProgressNotificatin(notificationType: .duplicatedEmails, totalProgressItems: contacts.count, currentProgressItem: 0) : ()
 			
 			if !emailsList.isEmpty {
 				
@@ -691,9 +690,9 @@ extension ContactsManager {
 						let fetchPredicate = CNContact.predicateForContacts(matchingEmailAddress: email)
 						
 						if enableSingleNotification {
-							self.singleSearchNotificationManager.sendSingleSearchProgressNotification(notificationtype: .duplicatesEmails, totalProgressItems: emailsList.count, currentProgressItem: i)
+							self.progressSearchNotificationManager.sendSingleSearchProgressNotification(notificationtype: .duplicatesEmails, totalProgressItems: emailsList.count, currentProgressItem: i)
 						} else if enableDeepCleanNotification {
-							self.deepCleanNotificationManager.sendDeepProgressNotificatin(notificationType: .duplicatedEmails, totalProgressItems: emailsList.count, currentProgressItem: i)
+							self.progressSearchNotificationManager.sendDeepProgressNotificatin(notificationType: .duplicatedEmails, totalProgressItems: emailsList.count, currentProgressItem: i)
 						}
 						
 						let containerResult = try contactsStore.unifiedContacts(matching: fetchPredicate, keysToFetch: self.fetchingKeys)
@@ -705,9 +704,9 @@ extension ContactsManager {
 						debugPrint(error.localizedDescription)
 					}
 				}
-				enableDeepCleanNotification ? self.deepCleanNotificationManager.sendDeepProgressNotificatin(notificationType: .duplicatedEmails, totalProgressItems: emailsList.count, currentProgressItem: emailsList.count) : ()
+				enableDeepCleanNotification ? self.progressSearchNotificationManager.sendDeepProgressNotificatin(notificationType: .duplicatedEmails, totalProgressItems: emailsList.count, currentProgressItem: emailsList.count) : ()
 			} else {
-				enableDeepCleanNotification ? self.deepCleanNotificationManager.sendDeepProgressNotificatin(notificationType: .duplicatedEmails, totalProgressItems: 1, currentProgressItem: 1) : ()
+				enableDeepCleanNotification ? self.progressSearchNotificationManager.sendDeepProgressNotificatin(notificationType: .duplicatedEmails, totalProgressItems: 1, currentProgressItem: 1) : ()
 			}
 			completionHandler(duplicatedContacts)
 		}

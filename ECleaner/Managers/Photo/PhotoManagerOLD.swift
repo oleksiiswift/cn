@@ -82,43 +82,43 @@ class PhotoManagerOLD: NSObject {
 //        }
 //    }
     
-    public func calculateLargeVideosCount() {
-        debugPrint("start large")
-        self.getLargevideoContent { assets in
-            debugPrint("done with large videos")
-            UpdateContentDataBaseMediator.instance.getLargeVideosAssets(assets)
-        }
-    }
+//    public func calculateLargeVideosCount() {
+//        debugPrint("start large")
+//        self.getLargevideoContent { assets in
+//            debugPrint("done with large videos")
+//            UpdateContentDataBaseMediator.instance.getLargeVideosAssets(assets)
+//        }
+//    }
     
-    public func calculateRecentlyDeleted() {
-        debugPrint("try fetch recently deleted photos videos")
-        self.getSortedRecentlyDeletedAssets { photos, videos in
-            debugPrint("done with photos and videos")
-        
-            UpdateContentDataBaseMediator.instance.getRecentlyDeletedPhotosAssets(photos)
-            UpdateContentDataBaseMediator.instance.getRecentlyDeletedVideosAssets(videos)
-        }
-    }
+//    public func calculateRecentlyDeleted() {
+//        debugPrint("try fetch recently deleted photos videos")
+//        self.getSortedRecentlyDeletedAssets { photos, videos in
+//            debugPrint("done with photos and videos")
+//
+//            UpdateContentDataBaseMediator.instance.getRecentlyDeletedPhotosAssets(photos)
+//            UpdateContentDataBaseMediator.instance.getRecentlyDeletedVideosAssets(videos)
+//        }
+//    }
     
-    public func calculateVideoCount() {
-        debugPrint("start video count")
-        self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumVideos, by: PHAssetMediaType.video.rawValue) { assets in
-            U.UI {
-                debugPrint("done with video count")
-                UpdateContentDataBaseMediator.instance.updateContentStoreCount(mediaType: .userVideo, itemsCount: assets.count, calculatedSpace: nil)
-            }
-        }
-    }
+//    public func calculateVideoCount() {
+//        debugPrint("start video count")
+//        self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumVideos, by: PHAssetMediaType.video.rawValue) { assets in
+//            U.UI {
+//                debugPrint("done with video count")
+//                UpdateContentDataBaseMediator.instance.updateContentStoreCount(mediaType: .userVideo, itemsCount: assets.count, calculatedSpace: nil)
+//            }
+//        }
+//    }
     
-    public func calculatePhotoCount() {
-        debugPrint("start photo count")
-        self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumUserLibrary, by: PHAssetMediaType.image.rawValue) { assets in
-            U.UI {
-                debugPrint("done with gallery count")
-                UpdateContentDataBaseMediator.instance.updateContentStoreCount(mediaType: .userPhoto, itemsCount: assets.count, calculatedSpace: nil)
-            }
-        }
-    }
+//    public func calculatePhotoCount() {
+//        debugPrint("start photo count")
+//        self.fetchManager.fetchFromGallery(collectiontype: .smartAlbumUserLibrary, by: PHAssetMediaType.image.rawValue) { assets in
+//            U.UI {
+//                debugPrint("done with gallery count")
+//                UpdateContentDataBaseMediator.instance.updateContentStoreCount(mediaType: .userPhoto, itemsCount: assets.count, calculatedSpace: nil)
+//            }
+//        }
+//    }
     
     
     public func getPhotoAssetsCount(from startDate: String, to endDate: String, completion: @escaping (Int) -> Void) {
@@ -184,37 +184,37 @@ class PhotoManagerOLD: NSObject {
         }
     }
     
-    public func calculateScreenRecordsCout() {
-        debugPrint("start screen records")
-        self.getScreenRecordsVideos { assets in
-            debugPrint("done with screenrecords")
-            UpdateContentDataBaseMediator.instance.getScreenRecordsVideosAssets(assets)
-        }
-    }
+//    public func calculateScreenRecordsCout() {
+//        debugPrint("start screen records")
+//        self.getScreenRecordsVideos { assets in
+//            debugPrint("done with screenrecords")
+//
+//        }
+//    }
     
-    public func calculateScreenShotsCount() {
-        debugPrint("start get screenshots")
-        self.getScreenShots { assets in
-            debugPrint("done with screenshots")
-            UpdateContentDataBaseMediator.instance.getScreenshots(assets)
-        }
-    }
+//    public func calculateScreenShotsCount() {
+//        debugPrint("start get screenshots")
+//        self.getScreenShots { assets in
+//            debugPrint("done with screenshots")
+//            UpdateContentDataBaseMediator.instance.getScreenshots(assets)
+//        }
+//    }
     
-    public func calculateLivePhotoCount() {
-        debugPrint("start live photos")
-        self.getLivePhotos { assets in
-            debugPrint("done with livephoto")
-            UpdateContentDataBaseMediator.instance.getLivePhotosAssets(assets)
-        }
-    }
+//    public func calculateLivePhotoCount() {
+//        debugPrint("start live photos")
+//        self.getLivePhotos { assets in
+//            debugPrint("done with livephoto")
+//            UpdateContentDataBaseMediator.instance.getLivePhotosAssets(assets)
+//        }
+//    }
     
-    public func calculateSelfiesCount() {
-        debugPrint("start selfie")
-        self.getSelfiePhotos { assets in
-            debugPrint("done with selfies")
-            UpdateContentDataBaseMediator.instance.getFrontCameraAssets(assets)
-        }
-    }
+//    public func calculateSelfiesCount() {
+//        debugPrint("start selfie")
+//        self.getSelfiePhotos { assets in
+//            debugPrint("done with selfies")
+//            UpdateContentDataBaseMediator.instance.getFrontCameraAssets(assets)
+//        }
+//    }
 
     private func getPhotoLibrary() {
         
@@ -222,47 +222,47 @@ class PhotoManagerOLD: NSObject {
 //            self.calculateAssetsDiskSpace()
 //        }
         
-        let concurrentOperationSecond = ConcurrentProcessOperation { _ in
-            self.calculateLargeVideosCount()
-        }
+//        let concurrentOperationSecond = ConcurrentProcessOperation { _ in
+//            self.calculateLargeVideosCount()
+//        }
         
-        let concurrentOperationThird = ConcurrentProcessOperation { _ in
-            self.calculateRecentlyDeleted()
-        }
+//        let concurrentOperationThird = ConcurrentProcessOperation { _ in
+//            self.calculateRecentlyDeleted()
+//        }
         
-        let concurrentOperationFourth = ConcurrentProcessOperation { _ in
-            self.calculateVideoCount()
-        }
+//        let concurrentOperationFourth = ConcurrentProcessOperation { _ in
+//            self.calculateVideoCount()
+//        }
+//
+//        let concurrentOperationFifth = ConcurrentProcessOperation { _ in
+//            self.calculatePhotoCount()
+//        }
         
-        let concurrentOperationFifth = ConcurrentProcessOperation { _ in
-            self.calculatePhotoCount()
-        }
+//        let concurrentOperationSixth = ConcurrentProcessOperation { _ in
+//            self.calculateScreenRecordsCout()
+//        }
+//
+//        let concurrentOperationSeventh = ConcurrentProcessOperation { _ in
+//            self.calculateScreenShotsCount()
+//        }
         
-        let concurrentOperationSixth = ConcurrentProcessOperation { _ in
-            self.calculateScreenRecordsCout()
-        }
+//        let concurrentOperationEighth = ConcurrentProcessOperation { _ in
+//            self.calculateLivePhotoCount()
+//        }
         
-        let concurrentOperationSeventh = ConcurrentProcessOperation { _ in
-            self.calculateScreenShotsCount()
-        }
-        
-        let concurrentOperationEighth = ConcurrentProcessOperation { _ in
-            self.calculateLivePhotoCount()
-        }
-        
-        let concurrentOperationNinth = ConcurrentProcessOperation { _ in
-            self.calculateSelfiesCount()
-        }
+//        let concurrentOperationNinth = ConcurrentProcessOperation { _ in
+//            self.calculateSelfiesCount()
+//        }
 
-        operationConcurrentQueue.addOperation(concurrentOperationFirst)
-        operationConcurrentQueue.addOperation(concurrentOperationSecond)
-        operationConcurrentQueue.addOperation(concurrentOperationThird)
-        operationConcurrentQueue.addOperation(concurrentOperationFourth)
-        operationConcurrentQueue.addOperation(concurrentOperationFifth)
-        operationConcurrentQueue.addOperation(concurrentOperationSixth)
-        operationConcurrentQueue.addOperation(concurrentOperationSeventh)
-        operationConcurrentQueue.addOperation(concurrentOperationEighth)
-        operationConcurrentQueue.addOperation(concurrentOperationNinth)
+//        operationConcurrentQueue.addOperation(concurrentOperationFirst)
+//        operationConcurrentQueue.addOperation(concurrentOperationSecond)
+//        operationConcurrentQueue.addOperation(concurrentOperationThird)
+//        operationConcurrentQueue.addOperation(concurrentOperationFourth)
+//        operationConcurrentQueue.addOperation(concurrentOperationFifth)
+//        operationConcurrentQueue.addOperation(concurrentOperationSixth)
+//        operationConcurrentQueue.addOperation(concurrentOperationSeventh)
+//        operationConcurrentQueue.addOperation(concurrentOperationEighth)
+//        operationConcurrentQueue.addOperation(concurrentOperationNinth)
         
     }
     
@@ -568,109 +568,71 @@ extension PhotoManagerOLD {
         }
     }
     
-    /// `load selfies` from gallery
-    public func getSelfiePhotos(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", isDeepCleanScan: Bool = false, completionHandler: @escaping ((_ assets: [PHAsset]) -> Void)) {
-        
-        fetchManager.fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumSelfPortraits, by: PHAssetMediaType.image.rawValue) { selfiesInLibrary in
-            
-            U.BG {
-                var selfies: [PHAsset] = []
-                if selfiesInLibrary.count == 0 {
-                    if !isDeepCleanScan {
-                        U.UI {
-                            completionHandler([])
-                        }
-                    } else {
-                        completionHandler([])
-                    }
-                    return
-                }
-                
-                for selfiePos in 1...selfiesInLibrary.count {
-                    selfies.append(selfiesInLibrary[selfiePos - 1])
-                }
-                if !isDeepCleanScan {
-                    U.UI {
-                        completionHandler(selfies)
-                    }
-                } else {
-                    completionHandler(selfies)
-                }
-            }
-        }
-    }
+//    /// `load selfies` from gallery
+//    public func getSelfiePhotos(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", isDeepCleanScan: Bool = false, completionHandler: @escaping ((_ assets: [PHAsset]) -> Void)) {
+//
+//        fetchManager.fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumSelfPortraits, by: PHAssetMediaType.image.rawValue) { selfiesInLibrary in
+//
+//            U.BG {
+//                var selfies: [PHAsset] = []
+//                if selfiesInLibrary.count == 0 {
+//                    if !isDeepCleanScan {
+//                        U.UI {
+//                            completionHandler([])
+//                        }
+//                    } else {
+//                        completionHandler([])
+//                    }
+//                    return
+//                }
+//
+//                for selfiePos in 1...selfiesInLibrary.count {
+//                    selfies.append(selfiesInLibrary[selfiePos - 1])
+//                }
+//                if !isDeepCleanScan {
+//                    U.UI {
+//                        completionHandler(selfies)
+//                    }
+//                } else {
+//                    completionHandler(selfies)
+//                }
+//            }
+//        }
+//    }
     
-    /// `load live photos` from gallery
-    public func getLivePhotos(isDeepCleanScan: Bool = false,_ completionHandler: @escaping ((_ assets: [PHAsset]) -> Void)) {
-        
-        fetchManager.fetchFromGallery(collectiontype: .smartAlbumLivePhotos, by: PHAssetMediaType.image.rawValue) { livePhotosLibrary in
-            
-            U.BG {
-                var livePhotos: [PHAsset] = []
-                if livePhotosLibrary.count == 0 {
-                    if !isDeepCleanScan {
-                        U.UI {
-                            completionHandler([])
-                        }
-                    } else {
-                        completionHandler([])
-                    }
-                    return
-                }
-                
-                for livePhoto in 1...livePhotosLibrary.count {
-                    livePhotos.append(livePhotosLibrary[livePhoto - 1])
-                }
-                if !isDeepCleanScan {
-                    U.UI {
-                        completionHandler(livePhotos)
-                    }
-                } else {
-                    completionHandler(livePhotos)
-                }
-            }
-        }
-    }
+//    /// `load live photos` from gallery
+//    public func getLivePhotos(isDeepCleanScan: Bool = false,_ completionHandler: @escaping ((_ assets: [PHAsset]) -> Void)) {
+//
+//        fetchManager.fetchFromGallery(collectiontype: .smartAlbumLivePhotos, by: PHAssetMediaType.image.rawValue) { livePhotosLibrary in
+//
+//            U.BG {
+//                var livePhotos: [PHAsset] = []
+//                if livePhotosLibrary.count == 0 {
+//                    if !isDeepCleanScan {
+//                        U.UI {
+//                            completionHandler([])
+//                        }
+//                    } else {
+//                        completionHandler([])
+//                    }
+//                    return
+//                }
+//
+//                for livePhoto in 1...livePhotosLibrary.count {
+//                    livePhotos.append(livePhotosLibrary[livePhoto - 1])
+//                }
+//                if !isDeepCleanScan {
+//                    U.UI {
+//                        completionHandler(livePhotos)
+//                    }
+//                } else {
+//                    completionHandler(livePhotos)
+//                }
+//            }
+//        }
+//    }
     
-    /// `load screenshots` from gallery
-    public func getScreenShots(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", isDeepCleanScan: Bool = false, completionHandler: @escaping ((_ assets: [PHAsset]) -> Void)) {
-        
-        fetchManager.fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumScreenshots, by: PHAssetMediaType.image.rawValue) { screensShotsLibrary in
-            U.BG {
-                var screens: [PHAsset] = []
-                
-                if screensShotsLibrary.count == 0 {
-                    if !isDeepCleanScan {
-                        U.UI {
-                            completionHandler([])
-                        }
-                    } else {
-                        completionHandler([])
-                    }
-                    return
-                }
-                
-                for screensPos in 1...screensShotsLibrary.count {
-				
-                    screens.append(screensShotsLibrary[screensPos - 1])
-                    if isDeepCleanScan {
-                        debugPrint("screen shots index -> ", screensPos)
-                        self.progressNotificationManager.sendDeepProgressNotificatin(notificationType: .screenshots,
-                                                                                 totalProgressItems: screensShotsLibrary.count,
-                                                                                 currentProgressItem: screensPos)
-                    }
-                }
-                
-                if !isDeepCleanScan {
-                    U.UI {
-                        completionHandler(screens)
-                    }
-                } else {
-                    completionHandler(screens)
-                }
-            }
-        }
-    }
+
 }
 
 //  MARK: - video part -
@@ -678,11 +640,11 @@ extension PhotoManagerOLD {
     
 //    /// `fetch large videos` from gallery
 //    public func getLargevideoContent(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", isDeepCleanScan: Bool = false, completionHandler: @escaping ((_ assets: [PHAsset]) -> Void)) {
-//        
+//
 //        fetchManager.fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumVideos, by: PHAssetMediaType.video.rawValue) { videoContent in
 //            U.BG {
 //                var videos: [PHAsset] = []
-//                
+//
 //                if videoContent.count == 0 {
 //                    if !isDeepCleanScan {
 //                        U.UI {
@@ -693,20 +655,20 @@ extension PhotoManagerOLD {
 //                    }
 //                    return
 //                }
-//                
+//
 //                for videosPosition in 1...videoContent.count {
-//					
+//
 //                    if videoContent[videosPosition - 1].imageSize > 55000000 {
 //                        videos.append(videoContent[videosPosition - 1])
 //                    }
-//                    
+//
 //                    if isDeepCleanScan {
 //                        self.progressNotificationManager.sendDeepProgressNotificatin(notificationType: .largeVideo,
 //                                                                                 totalProgressItems: videoContent.count,
 //                                                                                 currentProgressItem: videosPosition)
 //                    }
 //                }
-//				
+//
 //                if !isDeepCleanScan {
 //                    U.UI {
 //                        completionHandler(videos)
@@ -811,51 +773,6 @@ extension PhotoManagerOLD {
         }
     }
     
-    /// `screen recordings` from gallery
-    public func getScreenRecordsVideos(from startDate: String = "01-01-1917 00:00:00", to endDate: String = "01-01-2666 00:00:00", isDeepCleanScan: Bool = false, completionHandler: @escaping ((_ screenRecordsAssets: [PHAsset]) -> Void)) {
-        
-        fetchManager.fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumVideos, by: PHAssetMediaType.video.rawValue) { videoAssets in
-            U.BG {
-                var screenRecords: [PHAsset] = []
-                
-                if videoAssets.count == 0 {
-                    if !isDeepCleanScan {
-                        U.UI {
-                            completionHandler([])
-                        }
-                    } else {
-                        completionHandler([])
-                    }
-                    return
-                }
-                
-                for videosPosition in 1...videoAssets.count {
-					
-                    let asset = videoAssets[videosPosition - 1]
-                        
-                    if let assetResource = PHAssetResource.assetResources(for: asset).first {
-                        if assetResource.originalFilename.contains("RPReplay") {
-                            screenRecords.append(asset)
-                        }
-                    }
-                    
-                    if isDeepCleanScan {
-                        self.progressNotificationManager.sendDeepProgressNotificatin(notificationType: .screenRecordings,
-                                                                                     totalProgressItems: videoAssets.count,
-                                                                                     currentProgressItem: videosPosition)
-                    }
-                }
-                
-                if !isDeepCleanScan {
-                    U.UI {
-                        completionHandler(screenRecords)
-                    }
-                } else {
-                    completionHandler(screenRecords)
-                }
-            }
-        }
-    }
 
     /// `duplicated videos compare algorithm`
     public func getDuplicatedVideoAsset(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", isDeepCleanScan: Bool = false, completionHandler: @escaping ((_ videoAssets: [PhassetGroup]) -> Void)) {
@@ -1047,35 +964,35 @@ extension PhotoManagerOLD {
 
 extension PhotoManagerOLD {
     
-    public func deleteSelected(assets: [PHAsset], completion: @escaping ((Bool) -> Void)) {
-        
-        let assetsSelectedIdentifiers = assets.map({ $0.localIdentifier})
-        
-        let deletedAssets = PHAsset.fetchAssets(withLocalIdentifiers: assetsSelectedIdentifiers, options: nil)
-        
-        PHPhotoLibrary.shared().performChanges {
-            PHAssetChangeRequest.deleteAssets(deletedAssets)
-        } completionHandler: { success, error in
-            U.UI {
-                completion(success)
-            }
-        }
-    }
+//    public func deleteSelected(assets: [PHAsset], completion: @escaping ((Bool) -> Void)) {
+//        
+//        let assetsSelectedIdentifiers = assets.map({ $0.localIdentifier})
+//        
+//        let deletedAssets = PHAsset.fetchAssets(withLocalIdentifiers: assetsSelectedIdentifiers, options: nil)
+//        
+//        PHPhotoLibrary.shared().performChanges {
+//            PHAssetChangeRequest.deleteAssets(deletedAssets)
+//        } completionHandler: { success, error in
+//            U.UI {
+//                completion(success)
+//            }
+//        }
+//    }
     
-    /// fetch `recently deleted assets`
-    public func getRecentlyDeletedAssets(completion: @escaping ([PHAsset]) -> Void) {
-        
-        fetchManager.recentlyDeletedAlbumFetch { assets in
-            completion(assets)
-        }
-    }
-    
-    public func getSortedRecentlyDeletedAssets(completion: @escaping (_ photos: [PHAsset],_ videos: [PHAsset]) -> Void) {
-        
-        fetchManager.recentlyDeletedSortedAlbumFetch { photos, videos in
-            completion(photos, videos)
-        }
-    }
+//    /// fetch `recently deleted assets`
+//    public func getRecentlyDeletedAssets(completion: @escaping ([PHAsset]) -> Void) {
+//
+//        fetchManager.recentlyDeletedAlbumFetch { assets in
+//            completion(assets)
+//        }
+//    }
+//
+//    public func getSortedRecentlyDeletedAssets(completion: @escaping (_ photos: [PHAsset],_ videos: [PHAsset]) -> Void) {
+//
+//        fetchManager.recentlyDeletedSortedAlbumFetch { photos, videos in
+//            completion(photos, videos)
+//        }
+//    }
 }
 
 //      MARK: - change assets observer -
