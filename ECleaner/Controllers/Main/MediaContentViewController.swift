@@ -20,7 +20,7 @@ class MediaContentViewController: UIViewController {
     var dateSelectableView = DateSelectebleView()
     
     public var mediaContentType: MediaContentType = .none
-    private var photoManager = PhotoManager()
+    private var photoManager = PhotoManagerOLD()
     private var contactsManager = ContactsManager.shared
     
     private var startingDate: String {

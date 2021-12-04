@@ -11,6 +11,7 @@ enum AlertType {
 	
 		/// `access module`
 	case contactsRestricted
+	case photoLibraryRestricted
 	
 	
 	
@@ -66,7 +67,8 @@ enum AlertType {
 			case .contactsRestricted:
 				return ErrorHandler.AccessRestrictedError.contactsRestrictedError.title
 				
-				
+			case .photoLibraryRestricted:
+				return ErrorHandler.AccessRestrictedError.photoLibraryRestrictedError.title
 				
 				
 				
@@ -138,6 +140,8 @@ enum AlertType {
         switch self {
 			case .contactsRestricted:
 				return ErrorHandler.AccessRestrictedError.contactsRestrictedError.errorRawValue
+			case .photoLibraryRestricted:
+				return ErrorHandler.AccessRestrictedError.photoLibraryRestrictedError.errorRawValue
 				
 				
             case .allowNotification:
@@ -201,7 +205,7 @@ enum AlertType {
     var withCancel: Bool {
         switch self {
 				
-			case .contactsRestricted:
+			case .contactsRestricted, .photoLibraryRestricted:
 				return true
 				
 				

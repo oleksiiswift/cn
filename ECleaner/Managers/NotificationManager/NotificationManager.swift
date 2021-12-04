@@ -35,6 +35,18 @@ extension Notification.Name {
     static let deepCleanDupLicatedMailsScan =           Notification.Name(C.key.notification.deepClean.deepCleanDupLicatedMailsScan)
     
         ///  `single search scan progress notification`
+		
+	static let singleSearchSimilarPhotoScan = 				Notification.Name(C.key.notification.singleSearch.singleSearchSimilarPhotoPHAssetScan)
+	static let singleSearchDuplicatedPhotoScan = 			Notification.Name(C.key.notification.singleSearch.singleDuplicatedPhotoPHAssetScant)
+	static let singleSearchScreenShotsPhotoScan = 			Notification.Name(C.key.notification.singleSearch.singleScreeenshotsPhotoPHAssetScan)
+	static let singleSearchSelfiePhotoScan = 				Notification.Name(C.key.notification.singleSearch.singleSelfiePHAssetScan)
+	static let singleSearchLivePhotoScan = 					Notification.Name(C.key.notification.singleSearch.singleLivePhotoPHAssetScan)
+	static let singleSearchRecentlyDeletedPhotoScan = 		Notification.Name(C.key.notification.singleSearch.singleRecentlyDeletedPHAssetScan)
+	static let singleSearchLargeVideoScan = 				Notification.Name(C.key.notification.singleSearch.singleLargeVideoPHAssetScan)
+	static let singleSearchDuplicatedVideoScan = 			Notification.Name(C.key.notification.singleSearch.singleDuplicatedVideoPHAssetScan)
+	static let singleSearchSimilarVideoScan = 				Notification.Name(C.key.notification.singleSearch.singleSimilarVideoPHAssetScan)
+	static let singleSearchScreenRecordingVideoScan = 		Notification.Name(C.key.notification.singleSearch.singleScreenRecordingsVideoPHAssetScan)
+	static let singleSearchRecentlyDeletedVideoScan = 		Notification.Name(C.key.notification.singleSearch.singleRecentlyDeleteVideoPHAssetScan)
     static let singleSearchAllContactsScan =                Notification.Name(C.key.notification.singleSearch.singleSearchAllContactsScan)
     static let singleSearchEmptyContactsScan =              Notification.Name(C.key.notification.singleSearch.singleSearchEmptyContactsScan)
     static let singleSearchDuplicatesNamesContactsScan =    Notification.Name(C.key.notification.singleSearch.singleSearchDuplicatesNamesContactsScan)

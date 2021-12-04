@@ -22,7 +22,7 @@ class MainViewController: UIViewController {
     
     private let baseCarouselLayout = BaseCarouselFlowLayout()
         
-    private var photoMenager = PhotoManager()
+    private var photoMenager = PhotoManagerOLD()
     
     private var contentCount: [MediaContentType : Int] = [:]
     private var diskSpaceForStartingScreen: [MediaContentType : Int64] = [:]

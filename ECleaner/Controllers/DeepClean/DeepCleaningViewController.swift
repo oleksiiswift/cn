@@ -33,7 +33,7 @@ class DeepCleaningViewController: UIViewController {
 
      /// managers∂
      private var deepCleanManager = DeepCleanManager()
-     private var photoManager = PhotoManager()
+     private var photoManager = PhotoManagerOLD()
 	 private var contactsManager = ContactsManager.shared
      
      /// protocols and delegates

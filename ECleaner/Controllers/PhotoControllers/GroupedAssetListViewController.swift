@@ -61,7 +61,7 @@ class GroupedAssetListViewController: UIViewController, UIPageViewControllerDele
     
     /// - managers -
     private var cacheImageManager = PHCachingImageManager()
-    private var photoManager = PhotoManager()
+    private var photoManager = PhotoManagerOLD()
     
     /// - flow layout -
     let collectionViewFlowLayout = SNCollectionViewLayout()

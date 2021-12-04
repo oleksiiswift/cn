@@ -75,6 +75,19 @@ class Constants {
                 static let singleSearchDuplicatesNamesContactsScan = "singleSearchDuplicatesNamesContactsScan"
                 static let singleSearchDuplicatesNumbersContactsScan = "singleSearchDuplicatesNumbersContactsScan"
                 static let singleSearchDupliatesEmailsContactsScan = "singleSearchDupliatesEmailsContactsScan"
+					/// photo
+				static let singleSearchSimilarPhotoPHAssetScan = "singleSearchSimilarPhotoPhassetScan"
+				static let singleDuplicatedPhotoPHAssetScant = "singleDuplicatedPhotoPHAssetScant"
+				static let singleScreeenshotsPhotoPHAssetScan = "singleScreeenshotsPhotoPHAssetScan"
+				static let singleSelfiePHAssetScan = "singleSelfiePHAssetScan"
+				static let singleLivePhotoPHAssetScan = "singleLivePhotoPHAssetScan"
+				static let singleRecentlyDeletedPHAssetScan = "singleRecentlyDeletedPHAssetScan"
+					/// video
+				static let singleLargeVideoPHAssetScan = "singleLargeVideoPHAssetScan"
+				static let singleDuplicatedVideoPHAssetScan = "singleDuplicatedVideoPHAssetScan"
+				static let singleSimilarVideoPHAssetScan = "singleSimilarVideoPHAssetScan"
+				static let singleScreenRecordingsVideoPHAssetScan = "singleScreenRecordingsVideoPHAssetScan"
+				static let singleRecentlyDeleteVideoPHAssetScan = "singleRecentlyDeleteVideoPHAssetScan"
             }
             
             /// `contacts notification`
@@ -87,6 +100,7 @@ class Constants {
 			struct queue {
 				static let contacts = "contactsCleanSearchOperationQueuer"
 				static let phassets = "phassetsCleanSearchOperationQueuer"
+				static let utils = "utilsBackgroudSpaceCalculated"
 			}
 			
 			struct name {
@@ -98,6 +112,8 @@ class Constants {
 				static let duplicatedContacts = "duplicatedContactsOperation"
 				static let phoneDuplicated = "phoneDuplicatedOperation"
 				static let emailDuplicated = "emailDuplicatedOperation"
+				
+				static let phassetSizes = "calculatedAllPhassetSpaceOperation"
 			}
 		
 		}
@@ -118,11 +134,14 @@ class Constants {
                 static let duplicatePhotoIndex = "deepCleanDuplicatePhotoProcessingIndex"
                 static let screenShotsIndex = "deepCleanscreenShotsIndex"
                 static let livePhotosIndex = "deepCleanlivePhotosIndex"
+				static let selfiePhotosIndex = "selfiePhotosIndex"
+				static let recentlyDeletedPhotoIndex = "recentlyDeletedPhotoIndex"
                     /// video part
                 static let largeVideoIndex = "deepCleanlargeVideoIndex"
                 static let duplicateVideoIndex = "deepCleanduplicateVideoIndex"
                 static let similarVideoIndex = "deepCleansimilarVideoIndex"
                 static let screenRecordingsIndex = "deepCleanscreenRecordingsIndex"
+				static let recentrlyDeletedVideoIndex = "recentrlyDeletedVideoIndex"
                     /// contacts part
                 static let allContactsIndex = "deepCleanallContactsIndex"
                 static let emptyContactsIndex = "deepCleanemptyContactsIndex"
@@ -138,11 +157,14 @@ class Constants {
                 static let duplicatePhotoCount = "deepCleanDuplicatePhotoTotalAssetsCount"
                 static let screenShotsCount = "deepCleanscreenShotsCount"
                 static let livePhotosSimilarCount = "deepCleanlivePhotosCount"
+				static let selfiePhotosCount = "selfiePhotosCount"
+				static let recentlyDeletedPhotoCount = "recentlyDeletedPhotoCount"
                     /// video part
                 static let largeVideoCount = "deepCleanlargeVideoCount"
                 static let duplicateVideoCount = "deepCleanduplicateVideoCount"
                 static let similarVideoCount = "deepCleansimilarVideoCount"
                 static let screenRecordingsCount = "deepCleanscreenRecordingsCount"
+				static let recentlyDeletedVideoCount = "recentlyDeletedVideoCount"
                     /// contacts part
                 static let allContactsCount = "deepCleanallContactsCount"
                 static let emptyContactsCount = "deepCleanemptyContactsCount"

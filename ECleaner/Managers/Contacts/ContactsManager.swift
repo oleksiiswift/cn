@@ -374,11 +374,6 @@ extension ContactsManager {
 
 
 extension ContactsManager {
-
-		/// ``namesDuplicated`` - find duplicated contacts by name
-		/// ``namesDuplicatesGroup`` - get sections of duplicated contacts by names
-		/// ``emailDuplicatesGroup`` - find duplicated contacts by emails  -  get sections of duplicated contacts by emails
-		/// ``getEmptyContactsOperation`` - check for empty fields
 	
 	public func getSingleDuplicatedCleaningContacts(of type: ContactasCleaningType, allowNotification: Bool = true, completionHandler: @escaping ([ContactsGroup]) -> Void) {
 		
@@ -501,6 +496,12 @@ extension ContactsManager {
 
 extension ContactsManager {
 	
+		/// ``getEmptyContactsOperation`` - find duplicated contacts by name
+		/// ``getDuplicatedContactsNamesOperation`` - get sections of duplicated contacts by names
+		/// ``getPhoneDuplicatedOperation`` find duplicated contacts by phone numbers
+		/// ``getEmailDuplicatesOperation`` - find duplicated contacts by emails  -  get sections of duplicated contacts by emails
+		/// ``getEmailDuplicatesOperation`` - check for empty fields
+	
 		/// `check empty filds` - check if some fileds is emty
 	private func getEmptyContactsOperation(contacts: [CNContact], enableDeepCleanNotification: Bool = false, enableSingleNotification: Bool = false, _ completionHandler: @escaping ([ContactsGroup]) -> Void) -> ConcurrentProcessOperation {
 		
@@ -563,7 +564,7 @@ extension ContactsManager {
 	}
 	
 	
-		/// `names duplicated contacts`
+		/// `names duplicated contacts group`
 	private func getDuplicatedContactsNamesOperation(contacts: [CNContact], enableDeepCleanNotification: Bool = false, enableSingleNotification: Bool = false, _ completionHandler: @escaping ([ContactsGroup]) -> Void) -> ConcurrentProcessOperation {
 	
 		let duplicatedContactsOperation = ConcurrentProcessOperation { _ in
@@ -616,7 +617,7 @@ extension ContactsManager {
 		return duplicatedContactsOperation
 	}
 	
-	
+		/// `phone numbers duplicated group`
 	private func getPhoneDuplicatedOperation(contacts: [CNContact], enableSingleNotification: Bool = true, enableDeepCleanNotification: Bool = false, completionHandler: @escaping ([ContactsGroup]) -> Void) -> ConcurrentProcessOperation {
 		
 		let phoneDuplicatedOperation = ConcurrentProcessOperation { _ in
@@ -665,6 +666,7 @@ extension ContactsManager {
 		return phoneDuplicatedOperation
 	}
 	
+		/// `duplicated email list group`
 	private func getEmailDuplicatesOperation(contacts: [CNContact], enableSingleNotification: Bool = true, enableDeepCleanNotification: Bool = false, completionHandler: @escaping ([ContactsGroup]) -> Void) -> ConcurrentProcessOperation {
 		
 		let emailDuplicatedOperation = ConcurrentProcessOperation { _ in

@@ -10,7 +10,7 @@ import Photos
 
 class DeepCleanManager {
     
-    private var photoManager = PhotoManager.manager
+    private var photoManager = PhotoManagerOLD.shared
     private var contactManager = ContactsManager.shared
     
     let deepCleanOperationQue = OperationProcessingQueuer(name: "Deep Clean Queuer", maxConcurrentOperationCount: 1, qualityOfService: .default)

@@ -30,7 +30,7 @@ class SimpleAssetsListViewController: UIViewController {
     
     public var isDeepCleaningSelectableFlow: Bool = false
     
-    private var photoManager = PhotoManager()
+    private var photoManager = PhotoManagerOLD()
     
     var selectedAssetsDelegate: DeepCleanSelectableAssetsDelegate?
 

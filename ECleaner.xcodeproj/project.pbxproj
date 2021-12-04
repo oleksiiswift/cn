@@ -85,7 +85,7 @@
 		04E58373267A4A2000EDC3A3 /* UIDevice+Enviroment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04E58372267A4A2000EDC3A3 /* UIDevice+Enviroment.swift */; };
 		04E58377267B323E00EDC3A3 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04E58376267B323E00EDC3A3 /* Constants.swift */; };
 		04E58379267B39AD00EDC3A3 /* PHPhotoLibrary+Auth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04E58378267B39AD00EDC3A3 /* PHPhotoLibrary+Auth.swift */; };
-		04E5837C267B3E2A00EDC3A3 /* PhotoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04E5837B267B3E2A00EDC3A3 /* PhotoManager.swift */; };
+		04E5837C267B3E2A00EDC3A3 /* PhotoManagerOLD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04E5837B267B3E2A00EDC3A3 /* PhotoManagerOLD.swift */; };
 		04E5837E267B60F600EDC3A3 /* AlertManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04E5837D267B60F600EDC3A3 /* AlertManager.swift */; };
 		04E58380267B9F6B00EDC3A3 /* PhassetFetchManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04E5837F267B9F6B00EDC3A3 /* PhassetFetchManager.swift */; };
 		04EE29FB269891F30013837D /* PHasset+Thumbnail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04EE29FA269891F30013837D /* PHasset+Thumbnail.swift */; };
@@ -127,6 +127,9 @@
 		4FE4EA7627217130005FBB68 /* Roboto-ThinItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4F4A17AE271D76F700CAF157 /* Roboto-ThinItalic.ttf */; };
 		4FE56A992729973B006CD946 /* DeepCleanInfoView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4FE56A982729973B006CD946 /* DeepCleanInfoView.xib */; };
 		4FE56A9B27299A11006CD946 /* DeepCleanInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FE56A9A27299A11006CD946 /* DeepCleanInfoView.swift */; };
+		970D7782275A9C400048F41D /* PHAssetGroupModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970D7781275A9C400048F41D /* PHAssetGroupModel.swift */; };
+		970D7784275B66CE0048F41D /* PhotoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970D7783275B66CE0048F41D /* PhotoManager.swift */; };
+		970D7786275B70420048F41D /* PHAsset+FileSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970D7785275B70420048F41D /* PHAsset+FileSize.swift */; };
 		9720EBEB27326F8C0078CD40 /* CellBlock 52.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9720EBEA27326F8C0078CD40 /* CellBlock 52.swift */; };
 		97238A072689BD8000C523DC /* PhotoMediaType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97238A062689BD8000C523DC /* PhotoMediaType.swift */; };
 		97238A092689D01E00C523DC /* GroupedAssetListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97238A082689D01E00C523DC /* GroupedAssetListViewController.swift */; };
@@ -299,7 +302,7 @@
 		04E58372267A4A2000EDC3A3 /* UIDevice+Enviroment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIDevice+Enviroment.swift"; sourceTree = "<group>"; };
 		04E58376267B323E00EDC3A3 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		04E58378267B39AD00EDC3A3 /* PHPhotoLibrary+Auth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PHPhotoLibrary+Auth.swift"; sourceTree = "<group>"; };
-		04E5837B267B3E2A00EDC3A3 /* PhotoManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoManager.swift; sourceTree = "<group>"; };
+		04E5837B267B3E2A00EDC3A3 /* PhotoManagerOLD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoManagerOLD.swift; sourceTree = "<group>"; };
 		04E5837D267B60F600EDC3A3 /* AlertManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertManager.swift; sourceTree = "<group>"; };
 		04E5837F267B9F6B00EDC3A3 /* PhassetFetchManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhassetFetchManager.swift; sourceTree = "<group>"; };
 		04EE29FA269891F30013837D /* PHasset+Thumbnail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PHasset+Thumbnail.swift"; sourceTree = "<group>"; };
@@ -343,6 +346,9 @@
 		4FE56A982729973B006CD946 /* DeepCleanInfoView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DeepCleanInfoView.xib; sourceTree = "<group>"; };
 		4FE56A9A27299A11006CD946 /* DeepCleanInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepCleanInfoView.swift; sourceTree = "<group>"; };
 		81D1B9EBAF1D92CCA563E435 /* Pods-ECleaner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ECleaner.debug.xcconfig"; path = "Target Support Files/Pods-ECleaner/Pods-ECleaner.debug.xcconfig"; sourceTree = "<group>"; };
+		970D7781275A9C400048F41D /* PHAssetGroupModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PHAssetGroupModel.swift; sourceTree = "<group>"; };
+		970D7783275B66CE0048F41D /* PhotoManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoManager.swift; sourceTree = "<group>"; };
+		970D7785275B70420048F41D /* PHAsset+FileSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PHAsset+FileSize.swift"; sourceTree = "<group>"; };
 		9720EBEA27326F8C0078CD40 /* CellBlock 52.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CellBlock 52.swift"; sourceTree = "<group>"; };
 		97238A062689BD8000C523DC /* PhotoMediaType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoMediaType.swift; sourceTree = "<group>"; };
 		97238A082689D01E00C523DC /* GroupedAssetListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupedAssetListViewController.swift; sourceTree = "<group>"; };
@@ -534,6 +540,8 @@
 		047DE61426AAA33700733CD5 /* Temp */ = {
 			isa = PBXGroup;
 			children = (
+				9797D7AB2754E6F300F2B030 /* ContactManagerDeprocatedMethods.swift */,
+				97A61EDD2726AB8700F2E6DE /* OLDContactsManager.swift */,
 				0459DF9826A6C5E50085EEDF /* celBlock51area.swift */,
 				9720EBEA27326F8C0078CD40 /* CellBlock 52.swift */,
 			);
@@ -585,7 +593,8 @@
 			isa = PBXGroup;
 			children = (
 				047DE61B26AAD5F000733CD5 /* DeepCleanManager.swift */,
-				04E5837B267B3E2A00EDC3A3 /* PhotoManager.swift */,
+				04E5837B267B3E2A00EDC3A3 /* PhotoManagerOLD.swift */,
+				970D7783275B66CE0048F41D /* PhotoManager.swift */,
 				04E5837F267B9F6B00EDC3A3 /* PhassetFetchManager.swift */,
 			);
 			path = Photo;
@@ -809,8 +818,9 @@
 				977BA0482733173B0018DF53 /* CNContacts */,
 				97CB351C273A972D005DA881 /* CALayer */,
 				97CB351F273A9775005DA881 /* TableView */,
-				97B01A742746ED5D00DDE03C /* UIFont+Italic.swift */,
-				978FEF19274C1C5400ADE1D9 /* UIAlertController+Colors.swift */,
+				970D7789275B70F60048F41D /* UIFont */,
+				970D7788275B70E70048F41D /* UIAlertController */,
+				970D7787275B70D70048F41D /* PHAsset */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -1074,6 +1084,30 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
+		970D7787275B70D70048F41D /* PHAsset */ = {
+			isa = PBXGroup;
+			children = (
+				970D7785275B70420048F41D /* PHAsset+FileSize.swift */,
+			);
+			path = PHAsset;
+			sourceTree = "<group>";
+		};
+		970D7788275B70E70048F41D /* UIAlertController */ = {
+			isa = PBXGroup;
+			children = (
+				978FEF19274C1C5400ADE1D9 /* UIAlertController+Colors.swift */,
+			);
+			path = UIAlertController;
+			sourceTree = "<group>";
+		};
+		970D7789275B70F60048F41D /* UIFont */ = {
+			isa = PBXGroup;
+			children = (
+				97B01A742746ED5D00DDE03C /* UIFont+Italic.swift */,
+			);
+			path = UIFont;
+			sourceTree = "<group>";
+		};
 		97238A142689F30500C523DC /* Presenters */ = {
 			isa = PBXGroup;
 			children = (
@@ -1190,8 +1224,6 @@
 		97A61EDF2726AB8B00F2E6DE /* Contacts */ = {
 			isa = PBXGroup;
 			children = (
-				97A61EDD2726AB8700F2E6DE /* OLDContactsManager.swift */,
-				9797D7AB2754E6F300F2B030 /* ContactManagerDeprocatedMethods.swift */,
 				97C44FBC274EF959001B61AB /* ContactsContainerType.swift */,
 				97D2BEC9275A2D1D002082EB /* ContactsManager.swift */,
 				97D2BECF275A3F88002082EB /* ContactsExportManager.swift */,
@@ -1297,6 +1329,7 @@
 			children = (
 				97C44FBA274EF93B001B61AB /* ContactasCleaningType.swift */,
 				97D2BED1275A4227002082EB /* ContactsGroupModel.swift */,
+				970D7781275A9C400048F41D /* PHAssetGroupModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1524,6 +1557,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				972E02542741050D00C236C7 /* SingleContactsGroupOperationsListener.swift in Sources */,
+				970D7782275A9C400048F41D /* PHAssetGroupModel.swift in Sources */,
 				048D65C926B171E5004F0ADC /* PlainProgressview.swift in Sources */,
 				4F4A17A6271D743600CAF157 /* FontRepresentable.swift in Sources */,
 				0459DF8B26A55F360085EEDF /* CarouselCollectionViewCell.swift in Sources */,
@@ -1580,7 +1614,7 @@
 				040E288826A98B0F0019F372 /* DeepCleaningViewController.swift in Sources */,
 				0459DF9B26A6CDCC0085EEDF /* PHCachingImageManager+RequestExtension.swift in Sources */,
 				04CF0003268602DE000CA850 /* MediaContentType.swift in Sources */,
-				04E5837C267B3E2A00EDC3A3 /* PhotoManager.swift in Sources */,
+				04E5837C267B3E2A00EDC3A3 /* PhotoManagerOLD.swift in Sources */,
 				97D2BED0275A3F88002082EB /* ContactsExportManager.swift in Sources */,
 				97C909CE274950D300BC2E47 /* DepricatedMethods.swift in Sources */,
 				04467CE0270D929D00DBBB39 /* HorizontalProgressBar.swift in Sources */,
@@ -1660,6 +1694,7 @@
 				049CC21B268225E60002F988 /* SettingsManager.swift in Sources */,
 				977FE23727306355004DE4C3 /* ContactsGroupViewController.swift in Sources */,
 				4F4A17A4271D73E900CAF157 /* Font.swift in Sources */,
+				970D7784275B66CE0048F41D /* PhotoManager.swift in Sources */,
 				975AF43B2728306C00744E3B /* ContactListDataSource.swift in Sources */,
 				97B01A752746ED5D00DDE03C /* UIFont+Italic.swift in Sources */,
 				97CC2F3A2683D00F0072EF8C /* UpdateContentDataBaseListener.swift in Sources */,
@@ -1667,6 +1702,7 @@
 				047DE61C26AAD5F000733CD5 /* DeepCleanManager.swift in Sources */,
 				97DC39AE273C003300D487BE /* PrimaryShadowButton.swift in Sources */,
 				04CF00002685F0C3000CA850 /* ContentTypeTableViewCell.swift in Sources */,
+				970D7786275B70420048F41D /* PHAsset+FileSize.swift in Sources */,
 				4F56074727205AF300CA19E9 /* BlueDarkStyle.swift in Sources */,
 				049CC221268314690002F988 /* NotificationManager.swift in Sources */,
 				4F4A17A8271D745300CAF157 /* UIFont+Extension.swift in Sources */,
