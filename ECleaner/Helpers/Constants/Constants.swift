@@ -77,7 +77,8 @@ class Constants {
                 static let singleSearchDupliatesEmailsContactsScan = "singleSearchDupliatesEmailsContactsScan"
 					/// photo
 				static let singleSearchSimilarPhotoPHAssetScan = "singleSearchSimilarPhotoPhassetScan"
-				static let singleDuplicatedPhotoPHAssetScant = "singleDuplicatedPhotoPHAssetScant"
+				static let singleDuplicatedPhotoPHAssetScan = "singleDuplicatedPhotoPHAssetScant"
+				static let singleSimilarLivePhotoPHAssetScan = "singleSimilarLivePhotoPHAssetScan"
 				static let singleScreeenshotsPhotoPHAssetScan = "singleScreeenshotsPhotoPHAssetScan"
 				static let singleSelfiePHAssetScan = "singleSelfiePHAssetScan"
 				static let singleLivePhotoPHAssetScan = "singleLivePhotoPHAssetScan"
@@ -125,10 +126,18 @@ class Constants {
 				static let livePhotoOperation = "livePhotoOperation"
 				static let photoSelfiesOperation = "photoSelfiesOperation"
 				
+				static let similarPhotoProcessingOperation = "similarPhotoProcessingOperation"
+				static let duplicatePhotoProcessingOperation = "duplicatePhotoProcessingOperation"
+				static let similarLivePhotoProcessingOperation = "similarLivePhotoProcessingOperation"
 				
+				static let similarVideoProcessingOperation = "similarVideoProcessingOperation"
+				static let duplicateVideoProcessingOperation = "duplicateVideoProcessingOperation"
+			
 				static let deletePhassetsOperation = "deletePhassetsOperation"
+				static let similarTuplesOperation = "serviceUtilityDuplicatedTuplesOperation"
+				static let findDuplicatedVideoOperation = "findDuplicatedVideoOperation"
+				static let getSimilarVideosByTimeStampOperation = "getSimilarVideosByTimeStampOperation"
 			}
-		
 		}
         
 //        MARK: - notification dictionary progress identifiers -

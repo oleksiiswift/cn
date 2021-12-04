@@ -37,7 +37,8 @@ extension Notification.Name {
         ///  `single search scan progress notification`
 		
 	static let singleSearchSimilarPhotoScan = 				Notification.Name(C.key.notification.singleSearch.singleSearchSimilarPhotoPHAssetScan)
-	static let singleSearchDuplicatedPhotoScan = 			Notification.Name(C.key.notification.singleSearch.singleDuplicatedPhotoPHAssetScant)
+	static let singleSearchDuplicatedPhotoScan = 			Notification.Name(C.key.notification.singleSearch.singleDuplicatedPhotoPHAssetScan)
+	static let singleSearchSimilarLivePhotoScan =			Notification.Name(C.key.notification.singleSearch.singleLivePhotoPHAssetScan)
 	static let singleSearchScreenShotsPhotoScan = 			Notification.Name(C.key.notification.singleSearch.singleScreeenshotsPhotoPHAssetScan)
 	static let singleSearchSelfiePhotoScan = 				Notification.Name(C.key.notification.singleSearch.singleSelfiePHAssetScan)
 	static let singleSearchLivePhotoScan = 					Notification.Name(C.key.notification.singleSearch.singleLivePhotoPHAssetScan)

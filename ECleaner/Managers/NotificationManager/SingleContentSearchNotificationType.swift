@@ -12,6 +12,7 @@ enum SingleContentSearchNotificationType {
 	/// `photo search`
 	case similarPhoto
 	case duplicatedPhoto
+	case similarLivePhoto
 	case screenShots
 	case selfies
 	case livePhoto
@@ -41,6 +42,8 @@ enum SingleContentSearchNotificationType {
 				return C.key.notificationDictionary.count.similarPhotoCount
 			case .duplicatedPhoto:
 				return C.key.notificationDictionary.count.duplicatePhotoCount
+			case .similarLivePhoto:
+				return C.key.notificationDictionary.count.livePhotosSimilarCount
 			case .screenShots:
 				return C.key.notificationDictionary.count.screenShotsCount
 			case .selfies:
@@ -83,6 +86,8 @@ enum SingleContentSearchNotificationType {
 				return C.key.notificationDictionary.index.similarPhotoIndex
 			case .duplicatedPhoto:
 				return C.key.notificationDictionary.index.duplicatePhotoIndex
+			case .similarLivePhoto:
+				return C.key.notificationDictionary.index.livePhotosIndex
 			case .screenShots:
 				return C.key.notificationDictionary.index.screenShotsIndex
 			case .selfies:
@@ -126,6 +131,8 @@ enum SingleContentSearchNotificationType {
 				return .singleSearchSimilarPhotoScan
 			case .duplicatedPhoto:
 				return .singleSearchDuplicatedPhotoScan
+			case .similarLivePhoto:
+				return .singleSearchSimilarLivePhotoScan
 			case .screenShots:
 				return .singleSearchScreenShotsPhotoScan
 			case .selfies:
@@ -169,6 +176,8 @@ enum SingleContentSearchNotificationType {
 				return .similarPhotos
 			case .duplicatedPhoto:
 				return .duplicatedPhotos
+			case .similarLivePhoto:
+				return .similarLivePhotos
 			case .screenShots:
 				return .singleScreenShots
 			case .selfies:
