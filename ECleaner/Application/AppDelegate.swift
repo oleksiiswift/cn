@@ -35,7 +35,7 @@ extension AppDelegate {
     
     private func configureApplication(with launchOptions: [UIApplication.LaunchOptionsKey: Any]?) {
         
-        PhotoManagerOLD().getPhotoLibraryAccess()
+		PhotoManager.shared.checkPhotoLibraryAccess()
         ContactsManager.shared.checkStatus { res in }
         
 //        ContactsManagerOLD.shared.deleteAllContacts()

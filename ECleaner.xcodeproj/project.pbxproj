@@ -542,6 +542,7 @@
 		047DE61426AAA33700733CD5 /* Temp */ = {
 			isa = PBXGroup;
 			children = (
+				04E5837B267B3E2A00EDC3A3 /* PhotoManagerOLD.swift */,
 				9797D7AB2754E6F300F2B030 /* ContactManagerDeprocatedMethods.swift */,
 				97A61EDD2726AB8700F2E6DE /* OLDContactsManager.swift */,
 				0459DF9826A6C5E50085EEDF /* celBlock51area.swift */,
@@ -595,7 +596,6 @@
 			isa = PBXGroup;
 			children = (
 				047DE61B26AAD5F000733CD5 /* DeepCleanManager.swift */,
-				04E5837B267B3E2A00EDC3A3 /* PhotoManagerOLD.swift */,
 				970D7783275B66CE0048F41D /* PhotoManager.swift */,
 				04E5837F267B9F6B00EDC3A3 /* PhassetFetchManager.swift */,
 			);

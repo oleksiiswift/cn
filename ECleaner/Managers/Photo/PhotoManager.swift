@@ -928,25 +928,6 @@ extension PhotoManager {
 	}
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//		MARK: - temporary not in use
 extension PhotoManager {
 	
 	public func getPhotoAssetsCount(from startDate: String, to endDate: String, completion: @escaping (Int) -> Void) {
@@ -958,57 +939,57 @@ extension PhotoManager {
 	
 	public func getPartitionalMediaAssetsCount(from startDate: String, to endDate: String, completion: @escaping ([AssetsGroupType: Int]) -> Void) {
 		
-//		var totalProcessingProcess = 0
-//
-//		var totalPartitinAssetsCount: [AssetsGroupType : Int] = [.photo : 0, // get all photo count
-//																 .screenShots : 0, // get all screenshots
-//																 .livePhotos : 0, // get all live photosCount
-//																 .video : 0, // get all videos
-//																 .screenRecordings : 0] // get all screen recordings
-//
-//		self.fetchManager.fetchPhotoCount(from: startDate, to: endDate) { photoCount in
-//			totalPartitinAssetsCount[.photo] = photoCount
-//
-//			totalProcessingProcess += 1
-//			if totalProcessingProcess == 5 {
-//				completion(totalPartitinAssetsCount)
-//			}
-//		}
-//
-//		self.fetchManager.fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumVideos, by: PHAssetMediaType.video.rawValue) { result in
-//			totalPartitinAssetsCount[.video] = result.count
-//
-//			totalProcessingProcess += 1
-//			if totalProcessingProcess == 5 {
-//				completion(totalPartitinAssetsCount)
-//			}
-//		}
-//
-//		self.getScreenShots(from: startDate, to: endDate, isDeepCleanScan: false) { assets in
-//			totalPartitinAssetsCount[.screenShots] = assets.count
-//
-//			totalProcessingProcess += 1
-//			if totalProcessingProcess == 5 {
-//				completion(totalPartitinAssetsCount)
-//			}
-//		}
-//
-//		self.fetchManager.fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumLivePhotos, by: PHAssetMediaType.image.rawValue) { result in
-//			totalPartitinAssetsCount[.livePhotos] = result.count
-//
-//			totalProcessingProcess += 1
-//			if totalProcessingProcess == 5 {
-//				completion(totalPartitinAssetsCount)
-//			}
-//		}
-//
-//		self.getScreenRecordsVideos(from: startDate, to: endDate, isDeepCleanScan: false) { screenRecordsAssets in
-//			totalPartitinAssetsCount[.screenRecordings] = screenRecordsAssets.count
-//
-//			totalProcessingProcess += 1
-//			if totalProcessingProcess == 5 {
-//				completion(totalPartitinAssetsCount)
-//			}
-//		}
+		var totalProcessingProcess = 0
+
+		var totalPartitinAssetsCount: [AssetsGroupType : Int] = [.photo : 0, // get all photo count
+																 .screenShots : 0, // get all screenshots
+																 .livePhotos : 0, // get all live photosCount
+																 .video : 0, // get all videos
+																 .screenRecordings : 0] // get all screen recordings
+
+		self.fetchManager.fetchPhotoCount(from: startDate, to: endDate) { photoCount in
+			totalPartitinAssetsCount[.photo] = photoCount
+
+			totalProcessingProcess += 1
+			if totalProcessingProcess == 5 {
+				completion(totalPartitinAssetsCount)
+			}
+		}
+
+		self.fetchManager.fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumVideos, by: PHAssetMediaType.video.rawValue) { result in
+			totalPartitinAssetsCount[.video] = result.count
+
+			totalProcessingProcess += 1
+			if totalProcessingProcess == 5 {
+				completion(totalPartitinAssetsCount)
+			}
+		}
+
+		self.getScreenShots(from: startDate, to: endDate, isDeepCleanScan: false) { assets in
+			totalPartitinAssetsCount[.screenShots] = assets.count
+
+			totalProcessingProcess += 1
+			if totalProcessingProcess == 5 {
+				completion(totalPartitinAssetsCount)
+			}
+		}
+
+		self.fetchManager.fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumLivePhotos, by: PHAssetMediaType.image.rawValue) { result in
+			totalPartitinAssetsCount[.livePhotos] = result.count
+
+			totalProcessingProcess += 1
+			if totalProcessingProcess == 5 {
+				completion(totalPartitinAssetsCount)
+			}
+		}
+
+		self.getScreenRecordsVideos(from: startDate, to: endDate, isDeepCleanScan: false) { screenRecordsAssets in
+			totalPartitinAssetsCount[.screenRecordings] = screenRecordsAssets.count
+
+			totalProcessingProcess += 1
+			if totalProcessingProcess == 5 {
+				completion(totalPartitinAssetsCount)
+			}
+		}
 	}
 }

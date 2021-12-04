@@ -101,6 +101,7 @@ class Constants {
 			struct queue {
 				static let contacts = "contactsCleanSearchOperationQueuer"
 				static let phassets = "phassetsCleanSearchOperationQueuer"
+				static let deepClean = "deepCleanSearchOperationQueuer"
 				static let utils = "utilsBackgroudSpaceCalculated"
 			}
 			

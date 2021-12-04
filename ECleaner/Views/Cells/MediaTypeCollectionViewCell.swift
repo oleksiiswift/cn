@@ -21,7 +21,7 @@ class MediaTypeCollectionViewCell: UICollectionViewCell {
     
     private lazy var loadingActivityIndicatorView = UIActivityIndicatorView()
 
-    private var photoManager = PhotoManagerOLD()
+	private var photoManager = PhotoManager.shared
     public var mediaTypeCell: MediaContentType = .none
     
     override func prepareForReuse() {
