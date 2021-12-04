@@ -36,10 +36,10 @@ enum Strictness {
 		- parameter isDeepCleanScan in methods used for completion stay in background if `false` completion of methods needs move to main thread
 		*/
 
-class PhotoManager: NSObject {
+class PhotoManager {
 	
-	static let shared: PhotoManagerOLD = {
-		let instance = PhotoManagerOLD()
+	static let shared: PhotoManager = {
+		let instance = PhotoManager()
 		return instance
 	}()
 	
@@ -446,12 +446,10 @@ extension PhotoManager {
 								}
 							}
 						}
-						
 						if compareAsset.count != 0 {
 							grouped.append(PhassetGroup.init(name: "", assets: compareAsset))
 						}
 					}
-					
 					completionHandler(grouped.isEmpty ? [] : grouped)
 				} else {
 					completionHandler([])
@@ -461,7 +459,6 @@ extension PhotoManager {
 		
 		similarVideosByTimeStampOperation.name = C.key.operation.name.getSimilarVideosByTimeStampOperation
 		return similarVideosByTimeStampOperation
-		
 	}
 }
 
@@ -487,7 +484,6 @@ extension PhotoManager {
 				}
 			}
 		}
-		
 		photoSelfiesOperation.name = C.key.operation.name.photoSelfiesOperation
 		return photoSelfiesOperation
 	}
@@ -517,7 +513,6 @@ extension PhotoManager {
 				}
 			}
 		}
-		
 		getScreenShotsOperation.name = C.key.operation.name.screenShotsOperation
 		return getScreenShotsOperation
 	}
@@ -546,7 +541,6 @@ extension PhotoManager {
 				}
 			}
 		}
-		
 		livePhotoOperation.name = C.key.operation.name.livePhotoOperation
 		return livePhotoOperation
 	}
@@ -629,52 +623,51 @@ extension PhotoManager {
 	}
 	
 		/// `load simmiliar live photo` from gallery
-		public func getSimilarLivePhotosOperation(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", enableDeepCleanProcessingNotification: Bool = false, enableSingleProcessingNotification: Bool = false, completionHandler: @escaping ((_ assets: [PhassetGroup]) -> Void)) -> ConcurrentProcessOperation {
+	public func getSimilarLivePhotosOperation(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", enableDeepCleanProcessingNotification: Bool = false, enableSingleProcessingNotification: Bool = false, completionHandler: @escaping ((_ assets: [PhassetGroup]) -> Void)) -> ConcurrentProcessOperation {
+		
+		let similarLivePhotoProcessingOperation = ConcurrentProcessOperation { _ in
 			
-			let similarLivePhotoProcessingOperation = ConcurrentProcessOperation { _ in
-			
-				self.fetchManager.fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumLivePhotos, by: PHAssetMediaType.image.rawValue) { livePhotoGallery in
+			self.fetchManager.fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumLivePhotos, by: PHAssetMediaType.image.rawValue) { livePhotoGallery in
 				
-					var livePhotos: [OSTuple<NSString, NSData>] = []
-					
-					if livePhotoGallery.count != 0 {
-						for livePosition in 1...livePhotoGallery.count {
-							debugPrint("live photo position", livePosition)
-							
-							if enableSingleProcessingNotification {
-								self.progressSearchNotificationManager.sendSingleSearchProgressNotification(notificationtype: .similarLivePhoto,
-																											totalProgressItems: livePhotoGallery.count,
-																											currentProgressItem: livePosition)
-							} else  if enableDeepCleanProcessingNotification {
-								self.progressSearchNotificationManager.sendDeepProgressNotificatin(notificationType: .similarLivePhoto,
-																						 totalProgressItems: livePhotoGallery.count,
-																						 currentProgressItem: livePosition)
-							}
-							
-							let image = self.fetchManager.getThumbnail(from: livePhotoGallery[livePosition - 1], size: CGSize(width: 150, height: 150))
-							if let data = image.jpegData(compressionQuality: 0.8) {
-								let tuple = OSTuple<NSString, NSData>(first: "image\(livePosition)" as NSString, andSecond: data as NSData)
-								livePhotos.append(tuple)
-							}
+				var livePhotos: [OSTuple<NSString, NSData>] = []
+				
+				if livePhotoGallery.count != 0 {
+					for livePosition in 1...livePhotoGallery.count {
+						debugPrint("live photo position", livePosition)
+						
+						if enableSingleProcessingNotification {
+							self.progressSearchNotificationManager.sendSingleSearchProgressNotification(notificationtype: .similarLivePhoto,
+																										totalProgressItems: livePhotoGallery.count,
+																										currentProgressItem: livePosition)
+						} else  if enableDeepCleanProcessingNotification {
+							self.progressSearchNotificationManager.sendDeepProgressNotificatin(notificationType: .similarLivePhoto,
+																							   totalProgressItems: livePhotoGallery.count,
+																							   currentProgressItem: livePosition)
 						}
 						
-						let duplicatedTuplesOperation = self.getDuplicatedTuplesOperation(for: livePhotos,
-																							 photosInGallery: livePhotoGallery,
-																							 isDeepCleanScan: enableDeepCleanProcessingNotification) { similarLivePhotoGroup in
-							completionHandler(similarLivePhotoGroup)
+						let image = self.fetchManager.getThumbnail(from: livePhotoGallery[livePosition - 1], size: CGSize(width: 150, height: 150))
+						if let data = image.jpegData(compressionQuality: 0.8) {
+							let tuple = OSTuple<NSString, NSData>(first: "image\(livePosition)" as NSString, andSecond: data as NSData)
+							livePhotos.append(tuple)
 						}
-					
-						self.serviceUtilsCalculatedOperationsQueuer.addOperation(duplicatedTuplesOperation)
-						
-					} else {
-						completionHandler([])
 					}
+					
+					let duplicatedTuplesOperation = self.getDuplicatedTuplesOperation(for: livePhotos,
+																						 photosInGallery: livePhotoGallery,
+																						 isDeepCleanScan: enableDeepCleanProcessingNotification) { similarLivePhotoGroup in
+						completionHandler(similarLivePhotoGroup)
+					}
+					
+					self.serviceUtilsCalculatedOperationsQueuer.addOperation(duplicatedTuplesOperation)
+					
+				} else {
+					completionHandler([])
 				}
 			}
-			
-			similarLivePhotoProcessingOperation.name = C.key.operation.name.similarLivePhotoProcessingOperation
-			return similarLivePhotoProcessingOperation
 		}
+		similarLivePhotoProcessingOperation.name = C.key.operation.name.similarLivePhotoProcessingOperation
+		return similarLivePhotoProcessingOperation
+	}
 	
 		// `duplicate photo algorithm`
 	public func getDuplicatedPhotosAsset(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", enableDeepCleanProcessingNotification: Bool = false, enableSingleProcessingNotification: Bool = false, completionHandler: @escaping ((_ assets: [PhassetGroup]) -> Void)) -> ConcurrentProcessOperation {
@@ -904,7 +897,6 @@ extension PhotoManager {
 		deletePhassetsOperation.name = C.key.operation.name.deletePhassetsOperation
 		return deletePhassetsOperation
 	}
-	
 }
 
 
