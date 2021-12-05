@@ -12,6 +12,7 @@ class DeepCleanManager {
     
 	private var photoManager = PhotoManager.shared
     private var contactManager = ContactsManager.shared
+	private var fetchManager = PHAssetFetchManager.shared
     
 	let deepCleanOperationQue = OperationProcessingQueuer(name: C.key.operation.queue.deepClean, maxConcurrentOperationCount: 10, qualityOfService: .default)
         
@@ -159,6 +160,7 @@ class DeepCleanManager {
     }
 	
 	public func cancelAllOperation() {
+		photoManager.serviceUtilsCalculatedOperationsQueuer.cancelAll()
 		deepCleanOperationQue.cancelAll()
 		contactManager.contactsProcessingOperationQueuer.cancelAll()
 	}

@@ -228,7 +228,6 @@ extension PhotoManager {
 					completionHandler([])
 				}
 			}
-			
 		}
 		largeVideoProcessingOperation.name = C.key.operation.name.largeVideo
 		return largeVideoProcessingOperation
@@ -237,7 +236,7 @@ extension PhotoManager {
 		/// `screen recordings` from gallery
 	public func getScreenRecordsVideosOperation(from startDate: String = "01-01-1917 00:00:00", to endDate: String = "01-01-2666 00:00:00", enableDeepCleanProcessingNotification: Bool = false, enableSingleProcessingNotification: Bool = false, completionHandler: @escaping ((_ screenRecordsAssets: [PHAsset]) -> Void)) -> ConcurrentProcessOperation {
 		
-		let screenRecordsVideosOperation = ConcurrentProcessOperation { _ in
+		let screenRecordsVideosOperation = ConcurrentProcessOperation { operation in
 			
 			self.fetchManager.fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumVideos, by: PHAssetMediaType.video.rawValue) { videoAssets in
 				
@@ -247,6 +246,11 @@ extension PhotoManager {
 					
 					for videosPosition in 1...videoAssets.count {
 						
+						if operation.isCancelled {
+							completionHandler([])
+							return
+						}
+					
 						let asset = videoAssets[videosPosition - 1]
 						
 						if let assetResource = PHAssetResource.assetResources(for: asset).first {
@@ -271,7 +275,6 @@ extension PhotoManager {
 				}
 			}
 		}
-		
 		screenRecordsVideosOperation.name = C.key.operation.name.screenRecordingOperation
 		return screenRecordsVideosOperation
 	}
@@ -284,7 +287,7 @@ extension PhotoManager {
 	public func getSimilarVideoAssetsOperation(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", enableDeepCleanProcessingNotification: Bool = false, enableSingleProcessingNotification: Bool = false,  completionHandler: @escaping ((_ videoAssets: [PhassetGroup]) -> Void)) -> ConcurrentProcessOperation
 	{
 	
-	let similarVideoAssetsOperation = ConcurrentProcessOperation { _ in
+	let similarVideoAssetsOperation = ConcurrentProcessOperation { operation in
 		
 		self.fetchManager.fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumVideos, by: PHAssetMediaType.video.rawValue) { videoContent in
 			
@@ -296,8 +299,8 @@ extension PhotoManager {
 					let asset = videoContent[videoPosition - 1]
 					assets.append(asset)
 				}
-
-				let similarVideoPhassetOperation = self.findDuplicatedVideoOperation(assets: assets, strictness: .similar, enableDeepCleanProcessingNotification: enableDeepCleanProcessingNotification, enableSingleProcessingNotification: enableSingleProcessingNotification) { phassetCroup in
+				
+				let similarVideoPhassetOperation = self.findDuplicatedVideoOperation(assets: assets, strictness: .similar, enableDeepCleanProcessingNotification: enableDeepCleanProcessingNotification, enableSingleProcessingNotification: enableSingleProcessingNotification, operation: operation) { phassetCroup in
 					completionHandler(phassetCroup)
 				}
 				
@@ -308,16 +311,14 @@ extension PhotoManager {
 			}
 		}
 	}
-	
 	similarVideoAssetsOperation.name = C.key.operation.name.similarVideoProcessingOperation
 	return similarVideoAssetsOperation
-	
 	}
 	
 		/// `duplicated videos compare algorithm`
 	public func getDuplicatedVideoAssetOperation(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", enableDeepCleanProcessingNotification: Bool = false, enableSingleProcessingNotification: Bool = false, completionHandler: @escaping ((_ videoAssets: [PhassetGroup]) -> Void)) -> ConcurrentProcessOperation {
 		
-		let duplicatedVideoAssetsOperation = ConcurrentProcessOperation { _ in
+		let duplicatedVideoAssetsOperation = ConcurrentProcessOperation { operation in
 			
 			self.fetchManager.fetchFromGallery(from: startDate,
 											   to: endDate,
@@ -328,6 +329,11 @@ extension PhotoManager {
 				
 				if videoCollection.count != 0 {
 					for index in 1...videoCollection.count {
+						
+						if operation.isCancelled {
+							completionHandler([])
+							return
+						}
 						
 						if enableSingleProcessingNotification {
 							self.progressSearchNotificationManager.sendSingleSearchProgressNotification(notificationtype: .duplicatedVideo,
@@ -359,6 +365,11 @@ extension PhotoManager {
 					
 					for index in 1...duplicateVideoIDasTuples.count {
 						
+						if operation.isCancelled {
+							completionHandler([])
+							return
+						}
+						
 						let tuple = duplicateVideoIDasTuples[index - 1]
 						var groupAssets: [PHAsset] = []
 						if let first = tuple.first as String?, let second = tuple.second as String? {
@@ -377,6 +388,12 @@ extension PhotoManager {
 							}
 							
 							duplicateVideoIDasTuples.filter({$0.first != nil && $0.second != nil}).filter({ $0.first == tuple.first || $0.first == tuple.second || $0.second == tuple.second || $0.second == tuple.first }).forEach({ tuple in
+								
+								if operation.isCancelled {
+									completionHandler([])
+									return
+								}
+								
 								if let firstTuple = tuple.first as String?, let secondTuple = tuple.second as String? {
 									let firstTupleInteger = firstTuple.replacingStringAndConvertToIntegerForImage() - 1
 									let secondTupleInteger = secondTuple.replacingStringAndConvertToIntegerForImage() - 1
@@ -408,7 +425,6 @@ extension PhotoManager {
 				}
 			}
 		}
-		
 		duplicatedVideoAssetsOperation.name = C.key.operation.name.duplicateVideoProcessingOperation
 		return duplicatedVideoAssetsOperation
 	}
@@ -416,7 +432,7 @@ extension PhotoManager {
 		/// `similar videos by time stamp`
 	public func getSimilarVideosByTimeStampOperation(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", enableDeepCleanProcessingNotification: Bool = false, enableSingleProcessingNotification: Bool = false, completionHandler: @escaping ((_ videoAssets: [PhassetGroup]) -> Void)) -> ConcurrentProcessOperation {
 		
-		let similarVideosByTimeStampOperation = ConcurrentProcessOperation { _ in
+		let similarVideosByTimeStampOperation = ConcurrentProcessOperation { operation in
 			
 			self.fetchManager.fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumVideos, by: PHAssetMediaType.video.rawValue) { videoContent in
 				
@@ -430,11 +446,23 @@ extension PhotoManager {
 					}
 					
 					for video in assets {
+						
+						if operation.isCancelled {
+							completionHandler([])
+							return
+						}
+						
 						var compareAsset: [PHAsset] = []
 						debugPrint("->>>>>>>>>>")
 						debugPrint(video.localIdentifier)
 						
 						for check in assets {
+							
+							if operation.isCancelled {
+								completionHandler([])
+								return
+							}
+						
 							debugPrint("........")
 							debugPrint(check.localIdentifier)
 							if video.localIdentifier != check.localIdentifier {
@@ -456,7 +484,6 @@ extension PhotoManager {
 				}
 			}
 		}
-		
 		similarVideosByTimeStampOperation.name = C.key.operation.name.getSimilarVideosByTimeStampOperation
 		return similarVideosByTimeStampOperation
 	}
@@ -469,13 +496,19 @@ extension PhotoManager {
 		/// `load selfies` from gallery
 	public func getSelfiePhotosOperation(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", enableDeepCleanProcessingNotification: Bool = false, enableSingleProcessingNotification: Bool = false, completionHandler: @escaping ((_ assets: [PHAsset]) -> Void)) -> ConcurrentProcessOperation {
 		
-		let photoSelfiesOperation = ConcurrentProcessOperation { _ in
+		let photoSelfiesOperation = ConcurrentProcessOperation { operation in
 			
 			self.fetchManager.fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumSelfPortraits, by: PHAssetMediaType.image.rawValue) { selfiesInLibrary in
 				var selfies: [PHAsset] = []
 				
 				if selfiesInLibrary.count != 0 {
 					for selfiePos in 1...selfiesInLibrary.count {
+						
+						if operation.isCancelled {
+							completionHandler([])
+							return
+						}
+						
 						selfies.append(selfiesInLibrary[selfiePos - 1])
 					}
 					completionHandler(selfies)
@@ -491,7 +524,7 @@ extension PhotoManager {
 		/// `load screenshots` from gallery
 	public func getScreenShotsOperation(from startDate: String = "01-01-1917 00:00:00", to endDate: String = "01-01-2666 00:00:00", enableDeepCleanProcessingNotification: Bool = false, enableSingleProcessingNotification: Bool = false, completionHandler: @escaping ((_ assets: [PHAsset]) -> Void)) -> ConcurrentProcessOperation {
 		
-		let getScreenShotsOperation = ConcurrentProcessOperation { _ in
+		let getScreenShotsOperation = ConcurrentProcessOperation { operation in
 			
 			self.fetchManager.fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumScreenshots, by: PHAssetMediaType.image.rawValue) { screensShotsLibrary in
 				
@@ -500,6 +533,12 @@ extension PhotoManager {
 				if screensShotsLibrary.count != 0 {
 					
 					for screensPos in 1...screensShotsLibrary.count {
+						
+						if operation.isCancelled {
+							completionHandler([])
+							return
+						}
+						
 						if enableSingleProcessingNotification {
 							self.progressSearchNotificationManager.sendSingleSearchProgressNotification(notificationtype: .screenShots, totalProgressItems: screensShotsLibrary.count, currentProgressItem: screensPos)
 						} else if enableDeepCleanProcessingNotification {
@@ -520,7 +559,7 @@ extension PhotoManager {
 			/// `load live photos` from gallery
 	public func getLivePhotosOperation(from startDate: String = "01-01-1917 00:00:00", to endDate: String = "01-01-2666 00:00:00", enableDeepCleanProcessingNotification: Bool = false, enableSingleProcessingNotification: Bool = false, completionHandler: @escaping ((_ assets: [PHAsset]) -> Void)) -> ConcurrentProcessOperation {
 		
-		let livePhotoOperation = ConcurrentProcessOperation { _ in
+		let livePhotoOperation = ConcurrentProcessOperation { operation in
 			
 			self.fetchManager.fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumLivePhotos, by: PHAssetMediaType.image.rawValue) { livePhotosLibrary in
 				
@@ -528,6 +567,12 @@ extension PhotoManager {
 				if livePhotosLibrary.count != 0 {
 					
 					for livePhotoPosition in 1...livePhotosLibrary.count {
+						
+						if operation.isCancelled {
+							completionHandler([])
+							return
+						}
+						
 						if enableSingleProcessingNotification {
 							self.progressSearchNotificationManager.sendSingleSearchProgressNotification(notificationtype: .livePhoto, totalProgressItems: livePhotosLibrary.count, currentProgressItem: livePhotoPosition)
 						} else if enableDeepCleanProcessingNotification {
@@ -552,7 +597,7 @@ extension PhotoManager {
 		/// `simmilar photo algoritm`
 	public func getSimilarPhotosAssetsOperation(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", fileSizeCheck: Bool = false, enableDeepCleanProcessingNotification: Bool = false, enableSingleProcessingNotification: Bool = false, completionHandler: @escaping ((_ assets: [PhassetGroup]) -> Void)) -> ConcurrentProcessOperation {
 		
-		let similarPhotoProcessingOperation = ConcurrentProcessOperation { _ in
+		let similarPhotoProcessingOperation = ConcurrentProcessOperation { operation in
 			
 			self.fetchManager.fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumUserLibrary, by: PHAssetMediaType.image.rawValue) { photosInGallery in
 				
@@ -568,7 +613,12 @@ extension PhotoManager {
 					for index in 1...photosInGallery.count {
 						debugPrint("index preocessing duplicate")
 						debugPrint("index \(index)")
-						
+							
+						if operation.isCancelled {
+							completionHandler([])
+							return
+						}
+					
 						if enableSingleProcessingNotification {
 							self.progressSearchNotificationManager.sendSingleSearchProgressNotification(notificationtype: .similarPhoto,
 																										totalProgressItems: photosInGallery.count,
@@ -589,6 +639,12 @@ extension PhotoManager {
 					}
 					
 					for index in 0...similarPhotos.count - 1 {
+						
+						if operation.isCancelled {
+							completionHandler([])
+							return
+						}
+						
 						debugPrint("similar index precessing: ", index)
 						var similarIndex = index + 1
 						if containsAdd.contains(index) { continue }
@@ -625,7 +681,7 @@ extension PhotoManager {
 		/// `load simmiliar live photo` from gallery
 	public func getSimilarLivePhotosOperation(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", enableDeepCleanProcessingNotification: Bool = false, enableSingleProcessingNotification: Bool = false, completionHandler: @escaping ((_ assets: [PhassetGroup]) -> Void)) -> ConcurrentProcessOperation {
 		
-		let similarLivePhotoProcessingOperation = ConcurrentProcessOperation { _ in
+		let similarLivePhotoProcessingOperation = ConcurrentProcessOperation { operation in
 			
 			self.fetchManager.fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumLivePhotos, by: PHAssetMediaType.image.rawValue) { livePhotoGallery in
 				
@@ -633,6 +689,12 @@ extension PhotoManager {
 				
 				if livePhotoGallery.count != 0 {
 					for livePosition in 1...livePhotoGallery.count {
+						
+						if operation.isCancelled {
+							completionHandler([])
+							return
+						}
+					
 						debugPrint("live photo position", livePosition)
 						
 						if enableSingleProcessingNotification {
@@ -672,7 +734,7 @@ extension PhotoManager {
 		// `duplicate photo algorithm`
 	public func getDuplicatedPhotosAsset(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", enableDeepCleanProcessingNotification: Bool = false, enableSingleProcessingNotification: Bool = false, completionHandler: @escaping ((_ assets: [PhassetGroup]) -> Void)) -> ConcurrentProcessOperation {
 		
-		let duplicatedPhotoAssetOperation = ConcurrentProcessOperation { _ in
+		let duplicatedPhotoAssetOperation = ConcurrentProcessOperation { operation in
 			
 			
 			self.fetchManager.fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumUserLibrary, by: PHAssetMediaType.image.rawValue) { photoGallery in
@@ -685,6 +747,11 @@ extension PhotoManager {
 					for photoPos in 1...photoGallery.count {
 						debugPrint("loading duplicate")
 						debugPrint("photoposition \(photoPos)")
+						
+						if operation.isCancelled {
+							completionHandler([])
+							return
+						}
 						
 							/// adding notification to handle progress similar photos processing
 						if enableSingleProcessingNotification {
@@ -726,7 +793,7 @@ extension PhotoManager {
 		/// `private duplicated tuples` need for service compare
 	private func getDuplicatedTuplesOperation(for photos: [OSTuple<NSString, NSData>], photosInGallery: PHFetchResult<PHAsset>, isDeepCleanScan: Bool = false, completionHandler: @escaping ([PhassetGroup]) -> Void) -> ConcurrentProcessOperation{
 		
-		let serviceUtilityDuplicatedTuplesOperation = ConcurrentProcessOperation { _ in
+		let serviceUtilityDuplicatedTuplesOperation = ConcurrentProcessOperation { operation in
 			
 			var duplicatedPhotosCount: [Int] = []
 			var duplicatedGroup: [PhassetGroup] = []
@@ -739,6 +806,12 @@ extension PhotoManager {
 			}
 			
 			for currentPosition in 1...duplicatedIDS.count {
+				
+				if operation.isCancelled {
+					completionHandler([])
+					return
+				}
+				
 				let duplicatedTuple = duplicatedIDS[currentPosition - 1]
 				var group: [PHAsset] = []
 				
@@ -763,6 +836,12 @@ extension PhotoManager {
 					}
 					
 					duplicatedIDS.filter({ $0.first != nil && $0.second != nil}).filter({ $0.first == duplicatedTuple.first || $0.second == duplicatedTuple.second || $0.second == duplicatedTuple.second || $0.second == duplicatedTuple.first}).forEach ({ tuple in
+						
+						if operation.isCancelled {
+							completionHandler([])
+							return
+						}
+					
 						if let first = tuple.first as String?, let second = tuple.second as String? {
 							let firstInt = first.replacingStringAndConvertToIntegerForImage() - 1
 							let socondInt = second.replacingStringAndConvertToIntegerForImage() - 1
@@ -792,18 +871,16 @@ extension PhotoManager {
 					}
 				}
 			}
-			
 			completionHandler(duplicatedGroup)
 		}
-		
 		serviceUtilityDuplicatedTuplesOperation.name = C.key.operation.name.similarTuplesOperation
 		return serviceUtilityDuplicatedTuplesOperation
 	}
 	
 		/// similar close to identical videos algoritm
-	public func findDuplicatedVideoOperation(assets: [PHAsset], strictness: Strictness, enableDeepCleanProcessingNotification: Bool = false, enableSingleProcessingNotification: Bool = false, completionHandler: @escaping ([PhassetGroup]) -> Void) -> ConcurrentProcessOperation {
+	public func findDuplicatedVideoOperation(assets: [PHAsset], strictness: Strictness, enableDeepCleanProcessingNotification: Bool = false, enableSingleProcessingNotification: Bool = false, operation: ConcurrentProcessOperation, completionHandler: @escaping ([PhassetGroup]) -> Void) -> ConcurrentProcessOperation {
 		
-		let duplicatedVideoOperation = ConcurrentProcessOperation { _ in
+		let duplicatedVideoOperation = ConcurrentProcessOperation { operation in
 			
 			var phassetGroup: [PhassetGroup] = []
 			
@@ -833,6 +910,11 @@ extension PhotoManager {
 			var notificationStarterIndex = 1
 			
 			for pair in similarImageIdsAsTuples {
+				
+				if operation.isCancelled {
+					completionHandler([])
+					return
+				}
 				
 				if enableSingleProcessingNotification {
 					self.progressSearchNotificationManager.sendSingleSearchProgressNotification(notificationtype: .similarVideo,
@@ -881,19 +963,21 @@ extension PhotoManager {
 	
 	public func deleteSelectedOperation(assets: [PHAsset], completion: @escaping ((Bool) -> Void)) -> ConcurrentProcessOperation {
 		
-		let deletePhassetsOperation = ConcurrentProcessOperation {_ in
-			
+		let deletePhassetsOperation = ConcurrentProcessOperation { operation in
 			let assetsSelectedIdentifiers = assets.map({ $0.localIdentifier})
 			
 			let deletedAssets = PHAsset.fetchAssets(withLocalIdentifiers: assetsSelectedIdentifiers, options: nil)
 			
+			
 			PHPhotoLibrary.shared().performChanges {
+				if operation.isCancelled {
+					return
+				}
 				PHAssetChangeRequest.deleteAssets(deletedAssets)
 			} completionHandler: { success, error in
 					completion(success)
 			}
 		}
-		
 		deletePhassetsOperation.name = C.key.operation.name.deletePhassetsOperation
 		return deletePhassetsOperation
 	}
@@ -910,7 +994,6 @@ extension PhotoManager {
 				completionHandler(result.count)
 			}
 		}
-		
 		calculateTotalVideoProcessingOperation.name = C.key.operation.name.videoCountOperation
 		return calculateTotalVideoProcessingOperation
 	}
@@ -922,7 +1005,6 @@ extension PhotoManager {
 				completionHandler(result.count)
 			}
 		}
-		
 		calculateTotalPhotoProcessingOperation.name = C.key.operation.name.photoCouuntOperation
 		return calculateTotalPhotoProcessingOperation
 	}
@@ -986,7 +1068,6 @@ extension PhotoManager {
 				completion(totalPartitinAssetsCount)
 			}
 		}
-		
 		
 		phassetProcessingOperationQueuer.addOperation(photoCountOperation)
 		phassetProcessingOperationQueuer.addOperation(videoCountOperationm)

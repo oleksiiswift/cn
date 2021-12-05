@@ -106,6 +106,8 @@ class Constants {
 			}
 			
 			struct name {
+				
+					/// `contacts`
 				static let updateContectContacts = "updateBaseContactsOperation"
 				static let mergeContacts = "mergeContactsOperation"
 				static let deleteContacts = "deleteContactsOperation"
@@ -115,7 +117,9 @@ class Constants {
 				static let phoneDuplicated = "phoneDuplicatedOperation"
 				static let emailDuplicated = "emailDuplicatedOperation"
 				
-				static let phassetSizes = "calculatedAllPhassetSpaceOperation"
+					/// `system phassets`
+				static let phassetSingleSizes = "getCalculatePHAssetSizesSingleOperation"
+				static let phassetAllSizes = "getCalculatedAllPHAssetSizeOperation"
 				static let fetchPHAssetCount = "fetchTotalPHAssetsOperation"
 				static let fetchFromGallery = "fetchFromGalleryOperation"
 				

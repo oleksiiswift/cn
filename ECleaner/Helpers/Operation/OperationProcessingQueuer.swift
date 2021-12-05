@@ -72,7 +72,7 @@ public class OperationProcessingQueuer {
 	public func cancelAll() {
 		operationQueue.cancelAllOperations()
 	}
-	
+		
 	public func waitUntilAllOperationsAreFinished() {
 		operationQueue.waitUntilAllOperationsAreFinished()
 	}
