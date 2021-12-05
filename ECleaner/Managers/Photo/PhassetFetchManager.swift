@@ -36,8 +36,54 @@ enum SortingDesriptionKey {
     }
 }
 
-extension PHAssetFetchManager {
+//		MARK: - FETCH PHASSET MANAGER - LOAD PHASSETS
 
+class PHAssetFetchManager {
+	
+	static let shared = PHAssetFetchManager()
+	
+	public func fetchTotalAssetsCountOperation(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", completionHandler: @escaping (Int) -> Void) -> ConcurrentProcessOperation {
+		
+		let fetchTotalPHAssetsOperation = ConcurrentProcessOperation(operationName: C.key.operation.name.fetchPHAssetCount) { operation in
+			let fetchOptions = PHFetchOptions()
+			fetchOptions.sortDescriptors = [NSSortDescriptor(key: SortingDesriptionKey.creationDate.value, ascending: false)]
+			fetchOptions.predicate = NSPredicate(format: "mediaType = %d || mediaType = %d", PHAssetMediaType.image.rawValue, PHAssetMediaType.video.rawValue, "\(SDKey.mediaType.value) = %d AND (\(SDKey.creationDate.value) >= %@) AND (\(SDKey.creationDate.value) <= %@)",
+															 startDate.NSDateConverter(format: C.dateFormat.fullDmy),
+															 endDate.NSDateConverter(format: C.dateFormat.fullDmy))
+			
+			let pholeAssets = PHAsset.fetchAssets(with: fetchOptions)
+			
+			completionHandler(pholeAssets.count)
+		}
+		return fetchTotalPHAssetsOperation
+	}
+	
+	public func fetchFromGalleryOperation(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", collectiontype: PHAssetCollectionSubtype, by type: Int, completionHandler: @escaping ((_ result: PHFetchResult<PHAsset>) -> Void)) -> ConcurrentProcessOperation {
+		
+		let fetchFromGalleryOperation = ConcurrentProcessOperation(operationName: C.key.operation.name.fetchFromGallery) { operation in
+			
+			let fetchOptions = PHFetchOptions()
+			
+			let albumPhoto: PHFetchResult<PHAssetCollection> = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: collectiontype, options: fetchOptions)
+			
+			fetchOptions.sortDescriptors = [NSSortDescriptor(key: SortingDesriptionKey.creationDate.value, ascending: false)]
+			fetchOptions.predicate = NSPredicate(
+				format: "\(SDKey.mediaType.value) = %d AND (\(SDKey.creationDate.value) >= %@) AND (\(SDKey.creationDate.value) <= %@)",
+				type,
+				startDate.NSDateConverter(format: C.dateFormat.fullDmy),
+				endDate.NSDateConverter(format: C.dateFormat.fullDmy)
+			)
+			albumPhoto.enumerateObjects({(collection, index, object) in
+				completionHandler(PHAsset.fetchAssets(in: collection, options: fetchOptions))
+			})
+		}
+		return fetchFromGalleryOperation
+	}
+}
+
+extension PHAssetFetchManager {
+	
+	
     public func fetchTotalAssetsCount(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", completionHandler: @escaping (Int) -> Void) {
         
         let fetchOptions = PHFetchOptions()
@@ -157,10 +203,6 @@ extension PHAssetFetchManager {
         return image
     }
     
-
-    
-
-    
     public func assetSizeFromData(asset: PHAsset, completion: @escaping ((_ result: Int64) -> Void)) {
         var fileSize: Int64 = 0
         let requestOptions = PHImageRequestOptions.init()
@@ -195,18 +237,6 @@ extension PHAssetFetchManager {
     }
 }
             
-
-//		MARK: - FETCH PHASSET MANAGER - LOAD PHASSETS
-
-class PHAssetFetchManager {
-	
-		static let shared = PHAssetFetchManager()
-    
-    
-    
-
-}
-
 
 //		MARK: - files count check, space calculated operation -
 extension PHAssetFetchManager {

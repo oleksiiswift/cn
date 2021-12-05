@@ -116,6 +116,8 @@ class Constants {
 				static let emailDuplicated = "emailDuplicatedOperation"
 				
 				static let phassetSizes = "calculatedAllPhassetSpaceOperation"
+				static let fetchPHAssetCount = "fetchTotalPHAssetsOperation"
+				static let fetchFromGallery = "fetchFromGalleryOperation"
 				
 				static let largeVideo = "largeVideoOperation"
 				static let recentlyDeletedAlbums = "recentlyDeletedAlbumFetchOperation"

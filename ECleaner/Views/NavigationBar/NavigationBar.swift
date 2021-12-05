@@ -152,11 +152,15 @@ class NavigationBar: UIView {
 extension NavigationBar {
 	
 	public func temporaryLockLeftButton(_ isLock: Bool) {
-		leftBarButtonItem.isEnabled = !isLock
+		U.UI {
+			self.leftBarButtonItem.isEnabled = !isLock
+		}
 	}
 	
 	public func temporaryLockRightButton(_ isLock: Bool) {
-		rightBarButtonItem.isEnabled = !isLock
+		U.UI {
+			self.rightBarButtonItem.isEnabled = !isLock			
+		}
 	}
 }
 

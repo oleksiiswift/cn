@@ -946,50 +946,52 @@ extension PhotoManager {
 																 .livePhotos : 0, // get all live photosCount
 																 .video : 0, // get all videos
 																 .screenRecordings : 0] // get all screen recordings
-
-		self.fetchManager.fetchPhotoCount(from: startDate, to: endDate) { photoCount in
+		
+		let photoCountOperation = fetchManager.fetchTotalAssetsCountOperation(from: startDate, to: endDate) { photoCount in
 			totalPartitinAssetsCount[.photo] = photoCount
-
+			totalProcessingProcess += 1
+			if totalProcessingProcess == 5 {
+				completion(totalPartitinAssetsCount)
+			}
+		}
+		
+		let videoCountOperationm = fetchManager.fetchFromGalleryOperation(from: startDate, to: endDate, collectiontype: .smartAlbumVideos, by: PHAssetMediaType.video.rawValue) { video in
+			totalPartitinAssetsCount[.video] = video.count
+			totalProcessingProcess += 1
+			if totalProcessingProcess == 5 {
+				completion(totalPartitinAssetsCount)
+			}
+		}
+		
+		let screenShotCountOperation = getScreenShotsOperation(from: startDate, to: endDate) { screenShots in
+			totalPartitinAssetsCount[.screenShots] = screenShots.count
 			totalProcessingProcess += 1
 			if totalProcessingProcess == 5 {
 				completion(totalPartitinAssetsCount)
 			}
 		}
 
-		self.fetchManager.fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumVideos, by: PHAssetMediaType.video.rawValue) { result in
-			totalPartitinAssetsCount[.video] = result.count
-
+		let livePhotoCountOperation = getLivePhotosOperation(from: startDate, to: endDate) { livePhotos in
+			totalPartitinAssetsCount[.livePhotos] = livePhotos.count
 			totalProcessingProcess += 1
 			if totalProcessingProcess == 5 {
 				completion(totalPartitinAssetsCount)
 			}
 		}
-
-		self.getScreenShots(from: startDate, to: endDate, isDeepCleanScan: false) { assets in
-			totalPartitinAssetsCount[.screenShots] = assets.count
-
-			totalProcessingProcess += 1
-			if totalProcessingProcess == 5 {
-				completion(totalPartitinAssetsCount)
-			}
-		}
-
-		self.fetchManager.fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumLivePhotos, by: PHAssetMediaType.image.rawValue) { result in
-			totalPartitinAssetsCount[.livePhotos] = result.count
-
-			totalProcessingProcess += 1
-			if totalProcessingProcess == 5 {
-				completion(totalPartitinAssetsCount)
-			}
-		}
-
-		self.getScreenRecordsVideos(from: startDate, to: endDate, isDeepCleanScan: false) { screenRecordsAssets in
+		
+		let screenRecordingsVideosOperation = getScreenShotsOperation(from: startDate, to: endDate) { screenRecordsAssets in
 			totalPartitinAssetsCount[.screenRecordings] = screenRecordsAssets.count
-
 			totalProcessingProcess += 1
 			if totalProcessingProcess == 5 {
 				completion(totalPartitinAssetsCount)
 			}
 		}
+		
+		
+		phassetProcessingOperationQueuer.addOperation(photoCountOperation)
+		phassetProcessingOperationQueuer.addOperation(videoCountOperationm)
+		phassetProcessingOperationQueuer.addOperation(screenShotCountOperation)
+		phassetProcessingOperationQueuer.addOperation(livePhotoCountOperation)
+		phassetProcessingOperationQueuer.addOperation(screenRecordingsVideosOperation)
 	}
 }
