@@ -33,7 +33,7 @@ class DeepCleaningViewController: UIViewController {
 
      /// managers∂
      private var deepCleanManager = DeepCleanManager()
-     private var photoManager = PhotoManager()
+	 private var photoManager = PhotoManager.shared
 	 private var contactsManager = ContactsManager.shared
      
      /// protocols and delegates
@@ -89,6 +89,8 @@ class DeepCleaningViewController: UIViewController {
      override func viewDidLoad() {
           super.viewDidLoad()
           
+		  deepCleanManager.cancelAllOperation()
+		  
           setupUI()
           setProcessingActionButton(.redyForStartingCleaning)
           setupNavigation()
@@ -120,7 +122,9 @@ extension DeepCleaningViewController {
                self.photoManager.getPartitionalMediaAssetsCount(from: self.startingDate, to: self.endingDate) { assetGroupPartitionCount in
 					self.setProcessingActionButton(.didCleaning)
                     self.totalPartitinAssetsCount = assetGroupPartitionCount
-                    self.startDeepCleanScan()
+					U.delay(1) {
+						 self.startDeepCleanScan()
+					}
                }
           }
      }
@@ -416,9 +420,9 @@ extension DeepCleaningViewController {
                if Thread.isMainThread {
                     self.progressUpdate(type, progress: progress, title: title)
                } else {
-                    U.UI {
-                         self.progressUpdate(type, progress: progress, title: title)
-                    }
+					U.delay(0.1) {
+						 self.progressUpdate(type, progress: progress, title: title)
+					}
                }
           }
      }
@@ -518,6 +522,7 @@ extension DeepCleaningViewController {
           guard !indexPath.isEmpty else { return }
           
           guard let cell = tableView.cellForRow(at: indexPath) as? ContentTypeTableViewCell else { return }
+
           self.configure(cell, at: indexPath, currentProgress: progress)
           updateTotalFilesTitleChecked(0)
      }

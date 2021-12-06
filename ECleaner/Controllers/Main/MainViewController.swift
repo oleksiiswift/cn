@@ -22,7 +22,7 @@ class MainViewController: UIViewController {
     
     private let baseCarouselLayout = BaseCarouselFlowLayout()
         
-    private var photoMenager = PhotoManager()
+	private var photoMenager = PhotoManager.shared
     
     private var contentCount: [MediaContentType : Int] = [:]
     private var diskSpaceForStartingScreen: [MediaContentType : Int64] = [:]
@@ -196,6 +196,7 @@ extension MainViewController {
                 viewController.allScreenRecords = self.allScreenRecordsVideos
                 viewController.allRecentlyDeletedVideos = self.allRecentlyDeletedVideos
             case .userContacts:
+				ContactsManager.shared.contactsProcessingOperationQueuer.cancelAll()
                 viewController.allContacts = self.allContacts
                 viewController.allEmptyContacts = self.allEmptyContacts
                 viewController.allDuplicatedContacts = self.allDuplicatedContacts
@@ -231,7 +232,9 @@ extension MainViewController {
 extension MainViewController {
     
     @objc func contactsStoreDidChange() {
-        self.updateContactsCount()
+		U.delay(5) {
+			self.updateContactsCount()			
+		}
     }
     
     private func updateContactsCount() {
@@ -262,7 +265,7 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
             case 1:
                 self.openMediaController(type: .userVideo)
             case 2:
-                ContactsManager.shared.setStopSearchProcessing()
+				ContactsManager.shared.setProcess(.search, state: .disable)
                 self.openMediaController(type: .userContacts)
             default:
                 return

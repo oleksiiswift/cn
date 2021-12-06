@@ -10,10 +10,11 @@ import Photos
 
 class DeepCleanManager {
     
-    private var photoManager = PhotoManager.manager
+	private var photoManager = PhotoManager.shared
     private var contactManager = ContactsManager.shared
+	private var fetchManager = PHAssetFetchManager.shared
     
-    let deepCleanOperationQue = OperationPhotoProcessingQueuer(name: "Deep Clean Queuer", maxConcurrentOperationCount: 1, qualityOfService: .default)
+	let deepCleanOperationQue = OperationProcessingQueuer(name: C.key.operation.queue.deepClean, maxConcurrentOperationCount: 10, qualityOfService: .default)
         
     public func startDeepCleaningFetch(_ optionMediaType: [PhotoMediaType], startingFetchingDate: String, endingFetchingDate: String,
                                        handler: @escaping ([PhotoMediaType]) -> Void,
@@ -34,187 +35,133 @@ class DeepCleanManager {
         var totalResultCount = 0
     
         handler(optionMediaType)
-        
-//        MARK: - similar video -
-        let similarLivePhotoFetchOperation = ConcurrentProcessOperation { _ in
-            debugPrint("start simmilar live photos")
-            self.photoManager.getSimilarLivePhotos(from: startingFetchingDate, to: endingFetchingDate, isDeepCleanScan: true) { assetsGroup in
-                similarLivePhotos(assetsGroup)
-                totalResultCount += 1
-                if totalResultCount == 12 {
-                    completionHandler()
-                }
-            }
-        }
-        
-//        MARK: - large video -
-        let largeVideosFetchOperation = ConcurrentProcessOperation { _ in
-            debugPrint("start fetch large videos")
-            self.photoManager.getLargevideoContent(from: startingFetchingDate, to: endingFetchingDate, isDeepCleanScan: true) { asset in
-                
-                largeVideo(asset)
-                
-                totalResultCount += 1
-                if totalResultCount == 12 {
-                    completionHandler()
-                }
-            }
-        }
-        
-//        MARK: - screenshots -
-        let screenshotsFetchOperation = ConcurrentProcessOperation { _ in
-            debugPrint("start fetch screenshots")
-            self.photoManager.getScreenShots(from: startingFetchingDate, to: endingFetchingDate, isDeepCleanScan: true) { assets in
-                
-                screenShots(assets)
-                
-                totalResultCount += 1
-                if totalResultCount == 12 {
-                    completionHandler()
-                }
-            }
-        }
-        
-//        MARK: - similar photoassets -
-        let similarPhotoFetchOperation = ConcurrentProcessOperation { _ in
-            debugPrint("start similar photo asssets")
-            self.photoManager.getSimilarPhotosAssets(from: startingFetchingDate, to: endingFetchingDate, fileSizeCheck: true, isDeepCleanScan: true) { assetsGroup in
-                
-                similarPhoto(assetsGroup)
-                
-                totalResultCount += 1
-                if totalResultCount == 12 {
-                    completionHandler()
-                }
-            }
-        }
-        
-//        MARK: - duplicated photo assets -
-        let duplicatedPhotoFetchOperation = ConcurrentProcessOperation { _ in
-            debugPrint("start dupliacated photo assets")
-            self.photoManager.getDuplicatedPhotosAsset(from: startingFetchingDate, to: endingFetchingDate, isDeepCleanScan: true) { assetsGroup in
-
-                duplicatedPhoto(assetsGroup)
-
-                totalResultCount += 1
-                if totalResultCount == 12 {
-                    completionHandler()
-                }
-            }
-        }
-     
-//        MARK: - similar videos assets -
-        let similarVideoFetchOperation = ConcurrentProcessOperation { _ in
-            debugPrint("start simmilar video assets")
-            self.photoManager.getSimilarVideoAssets(from: startingFetchingDate, to: endingFetchingDate, isDeepCleanScan: true) { assetsGroup in
-
-                similarVideo(assetsGroup)
-
-                totalResultCount += 1
-                if totalResultCount == 12 {
-                    completionHandler()
-                }
-            }
-        }
-        
-//        MARK: - duplicated video assets -
-        let duplicatedVideoFetchOperation = ConcurrentProcessOperation { _ in
-            debugPrint("start duplicated video assets")
-            self.photoManager.getDuplicatedVideoAsset(from: startingFetchingDate, to: endingFetchingDate, isDeepCleanScan: true) { assetsGroup in
-
-                duplicatedVideo(assetsGroup)
-
-                totalResultCount += 1
-                if totalResultCount == 12 {
-                    completionHandler()
-                }
-            }
-        }
-        
-//        MARK: - screen recordings assets - 
-        let screenRecordingsFethcOperation = ConcurrentProcessOperation { _ in
-            debugPrint("start screen records vidoes")
-            self.photoManager.getScreenRecordsVideos(from: startingFetchingDate, to: endingFetchingDate, isDeepCleanScan: true) { assets in
-
-                screenRecordings(assets)
-
-                totalResultCount += 1
-                if totalResultCount == 12 {
-                    completionHandler()
-                }
-            }
-        }
-
-//        MARK: - mark fetch contacts -
-        let emptyContactsFetchOperation = ConcurrentProcessOperation { _ in
-            debugPrint("start fetch empty Contacts")
-            self.contactManager.deepCleanEmptySearchContacts { contactsGroup in
-                emptyContacts(contactsGroup)
-                totalResultCount += 1
-                if totalResultCount == 12 {
-                    completionHandler()
-                }
-            }
-        }
-        
-//        MARK: - duplicated contacts -
-        let duplicatedContactsFetchOperation = ConcurrentProcessOperation { _ in
-            debugPrint("start fetch duplicated contacts Contacts")
-            self.contactManager.deepCleanDuplicatedContactsSearchContacts { contactsGroup in
-                duplicatedContats(contactsGroup)
-                totalResultCount += 1
-                if totalResultCount == 12 {
-                    completionHandler()
-                }
-            }
-        }
-
-//        MARK: - duplicated phone numbers contacts -
-        let duplicatedPhoneNumbersContactsFetchOperation = ConcurrentProcessOperation { _ in
-            debugPrint("start fetch phonenumbers duplicated Contacts")
-            self.contactManager.deepCleanDuplicatedPhoneNumbersSearchContacts { contacstsGroup in
-                duplicatedPhoneNumbers(contacstsGroup)
-                totalResultCount += 1
-                if totalResultCount == 12 {
-                    completionHandler()
-                }
-            }
-        }
-
-//        MARK: - duplicated email contact s-
-        let duplicatedEmailContactsFetchOperation = ConcurrentProcessOperation { _ in
-            debugPrint("start fetch emails duplicated Contacts")
-            self.contactManager.deepCleanDuplicatedEmailsSearchSearchContacts { contacstsGroup in
-                duplicatedEmails(contacstsGroup)
-                totalResultCount += 1
-                if totalResultCount == 12 {
-                    completionHandler()
-                }
-            }
-        }
 		
-		let llop = ConcurrentProcessOperation {_ in
-			for i in 0...Int.max {
-				debugPrint(i)
+		
+//        MARK: - similar photoassets -
+		let getSimilarPhotosAssetsOperation = photoManager.getSimilarPhotosAssetsOperation(from: startingFetchingDate, to: endingFetchingDate, enableDeepCleanProcessingNotification: true) { similarGroup in
+			similarPhoto(similarGroup)
+			totalResultCount += 1
+			if totalResultCount == 12 {
+				completionHandler()
 			}
 		}
-        
-        deepCleanOperationQue.addOperation(duplicatedPhotoFetchOperation)
-        deepCleanOperationQue.addOperation(similarPhotoFetchOperation)
-        deepCleanOperationQue.addOperation(duplicatedVideoFetchOperation)
-        deepCleanOperationQue.addOperation(similarVideoFetchOperation)
-        deepCleanOperationQue.addOperation(largeVideosFetchOperation)
-        deepCleanOperationQue.addOperation(screenRecordingsFethcOperation)
-        deepCleanOperationQue.addOperation(screenshotsFetchOperation)
-        deepCleanOperationQue.addOperation(similarLivePhotoFetchOperation)
-        deepCleanOperationQue.addOperation(emptyContactsFetchOperation)
-        deepCleanOperationQue.addOperation(duplicatedContactsFetchOperation)
-        deepCleanOperationQue.addOperation(duplicatedPhoneNumbersContactsFetchOperation)
-        deepCleanOperationQue.addOperation(duplicatedEmailContactsFetchOperation)
-		deepCleanOperationQue.addOperation(llop)
+		
+		
+//        MARK: - duplicated photo assets -
+		let duplicatedPhotoAssetOperation = photoManager.getDuplicatedPhotosAsset(from: startingFetchingDate, to: endingFetchingDate, enableDeepCleanProcessingNotification: true) { duplicateGroup in
+			duplicatedPhoto(duplicateGroup)
+			totalResultCount += 1
+			if totalResultCount == 12 {
+				completionHandler()
+			}
+		}
+		
+//        MARK: - screenshots -
+		let getScreenShotsAssetsOperation = photoManager.getScreenShotsOperation(from: startingFetchingDate, to: endingFetchingDate, enableDeepCleanProcessingNotification: true) { screenshots in
+			screenShots(screenshots)
+			totalResultCount += 1
+			if totalResultCount == 12 {
+				completionHandler()
+			}
+		}
+		
+//        MARK: - similar live photo -
+		let getLivePhotoAssetsOperation = photoManager.getSimilarLivePhotosOperation(from: startingFetchingDate, to: endingFetchingDate, enableDeepCleanProcessingNotification: true) { similarAssets in
+			similarLivePhotos(similarAssets)
+			totalResultCount += 1
+			if totalResultCount == 12 {
+				completionHandler()
+			}
+		}
+		
+//        MARK: - large video -
+		let getLargevideoContentOperation = photoManager.getLargevideoContentOperation(from: startingFetchingDate, to: endingFetchingDate, enableDeepCleanProcessingNotification: true) { largeVodepAsset in
+			largeVideo(largeVodepAsset)
+			
+			totalResultCount += 1
+			if totalResultCount == 12 {
+				completionHandler()
+			}
+		}
+		
+//        MARK: - duplicated video assets -
+		let getDuplicatedVideoAssetOperatioon = photoManager.getDuplicatedVideoAssetOperation(from: startingFetchingDate, to: endingFetchingDate, enableDeepCleanProcessingNotification: true) { duplicatedVideoAsset in
+			duplicatedVideo(duplicatedVideoAsset)
+
+			totalResultCount += 1
+			if totalResultCount == 12 {
+				completionHandler()
+			}
+		}
+
+//        MARK: - similar videos assets -
+		let getSimilarVideoAssetsOperation = photoManager.getSimilarVideoAssetsOperation(from: startingFetchingDate, to: endingFetchingDate, enableDeepCleanProcessingNotification: true) { similiarVideoAsset in
+			similarVideo(similiarVideoAsset)
+
+			totalResultCount += 1
+			if totalResultCount == 12 {
+				completionHandler()
+			}
+		}
+		
+//        MARK: - screen recordings assets -
+		let getScreenRecordsVideosOperation = photoManager.getScreenRecordsVideosOperation(from: startingFetchingDate, to: endingFetchingDate, enableDeepCleanProcessingNotification: true) { screenRecordsAssets in
+			screenRecordings(screenRecordsAssets)
+
+			totalResultCount += 1
+			if totalResultCount == 12 {
+				completionHandler()
+			}
+		}
+		
+		deepCleanOperationQue.addOperation(getSimilarPhotosAssetsOperation)
+		deepCleanOperationQue.addOperation(duplicatedPhotoAssetOperation)
+		deepCleanOperationQue.addOperation(getScreenShotsAssetsOperation)
+		deepCleanOperationQue.addOperation(getLivePhotoAssetsOperation)
+		deepCleanOperationQue.addOperation(getLargevideoContentOperation)
+		deepCleanOperationQue.addOperation(getDuplicatedVideoAssetOperatioon)
+		deepCleanOperationQue.addOperation(getSimilarVideoAssetsOperation)
+		deepCleanOperationQue.addOperation(getScreenRecordsVideosOperation)
+		
+
+//        MARK: - mark fetch contacts -
+		contactManager.getDeepCleanContactsProcessing {
+			
+			
+		} emptyContactsCompletion: { emptyContactsGroup in
+				/// - empty fields contacts
+			emptyContacts(emptyContactsGroup)
+			totalResultCount += 1
+			if totalResultCount == 12 {
+				completionHandler()
+			}
+		} duplicatedContactsCompletion: { duplicatedContactsGroup in
+				/// - duplicated contacts -
+			duplicatedContats(duplicatedContactsGroup)
+			totalResultCount += 1
+			if totalResultCount == 12 {
+				completionHandler()
+			}
+		} duplicatedPhoneNumbersCompletion: { duplicatedNumbersContactsGroup in
+				/// - duplicated phone numbers contacts -
+			duplicatedPhoneNumbers(duplicatedNumbersContactsGroup)
+			totalResultCount += 1
+			if totalResultCount == 12 {
+				completionHandler()
+			}
+		} duplicatedEmailsContactsCompletion: { duplicatedEmailsContactsGroup in
+				/// duplicated email contact s-
+			duplicatedEmails(duplicatedEmailsContactsGroup)
+			totalResultCount += 1
+			if totalResultCount == 12 {
+				completionHandler()
+			}
+		}
     }
 	
 	public func cancelAllOperation() {
+		photoManager.serviceUtilsCalculatedOperationsQueuer.cancelAll()
 		deepCleanOperationQue.cancelAll()
+		contactManager.contactsProcessingOperationQueuer.cancelAll()
 	}
 }

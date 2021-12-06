@@ -324,7 +324,8 @@ extension ContactsViewController {
                 }
             }
         } else if contentType == .emptyContacts {
-            self.contactManager.getEmptyContacts { contactsGroups in
+			self.contactManager.getSingleDuplicatedCleaningContacts(of: .emptyContacts, allowNotification: false) { contactsGroups in
+
                 U.UI {
                     
                     self.setCancelAndDeselectAllItems()

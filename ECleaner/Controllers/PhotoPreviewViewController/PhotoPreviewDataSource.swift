@@ -32,7 +32,7 @@ class PhotoPreviewPagingDataSource: NSObject, UIPageViewControllerDataSource {
      
     private var itemsDataSource: PhotoPreviewDataSource?
     
-    private let fetchingPhassetQueue = AssetsOperationQueue()
+    private let fetchingPhassetQueue = OperationServiceQueue()
     
     private var isGroupedAssets: Bool
     

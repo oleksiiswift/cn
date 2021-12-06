@@ -98,11 +98,11 @@ class ConcurrentProcessOperation: Operation {
 
 extension ConcurrentProcessOperation {
     
-    func addToQueuer(_ queue: OperationPhotoProcessingQueuer) {
+    func addToQueuer(_ queue: OperationProcessingQueuer) {
         queue.addOperation(self)
     }
     
     func addToSharedQueuer() {
-        OperationPhotoProcessingQueuer.shared.addOperation(self)
+        OperationProcessingQueuer.shared.addOperation(self)
     }
 }

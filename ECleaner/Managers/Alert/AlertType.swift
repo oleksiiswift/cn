@@ -8,6 +8,13 @@
 import UIKit
 
 enum AlertType {
+	
+		/// `access module`
+	case contactsRestricted
+	case photoLibraryRestricted
+	
+	
+	
     
     case allowNotification
     case allowConstacStore
@@ -30,13 +37,16 @@ enum AlertType {
 	
 	case setBreakDeepCleanSearch
     
-    case contactsIsEmpty
-    case emptyContactsIsEmpty
-    case duplicatesNamesIsEmpty
-    case duplicatesNumbersIsEmpty
-    case duplicatesEmailsIsEmpty
+
+
     
     /// `contacts module`
+		/// empty
+	case contactsIsEmpty
+	case emptyContactsIsEmpty
+	case duplicatesNamesIsEmpty
+	case duplicatesNumbersIsEmpty
+	case duplicatesEmailsIsEmpty
         /// ask
     case deleteContacts
     case deleteContact
@@ -53,6 +63,15 @@ enum AlertType {
     /// alert title
     var alertTitle: String? {
         switch self {
+				
+			case .contactsRestricted:
+				return ErrorHandler.AccessRestrictedError.contactsRestrictedError.title
+				
+			case .photoLibraryRestricted:
+				return ErrorHandler.AccessRestrictedError.photoLibraryRestrictedError.title
+				
+				
+				
 
             case .allowNotification:
                 return "locomark set title for allow notification"
@@ -119,6 +138,12 @@ enum AlertType {
     var alertMessage: String? {
         
         switch self {
+			case .contactsRestricted:
+				return ErrorHandler.AccessRestrictedError.contactsRestrictedError.errorRawValue
+			case .photoLibraryRestricted:
+				return ErrorHandler.AccessRestrictedError.photoLibraryRestrictedError.errorRawValue
+				
+				
             case .allowNotification:
                 return "locomark notification message"
             case .allowConstacStore:
@@ -179,6 +204,14 @@ enum AlertType {
     
     var withCancel: Bool {
         switch self {
+				
+			case .contactsRestricted, .photoLibraryRestricted:
+				return true
+				
+				
+				
+				
+				
                 
             case .allowNotification, .allowConstacStore, .allowPhotoLibrary, .allowDeleteSelectedPhotos, .withCancel:
                 return true

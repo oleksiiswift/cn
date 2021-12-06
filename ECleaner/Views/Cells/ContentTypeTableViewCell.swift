@@ -38,6 +38,7 @@ class ContentTypeTableViewCell: UITableViewCell {
 
         horizontalProgressView.progress = 0
         horizontalProgressView.setNeedsDisplay()
+		reuseShadowRoundedView.setImage(nil)
     }
     
     override func awakeFromNib() {
@@ -85,14 +86,14 @@ extension ContentTypeTableViewCell {
         
         switch presentingType {
             case .deepCleen:
-        
+   
                 contentTypeTextLabel.text = contentType.getDeepCellTitle(index: indexPath.row)
                 
                 let processingCellImage = isProcessingComplete ? contentType.imageOfRows : contentType.unAbleImageOfRows
                 
                 reuseShadowRoundedView.setImage(processingCellImage)
-                
-                let progressStringText = isProcessingComplete ? "processing wait" : String("progress - \(progress.rounded().cleanValue) %")
+				let handledProgressSubtitle = progress == 0.0 ? "-" : String("progress - \(progress.rounded().cleanValue) %")
+                let progressStringText = isProcessingComplete ? "processing wait" : handledProgressSubtitle
                 let updatingCountValuesDeepClean: String = progressStringText
                 let updatingCountValuesContactDeepClean: String = progressStringText
                 horizontalProgressView.progress = progress / 100
@@ -106,6 +107,15 @@ extension ContentTypeTableViewCell {
                     case .none:
                         contentSubtitleTextLabel.text = ""
                 }
+				
+//				if isProcessingComplete || horizontalProgressView.progress == 1.0 {
+//					U.animate(1, delay: 2) {
+//						self.horizontalProgressView.alpha = 0
+//					} completion: {
+//						self.horizontalProgressView.progress = 0
+//						self.horizontalProgressView.alpha = 1
+//					}
+//				}
                 
             case .singleSearch:
                 contentTypeTextLabel.text = contentType.getCellTitle(index: indexPath.row)

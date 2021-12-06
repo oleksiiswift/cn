@@ -17,7 +17,7 @@ class ShareManager {
     }()
     
     private var fileManager = ECFileManager()
-    private var contactsManager = ContactsManager.shared
+    private var contactsExportManager = ContactsExportManager.shared
     
     public func shareAllContacts(_ exportType: ExportContactsAvailibleFormat,_ comtpletionHandler: @escaping (Bool) -> Void) {
         switch exportType {
@@ -35,7 +35,7 @@ class ShareManager {
     }
     
     private func shareAllVCFContacts(_ completion: @escaping(Bool) -> Void) {
-        contactsManager.vcfContactsExportAll { fileURL in
+		contactsExportManager.vcfContactsExportAll { fileURL in
             P.hideIndicator()
             if let url = fileURL {
                 completion(true)
@@ -45,7 +45,7 @@ class ShareManager {
     }
     
     private func shareAllCSVContacts(_ completion: @escaping(Bool) -> Void) {
-        contactsManager.csvContactsExportAll { fileURL in
+		contactsExportManager.csvContactsExportAll { fileURL in
             P.hideIndicator()
             if let url = fileURL {
                 completion(true)
@@ -58,7 +58,7 @@ class ShareManager {
         
         switch format {
             case .vcf:
-                contactsManager.vcfContactsExport(contacts: contacts) { fileURL in
+				contactsExportManager.vcfContactsExport(contacts: contacts) { fileURL in
                     P.hideIndicator()
                     if let url = fileURL {
                         completionHandler(true)
@@ -68,7 +68,7 @@ class ShareManager {
                     }
                 }
             case .csv:
-                contactsManager.csvContactsExport(contacts: contacts) { fileURL in
+				contactsExportManager.csvContactsExport(contacts: contacts) { fileURL in
                     P.hideIndicator()
                     if let url = fileURL {
                         completionHandler(true)

@@ -35,10 +35,10 @@ extension AppDelegate {
     
     private func configureApplication(with launchOptions: [UIApplication.LaunchOptionsKey: Any]?) {
         
-        PhotoManager().getPhotoLibraryAccess()
+		PhotoManager.shared.checkPhotoLibraryAccess()
         ContactsManager.shared.checkStatus { res in }
         
-//        ContactsManager.shared.deleteAllContacts()
+//        ContactsManagerOLD.shared.deleteAllContacts()
 //        U.delay(10) {
 //            NotificationCenter.default.addObserver(forName: nil, object: nil, queue: nil) { notification in
 //                debugPrint(notification)

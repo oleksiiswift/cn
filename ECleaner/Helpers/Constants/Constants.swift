@@ -75,12 +75,77 @@ class Constants {
                 static let singleSearchDuplicatesNamesContactsScan = "singleSearchDuplicatesNamesContactsScan"
                 static let singleSearchDuplicatesNumbersContactsScan = "singleSearchDuplicatesNumbersContactsScan"
                 static let singleSearchDupliatesEmailsContactsScan = "singleSearchDupliatesEmailsContactsScan"
+					/// photo
+				static let singleSearchSimilarPhotoPHAssetScan = "singleSearchSimilarPhotoPhassetScan"
+				static let singleDuplicatedPhotoPHAssetScan = "singleDuplicatedPhotoPHAssetScant"
+				static let singleSimilarLivePhotoPHAssetScan = "singleSimilarLivePhotoPHAssetScan"
+				static let singleScreeenshotsPhotoPHAssetScan = "singleScreeenshotsPhotoPHAssetScan"
+				static let singleSelfiePHAssetScan = "singleSelfiePHAssetScan"
+				static let singleLivePhotoPHAssetScan = "singleLivePhotoPHAssetScan"
+				static let singleRecentlyDeletedPHAssetScan = "singleRecentlyDeletedPHAssetScan"
+					/// video
+				static let singleLargeVideoPHAssetScan = "singleLargeVideoPHAssetScan"
+				static let singleDuplicatedVideoPHAssetScan = "singleDuplicatedVideoPHAssetScan"
+				static let singleSimilarVideoPHAssetScan = "singleSimilarVideoPHAssetScan"
+				static let singleScreenRecordingsVideoPHAssetScan = "singleScreenRecordingsVideoPHAssetScan"
+				static let singleRecentlyDeleteVideoPHAssetScan = "singleRecentlyDeleteVideoPHAssetScan"
             }
             
             /// `contacts notification`
             static let mergeContactsSelectionDidChange = "mergeContactsSelectionDidChange"
             static let selectedContactsDidChange = "selectedContactsDidChange"
         }
+		
+		struct operation {
+			
+			struct queue {
+				static let contacts = "contactsCleanSearchOperationQueuer"
+				static let phassets = "phassetsCleanSearchOperationQueuer"
+				static let deepClean = "deepCleanSearchOperationQueuer"
+				static let utils = "utilsBackgroudSpaceCalculated"
+			}
+			
+			struct name {
+				
+					/// `contacts`
+				static let updateContectContacts = "updateBaseContactsOperation"
+				static let mergeContacts = "mergeContactsOperation"
+				static let deleteContacts = "deleteContactsOperation"
+				
+				static let emptyContacts = "emptyContactsOperation"
+				static let duplicatedContacts = "duplicatedContactsOperation"
+				static let phoneDuplicated = "phoneDuplicatedOperation"
+				static let emailDuplicated = "emailDuplicatedOperation"
+				
+					/// `system phassets`
+				static let phassetSingleSizes = "getCalculatePHAssetSizesSingleOperation"
+				static let phassetAllSizes = "getCalculatedAllPHAssetSizeOperation"
+				static let fetchPHAssetCount = "fetchTotalPHAssetsOperation"
+				static let fetchFromGallery = "fetchFromGalleryOperation"
+				
+				static let largeVideo = "largeVideoOperation"
+				static let recentlyDeletedAlbums = "recentlyDeletedAlbumFetchOperation"
+				static let recentlyDeletedSortedAlbums = "recentlyDeletedSortedAlbumsFetchOperation"
+				static let videoCountOperation = "calculateTotalVideoProcessingOperation"
+				static let photoCouuntOperation = "calculateTotlaPhotoProcessingOperation"
+				static let screenRecordingOperation = "screenRecordsVideosOperation"
+				static let screenShotsOperation = "screenShotsOperation"
+				static let livePhotoOperation = "livePhotoOperation"
+				static let photoSelfiesOperation = "photoSelfiesOperation"
+				
+				static let similarPhotoProcessingOperation = "similarPhotoProcessingOperation"
+				static let duplicatePhotoProcessingOperation = "duplicatePhotoProcessingOperation"
+				static let similarLivePhotoProcessingOperation = "similarLivePhotoProcessingOperation"
+				
+				static let similarVideoProcessingOperation = "similarVideoProcessingOperation"
+				static let duplicateVideoProcessingOperation = "duplicateVideoProcessingOperation"
+			
+				static let deletePhassetsOperation = "deletePhassetsOperation"
+				static let similarTuplesOperation = "serviceUtilityDuplicatedTuplesOperation"
+				static let findDuplicatedVideoOperation = "findDuplicatedVideoOperation"
+				static let getSimilarVideosByTimeStampOperation = "getSimilarVideosByTimeStampOperation"
+			}
+		}
         
 //        MARK: - notification dictionary progress identifiers -
         /**
@@ -98,11 +163,14 @@ class Constants {
                 static let duplicatePhotoIndex = "deepCleanDuplicatePhotoProcessingIndex"
                 static let screenShotsIndex = "deepCleanscreenShotsIndex"
                 static let livePhotosIndex = "deepCleanlivePhotosIndex"
+				static let selfiePhotosIndex = "selfiePhotosIndex"
+				static let recentlyDeletedPhotoIndex = "recentlyDeletedPhotoIndex"
                     /// video part
                 static let largeVideoIndex = "deepCleanlargeVideoIndex"
                 static let duplicateVideoIndex = "deepCleanduplicateVideoIndex"
                 static let similarVideoIndex = "deepCleansimilarVideoIndex"
                 static let screenRecordingsIndex = "deepCleanscreenRecordingsIndex"
+				static let recentrlyDeletedVideoIndex = "recentrlyDeletedVideoIndex"
                     /// contacts part
                 static let allContactsIndex = "deepCleanallContactsIndex"
                 static let emptyContactsIndex = "deepCleanemptyContactsIndex"
@@ -118,11 +186,14 @@ class Constants {
                 static let duplicatePhotoCount = "deepCleanDuplicatePhotoTotalAssetsCount"
                 static let screenShotsCount = "deepCleanscreenShotsCount"
                 static let livePhotosSimilarCount = "deepCleanlivePhotosCount"
+				static let selfiePhotosCount = "selfiePhotosCount"
+				static let recentlyDeletedPhotoCount = "recentlyDeletedPhotoCount"
                     /// video part
                 static let largeVideoCount = "deepCleanlargeVideoCount"
                 static let duplicateVideoCount = "deepCleanduplicateVideoCount"
                 static let similarVideoCount = "deepCleansimilarVideoCount"
                 static let screenRecordingsCount = "deepCleanscreenRecordingsCount"
+				static let recentlyDeletedVideoCount = "recentlyDeletedVideoCount"
                     /// contacts part
                 static let allContactsCount = "deepCleanallContactsCount"
                 static let emptyContactsCount = "deepCleanemptyContactsCount"
