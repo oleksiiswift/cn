@@ -96,7 +96,7 @@ class DeepCleaningViewController: UIViewController {
           setupNavigation()
           setupTableView()
           setupDateInterval()
-          updateTotalFilesTitleChecked(0)
+          updateTotalFilesTitleChecked()
           setupObserversAndDelegate()
           updateColors()
      }
@@ -413,17 +413,12 @@ extension DeepCleaningViewController {
           guard let userInfo = info,
                 let totalProcessingAssetsCount = userInfo[type.dictionaryCountName] as? Int,
                 let index = userInfo[type.dictionaryIndexName] as? Int else { return }
-          sleep(UInt32(0.1))
-          handleTotalFilesChecked(by: type, files: index)
- 
+		  
           calculateProgressPercentage(total: totalProcessingAssetsCount, current: index) { title, progress in
-               if Thread.isMainThread {
-                    self.progressUpdate(type, progress: progress, title: title)
-               } else {
-					U.delay(0.1) {
-						 self.progressUpdate(type, progress: progress, title: title)
-					}
-               }
+			   U.delay(0.5) {
+					self.handleTotalFilesChecked(by: type, files: index)
+					self.progressUpdate(type, progress: progress, title: title)
+			   }
           }
      }
      
@@ -460,7 +455,7 @@ extension DeepCleaningViewController {
           }
      }
      
-     private func updateTotalFilesTitleChecked(_ totalFiles: Int) {
+     private func updateTotalFilesTitleChecked() {
                     
           let totalVideoProcessing = (totalDeepCleanFilesCountIn[5] + totalDeepCleanFilesCountIn[6]) / 2
           let totalPhotoProcessing = (totalDeepCleanFilesCountIn[0] + totalDeepCleanFilesCountIn[1]) / 2
@@ -470,6 +465,7 @@ extension DeepCleaningViewController {
           if self.totalFilesOnDevice == 0 {
                totalPercentageCalculated = 0
           } else {
+			   debugPrint("--> \(self.totalDeepCleanProgress)")
                totalPercentageCalculated = self.totalDeepCleanProgress.sum() / 12
           }
           
@@ -524,15 +520,16 @@ extension DeepCleaningViewController {
           guard let cell = tableView.cellForRow(at: indexPath) as? ContentTypeTableViewCell else { return }
 
           self.configure(cell, at: indexPath, currentProgress: progress)
-          updateTotalFilesTitleChecked(0)
+          updateTotalFilesTitleChecked()
      }
      
      private func calculateProgressPercentage(total: Int, current: Int, completion: @escaping (String, CGFloat) -> Void) {
-          
-          let percentLabelFormat: String = "%.f %%"
-          let totalPercent = CGFloat(Double(current) / Double(total)) * 100
-          let stingFormat = String(format: percentLabelFormat, totalPercent)
-          completion(stingFormat, totalPercent)
+		  U.GLB(qos: .background) {
+			   let percentLabelFormat: String = "%.f %%"
+			   let totalPercent = CGFloat(Double(current) / Double(total)) * 100
+			   let stingFormat = String(format: percentLabelFormat, totalPercent)
+			   completion(stingFormat, totalPercent)
+		  }
      }
 }
 
@@ -675,7 +672,7 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
                           indexPath: indexPath,
                           phasetCount: phassetMediaTupeCount,
                           presentingType: .deepCleen,
-                          progress: self.currentProgressForRawMediatype[photoMediaType] ?? 0,
+                          progress: progress,
                           isProcessingComplete: self.doneProcessingDeepCleanForMedia[photoMediaType] ?? false)
      }
      

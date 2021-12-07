@@ -14,7 +14,7 @@ class DeepCleanManager {
     private var contactManager = ContactsManager.shared
 	private var fetchManager = PHAssetFetchManager.shared
     
-	let deepCleanOperationQue = OperationProcessingQueuer(name: C.key.operation.queue.deepClean, maxConcurrentOperationCount: 10, qualityOfService: .default)
+	let deepCleanOperationQue = OperationProcessingQueuer(name: C.key.operation.queue.deepClean, maxConcurrentOperationCount: 5, qualityOfService: .default)
         
     public func startDeepCleaningFetch(_ optionMediaType: [PhotoMediaType], startingFetchingDate: String, endingFetchingDate: String,
                                        handler: @escaping ([PhotoMediaType]) -> Void,
