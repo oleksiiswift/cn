@@ -700,11 +700,11 @@ extension PhotoManager {
 						if enableSingleProcessingNotification {
 							self.progressSearchNotificationManager.sendSingleSearchProgressNotification(notificationtype: .similarLivePhoto,
 																										totalProgressItems: livePhotoGallery.count,
-																										currentProgressItem: livePosition)
+																										currentProgressItem: livePosition / 2)
 						} else  if enableDeepCleanProcessingNotification {
 							self.progressSearchNotificationManager.sendDeepProgressNotificatin(notificationType: .similarLivePhoto,
 																							   totalProgressItems: livePhotoGallery.count,
-																							   currentProgressItem: livePosition)
+																							   currentProgressItem: livePosition / 2)
 						}
 						
 						let image = self.fetchManager.getThumbnail(from: livePhotoGallery[livePosition - 1], size: CGSize(width: 150, height: 150))
@@ -714,12 +714,10 @@ extension PhotoManager {
 						}
 					}
 					
-					let duplicatedTuplesOperation = self.getDuplicatedTuplesOperation(for: livePhotos,
-																						 photosInGallery: livePhotoGallery,
-																						 isDeepCleanScan: enableDeepCleanProcessingNotification) { similarLivePhotoGroup in
+					let duplicatedTuplesOperation = self.getDuplicatedTuplesOperation(for: livePhotos, photosInGallery: livePhotoGallery, deepCleanTyep: .similarLivePhoto, singleCleanType: .similarLivePhoto, enableDeepCleanProcessingNotification: enableDeepCleanProcessingNotification, enableSingleProcessingNotification: enableSingleProcessingNotification) { similarLivePhotoGroup in
 						completionHandler(similarLivePhotoGroup)
 					}
-					
+		
 					self.serviceUtilsCalculatedOperationsQueuer.addOperation(duplicatedTuplesOperation)
 					
 				} else {
@@ -757,11 +755,11 @@ extension PhotoManager {
 						if enableSingleProcessingNotification {
 							self.progressSearchNotificationManager.sendSingleSearchProgressNotification(notificationtype: .duplicatedPhoto,
 																										totalProgressItems: photoGallery.count,
-																										currentProgressItem: photoPos)
+																										currentProgressItem: photoPos / 2)
 						} else {
 							self.progressSearchNotificationManager.sendDeepProgressNotificatin(notificationType: .duplicatePhoto,
 																							   totalProgressItems: photoGallery.count,
-																							   currentProgressItem: photoPos)
+																							   currentProgressItem: photoPos / 2)
 						}
 						
 						let image = self.fetchManager.getThumbnail(from: photoGallery[photoPos - 1], size: CGSize(width: 150, height: 150))
@@ -771,7 +769,7 @@ extension PhotoManager {
 						}
 					}
 					
-					let duplicatedTuplesOperation = self.getDuplicatedTuplesOperation(for: photos, photosInGallery: photoGallery) { duplicatedPhotoAssetsGroup in
+					let duplicatedTuplesOperation = self.getDuplicatedTuplesOperation(for: photos, photosInGallery: photoGallery, deepCleanTyep: .duplicatePhoto, singleCleanType: .duplicatedPhoto,  enableDeepCleanProcessingNotification: enableDeepCleanProcessingNotification, enableSingleProcessingNotification: enableSingleProcessingNotification) { duplicatedPhotoAssetsGroup in
 						completionHandler(duplicatedPhotoAssetsGroup)
 					}
 					
@@ -791,7 +789,7 @@ extension PhotoManager {
 extension PhotoManager {
 	
 		/// `private duplicated tuples` need for service compare
-	private func getDuplicatedTuplesOperation(for photos: [OSTuple<NSString, NSData>], photosInGallery: PHFetchResult<PHAsset>, isDeepCleanScan: Bool = false, completionHandler: @escaping ([PhassetGroup]) -> Void) -> ConcurrentProcessOperation{
+	private func getDuplicatedTuplesOperation(for photos: [OSTuple<NSString, NSData>], photosInGallery: PHFetchResult<PHAsset>, deepCleanTyep: DeepCleanNotificationType, singleCleanType: SingleContentSearchNotificationType, enableDeepCleanProcessingNotification: Bool = false, enableSingleProcessingNotification: Bool = false, completionHandler: @escaping ([PhassetGroup]) -> Void) -> ConcurrentProcessOperation{
 		
 		let serviceUtilityDuplicatedTuplesOperation = ConcurrentProcessOperation { operation in
 			
@@ -817,6 +815,16 @@ extension PhotoManager {
 				
 				debugPrint("checkDuplicated")
 				debugPrint("position \(currentPosition)")
+				
+				if enableSingleProcessingNotification {
+					self.progressSearchNotificationManager.sendSingleSearchProgressNotification(notificationtype: singleCleanType,
+																								totalProgressItems: duplicatedIDS.count,
+																								currentProgressItem: currentPosition)
+				} else if enableDeepCleanProcessingNotification {
+					self.progressSearchNotificationManager.sendDeepProgressNotificatin(notificationType: deepCleanTyep,
+																					   totalProgressItems: duplicatedIDS.count,
+																					   currentProgressItem: currentPosition)
+				}
 				
 				if let first = duplicatedTuple.first as String?, let second = duplicatedTuple.second as String? {
 					let firstInteger = first.replacingStringAndConvertToIntegerForImage() - 1
@@ -907,7 +915,7 @@ extension PhotoManager {
 			
 			var assetToGroupIndex = [PHAsset: Int]()
 			
-			var notificationStarterIndex = 1
+			var notificationStarterIndex = 0
 			
 			for pair in similarImageIdsAsTuples {
 				
@@ -915,20 +923,7 @@ extension PhotoManager {
 					completionHandler([])
 					return
 				}
-				
-				if enableSingleProcessingNotification {
-					self.progressSearchNotificationManager.sendSingleSearchProgressNotification(notificationtype: .similarVideo,
-																								totalProgressItems: similarImageIdsAsTuples.count,
-																								currentProgressItem: notificationStarterIndex)
-					
-					notificationStarterIndex += 1
-				} else if enableDeepCleanProcessingNotification {
-					self.progressSearchNotificationManager.sendDeepProgressNotificatin(notificationType: .similarVideo,
-																					   totalProgressItems: similarImageIdsAsTuples.count,
-																					   currentProgressItem: notificationStarterIndex)
-					notificationStarterIndex += 1
-				}
-				
+			
 				let assetIndex1 = Int(pair.first! as String)!
 				let assetIndex2 = Int(pair.second! as String)!
 				let asset1 = assets[assetIndex1]
@@ -950,6 +945,18 @@ extension PhotoManager {
 					assetToGroupIndex[asset2] = groupIndex1!
 				}
 				
+				if enableSingleProcessingNotification {
+					notificationStarterIndex += 1
+					self.progressSearchNotificationManager.sendSingleSearchProgressNotification(notificationtype: .similarVideo,
+																								totalProgressItems: similarImageIdsAsTuples.count,
+																								currentProgressItem: notificationStarterIndex)
+					
+				} else if enableDeepCleanProcessingNotification {
+					notificationStarterIndex += 1
+					self.progressSearchNotificationManager.sendDeepProgressNotificatin(notificationType: .similarVideo,
+																					   totalProgressItems: similarImageIdsAsTuples.count,
+																					   currentProgressItem: notificationStarterIndex)
+				}
 			}
 			completionHandler(phassetGroup)
 		}
