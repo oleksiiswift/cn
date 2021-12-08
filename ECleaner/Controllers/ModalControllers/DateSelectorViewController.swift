@@ -7,10 +7,28 @@
 
 import UIKit
 
+extension UIView {
+
+ func findViews<T: UIView>(subclassOf: T.Type) -> [T] {
+	return recursiveSubviews.compactMap { $0 as? T }
+ }
+
+ var recursiveSubviews: [UIView] {
+	return subviews + subviews.flatMap { $0.recursiveSubviews }
+ }
+
+}
+
 class DateSelectorViewController: UIViewController {
     
-    @IBOutlet weak var periodDatePicker: UIDatePicker!
+	@IBOutlet weak var datePicker: HEDatePicker!
+	
+	
+	
+	
+	@IBOutlet weak var periodDatePicker: UIDatePicker!
     @IBOutlet weak var mainContainerView: UIView!
+	@IBOutlet weak var pickerContainerView: UIView!
     @IBOutlet weak var customNavBar: StartingNavigationBar!
     @IBOutlet weak var autoDatePickButton: UIButton!
     @IBOutlet weak var autoDatePickBackgroundImageView: UIImageView!
@@ -18,10 +36,9 @@ class DateSelectorViewController: UIViewController {
     @IBOutlet weak var autoDatePickTextLabel: UILabel!
     @IBOutlet weak var submitButtonView: ShadowView!
     @IBOutlet weak var submitButtonTextLabel: UILabel!
-    
     @IBOutlet weak var mainContainerViewHeightConstraint: NSLayoutConstraint!
     
-    private var autoPickCheckIsOn: Bool = false
+	private var autoPickCheckIsOn: Bool = false
     public var isStartingDateSelected: Bool = false
     
     private var selectedDate: String {
@@ -39,6 +56,38 @@ class DateSelectorViewController: UIViewController {
         setupObserversAndDelegate()
         setupUI()
         updateColors()
+		
+		
+		
+		self.datePicker.delegate = self
+		self.datePicker.identifier = .gregorian
+		self.datePicker.locale = Locale(identifier: "en_US")
+	
+		self.datePicker.pickerType = .yearMonth
+		self.datePicker.reloadAllComponents()
+		self.datePicker.setDate(Date(), animated: false)
+//		self.datePicker.font = .systemFont(ofSize: 20, weight: .bold)
+//		self.datePicker.showsLargeContentViewer = false
+
+		
+	
+		
+////		let picker = MonthYearPickerView(frame: CGRect(origin: CGPoint(x: 0, y: (pickerContainerView.bounds.height - 216) / 2), size: CGSize(width: view.bounds.width, height: 216)))
+//		let picker = MonthYearPickerView(frame: CGRect(x: 0, y: 0, width: pickerContainerView.frame.height, height: pickerContainerView.frame.width))
+//
+//
+//
+////			  picker.minimumDate = Date()
+//			  picker.maximumDate = Calendar.current.date(byAdding: .year, value: 10, to: Date())
+//			  picker.addTarget(self, action: #selector(dateChanged(_:)), for: .valueChanged)
+//		pickerContainerView.addSubview(picker)
+//		picker.translatesAutoresizingMaskIntoConstraints = false
+//
+//		picker.leadingAnchor.constraint(equalTo: pickerContainerView.leadingAnchor, constant: 20).isActive = true
+//		picker.trailingAnchor.constraint(equalTo: pickerContainerView.trailingAnchor, constant: -20).isActive = true
+//		picker.topAnchor.constraint(equalTo: pickerContainerView.topAnchor, constant: 0).isActive = true
+//		picker.bottomAnchor.constraint(equalTo: pickerContainerView.bottomAnchor, constant: 0).isActive = true
+//
     }
     
     override func viewDidLayoutSubviews() {
@@ -46,6 +95,10 @@ class DateSelectorViewController: UIViewController {
             
         mainContainerView.cornerSelectRadiusView(corners: [.topLeft, .topRight], radius: 20)
     }
+	
+	@objc func dateChanged(_ picker: MonthYearPickerView) {
+			print("date changed: \(picker.date)")
+		}
     
     func setupNavigation() {
         
@@ -171,3 +224,15 @@ extension DateSelectorViewController: StartingNavigationBarDelegate {
     
     
 }
+
+
+
+extension DateSelectorViewController: HEDatePickerDelegate {
+	func pickerView(_ pickerView: HEDatePicker, didSelectRow row: Int, inComponent component: Int) {
+	}
+}
+
+
+
+
+

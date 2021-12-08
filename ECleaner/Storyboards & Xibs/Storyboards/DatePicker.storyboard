@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19162" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="3Qs-rr-bpc">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19455" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="3Qs-rr-bpc">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19144"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19454"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -33,8 +35,8 @@
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pb8-In-ZYb">
                                         <rect key="frame" x="0.0" y="78" width="414" height="200"/>
                                         <subviews>
-                                            <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" style="wheels" translatesAutoresizingMaskIntoConstraints="NO" id="pnZ-sP-l1l">
-                                                <rect key="frame" x="0.0" y="5" width="414" height="190"/>
+                                            <datePicker hidden="YES" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" style="wheels" translatesAutoresizingMaskIntoConstraints="NO" id="pnZ-sP-l1l">
+                                                <rect key="frame" x="0.0" y="33" width="414" height="162"/>
                                                 <date key="minimumDate" timeIntervalSinceReferenceDate="-978267600">
                                                     <!--1970-01-01 11:00:00 +0000-->
                                                 </date>
@@ -45,13 +47,19 @@
                                                     <action selector="didPickUpActionPicker:" destination="3Qs-rr-bpc" eventType="valueChanged" id="2NN-YI-sgE"/>
                                                 </connections>
                                             </datePicker>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xNa-eO-f8Z" customClass="HEDatePicker" customModule="ECleaner" customModuleProvider="target">
+                                                <rect key="frame" x="0.0" y="0.0" width="414" height="200"/>
+                                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            </view>
                                         </subviews>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstAttribute="trailing" secondItem="pnZ-sP-l1l" secondAttribute="trailing" id="Cte-v0-uvj"/>
-                                            <constraint firstAttribute="bottom" secondItem="pnZ-sP-l1l" secondAttribute="bottom" constant="5" id="D8f-JV-snE"/>
-                                            <constraint firstItem="pnZ-sP-l1l" firstAttribute="top" secondItem="pb8-In-ZYb" secondAttribute="top" constant="5" id="MWJ-TD-qqQ"/>
+                                            <constraint firstAttribute="bottom" secondItem="xNa-eO-f8Z" secondAttribute="bottom" id="Eyq-5d-Thg"/>
                                             <constraint firstItem="pnZ-sP-l1l" firstAttribute="leading" secondItem="pb8-In-ZYb" secondAttribute="leading" id="OM3-TM-rmr"/>
+                                            <constraint firstItem="xNa-eO-f8Z" firstAttribute="top" secondItem="pb8-In-ZYb" secondAttribute="top" id="XXg-5b-JQS"/>
+                                            <constraint firstItem="xNa-eO-f8Z" firstAttribute="leading" secondItem="pb8-In-ZYb" secondAttribute="leading" id="be8-Py-bNB"/>
+                                            <constraint firstAttribute="trailing" secondItem="xNa-eO-f8Z" secondAttribute="trailing" id="cqU-hP-ywp"/>
                                             <constraint firstAttribute="height" constant="200" id="ypn-Cr-MGP"/>
                                         </constraints>
                                     </view>
@@ -190,9 +198,11 @@
                         <outlet property="autoDatePickImageView" destination="8cL-Pk-ILa" id="TUg-AC-A8t"/>
                         <outlet property="autoDatePickTextLabel" destination="BAK-Nx-Q9j" id="1CY-ZC-nCZ"/>
                         <outlet property="customNavBar" destination="y79-R1-NIG" id="c9r-jr-Kgt"/>
+                        <outlet property="datePicker" destination="xNa-eO-f8Z" id="Pxx-8z-uWI"/>
                         <outlet property="mainContainerView" destination="AaZ-Qi-Xe2" id="bNH-C9-5sv"/>
                         <outlet property="mainContainerViewHeightConstraint" destination="8MR-dW-VFb" id="MIE-kr-7se"/>
                         <outlet property="periodDatePicker" destination="pnZ-sP-l1l" id="dk8-yW-Zrm"/>
+                        <outlet property="pickerContainerView" destination="pb8-In-ZYb" id="QrA-DC-zqH"/>
                         <outlet property="submitButtonTextLabel" destination="uEC-87-sHn" id="rnE-tg-eaX"/>
                         <outlet property="submitButtonView" destination="wjA-Jm-dfS" id="jiD-Jk-ESr"/>
                     </connections>
