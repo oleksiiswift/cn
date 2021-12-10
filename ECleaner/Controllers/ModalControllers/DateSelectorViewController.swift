@@ -63,7 +63,7 @@ class DateSelectorViewController: UIViewController {
 		self.datePicker.identifier = .gregorian
 		self.datePicker.locale = Locale(identifier: "en_US")
 	
-		self.datePicker.pickerType = .yearMonth
+		self.datePicker.pickerType = .year
 		self.datePicker.reloadAllComponents()
 		self.datePicker.setDate(Date(), animated: false)
 //		self.datePicker.font = .systemFont(ofSize: 20, weight: .bold)
@@ -94,6 +94,13 @@ class DateSelectorViewController: UIViewController {
         super.viewDidLayoutSubviews()
             
         mainContainerView.cornerSelectRadiusView(corners: [.topLeft, .topRight], radius: 20)
+		
+		
+//		datePicker.leadingAnchor.constraint(equalTo: pickerContainerView.leadingAnchor).isActive = true
+//		datePicker.trailingAnchor.constraint(equalTo: pickerContainerView.trailingAnchor).isActive = true
+//		datePicker.topAnchor.constraint(equalTo: pickerContainerView.topAnchor).isActive = true
+//		datePicker.bottomAnchor.constraint(equalTo: pickerContainerView.bottomAnchor).isActive = true
+//		datePicker.layoutIfNeeded()
     }
 	
 	@objc func dateChanged(_ picker: MonthYearPickerView) {

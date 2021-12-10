@@ -48,18 +48,18 @@
                                                 </connections>
                                             </datePicker>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xNa-eO-f8Z" customClass="HEDatePicker" customModule="ECleaner" customModuleProvider="target">
-                                                <rect key="frame" x="0.0" y="0.0" width="414" height="200"/>
+                                                <rect key="frame" x="20" y="0.0" width="167" height="200"/>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             </view>
                                         </subviews>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
+                                            <constraint firstItem="xNa-eO-f8Z" firstAttribute="trailing" secondItem="pb8-In-ZYb" secondAttribute="centerX" constant="-20" id="6ud-VH-PdC"/>
                                             <constraint firstAttribute="trailing" secondItem="pnZ-sP-l1l" secondAttribute="trailing" id="Cte-v0-uvj"/>
                                             <constraint firstAttribute="bottom" secondItem="xNa-eO-f8Z" secondAttribute="bottom" id="Eyq-5d-Thg"/>
                                             <constraint firstItem="pnZ-sP-l1l" firstAttribute="leading" secondItem="pb8-In-ZYb" secondAttribute="leading" id="OM3-TM-rmr"/>
                                             <constraint firstItem="xNa-eO-f8Z" firstAttribute="top" secondItem="pb8-In-ZYb" secondAttribute="top" id="XXg-5b-JQS"/>
-                                            <constraint firstItem="xNa-eO-f8Z" firstAttribute="leading" secondItem="pb8-In-ZYb" secondAttribute="leading" id="be8-Py-bNB"/>
-                                            <constraint firstAttribute="trailing" secondItem="xNa-eO-f8Z" secondAttribute="trailing" id="cqU-hP-ywp"/>
+                                            <constraint firstItem="xNa-eO-f8Z" firstAttribute="leading" secondItem="pb8-In-ZYb" secondAttribute="leading" constant="20" id="be8-Py-bNB"/>
                                             <constraint firstAttribute="height" constant="200" id="ypn-Cr-MGP"/>
                                         </constraints>
                                     </view>
