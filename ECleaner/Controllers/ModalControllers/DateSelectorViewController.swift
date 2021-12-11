@@ -7,28 +7,18 @@
 
 import UIKit
 
-extension UIView {
 
- func findViews<T: UIView>(subclassOf: T.Type) -> [T] {
-	return recursiveSubviews.compactMap { $0 as? T }
- }
-
- var recursiveSubviews: [UIView] {
-	return subviews + subviews.flatMap { $0.recursiveSubviews }
- }
-
-}
 
 class DateSelectorViewController: UIViewController {
     
-	@IBOutlet weak var datePicker: HEDatePicker!
-	
-	
-	
-	
-	@IBOutlet weak var periodDatePicker: UIDatePicker!
+
     @IBOutlet weak var mainContainerView: UIView!
 	@IBOutlet weak var pickerContainerView: UIView!
+	
+	@IBOutlet weak var monthDatePicker: SegmentDatePicker!
+	@IBOutlet weak var yearDatePicker: SegmentDatePicker!
+	@IBOutlet weak var pickerSpacerShadowView: UIView!
+	
     @IBOutlet weak var customNavBar: StartingNavigationBar!
     @IBOutlet weak var autoDatePickButton: UIButton!
     @IBOutlet weak var autoDatePickBackgroundImageView: UIImageView!
@@ -43,7 +33,8 @@ class DateSelectorViewController: UIViewController {
     
     private var selectedDate: String {
         get {
-            U.getString(from: periodDatePicker.date, format: C.dateFormat.fullDmy)
+//            U.getString(from: periodDatePicker.date, format: C.dateFormat.fullDmy)
+			""
         }
     }
     
@@ -54,18 +45,14 @@ class DateSelectorViewController: UIViewController {
 
         setupNavigation()
         setupObserversAndDelegate()
+		setupDatePickers()
         setupUI()
         updateColors()
 		
+
 		
 		
-		self.datePicker.delegate = self
-		self.datePicker.identifier = .gregorian
-		self.datePicker.locale = Locale(identifier: "en_US")
-	
-		self.datePicker.pickerType = .year
-		self.datePicker.reloadAllComponents()
-		self.datePicker.setDate(Date(), animated: false)
+		
 //		self.datePicker.font = .systemFont(ofSize: 20, weight: .bold)
 //		self.datePicker.showsLargeContentViewer = false
 
@@ -103,10 +90,10 @@ class DateSelectorViewController: UIViewController {
 //		datePicker.layoutIfNeeded()
     }
 	
-	@objc func dateChanged(_ picker: MonthYearPickerView) {
-			print("date changed: \(picker.date)")
-		}
-    
+//	@objc func dateChanged(_ picker: MonthYearPickerView) {
+//			print("date changed: \(picker.date)")
+//		}
+//
     func setupNavigation() {
         
         customNavBar.setUpNavigation(title: "SELECT_PERIOD".localized(), leftImage: nil, rightImage: I.systemItems.navigationBarItems.dissmiss)
@@ -115,6 +102,7 @@ class DateSelectorViewController: UIViewController {
     func setupObserversAndDelegate() {
 
         customNavBar.delegate = self
+	
     }
     
     
@@ -125,11 +113,11 @@ class DateSelectorViewController: UIViewController {
         
         if isStartingDateSelected {
             if let lastPickDate = S.lastSmartCleanDate, let date = U.getDateFrom(string: lastPickDate, format: C.dateFormat.fullDmy) {
-                periodDatePicker.setDate(date, animated: true)
+//                periodDatePicker.setDate(date, animated: true)
             }
         } else {
             if autoPickCheckIsOn {
-                periodDatePicker.setDate(Date(), animated: true)
+//                periodDatePicker.setDate(Date(), animated: true)
             }
         }
     }
@@ -138,9 +126,9 @@ class DateSelectorViewController: UIViewController {
         self.checkTheDate()
     }
     
-    @IBAction func didPickUpActionPicker(_ sender: Any) {
-        debugPrint(selectedDate)
-    }
+//    @IBAction func didPickUpActionPicker(_ sender: Any) {
+//        debugPrint(selectedDate)
+//    }
 }
 
 extension DateSelectorViewController {
@@ -154,7 +142,7 @@ extension DateSelectorViewController {
     public func setPicker(_ value: String) {
         if let date = U.getDateFrom(string: value, format: C.dateFormat.fullDmy) {
             U.UI {
-                self.periodDatePicker.setDate(date, animated: true)
+//                self.periodDatePicker.setDate(date, animated: true)
             }
         }
     }
@@ -192,7 +180,7 @@ extension DateSelectorViewController: Themeble {
         autoDatePickTextLabel.text = isStartingDateSelected ? "SINCE_THE_LAST_CLEANING".localized() : "NOW_IS_THE_TIME_FOR".localized()
         autoDatePickTextLabel.font = UIFont(font: FontManager.robotoBold, size: 14.0)
         autoDatePickImageView.image = I.systemElementsItems.checkBox
-        periodDatePicker.maximumDate = Date()
+//        periodDatePicker.maximumDate = Date()
         
         autoDatePickBackgroundImageView.layer.applySketchShadow(
             color: UIColor().colorFromHexString("D8DFEB"),
@@ -204,12 +192,40 @@ extension DateSelectorViewController: Themeble {
         
         autoDatePickImageView.isHidden = !autoPickCheckIsOn
         
-        periodDatePicker.setValue(false, forKey: "highlightsToday")
-        periodDatePicker.setValue(theme.titleTextColor, forKeyPath: "textColor")
-        if periodDatePicker.subviews[0].subviews.count >= 2 {
-            periodDatePicker.subviews[0].subviews[1].backgroundColor = UIColor.clear
-        }
+//        periodDatePicker.setValue(false, forKey: "highlightsToday")
+//        periodDatePicker.setValue(theme.titleTextColor, forKeyPath: "textColor")
+//        if periodDatePicker.subviews[0].subviews.count >= 2 {
+//            periodDatePicker.subviews[0].subviews[1].backgroundColor = UIColor.clear
+//        }
     }
+	
+	private func setupDatePickers() {
+		
+		
+		self.yearDatePicker.delegate = self
+		self.monthDatePicker.delegate = self
+		
+		self.yearDatePicker.calendarIdentifier = .gregorian
+		self.monthDatePicker.calendarIdentifier = .gregorian
+		
+		self.yearDatePicker.pickerLocale = Locale(identifier: "en_US")
+		self.monthDatePicker.pickerLocale = Locale(identifier: "en_US")
+		
+		self.yearDatePicker.datePickerType = .year
+		self.monthDatePicker.datePickerType = .month
+		
+		self.yearDatePicker.componentYearMargin = .left
+		self.monthDatePicker.componentMonthMargin = .right
+		
+//		self.yearDatePicker.marginValue = -40
+//		self.monthDatePicker.marginValue = 1
+		
+		self.yearDatePicker.reloadAllComponents()
+		self.monthDatePicker.reloadAllComponents()
+		
+		self.yearDatePicker.setCurrentDate(Date(), animated: false)
+		self.monthDatePicker.setCurrentDate(Date(), animated: false)
+	}
     
     func updateColors() {
         
@@ -217,6 +233,9 @@ extension DateSelectorViewController: Themeble {
         mainContainerView.backgroundColor = theme.backgroundColor
         submitButtonTextLabel.textColor = theme.blueTextColor
         autoDatePickTextLabel.textColor = theme.subTitleTextColor
+		
+		self.monthDatePicker.font = .systemFont(ofSize: 26, weight: .black)
+		self.yearDatePicker.font = .systemFont(ofSize: 26, weight: .black)
     }
 }
 
@@ -232,12 +251,23 @@ extension DateSelectorViewController: StartingNavigationBarDelegate {
     
 }
 
-
-
-extension DateSelectorViewController: HEDatePickerDelegate {
-	func pickerView(_ pickerView: HEDatePicker, didSelectRow row: Int, inComponent component: Int) {
+extension DateSelectorViewController: SegmentDatePickerDelegate {
+	
+	
+	func datePicker(_ segmentDatePicker: SegmentDatePicker, didSelect row: Int, in component: Int) {
+		if segmentDatePicker == monthDatePicker {
+			
+		} else if segmentDatePicker == yearDatePicker {
+			
+		}
 	}
+	
+	
 }
+
+
+
+
 
 
 

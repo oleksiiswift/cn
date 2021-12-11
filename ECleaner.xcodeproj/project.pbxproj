@@ -171,6 +171,14 @@
 		9797D7AC2754E6F300F2B030 /* ContactManagerDeprocatedMethods.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9797D7AB2754E6F300F2B030 /* ContactManagerDeprocatedMethods.swift */; };
 		97A05B742743D4B600968459 /* SearchBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A05B732743D4B600968459 /* SearchBarView.swift */; };
 		97A05B762743D4C200968459 /* SearchBarView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 97A05B752743D4C200968459 /* SearchBarView.xib */; };
+		97A39FDC27649DF4007CB482 /* SegmentDatePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A39FDB27649DF4007CB482 /* SegmentDatePicker.swift */; };
+		97A39FDE27649F0C007CB482 /* UIView+RecurciveSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A39FDD27649F0C007CB482 /* UIView+RecurciveSearch.swift */; };
+		97A39FE127649FE0007CB482 /* SegmentDatePicker+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A39FE027649FE0007CB482 /* SegmentDatePicker+Extension.swift */; };
+		97A39FE32764A025007CB482 /* SegmentDatePickerType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A39FE22764A025007CB482 /* SegmentDatePickerType.swift */; };
+		97A39FE52764A040007CB482 /* SegmentDatePickerComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A39FE42764A040007CB482 /* SegmentDatePickerComponents.swift */; };
+		97A39FE72764A2CF007CB482 /* SegmentDatePickerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A39FE62764A2CF007CB482 /* SegmentDatePickerDelegate.swift */; };
+		97A39FE92764A9B8007CB482 /* DatePickerStringComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A39FE82764A9B8007CB482 /* DatePickerStringComponents.swift */; };
+		97A39FEB2764E8CB007CB482 /* UILabel+Margin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A39FEA2764E8CB007CB482 /* UILabel+Margin.swift */; };
 		97A61EDE2726AB8700F2E6DE /* OLDContactsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A61EDD2726AB8700F2E6DE /* OLDContactsManager.swift */; };
 		97B01A59274582F900DDE03C /* BottomDoubleButtonBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B01A58274582F900DDE03C /* BottomDoubleButtonBarView.swift */; };
 		97B01A5B2745830500DDE03C /* BottomDoubleButtonBarView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 97B01A5A2745830500DDE03C /* BottomDoubleButtonBarView.xib */; };
@@ -392,6 +400,14 @@
 		9797D7AB2754E6F300F2B030 /* ContactManagerDeprocatedMethods.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactManagerDeprocatedMethods.swift; sourceTree = "<group>"; };
 		97A05B732743D4B600968459 /* SearchBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBarView.swift; sourceTree = "<group>"; };
 		97A05B752743D4C200968459 /* SearchBarView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SearchBarView.xib; sourceTree = "<group>"; };
+		97A39FDB27649DF4007CB482 /* SegmentDatePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentDatePicker.swift; sourceTree = "<group>"; };
+		97A39FDD27649F0C007CB482 /* UIView+RecurciveSearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+RecurciveSearch.swift"; sourceTree = "<group>"; };
+		97A39FE027649FE0007CB482 /* SegmentDatePicker+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SegmentDatePicker+Extension.swift"; sourceTree = "<group>"; };
+		97A39FE22764A025007CB482 /* SegmentDatePickerType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentDatePickerType.swift; sourceTree = "<group>"; };
+		97A39FE42764A040007CB482 /* SegmentDatePickerComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentDatePickerComponents.swift; sourceTree = "<group>"; };
+		97A39FE62764A2CF007CB482 /* SegmentDatePickerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentDatePickerDelegate.swift; sourceTree = "<group>"; };
+		97A39FE82764A9B8007CB482 /* DatePickerStringComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePickerStringComponents.swift; sourceTree = "<group>"; };
+		97A39FEA2764E8CB007CB482 /* UILabel+Margin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+Margin.swift"; sourceTree = "<group>"; };
 		97A61EDD2726AB8700F2E6DE /* OLDContactsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OLDContactsManager.swift; sourceTree = "<group>"; };
 		97B01A58274582F900DDE03C /* BottomDoubleButtonBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomDoubleButtonBarView.swift; sourceTree = "<group>"; };
 		97B01A5A2745830500DDE03C /* BottomDoubleButtonBarView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BottomDoubleButtonBarView.xib; sourceTree = "<group>"; };
@@ -704,6 +720,7 @@
 				049CC23326833D320002F988 /* UIView+Radius.swift */,
 				04CFFFFA2685E546000CA850 /* UIView+SelectedCornerRadius.swift */,
 				04CFFFFC2685E571000CA850 /* UIView+Borders.swift */,
+				97A39FDD27649F0C007CB482 /* UIView+RecurciveSearch.swift */,
 			);
 			path = UIView;
 			sourceTree = "<group>";
@@ -827,6 +844,7 @@
 				970D7789275B70F60048F41D /* UIFont */,
 				970D7788275B70E70048F41D /* UIAlertController */,
 				970D7787275B70D70048F41D /* PHAsset */,
+				97A39FEA2764E8CB007CB482 /* UILabel+Margin.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -902,6 +920,7 @@
 				9776F5822735949C009D806A /* ShadowView */,
 				97DC39B1273C091C00D487BE /* ShadowButtons */,
 				9776F57A27359382009D806A /* Layer */,
+				97A39FDF27649F7C007CB482 /* DatePicker */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1225,6 +1244,19 @@
 				0405AA5A269D9BD6004AC07A /* PreviewAVController.swift */,
 			);
 			path = Preview;
+			sourceTree = "<group>";
+		};
+		97A39FDF27649F7C007CB482 /* DatePicker */ = {
+			isa = PBXGroup;
+			children = (
+				97A39FDB27649DF4007CB482 /* SegmentDatePicker.swift */,
+				97A39FE22764A025007CB482 /* SegmentDatePickerType.swift */,
+				97A39FE42764A040007CB482 /* SegmentDatePickerComponents.swift */,
+				97A39FE82764A9B8007CB482 /* DatePickerStringComponents.swift */,
+				97A39FE62764A2CF007CB482 /* SegmentDatePickerDelegate.swift */,
+				97A39FE027649FE0007CB482 /* SegmentDatePicker+Extension.swift */,
+			);
+			path = DatePicker;
 			sourceTree = "<group>";
 		};
 		97A61EDF2726AB8B00F2E6DE /* Contacts */ = {
@@ -1566,6 +1598,7 @@
 				970D7782275A9C400048F41D /* PHAssetGroupModel.swift in Sources */,
 				048D65C926B171E5004F0ADC /* PlainProgressview.swift in Sources */,
 				4F4A17A6271D743600CAF157 /* FontRepresentable.swift in Sources */,
+				97A39FE52764A040007CB482 /* SegmentDatePickerComponents.swift in Sources */,
 				0459DF8B26A55F360085EEDF /* CarouselCollectionViewCell.swift in Sources */,
 				977BA04527328C4A0018DF53 /* Array+BestValue.swift in Sources */,
 				97CC2F382683CF740072EF8C /* UpdateContentDataBaseMediator.swift in Sources */,
@@ -1575,6 +1608,7 @@
 				97FC789626889541000D7F26 /* TimeIInterval.swift in Sources */,
 				97FC789226888120000D7F26 /* Date+CurrentDate.swift in Sources */,
 				0405AA59269D77A5004AC07A /* CMtime+StringDuration.swift in Sources */,
+				97A39FE72764A2CF007CB482 /* SegmentDatePickerDelegate.swift in Sources */,
 				9776F5842735953A009D806A /* ShadowView.swift in Sources */,
 				97FC78A12688E5E8000D7F26 /* PhotoCollectionViewCell.swift in Sources */,
 				97A61EDE2726AB8700F2E6DE /* OLDContactsManager.swift in Sources */,
@@ -1585,6 +1619,7 @@
 				049CC23426833D320002F988 /* UIView+Radius.swift in Sources */,
 				97DC39AA273BE9C800D487BE /* GroupedContactsHeaderView.swift in Sources */,
 				97B01A59274582F900DDE03C /* BottomDoubleButtonBarView.swift in Sources */,
+				97A39FDC27649DF4007CB482 /* SegmentDatePicker.swift in Sources */,
 				04467CE4270DA3A000DBBB39 /* DateSelectebleView.swift in Sources */,
 				4F56073B27205AF300CA19E9 /* Property.swift in Sources */,
 				04E58373267A4A2000EDC3A3 /* UIDevice+Enviroment.swift in Sources */,
@@ -1615,6 +1650,7 @@
 				04CFFFFD2685E571000CA850 /* UIView+Borders.swift in Sources */,
 				049CC2372683730A0002F988 /* BaseCollectionFlowLayout.swift in Sources */,
 				978FEF14274BC21A00ADE1D9 /* ProgressAlertController.swift in Sources */,
+				97A39FEB2764E8CB007CB482 /* UILabel+Margin.swift in Sources */,
 				972E0256274105B300C236C7 /* SingleContactsGroupOperationsMediator.swift in Sources */,
 				040E288826A98B0F0019F372 /* DeepCleaningViewController.swift in Sources */,
 				0459DF9B26A6CDCC0085EEDF /* PHCachingImageManager+RequestExtension.swift in Sources */,
@@ -1685,6 +1721,7 @@
 				4F56074427205AF300CA19E9 /* ProgressViewController.swift in Sources */,
 				97E678462750F68A004E340B /* UsageDataNotificationType.swift in Sources */,
 				4F56073C27205AF300CA19E9 /* CircularProgressView.swift in Sources */,
+				97A39FE32764A025007CB482 /* SegmentDatePickerType.swift in Sources */,
 				97238A132689EF6E00C523DC /* Presenter.swift in Sources */,
 				97FC7894268882C9000D7F26 /* Date+DateFormatter.swift in Sources */,
 				04649B3C268C98A900336FE4 /* UIButton+RemoveAnimation.swift in Sources */,
@@ -1698,11 +1735,13 @@
 				97FC78982688CC06000D7F26 /* SimpleAssetsListViewController.swift in Sources */,
 				97A05B742743D4B600968459 /* SearchBarView.swift in Sources */,
 				97DAB62E272C164A00F05CEA /* GroupContactTableViewCell.swift in Sources */,
+				97A39FE127649FE0007CB482 /* SegmentDatePicker+Extension.swift in Sources */,
 				049CC21B268225E60002F988 /* SettingsManager.swift in Sources */,
 				977FE23727306355004DE4C3 /* ContactsGroupViewController.swift in Sources */,
 				4F4A17A4271D73E900CAF157 /* Font.swift in Sources */,
 				970D7784275B66CE0048F41D /* PhotoManager.swift in Sources */,
 				975AF43B2728306C00744E3B /* ContactListDataSource.swift in Sources */,
+				97A39FDE27649F0C007CB482 /* UIView+RecurciveSearch.swift in Sources */,
 				97B01A752746ED5D00DDE03C /* UIFont+Italic.swift in Sources */,
 				97CC2F3A2683D00F0072EF8C /* UpdateContentDataBaseListener.swift in Sources */,
 				9776F57E27359406009D806A /* ShadowRoundedView.swift in Sources */,
@@ -1728,6 +1767,7 @@
 				4F56074627205AF300CA19E9 /* BlueIndicatorStyle.swift in Sources */,
 				970D778B275B9B850048F41D /* ProgressSearchNotificationManager.swift in Sources */,
 				97D2BEC8275A2AA2002082EB /* OperationServiceQueue.swift in Sources */,
+				97A39FE92764A9B8007CB482 /* DatePickerStringComponents.swift in Sources */,
 				97238A0B2689EDD200C523DC /* Toast.swift in Sources */,
 				04649B3A268C6FEC00336FE4 /* Array+Extension.swift in Sources */,
 				04E58380267B9F6B00EDC3A3 /* PhassetFetchManager.swift in Sources */,

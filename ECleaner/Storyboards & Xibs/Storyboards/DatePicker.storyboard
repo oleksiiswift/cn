@@ -35,31 +35,36 @@
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pb8-In-ZYb">
                                         <rect key="frame" x="0.0" y="78" width="414" height="200"/>
                                         <subviews>
-                                            <datePicker hidden="YES" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" style="wheels" translatesAutoresizingMaskIntoConstraints="NO" id="pnZ-sP-l1l">
-                                                <rect key="frame" x="0.0" y="33" width="414" height="162"/>
-                                                <date key="minimumDate" timeIntervalSinceReferenceDate="-978267600">
-                                                    <!--1970-01-01 11:00:00 +0000-->
-                                                </date>
-                                                <date key="maximumDate" timeIntervalSinceReferenceDate="1164970800">
-                                                    <!--2037-12-01 11:00:00 +0000-->
-                                                </date>
-                                                <connections>
-                                                    <action selector="didPickUpActionPicker:" destination="3Qs-rr-bpc" eventType="valueChanged" id="2NN-YI-sgE"/>
-                                                </connections>
-                                            </datePicker>
-                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xNa-eO-f8Z" customClass="HEDatePicker" customModule="ECleaner" customModuleProvider="target">
-                                                <rect key="frame" x="20" y="0.0" width="167" height="200"/>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="it5-se-s3G" customClass="SegmentDatePicker" customModule="ECleaner" customModuleProvider="target">
+                                                <rect key="frame" x="0.0" y="0.0" width="197" height="200"/>
+                                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            </view>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="JIl-FT-eky">
+                                                <rect key="frame" x="197" y="0.0" width="20" height="200"/>
+                                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="20" id="kOI-xb-1sz"/>
+                                                </constraints>
+                                            </view>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Usu-Xa-CzE" customClass="SegmentDatePicker" customModule="ECleaner" customModuleProvider="target">
+                                                <rect key="frame" x="217" y="0.0" width="197" height="200"/>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             </view>
                                         </subviews>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
-                                            <constraint firstItem="xNa-eO-f8Z" firstAttribute="trailing" secondItem="pb8-In-ZYb" secondAttribute="centerX" constant="-20" id="6ud-VH-PdC"/>
-                                            <constraint firstAttribute="trailing" secondItem="pnZ-sP-l1l" secondAttribute="trailing" id="Cte-v0-uvj"/>
-                                            <constraint firstAttribute="bottom" secondItem="xNa-eO-f8Z" secondAttribute="bottom" id="Eyq-5d-Thg"/>
-                                            <constraint firstItem="pnZ-sP-l1l" firstAttribute="leading" secondItem="pb8-In-ZYb" secondAttribute="leading" id="OM3-TM-rmr"/>
-                                            <constraint firstItem="xNa-eO-f8Z" firstAttribute="top" secondItem="pb8-In-ZYb" secondAttribute="top" id="XXg-5b-JQS"/>
-                                            <constraint firstItem="xNa-eO-f8Z" firstAttribute="leading" secondItem="pb8-In-ZYb" secondAttribute="leading" constant="20" id="be8-Py-bNB"/>
+                                            <constraint firstAttribute="trailing" secondItem="Usu-Xa-CzE" secondAttribute="trailing" id="1jJ-fb-e38"/>
+                                            <constraint firstItem="it5-se-s3G" firstAttribute="top" secondItem="pb8-In-ZYb" secondAttribute="top" id="F64-UE-L0b"/>
+                                            <constraint firstItem="Usu-Xa-CzE" firstAttribute="leading" secondItem="JIl-FT-eky" secondAttribute="trailing" id="JkS-hu-7Ay"/>
+                                            <constraint firstItem="Usu-Xa-CzE" firstAttribute="top" secondItem="pb8-In-ZYb" secondAttribute="top" id="Lh4-nU-Xtd"/>
+                                            <constraint firstItem="Usu-Xa-CzE" firstAttribute="leading" secondItem="pb8-In-ZYb" secondAttribute="centerX" constant="10" id="Qoe-WS-EKk"/>
+                                            <constraint firstItem="JIl-FT-eky" firstAttribute="leading" secondItem="it5-se-s3G" secondAttribute="trailing" id="Sq4-Js-FuR"/>
+                                            <constraint firstAttribute="bottom" secondItem="JIl-FT-eky" secondAttribute="bottom" id="TOd-kP-hv1"/>
+                                            <constraint firstAttribute="bottom" secondItem="it5-se-s3G" secondAttribute="bottom" id="aSD-Ej-o48"/>
+                                            <constraint firstItem="it5-se-s3G" firstAttribute="leading" secondItem="pb8-In-ZYb" secondAttribute="leading" id="j8N-RN-6jg"/>
+                                            <constraint firstAttribute="bottom" secondItem="Usu-Xa-CzE" secondAttribute="bottom" id="now-bL-VBh"/>
+                                            <constraint firstItem="JIl-FT-eky" firstAttribute="top" secondItem="pb8-In-ZYb" secondAttribute="top" id="sGN-CW-Vx1"/>
+                                            <constraint firstItem="it5-se-s3G" firstAttribute="trailing" secondItem="pb8-In-ZYb" secondAttribute="centerX" constant="-10" id="shC-Zq-7IT"/>
                                             <constraint firstAttribute="height" constant="200" id="ypn-Cr-MGP"/>
                                         </constraints>
                                     </view>
@@ -198,18 +203,19 @@
                         <outlet property="autoDatePickImageView" destination="8cL-Pk-ILa" id="TUg-AC-A8t"/>
                         <outlet property="autoDatePickTextLabel" destination="BAK-Nx-Q9j" id="1CY-ZC-nCZ"/>
                         <outlet property="customNavBar" destination="y79-R1-NIG" id="c9r-jr-Kgt"/>
-                        <outlet property="datePicker" destination="xNa-eO-f8Z" id="Pxx-8z-uWI"/>
                         <outlet property="mainContainerView" destination="AaZ-Qi-Xe2" id="bNH-C9-5sv"/>
                         <outlet property="mainContainerViewHeightConstraint" destination="8MR-dW-VFb" id="MIE-kr-7se"/>
-                        <outlet property="periodDatePicker" destination="pnZ-sP-l1l" id="dk8-yW-Zrm"/>
+                        <outlet property="monthDatePicker" destination="it5-se-s3G" id="ivk-V6-9fW"/>
                         <outlet property="pickerContainerView" destination="pb8-In-ZYb" id="QrA-DC-zqH"/>
+                        <outlet property="pickerSpacerShadowView" destination="JIl-FT-eky" id="cv0-an-zqd"/>
                         <outlet property="submitButtonTextLabel" destination="uEC-87-sHn" id="rnE-tg-eaX"/>
                         <outlet property="submitButtonView" destination="wjA-Jm-dfS" id="jiD-Jk-ESr"/>
+                        <outlet property="yearDatePicker" destination="Usu-Xa-CzE" id="MPT-ms-HJu"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="C7l-ZL-kri" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1112" y="732"/>
+            <point key="canvasLocation" x="1111.5942028985507" y="731.91964285714278"/>
         </scene>
     </scenes>
     <resources>
