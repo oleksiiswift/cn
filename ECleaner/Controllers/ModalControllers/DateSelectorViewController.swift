@@ -47,6 +47,7 @@ class DateSelectorViewController: UIViewController {
         setupObserversAndDelegate()
 		setupDatePickers()
         setupUI()
+		setupPickerSpacerView()
         updateColors()
 		
 
@@ -201,41 +202,92 @@ extension DateSelectorViewController: Themeble {
 	
 	private func setupDatePickers() {
 		
-		
 		self.yearDatePicker.delegate = self
-		self.monthDatePicker.delegate = self
-		
 		self.yearDatePicker.calendarIdentifier = .gregorian
-		self.monthDatePicker.calendarIdentifier = .gregorian
-		
+		self.yearDatePicker.font = .systemFont(ofSize: 26, weight: .black)
+		self.yearDatePicker.disabledFont = .systemFont(ofSize: 26, weight: .black)
 		self.yearDatePicker.pickerLocale = Locale(identifier: "en_US")
-		self.monthDatePicker.pickerLocale = Locale(identifier: "en_US")
-		
 		self.yearDatePicker.datePickerType = .year
-		self.monthDatePicker.datePickerType = .month
-		
-		self.yearDatePicker.componentYearMargin = .left
-		self.monthDatePicker.componentMonthMargin = .right
-		
-//		self.yearDatePicker.marginValue = -40
-//		self.monthDatePicker.marginValue = 1
-		
 		self.yearDatePicker.reloadAllComponents()
-		self.monthDatePicker.reloadAllComponents()
-		
+		self.yearDatePicker.maximumDate = Date()
+		self.yearDatePicker.selectebleLowerPeriodBound = isStartingDateSelected
 		self.yearDatePicker.setCurrentDate(Date(), animated: false)
+		
+		self.monthDatePicker.delegate = self
+		self.monthDatePicker.calendarIdentifier = .gregorian
+		self.monthDatePicker.font = .systemFont(ofSize: 26, weight: .black)
+		self.monthDatePicker.disabledFont = .systemFont(ofSize: 26, weight: .black)
+		self.monthDatePicker.pickerLocale = Locale(identifier: "en_US")
+		self.monthDatePicker.datePickerType = .month
+		self.monthDatePicker.selectebleLowerPeriodBound = isStartingDateSelected
+		self.monthDatePicker.reloadAllComponents()
 		self.monthDatePicker.setCurrentDate(Date(), animated: false)
 	}
     
+	private func setupPickerSpacerView() {
+		
+		let container = UIView()
+		container.backgroundColor = theme.backgroundColor
+		
+		pickerContainerView.addSubview(container)
+		
+		container.translatesAutoresizingMaskIntoConstraints = false
+		container.topAnchor.constraint(equalTo: pickerContainerView.topAnchor, constant: 10).isActive = true
+		container.bottomAnchor.constraint(equalTo: pickerContainerView.bottomAnchor, constant: 50).isActive = true
+		container.widthAnchor.constraint(equalToConstant: 3).isActive = true
+		container.centerXAnchor.constraint(equalTo: pickerContainerView.centerXAnchor).isActive = true
+	
+		let lefty = UIView()
+		lefty.backgroundColor = theme.backgroundColor
+		
+		container.addSubview(lefty)
+		lefty.translatesAutoresizingMaskIntoConstraints = false
+		lefty.leadingAnchor.constraint(equalTo: container.leadingAnchor).isActive = true
+		lefty.topAnchor.constraint(equalTo: container.topAnchor).isActive = true
+		lefty.bottomAnchor.constraint(equalTo: container.bottomAnchor).isActive = true
+		lefty.widthAnchor.constraint(equalToConstant: 1.5).isActive = true
+		
+		let righty = UIView()
+		righty.backgroundColor = theme.backgroundColor
+		container.addSubview(righty)
+		
+		righty.translatesAutoresizingMaskIntoConstraints = false
+		righty.leadingAnchor.constraint(equalTo: lefty.trailingAnchor).isActive = true
+		righty.trailingAnchor.constraint(equalTo: container.trailingAnchor).isActive = true
+		righty.topAnchor.constraint(equalTo: container.topAnchor).isActive = true
+		righty.bottomAnchor.constraint(equalTo: container.bottomAnchor).isActive = true
+		
+		let leftyGradientMask: CAGradientLayer = CAGradientLayer()
+		leftyGradientMask.frame = CGRect(x: 0.0, y: 0.0, width: 1.5, height: pickerContainerView.frame.height - 20)
+		leftyGradientMask.colors = [theme.backgroundColor.cgColor,
+									theme.separatorMainColor.cgColor,
+									theme.backgroundColor.cgColor]
+		leftyGradientMask.startPoint = CGPoint(x: 0.0, y: 0.0)
+		leftyGradientMask.endPoint = CGPoint(x: 0.0, y: 1.0)
+	
+		let rightyGradientMask: CAGradientLayer = CAGradientLayer()
+		rightyGradientMask.frame = CGRect(x: 0.0, y: 0.0, width: 1.5, height: pickerContainerView.frame.height - 20)
+		rightyGradientMask.colors = [theme.backgroundColor.cgColor,
+									theme.separatorHelperColor.cgColor,
+									theme.backgroundColor.cgColor]
+		rightyGradientMask.startPoint = CGPoint(x: 0.0, y: 0.0)
+		rightyGradientMask.endPoint = CGPoint(x: 0.0, y: 1.0)
+		
+		lefty.layer.addSublayer(leftyGradientMask)
+		righty.layer.addSublayer(rightyGradientMask)
+		
+		leftyGradientMask.bringToFront()
+		rightyGradientMask.bringToFront()
+	}
+	
     func updateColors() {
         
         self.view.backgroundColor = .clear
         mainContainerView.backgroundColor = theme.backgroundColor
         submitButtonTextLabel.textColor = theme.blueTextColor
         autoDatePickTextLabel.textColor = theme.subTitleTextColor
-		
-		self.monthDatePicker.font = .systemFont(ofSize: 26, weight: .black)
-		self.yearDatePicker.font = .systemFont(ofSize: 26, weight: .black)
+		self.monthDatePicker.textColor = theme.titleTextColor
+		self.yearDatePicker.textColor = theme.titleTextColor
     }
 }
 
@@ -247,22 +299,17 @@ extension DateSelectorViewController: StartingNavigationBarDelegate {
         
         self.dismiss(animated: true, completion: nil)
     }
-    
-    
 }
 
 extension DateSelectorViewController: SegmentDatePickerDelegate {
 	
-	
 	func datePicker(_ segmentDatePicker: SegmentDatePicker, didSelect row: Int, in component: Int) {
 		if segmentDatePicker == monthDatePicker {
-			
+			debugPrint(segmentDatePicker.currentDate.getMonth())
 		} else if segmentDatePicker == yearDatePicker {
-			
+			debugPrint(segmentDatePicker.currentDate.getYear())
 		}
 	}
-	
-	
 }
 
 

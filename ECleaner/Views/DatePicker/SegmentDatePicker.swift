@@ -65,12 +65,14 @@ class SegmentDatePicker: UIControl {
 		}
 	}
 	
+	public var selectebleLowerPeriodBound: Bool = false
+	
 	public var delegate: SegmentDatePickerDelegate?
 	
 		/// `compomemts ui`
 	
 	public var font: UIFont = .systemFont(ofSize: 18, weight: .medium)
-	public var disabledFont: UIFont = .systemFont(ofSize: 16, weight: .medium)
+	public var disabledFont: UIFont = .systemFont(ofSize: 18, weight: .medium)
 	public var textColor: UIColor = .black
 	
 	public var componentMonthMargin: ComponentsTextMargin = .centered
@@ -78,7 +80,6 @@ class SegmentDatePicker: UIControl {
 	public var componentYearMargin: ComponentsTextMargin = .centered
 	public var componentYearAlign: ComponentsTextAlign = .centered
 	public var marginValue: CGFloat = 0
-	
 	
 	private var disableTextColor: UIColor {
 		get {
@@ -115,7 +116,6 @@ class SegmentDatePicker: UIControl {
 		datePickerView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: 0).isActive = true
 		datePickerView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 0).isActive = true
 		datePickerView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: 0).isActive = true
-		
 	}
 	
 	public override var intrinsicContentSize : CGSize {
@@ -309,7 +309,7 @@ extension SegmentDatePicker {
 		switch component {
 			case .year:
 				let currentYear = Date().getYear()
-				return Range(uncheckedBounds: (lower: currentYear - numbersOfYears, upper: currentYear / 2))
+				return Range(uncheckedBounds: (lower: currentYear - numbersOfYears / 2, upper: currentYear + numbersOfYears / 2))
 			case .month:
 				return self.pickerCalendar.maximumRange(of: .month)!
 			case .day:
@@ -418,7 +418,7 @@ extension SegmentDatePicker: UIPickerViewDataSource {
 		
 		switch componentsValuesCount {
 			case .year:
-				return 200
+				return 100
 			case .month:
 				return 12
 			case .day:
@@ -446,7 +446,11 @@ extension SegmentDatePicker: UIPickerViewDelegate {
 		let components = self.validDateValueBy(updatting: datePickerComponent, at: value)
 		
 		if !self.dateIsInRange(self.pickerCalendar.date(from: components)!) {
-			self.setCurrentDate(self.currentDate, animated: true)
+			if self.selectebleLowerPeriodBound {
+				self.setCurrentDate(self.currentDate, animated: true)
+			} else {
+				self.setCurrentDate(Date(), animated: true)
+			}
 		} else {
 			
 			let componentsAtRow = self.currentCalendarComponentBy(updating: datePickerComponent, at: value)
@@ -500,25 +504,14 @@ extension SegmentDatePicker: UIPickerViewDelegate {
 		label.textColor = textColor
 		label.text = self.getTitleFor(row, at: component)
 		
-//		if componentAtIndex == .month {
-//			switch componentMonthAlign {
-//				case .left:
-//					label.textAlignment = .left
-//				case .right:
-//					label.textAlignment = .right
-//				case .centered:
-//					label.textAlignment = .center
-//			}
-//		} else if componentAtIndex == .year {
-//			switch componentYearAlign {
-//				case .left:
-//					label.textAlignment = .left
-//				case .right:
-//					label.textAlignment = .right
-//				case .centered:
-//					label.textAlignment = .center
-//			}
-//		}
+		let containerView = UIView()
+		
+		containerView.frame = CGRect(x: 0, y: 0, width: U.screenWidth / 2 - 20, height: 60)
+		containerView.addSubview(label)
+		label.frame = containerView.frame
+		label.textAlignment = .center
+
+		return containerView
 		
 					if componentAtIndex == .month {
 			
@@ -562,65 +555,72 @@ extension SegmentDatePicker: UIPickerViewDelegate {
 							label.textAlignment = .right
 						}
 					}
-
-		
 		return label
 	}
 	
-	public func pickerView(_ pickerView: UIPickerView, widthForComponent component: Int) -> CGFloat {
-				let widthBuffer = 25.0 + 20
-//
-		let calendarComponent = self.getComponent(at: component)
-				
-				let stringSizingAttributes = [NSAttributedString.Key.font : self.font]
-				var size = 0.01
-//
-				if calendarComponent == .month {
-					let dateFormatter = self.segmentPickerDateFormatter()
-//
-//					let yearComponentSizingString = NSString(string: "0000000000")
-//					size = Double(yearComponentSizingString.size(withAttributes: stringSizingAttributes).width)
-//					// Get the length of the longest month string and set the size to it.
-					for symbol in dateFormatter.monthSymbols! {
-						let monthSize = NSString(string: symbol).size(withAttributes: stringSizingAttributes)
+//			public func pickerView(_ pickerView: UIPickerView, widthForComponent component: Int) -> CGFloat {
+//				return U.screenWidth / 2
+//			}
+	
+//	public func pickerView(_ pickerView: UIPickerView, widthForComponent component: Int) -> CGFloat {
+//				let widthBuffer = 25.0 + 20
 ////
-						size = max(size, Double(monthSize.width))
-//////						size = 200
-					}
-				} else if calendarComponent == .day{
-					// Pad the day string to two digits
-					let dayComponentSizingString = NSString(string: "00")
-					size = Double(dayComponentSizingString.size(withAttributes: stringSizingAttributes).width)
-				} else if calendarComponent == .year  {
-					// Pad the year string to four digits.
-					let yearComponentSizingString = NSString(string: "00000000")
-					size = Double(yearComponentSizingString.size(withAttributes: stringSizingAttributes).width)
-				} else if calendarComponent == .hour  {
-					// Pad the year string to four digits.
-					let yearComponentSizingString = NSString(string: "00")
-					size = Double(yearComponentSizingString.size(withAttributes: stringSizingAttributes).width)
-				} else if calendarComponent == .minute  {
-					// Pad the year string to four digits.
-					let yearComponentSizingString = NSString(string: "00")
-					size = Double(yearComponentSizingString.size(withAttributes: stringSizingAttributes).width)
-				} else if (calendarComponent == .space) {
-					size = 5
-				}
+//		let calendarComponent = self.getComponent(at: component)
 //
-////				self.pickerView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: -(size / 2)).isActive = true
-////				self.pickerView.layoutIfNeeded()
-//
-//
-//				// Add the width buffer in order to allow the picker components not to run up against the edges
-				return CGFloat(size + widthBuffer)
-//				return (U.screenWidth / 2) - 10
+//				let stringSizingAttributes = [NSAttributedString.Key.font : self.font]
+//				var size = 0.01
+////
+//				if calendarComponent == .month {
+//					let dateFormatter = self.segmentPickerDateFormatter()
+////
+////					let yearComponentSizingString = NSString(string: "0000000000")
+////					size = Double(yearComponentSizingString.size(withAttributes: stringSizingAttributes).width)
+////					// Get the length of the longest month string and set the size to it.
+//					for symbol in dateFormatter.monthSymbols! {
+//						let monthSize = NSString(string: symbol).size(withAttributes: stringSizingAttributes)
+//////
+//						size = max(size, Double(monthSize.width))
+////////						size = 200
+//					}
+//				} else if calendarComponent == .day{
+//					// Pad the day string to two digits
+//					let dayComponentSizingString = NSString(string: "00")
+//					size = Double(dayComponentSizingString.size(withAttributes: stringSizingAttributes).width)
+//				} else if calendarComponent == .year  {
+//					// Pad the year string to four digits.
+//					return U.screenWidth / 2
 //
 //
-//		return (U.screenWidth / 2) - 20
-//		return 300
+//					let yearComponentSizingString = NSString(string: "00000000")
+//					size = Double(yearComponentSizingString.size(withAttributes: stringSizingAttributes).width)
 //
 //
-			}
+//				} else if calendarComponent == .hour  {
+//					// Pad the year string to four digits.
+//					let yearComponentSizingString = NSString(string: "00")
+//					size = Double(yearComponentSizingString.size(withAttributes: stringSizingAttributes).width)
+//				} else if calendarComponent == .minute  {
+//					// Pad the year string to four digits.
+//					let yearComponentSizingString = NSString(string: "00")
+//					size = Double(yearComponentSizingString.size(withAttributes: stringSizingAttributes).width)
+//				} else if (calendarComponent == .space) {
+//					size = 5
+//				}
+////
+//////				self.pickerView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: -(size / 2)).isActive = true
+//////				self.pickerView.layoutIfNeeded()
+////
+////
+////				// Add the width buffer in order to allow the picker components not to run up against the edges
+//				return CGFloat(size + widthBuffer)
+////				return (U.screenWidth / 2) - 10
+////
+////
+////		return (U.screenWidth / 2) - 20
+////		return 300
+////
+////
+//			}
 }
 
 
