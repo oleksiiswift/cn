@@ -26,19 +26,19 @@ class MediaContentViewController: UIViewController {
 	public let phassetProcessingOperationQueuer = OperationProcessingQueuer(name: Constants.key.operation.queue.phassets, maxConcurrentOperationCount: 10, qualityOfService: .background)
 	public let contactsProcessingOperationQueuer = OperationProcessingQueuer(name: Constants.key.operation.queue.contacts, maxConcurrentOperationCount: 10, qualityOfService: .background)
     
-    private var startingDate: String {
+    private var lowerBoundDate: Date {
         get {
-            return S.startingSavedDate
+            return S.lowerBoundSavedDate
         } set {
-            S.startingSavedDate = newValue
+            S.lowerBoundSavedDate = newValue
         }
     }
 
-    private var endingDate: String {
+    private var upperBoundDate: Date {
         get {
-            return S.endingSavedDate
+            return S.lowerBoundSavedDate
         } set {
-            S.endingSavedDate = newValue
+            S.upperBoundSavedDate = newValue
         }
     }
     private var scanningProcessIsRunning: Bool = false
@@ -317,7 +317,7 @@ extension MediaContentViewController {
     
     private func showSimilarPhotos() {
 		
-		let getSimilarPhotosAssetsOperation = photoManager.getSimilarPhotosAssetsOperation(from: startingDate, to: endingDate, enableSingleProcessingNotification: true) { similarGroup in
+		let getSimilarPhotosAssetsOperation = photoManager.getSimilarPhotosAssetsOperation(from: lowerBoundDate, to: upperBoundDate, enableSingleProcessingNotification: true) { similarGroup in
 			U.UI {
 				if !similarGroup.isEmpty {
 					self.showGropedContoller(assets: "similar photo", grouped: similarGroup, photoContent: .similarPhotos)
@@ -331,7 +331,7 @@ extension MediaContentViewController {
     
     private func showLivePhotos() {
 		
-		let getLivePhotoAssetsOperation = photoManager.getLivePhotosOperation(from: startingDate, to: endingDate, enableSingleProcessingNotification: true) { similarAssets in
+		let getLivePhotoAssetsOperation = photoManager.getLivePhotosOperation(from: lowerBoundDate, to: upperBoundDate, enableSingleProcessingNotification: true) { similarAssets in
 			U.UI {
 				if !similarAssets.isEmpty {
 					self.showAssetViewController(assets: "live photos", collection: similarAssets, photoContent: .singleLivePhotos)
@@ -345,7 +345,7 @@ extension MediaContentViewController {
     
     private func showDuplicatePhotos() {
 		
-		let duplicatedPhotoAssetOperation = photoManager.getDuplicatedPhotosAsset(from: startingDate, to: endingDate, enableSingleProcessingNotification: true) { duplicateGroup in
+		let duplicatedPhotoAssetOperation = photoManager.getDuplicatedPhotosAsset(from: lowerBoundDate, to: upperBoundDate, enableSingleProcessingNotification: true) { duplicateGroup in
 			U.UI {
 				if !duplicateGroup.isEmpty {
 					self.showGropedContoller(assets: "duplicate photo", grouped: duplicateGroup, photoContent: .duplicatedPhotos)
@@ -359,7 +359,7 @@ extension MediaContentViewController {
     
     private func showSelfies() {
 		
-		let getSelfiesPhotoAssetOperation = photoManager.getSelfiePhotosOperation(from: startingDate, to: endingDate, enableSingleProcessingNotification: true) { selfies in
+		let getSelfiesPhotoAssetOperation = photoManager.getSelfiePhotosOperation(from: lowerBoundDate, to: upperBoundDate, enableSingleProcessingNotification: true) { selfies in
 			U.UI {
 				if selfies.count != 0 {
 					self.showAssetViewController(assets: "selfies", collection: selfies, photoContent: .singleSelfies)
@@ -373,7 +373,7 @@ extension MediaContentViewController {
     
     private func showScreenshots() {
 		
-		let getScreenShotsAssetsOperation = photoManager.getScreenShotsOperation(from: startingDate, to: endingDate, enableSingleProcessingNotification: true) { screenshots in
+		let getScreenShotsAssetsOperation = photoManager.getScreenShotsOperation(from: lowerBoundDate, to: upperBoundDate, enableSingleProcessingNotification: true) { screenshots in
 			U.UI {
 				if screenshots.count != 0 {
 					self.showAssetViewController(assets: "screenshots", collection: screenshots, photoContent: .singleScreenShots)
@@ -419,7 +419,7 @@ extension MediaContentViewController {
 	private func checkForAssetsCount() {
 		
 		if self.allScreenRecords.isEmpty {
-			let screenRecordsVideosOperation = photoManager.getScreenRecordsVideosOperation(from: startingDate, to: endingDate) { screenRecordsAssets in
+			let screenRecordsVideosOperation = photoManager.getScreenRecordsVideosOperation(from: lowerBoundDate, to: upperBoundDate) { screenRecordsAssets in
 				if screenRecordsAssets.count != 0 {
 					self.allScreenRecords = screenRecordsAssets
 				}
@@ -429,7 +429,7 @@ extension MediaContentViewController {
 		
 		if self.allLargeVideos.isEmpty {
 			
-			let largeVideosOperation = photoManager.getLargevideoContentOperation(from: startingDate, to: endingDate) { videoAssets in
+			let largeVideosOperation = photoManager.getLargevideoContentOperation(from: lowerBoundDate, to: upperBoundDate) { videoAssets in
 				if videoAssets.count != 0 {
 					self.allLargeVideos = videoAssets
 				}
@@ -446,7 +446,7 @@ extension MediaContentViewController {
     
     private func showLargeVideoFiles() {
 		
-		let getLargevideoContentOperation = photoManager.getLargevideoContentOperation(from: startingDate, to: endingDate, enableSingleProcessingNotification: true) { largeVodepAsset in
+		let getLargevideoContentOperation = photoManager.getLargevideoContentOperation(from: lowerBoundDate, to: upperBoundDate, enableSingleProcessingNotification: true) { largeVodepAsset in
 			U.UI {
 				if largeVodepAsset.count != 0 {
 					self.showAssetViewController(assets: "large videos", collection: largeVodepAsset, photoContent: .singleLargeVideos)
@@ -461,7 +461,7 @@ extension MediaContentViewController {
     
     private func showDuplicateVideoFiles() {
 		
-		let getDuplicatedVideoAssetOperatioon = photoManager.getDuplicatedVideoAssetOperation(from: startingDate, to: endingDate, enableSingleProcessingNotification: true) { duplicatedVideoAsset in
+		let getDuplicatedVideoAssetOperatioon = photoManager.getDuplicatedVideoAssetOperation(from: lowerBoundDate, to: upperBoundDate, enableSingleProcessingNotification: true) { duplicatedVideoAsset in
 			U.UI {
 				if duplicatedVideoAsset.count != 0 {
 					self.showGropedContoller(assets: "duplicated video", grouped: duplicatedVideoAsset, photoContent: .duplicatedVideos)
@@ -475,7 +475,7 @@ extension MediaContentViewController {
     
     private func showSimilarVideoFiles() {
 		
-		let getSimilarVideoAssetsOperation = photoManager.getSimilarVideoAssetsOperation(from: startingDate, to: endingDate, enableSingleProcessingNotification: true) { similiarVideoAsset in
+		let getSimilarVideoAssetsOperation = photoManager.getSimilarVideoAssetsOperation(from: lowerBoundDate, to: upperBoundDate, enableSingleProcessingNotification: true) { similiarVideoAsset in
 			U.UI {
 				if similiarVideoAsset.count != 0 {
 					self.showGropedContoller(assets: "similar videos", grouped: similiarVideoAsset, photoContent: .similarVideos)
@@ -490,7 +490,7 @@ extension MediaContentViewController {
     
     private func showScreenRecordsVideoFiles() {
 		
-		let getScreenRecordsVideosOperation = photoManager.getScreenRecordsVideosOperation(from: startingDate, to: endingDate, enableSingleProcessingNotification: true) { screenRecordsAssets in
+		let getScreenRecordsVideosOperation = photoManager.getScreenRecordsVideosOperation(from: lowerBoundDate, to: upperBoundDate, enableSingleProcessingNotification: true) { screenRecordsAssets in
 			if screenRecordsAssets.count != 0 {
 				self.showAssetViewController(assets: "screen records", collection: screenRecordsAssets, photoContent: .singleScreenRecordings)
 			} else {
@@ -502,7 +502,7 @@ extension MediaContentViewController {
     
     private func showSimmilarVideoFilesByTimeStamp() {
 		
-		let getSimilarVideosByTimeStamp = photoManager.getSimilarVideosByTimeStampOperation(from: startingDate, to: endingDate, enableSingleProcessingNotification: true) { similarVideos in
+		let getSimilarVideosByTimeStamp = photoManager.getSimilarVideosByTimeStampOperation(from: lowerBoundDate, to: upperBoundDate, enableSingleProcessingNotification: true) { similarVideos in
 			if similarVideos.count != 0 {
 				self.showGropedContoller(assets: "similar by time stam", grouped: similarVideos, photoContent: .similarVideos)
 			} else {
@@ -797,7 +797,7 @@ extension MediaContentViewController: Themeble {
     
     private func setupDateInterval() {
         
-        self.dateSelectableView.setupDisplaysDate(startingDate: self.startingDate, endingDate: self.endingDate)
+		self.dateSelectableView.setupDisplaysDate(lowerDate: self.lowerBoundDate, upperdDate: self.upperBoundDate)
     }
     
     func updateColors() {
@@ -817,11 +817,11 @@ extension MediaContentViewController: Themeble {
         
         if let dateSelectorController = segue.destination as? DateSelectorViewController {
             dateSelectorController.isStartingDateSelected = self.isStartingDateSelected
-            dateSelectorController.setPicker(self.isStartingDateSelected ? self.startingDate : self.endingDate)
+            dateSelectorController.setPicker(self.isStartingDateSelected ? self.lowerBoundDate : self.upperBoundDate)
             
             dateSelectorController.selectedDateCompletion = { selectedDate in
-                self.isStartingDateSelected ? (self.startingDate = selectedDate) : (self.endingDate = selectedDate)
-                self.dateSelectableView.setupDisplaysDate(startingDate: self.startingDate, endingDate: self.endingDate)
+                self.isStartingDateSelected ? (self.lowerBoundDate = selectedDate) : (self.upperBoundDate = selectedDate)
+				self.dateSelectableView.setupDisplaysDate(lowerDate: self.lowerBoundDate, upperdDate: self.upperBoundDate)
             }
         }
     }

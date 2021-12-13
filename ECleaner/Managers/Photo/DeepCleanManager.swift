@@ -16,7 +16,7 @@ class DeepCleanManager {
     
 	let deepCleanOperationQue = OperationProcessingQueuer(name: C.key.operation.queue.deepClean, maxConcurrentOperationCount: 5, qualityOfService: .default)
         
-    public func startDeepCleaningFetch(_ optionMediaType: [PhotoMediaType], startingFetchingDate: String, endingFetchingDate: String,
+    public func startDeepCleaningFetch(_ optionMediaType: [PhotoMediaType], startingFetchingDate: Date, endingFetchingDate: Date,
                                        handler: @escaping ([PhotoMediaType]) -> Void,
                                        screenShots: @escaping ([PHAsset]) -> Void,
                                        similarPhoto: @escaping ([PhassetGroup]) -> Void,

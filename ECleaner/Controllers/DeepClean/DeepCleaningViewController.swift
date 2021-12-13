@@ -49,19 +49,19 @@ class DeepCleaningViewController: UIViewController {
 	 public var scansOptions: [PhotoMediaType]?
      private var deepCleaningState: DeepCleaningState = .willStartCleaning
 
-     private var startingDate: String {
+     private var lowerBoundDate: Date {
           get {
-               return S.startingSavedDate
+			   return S.lowerBoundSavedDate
           } set {
-               S.startingSavedDate = newValue
+			   S.lowerBoundSavedDate = newValue
           }
      }
      
-     private var endingDate: String {
+     private var upperBoundDate: Date {
           get {
-               return S.endingSavedDate
+               return S.upperBoundSavedDate
           } set {
-               S.endingSavedDate = newValue
+               S.upperBoundSavedDate = newValue
           }
      }
      
@@ -116,10 +116,10 @@ extension DeepCleaningViewController {
      
      private func prepareStartDeepCleanProcessing() {
           
-          self.photoManager.getPhotoAssetsCount(from: self.startingDate, to: self.endingDate) { allAssetsCount in
+          self.photoManager.getPhotoAssetsCount(from: self.lowerBoundDate, to: self.upperBoundDate) { allAssetsCount in
                self.totalFilesOnDevice = allAssetsCount
                
-               self.photoManager.getPartitionalMediaAssetsCount(from: self.startingDate, to: self.endingDate) { assetGroupPartitionCount in
+               self.photoManager.getPartitionalMediaAssetsCount(from: self.lowerBoundDate, to: self.upperBoundDate) { assetGroupPartitionCount in
 					self.setProcessingActionButton(.didCleaning)
                     self.totalPartitinAssetsCount = assetGroupPartitionCount
 					U.delay(1) {
@@ -173,7 +173,7 @@ extension DeepCleaningViewController {
 		  
 		  navigationBar.temporaryLockLeftButton(true)
           
-          deepCleanManager.startDeepCleaningFetch(options, startingFetchingDate: startingDate, endingFetchingDate: endingDate) { mediaType in
+          deepCleanManager.startDeepCleaningFetch(options, startingFetchingDate: lowerBoundDate, endingFetchingDate: upperBoundDate) { mediaType in
                self.scansOptions = mediaType
           } screenShots: { assets in
                     /// `processing single screenshots`
@@ -678,6 +678,8 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
      
      private func configureInfoCell(_ cell: DeepCleanInfoTableViewCell, at indexPath: IndexPath) {
           
+		  cell.selectionStyle = .none
+		  cell.isUserInteractionEnabled = false
           cell.setProgress(files: self.totalFilesChecked)
           cell.setRoundedProgress(value: totalPercentageCalculated)
      }
@@ -712,7 +714,7 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
                     return cell
           }
      }
-     
+	      
      func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
           
           guard indexPath.section != 0, !processing else { return}
@@ -764,7 +766,7 @@ extension DeepCleaningViewController {
      
      private func setupDateInterval() {
           
-          dateSelectPickerView.setupDisplaysDate(startingDate: self.startingDate, endingDate: self.endingDate)
+		  dateSelectPickerView.setupDisplaysDate(lowerDate: self.lowerBoundDate, upperdDate: self.upperBoundDate)
      }
      
      private func setupObserversAndDelegate() {
@@ -815,11 +817,11 @@ extension DeepCleaningViewController {
           
           if let dateSelectorController = segue.destination as? DateSelectorViewController {
                dateSelectorController.isStartingDateSelected = self.isStartingDateSelected
-               dateSelectorController.setPicker(self.isStartingDateSelected ? self.startingDate : self.endingDate)
+               dateSelectorController.setPicker(self.isStartingDateSelected ? self.lowerBoundDate : self.upperBoundDate)
                
                dateSelectorController.selectedDateCompletion = { selectedDate in
-                    self.isStartingDateSelected ? (self.startingDate = selectedDate) : (self.endingDate = selectedDate)
-                    self.dateSelectPickerView.setupDisplaysDate(startingDate: self.startingDate, endingDate: self.endingDate)
+                    self.isStartingDateSelected ? (self.lowerBoundDate = selectedDate) : (self.upperBoundDate = selectedDate)
+					self.dateSelectPickerView.setupDisplaysDate(lowerDate: self.lowerBoundDate, upperdDate: self.upperBoundDate)
                }
           }
      }

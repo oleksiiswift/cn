@@ -39,7 +39,6 @@ class SegmentDatePicker: UIControl {
 	public var customDatePickerType = ""
 	public let numbersOfYears: Int = 100
 	
-	
 	public var calendarIdentifier: Calendar.Identifier = .gregorian {
 		didSet {
 			self.pickerCalendar = Calendar(identifier: calendarIdentifier)
@@ -512,7 +511,7 @@ extension SegmentDatePicker: UIPickerViewDelegate {
 		label.textAlignment = .center
 
 		return containerView
-		
+			
 					if componentAtIndex == .month {
 			
 						if componentMonthMargin == .centered {
@@ -557,70 +556,6 @@ extension SegmentDatePicker: UIPickerViewDelegate {
 					}
 		return label
 	}
-	
-//			public func pickerView(_ pickerView: UIPickerView, widthForComponent component: Int) -> CGFloat {
-//				return U.screenWidth / 2
-//			}
-	
-//	public func pickerView(_ pickerView: UIPickerView, widthForComponent component: Int) -> CGFloat {
-//				let widthBuffer = 25.0 + 20
-////
-//		let calendarComponent = self.getComponent(at: component)
-//
-//				let stringSizingAttributes = [NSAttributedString.Key.font : self.font]
-//				var size = 0.01
-////
-//				if calendarComponent == .month {
-//					let dateFormatter = self.segmentPickerDateFormatter()
-////
-////					let yearComponentSizingString = NSString(string: "0000000000")
-////					size = Double(yearComponentSizingString.size(withAttributes: stringSizingAttributes).width)
-////					// Get the length of the longest month string and set the size to it.
-//					for symbol in dateFormatter.monthSymbols! {
-//						let monthSize = NSString(string: symbol).size(withAttributes: stringSizingAttributes)
-//////
-//						size = max(size, Double(monthSize.width))
-////////						size = 200
-//					}
-//				} else if calendarComponent == .day{
-//					// Pad the day string to two digits
-//					let dayComponentSizingString = NSString(string: "00")
-//					size = Double(dayComponentSizingString.size(withAttributes: stringSizingAttributes).width)
-//				} else if calendarComponent == .year  {
-//					// Pad the year string to four digits.
-//					return U.screenWidth / 2
-//
-//
-//					let yearComponentSizingString = NSString(string: "00000000")
-//					size = Double(yearComponentSizingString.size(withAttributes: stringSizingAttributes).width)
-//
-//
-//				} else if calendarComponent == .hour  {
-//					// Pad the year string to four digits.
-//					let yearComponentSizingString = NSString(string: "00")
-//					size = Double(yearComponentSizingString.size(withAttributes: stringSizingAttributes).width)
-//				} else if calendarComponent == .minute  {
-//					// Pad the year string to four digits.
-//					let yearComponentSizingString = NSString(string: "00")
-//					size = Double(yearComponentSizingString.size(withAttributes: stringSizingAttributes).width)
-//				} else if (calendarComponent == .space) {
-//					size = 5
-//				}
-////
-//////				self.pickerView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: -(size / 2)).isActive = true
-//////				self.pickerView.layoutIfNeeded()
-////
-////
-////				// Add the width buffer in order to allow the picker components not to run up against the edges
-//				return CGFloat(size + widthBuffer)
-////				return (U.screenWidth / 2) - 10
-////
-////
-////		return (U.screenWidth / 2) - 20
-////		return 300
-////
-////
-//			}
 }
 
 

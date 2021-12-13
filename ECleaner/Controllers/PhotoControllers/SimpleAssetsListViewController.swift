@@ -407,7 +407,7 @@ extension SimpleAssetsListViewController: UpdatingChangesInOpenedScreensListener
         
         if mediaType == .singleScreenShots {
 			
-			let screenShotsOperation = photoManager.getScreenShotsOperation(from: S.startingSavedDate, to: S.endingSavedDate) { screenShots in
+			let screenShotsOperation = photoManager.getScreenShotsOperation(from: S.lowerBoundSavedDate, to: S.upperBoundSavedDate) { screenShots in
 				if self.assetCollection.count != screenShots.count {
 					self.assetCollection = screenShots
 					self.collectionView.reloadData()
@@ -423,7 +423,7 @@ extension SimpleAssetsListViewController: UpdatingChangesInOpenedScreensListener
         
         if mediaType == .singleSelfies {
 			
-			let selfiePhotosOperation = photoManager.getSelfiePhotosOperation(from: S.startingSavedDate, to: S.endingSavedDate) { selfies in
+			let selfiePhotosOperation = photoManager.getSelfiePhotosOperation(from: S.lowerBoundSavedDate, to: S.upperBoundSavedDate) { selfies in
 				if self.assetCollection.count != selfies.count {
 					self.assetCollection = selfies
 					self.collectionView.reloadData()

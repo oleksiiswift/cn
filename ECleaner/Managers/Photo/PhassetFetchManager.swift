@@ -42,15 +42,21 @@ class PHAssetFetchManager {
 	
 	static let shared = PHAssetFetchManager()
 	
-	public func fetchTotalAssetsCountOperation(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", completionHandler: @escaping (Int) -> Void) -> ConcurrentProcessOperation {
+	private static let lowerDateValue: Date = S.defaultLowerDateValue
+	private static let upperDateValue: Date = S.defaultUpperDateValue
+	
+	
+	public func fetchTotalAssetsCountOperation(from lowerDate: Date = lowerDateValue, to upperDate: Date = upperDateValue, completionHandler: @escaping (Int) -> Void) -> ConcurrentProcessOperation {
 		
 		let fetchTotalPHAssetsOperation = ConcurrentProcessOperation { _ in
 			let fetchOptions = PHFetchOptions()
 			fetchOptions.sortDescriptors = [NSSortDescriptor(key: SortingDesriptionKey.creationDate.value, ascending: false)]
-			fetchOptions.predicate = NSPredicate(format: SDKey.allMediaType.value, PHAssetMediaType.image.rawValue, PHAssetMediaType.video.rawValue, "\(SDKey.mediaType.value) = %d AND (\(SDKey.creationDate.value) >= %@) AND (\(SDKey.creationDate.value) <= %@)",
-															 startDate.NSDateConverter(format: C.dateFormat.fullDmy),
-															 endDate.NSDateConverter(format: C.dateFormat.fullDmy))
-			
+			fetchOptions.predicate = NSPredicate(format: SDKey.allMediaType.value,
+												 PHAssetMediaType.image.rawValue,
+												 PHAssetMediaType.video.rawValue,
+												 "\(SDKey.mediaType.value) = %d AND (\(SDKey.creationDate.value) >= %@) AND (\(SDKey.creationDate.value) <= %@)",
+												 lowerDate as NSDate,
+												 upperDate as NSDate)
 			let pholeAssets = PHAsset.fetchAssets(with: fetchOptions)
 			
 			completionHandler(pholeAssets.count)
@@ -59,7 +65,7 @@ class PHAssetFetchManager {
 		return fetchTotalPHAssetsOperation
 	}
 	
-	public func fetchFromGalleryOperation(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", collectiontype: PHAssetCollectionSubtype, by type: Int, completionHandler: @escaping ((_ result: PHFetchResult<PHAsset>) -> Void)) -> ConcurrentProcessOperation {
+	public func fetchFromGalleryOperation(from lowerDate: Date = lowerDateValue, to upperDate: Date = upperDateValue, collectiontype: PHAssetCollectionSubtype, by type: Int, completionHandler: @escaping ((_ result: PHFetchResult<PHAsset>) -> Void)) -> ConcurrentProcessOperation {
 		
 		let fetchFromGalleryOperation = ConcurrentProcessOperation { _ in
 			
@@ -71,8 +77,8 @@ class PHAssetFetchManager {
 			fetchOptions.predicate = NSPredicate(
 				format: "\(SDKey.mediaType.value) = %d AND (\(SDKey.creationDate.value) >= %@) AND (\(SDKey.creationDate.value) <= %@)",
 				type,
-				startDate.NSDateConverter(format: C.dateFormat.fullDmy),
-				endDate.NSDateConverter(format: C.dateFormat.fullDmy)
+				lowerDate as NSDate,
+				upperDate as NSDate
 			)
 			albumPhoto.enumerateObjects({(collection, index, object) in
 				completionHandler(PHAsset.fetchAssets(in: collection, options: fetchOptions))
@@ -86,20 +92,23 @@ class PHAssetFetchManager {
 extension PHAssetFetchManager {
 	
 	
-    public func fetchTotalAssetsCount(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", completionHandler: @escaping (Int) -> Void) {
+    public func fetchTotalAssetsCount(from lowerDate: Date = lowerDateValue, to upperDate: Date = upperDateValue, completionHandler: @escaping (Int) -> Void) {
         
         let fetchOptions = PHFetchOptions()
         fetchOptions.sortDescriptors = [NSSortDescriptor(key: SortingDesriptionKey.creationDate.value, ascending: false)]
-		fetchOptions.predicate = NSPredicate(format: SDKey.allMediaType.value, PHAssetMediaType.image.rawValue, PHAssetMediaType.video.rawValue, "\(SDKey.mediaType.value) = %d AND (\(SDKey.creationDate.value) >= %@) AND (\(SDKey.creationDate.value) <= %@)",
-                                                         startDate.NSDateConverter(format: C.dateFormat.fullDmy),
-                                                         endDate.NSDateConverter(format: C.dateFormat.fullDmy))
+		fetchOptions.predicate = NSPredicate(format: SDKey.allMediaType.value,
+											 PHAssetMediaType.image.rawValue,
+											 PHAssetMediaType.video.rawValue,
+											 "\(SDKey.mediaType.value) = %d AND (\(SDKey.creationDate.value) >= %@) AND (\(SDKey.creationDate.value) <= %@)",
+											 lowerDate as NSDate,
+											 upperDate as NSDate)
         
         let pholeAssets = PHAsset.fetchAssets(with: fetchOptions)
         
         completionHandler(pholeAssets.count)
     }
     
-    public func fetchFromGallery(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", collectiontype: PHAssetCollectionSubtype, by type: Int, completionHandler: @escaping ((_ result: PHFetchResult<PHAsset>) -> Void)) {
+    public func fetchFromGallery(from lowerDate: Date = lowerDateValue, to upperDate: Date = upperDateValue, collectiontype: PHAssetCollectionSubtype, by type: Int, completionHandler: @escaping ((_ result: PHFetchResult<PHAsset>) -> Void)) {
         let fetchOptions = PHFetchOptions()
     
         let albumPhoto: PHFetchResult<PHAssetCollection> = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: collectiontype, options: fetchOptions)
@@ -108,16 +117,16 @@ extension PHAssetFetchManager {
         fetchOptions.predicate = NSPredicate(
             format: "\(SDKey.mediaType.value) = %d AND (\(SDKey.creationDate.value) >= %@) AND (\(SDKey.creationDate.value) <= %@)",
             type,
-            startDate.NSDateConverter(format: C.dateFormat.fullDmy),
-            endDate.NSDateConverter(format: C.dateFormat.fullDmy)
+			lowerDate as NSDate,
+			upperDate as NSDate
         )
         albumPhoto.enumerateObjects({(collection, index, object) in
             completionHandler(PHAsset.fetchAssets(in: collection, options: fetchOptions))
         })
     }
     
-    public func fetchPhotoCount(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", completionHandler: @escaping ((_ photoCount: Int) -> Void)) {
-        fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumUserLibrary, by: PHAssetMediaType.image.rawValue) { libraryResult in
+    public func fetchPhotoCount(from lowerDate: Date = lowerDateValue, to upperDate: Date = upperDateValue, completionHandler: @escaping ((_ photoCount: Int) -> Void)) {
+        fetchFromGallery(from: lowerDate, to: upperDate, collectiontype: .smartAlbumUserLibrary, by: PHAssetMediaType.image.rawValue) { libraryResult in
             completionHandler(libraryResult.count)
         }
     }

@@ -251,6 +251,25 @@ extension Utils {
     static func getDateFrom(string date: String, format: String) -> Date? {
         return Date().getDateFromString(stringDate: date, format: format)
     }
+
+	static func numbersOfDays(at month: Int, in year: Int) -> Int {
+		let calendar = Calendar(identifier: .gregorian)
+		var components = DateComponents()
+		components.day = 1
+		components.month = month
+		components.year = year
+		return (calendar as NSCalendar).range(of: .day, in: .month, for: calendar.date(from: components)!).length
+	}
+	
+	static func getDateFromComponents(day: Int, month: Int, year: Int) -> Date {
+		let calendar = Calendar(identifier: .gregorian)
+		var components = DateComponents()
+		components.day = day
+		components.month = month
+		components.year = year
+		components.timeZone = TimeZone(secondsFromGMT: 0)
+		return calendar.date(from: components)!
+	}
 }
 
 //  TODO: temp get name from bundle, for future get localized app name

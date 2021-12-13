@@ -30,8 +30,8 @@ class Constants {
             static let isDarkModeOn = "darkModeIsSetOn"
             static let photoLibraryAccessGranted = "photoLibraryAccessGranted"
             static let contactStoreAccessGranted = "contactStoreAccessGranted"
-            static let startingSavedDate = "startingSavedDate"
-            static let endingSavedDate = "endingSavedDate"
+            static let lowerBoundSavedDate = "lowerBoundSavedDate"
+            static let upperBoundSavedDate = "upperBoundSavedDate"
             static let lastSmartClean = "lastSmartClean"
             
             static let photoSpace = "photoDiskSpace"
@@ -306,6 +306,7 @@ class Constants {
         static let fullDateFormat = "yyyy-MM-dd HH:mm:ss"
         static let expiredDateFormat = "dd\\MM\\yyyy"
         static let fullDmy = "dd-MM-yyyy HH:mm:ss"
+		
     }
     
     struct defaultValues {

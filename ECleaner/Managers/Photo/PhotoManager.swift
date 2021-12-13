@@ -51,6 +51,9 @@ class PhotoManager {
 	
 	var assetCollection: PHAssetCollection?
 	
+	private static let lowerDateValue: Date = S.defaultLowerDateValue
+	private static let upperDateValue: Date = S.defaultUpperDateValue
+	
 //		    MARK: - authentification -
 	private func photoLibraryRequestAuth(completion: @escaping (_ status: Bool) -> Void ) {
 		if #available(iOS 14, *) {
@@ -197,11 +200,11 @@ extension PhotoManager {
 //	MARK: - VIDEO PROCESSING -
 extension PhotoManager {
 	
-	public func getLargevideoContentOperation(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", enableDeepCleanProcessingNotification: Bool = false, enableSingleProcessingNotification: Bool = false, completionHandler: @escaping ((_ assets: [PHAsset]) -> Void)) -> ConcurrentProcessOperation {
+	public func getLargevideoContentOperation(from lowerDate: Date = lowerDateValue, to upperDate: Date = upperDateValue, enableDeepCleanProcessingNotification: Bool = false, enableSingleProcessingNotification: Bool = false, completionHandler: @escaping ((_ assets: [PHAsset]) -> Void)) -> ConcurrentProcessOperation {
 		
 		let largeVideoProcessingOperation = ConcurrentProcessOperation { _ in
 			
-			self.fetchManager.fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumVideos, by: PHAssetMediaType.video.rawValue) { videoContent in
+			self.fetchManager.fetchFromGallery(from: lowerDate, to: upperDate, collectiontype: .smartAlbumVideos, by: PHAssetMediaType.video.rawValue) { videoContent in
 				
 				var videos: [PHAsset] = []
 				
@@ -234,11 +237,11 @@ extension PhotoManager {
 	}
 	
 		/// `screen recordings` from gallery
-	public func getScreenRecordsVideosOperation(from startDate: String = "01-01-1917 00:00:00", to endDate: String = "01-01-2666 00:00:00", enableDeepCleanProcessingNotification: Bool = false, enableSingleProcessingNotification: Bool = false, completionHandler: @escaping ((_ screenRecordsAssets: [PHAsset]) -> Void)) -> ConcurrentProcessOperation {
+	public func getScreenRecordsVideosOperation(from lowerDate: Date = lowerDateValue, to upperDate: Date = upperDateValue, enableDeepCleanProcessingNotification: Bool = false, enableSingleProcessingNotification: Bool = false, completionHandler: @escaping ((_ screenRecordsAssets: [PHAsset]) -> Void)) -> ConcurrentProcessOperation {
 		
 		let screenRecordsVideosOperation = ConcurrentProcessOperation { operation in
 			
-			self.fetchManager.fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumVideos, by: PHAssetMediaType.video.rawValue) { videoAssets in
+			self.fetchManager.fetchFromGallery(from: lowerDate, to: upperDate, collectiontype: .smartAlbumVideos, by: PHAssetMediaType.video.rawValue) { videoAssets in
 				
 				var screenRecords: [PHAsset] = []
 			
@@ -284,12 +287,12 @@ extension PhotoManager {
 extension PhotoManager {
 	
 		/// `similar Videos` from gallery
-	public func getSimilarVideoAssetsOperation(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", enableDeepCleanProcessingNotification: Bool = false, enableSingleProcessingNotification: Bool = false,  completionHandler: @escaping ((_ videoAssets: [PhassetGroup]) -> Void)) -> ConcurrentProcessOperation
+	public func getSimilarVideoAssetsOperation(from lowerDate: Date = lowerDateValue, to upperDate: Date = upperDateValue, enableDeepCleanProcessingNotification: Bool = false, enableSingleProcessingNotification: Bool = false,  completionHandler: @escaping ((_ videoAssets: [PhassetGroup]) -> Void)) -> ConcurrentProcessOperation
 	{
 	
 	let similarVideoAssetsOperation = ConcurrentProcessOperation { operation in
 		
-		self.fetchManager.fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumVideos, by: PHAssetMediaType.video.rawValue) { videoContent in
+		self.fetchManager.fetchFromGallery(from: lowerDate, to: upperDate, collectiontype: .smartAlbumVideos, by: PHAssetMediaType.video.rawValue) { videoContent in
 			
 			var assets: [PHAsset] = []
 			
@@ -316,12 +319,12 @@ extension PhotoManager {
 	}
 	
 		/// `duplicated videos compare algorithm`
-	public func getDuplicatedVideoAssetOperation(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", enableDeepCleanProcessingNotification: Bool = false, enableSingleProcessingNotification: Bool = false, completionHandler: @escaping ((_ videoAssets: [PhassetGroup]) -> Void)) -> ConcurrentProcessOperation {
+	public func getDuplicatedVideoAssetOperation(from lowerDate: Date = lowerDateValue, to upperDate: Date = upperDateValue, enableDeepCleanProcessingNotification: Bool = false, enableSingleProcessingNotification: Bool = false, completionHandler: @escaping ((_ videoAssets: [PhassetGroup]) -> Void)) -> ConcurrentProcessOperation {
 		
 		let duplicatedVideoAssetsOperation = ConcurrentProcessOperation { operation in
 			
-			self.fetchManager.fetchFromGallery(from: startDate,
-											   to: endDate,
+			self.fetchManager.fetchFromGallery(from: lowerDate,
+											   to: upperDate,
 											   collectiontype: .smartAlbumVideos,
 											   by: PHAssetMediaType.video.rawValue) { videoCollection in
 				var videos: [OSTuple<NSString, NSData>] = []
@@ -430,11 +433,11 @@ extension PhotoManager {
 	}
 	
 		/// `similar videos by time stamp`
-	public func getSimilarVideosByTimeStampOperation(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", enableDeepCleanProcessingNotification: Bool = false, enableSingleProcessingNotification: Bool = false, completionHandler: @escaping ((_ videoAssets: [PhassetGroup]) -> Void)) -> ConcurrentProcessOperation {
+	public func getSimilarVideosByTimeStampOperation(from lowerDate: Date = lowerDateValue, to upperDate: Date = upperDateValue, enableDeepCleanProcessingNotification: Bool = false, enableSingleProcessingNotification: Bool = false, completionHandler: @escaping ((_ videoAssets: [PhassetGroup]) -> Void)) -> ConcurrentProcessOperation {
 		
 		let similarVideosByTimeStampOperation = ConcurrentProcessOperation { operation in
 			
-			self.fetchManager.fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumVideos, by: PHAssetMediaType.video.rawValue) { videoContent in
+			self.fetchManager.fetchFromGallery(from: lowerDate, to: upperDate, collectiontype: .smartAlbumVideos, by: PHAssetMediaType.video.rawValue) { videoContent in
 				
 				var assets: [PHAsset] = []
 				var grouped: [PhassetGroup] = []
@@ -494,11 +497,11 @@ extension PhotoManager {
 extension PhotoManager {
 	
 		/// `load selfies` from gallery
-	public func getSelfiePhotosOperation(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", enableDeepCleanProcessingNotification: Bool = false, enableSingleProcessingNotification: Bool = false, completionHandler: @escaping ((_ assets: [PHAsset]) -> Void)) -> ConcurrentProcessOperation {
+	public func getSelfiePhotosOperation(from lowerDate: Date = lowerDateValue, to upperDate: Date = upperDateValue, enableDeepCleanProcessingNotification: Bool = false, enableSingleProcessingNotification: Bool = false, completionHandler: @escaping ((_ assets: [PHAsset]) -> Void)) -> ConcurrentProcessOperation {
 		
 		let photoSelfiesOperation = ConcurrentProcessOperation { operation in
 			
-			self.fetchManager.fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumSelfPortraits, by: PHAssetMediaType.image.rawValue) { selfiesInLibrary in
+			self.fetchManager.fetchFromGallery(from: lowerDate, to: upperDate, collectiontype: .smartAlbumSelfPortraits, by: PHAssetMediaType.image.rawValue) { selfiesInLibrary in
 				var selfies: [PHAsset] = []
 				
 				if selfiesInLibrary.count != 0 {
@@ -522,11 +525,11 @@ extension PhotoManager {
 	}
 	
 		/// `load screenshots` from gallery
-	public func getScreenShotsOperation(from startDate: String = "01-01-1917 00:00:00", to endDate: String = "01-01-2666 00:00:00", enableDeepCleanProcessingNotification: Bool = false, enableSingleProcessingNotification: Bool = false, completionHandler: @escaping ((_ assets: [PHAsset]) -> Void)) -> ConcurrentProcessOperation {
+	public func getScreenShotsOperation(from lowerDate: Date = lowerDateValue, to upperDate: Date = upperDateValue, enableDeepCleanProcessingNotification: Bool = false, enableSingleProcessingNotification: Bool = false, completionHandler: @escaping ((_ assets: [PHAsset]) -> Void)) -> ConcurrentProcessOperation {
 		
 		let getScreenShotsOperation = ConcurrentProcessOperation { operation in
 			
-			self.fetchManager.fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumScreenshots, by: PHAssetMediaType.image.rawValue) { screensShotsLibrary in
+			self.fetchManager.fetchFromGallery(from: lowerDate, to: upperDate, collectiontype: .smartAlbumScreenshots, by: PHAssetMediaType.image.rawValue) { screensShotsLibrary in
 				
 				var screens: [PHAsset] = []
 	
@@ -557,11 +560,11 @@ extension PhotoManager {
 	}
 	
 			/// `load live photos` from gallery
-	public func getLivePhotosOperation(from startDate: String = "01-01-1917 00:00:00", to endDate: String = "01-01-2666 00:00:00", enableDeepCleanProcessingNotification: Bool = false, enableSingleProcessingNotification: Bool = false, completionHandler: @escaping ((_ assets: [PHAsset]) -> Void)) -> ConcurrentProcessOperation {
+	public func getLivePhotosOperation(from lowerDate: Date = lowerDateValue, to upperDate: Date = upperDateValue, enableDeepCleanProcessingNotification: Bool = false, enableSingleProcessingNotification: Bool = false, completionHandler: @escaping ((_ assets: [PHAsset]) -> Void)) -> ConcurrentProcessOperation {
 		
 		let livePhotoOperation = ConcurrentProcessOperation { operation in
 			
-			self.fetchManager.fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumLivePhotos, by: PHAssetMediaType.image.rawValue) { livePhotosLibrary in
+			self.fetchManager.fetchFromGallery(from: lowerDate, to: upperDate, collectiontype: .smartAlbumLivePhotos, by: PHAssetMediaType.image.rawValue) { livePhotosLibrary in
 				
 				var livePhotos: [PHAsset] = []
 				if livePhotosLibrary.count != 0 {
@@ -595,11 +598,11 @@ extension PhotoManager {
 extension PhotoManager {
 	
 		/// `simmilar photo algoritm`
-	public func getSimilarPhotosAssetsOperation(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", fileSizeCheck: Bool = false, enableDeepCleanProcessingNotification: Bool = false, enableSingleProcessingNotification: Bool = false, completionHandler: @escaping ((_ assets: [PhassetGroup]) -> Void)) -> ConcurrentProcessOperation {
+	public func getSimilarPhotosAssetsOperation(from lowerDate: Date = lowerDateValue, to upperDate: Date = upperDateValue, fileSizeCheck: Bool = false, enableDeepCleanProcessingNotification: Bool = false, enableSingleProcessingNotification: Bool = false, completionHandler: @escaping ((_ assets: [PhassetGroup]) -> Void)) -> ConcurrentProcessOperation {
 		
 		let similarPhotoProcessingOperation = ConcurrentProcessOperation { operation in
 			
-			self.fetchManager.fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumUserLibrary, by: PHAssetMediaType.image.rawValue) { photosInGallery in
+			self.fetchManager.fetchFromGallery(from: lowerDate, to: upperDate, collectiontype: .smartAlbumUserLibrary, by: PHAssetMediaType.image.rawValue) { photosInGallery in
 				
 				var group: [PhassetGroup] = []
 				var containsAdd: [Int] = []
@@ -679,11 +682,11 @@ extension PhotoManager {
 	}
 	
 		/// `load simmiliar live photo` from gallery
-	public func getSimilarLivePhotosOperation(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", enableDeepCleanProcessingNotification: Bool = false, enableSingleProcessingNotification: Bool = false, completionHandler: @escaping ((_ assets: [PhassetGroup]) -> Void)) -> ConcurrentProcessOperation {
+	public func getSimilarLivePhotosOperation(from lowerDate: Date = lowerDateValue, to upperDate: Date = upperDateValue, enableDeepCleanProcessingNotification: Bool = false, enableSingleProcessingNotification: Bool = false, completionHandler: @escaping ((_ assets: [PhassetGroup]) -> Void)) -> ConcurrentProcessOperation {
 		
 		let similarLivePhotoProcessingOperation = ConcurrentProcessOperation { operation in
 			
-			self.fetchManager.fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumLivePhotos, by: PHAssetMediaType.image.rawValue) { livePhotoGallery in
+			self.fetchManager.fetchFromGallery(from: lowerDate, to: upperDate, collectiontype: .smartAlbumLivePhotos, by: PHAssetMediaType.image.rawValue) { livePhotoGallery in
 				
 				var livePhotos: [OSTuple<NSString, NSData>] = []
 				
@@ -730,12 +733,12 @@ extension PhotoManager {
 	}
 	
 		// `duplicate photo algorithm`
-	public func getDuplicatedPhotosAsset(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", enableDeepCleanProcessingNotification: Bool = false, enableSingleProcessingNotification: Bool = false, completionHandler: @escaping ((_ assets: [PhassetGroup]) -> Void)) -> ConcurrentProcessOperation {
+	public func getDuplicatedPhotosAsset(from lowerDate: Date = lowerDateValue, to upperDate: Date = upperDateValue, enableDeepCleanProcessingNotification: Bool = false, enableSingleProcessingNotification: Bool = false, completionHandler: @escaping ((_ assets: [PhassetGroup]) -> Void)) -> ConcurrentProcessOperation {
 		
 		let duplicatedPhotoAssetOperation = ConcurrentProcessOperation { operation in
 			
 			
-			self.fetchManager.fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumUserLibrary, by: PHAssetMediaType.image.rawValue) { photoGallery in
+			self.fetchManager.fetchFromGallery(from: lowerDate, to: upperDate, collectiontype: .smartAlbumUserLibrary, by: PHAssetMediaType.image.rawValue) { photoGallery in
 				
 				var photos: [OSTuple<NSString, NSData>] = []
 				
@@ -1019,14 +1022,14 @@ extension PhotoManager {
 
 extension PhotoManager {
 	
-	public func getPhotoAssetsCount(from startDate: String, to endDate: String, completion: @escaping (Int) -> Void) {
+	public func getPhotoAssetsCount(from startDate: Date, to endDate: Date, completion: @escaping (Int) -> Void) {
 		
 		self.fetchManager.fetchTotalAssetsCount(from: startDate, to: endDate) { totalCount in
 			completion(totalCount)
 		}
 	}
 	
-	public func getPartitionalMediaAssetsCount(from startDate: String, to endDate: String, completion: @escaping ([AssetsGroupType: Int]) -> Void) {
+	public func getPartitionalMediaAssetsCount(from startDate: Date, to endDate: Date, completion: @escaping ([AssetsGroupType: Int]) -> Void) {
 		
 		var totalProcessingProcess = 0
 

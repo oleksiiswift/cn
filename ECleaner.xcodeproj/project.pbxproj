@@ -84,7 +84,6 @@
 		04E58373267A4A2000EDC3A3 /* UIDevice+Enviroment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04E58372267A4A2000EDC3A3 /* UIDevice+Enviroment.swift */; };
 		04E58377267B323E00EDC3A3 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04E58376267B323E00EDC3A3 /* Constants.swift */; };
 		04E58379267B39AD00EDC3A3 /* PHPhotoLibrary+Auth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04E58378267B39AD00EDC3A3 /* PHPhotoLibrary+Auth.swift */; };
-		04E5837C267B3E2A00EDC3A3 /* PhotoManagerOLD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04E5837B267B3E2A00EDC3A3 /* PhotoManagerOLD.swift */; };
 		04E5837E267B60F600EDC3A3 /* AlertManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04E5837D267B60F600EDC3A3 /* AlertManager.swift */; };
 		04E58380267B9F6B00EDC3A3 /* PhassetFetchManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04E5837F267B9F6B00EDC3A3 /* PhassetFetchManager.swift */; };
 		04EE29FB269891F30013837D /* PHasset+Thumbnail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04EE29FA269891F30013837D /* PHasset+Thumbnail.swift */; };
@@ -169,7 +168,6 @@
 		978FEF12274BB73700ADE1D9 /* AlertType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978FEF11274BB73700ADE1D9 /* AlertType.swift */; };
 		978FEF14274BC21A00ADE1D9 /* ProgressAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978FEF13274BC21A00ADE1D9 /* ProgressAlertController.swift */; };
 		978FEF1A274C1C5400ADE1D9 /* UIAlertController+Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978FEF19274C1C5400ADE1D9 /* UIAlertController+Colors.swift */; };
-		9797D7AC2754E6F300F2B030 /* ContactManagerDeprocatedMethods.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9797D7AB2754E6F300F2B030 /* ContactManagerDeprocatedMethods.swift */; };
 		97A05B742743D4B600968459 /* SearchBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A05B732743D4B600968459 /* SearchBarView.swift */; };
 		97A05B762743D4C200968459 /* SearchBarView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 97A05B752743D4C200968459 /* SearchBarView.xib */; };
 		97A39FDC27649DF4007CB482 /* SegmentDatePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A39FDB27649DF4007CB482 /* SegmentDatePicker.swift */; };
@@ -180,7 +178,9 @@
 		97A39FE72764A2CF007CB482 /* SegmentDatePickerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A39FE62764A2CF007CB482 /* SegmentDatePickerDelegate.swift */; };
 		97A39FE92764A9B8007CB482 /* DatePickerStringComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A39FE82764A9B8007CB482 /* DatePickerStringComponents.swift */; };
 		97A39FEB2764E8CB007CB482 /* UILabel+Margin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A39FEA2764E8CB007CB482 /* UILabel+Margin.swift */; };
-		97A61EDE2726AB8700F2E6DE /* OLDContactsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A61EDD2726AB8700F2E6DE /* OLDContactsManager.swift */; };
+		97AC5DBA276756D100C20F73 /* CAGradientLayer+Point.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AC5DB9276756D100C20F73 /* CAGradientLayer+Point.swift */; };
+		97AC5DBD276790C700C20F73 /* UserDefaults+Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AC5DBC276790C700C20F73 /* UserDefaults+Date.swift */; };
+		97AC5DC02767C55100C20F73 /* Date+LocalizedDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AC5DBF2767C55100C20F73 /* Date+LocalizedDescription.swift */; };
 		97B01A59274582F900DDE03C /* BottomDoubleButtonBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B01A58274582F900DDE03C /* BottomDoubleButtonBarView.swift */; };
 		97B01A5B2745830500DDE03C /* BottomDoubleButtonBarView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 97B01A5A2745830500DDE03C /* BottomDoubleButtonBarView.xib */; };
 		97B01A732746DF6300DDE03C /* EmptyContactListDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B01A722746DF6300DDE03C /* EmptyContactListDataSource.swift */; };
@@ -222,7 +222,6 @@
 		97DC39B0273C08ED00D487BE /* PrimaryShadowImageWithTextButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97DC39AF273C08ED00D487BE /* PrimaryShadowImageWithTextButton.swift */; };
 		97E54A86268BB16A00C7FD54 /* SNCollectionViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97E54A85268BB16A00C7FD54 /* SNCollectionViewLayout.swift */; };
 		97E678462750F68A004E340B /* UsageDataNotificationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97E678452750F68A004E340B /* UsageDataNotificationType.swift */; };
-		97E90C032760BBA100622BF1 /* Picker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97E90C022760BBA100622BF1 /* Picker.swift */; };
 		97FC789226888120000D7F26 /* Date+CurrentDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97FC789126888120000D7F26 /* Date+CurrentDate.swift */; };
 		97FC7894268882C9000D7F26 /* Date+DateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97FC7893268882C9000D7F26 /* Date+DateFormatter.swift */; };
 		97FC789626889541000D7F26 /* TimeIInterval.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97FC789526889541000D7F26 /* TimeIInterval.swift */; };
@@ -312,7 +311,6 @@
 		04E58372267A4A2000EDC3A3 /* UIDevice+Enviroment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIDevice+Enviroment.swift"; sourceTree = "<group>"; };
 		04E58376267B323E00EDC3A3 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		04E58378267B39AD00EDC3A3 /* PHPhotoLibrary+Auth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PHPhotoLibrary+Auth.swift"; sourceTree = "<group>"; };
-		04E5837B267B3E2A00EDC3A3 /* PhotoManagerOLD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoManagerOLD.swift; sourceTree = "<group>"; };
 		04E5837D267B60F600EDC3A3 /* AlertManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertManager.swift; sourceTree = "<group>"; };
 		04E5837F267B9F6B00EDC3A3 /* PhassetFetchManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhassetFetchManager.swift; sourceTree = "<group>"; };
 		04EE29FA269891F30013837D /* PHasset+Thumbnail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PHasset+Thumbnail.swift"; sourceTree = "<group>"; };
@@ -399,7 +397,6 @@
 		978FEF11274BB73700ADE1D9 /* AlertType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertType.swift; sourceTree = "<group>"; };
 		978FEF13274BC21A00ADE1D9 /* ProgressAlertController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressAlertController.swift; sourceTree = "<group>"; };
 		978FEF19274C1C5400ADE1D9 /* UIAlertController+Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIAlertController+Colors.swift"; sourceTree = "<group>"; };
-		9797D7AB2754E6F300F2B030 /* ContactManagerDeprocatedMethods.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactManagerDeprocatedMethods.swift; sourceTree = "<group>"; };
 		97A05B732743D4B600968459 /* SearchBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBarView.swift; sourceTree = "<group>"; };
 		97A05B752743D4C200968459 /* SearchBarView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SearchBarView.xib; sourceTree = "<group>"; };
 		97A39FDB27649DF4007CB482 /* SegmentDatePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentDatePicker.swift; sourceTree = "<group>"; };
@@ -410,7 +407,9 @@
 		97A39FE62764A2CF007CB482 /* SegmentDatePickerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentDatePickerDelegate.swift; sourceTree = "<group>"; };
 		97A39FE82764A9B8007CB482 /* DatePickerStringComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePickerStringComponents.swift; sourceTree = "<group>"; };
 		97A39FEA2764E8CB007CB482 /* UILabel+Margin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+Margin.swift"; sourceTree = "<group>"; };
-		97A61EDD2726AB8700F2E6DE /* OLDContactsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OLDContactsManager.swift; sourceTree = "<group>"; };
+		97AC5DB9276756D100C20F73 /* CAGradientLayer+Point.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CAGradientLayer+Point.swift"; sourceTree = "<group>"; };
+		97AC5DBC276790C700C20F73 /* UserDefaults+Date.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+Date.swift"; sourceTree = "<group>"; };
+		97AC5DBF2767C55100C20F73 /* Date+LocalizedDescription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+LocalizedDescription.swift"; sourceTree = "<group>"; };
 		97B01A58274582F900DDE03C /* BottomDoubleButtonBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomDoubleButtonBarView.swift; sourceTree = "<group>"; };
 		97B01A5A2745830500DDE03C /* BottomDoubleButtonBarView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BottomDoubleButtonBarView.xib; sourceTree = "<group>"; };
 		97B01A722746DF6300DDE03C /* EmptyContactListDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyContactListDataSource.swift; sourceTree = "<group>"; };
@@ -452,7 +451,6 @@
 		97DC39AF273C08ED00D487BE /* PrimaryShadowImageWithTextButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimaryShadowImageWithTextButton.swift; sourceTree = "<group>"; };
 		97E54A85268BB16A00C7FD54 /* SNCollectionViewLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SNCollectionViewLayout.swift; sourceTree = "<group>"; };
 		97E678452750F68A004E340B /* UsageDataNotificationType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsageDataNotificationType.swift; sourceTree = "<group>"; };
-		97E90C022760BBA100622BF1 /* Picker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Picker.swift; sourceTree = "<group>"; };
 		97FC789126888120000D7F26 /* Date+CurrentDate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+CurrentDate.swift"; sourceTree = "<group>"; };
 		97FC7893268882C9000D7F26 /* Date+DateFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+DateFormatter.swift"; sourceTree = "<group>"; };
 		97FC789526889541000D7F26 /* TimeIInterval.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeIInterval.swift; sourceTree = "<group>"; };
@@ -562,12 +560,8 @@
 		047DE61426AAA33700733CD5 /* Temp */ = {
 			isa = PBXGroup;
 			children = (
-				04E5837B267B3E2A00EDC3A3 /* PhotoManagerOLD.swift */,
-				9797D7AB2754E6F300F2B030 /* ContactManagerDeprocatedMethods.swift */,
-				97A61EDD2726AB8700F2E6DE /* OLDContactsManager.swift */,
 				0459DF9826A6C5E50085EEDF /* celBlock51area.swift */,
 				9720EBEA27326F8C0078CD40 /* CellBlock 52.swift */,
-				97E90C022760BBA100622BF1 /* Picker.swift */,
 			);
 			path = Temp;
 			sourceTree = "<group>";
@@ -805,7 +799,6 @@
 				04E58361267A3ED000EDC3A3 /* Protocols */,
 				04E58367267A3F8F00EDC3A3 /* Assets */,
 				04E0947D267A06B900A69956 /* Info.plist */,
-				97C909CD274950D300BC2E47 /* TemproraryClassMethodsCellBlock.swift */,
 			);
 			path = ECleaner;
 			sourceTree = "<group>";
@@ -828,6 +821,7 @@
 		04E5835D267A3E6C00EDC3A3 /* Extension */ = {
 			isa = PBXGroup;
 			children = (
+				97AC5DBE276790CD00C20F73 /* UserDefaults */,
 				97E54A892690A9A100C7FD54 /* UICollectionView */,
 				049CC20E26821D330002F988 /* UIDevice */,
 				04E5837A267B39C400EDC3A3 /* PhotoLibrary */,
@@ -846,7 +840,7 @@
 				970D7789275B70F60048F41D /* UIFont */,
 				970D7788275B70E70048F41D /* UIAlertController */,
 				970D7787275B70D70048F41D /* PHAsset */,
-				97A39FEA2764E8CB007CB482 /* UILabel+Margin.swift */,
+				97AC5DBB276790A600C20F73 /* UILabel */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -1213,6 +1207,7 @@
 			children = (
 				9776F5782735937E009D806A /* InnerShadowLayer.swift */,
 				9776F57F2735944E009D806A /* CALAyer+Extension+SL.swift */,
+				97AC5DB9276756D100C20F73 /* CAGradientLayer+Point.swift */,
 			);
 			path = Layer;
 			sourceTree = "<group>";
@@ -1271,6 +1266,22 @@
 			path = Contacts;
 			sourceTree = "<group>";
 		};
+		97AC5DBB276790A600C20F73 /* UILabel */ = {
+			isa = PBXGroup;
+			children = (
+				97A39FEA2764E8CB007CB482 /* UILabel+Margin.swift */,
+			);
+			path = UILabel;
+			sourceTree = "<group>";
+		};
+		97AC5DBE276790CD00C20F73 /* UserDefaults */ = {
+			isa = PBXGroup;
+			children = (
+				97AC5DBC276790C700C20F73 /* UserDefaults+Date.swift */,
+			);
+			path = UserDefaults;
+			sourceTree = "<group>";
+		};
 		97B01A56274501B300DDE03C /* SearchBar */ = {
 			isa = PBXGroup;
 			children = (
@@ -1308,6 +1319,7 @@
 		97B01A802747CB9100DDE03C /* Export */ = {
 			isa = PBXGroup;
 			children = (
+				97C909CD274950D300BC2E47 /* TemproraryClassMethodsCellBlock.swift */,
 				97B01A7E2747CB8C00DDE03C /* ExportContactsViewController.swift */,
 			);
 			path = Export;
@@ -1407,6 +1419,7 @@
 				97FC789126888120000D7F26 /* Date+CurrentDate.swift */,
 				97FC789526889541000D7F26 /* TimeIInterval.swift */,
 				97FC7893268882C9000D7F26 /* Date+DateFormatter.swift */,
+				97AC5DBF2767C55100C20F73 /* Date+LocalizedDescription.swift */,
 			);
 			path = Date;
 			sourceTree = "<group>";
@@ -1615,7 +1628,6 @@
 				97A39FE72764A2CF007CB482 /* SegmentDatePickerDelegate.swift in Sources */,
 				9776F5842735953A009D806A /* ShadowView.swift in Sources */,
 				97FC78A12688E5E8000D7F26 /* PhotoCollectionViewCell.swift in Sources */,
-				97A61EDE2726AB8700F2E6DE /* OLDContactsManager.swift in Sources */,
 				975AF4392728300E00744E3B /* Arrray+Rearranged.swift in Sources */,
 				97D2BED2275A4227002082EB /* ContactsGroupModel.swift in Sources */,
 				0405AA5B269D9BD6004AC07A /* PreviewAVController.swift in Sources */,
@@ -1659,18 +1671,15 @@
 				040E288826A98B0F0019F372 /* DeepCleaningViewController.swift in Sources */,
 				0459DF9B26A6CDCC0085EEDF /* PHCachingImageManager+RequestExtension.swift in Sources */,
 				04CF0003268602DE000CA850 /* MediaContentType.swift in Sources */,
-				04E5837C267B3E2A00EDC3A3 /* PhotoManagerOLD.swift in Sources */,
 				97D2BED0275A3F88002082EB /* ContactsExportManager.swift in Sources */,
 				97C909CE274950D300BC2E47 /* TemproraryClassMethodsCellBlock.swift in Sources */,
 				04467CE0270D929D00DBBB39 /* HorizontalProgressBar.swift in Sources */,
 				97CE449D273D311400DF6114 /* NavigationBarDelegate.swift in Sources */,
 				044281FE2692F9B800B6B47C /* SelectDropDownMenuDelegate.swift in Sources */,
 				97CB351E273A9746005DA881 /* TableView+IndexPath.swift in Sources */,
-				9797D7AC2754E6F300F2B030 /* ContactManagerDeprocatedMethods.swift in Sources */,
 				4F56073E27205AF300CA19E9 /* ProgressView.swift in Sources */,
 				04CACE1E26A7FF62006489FA /* CarouselItemView.swift in Sources */,
 				97CB3516273A9129005DA881 /* ContactTableViewCell.swift in Sources */,
-				97E90C032760BBA100622BF1 /* Picker.swift in Sources */,
 				04CFFFEC2684725F000CA850 /* Device+DiskSpace.swift in Sources */,
 				97CE4499273D305900DF6114 /* NavigationBar.swift in Sources */,
 				4F56074527205AF300CA19E9 /* GreenLightStyle.swift in Sources */,
@@ -1678,9 +1687,12 @@
 				04E09470267A06B500A69956 /* AppDelegate.swift in Sources */,
 				04B20F02269C4F6A00C6BC14 /* AssetContextPreviewViewController.swift in Sources */,
 				9770C808274D34A90046EF84 /* FileFormats.swift in Sources */,
+				97AC5DBA276756D100C20F73 /* CAGradientLayer+Point.swift in Sources */,
+				97AC5DBD276790C700C20F73 /* UserDefaults+Date.swift in Sources */,
 				044A6FB9270F1B1000CF0D17 /* CircleProgressBar.swift in Sources */,
 				4F56074227205AF300CA19E9 /* WindowBuilder.swift in Sources */,
 				970D778D275B9C9E0048F41D /* SingleContentSearchNotificationType.swift in Sources */,
+				97AC5DC02767C55100C20F73 /* Date+LocalizedDescription.swift in Sources */,
 				97E54A86268BB16A00C7FD54 /* SNCollectionViewLayout.swift in Sources */,
 				044A6FBD270F1B9B00CF0D17 /* Sequence+GetSum.swift in Sources */,
 				97CB351127395803005DA881 /* SectionShadowView.swift in Sources */,

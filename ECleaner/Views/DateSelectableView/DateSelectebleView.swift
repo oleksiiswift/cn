@@ -112,10 +112,10 @@ class DateSelectebleView: UIView {
         shadowView.layer.setShadow(color: theme.bottomShadowColor, alpha: 1, x: 3, y: 0, blur: 10, spread: 0)
     }
     
-    public func setupDisplaysDate(startingDate: String, endingDate: String) {
-        
-        startingDateTextLabel.text = U.displayDate(from: startingDate).uppercased()
-        endingDateTextLabel.text = U.displayDate(from: endingDate).uppercased()
+    public func setupDisplaysDate(lowerDate: Date, upperdDate: Date) {
+        		 
+		startingDateTextLabel.text = String("\(lowerDate.stringMonth()) \(lowerDate.getYear())").uppercased()
+		endingDateTextLabel.text = String("\(upperdDate.stringMonth()) \(upperdDate.getYear())").uppercased()
     }
     
     private func setupUI() {
