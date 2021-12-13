@@ -30,7 +30,7 @@ class SimpleAssetsListViewController: UIViewController {
     
     public var isDeepCleaningSelectableFlow: Bool = false
     
-    private var photoManager = PhotoManager()
+	private var photoManager = PhotoManager.shared
     
     var selectedAssetsDelegate: DeepCleanSelectableAssetsDelegate?
 
@@ -309,16 +309,18 @@ extension SimpleAssetsListViewController {
             let assetInCollection = self.assetCollection[indexPath.row]
                 assetsToDelete.append(assetInCollection)
         }
+		
+		let deleteOperation = photoManager.deleteSelectedOperation(assets: assetsToDelete) { success in
+			if success {
+				let assetIdentifiers = assetsToDelete.map({ $0.localIdentifier})
+				self.assetCollection = self.assetCollection.filter({!assetIdentifiers.contains($0.localIdentifier)})
+				self.collectionView.reloadData()
+				self.handleSelectAllButtonState()
+				self.handleBottomButtonMenu()
+			}
+		}
             
-        photoManager.deleteSelected(assets: assetsToDelete) { success in
-            if success {
-                let assetIdentifiers = assetsToDelete.map({ $0.localIdentifier})                
-                self.assetCollection = self.assetCollection.filter({!assetIdentifiers.contains($0.localIdentifier)})
-                self.collectionView.reloadData()
-                self.handleSelectAllButtonState()
-                self.handleBottomButtonMenu()
-            }
-        }
+		photoManager.serviceUtilsCalculatedOperationsQueuer.addOperation(deleteOperation)
     }
     
     private func createCellContextMenu(for asset: PHAsset, at indexPath: IndexPath) -> UIMenu {
@@ -404,12 +406,15 @@ extension SimpleAssetsListViewController: UpdatingChangesInOpenedScreensListener
     func getUpdatingScreenShots() {
         
         if mediaType == .singleScreenShots {
-            photoManager.getScreenShots(from: S.startingSavedDate, to: S.endingSavedDate) { screenShots in
-                if self.assetCollection.count != screenShots.count {
-                    self.assetCollection = screenShots
-                    self.collectionView.reloadData()
-                }
-            }
+			
+			let screenShotsOperation = photoManager.getScreenShotsOperation(from: S.lowerBoundSavedDate, to: S.upperBoundSavedDate) { screenShots in
+				if self.assetCollection.count != screenShots.count {
+					self.assetCollection = screenShots
+					self.collectionView.reloadData()
+				}
+			}
+			
+			photoManager.phassetProcessingOperationQueuer.addOperation(screenShotsOperation)
         }
     }
     
@@ -417,12 +422,14 @@ extension SimpleAssetsListViewController: UpdatingChangesInOpenedScreensListener
     func getUpdatingSelfies() {
         
         if mediaType == .singleSelfies {
-            photoManager.getSelfiePhotos(from: S.startingSavedDate, to: S.endingSavedDate) { selfies in
-                if self.assetCollection.count != selfies.count {
-                    self.assetCollection = selfies
-                    self.collectionView.reloadData()
-                }
-            }
+			
+			let selfiePhotosOperation = photoManager.getSelfiePhotosOperation(from: S.lowerBoundSavedDate, to: S.upperBoundSavedDate) { selfies in
+				if self.assetCollection.count != selfies.count {
+					self.assetCollection = selfies
+					self.collectionView.reloadData()
+				}
+			}
+			photoManager.phassetProcessingOperationQueuer.addOperation(selfiePhotosOperation)
         }
     }
 }

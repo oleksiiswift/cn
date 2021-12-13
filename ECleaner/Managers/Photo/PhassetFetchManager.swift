@@ -14,6 +14,8 @@ enum SortingDesriptionKey {
     case modification
     case mediaType
     case burstIdentifier
+	case singleMediaType
+	case allMediaType
     
     var value: String {
         switch self {
@@ -26,28 +28,87 @@ enum SortingDesriptionKey {
                 return "burstIdentifier"
             case .mediaType:
                 return "mediaType"
+			case .singleMediaType:
+				return "mediaType = %d"
+			case .allMediaType:
+				return "mediaType = %d || mediaType = %d"
         }
     }
 }
 
-class PHAssetFetchManager {
-    
-    static let shared = PHAssetFetchManager()
+//		MARK: - FETCH PHASSET MANAGER - LOAD PHASSETS
 
-    public func fetchTotalAssetsCount(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", completionHandler: @escaping (Int) -> Void) {
+class PHAssetFetchManager {
+	
+	static let shared = PHAssetFetchManager()
+	
+	private static let lowerDateValue: Date = S.defaultLowerDateValue
+	private static let upperDateValue: Date = S.defaultUpperDateValue
+	
+	
+	public func fetchTotalAssetsCountOperation(from lowerDate: Date = lowerDateValue, to upperDate: Date = upperDateValue, completionHandler: @escaping (Int) -> Void) -> ConcurrentProcessOperation {
+		
+		let fetchTotalPHAssetsOperation = ConcurrentProcessOperation { _ in
+			let fetchOptions = PHFetchOptions()
+			fetchOptions.sortDescriptors = [NSSortDescriptor(key: SortingDesriptionKey.creationDate.value, ascending: false)]
+			fetchOptions.predicate = NSPredicate(format: SDKey.allMediaType.value,
+												 PHAssetMediaType.image.rawValue,
+												 PHAssetMediaType.video.rawValue,
+												 "\(SDKey.mediaType.value) = %d AND (\(SDKey.creationDate.value) >= %@) AND (\(SDKey.creationDate.value) <= %@)",
+												 lowerDate as NSDate,
+												 upperDate as NSDate)
+			let pholeAssets = PHAsset.fetchAssets(with: fetchOptions)
+			
+			completionHandler(pholeAssets.count)
+		}
+		fetchTotalPHAssetsOperation.name = C.key.operation.name.fetchPHAssetCount
+		return fetchTotalPHAssetsOperation
+	}
+	
+	public func fetchFromGalleryOperation(from lowerDate: Date = lowerDateValue, to upperDate: Date = upperDateValue, collectiontype: PHAssetCollectionSubtype, by type: Int, completionHandler: @escaping ((_ result: PHFetchResult<PHAsset>) -> Void)) -> ConcurrentProcessOperation {
+		
+		let fetchFromGalleryOperation = ConcurrentProcessOperation { _ in
+			
+			let fetchOptions = PHFetchOptions()
+			
+			let albumPhoto: PHFetchResult<PHAssetCollection> = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: collectiontype, options: fetchOptions)
+			
+			fetchOptions.sortDescriptors = [NSSortDescriptor(key: SortingDesriptionKey.creationDate.value, ascending: false)]
+			fetchOptions.predicate = NSPredicate(
+				format: "\(SDKey.mediaType.value) = %d AND (\(SDKey.creationDate.value) >= %@) AND (\(SDKey.creationDate.value) <= %@)",
+				type,
+				lowerDate as NSDate,
+				upperDate as NSDate
+			)
+			albumPhoto.enumerateObjects({(collection, index, object) in
+				completionHandler(PHAsset.fetchAssets(in: collection, options: fetchOptions))
+			})
+		}
+		fetchFromGalleryOperation.name = C.key.operation.name.fetchFromGallery
+		return fetchFromGalleryOperation
+	}
+}
+
+extension PHAssetFetchManager {
+	
+	
+    public func fetchTotalAssetsCount(from lowerDate: Date = lowerDateValue, to upperDate: Date = upperDateValue, completionHandler: @escaping (Int) -> Void) {
         
         let fetchOptions = PHFetchOptions()
         fetchOptions.sortDescriptors = [NSSortDescriptor(key: SortingDesriptionKey.creationDate.value, ascending: false)]
-        fetchOptions.predicate = NSPredicate(format: "mediaType = %d || mediaType = %d", PHAssetMediaType.image.rawValue, PHAssetMediaType.video.rawValue, "\(SDKey.mediaType.value) = %d AND (\(SDKey.creationDate.value) >= %@) AND (\(SDKey.creationDate.value) <= %@)",
-                                                         startDate.NSDateConverter(format: C.dateFormat.fullDmy),
-                                                         endDate.NSDateConverter(format: C.dateFormat.fullDmy))
+		fetchOptions.predicate = NSPredicate(format: SDKey.allMediaType.value,
+											 PHAssetMediaType.image.rawValue,
+											 PHAssetMediaType.video.rawValue,
+											 "\(SDKey.mediaType.value) = %d AND (\(SDKey.creationDate.value) >= %@) AND (\(SDKey.creationDate.value) <= %@)",
+											 lowerDate as NSDate,
+											 upperDate as NSDate)
         
         let pholeAssets = PHAsset.fetchAssets(with: fetchOptions)
         
         completionHandler(pholeAssets.count)
     }
     
-    public func fetchFromGallery(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", collectiontype: PHAssetCollectionSubtype, by type: Int, completionHandler: @escaping ((_ result: PHFetchResult<PHAsset>) -> Void)) {
+    public func fetchFromGallery(from lowerDate: Date = lowerDateValue, to upperDate: Date = upperDateValue, collectiontype: PHAssetCollectionSubtype, by type: Int, completionHandler: @escaping ((_ result: PHFetchResult<PHAsset>) -> Void)) {
         let fetchOptions = PHFetchOptions()
     
         let albumPhoto: PHFetchResult<PHAssetCollection> = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: collectiontype, options: fetchOptions)
@@ -56,16 +117,16 @@ class PHAssetFetchManager {
         fetchOptions.predicate = NSPredicate(
             format: "\(SDKey.mediaType.value) = %d AND (\(SDKey.creationDate.value) >= %@) AND (\(SDKey.creationDate.value) <= %@)",
             type,
-            startDate.NSDateConverter(format: C.dateFormat.fullDmy),
-            endDate.NSDateConverter(format: C.dateFormat.fullDmy)
+			lowerDate as NSDate,
+			upperDate as NSDate
         )
         albumPhoto.enumerateObjects({(collection, index, object) in
             completionHandler(PHAsset.fetchAssets(in: collection, options: fetchOptions))
         })
     }
     
-    public func fetchPhotoCount(from startDate: String = "01-01-1970 00:00:00", to endDate: String = "01-01-2666 00:00:00", completionHandler: @escaping ((_ photoCount: Int) -> Void)) {
-        fetchFromGallery(from: startDate, to: endDate, collectiontype: .smartAlbumUserLibrary, by: PHAssetMediaType.image.rawValue) { libraryResult in
+    public func fetchPhotoCount(from lowerDate: Date = lowerDateValue, to upperDate: Date = upperDateValue, completionHandler: @escaping ((_ photoCount: Int) -> Void)) {
+        fetchFromGallery(from: lowerDate, to: upperDate, collectiontype: .smartAlbumUserLibrary, by: PHAssetMediaType.image.rawValue) { libraryResult in
             completionHandler(libraryResult.count)
         }
     }
@@ -77,7 +138,7 @@ extension PHAssetFetchManager {
     private func fetchAssets(by type: Int) -> PHFetchResult<PHAsset> {
         let fetchOption = PHFetchOptions()
         fetchOption.sortDescriptors = [NSSortDescriptor(key: SortingDesriptionKey.creationDate.value, ascending: false)]
-        fetchOption.predicate = NSPredicate(format: "mediaType == %d", type)
+		fetchOption.predicate = NSPredicate(format: SDKey.singleMediaType.value, type)
         return PHAsset.fetchAssets(with: fetchOption)
     }
     
@@ -93,7 +154,7 @@ extension PHAssetFetchManager {
     public func fetchImagesFromGallery(collection: PHAssetCollection?) -> PHFetchResult<PHAsset> {
         let fetchOption = PHFetchOptions()
         fetchOption.sortDescriptors = [NSSortDescriptor(key: SortingDesriptionKey.creationDate.value, ascending: false)]
-        fetchOption.predicate = NSPredicate(format: "mediaType == %d || mediaType == %d", PHAssetMediaType.image.rawValue, PHAssetMediaType.video.rawValue)
+		fetchOption.predicate = NSPredicate(format: SDKey.allMediaType.value, PHAssetMediaType.image.rawValue, PHAssetMediaType.video.rawValue)
         if let collection = collection {
             return PHAsset.fetchAssets(in: collection, options: fetchOption)
         } else {
@@ -153,54 +214,6 @@ extension PHAssetFetchManager {
         return image
     }
     
-//    MARK: - all assets size -
-    public func calculateAllAssetsSize(result: PHFetchResult<PHAsset>) -> Int64 {
-        var allSize: Int64 = 0
-
-        let requestOptions = PHImageRequestOptions.init()
-        
-        requestOptions.isSynchronous = false
-        
-        var numbers = 0
-        result.enumerateObjects({ (object, index, stopped) in
-            let manager = PHImageManager.default()
-            manager.requestImageDataAndOrientation(for: object, options: requestOptions) { imageData, _, _, _ in
-                numbers += 1
-                
-                if imageData != nil {
-                    allSize += object.imageSize
-                    debugPrint(String("\(numbers) -> \(allSize)"))
-//                         Int64(imageData!.count)
-                }
-            }
-        })
-        return allSize
-    }
-    
-    public func gitAllCalculatedPhassetsSize(_ completionHandler: @escaping (_ photoSpace: Int64,_ videoSpace: Int64,_ allAssetsSpace: Int64) -> Void) {
-        var allSpaceSize: Int64 = 0
-        var photoPhassetSpace: Int64 = 0
-        var videoPhassetSpace: Int64 = 0
-            
-        let fetchOption = PHFetchOptions()
-        fetchOption.sortDescriptors = [NSSortDescriptor(key: SortingDesriptionKey.creationDate.value, ascending: false)]
-        fetchOption.predicate = NSPredicate(format: "mediaType == %d || mediaType == %d", PHAssetMediaType.image.rawValue, PHAssetMediaType.video.rawValue)
-        
-        let assets = PHAsset.fetchAssets(with: fetchOption)
-        
-        assets.enumerateObjects { object, index, stopped in
-//            debugPrint("calculated space at index: ", index)
-            if object.mediaType == .image {
-                allSpaceSize += object.imageSize
-                photoPhassetSpace += object.imageSize
-            } else if object.mediaType == .video {
-                allSpaceSize += object.imageSize
-                videoPhassetSpace += object.imageSize
-            }
-        }
-        completionHandler(photoPhassetSpace, videoPhassetSpace, allSpaceSize)
-    }
-    
     public func assetSizeFromData(asset: PHAsset, completion: @escaping ((_ result: Int64) -> Void)) {
         var fileSize: Int64 = 0
         let requestOptions = PHImageRequestOptions.init()
@@ -235,104 +248,183 @@ extension PHAssetFetchManager {
     }
 }
             
-//  MARK: recentle deleted assets fetch methods
+
+//		MARK: - files count check, space calculated operation -
 extension PHAssetFetchManager {
- 
-    public func recentlyDeletedAlbumFetch(completionHandler: @escaping (([PHAsset]) -> Void)) {
+	
+		/// `all assets size` - calculated all asset at one
+	public func getCalculatedAllPHAssetSizeOperation(result: PHFetchResult<PHAsset>, completionHandler: @escaping (Int64) -> Void) -> ConcurrentProcessOperation {
+		
+		let calculatedAllPHAssetOperation = ConcurrentProcessOperation(operationName: C.key.operation.name.phassetAllSizes) { operation in
+			var phassetCalculetedSize: Int64 = 0
+			let requestOptions = PHImageRequestOptions.init()
+			requestOptions.isSynchronous = false
+			var currentProcessingIndex: Int = 0
+			result.enumerateObjects({ (object, index, stopped) in
+				let manager = PHImageManager.default()
+				manager.requestImageDataAndOrientation(for: object, options: requestOptions) { imageData, _, _, _ in
+					currentProcessingIndex += 1
+					if imageData != nil {
+						phassetCalculetedSize += object.imageSize
+						debugPrint(String("\(currentProcessingIndex) -> \(phassetCalculetedSize)"))
+					}
+				}
+			})
+			completionHandler(phassetCalculetedSize)
+		}
+		return calculatedAllPHAssetOperation
+	}
+	
+		/// `all assets file size, and in one loop get photo video`
+	public func getCalculatePHAssetSizesSingleOperation(_ completionHandler: @escaping (_ photoSpace: Int64,_ videoSpace: Int64,_ allAssetsSpace: Int64) -> Void) -> ConcurrentProcessOperation {
+		
+		let calculatedAllPhassetSpaceOperation = ConcurrentProcessOperation { _ in
+			U.GLB(qos: .background, {
+				
+				var photoLibraryPHAssetCalculatedSpace: Int64 = 0
+				var photoPhassetSpace: Int64 = 0
+				var videoPhassetSpace: Int64 = 0
+				let fetchOption = PHFetchOptions()
+				fetchOption.sortDescriptors = [NSSortDescriptor(key: SortingDesriptionKey.creationDate.value, ascending: false)]
+				fetchOption.predicate = NSPredicate(format: SDKey.allMediaType.value, PHAssetMediaType.image.rawValue, PHAssetMediaType.video.rawValue)
+				let assets = PHAsset.fetchAssets(with: fetchOption)
+//				var media: [PHAsset] = []
+				assets.enumerateObjects { object, index, stopped in
+//					debugPrint("calculated space at index: ", index)
+//					media.append(object)
+					if object.mediaType == .image {
+						photoLibraryPHAssetCalculatedSpace += object.imageSize
+						photoPhassetSpace += object.imageSize
+					} else if object.mediaType == .video {
+						photoLibraryPHAssetCalculatedSpace += object.imageSize
+						videoPhassetSpace += object.imageSize
+					}
+				}
+				
+//				photoPhassetSpace = media.filter({$0.mediaType == .image}).map({$0.imageSize}).sum()
+//				videoPhassetSpace = media.filter({$0.mediaType == .video}).map({$0.imageSize}).sum()
 
-        fetchRecentlyDeletedCollection { collection in
-            guard let albumCollection = collection else {
-                completionHandler([])
-                return
-            }
-
-            let result = PHAsset.fetchAssets(in: albumCollection, options: nil)
-            var assets = [PHAsset]()
-
-            if result.count == 0 {
-                U.UI {
-                    completionHandler([])
-                }
-                return
-            }
-
-            for assetPosition in 1...result.count {
-                assets.append(result[assetPosition - 1])
-            }
-            
-            U.UI {
-                completionHandler(assets)
-            }
-            completionHandler(assets)
-        }
-    }
-    
-    public func recentlyDeletedSortedAlbumFetch(completionHandler: @escaping ((_ photosAssets: [PHAsset],_ videoAssets: [PHAsset]) -> Void)) {
-        
-        fetchRecentlyDeletedCollection { collection in
-            
-            guard let recentlyDeletedCollection = collection else { return completionHandler([], [])}
-            
-            var photoAssets: [PHAsset] = []
-            var videoAssets: [PHAsset] = []
-            
-            let photoFetchOptions = PHFetchOptions()
-            let videoFetchOptions = PHFetchOptions()
-            
-            photoFetchOptions.predicate = NSPredicate(format: "mediaType == %d", PHAssetMediaType.image.rawValue)
-            videoFetchOptions.predicate = NSPredicate(format: "mediaType == %d", PHAssetMediaType.video.rawValue)
-            
-            let photoResult = PHAsset.fetchAssets(in: recentlyDeletedCollection, options: photoFetchOptions)
-            let videoResult = PHAsset.fetchAssets(in: recentlyDeletedCollection, options: videoFetchOptions)
-            
-            if photoResult.count == 0 && videoResult.count == 0 {
-                U.UI {
-                    completionHandler([], [])
-                }
-                return
-            }
-            
-            for photoAssetPosition in 1...photoResult.count {
-                photoAssets.append(photoResult[photoAssetPosition - 1])
-            }
-          
-            #warning("EC-23")
-//            for videoAssetPosion in 1...videoResult.count {
-//                videoAssets.append(videoResult[videoAssetPosion - 1])
-//            }
-            
-            U.UI {
-                completionHandler(photoAssets, videoAssets)
-            }
-        }
-    }
-    
-    private func fetchRecentlyDeletedCollection(completionHandler: @escaping ((PHAssetCollection?) -> Void)) {
-        
-        let result = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .albumRegular, options: nil)
-        
-        for i in 0..<result.count {
-            let album = result[i]
-            
-            if album.localizedTitle == "Recently Deleted" {
-                 completionHandler(album)
-            }
-        }
-    }
+//				photoLibraryPHAssetCalculatedSpace = photoPhassetSpace + videoPhassetSpace
+				completionHandler(photoPhassetSpace, videoPhassetSpace, photoLibraryPHAssetCalculatedSpace)
+			})
+		}
+		calculatedAllPhassetSpaceOperation.name = C.key.operation.name.phassetSingleSizes
+		return calculatedAllPhassetSpaceOperation
+	}
 }
 
-extension PHAsset {
-    
-    var imageSize: Int64 {
-        
-        let resources = PHAssetResource.assetResources(for: self)
-        var fileDiskSpace: Int64 = 0
-        
-        if let resource = resources.first {
-            if let unsignedInt64 = resource.value(forKey: "fileSize") as? CLong {
-                fileDiskSpace = Int64(bitPattern: UInt64(unsignedInt64))
-            }
-        }
-        return fileDiskSpace
-    }
+//		MARK: - RECENTLY DELETED PHASSETS CHECK -
+		/// recentle deleted assets fetch methods
+extension PHAssetFetchManager {
+	
+	public func recentlyDeletedAlbumFetchOperation(completionHandler: @escaping (([PHAsset]) -> Void)) -> ConcurrentProcessOperation {
+	
+		let recentlyDeletedAlbumFetch = ConcurrentProcessOperation { _ in
+			self.fetchRecentlyDeletedCollection { collection in
+				guard let albumCollection = collection else {
+					completionHandler([])
+					return
+				}
+
+				let result = PHAsset.fetchAssets(in: albumCollection, options: nil)
+				var assets = [PHAsset]()
+
+				if result.count != 0 {
+					for assetPosition in 1...result.count {
+						assets.append(result[assetPosition - 1])
+					}
+					completionHandler(assets)
+					
+				} else {
+					completionHandler([])
+				}
+			}
+		}
+		recentlyDeletedAlbumFetch.name = C.key.operation.name.recentlyDeletedAlbums
+		return recentlyDeletedAlbumFetch
+	}
+	
+	public func recentlyDeletdSortedAlbumsFetchOperation(completionHandler: @escaping ((_ photosAssets: [PHAsset],_ videoAssets: [PHAsset]) -> Void)) -> ConcurrentProcessOperation {
+		
+		let recentlyDeletedAlbumsSortFetch = ConcurrentProcessOperation { operation in
+			
+			self.fetchRecentlyDeletedCollection { collection in
+				
+				guard let recentlyDeletedCollection = collection else { return completionHandler([], [])}
+				
+				var photoAssets: [PHAsset] = []
+				var videoAssets: [PHAsset] = []
+				
+				let photoFetchOptions = PHFetchOptions()
+				let videoFetchOptions = PHFetchOptions()
+				
+				photoFetchOptions.predicate = NSPredicate(format: SDKey.singleMediaType.value, PHAssetMediaType.image.rawValue)
+				videoFetchOptions.predicate = NSPredicate(format: SDKey.singleMediaType.value, PHAssetMediaType.video.rawValue)
+				
+				let photoResult = PHAsset.fetchAssets(in: recentlyDeletedCollection, options: photoFetchOptions)
+				let videoResult = PHAsset.fetchAssets(in: recentlyDeletedCollection, options: videoFetchOptions)
+				
+				if photoResult.count != 0 && videoResult.count != 0 {
+			
+					for photoAssetPosition in 1...photoResult.count {
+						if operation.isCancelled {
+							completionHandler([], [])
+							return
+						}
+						photoAssets.append(photoResult[photoAssetPosition - 1])
+					}
+					
+					for videoAssetPosion in 1...videoResult.count {
+						if operation.isCancelled {
+							completionHandler([], [])
+							return
+						}
+						videoAssets.append(videoResult[videoAssetPosion - 1])
+					}
+					completionHandler(photoAssets, videoAssets)
+				} else if photoResult.count != 0 && videoResult.count == 0 {
+					for photoAssetPosition in 1...photoResult.count {
+						if operation.isCancelled {
+							completionHandler([], [])
+							return
+						}
+						photoAssets.append(photoResult[photoAssetPosition - 1])
+					}
+					
+					completionHandler(photoAssets, [])
+				} else if photoAssets.count == 0 && videoResult.count != 0 {
+					for videoAssetPosion in 1...videoResult.count {
+						if operation.isCancelled {
+							completionHandler([], [])
+							return
+						}
+						videoAssets.append(videoResult[videoAssetPosion - 1])
+					}
+					completionHandler([], videoAssets)
+				} else {
+					completionHandler([], [])
+				}
+			}
+		}
+		recentlyDeletedAlbumsSortFetch.name = C.key.operation.name.recentlyDeletedSortedAlbums
+		return recentlyDeletedAlbumsSortFetch
+	}
+	
+	private func fetchRecentlyDeletedCollection(completionHandler: @escaping ((PHAssetCollection?) -> Void)) {
+		
+		let result = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .albumRegular, options: nil)
+		
+		for i in 0..<result.count {
+			let album = result[i]
+			
+			if album.localizedTitle == "Recently Deleted" {
+				 completionHandler(album)
+			}
+		}
+	}
+}
+
+//		MARK: - UTILS -
+extension PHAssetFetchManager {
+	
 }

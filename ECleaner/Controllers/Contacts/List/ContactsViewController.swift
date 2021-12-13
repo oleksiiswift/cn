@@ -324,7 +324,8 @@ extension ContactsViewController {
                 }
             }
         } else if contentType == .emptyContacts {
-            self.contactManager.getEmptyContacts { contactsGroups in
+			self.contactManager.getSingleDuplicatedCleaningContacts(of: .emptyContacts, allowNotification: false) { contactsGroups in
+
                 U.UI {
                     
                     self.setCancelAndDeselectAllItems()
@@ -587,15 +588,15 @@ extension ContactsViewController: Themeble {
         if contentType == .allContacts {
             navigationBar.setIsDropShadow = false
             navigationBar.setupNavigation(title: contentType.mediaTypeName,
-                                          leftBarButtonImage: I.navigationItems.back,
-                                          rightBarButtonImage: I.navigationItems.burgerDots,
+                                          leftBarButtonImage: I.systemItems.navigationBarItems.back,
+                                          rightBarButtonImage: I.systemItems.navigationBarItems.burgerDots,
                                           mediaType: .userContacts,
                                           leftButtonTitle: nil,
                                           rightButtonTitle: nil)
         } else if contentType == .emptyContacts {
             setSearchBarIsHiden()
             navigationBar.setupNavigation(title: contentType.mediaTypeName,
-                                          leftBarButtonImage: I.navigationItems.back,
+                                          leftBarButtonImage: I.systemItems.navigationBarItems.back,
                                           rightBarButtonImage: nil,
                                           mediaType: .userContacts,
                                           leftButtonTitle: nil, rightButtonTitle: "edit")

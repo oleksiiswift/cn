@@ -78,7 +78,20 @@ class AlertManager: NSObject {
     }
 }
 
+//	MARK: - ACCESS ARTS, PERMISSION, SETTINGS, RESTRICTED -
 extension AlertManager {
+	
+	static func showResrictedAlert(by type: AlertType, completionHandler: @escaping () -> Void) {
+		
+		let settingsAction = UIAlertAction(title: "Settings", style: .default) { _ in
+			U.openSettings()
+		}
+		
+		self.showAlert(type: type, actions: [settingsAction], withCancel: true) {
+			completionHandler()
+		}
+	}
+	
     
     static func showOpenSettingsAlert(_ alertType: AlertType) {
         
@@ -157,4 +170,17 @@ extension AlertManager {
             completion()
         }
     }
+}
+
+//		MARK: - stop search alerts -
+extension AlertManager {
+	
+	static func showStopDeepCleanSearchProcess(_ completion: @escaping () -> Void) {
+		
+		let stopDeepCleanAlertAction = UIAlertAction(title: "ok", style: .default) { _ in
+			completion()
+		}
+		
+		showAlert(type: .setBreakDeepCleanSearch, actions: [stopDeepCleanAlertAction], withCancel: true, cancelCompletion: nil)
+	}
 }

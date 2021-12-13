@@ -7,7 +7,7 @@
 
 import Foundation
 import UIKit
-//extension ContactsManager {
+//extension ContactsManagerOLD {
 //
 ////    use only with know country
 //    func phonesValidatibg(_ contact: CNContact) -> Int {
@@ -23,7 +23,7 @@ import UIKit
 //}
 
 
-//extension ContactsManager {
+//extension ContactsManagerOLD {
 //    
 //    
 //    func mergeAllDuplicates(_ duplicates: [CNContact]) -> CNContact {
@@ -67,7 +67,7 @@ import UIKit
 //}
 
 
-//extension ContactsManager {
+//extension ContactsManagerOLD {
 //
 //    public func specialContacts() {
 //        

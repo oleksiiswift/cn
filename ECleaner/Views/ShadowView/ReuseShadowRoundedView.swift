@@ -15,6 +15,7 @@ class ReuseShadowRoundedView: UIView {
     
     public var topShadowColor: UIColor = .red
     public var bottomShadowColor: UIColor = .black
+    public var templateTintColor: UIColor = .orange
     
     private var activityIndicatorView = UIActivityIndicatorView()
     
@@ -69,6 +70,10 @@ class ReuseShadowRoundedView: UIView {
             self.activityIndicatorView.removeFromSuperview()
             self.isActivityIndicatorShow = false
         }
+    }
+    
+    public func setTintColor(_ tintColor: UIColor) {
+        imageView.tintColor = tintColor
     }
 
     private func setupImageView() {

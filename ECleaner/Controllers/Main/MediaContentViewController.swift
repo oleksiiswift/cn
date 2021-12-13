@@ -20,22 +20,25 @@ class MediaContentViewController: UIViewController {
     var dateSelectableView = DateSelectebleView()
     
     public var mediaContentType: MediaContentType = .none
-    private var photoManager = PhotoManager()
+	private var photoManager = PhotoManager.shared
     private var contactsManager = ContactsManager.shared
+	
+	public let phassetProcessingOperationQueuer = OperationProcessingQueuer(name: Constants.key.operation.queue.phassets, maxConcurrentOperationCount: 10, qualityOfService: .background)
+	public let contactsProcessingOperationQueuer = OperationProcessingQueuer(name: Constants.key.operation.queue.contacts, maxConcurrentOperationCount: 10, qualityOfService: .background)
     
-    private var startingDate: String {
+    private var lowerBoundDate: Date {
         get {
-            return S.startingSavedDate
+            return S.lowerBoundSavedDate
         } set {
-            S.startingSavedDate = newValue
+            S.lowerBoundSavedDate = newValue
         }
     }
 
-    private var endingDate: String {
+    private var upperBoundDate: Date {
         get {
-            return S.endingSavedDate
+            return S.lowerBoundSavedDate
         } set {
-            S.endingSavedDate = newValue
+            S.upperBoundSavedDate = newValue
         }
     }
     private var scanningProcessIsRunning: Bool = false
@@ -65,8 +68,7 @@ class MediaContentViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.contactsManager.setProcess(.search, state: .availible) /// set update of contacts availible
-            
+		self.contactsManager.setProcess(.search, state: .availible)
         checkForAssetsCount()
         setupUI()
         setupDateInterval()
@@ -106,7 +108,7 @@ extension MediaContentViewController: UITableViewDelegate, UITableViewDataSource
     
     func configure(_ cell: ContentTypeTableViewCell, at indexPath: IndexPath, isSearchingStarted: Bool = false) {
     
-        let  photoMediaType: PhotoMediaType = MediaType.getSingleSearchMediaContentType(from: indexPath, type: mediaContentType)
+        let  photoMediaType: PhotoMediaType = .getSingleSearchMediaContentType(from: indexPath, type: mediaContentType)
         
         var assetContentCount: Int {
             switch photoMediaType {
@@ -314,159 +316,200 @@ extension MediaContentViewController {
     */
     
     private func showSimilarPhotos() {
-        photoManager.getSimilarPhotosAssets(from: startingDate, to: endingDate) { similarGroup in
-            if !similarGroup.isEmpty {
-                self.showGropedContoller(assets: "similar photo", grouped: similarGroup, photoContent: .similarPhotos)
-            } else {
-                AlertManager.showCantFindMediaContent(by: .noSimiliarPhoto) {}
-            }
-        }
+		
+		let getSimilarPhotosAssetsOperation = photoManager.getSimilarPhotosAssetsOperation(from: lowerBoundDate, to: upperBoundDate, enableSingleProcessingNotification: true) { similarGroup in
+			U.UI {
+				if !similarGroup.isEmpty {
+					self.showGropedContoller(assets: "similar photo", grouped: similarGroup, photoContent: .similarPhotos)
+				} else {
+					AlertManager.showCantFindMediaContent(by: .noSimiliarPhoto) {}
+				}
+			}
+		}
+		phassetProcessingOperationQueuer.addOperation(getSimilarPhotosAssetsOperation)
     }
     
     private func showLivePhotos() {
-        
-        photoManager.getLivePhotos { asset in
-            if !asset.isEmpty {
-                self.showAssetViewController(assets: "live photos", collection: asset, photoContent: .singleLivePhotos)
-            } else {
-                AlertManager.showCantFindMediaContent(by: .noLivePhoto) {}
-            }
-        }
+		
+		let getLivePhotoAssetsOperation = photoManager.getLivePhotosOperation(from: lowerBoundDate, to: upperBoundDate, enableSingleProcessingNotification: true) { similarAssets in
+			U.UI {
+				if !similarAssets.isEmpty {
+					self.showAssetViewController(assets: "live photos", collection: similarAssets, photoContent: .singleLivePhotos)
+				} else {
+					AlertManager.showCantFindMediaContent(by: .noLivePhoto) {}
+				}
+			}
+		}
+		phassetProcessingOperationQueuer.addOperation(getLivePhotoAssetsOperation)
     }
     
     private func showDuplicatePhotos() {
-        photoManager.getDuplicatedPhotosAsset(from: startingDate, to: endingDate) { duplicateGroup in
-            if !duplicateGroup.isEmpty {
-                self.showGropedContoller(assets: "duplicate photo", grouped: duplicateGroup, photoContent: .duplicatedPhotos)
-            } else {
-                AlertManager.showCantFindMediaContent(by: .noDuplicatesPhoto) {}
-            }
-        }
+		
+		let duplicatedPhotoAssetOperation = photoManager.getDuplicatedPhotosAsset(from: lowerBoundDate, to: upperBoundDate, enableSingleProcessingNotification: true) { duplicateGroup in
+			U.UI {
+				if !duplicateGroup.isEmpty {
+					self.showGropedContoller(assets: "duplicate photo", grouped: duplicateGroup, photoContent: .duplicatedPhotos)
+				} else {
+					AlertManager.showCantFindMediaContent(by: .noDuplicatesPhoto) {}
+				}
+			}
+		}
+		phassetProcessingOperationQueuer.addOperation(duplicatedPhotoAssetOperation)
     }
     
     private func showSelfies() {
-        photoManager.getSelfiePhotos(from: startingDate, to: endingDate) { selfies in
-            if selfies.count != 0 {
-                self.showAssetViewController(assets: "selfies", collection: selfies, photoContent: .singleSelfies)
-            } else {
-                AlertManager.showCantFindMediaContent(by: .noSelfie) {}
-            }
-        }
+		
+		let getSelfiesPhotoAssetOperation = photoManager.getSelfiePhotosOperation(from: lowerBoundDate, to: upperBoundDate, enableSingleProcessingNotification: true) { selfies in
+			U.UI {
+				if selfies.count != 0 {
+					self.showAssetViewController(assets: "selfies", collection: selfies, photoContent: .singleSelfies)
+				} else {
+					AlertManager.showCantFindMediaContent(by: .noSelfie) {}
+				}
+			}
+		}
+		phassetProcessingOperationQueuer.addOperation(getSelfiesPhotoAssetOperation)
     }
     
     private func showScreenshots() {
-        photoManager.getScreenShots(from: startingDate, to: endingDate) { screenshots in
-            if screenshots.count != 0 {
-                self.showAssetViewController(assets: "screenshots", collection: screenshots, photoContent: .singleScreenShots)
-            } else {
-                AlertManager.showCantFindMediaContent(by: .noScreenShots) {}
-            }
-        }
+		
+		let getScreenShotsAssetsOperation = photoManager.getScreenShotsOperation(from: lowerBoundDate, to: upperBoundDate, enableSingleProcessingNotification: true) { screenshots in
+			U.UI {
+				if screenshots.count != 0 {
+					self.showAssetViewController(assets: "screenshots", collection: screenshots, photoContent: .singleScreenShots)
+				} else {
+					AlertManager.showCantFindMediaContent(by: .noScreenShots) {}
+				}
+			}
+		}
+		phassetProcessingOperationQueuer.addOperation(getScreenShotsAssetsOperation)
     }
     
     private func showRecentlyDeletedPhotos() {
-        photoManager.getSortedRecentlyDeletedAssets { deletedPhotos, _ in
-            if deletedPhotos.count != 0 {
-                self.showAssetViewController(assets: "recently deleted photos", collection: deletedPhotos, photoContent: .singleRecentlyDeletedPhotos)
-            } else {
-                AlertManager.showCantFindMediaContent(by: .noRecentlyDeletedPhotos) {}
-            }
-        }
+		
+		let getSortedRecentlyDeletedAssetsOperation = PHAssetFetchManager.shared.recentlyDeletdSortedAlbumsFetchOperation { photosAssets, videoAssets in
+			U.UI {
+				if photosAssets.count != 0 {
+					self.showAssetViewController(assets: "recently deleted photos", collection: photosAssets, photoContent: .singleRecentlyDeletedPhotos)
+				} else {
+					AlertManager.showCantFindMediaContent(by: .noRecentlyDeletedPhotos) {}
+				}
+			}
+		}
+		phassetProcessingOperationQueuer.addOperation(getSortedRecentlyDeletedAssetsOperation)
     }
     
     private func showRecentlyDeletedVideos() {
-        photoManager.getSortedRecentlyDeletedAssets { _, deletedVideos in
-            if deletedVideos.count != 0 {
-                self.showAssetViewController(assets: "resently deleted Videos", collection: deletedVideos, photoContent: .singleRecentlyDeletedVideos)
-            } else {
-                AlertManager.showCantFindMediaContent(by: .noRecentlyDeletedVideos) {}
-            }
-        }
-    }
-    
-    private func checkForAssetsCount() {
-        
-        if self.allScreenRecords.isEmpty {
-            photoManager.getScreenRecordsVideos(from: S.startingSavedDate, to: S.endingSavedDate) { videoAssets in
-                if videoAssets.count != 0 {
-                    self.allScreenRecords = videoAssets
-                } else {
-                    return
-                }
-            }
-        }
-        
-        if self.allLargeVideos.isEmpty {
-            photoManager.getLargevideoContent(from: S.startingSavedDate, to: S.endingSavedDate) { videoAssets in
-                if videoAssets.count != 0 {
-                    self.allLargeVideos = videoAssets
-                } else {
-                    return
-                }
-            }
-        }
+		
+		let getSortedRecentlyDeletedAssetsOperation = PHAssetFetchManager.shared.recentlyDeletdSortedAlbumsFetchOperation { photosAssets, videoAssets in
+			U.UI {
+				if videoAssets.count != 0 {
+					self.showAssetViewController(assets: "resently deleted Videos", collection: videoAssets, photoContent: .singleRecentlyDeletedVideos)
+				} else {
+					AlertManager.showCantFindMediaContent(by: .noRecentlyDeletedVideos) {}
+				}
+			}
+		}
+		phassetProcessingOperationQueuer.addOperation(getSortedRecentlyDeletedAssetsOperation)
     }
 }
+
+extension MediaContentViewController {
+	
+	private func checkForAssetsCount() {
+		
+		if self.allScreenRecords.isEmpty {
+			let screenRecordsVideosOperation = photoManager.getScreenRecordsVideosOperation(from: lowerBoundDate, to: upperBoundDate) { screenRecordsAssets in
+				if screenRecordsAssets.count != 0 {
+					self.allScreenRecords = screenRecordsAssets
+				}
+			}
+			phassetProcessingOperationQueuer.addOperation(screenRecordsVideosOperation)
+		}
+		
+		if self.allLargeVideos.isEmpty {
+			
+			let largeVideosOperation = photoManager.getLargevideoContentOperation(from: lowerBoundDate, to: upperBoundDate) { videoAssets in
+				if videoAssets.count != 0 {
+					self.allLargeVideos = videoAssets
+				}
+			}
+			
+			phassetProcessingOperationQueuer.addOperation(largeVideosOperation)
+		}
+	}
+}
+
 
 //      MARK: - video content -
 extension MediaContentViewController {
     
     private func showLargeVideoFiles() {
-        P.showIndicator()
-        photoManager.getLargevideoContent(from: startingDate, to: endingDate) { videos in
-            P.hideIndicator()
-            if videos.count != 0 {
-                self.showAssetViewController(assets: "large videos", collection: videos, photoContent: .singleLargeVideos)
-            } else {
-                AlertManager.showCantFindMediaContent(by: .noLargeVideo) {}
-            }
-        }
+		
+		let getLargevideoContentOperation = photoManager.getLargevideoContentOperation(from: lowerBoundDate, to: upperBoundDate, enableSingleProcessingNotification: true) { largeVodepAsset in
+			U.UI {
+				if largeVodepAsset.count != 0 {
+					self.showAssetViewController(assets: "large videos", collection: largeVodepAsset, photoContent: .singleLargeVideos)
+				} else {
+					AlertManager.showCantFindMediaContent(by: .noLargeVideo) {}
+				}
+			}
+		}
+		
+		phassetProcessingOperationQueuer.addOperation(getLargevideoContentOperation)
     }
     
     private func showDuplicateVideoFiles() {
-        P.showIndicator()
-        photoManager.getDuplicatedVideoAsset(from: startingDate, to: endingDate) { videoGrouped in
-            P.hideIndicator()
-            if videoGrouped.count != 0 {
-                self.showGropedContoller(assets: "duplicated video", grouped: videoGrouped, photoContent: .duplicatedVideos)
-            } else {
-                AlertManager.showCantFindMediaContent(by: .noDuplicatesVideo) {}
-            }
-        }
+		
+		let getDuplicatedVideoAssetOperatioon = photoManager.getDuplicatedVideoAssetOperation(from: lowerBoundDate, to: upperBoundDate, enableSingleProcessingNotification: true) { duplicatedVideoAsset in
+			U.UI {
+				if duplicatedVideoAsset.count != 0 {
+					self.showGropedContoller(assets: "duplicated video", grouped: duplicatedVideoAsset, photoContent: .duplicatedVideos)
+				} else {
+					AlertManager.showCantFindMediaContent(by: .noDuplicatesVideo) {}
+				}
+			}
+		}
+		phassetProcessingOperationQueuer.addOperation(getDuplicatedVideoAssetOperatioon)
     }
     
     private func showSimilarVideoFiles() {
-        P.showIndicator()
-        photoManager.getSimilarVideoAssets(from: startingDate, to: endingDate) { videos in
-            P.hideIndicator()
-            if videos.count != 0 {
-                self.showGropedContoller(assets: "similar videos", grouped: videos, photoContent: .similarVideos)
-            } else {
-                AlertManager.showCantFindMediaContent(by: .noSimilarVideo) {}
-            }
-        }
+		
+		let getSimilarVideoAssetsOperation = photoManager.getSimilarVideoAssetsOperation(from: lowerBoundDate, to: upperBoundDate, enableSingleProcessingNotification: true) { similiarVideoAsset in
+			U.UI {
+				if similiarVideoAsset.count != 0 {
+					self.showGropedContoller(assets: "similar videos", grouped: similiarVideoAsset, photoContent: .similarVideos)
+				} else {
+					AlertManager.showCantFindMediaContent(by: .noSimilarVideo) {}
+				}
+			}
+		}
+		
+		phassetProcessingOperationQueuer.addOperation(getSimilarVideoAssetsOperation)
     }
     
     private func showScreenRecordsVideoFiles() {
-        P.showIndicator()
-        photoManager.getScreenRecordsVideos(from: startingDate, to: endingDate) { videos in
-            P.hideIndicator()
-            if videos.count != 0 {
-                self.showAssetViewController(assets: "screen records", collection: videos, photoContent: .singleScreenRecordings)
-            } else {
-                AlertManager.showCantFindMediaContent(by: .noScreenRecording) {}
-            }
-        }
+		
+		let getScreenRecordsVideosOperation = photoManager.getScreenRecordsVideosOperation(from: lowerBoundDate, to: upperBoundDate, enableSingleProcessingNotification: true) { screenRecordsAssets in
+			if screenRecordsAssets.count != 0 {
+				self.showAssetViewController(assets: "screen records", collection: screenRecordsAssets, photoContent: .singleScreenRecordings)
+			} else {
+				AlertManager.showCantFindMediaContent(by: .noScreenRecording) {}
+			}
+		}
+		phassetProcessingOperationQueuer.addOperation(getScreenRecordsVideosOperation)
     }
     
     private func showSimmilarVideoFilesByTimeStamp() {
-        P.showIndicator()
-        photoManager.getSimilarVideosByTimeStamp(from: startingDate, to: endingDate) { videos in
-            P.hideIndicator()
-            if videos.count != 0 {
-                self.showGropedContoller(assets: "similar by time stam", grouped: videos, photoContent: .similarVideos)
-            }
-        }
+		
+		let getSimilarVideosByTimeStamp = photoManager.getSimilarVideosByTimeStampOperation(from: lowerBoundDate, to: upperBoundDate, enableSingleProcessingNotification: true) { similarVideos in
+			if similarVideos.count != 0 {
+				self.showGropedContoller(assets: "similar by time stam", grouped: similarVideos, photoContent: .similarVideos)
+			} else {
+				AlertManager.showCantFindMediaContent(by: .noSimilarVideo) {}
+			}
+		}
+		phassetProcessingOperationQueuer.addOperation(getSimilarVideosByTimeStamp)
     }
 }
 
@@ -490,7 +533,7 @@ extension MediaContentViewController {
     
     private func showEmptyGroupsContacts() {
         P.showIndicator()
-        self.contactsManager.getEmptyContacts { contactsGroup in
+		self.contactsManager.getSingleDuplicatedCleaningContacts(of: .emptyContacts) { contactsGroup in
             U.UI {
                 P.hideIndicator()
                 let totalContacts = contactsGroup.map({$0.contacts}).count
@@ -508,10 +551,10 @@ extension MediaContentViewController {
     private func showContactCleanController(cleanType: ContactasCleaningType) {
         self.scanningProcessIsRunning = !scanningProcessIsRunning
         
-        self.contactsManager.getDuplicatedContacts(of: cleanType) { contactsGroup in
+		self.contactsManager.getSingleDuplicatedCleaningContacts(of: cleanType) { contactsGroup in
             self.updateContactsCleanSearchCount(groupType: cleanType, contactsGroup: contactsGroup)
             U.delay(0.5) {
-                SingleSearchNitificationManager.instance.sendSingleSearchProgressNotification(notificationtype: cleanType.notificationType, totalProgressItems: 1, currentProgressItem: 1)
+				ProgressSearchNotificationManager.instance.sendSingleSearchProgressNotification(notificationtype: cleanType.notificationType, totalProgressItems: 1, currentProgressItem: 1)
                 U.delay(0.5) {
                     self.scanningProcessIsRunning = !self.scanningProcessIsRunning
                     if contactsGroup.count != 0 {
@@ -719,14 +762,13 @@ extension MediaContentViewController: Themeble {
         
         self.navigationController?.navigationBar.isHidden = true
         navigationBar.setupNavigation(title: mediaContentType.navigationTitle,
-                                      leftBarButtonImage: I.navigationItems.back,
+                                      leftBarButtonImage: I.systemItems.navigationBarItems.back,
                                       rightBarButtonImage: nil,
                                       mediaType: mediaContentType,
                                       leftButtonTitle: nil,
                                       rightButtonTitle: nil)
     }
     
-        
     private func setupDelegate() {
         
         self.dateSelectableView.delegate = self
@@ -753,10 +795,9 @@ extension MediaContentViewController: Themeble {
         }
     }
     
-    
     private func setupDateInterval() {
         
-        self.dateSelectableView.setupDisplaysDate(startingDate: self.startingDate, endingDate: self.endingDate)
+		self.dateSelectableView.setupDisplaysDate(lowerDate: self.lowerBoundDate, upperdDate: self.upperBoundDate)
     }
     
     func updateColors() {
@@ -776,11 +817,11 @@ extension MediaContentViewController: Themeble {
         
         if let dateSelectorController = segue.destination as? DateSelectorViewController {
             dateSelectorController.isStartingDateSelected = self.isStartingDateSelected
-            dateSelectorController.setPicker(self.isStartingDateSelected ? self.startingDate : self.endingDate)
+            dateSelectorController.setPicker(self.isStartingDateSelected ? self.lowerBoundDate : self.upperBoundDate)
             
             dateSelectorController.selectedDateCompletion = { selectedDate in
-                self.isStartingDateSelected ? (self.startingDate = selectedDate) : (self.endingDate = selectedDate)
-                self.dateSelectableView.setupDisplaysDate(startingDate: self.startingDate, endingDate: self.endingDate)
+                self.isStartingDateSelected ? (self.lowerBoundDate = selectedDate) : (self.upperBoundDate = selectedDate)
+				self.dateSelectableView.setupDisplaysDate(lowerDate: self.lowerBoundDate, upperdDate: self.upperBoundDate)
             }
         }
     }

@@ -61,7 +61,7 @@ class GroupedAssetListViewController: UIViewController, UIPageViewControllerDele
     
     /// - managers -
     private var cacheImageManager = PHCachingImageManager()
-    private var photoManager = PhotoManager()
+	private var photoManager = PhotoManager.shared
     
     /// - flow layout -
     let collectionViewFlowLayout = SNCollectionViewLayout()
@@ -554,16 +554,18 @@ extension GroupedAssetListViewController {
         
         let identifiers = selectedAssets.map({$0.localIdentifier})
         
-        photoManager.deleteSelected(assets: selectedAssets) { success in
-            if success {
-                for group in self.assetGroups {
-                    group.assets = group.assets.filter({!identifiers.contains($0.localIdentifier)})
-                }
-                self.assetGroups = self.assetGroups.filter({$0.assets.count != 1})
-            }
-            self.selectedAssets = []
-            self.collectionView.reloadData()
-        }
+		let deletePhassetOperation = photoManager.deleteSelectedOperation(assets: selectedAssets) { success in
+			if success {
+				for group in self.assetGroups {
+					group.assets = group.assets.filter({!identifiers.contains($0.localIdentifier)})
+				}
+				self.assetGroups = self.assetGroups.filter({$0.assets.count != 1})
+			}
+			self.selectedAssets = []
+			self.collectionView.reloadData()
+		}
+		
+		photoManager.phassetProcessingOperationQueuer.addOperation(deletePhassetOperation)
     }
     
     private func shouldSelectAllAssetsInSections(_ isSelect: Bool) {

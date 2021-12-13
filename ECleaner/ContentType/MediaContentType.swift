@@ -27,8 +27,25 @@ enum MediaContentType {
         }
     }
     
+    var screenAcentTintColor: UIColor {
+        
+        let theme = ThemeManager.theme
+        
+        switch self {
+            case .userPhoto:
+                return theme.phoneTintColor
+            case .userVideo:
+                return theme.videosTintColor
+            case .userContacts:
+                return theme.contactsTintColor
+            case .none:
+                return theme.defaulTintColor
+        }
+    }
     
-        /// `` MAIN SCREEN CONTENT TYPE PROPERTIES
+    
+        /// ``MAIN SCREEN CONTENT TYPE PROPERTIES``
+    
     var mainScreenIndexPath: IndexPath {
         switch self {
             case .userPhoto:
@@ -41,8 +58,22 @@ enum MediaContentType {
                 return IndexPath()
         }
     }
+    
+    
+    var processingImageOfRows: UIImage {
+        switch self {
+            case .userPhoto:
+                return I.personalisation.photo.processingThumb
+            case .userVideo:
+                return I.personalisation.video.processingThumb
+            case .userContacts:
+                return I.personalisation.contacts.processingThumb
+            case .none:
+                return UIImage()
+        }
+    }
         
-        /// `` SECTION PROPERTIES
+        /// `SECTION PROPERTIES`
     var cellTitle: [Int: [Int : String]] {
         switch self {
             case .userPhoto:
@@ -91,25 +122,25 @@ enum MediaContentType {
     
     var imageOfRows: UIImage {
         switch self {
-        case .userPhoto:
-            return I.mainStaticItems.photo
-        case .userVideo:
-            return I.mainStaticItems.video
-        case .userContacts:
-            return I.mainStaticItems.contacts
-        case .none:
-            return UIImage()
+            case .userPhoto:
+                return I.mainStaticItems.photo
+            case .userVideo:
+                return I.mainStaticItems.video
+            case .userContacts:
+                return I.mainStaticItems.contacts
+            case .none:
+                return UIImage()
         }
     }
     
-    var processingImageOfRows: UIImage {
+    var unAbleImageOfRows: UIImage {
         switch self {
             case .userPhoto:
-                return I.personalisation.photo.processingThumb
+                return I.personalisation.photo.unavailibleThumb
             case .userVideo:
-                return I.personalisation.video.processingThumb
+                return I.personalisation.video.unavailibleThumb
             case .userContacts:
-                return I.personalisation.contacts.processingThumb
+                return I.personalisation.contacts.unavailibleThumb
             case .none:
                 return UIImage()
         }
@@ -175,23 +206,9 @@ enum MediaContentType {
         }
     }
     
-    var screenAcentTintColor: UIColor {
-        
-        let theme = ThemeManager.theme
-        
-        switch self {
-            case .userPhoto:
-                return theme.phoneTintColor
-            case .userVideo:
-                return theme.videosTintColor
-            case .userContacts:
-                return theme.contactsTintColor
-            case .none:
-                return theme.defaulTintColor
-        }
-    }
     
-    ///    `DEEP CLEAN PROPERTIES`
+        /// ``DEEP CLEAN PROPERTIES``
+    
     var deepCleanNumbersOfRows: Int {
         switch self {
             case .userPhoto:
@@ -199,7 +216,7 @@ enum MediaContentType {
             case .userVideo:
                 return 4
             case .userContacts:
-                return 3
+                return 4
             default:
                 return 0
         }
@@ -236,16 +253,46 @@ enum MediaContentType {
             case .userContacts:
                 switch index {
                     case 0:
-                        return "all contacts"
+                        return "empty contacts names"
                     case 1:
-                        return "empty"
+                        return "duplicated contacts"
                     case 2:
-                        return "duplicates"
+                        return "duplicated phone numbers"
+                    case 3:
+                        return "duplicated emails"
                     default:
                         return ""
                 }
             case .none:
                 return ""
+        }
+    }
+    
+    public static func getDeepCleanSectionType(indexPath: IndexPath) -> MediaContentType {
+        
+        switch indexPath.section {
+            case 1:
+                return .userPhoto
+            case 2:
+                return .userVideo
+            case 3:
+                return .userContacts
+            default:
+                return .none
+        }
+    }
+    
+    public static func getMediaContentType(at section: Int) -> MediaContentType {
+        
+        switch section {
+            case 1:
+                return .userPhoto
+            case 2:
+                return .userVideo
+            case 3:
+                return .userContacts
+            default:
+                return .none
         }
     }
 }

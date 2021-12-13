@@ -22,6 +22,7 @@ import UIKit
     }
     
     private var progressView = UIView()
+	private let backgroundMask = CAShapeLayer()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -38,13 +39,22 @@ import UIKit
     private func setupView() {
         
         self.addSubview(progressView)
+		progressView.frame = self.bounds
+		progressView.backgroundColor = .clear
     }
     
     override func draw(_ rect: CGRect) {
         
-        let progressFrame: CGRect = CGRect(origin: .zero, size: CGSize(width: rect.width * progress, height: rect.height))
+//        let progressFrame: CGRect = CGRect(origin: .zero, size: CGSize(width: rect.width * progress, height: rect.height))
 //        progressView.setCorner(14)
-        progressView.backgroundColor = progressColor
-        progressView.frame = progressFrame
+//        progressView.backgroundColor = progressColor
+//        progressView.frame = progressFrame
+		backgroundMask.path = UIBezierPath(roundedRect: rect, cornerRadius: 0).cgPath
+		progressView.layer.mask = backgroundMask
+		let progressRect = CGRect(origin: .zero, size: CGSize(width: rect.width * progress, height: rect.height))
+		let progressLayer = CALayer()
+		progressLayer.frame = progressRect
+		progressView.layer.addSublayer(progressLayer)
+		progressLayer.backgroundColor = progressColor.cgColor
     }
 }

@@ -15,11 +15,21 @@ class Images {
     struct mainStaticItems {
         static let clean = UIImage(named: "clean")!
         static let photo = UIImage(named: "photo")!
-        static let video = UIImage(named: "video")!
+        static let video =  UIImage(named: "video")!
         static let contacts = UIImage(named: "contact")!
     }
     
     struct systemItems {
+        
+        struct navigationBarItems {
+            static let dissmiss = UIImage(named: "dissmiss")!
+            static let back = UIImage(named: "shevronArrowLeft")!
+            static let forward = UIImage(named: "shevronArrowRight")!
+            static let premium = UIImage(named: "premium")!
+            static let settings = UIImage(named: "settings")!
+            static let burgerDots = UIImage(named: "burgerDots")!
+            static let magic = UIImage(named: "magicSparcle")!
+        }
         
         struct selectItems {
             static let roundedCheckMark = UIImage(named: "roundedCheckmark")!
@@ -32,6 +42,8 @@ class Images {
             static let merge = UIImage(named: "mergeArrowTop")!
             static let delete = UIImage(named: "deleteItem")!
             static let refresh = UIImage(named: "circleArrow")!
+            static let deepClean = UIImage(named: "deepClean")!
+            static let refreshFull = UIImage(named: "circleRoundedArrows")!
         }
         
         struct backroundStaticItems {
@@ -49,38 +61,29 @@ class Images {
             static let mergeContact = UIImage(named: "mergeContactArrowRight")!
             static let contactPhoto = UIImage(named: "contactWithoutPhoto")!
             static let processingThumb = UIImage(named: "contactsProcessingEmptyItem")!
+            static let unavailibleThumb = UIImage(named: "contactsThumbUnselect")!
         }
         
         struct photo {
             
             static let processingThumb = UIImage(named: "photoProcessingEmptyItem")!
+            static let unavailibleThumb = UIImage(named: "photoThumbUnselect")!
         }
         
         struct video {
             
             static let processingThumb = UIImage(named: "videoProcessingEmptyItem")!
+            static let unavailibleThumb = UIImage(named: "videoThumbUnselect")!
         }
     }
-    
-    
-    
-    
-    
-    
-    
-    
+
     
 //  TODO: Check all images!!!!
     #warning("check all images -> ")
     struct navigationItems {
-        static let dissmiss = UIImage(named: "dissmiss")!
-        static let back = UIImage(named: "back")!
-        static let premium = UIImage(named: "premium")!
-        static let settings = UIImage(named: "settings")!
+    
         static let elipseBurger = UIImage(systemName: "ellipsis.circle.fill")
         static let leftShevronBack = UIImage(systemName: "chevron.left")
-        static let rightShevronBack = UIImage(named: "chevron")!
-        static let burgerDots = UIImage(named: "burgerDots")
     }
     
     struct systemElementsItems {

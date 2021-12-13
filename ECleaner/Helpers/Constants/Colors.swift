@@ -138,6 +138,24 @@ enum Theme: Int {
                 return UIColor().colorFromHexString("373E44")
         }
     }
+    
+    var progressBackgroundColor: UIColor {
+        switch self {
+            case .light:
+                return UIColor().colorFromHexString("DFE6F1")
+            case .dark:
+                return UIColor().colorFromHexString("DFE6F1")
+        }
+    }
+	
+	var activeButtonBackgroundColor: UIColor {
+		switch self {
+			case .light:
+				return UIColor().colorFromHexString("ECF0F6")
+			case .dark :
+				return UIColor().colorFromHexString("ECF0F6")
+		}
+	}
 
     
 //    MARK: - shadow colors -
@@ -262,6 +280,15 @@ enum Theme: Int {
                 return UIColor().colorFromHexString("BCC4D5")
         }
     }
+	
+	var activeLinkTitleTextColor: UIColor {
+		switch self {
+			case .light:
+				return UIColor().colorFromHexString("3587E3")
+			case .dark:
+				return UIColor().colorFromHexString("FFFFFF")
+		}
+	}
     
     
     
@@ -270,14 +297,7 @@ enum Theme: Int {
     #warning("check colors") 
 // MARK: - `neeed! Check colors for new aftet this linge!!!!!
     
-    var blueTextColor: UIColor {
-        switch self {
-            case .light:
-                return UIColor().colorFromHexString("3587E3")
-            case .dark:
-                return UIColor().colorFromHexString("FFFFFF")
-        }
-    }
+
     
 
     
@@ -310,14 +330,7 @@ enum Theme: Int {
 //        }
 //    }
     
-    var progressBackgroundColor: UIColor {
-        switch self {
-            case .light:
-                return UIColor().colorFromHexString("DCE3EB")
-            case .dark:
-                return UIColor().colorFromHexString("DCE3EB")
-        }
-    }
+
     
     
     

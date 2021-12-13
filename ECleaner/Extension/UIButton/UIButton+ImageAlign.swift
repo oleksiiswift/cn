@@ -20,10 +20,12 @@ extension UIButton {
     }
     
     func addLeftImageWithFixLeft(spacing: CGFloat, size: CGSize, image: UIImage) {
+		removePreviousImage()
         addImageWithFix(spacing: spacing, isLeft: true, imageWidth: size.width, imageHeight: size.height, image: image)
     }
     
     func addRighttImageWithFixRight(spacing: CGFloat, size: CGSize, image: UIImage) {
+		removePreviousImage()
         addImageWithFix(spacing: spacing, isLeft: false, imageWidth: size.width, imageHeight: size.height, image: image)
     }
 
@@ -72,8 +74,9 @@ extension UIButton {
     }
 
     private func addImageWithFix(spacing: CGFloat, isLeft: Bool, imageWidth: CGFloat, imageHeight: CGFloat, image: UIImage) {
-        
+
         let imageView = UIImageView(image: image)
+        imageView.tag = 66613
         imageView.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(imageView)
         
@@ -87,5 +90,19 @@ extension UIButton {
         imageView.widthAnchor.constraint(equalToConstant: imageWidth).isActive = true
         imageView.heightAnchor.constraint(equalToConstant: imageHeight).isActive = true
     }
+    
+    public func hideTemporaryImage(_ hide: Bool) {
+        
+        if let imageView = self.subviews.first(where: {$0.tag == 66613}) as? UIImageView {
+            imageView.isHidden = hide
+        }
+    }
+	
+	private func removePreviousImage() {
+		
+		if let imageView = self.subviews.first(where: {$0.tag == 66613}) as? UIImageView {
+			imageView.removeFromSuperview()
+		}
+	}
 }
 

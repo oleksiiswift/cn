@@ -8,6 +8,13 @@
 import UIKit
 
 enum AlertType {
+	
+		/// `access module`
+	case contactsRestricted
+	case photoLibraryRestricted
+	
+	
+	
     
     case allowNotification
     case allowConstacStore
@@ -27,14 +34,19 @@ enum AlertType {
     
     case noRecentlyDeletedPhotos
     case noRecentlyDeletedVideos
+	
+	case setBreakDeepCleanSearch
     
-    case contactsIsEmpty
-    case emptyContactsIsEmpty
-    case duplicatesNamesIsEmpty
-    case duplicatesNumbersIsEmpty
-    case duplicatesEmailsIsEmpty
+
+
     
     /// `contacts module`
+		/// empty
+	case contactsIsEmpty
+	case emptyContactsIsEmpty
+	case duplicatesNamesIsEmpty
+	case duplicatesNumbersIsEmpty
+	case duplicatesEmailsIsEmpty
         /// ask
     case deleteContacts
     case deleteContact
@@ -51,6 +63,15 @@ enum AlertType {
     /// alert title
     var alertTitle: String? {
         switch self {
+				
+			case .contactsRestricted:
+				return ErrorHandler.AccessRestrictedError.contactsRestrictedError.title
+				
+			case .photoLibraryRestricted:
+				return ErrorHandler.AccessRestrictedError.photoLibraryRestrictedError.title
+				
+				
+				
 
             case .allowNotification:
                 return "locomark set title for allow notification"
@@ -108,13 +129,21 @@ enum AlertType {
                 return "good need locale"
             case .suxxessMergedContact, .suxxessMergedContacts:
                 return "good merged locale"
-        }
+			case .setBreakDeepCleanSearch:
+				return "stop search process?"
+		}
     }
     
     /// alert message
     var alertMessage: String? {
         
         switch self {
+			case .contactsRestricted:
+				return ErrorHandler.AccessRestrictedError.contactsRestrictedError.errorRawValue
+			case .photoLibraryRestricted:
+				return ErrorHandler.AccessRestrictedError.photoLibraryRestrictedError.errorRawValue
+				
+				
             case .allowNotification:
                 return "locomark notification message"
             case .allowConstacStore:
@@ -159,7 +188,9 @@ enum AlertType {
                 return "cintact suxx merged"
             case .suxxessMergedContacts:
                 return "contacts suxx merged"
-        }
+			case .setBreakDeepCleanSearch:
+				return "this will reset all search progress"
+		}
     }
     
 //    /// alert or action sheet
@@ -173,6 +204,14 @@ enum AlertType {
     
     var withCancel: Bool {
         switch self {
+				
+			case .contactsRestricted, .photoLibraryRestricted:
+				return true
+				
+				
+				
+				
+				
                 
             case .allowNotification, .allowConstacStore, .allowPhotoLibrary, .allowDeleteSelectedPhotos, .withCancel:
                 return true
@@ -180,6 +219,8 @@ enum AlertType {
                 return false
             case .noLargeVideo, .noDuplicatesVideo, .noSimilarVideo, .noScreenRecording, .noRecentlyDeletedVideos:
                 return false
+			case .setBreakDeepCleanSearch:
+				return true
             case .contactsIsEmpty, .emptyContactsIsEmpty, .duplicatesNamesIsEmpty, .duplicatesNumbersIsEmpty, .duplicatesEmailsIsEmpty:
                 return false
             case .deleteContacts, .mergeContacts, .deleteContact, .mergeContact:

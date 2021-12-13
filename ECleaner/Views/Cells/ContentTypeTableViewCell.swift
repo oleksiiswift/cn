@@ -38,6 +38,7 @@ class ContentTypeTableViewCell: UITableViewCell {
 
         horizontalProgressView.progress = 0
         horizontalProgressView.setNeedsDisplay()
+		reuseShadowRoundedView.setImage(nil)
     }
     
     override func awakeFromNib() {
@@ -86,23 +87,38 @@ extension ContentTypeTableViewCell {
         switch presentingType {
             case .deepCleen:
                 contentTypeTextLabel.text = contentType.getDeepCellTitle(index: indexPath.row)
-                reuseShadowRoundedView.setImage(contentType.imageOfRows)
-                horizontalProgressView.progress = progress / 100
                 
-                let progressStringText = isProcessingComplete ? "processing wait" : String("progress - \(progress.rounded().cleanValue) %")
+                let processingCellImage = isProcessingComplete ? contentType.imageOfRows : contentType.unAbleImageOfRows
+				
+                reuseShadowRoundedView.setImage(processingCellImage)
+				let handledProgressSubtitle = progress == 0.0 ? "-" : String("progress - \(progress.rounded().cleanValue) %")
+                let progressStringText = isProcessingComplete ? "processing wait" : handledProgressSubtitle
                 let updatingCountValuesDeepClean: String = progressStringText
-                    //                : "0 \("FILES".localized())"
                 let updatingCountValuesContactDeepClean: String = progressStringText
-                    //                : "0 contacts"
-                
+				
+				U.delay(0.5) {
+					self.horizontalProgressView.progress = progress / 100
+					self.horizontalProgressView.layoutIfNeeded()
+				}
+		
                 switch contentType {
                     case .userPhoto, .userVideo:
                         contentSubtitleTextLabel.text = isProcessingComplete ? phasetCount != 0 ? String("\(phasetCount) \("FILES".localized())") : "no files to clean" : updatingCountValuesDeepClean
                     case .userContacts:
+                
                         contentSubtitleTextLabel.text = isProcessingComplete ? phasetCount != 0 ? String("\(phasetCount) \("contacts")") : "no contacts to clean" : updatingCountValuesContactDeepClean
                     case .none:
                         contentSubtitleTextLabel.text = ""
                 }
+				
+//				if isProcessingComplete || horizontalProgressView.progress == 1.0 {
+//					U.animate(1, delay: 2) {
+//						self.horizontalProgressView.alpha = 0
+//					} completion: {
+//						self.horizontalProgressView.progress = 0
+//						self.horizontalProgressView.alpha = 1
+//					}
+//				}
                 
             case .singleSearch:
                 contentTypeTextLabel.text = contentType.getCellTitle(index: indexPath.row)
@@ -153,12 +169,11 @@ extension ContentTypeTableViewCell: Themeble {
         baseView.setCorner(14)
         contentTypeTextLabel.font = UIFont(font: FontManager.robotoBold, size: 18.0)
         contentSubtitleTextLabel.font = UIFont(font: FontManager.robotoMedium, size: 14.0)
-        rightArrowImageView.image = I.navigationItems.rightShevronBack
+        rightArrowImageView.image = I.systemItems.navigationBarItems.forward
     }
     
     func updateColors() {
         baseView.backgroundColor = .clear
-        
         reuseShadowRoundedView.setShadowColor(for: theme.topShadowColor, and: theme.bottomShadowColor)
         contentTypeTextLabel.textColor = theme.titleTextColor
         contentSubtitleTextLabel.textColor = theme.subTitleTextColor

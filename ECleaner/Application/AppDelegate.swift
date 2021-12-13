@@ -35,10 +35,10 @@ extension AppDelegate {
     
     private func configureApplication(with launchOptions: [UIApplication.LaunchOptionsKey: Any]?) {
         
-        PhotoManager().getPhotoLibraryAccess()
+		PhotoManager.shared.checkPhotoLibraryAccess()
         ContactsManager.shared.checkStatus { res in }
         
-//        ContactsManager.shared.deleteAllContacts()
+//        ContactsManagerOLD.shared.deleteAllContacts()
 //        U.delay(10) {
 //            NotificationCenter.default.addObserver(forName: nil, object: nil, queue: nil) { notification in
 //                debugPrint(notification)
@@ -46,7 +46,8 @@ extension AppDelegate {
     }
 
     private func setDefaults() {
-        
-        S.endingSavedDate = U.getString(from: Date(), format: C.dateFormat.fullDmy)
+	
+		S.upperBoundSavedDate = Date()
+		S.lowerBoundSavedDate = Date(timeIntervalSinceReferenceDate: 0)
     }
 }
