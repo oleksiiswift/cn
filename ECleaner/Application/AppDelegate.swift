@@ -46,7 +46,8 @@ extension AppDelegate {
     }
 
     private func setDefaults() {
-        
-        S.endingSavedDate = U.getString(from: Date(), format: C.dateFormat.fullDmy)
+	
+		S.upperBoundSavedDate = Date()
+		S.lowerBoundSavedDate = Date(timeIntervalSinceReferenceDate: 0)
     }
 }

@@ -355,7 +355,7 @@ extension MainViewController: UpdateColorsDelegate {
         
         bottomButtonBarView.buttonColor = theme.cellBackGroundColor
         bottomButtonBarView.buttonTintColor = theme.secondaryTintColor
-        bottomButtonBarView.buttonTitleColor = theme.blueTextColor
+        bottomButtonBarView.buttonTitleColor = theme.activeLinkTitleTextColor
         bottomButtonBarView.configureShadow = true
         bottomButtonBarView.addButtonShadow()
         bottomButtonBarView.updateColorsSettings()

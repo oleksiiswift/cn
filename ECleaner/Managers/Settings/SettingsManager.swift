@@ -31,46 +31,54 @@ class SettingsManager {
             U.userDefaults.setValue(newValue, forKey: C.key.settings.photoLibraryAccessGranted)
         }
     }
+	
+	static var defaultLowerDateValue: Date {
+		get {
+			return Date(timeIntervalSince1970: 0)
+		}
+	}
+	
+	static var defaultUpperDateValue: Date {
+		get {
+			return U.getDateFromComponents(day: 1, month: 1, year: 2666)
+		}
+	}
+	
+	static var lowerBoundSavedDate: Date {
+		get {
+			if let date = U.userDefaults.getDate(forKey: C.key.settings.lowerBoundSavedDate) {
+				return date
+			} else {
+				return Date(timeIntervalSince1970: 0)
+			}
+		} set {
+			U.userDefaults.set(date: newValue, forKey: C.key.settings.lowerBoundSavedDate)
+		}
+	}
+	
+	static var upperBoundSavedDate: Date {
+		get {
+			if let date = U.userDefaults.getDate(forKey: C.key.settings.upperBoundSavedDate) {
+				return date
+			} else {
+				let currentDate = Date()
+				let days = U.numbersOfDays(at: currentDate.getMonth(), in: currentDate.getYear())
+				let date = U.getDateFromComponents(day: days, month: currentDate.getMonth(), year: currentDate.getYear())
+				return date
+			}
+		} set {
+			U.userDefaults.set(date: newValue, forKey: C.key.settings.upperBoundSavedDate)
+		}
+	}
     
-    static var startingSavedDate: String {
+    static var lastSmartCleanDate: Date? {
         get {
-            if let savedDate = U.userDefaults.string(forKey: C.key.settings.startingSavedDate) {
-                return savedDate
-            } else {
-                self.startingSavedDate = timeMachine
-                return timeMachine
-            }
+			return U.userDefaults.getDate(forKey: C.key.settings.lastSmartClean)
         } set {
-            U.userDefaults.setValue(newValue, forKey: C.key.settings.startingSavedDate)
+			U.userDefaults.set(date: newValue, forKey: C.key.settings.lastSmartClean)
         }
     }
-    
-    static var endingSavedDate: String {
-        get {
-            if let endingDate = U.userDefaults.string(forKey: C.key.settings.endingSavedDate) {
-                return endingDate
-            } else {
-                
-                let currentDate = U.getString(from: Date(), format: C.dateFormat.fullDmy)
-                self.endingSavedDate = currentDate
-                return currentDate
-            }
-        } set {
-            U.userDefaults.setValue(newValue, forKey: C.key.settings.endingSavedDate)
-        }
-    }
-    
-    static var lastSmartCleanDate: String? {
-        get {
-            return U.userDefaults.string(forKey: C.key.settings.lastSmartClean)
-        } set {
-            U.userDefaults.set(newValue, forKey: C.key.settings.lastSmartClean)
-        }
-    }
-    
-    static var timeMachine = "01-01-1970 00:00:00"
 }
-
 
 //  MARK: file sizez String values
     /// `phassetPhotoFilesSizes` -> disk space for all photos assets

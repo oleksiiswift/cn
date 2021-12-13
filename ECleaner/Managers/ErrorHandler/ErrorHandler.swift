@@ -52,6 +52,18 @@ class ErrorHandler {
 			}
 		}
 	}
+	
+	
+	enum FatalError {
+		case datePickerMinimumDateError
+		
+		var errorRawValue: String {
+			switch self {
+				case .datePickerMinimumDateError:
+					return "Cannot set a maximum date that is equal or less than the minimum date."
+			}
+		}
+	}
     
     
     private func deleteErrorForKey(_ error: DeleteError) -> String {
@@ -82,6 +94,13 @@ class ErrorHandler {
                 return "error create export file"
         }
     }
+	
+	private func fatalErrorForKey(_ error: FatalError) -> String {
+		switch error {
+			case .datePickerMinimumDateError:
+				return error.errorRawValue
+		}
+	}
 }
 
 extension ErrorHandler {
@@ -103,4 +122,9 @@ extension ErrorHandler {
             completion?()
         }
     }
+	
+	public func showFatalErrorAlert(_ errorType: FatalError, completion: (() -> Void)? = nil) {
+		let alertTitle = "Fatal Error"
+		A.showAlert(alertTitle, message: fatalErrorForKey(errorType), actions: [], withCancel: false, completion: nil)
+	}
 }
