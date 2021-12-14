@@ -129,6 +129,12 @@ extension DeepCleaningViewController {
           }
      }
 	 
+	 private func getTotalPhassetCount() {
+		  self.photoManager.getPhotoAssetsCount(from: S.lowerBoundSavedDate, to: S.upperBoundSavedDate) { allPhassets in
+			   self.totalFilesOnDevice = allPhassets
+		  }
+	 }
+
 	 private func showStopDeepCleanScanAlert() {
 		  
 		  A.showStopDeepCleanSearchProcess {
@@ -139,15 +145,40 @@ extension DeepCleaningViewController {
 	 private func stopAllCleaningOperation() {
 		  
 		  deepCleanManager.cancelAllOperation()
-//		  photoManager.setStopSearchProcessing()
-//		  contactsManager.setStopSearchProcessing()
-//		  resetAllValues()
-//		  U.delay(1) {
-//			   self.setProcessingActionButton(.redyForStartingCleaning)
-//
-//			   self.photoManager.setAvailibleSearchProcessing()
-//			   self.navigationBar.temporaryLockLeftButton(false)
-//		  }
+		  P.showIndicator()
+		  U.delay(3) {
+			   self.resetAllValues()
+			   U.delay(2) {
+					self.resetProgress()
+					self.tableView.reloadData()
+					U.delay(1) {
+						 P.hideIndicator()
+						 self.setProcessingActionButton(.redyForStartingCleaning)
+						 self.showBottomButtonBar()
+					}
+			   }
+		  }
+	 }
+	 
+	 private func resetProgress() {
+		  
+		  var updatableIndexPath =  getAllIndexPathsInSection(section: 1)
+		  let secondSectionPath = getAllIndexPathsInSection(section: 2)
+		  let thirdSectionPath = getAllIndexPathsInSection(section: 3)
+		  
+		  updatableIndexPath.append(contentsOf: secondSectionPath)
+		  updatableIndexPath.append(contentsOf: thirdSectionPath)
+		  
+		  updatableIndexPath.forEach { indexPath in
+			   if let cell = tableView.cellForRow(at: indexPath) as? ContentTypeTableViewCell {
+					cell.resetProgress()
+			   }
+		  }
+	 }
+	 
+	 func getAllIndexPathsInSection(section : Int) -> [IndexPath] {
+		 let count = tableView.numberOfRows(inSection: section);
+		 return (0..<count).map { IndexPath(row: $0, section: section) }
 	 }
 	 
 	 private func resetAllValues() {
@@ -163,10 +194,8 @@ extension DeepCleaningViewController {
 		  currentProgressForRawMediatype = [:]
 		  photoVideoFlowGroup = [:]
 		  contactsFlowGroups = [:]
-		  
-		  self.tableView.reloadData()
 	 }
-     
+	 
      private func startDeepCleanScan() {
           
           guard let options = scansOptions else { return }
@@ -856,6 +885,13 @@ extension DeepCleaningViewController {
 		  } else {
 			   
 		  }
+	 }
+	 
+	 private func showBottomButtonBar() {
+		  bottomContainerHeightConstraint.constant = (bottomMenuHeight + U.bottomSafeAreaHeight - 5)
+		  self.tableView.contentInset.bottom = 10
+		  self.tableView.layoutIfNeeded()
+		  self.view.layoutIfNeeded()
 	 }
 	 
 	 private func handleButtonStateActive() {

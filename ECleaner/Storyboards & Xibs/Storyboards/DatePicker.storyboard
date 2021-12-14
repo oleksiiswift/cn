@@ -65,6 +65,10 @@
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="bOf-pv-Bbw">
                                                 <rect key="frame" x="0.0" y="0.0" width="414" height="150"/>
                                                 <subviews>
+                                                    <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="mw5-KH-vvC">
+                                                        <rect key="frame" x="0.0" y="0.0" width="414" height="0.0"/>
+                                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    </view>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="U2z-lp-v2M">
                                                         <rect key="frame" x="0.0" y="0.0" width="414" height="75"/>
                                                         <subviews>
@@ -163,6 +167,7 @@
                         <outlet property="monthDatePicker" destination="it5-se-s3G" id="ivk-V6-9fW"/>
                         <outlet property="pickerContainerView" destination="pb8-In-ZYb" id="QrA-DC-zqH"/>
                         <outlet property="pickerSpacerShadowView" destination="JIl-FT-eky" id="cv0-an-zqd"/>
+                        <outlet property="spaceStackEmptyView" destination="mw5-KH-vvC" id="98d-0T-If2"/>
                         <outlet property="yearDatePicker" destination="Usu-Xa-CzE" id="MPT-ms-HJu"/>
                     </connections>
                 </viewController>

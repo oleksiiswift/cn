@@ -151,6 +151,10 @@ extension ContentTypeTableViewCell {
                 }
         }
     }
+	
+	public func resetProgress() {
+		self.horizontalProgressView.resetProgressLayer()
+	}
 
     public func setupCellSelected(at indexPath: IndexPath, isSelected: Bool) {
         
