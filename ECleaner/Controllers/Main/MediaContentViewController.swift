@@ -439,7 +439,7 @@ extension MediaContentViewController {
     
     private func showScreenRecordsVideoFiles() {
 		self.scanningProcessIsRunning = !self.scanningProcessIsRunning
-		self.currentlyScanningProcess = .screenShotsAssetsOperation
+		self.currentlyScanningProcess = .screenRecordingsVideoOperation
 		let getScreenRecordsVideosOperation = photoManager.getScreenRecordsVideosOperation(from: lowerBoundDate, to: upperBoundDate, enableSingleProcessingNotification: true) { screenRecordsAssets in
 			self.allScreenRecords = screenRecordsAssets
 			U.delay(0.5) {
