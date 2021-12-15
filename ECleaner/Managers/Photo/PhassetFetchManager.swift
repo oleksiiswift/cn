@@ -406,7 +406,7 @@ extension PHAssetFetchManager {
 				}
 			}
 		}
-		recentlyDeletedAlbumsSortFetch.name = C.key.operation.name.recentlyDeletedSortedAlbums
+		recentlyDeletedAlbumsSortFetch.name = CommonOperationSearchType.recentlyDeletedOperation.rawValue
 		return recentlyDeletedAlbumsSortFetch
 	}
 	

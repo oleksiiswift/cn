@@ -53,12 +53,11 @@ enum ContactasCleaningType {
     var alertEmptyType: AlertType {
         switch self {
             case .duplicatedPhoneNumnber:
-                return .duplicatesNumbersIsEmpty
+				return .duplicatedNumbersIsEmpty
             case .duplicatedContactName:
-                return .duplicatesNamesIsEmpty
+				return .duplicatedNamesIsEmpty
             case .duplicatedEmail:
-                return .duplicatesEmailsIsEmpty
-                
+				return .duplicatedEmailsIsEmpty
             default:
                 return .none
         }

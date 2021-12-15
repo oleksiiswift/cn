@@ -13,40 +13,37 @@ enum AlertType {
 	case contactsRestricted
 	case photoLibraryRestricted
 	
+	case similarPhotoIsEmpty
+	case duplicatedPhotoIsEmpty
+	case screenShotsIsEmpty
+	case selfiesIsEmpty
+	case livePhotoIsEmpty
+	case similarLivePhotoIsEmpty
+	case recentlyDeletedPhotosIsEmpty
 	
+	case largeVideoIsEmpty
+	case duplicatedVideoIsEmpty
+	case similarVideoIsEmpty
+	case screenRecordingIsEmpty
+	case recentlyDeletedVideosIsEmpty
 	
-    
+	case contactsIsEmpty
+	case emptyContactsIsEmpty
+	case duplicatedNamesIsEmpty
+	case duplicatedNumbersIsEmpty
+	case duplicatedEmailsIsEmpty
+	
     case allowNotification
     case allowConstacStore
     case allowPhotoLibrary
     case allowDeleteSelectedPhotos
     case withCancel
     
-    case noSimiliarPhoto
-    case noDuplicatesPhoto
-    case noScreenShots
-    case noSelfie
-    case noLivePhoto
-    case noLargeVideo
-    case noDuplicatesVideo
-    case noSimilarVideo
-    case noScreenRecording
-    
-    case noRecentlyDeletedPhotos
-    case noRecentlyDeletedVideos
-	
+
 	case setBreakDeepCleanSearch
-    
-
-
+	case setBreakSingleCleanSearch
     
     /// `contacts module`
-		/// empty
-	case contactsIsEmpty
-	case emptyContactsIsEmpty
-	case duplicatesNamesIsEmpty
-	case duplicatesNumbersIsEmpty
-	case duplicatesEmailsIsEmpty
         /// ask
     case deleteContacts
     case deleteContact
@@ -64,14 +61,35 @@ enum AlertType {
     var alertTitle: String? {
         switch self {
 				
+//				MARK: access error
 			case .contactsRestricted:
 				return ErrorHandler.AccessRestrictedError.contactsRestrictedError.title
 				
 			case .photoLibraryRestricted:
 				return ErrorHandler.AccessRestrictedError.photoLibraryRestrictedError.title
+
+//				MARK: no searching data
+			case .similarPhotoIsEmpty,
+					.duplicatedPhotoIsEmpty,
+					.screenShotsIsEmpty,
+					.selfiesIsEmpty,
+					.livePhotoIsEmpty,
+					.similarLivePhotoIsEmpty,
+					.recentlyDeletedPhotosIsEmpty,
+					.largeVideoIsEmpty,
+					.duplicatedVideoIsEmpty,
+					.similarVideoIsEmpty,
+					.screenRecordingIsEmpty,
+					.recentlyDeletedVideosIsEmpty,
+					.contactsIsEmpty,
+					.emptyContactsIsEmpty,
+					.duplicatedNamesIsEmpty,
+					.duplicatedNumbersIsEmpty,
+					.duplicatedEmailsIsEmpty:
+				return ErrorHandler.shared.emptyResultsErrorTitle()
 				
-				
-				
+			case .setBreakDeepCleanSearch, .setBreakSingleCleanSearch:
+				return "stop search process?"
 
             case .allowNotification:
                 return "locomark set title for allow notification"
@@ -83,40 +101,8 @@ enum AlertType {
                 return ""
             case .allowDeleteSelectedPhotos:
                 return "locomark delete assets?"
-            case .noSimiliarPhoto:
-                return "locomark no similar photos"
-            case .noDuplicatesPhoto:
-                return "locomark no duplicates photo"
-            case .noScreenShots:
-                return "locomark no screen shots"
-            case .noSelfie:
-                return "locomark no selfie"
-            case .noLivePhoto:
-                return "locomark no live photo"
-            case .none:
-                return ""
-            case .noLargeVideo:
-                return "locomark no large video files"
-            case .noDuplicatesVideo:
-                return "locomark no duplicated video"
-            case .noSimilarVideo:
-                return "locomark no similiar video"
-            case .noScreenRecording:
-                return "locomark no screen recordings"
-            case .noRecentlyDeletedPhotos:
-                return "locomark no recently deleted photos"
-            case .noRecentlyDeletedVideos:
-                return "locomark no recently deleted vides"
-            case .contactsIsEmpty:
-                return "contacts book is empty"
-            case .emptyContactsIsEmpty:
-                return "no empty contacts"
-            case .duplicatesNamesIsEmpty:
-                return "no duplicates"
-            case .duplicatesNumbersIsEmpty:
-                return "no duplicates"
-            case .duplicatesEmailsIsEmpty:
-                return "no duplicates"
+				
+           
             case .deleteContacts:
                 return "delete contacts"
             case .deleteContact:
@@ -129,8 +115,10 @@ enum AlertType {
                 return "good need locale"
             case .suxxessMergedContact, .suxxessMergedContacts:
                 return "good merged locale"
-			case .setBreakDeepCleanSearch:
-				return "stop search process?"
+		
+
+			case .none:
+				return ""
 		}
     }
     
@@ -138,10 +126,52 @@ enum AlertType {
     var alertMessage: String? {
         
         switch self {
+//				MARK: access error
 			case .contactsRestricted:
 				return ErrorHandler.AccessRestrictedError.contactsRestrictedError.errorRawValue
 			case .photoLibraryRestricted:
 				return ErrorHandler.AccessRestrictedError.photoLibraryRestrictedError.errorRawValue
+				
+//				MARK: no searching data
+			case .similarPhotoIsEmpty:
+				return ErrorHandler.shared.emptyResultsForKey(.similarPhotoIsEmpty)
+			case .duplicatedPhotoIsEmpty:
+				return ErrorHandler.shared.emptyResultsForKey(.duplicatedPhotoIsEmpty)
+			case .screenShotsIsEmpty:
+				return ErrorHandler.shared.emptyResultsForKey(.screenShotsIsEmpty)
+			case .selfiesIsEmpty:
+				return ErrorHandler.shared.emptyResultsForKey(.selfiesIsEmpty)
+			case .livePhotoIsEmpty:
+				return ErrorHandler.shared.emptyResultsForKey(.livePhotoIsEmpty)
+			case .similarLivePhotoIsEmpty:
+				return ErrorHandler.shared.emptyResultsForKey(.similarLivePhotoIsEmpty)
+			case .recentlyDeletedPhotosIsEmpty:
+				return ErrorHandler.shared.emptyResultsForKey(.recentlyDeletedPhotosIsEmpty)
+			case .largeVideoIsEmpty:
+				return ErrorHandler.shared.emptyResultsForKey(.recentlyDeletedPhotosIsEmpty)
+			case .duplicatedVideoIsEmpty:
+				return ErrorHandler.shared.emptyResultsForKey(.largeVideoIsEmpty)
+			case .similarVideoIsEmpty:
+				return ErrorHandler.shared.emptyResultsForKey(.similarVideoIsEmpty)
+			case .screenRecordingIsEmpty:
+				return ErrorHandler.shared.emptyResultsForKey(.screenRecordingIsEmpty)
+			case .recentlyDeletedVideosIsEmpty:
+				return ErrorHandler.shared.emptyResultsForKey(.recentlyDeletedVideosIsEmpty)
+			case .contactsIsEmpty:
+				return ErrorHandler.shared.emptyResultsForKey(.contactsIsEmpty)
+			case .emptyContactsIsEmpty:
+				return ErrorHandler.shared.emptyResultsForKey(.emptyContactsIsEmpty)
+			case .duplicatedNamesIsEmpty:
+				return ErrorHandler.shared.emptyResultsForKey(.duplicatedNamesIsEmpty)
+			case .duplicatedNumbersIsEmpty:
+				return ErrorHandler.shared.emptyResultsForKey(.duplicatedNumbersIsEmpty)
+			case .duplicatedEmailsIsEmpty:
+				return ErrorHandler.shared.emptyResultsForKey(.duplicatedEmailsIsEmpty)
+				
+			case .setBreakDeepCleanSearch:
+				return "this will reset all search progress"
+			case .setBreakSingleCleanSearch:
+				return "stop executing search process"
 				
 				
             case .allowNotification:
@@ -156,22 +186,8 @@ enum AlertType {
                 return "none"
             case .allowDeleteSelectedPhotos:
                 return "delete selecteds assets are you shure????"
-            case .noSimiliarPhoto, .noDuplicatesPhoto, .noScreenShots, .noSelfie, .noLivePhoto, .noLargeVideo, .noDuplicatesVideo, .noSimilarVideo, .noScreenRecording:
-                return "locomark no content"
-            case .noRecentlyDeletedPhotos:
-                return "recently deleted photos empty"
-            case .noRecentlyDeletedVideos:
-                return "recently deleted videos empty"
-            case .contactsIsEmpty:
-                return "contacts book is empty"
-            case .emptyContactsIsEmpty:
-                return "no empty contacts"
-            case .duplicatesNamesIsEmpty:
-                return "no duplicates"
-            case .duplicatesNumbersIsEmpty:
-                return "no duplicates"
-            case .duplicatesEmailsIsEmpty:
-                return "no duplicates"
+        
+	
             case .deleteContacts:
                 return "shure delete contacts"
             case .deleteContact:
@@ -188,8 +204,6 @@ enum AlertType {
                 return "cintact suxx merged"
             case .suxxessMergedContacts:
                 return "contacts suxx merged"
-			case .setBreakDeepCleanSearch:
-				return "this will reset all search progress"
 		}
     }
     
@@ -208,21 +222,29 @@ enum AlertType {
 			case .contactsRestricted, .photoLibraryRestricted:
 				return true
 				
+			case .similarPhotoIsEmpty,
+					.duplicatedPhotoIsEmpty,
+					.screenShotsIsEmpty,
+					.selfiesIsEmpty,
+					.livePhotoIsEmpty,
+					.similarLivePhotoIsEmpty,
+					.recentlyDeletedPhotosIsEmpty,
+					.largeVideoIsEmpty,
+					.duplicatedVideoIsEmpty,
+					.similarVideoIsEmpty,
+					.screenRecordingIsEmpty,
+					.recentlyDeletedVideosIsEmpty,
+					.contactsIsEmpty,
+					.emptyContactsIsEmpty,
+					.duplicatedNamesIsEmpty,
+					.duplicatedNumbersIsEmpty,
+					.duplicatedEmailsIsEmpty:
+				return false
 				
-				
-				
-				
-                
             case .allowNotification, .allowConstacStore, .allowPhotoLibrary, .allowDeleteSelectedPhotos, .withCancel:
                 return true
-            case .noSimiliarPhoto, .noDuplicatesPhoto, .noScreenShots, .noRecentlyDeletedPhotos, .noSelfie, .noLivePhoto:
-                return false
-            case .noLargeVideo, .noDuplicatesVideo, .noSimilarVideo, .noScreenRecording, .noRecentlyDeletedVideos:
-                return false
-			case .setBreakDeepCleanSearch:
+			case .setBreakDeepCleanSearch, .setBreakSingleCleanSearch:
 				return true
-            case .contactsIsEmpty, .emptyContactsIsEmpty, .duplicatesNamesIsEmpty, .duplicatesNumbersIsEmpty, .duplicatesEmailsIsEmpty:
-                return false
             case .deleteContacts, .mergeContacts, .deleteContact, .mergeContact:
                 return true
             case .suxxessDeleteContact, .suxxessDeleteContacts, .suxxessMergedContact, .suxxessMergedContacts:

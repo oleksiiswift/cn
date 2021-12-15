@@ -64,8 +64,29 @@ class ErrorHandler {
 			}
 		}
 	}
-    
-    
+	
+	enum EmptyResultsError {
+		case similarPhotoIsEmpty
+		case duplicatedPhotoIsEmpty
+		case screenShotsIsEmpty
+		case selfiesIsEmpty
+		case livePhotoIsEmpty
+		case similarLivePhotoIsEmpty
+		case recentlyDeletedPhotosIsEmpty
+		
+		case largeVideoIsEmpty
+		case duplicatedVideoIsEmpty
+		case similarVideoIsEmpty
+		case screenRecordingIsEmpty
+		case recentlyDeletedVideosIsEmpty
+		
+		case contactsIsEmpty
+		case emptyContactsIsEmpty
+		case duplicatedNamesIsEmpty
+		case duplicatedNumbersIsEmpty
+		case duplicatedEmailsIsEmpty
+	}
+
     private func deleteErrorForKey(_ error: DeleteError) -> String {
         switch error {
             case .errorDeleteContact:
@@ -101,6 +122,49 @@ class ErrorHandler {
 				return error.errorRawValue
 		}
 	}
+	
+	public func emptyResultsForKey(_ error: EmptyResultsError) -> String {
+		switch error {
+			case .similarPhotoIsEmpty:
+				return "np similar photo"
+			case .duplicatedPhotoIsEmpty:
+				return "no duplicated photo"
+			case .screenShotsIsEmpty:
+				return "no screenshots"
+			case .selfiesIsEmpty:
+				return "no selfies"
+			case .livePhotoIsEmpty:
+				return "no live photo"
+			case .similarLivePhotoIsEmpty:
+				return "no similar live photo found"
+			case .recentlyDeletedPhotosIsEmpty:
+				return "no recently deleted"
+			case .largeVideoIsEmpty:
+				return "no large files"
+			case .duplicatedVideoIsEmpty:
+				return "no duolicated video"
+			case .similarVideoIsEmpty:
+				return "np similar video"
+			case .screenRecordingIsEmpty:
+				return "no screen recordings"
+			case .recentlyDeletedVideosIsEmpty:
+				return "no recently deleted video"
+			case .contactsIsEmpty:
+				return "contacts book is empty"
+			case .emptyContactsIsEmpty:
+				return "no empty contacts"
+			case .duplicatedNamesIsEmpty:
+				return "no duplicated contacts found"
+			case .duplicatedNumbersIsEmpty:
+				return "no duplicated phone numbers found"
+			case .duplicatedEmailsIsEmpty:
+				return "no duplicated emails found"
+		}
+	}
+	
+	public func emptyResultsErrorTitle() -> String {
+		return "Sorry, no content)"
+	}
 }
 
 extension ErrorHandler {
@@ -126,5 +190,16 @@ extension ErrorHandler {
 	public func showFatalErrorAlert(_ errorType: FatalError, completion: (() -> Void)? = nil) {
 		let alertTitle = "Fatal Error"
 		A.showAlert(alertTitle, message: fatalErrorForKey(errorType), actions: [], withCancel: false, completion: nil)
+	}
+}
+
+//	MARK: no foud searching data
+extension ErrorHandler {
+	
+	public func showEmptySearchResultsFor(_ alertType: AlertType, completion: (() -> Void)? = nil) {
+		let alertAction = UIAlertAction(title: "ok", style: .default) { _ in
+			completion?()
+		}
+		A.showAlert(alertType.alertTitle, message: alertType.alertMessage, actions: [alertAction], withCancel: alertType.withCancel, completion: nil)
 	}
 }

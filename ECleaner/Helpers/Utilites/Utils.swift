@@ -280,7 +280,7 @@ extension Utils {
 	}
 	
 	static func setLowerDafaultValue() {
-		
+		S.lowerBoundSavedDate = Date(timeIntervalSinceReferenceDate: 0)
 	}
 }
 

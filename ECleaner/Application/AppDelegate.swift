@@ -48,6 +48,6 @@ extension AppDelegate {
     private func setDefaults() {
 	
 		U.setUpperDefaultValue()
-		S.lowerBoundSavedDate = Date(timeIntervalSinceReferenceDate: 0)
+		U.setLowerDafaultValue()
     }
 }
