@@ -558,7 +558,7 @@ extension ContactsManager {
 			}
 			completionHandler(contactsGroup)
 		}
-		emptyContactsOperation.name = C.key.operation.name.emptyContacts
+		emptyContactsOperation.name = COT.emptyContactOperation.rawValue
 		return emptyContactsOperation
 	}
 	
@@ -612,7 +612,7 @@ extension ContactsManager {
 			}
 			completionHandler(group)
 		}
-		duplicatedContactsOperation.name = C.key.operation.name.duplicatedContacts
+		duplicatedContactsOperation.name = COT.duplicatedNameOperation.rawValue
 		return duplicatedContactsOperation
 	}
 	
@@ -661,7 +661,7 @@ extension ContactsManager {
 			}
 			completionHandler(duplicatedContacts)
 		}
-		phoneDuplicatedOperation.name = C.key.operation.name.phoneDuplicated
+		phoneDuplicatedOperation.name = COT.duplicatedPhoneNumbersOperation.rawValue
 		return phoneDuplicatedOperation
 	}
 	
@@ -710,7 +710,7 @@ extension ContactsManager {
 			}
 			completionHandler(duplicatedContacts)
 		}
-		emailDuplicatedOperation.name = C.key.operation.name.emailDuplicated
+		emailDuplicatedOperation.name = COT.duplicatedEmailsOperation.rawValue
 		return emailDuplicatedOperation
 	}
 }

@@ -44,17 +44,23 @@ import UIKit
     }
     
     override func draw(_ rect: CGRect) {
-        
-//        let progressFrame: CGRect = CGRect(origin: .zero, size: CGSize(width: rect.width * progress, height: rect.height))
-//        progressView.setCorner(14)
-//        progressView.backgroundColor = progressColor
-//        progressView.frame = progressFrame
-		backgroundMask.path = UIBezierPath(roundedRect: rect, cornerRadius: 0).cgPath
-		progressView.layer.mask = backgroundMask
+		
 		let progressRect = CGRect(origin: .zero, size: CGSize(width: rect.width * progress, height: rect.height))
 		let progressLayer = CALayer()
+		progressLayer.name = "progress"
 		progressLayer.frame = progressRect
 		progressView.layer.addSublayer(progressLayer)
 		progressLayer.backgroundColor = progressColor.cgColor
     }
+	
+	public func resetProgressLayer() {
+		
+		guard let sublayers = progressView.layer.sublayers else { return }
+		
+		for sublayer in sublayers {
+			if sublayer.name == "progress" {
+				sublayer.removeFromSuperlayer()
+			}
+		}
+	}
 }

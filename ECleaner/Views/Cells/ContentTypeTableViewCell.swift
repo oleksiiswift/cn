@@ -137,7 +137,7 @@ extension ContentTypeTableViewCell {
                 switch photoMediaType {
                         
                     case .similarPhotos, .duplicatedPhotos, .similarVideos, .duplicatedVideos:
-                        contentSubtitleTextLabel.text = ""
+						contentSubtitleTextLabel.text = phasetCount != 0 ? String("\(phasetCount) \("duplicated phasset")") : "-"
                     case .singleScreenShots, .singleSelfies, .singleLivePhotos, .singleLargeVideos, .singleScreenRecordings, .singleRecentlyDeletedPhotos, .singleRecentlyDeletedVideos:
                         contentSubtitleTextLabel.text = phasetCount != 0 ?  String("\(phasetCount) \("FILES".localized())") : "no files"
                     case .allContacts, .emptyContacts:
@@ -151,6 +151,10 @@ extension ContentTypeTableViewCell {
                 }
         }
     }
+	
+	public func resetProgress() {
+		self.horizontalProgressView.resetProgressLayer()
+	}
 
     public func setupCellSelected(at indexPath: IndexPath, isSelected: Bool) {
         

@@ -119,31 +119,30 @@ enum PhotoMediaType: String {
     var singleSearchIndexPath: IndexPath {
         switch self {
             case .similarPhotos:
-                return IndexPath(row: 4, section: 3)
+                return IndexPath(row: 0, section: 0)
             case .duplicatedPhotos:
-                return IndexPath(row: 4, section: 3)
+                return IndexPath(row: 1, section: 0)
             case .singleScreenShots:
-                return IndexPath(row: 4, section: 3)
+                return IndexPath(row: 2, section: 0)
+			case .singleSelfies:
+				return IndexPath(row: 3, section: 0)
             case .singleLivePhotos:
-                return IndexPath(row: 4, section: 3)
-            case .similarLivePhotos:
-                return IndexPath(row: 4, section: 3)
+                return IndexPath(row: 4, section: 0)
+			case .singleRecentlyDeletedPhotos:
+				return IndexPath(row: 5, section: 0)
+
+				
             case .singleLargeVideos:
-                return IndexPath(row: 4, section: 3)
+                return IndexPath(row: 0, section: 0)
             case .duplicatedVideos:
-                return IndexPath(row: 4, section: 3)
+                return IndexPath(row: 1, section: 0)
             case .similarVideos:
-                return IndexPath(row: 4, section: 3)
-            case .singleSelfies:
-                return IndexPath(row: 4, section: 3)
+                return IndexPath(row: 2, section: 0)
             case .singleScreenRecordings:
-                return IndexPath(row: 4, section: 3)
-            case .singleRecentlyDeletedPhotos:
-                return IndexPath(row: 4, section: 3)
+                return IndexPath(row: 3, section: 0)
+
             case .singleRecentlyDeletedVideos:
-                return IndexPath(row: 4, section: 3)
-            case .compress:
-                return IndexPath(row: 4, section: 3)
+                return IndexPath(row: 4, section: 0)
                 
                 /// `contacts`
             case .allContacts:
@@ -156,7 +155,7 @@ enum PhotoMediaType: String {
                 return IndexPath(row: 3, section: 0)
             case .duplicatedEmails:
                 return IndexPath(row: 4, section: 0)
-            case .none:
+			default:
                 return IndexPath()
         }
     }

@@ -232,7 +232,7 @@ extension PhotoManager {
 				}
 			}
 		}
-		largeVideoProcessingOperation.name = C.key.operation.name.largeVideo
+		largeVideoProcessingOperation.name = CommonOperationSearchType.largeVideoContentOperation.rawValue
 		return largeVideoProcessingOperation
 	}
 	
@@ -278,7 +278,7 @@ extension PhotoManager {
 				}
 			}
 		}
-		screenRecordsVideosOperation.name = C.key.operation.name.screenRecordingOperation
+		screenRecordsVideosOperation.name = CommonOperationSearchType.screenRecordingsVideoOperation.rawValue
 		return screenRecordsVideosOperation
 	}
 }
@@ -314,7 +314,7 @@ extension PhotoManager {
 			}
 		}
 	}
-	similarVideoAssetsOperation.name = C.key.operation.name.similarVideoProcessingOperation
+	similarVideoAssetsOperation.name = CommonOperationSearchType.similarVideoAssetsOperation.rawValue
 	return similarVideoAssetsOperation
 	}
 	
@@ -428,7 +428,7 @@ extension PhotoManager {
 				}
 			}
 		}
-		duplicatedVideoAssetsOperation.name = C.key.operation.name.duplicateVideoProcessingOperation
+		duplicatedVideoAssetsOperation.name = CommonOperationSearchType.duplicatedVideoAssetOperation.rawValue
 		return duplicatedVideoAssetsOperation
 	}
 	
@@ -520,7 +520,7 @@ extension PhotoManager {
 				}
 			}
 		}
-		photoSelfiesOperation.name = C.key.operation.name.photoSelfiesOperation
+		photoSelfiesOperation.name = CommonOperationSearchType.singleSelfieAssetsOperation.rawValue
 		return photoSelfiesOperation
 	}
 	
@@ -555,7 +555,7 @@ extension PhotoManager {
 				}
 			}
 		}
-		getScreenShotsOperation.name = C.key.operation.name.screenShotsOperation
+		getScreenShotsOperation.name = CommonOperationSearchType.screenShotsAssetsOperation.rawValue
 		return getScreenShotsOperation
 	}
 	
@@ -589,7 +589,7 @@ extension PhotoManager {
 				}
 			}
 		}
-		livePhotoOperation.name = C.key.operation.name.livePhotoOperation
+		livePhotoOperation.name = CommonOperationSearchType.livePhotoAssetsOperation.rawValue
 		return livePhotoOperation
 	}
 }
@@ -677,7 +677,7 @@ extension PhotoManager {
 				}
 			}
 		}
-		similarPhotoProcessingOperation.name = C.key.operation.name.similarPhotoProcessingOperation
+		similarPhotoProcessingOperation.name = CommonOperationSearchType.similarPhotoAssetsOperaton.rawValue
 		return similarPhotoProcessingOperation
 	}
 	
@@ -783,7 +783,7 @@ extension PhotoManager {
 				}
 			}
 		}
-		duplicatedPhotoAssetOperation.name = C.key.operation.name.duplicatePhotoProcessingOperation
+		duplicatedPhotoAssetOperation.name = CommonOperationSearchType.duplicatedPhotoAssetsOperation.rawValue
 		return duplicatedPhotoAssetOperation
 	}
 }
@@ -884,7 +884,7 @@ extension PhotoManager {
 			}
 			completionHandler(duplicatedGroup)
 		}
-		serviceUtilityDuplicatedTuplesOperation.name = C.key.operation.name.similarTuplesOperation
+		serviceUtilityDuplicatedTuplesOperation.name = CommonOperationSearchType.utitlityDuplicatedPhotoTuplesOperation.rawValue
 		return serviceUtilityDuplicatedTuplesOperation
 	}
 	

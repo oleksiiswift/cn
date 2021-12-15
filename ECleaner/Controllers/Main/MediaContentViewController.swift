@@ -13,18 +13,17 @@ import Contacts
 class MediaContentViewController: UIViewController {
   
     @IBOutlet weak var navigationBar: NavigationBar!
-    @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var dateSelectContainerView: UIView!
+	@IBOutlet weak var dateSelectPickerView: DateSelectebleView!
+	@IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var dateSelectContainerHeigntConstraint: NSLayoutConstraint!
-    
-    var dateSelectableView = DateSelectebleView()
     
     public var mediaContentType: MediaContentType = .none
 	private var photoManager = PhotoManager.shared
     private var contactsManager = ContactsManager.shared
 	
-	public let phassetProcessingOperationQueuer = OperationProcessingQueuer(name: Constants.key.operation.queue.phassets, maxConcurrentOperationCount: 10, qualityOfService: .background)
-	public let contactsProcessingOperationQueuer = OperationProcessingQueuer(name: Constants.key.operation.queue.contacts, maxConcurrentOperationCount: 10, qualityOfService: .background)
+	public let phassetProcessingOperationQueuer = OperationProcessingQueuer(name: Constants.key.operation.queue.phassets, maxConcurrentOperationCount: 5, qualityOfService: .background)
+	public let contactsProcessingOperationQueuer = ContactsManager.shared.contactsProcessingOperationQueuer
+//	OperationProcessingQueuer(name: Constants.key.operation.queue.contacts, maxConcurrentOperationCount: 5, qualityOfService: .background)
     
     private var lowerBoundDate: Date {
         get {
@@ -36,22 +35,26 @@ class MediaContentViewController: UIViewController {
 
     private var upperBoundDate: Date {
         get {
-            return S.lowerBoundSavedDate
+            return S.upperBoundSavedDate
         } set {
             S.upperBoundSavedDate = newValue
         }
     }
+	
+	private var currentlyScanningProcess: CommonOperationSearchType = .none
     private var scanningProcessIsRunning: Bool = false
     private var isStartingDateSelected: Bool = false
-    
+	
+	public var similarPhoto: [PhassetGroup] = []
+	public var duplicatedPhoto: [PhassetGroup] = []
     public var allScreenShots: [PHAsset] = []
-    public var allSelfies: [PHAsset] = []
+	public var allSelfies: [PHAsset] = []
     public var allLiveFotos: [PHAsset] = []
     public var allRecentlyDeletedPhotos: [PHAsset] = []
     
     public var allLargeVideos: [PHAsset] = []
-    public var allSimmilarVideos: [PHAsset] = []
-    public var allDuplicatesVideos: [PHAsset] = []
+    public var allSimmilarVideos: [PhassetGroup] = []
+    public var allDuplicatesVideos: [PhassetGroup] = []
     public var allScreenRecords: [PHAsset] = []
     public var allRecentlyDeletedVideos: [PHAsset] = []
     
@@ -60,9 +63,20 @@ class MediaContentViewController: UIViewController {
     public var allDuplicatedContacts: [ContactsGroup] = []
     public var allDuplicatedPhoneNumbers: [ContactsGroup] = []
     public var allDuplicatedEmailAdresses: [ContactsGroup] = []
-    
+	
+	
+	/// `photos`
+	private var singleSearchPhotoProgress: [CGFloat] = [0,0,0,0,0,0]
+	private var totalSearchFindPhotosCountIn: [Int] = [0,0,0,0,0,0]
+	/// `videos`
+	private var singleSearchVideoProgress: [CGFloat] = [0,0,0,0,0]
+	private var totalSearchFindVideosCountInt: [Int] = [0,0,0,0,0]
+	/// `contacts`
     private var singleSearchContactsProgress: [CGFloat] = [0,0,0,0,0]
-    private var totalSearchFindContactsCointIn: [Int] = [0,0,0,0,0]
+	private var singleSearchContactsAfterProcessing: [CGFloat] = [0,0,0,0,0]
+    private var totalSearchFindContactsCountIn: [Int] = [0,0,0,0,0]
+	
+	
     private var currentProgressForMediaType: [PhotoMediaType : CGFloat] = [:]
     
     override func viewDidLoad() {
@@ -92,98 +106,6 @@ class MediaContentViewController: UIViewController {
             default:
                 break
         }
-    }
-}
-
-extension MediaContentViewController: UITableViewDelegate, UITableViewDataSource {
-
-    private func setupTableView() {
-        
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.separatorStyle = .none
-        tableView.register(UINib(nibName: C.identifiers.xibs.contentTypeCell, bundle: nil), forCellReuseIdentifier: C.identifiers.cells.contentTypeCell)
-        tableView.contentInset.top = 20
-    }
-    
-    func configure(_ cell: ContentTypeTableViewCell, at indexPath: IndexPath, isSearchingStarted: Bool = false) {
-    
-        let  photoMediaType: PhotoMediaType = .getSingleSearchMediaContentType(from: indexPath, type: mediaContentType)
-        
-        var assetContentCount: Int {
-            switch photoMediaType {
-                case .similarPhotos:
-                    return 0
-                case .duplicatedPhotos:
-                    return 0
-                case .singleScreenShots:
-                    return self.allScreenShots.count
-                case .singleLivePhotos:
-                    return self.allLiveFotos.count
-                case .similarLivePhotos:
-                    return 0
-                case .singleLargeVideos:
-                    return self.allLargeVideos.count
-                case .duplicatedVideos:
-                    return self.allDuplicatesVideos.count
-                case .similarVideos:
-                    return self.allSimmilarVideos.count
-                case .singleSelfies:
-                    return self.allSelfies.count
-                case .singleScreenRecordings:
-                    return self.allScreenRecords.count
-                case .singleRecentlyDeletedPhotos:
-                    return self.allRecentlyDeletedPhotos.count
-                case .singleRecentlyDeletedVideos:
-                    return self.allRecentlyDeletedVideos.count
-                case .compress:
-                    return 0
-                case .allContacts:
-                    return self.allContacts.count
-                case .emptyContacts:
-                    return self.allEmptyContacts.count
-                case .duplicatedContacts:
-                    return self.allDuplicatedContacts.count
-                case .duplicatedPhoneNumbers:
-                    return self.allDuplicatedPhoneNumbers.count
-                case .duplicatedEmails:
-                    return self.allDuplicatedEmailAdresses.count
-                case .none:
-                    return 0
-            }
-        }
-        
-        let progress = self.currentProgressForMediaType[photoMediaType] ?? 0
-        
-        cell.cellConfig(contentType: self.mediaContentType,
-                        photoMediaType: photoMediaType,
-                        indexPath: indexPath,
-                        phasetCount: assetContentCount,
-                        presentingType: .singleSearch,
-                        progress: progress,
-                        isProcessingComplete: isSearchingStarted)
-    }
-        
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return mediaContentType.numberOfSection
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: C.identifiers.cells.contentTypeCell, for: indexPath) as! ContentTypeTableViewCell
-        configure(cell, at: indexPath)
-        return cell
-    }
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return mediaContentType.numberOfRows
-    }
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 100
-    }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        self.showMediaContent(by: mediaContentType, selected: indexPath.row)
     }
 }
 
@@ -217,7 +139,7 @@ extension MediaContentViewController {
             case .userPhoto:
                 switch index {
                     case 0:
-                        self.showSimilarPhotos()
+						self.showSimilarPhotos()
                     case 1:
                         self.showDuplicatePhotos()
                     case 2:
@@ -314,103 +236,260 @@ extension MediaContentViewController {
      - parameter
      - parameter
     */
-    
+
     private func showSimilarPhotos() {
 		
+		self.scanningProcessIsRunning = !self.scanningProcessIsRunning
+		self.currentlyScanningProcess = .similarPhotoAssetsOperaton
+		
 		let getSimilarPhotosAssetsOperation = photoManager.getSimilarPhotosAssetsOperation(from: lowerBoundDate, to: upperBoundDate, enableSingleProcessingNotification: true) { similarGroup in
-			U.UI {
-				if !similarGroup.isEmpty {
-					self.showGropedContoller(assets: "similar photo", grouped: similarGroup, photoContent: .similarPhotos)
-				} else {
-					AlertManager.showCantFindMediaContent(by: .noSimiliarPhoto) {}
+			self.similarPhoto = similarGroup
+			U.delay(0.5) {
+				ProgressSearchNotificationManager.instance.sendSingleSearchProgressNotification(notificationtype: .similarPhoto, totalProgressItems: 1, currentProgressItem: 1)
+				U.delay(1) {
+					self.scanningProcessIsRunning = !self.scanningProcessIsRunning
+					self.currentlyScanningProcess = .none
+					if !similarGroup.isEmpty {
+						self.showGropedContoller(assets: PhotoMediaType.similarPhotos.mediaTypeName, grouped: similarGroup, photoContent: .similarPhotos)
+					} else {
+						ErrorHandler.shared.showEmptySearchResultsFor(.similarPhotoIsEmpty, completion: nil)
+					}
 				}
 			}
 		}
 		phassetProcessingOperationQueuer.addOperation(getSimilarPhotosAssetsOperation)
     }
-    
-    private func showLivePhotos() {
+	
+	private func showDuplicatePhotos() {
 		
-		let getLivePhotoAssetsOperation = photoManager.getLivePhotosOperation(from: lowerBoundDate, to: upperBoundDate, enableSingleProcessingNotification: true) { similarAssets in
-			U.UI {
-				if !similarAssets.isEmpty {
-					self.showAssetViewController(assets: "live photos", collection: similarAssets, photoContent: .singleLivePhotos)
-				} else {
-					AlertManager.showCantFindMediaContent(by: .noLivePhoto) {}
+		self.scanningProcessIsRunning = !self.scanningProcessIsRunning
+		self.currentlyScanningProcess = .duplicatedPhotoAssetsOperation
+		
+		let duplicatedPhotoAssetOperation = photoManager.getDuplicatedPhotosAsset(from: lowerBoundDate, to: upperBoundDate, enableSingleProcessingNotification: true) { duplicateGroup in
+			self.duplicatedPhoto = duplicateGroup
+			U.delay(0.5) {
+				ProgressSearchNotificationManager.instance.sendSingleSearchProgressNotification(notificationtype: .duplicatedPhoto, totalProgressItems: 1, currentProgressItem: 1)
+				U.delay(1) {
+					self.scanningProcessIsRunning = !self.scanningProcessIsRunning
+					self.currentlyScanningProcess = .none
+					if !duplicateGroup.isEmpty {
+						self.showGropedContoller(assets: PhotoMediaType.duplicatedPhotos.mediaTypeName, grouped: duplicateGroup, photoContent: .duplicatedPhotos)
+					} else {
+						ErrorHandler.shared.showEmptySearchResultsFor(.duplicatedPhotoIsEmpty, completion: nil)
+					}
+				}
+			}
+		}
+		phassetProcessingOperationQueuer.addOperation(duplicatedPhotoAssetOperation)
+	}
+	
+	private func showScreenshots() {
+		self.scanningProcessIsRunning = !self.scanningProcessIsRunning
+		self.currentlyScanningProcess = .screenShotsAssetsOperation
+		
+		let getScreenShotsAssetsOperation = photoManager.getScreenShotsOperation(from: lowerBoundDate, to: upperBoundDate, enableSingleProcessingNotification: true) { screenshots in
+			self.allScreenShots = screenshots
+			U.delay(0.5) {
+				ProgressSearchNotificationManager.instance.sendSingleSearchProgressNotification(notificationtype: .screenShots, totalProgressItems: 1, currentProgressItem: 1)
+				U.delay(1) {
+					self.scanningProcessIsRunning = !self.scanningProcessIsRunning
+					self.currentlyScanningProcess = .none
+					if screenshots.count != 0 {
+						self.showAssetViewController(assets: PhotoMediaType.singleSelfies.mediaTypeName, collection: screenshots, photoContent: .singleScreenShots)
+					} else {
+						ErrorHandler.shared.showEmptySearchResultsFor(.screenShotsIsEmpty, completion: nil)
+					}
+				}
+			}
+		}
+		phassetProcessingOperationQueuer.addOperation(getScreenShotsAssetsOperation)
+	}
+	
+	private func showSelfies() {
+		self.scanningProcessIsRunning = !self.scanningProcessIsRunning
+		self.currentlyScanningProcess = .singleSelfieAssetsOperation
+		let getSelfiesPhotoAssetOperation = photoManager.getSelfiePhotosOperation(from: lowerBoundDate, to: upperBoundDate, enableSingleProcessingNotification: true) { selfies in
+			self.allSelfies = selfies
+			U.delay(0.5) {
+				ProgressSearchNotificationManager.instance.sendSingleSearchProgressNotification(notificationtype: .selfies, totalProgressItems: 1, currentProgressItem: 1)
+				U.delay(1) {
+					self.scanningProcessIsRunning = !self.scanningProcessIsRunning
+					self.currentlyScanningProcess = .none
+					if selfies.count != 0 {
+						self.showAssetViewController(assets: PhotoMediaType.singleSelfies.mediaTypeName, collection: selfies, photoContent: .singleSelfies)
+					} else {
+						ErrorHandler.shared.showEmptySearchResultsFor(.selfiesIsEmpty, completion: nil)
+					}
+				}
+			}
+		}
+		phassetProcessingOperationQueuer.addOperation(getSelfiesPhotoAssetOperation)
+	}
+	
+    private func showLivePhotos() {
+		self.scanningProcessIsRunning = !self.scanningProcessIsRunning
+		self.currentlyScanningProcess = .livePhotoAssetsOperation
+		let getLivePhotoAssetsOperation = photoManager.getLivePhotosOperation(from: lowerBoundDate, to: upperBoundDate, enableSingleProcessingNotification: true) { livePhoto in
+			self.allLiveFotos = livePhoto
+			U.delay(0.5) {
+				ProgressSearchNotificationManager.instance.sendSingleSearchProgressNotification(notificationtype: .livePhoto, totalProgressItems: 1, currentProgressItem: 1)
+				U.delay(1) {
+					self.scanningProcessIsRunning = !self.scanningProcessIsRunning
+					self.currentlyScanningProcess = .none
+					if !livePhoto.isEmpty {
+						self.showAssetViewController(assets: PhotoMediaType.singleLivePhotos.mediaTypeName, collection: livePhoto, photoContent: .singleLivePhotos)
+					} else {
+						ErrorHandler.shared.showEmptySearchResultsFor(.livePhotoIsEmpty, completion: nil)
+					}
 				}
 			}
 		}
 		phassetProcessingOperationQueuer.addOperation(getLivePhotoAssetsOperation)
     }
     
-    private func showDuplicatePhotos() {
-		
-		let duplicatedPhotoAssetOperation = photoManager.getDuplicatedPhotosAsset(from: lowerBoundDate, to: upperBoundDate, enableSingleProcessingNotification: true) { duplicateGroup in
-			U.UI {
-				if !duplicateGroup.isEmpty {
-					self.showGropedContoller(assets: "duplicate photo", grouped: duplicateGroup, photoContent: .duplicatedPhotos)
-				} else {
-					AlertManager.showCantFindMediaContent(by: .noDuplicatesPhoto) {}
-				}
-			}
-		}
-		phassetProcessingOperationQueuer.addOperation(duplicatedPhotoAssetOperation)
-    }
-    
-    private func showSelfies() {
-		
-		let getSelfiesPhotoAssetOperation = photoManager.getSelfiePhotosOperation(from: lowerBoundDate, to: upperBoundDate, enableSingleProcessingNotification: true) { selfies in
-			U.UI {
-				if selfies.count != 0 {
-					self.showAssetViewController(assets: "selfies", collection: selfies, photoContent: .singleSelfies)
-				} else {
-					AlertManager.showCantFindMediaContent(by: .noSelfie) {}
-				}
-			}
-		}
-		phassetProcessingOperationQueuer.addOperation(getSelfiesPhotoAssetOperation)
-    }
-    
-    private func showScreenshots() {
-		
-		let getScreenShotsAssetsOperation = photoManager.getScreenShotsOperation(from: lowerBoundDate, to: upperBoundDate, enableSingleProcessingNotification: true) { screenshots in
-			U.UI {
-				if screenshots.count != 0 {
-					self.showAssetViewController(assets: "screenshots", collection: screenshots, photoContent: .singleScreenShots)
-				} else {
-					AlertManager.showCantFindMediaContent(by: .noScreenShots) {}
-				}
-			}
-		}
-		phassetProcessingOperationQueuer.addOperation(getScreenShotsAssetsOperation)
-    }
-    
-    private func showRecentlyDeletedPhotos() {
-		
+	private func showRecentlyDeletedPhotos() {
+		self.scanningProcessIsRunning = !self.scanningProcessIsRunning
+		self.currentlyScanningProcess = .recentlyDeletedOperation
 		let getSortedRecentlyDeletedAssetsOperation = PHAssetFetchManager.shared.recentlyDeletdSortedAlbumsFetchOperation { photosAssets, videoAssets in
-			U.UI {
-				if photosAssets.count != 0 {
-					self.showAssetViewController(assets: "recently deleted photos", collection: photosAssets, photoContent: .singleRecentlyDeletedPhotos)
-				} else {
-					AlertManager.showCantFindMediaContent(by: .noRecentlyDeletedPhotos) {}
+			self.allRecentlyDeletedPhotos = photosAssets
+			U.delay(0.5) {
+				ProgressSearchNotificationManager.instance.sendSingleSearchProgressNotification(notificationtype: .recentlyDeletedPhoto, totalProgressItems: 1, currentProgressItem: 1)
+				U.delay(1) {
+					self.scanningProcessIsRunning = !self.scanningProcessIsRunning
+					self.currentlyScanningProcess = .none
+					if photosAssets.count != 0 {
+						self.showAssetViewController(assets: PhotoMediaType.singleRecentlyDeletedPhotos.mediaTypeName, collection: photosAssets, photoContent: .singleRecentlyDeletedPhotos)
+					} else {
+						ErrorHandler.shared.showEmptySearchResultsFor(.recentlyDeletedPhotosIsEmpty, completion: nil)
+					}
 				}
 			}
 		}
 		phassetProcessingOperationQueuer.addOperation(getSortedRecentlyDeletedAssetsOperation)
-    }
+	}
+}
+
+//      MARK: - video content -
+extension MediaContentViewController {
     
-    private func showRecentlyDeletedVideos() {
+	private func showLargeVideoFiles() {
+		self.scanningProcessIsRunning = !self.scanningProcessIsRunning
+		self.currentlyScanningProcess = .largeVideoContentOperation
+		let getLargevideoContentOperation = photoManager.getLargevideoContentOperation(from: lowerBoundDate, to: upperBoundDate, enableSingleProcessingNotification: true) { largeVodeoAsset in
+			self.allLargeVideos = largeVodeoAsset
+			U.delay(0.5) {
+				ProgressSearchNotificationManager.instance.sendSingleSearchProgressNotification(notificationtype: .largeVideo, totalProgressItems: 1, currentProgressItem: 1)
+				U.delay(1) {
+					self.scanningProcessIsRunning = !self.scanningProcessIsRunning
+					self.currentlyScanningProcess = .none
+					if largeVodeoAsset.count != 0 {
+						self.showAssetViewController(assets: PhotoMediaType.singleLargeVideos.mediaTypeName, collection: largeVodeoAsset, photoContent: .singleLargeVideos)
+					} else {
+						ErrorHandler.shared.showEmptySearchResultsFor(.largeVideoIsEmpty, completion: nil)
+					}
+				}
+			}
+		}
+		phassetProcessingOperationQueuer.addOperation(getLargevideoContentOperation)
+	}
+    
+	private func showDuplicateVideoFiles() {
 		
+		self.scanningProcessIsRunning = !self.scanningProcessIsRunning
+		self.currentlyScanningProcess = .duplicatedVideoAssetOperation
+		let getDuplicatedVideoAssetOperatioon = photoManager.getDuplicatedVideoAssetOperation(from: lowerBoundDate, to: upperBoundDate, enableSingleProcessingNotification: true) { duplicatedVideoAsset in
+			self.allDuplicatesVideos = duplicatedVideoAsset
+			U.delay(0.5) {
+				ProgressSearchNotificationManager.instance.sendSingleSearchProgressNotification(notificationtype: .duplicatedVideo, totalProgressItems: 1, currentProgressItem: 1)
+				U.delay(1) {
+					self.scanningProcessIsRunning = !self.scanningProcessIsRunning
+					self.currentlyScanningProcess = .none
+					if duplicatedVideoAsset.count != 0 {
+						self.showGropedContoller(assets: PhotoMediaType.duplicatedVideos.mediaTypeName, grouped: duplicatedVideoAsset, photoContent: .duplicatedVideos)
+					} else {
+						ErrorHandler.shared.showEmptySearchResultsFor(.duplicatedVideoIsEmpty, completion: nil)
+					}
+				}
+			}
+		}
+		phassetProcessingOperationQueuer.addOperation(getDuplicatedVideoAssetOperatioon)
+	}
+    
+	private func showSimilarVideoFiles() {
+		self.scanningProcessIsRunning = !self.scanningProcessIsRunning
+		self.currentlyScanningProcess = .similarVideoAssetsOperation
+		let getSimilarVideoAssetsOperation = photoManager.getSimilarVideoAssetsOperation(from: lowerBoundDate, to: upperBoundDate, enableSingleProcessingNotification: true) { similiarVideoAsset in
+			self.allSimmilarVideos = similiarVideoAsset
+			
+			U.delay(0.5) {
+				ProgressSearchNotificationManager.instance.sendSingleSearchProgressNotification(notificationtype: .similarVideo, totalProgressItems: 1, currentProgressItem: 1)
+				U.delay(1) {
+					self.scanningProcessIsRunning = !self.scanningProcessIsRunning
+					self.currentlyScanningProcess = .none
+					if similiarVideoAsset.count != 0 {
+						self.showGropedContoller(assets: PhotoMediaType.similarVideos.mediaTypeName, grouped: similiarVideoAsset, photoContent: .similarVideos)
+					} else {
+						ErrorHandler.shared.showEmptySearchResultsFor(.similarVideoIsEmpty, completion: nil)
+					}
+				}
+			}
+		}
+		phassetProcessingOperationQueuer.addOperation(getSimilarVideoAssetsOperation)
+	}
+    
+    private func showScreenRecordsVideoFiles() {
+		self.scanningProcessIsRunning = !self.scanningProcessIsRunning
+		self.currentlyScanningProcess = .screenShotsAssetsOperation
+		let getScreenRecordsVideosOperation = photoManager.getScreenRecordsVideosOperation(from: lowerBoundDate, to: upperBoundDate, enableSingleProcessingNotification: true) { screenRecordsAssets in
+			self.allScreenRecords = screenRecordsAssets
+			U.delay(0.5) {
+				ProgressSearchNotificationManager.instance.sendSingleSearchProgressNotification(notificationtype: .screenRecordings, totalProgressItems: 1, currentProgressItem: 1)
+				U.delay(1) {
+					self.scanningProcessIsRunning = !self.scanningProcessIsRunning
+					self.currentlyScanningProcess = .none
+					if screenRecordsAssets.count != 0 {
+						self.showAssetViewController(assets: PhotoMediaType.singleScreenRecordings.mediaTypeName, collection: screenRecordsAssets, photoContent: .singleScreenRecordings)
+					} else {
+						ErrorHandler.shared.showEmptySearchResultsFor(.screenRecordingIsEmpty, completion: nil)
+					}
+				}
+			}
+		}
+		phassetProcessingOperationQueuer.addOperation(getScreenRecordsVideosOperation)
+    }
+	
+	private func showRecentlyDeletedVideos() {
+		self.scanningProcessIsRunning = !self.scanningProcessIsRunning
+		self.currentlyScanningProcess = .recentlyDeletedOperation
 		let getSortedRecentlyDeletedAssetsOperation = PHAssetFetchManager.shared.recentlyDeletdSortedAlbumsFetchOperation { photosAssets, videoAssets in
-			U.UI {
-				if videoAssets.count != 0 {
-					self.showAssetViewController(assets: "resently deleted Videos", collection: videoAssets, photoContent: .singleRecentlyDeletedVideos)
-				} else {
-					AlertManager.showCantFindMediaContent(by: .noRecentlyDeletedVideos) {}
+			self.allRecentlyDeletedVideos = videoAssets
+			U.delay(0.5) {
+				ProgressSearchNotificationManager.instance.sendSingleSearchProgressNotification(notificationtype: .recentlyDeletedVideo, totalProgressItems: 1, currentProgressItem: 1)
+				U.delay(1) {
+					self.scanningProcessIsRunning = !self.scanningProcessIsRunning
+					self.currentlyScanningProcess = .none
+					if videoAssets.count != 0 {
+						self.showAssetViewController(assets: PhotoMediaType.singleRecentlyDeletedVideos.mediaTypeName, collection: videoAssets, photoContent: .singleRecentlyDeletedVideos)
+					} else {
+						ErrorHandler.shared.showEmptySearchResultsFor(.recentlyDeletedVideosIsEmpty, completion: nil)
+					}
 				}
 			}
 		}
 		phassetProcessingOperationQueuer.addOperation(getSortedRecentlyDeletedAssetsOperation)
+	}
+    
+    private func showSimmilarVideoFilesByTimeStamp() {
+		self.scanningProcessIsRunning = !self.scanningProcessIsRunning
+		let getSimilarVideosByTimeStamp = photoManager.getSimilarVideosByTimeStampOperation(from: lowerBoundDate, to: upperBoundDate, enableSingleProcessingNotification: true) { similarVideos in
+			self.scanningProcessIsRunning = !self.scanningProcessIsRunning
+			if similarVideos.count != 0 {
+				self.showGropedContoller(assets: "similar by time stam", grouped: similarVideos, photoContent: .similarVideos)
+			} else {
+				ErrorHandler.shared.showEmptySearchResultsFor(.similarVideoIsEmpty, completion: nil)
+			}
+		}
+		phassetProcessingOperationQueuer.addOperation(getSimilarVideosByTimeStamp)
     }
 }
 
@@ -440,79 +519,6 @@ extension MediaContentViewController {
 	}
 }
 
-
-//      MARK: - video content -
-extension MediaContentViewController {
-    
-    private func showLargeVideoFiles() {
-		
-		let getLargevideoContentOperation = photoManager.getLargevideoContentOperation(from: lowerBoundDate, to: upperBoundDate, enableSingleProcessingNotification: true) { largeVodepAsset in
-			U.UI {
-				if largeVodepAsset.count != 0 {
-					self.showAssetViewController(assets: "large videos", collection: largeVodepAsset, photoContent: .singleLargeVideos)
-				} else {
-					AlertManager.showCantFindMediaContent(by: .noLargeVideo) {}
-				}
-			}
-		}
-		
-		phassetProcessingOperationQueuer.addOperation(getLargevideoContentOperation)
-    }
-    
-    private func showDuplicateVideoFiles() {
-		
-		let getDuplicatedVideoAssetOperatioon = photoManager.getDuplicatedVideoAssetOperation(from: lowerBoundDate, to: upperBoundDate, enableSingleProcessingNotification: true) { duplicatedVideoAsset in
-			U.UI {
-				if duplicatedVideoAsset.count != 0 {
-					self.showGropedContoller(assets: "duplicated video", grouped: duplicatedVideoAsset, photoContent: .duplicatedVideos)
-				} else {
-					AlertManager.showCantFindMediaContent(by: .noDuplicatesVideo) {}
-				}
-			}
-		}
-		phassetProcessingOperationQueuer.addOperation(getDuplicatedVideoAssetOperatioon)
-    }
-    
-    private func showSimilarVideoFiles() {
-		
-		let getSimilarVideoAssetsOperation = photoManager.getSimilarVideoAssetsOperation(from: lowerBoundDate, to: upperBoundDate, enableSingleProcessingNotification: true) { similiarVideoAsset in
-			U.UI {
-				if similiarVideoAsset.count != 0 {
-					self.showGropedContoller(assets: "similar videos", grouped: similiarVideoAsset, photoContent: .similarVideos)
-				} else {
-					AlertManager.showCantFindMediaContent(by: .noSimilarVideo) {}
-				}
-			}
-		}
-		
-		phassetProcessingOperationQueuer.addOperation(getSimilarVideoAssetsOperation)
-    }
-    
-    private func showScreenRecordsVideoFiles() {
-		
-		let getScreenRecordsVideosOperation = photoManager.getScreenRecordsVideosOperation(from: lowerBoundDate, to: upperBoundDate, enableSingleProcessingNotification: true) { screenRecordsAssets in
-			if screenRecordsAssets.count != 0 {
-				self.showAssetViewController(assets: "screen records", collection: screenRecordsAssets, photoContent: .singleScreenRecordings)
-			} else {
-				AlertManager.showCantFindMediaContent(by: .noScreenRecording) {}
-			}
-		}
-		phassetProcessingOperationQueuer.addOperation(getScreenRecordsVideosOperation)
-    }
-    
-    private func showSimmilarVideoFilesByTimeStamp() {
-		
-		let getSimilarVideosByTimeStamp = photoManager.getSimilarVideosByTimeStampOperation(from: lowerBoundDate, to: upperBoundDate, enableSingleProcessingNotification: true) { similarVideos in
-			if similarVideos.count != 0 {
-				self.showGropedContoller(assets: "similar by time stam", grouped: similarVideos, photoContent: .similarVideos)
-			} else {
-				AlertManager.showCantFindMediaContent(by: .noSimilarVideo) {}
-			}
-		}
-		phassetProcessingOperationQueuer.addOperation(getSimilarVideosByTimeStamp)
-    }
-}
-
 //      MARK: - contacts content -
 extension MediaContentViewController {
     
@@ -532,31 +538,52 @@ extension MediaContentViewController {
     }
     
     private func showEmptyGroupsContacts() {
-        P.showIndicator()
+		
+		self.scanningProcessIsRunning = !scanningProcessIsRunning
+		self.currentlyScanningProcess = .emptyContactOperation
+		
 		self.contactsManager.getSingleDuplicatedCleaningContacts(of: .emptyContacts) { contactsGroup in
-            U.UI {
-                P.hideIndicator()
-                let totalContacts = contactsGroup.map({$0.contacts}).count
-                let group = contactsGroup.filter({!$0.contacts.isEmpty})
-                
-                if totalContacts != 0 {
-                    self.showContactViewController(contactGroup: group, contentType: .emptyContacts)
-                } else {
-                    A.showEmptyContactsToPresent(of: .emptyContactsIsEmpty) {}
-                }
+			U.delay(0.5) {
+				ProgressSearchNotificationManager.instance.sendSingleSearchProgressNotification(notificationtype: .emptyContacts, totalProgressItems: 1, currentProgressItem: 1)
+				U.delay(0.5) {
+					self.scanningProcessIsRunning = !self.scanningProcessIsRunning
+					self.currentlyScanningProcess = .none
+					
+					let totalContacts = contactsGroup.map({$0.contacts}).count
+					let group = contactsGroup.filter({!$0.contacts.isEmpty})
+					
+					if totalContacts != 0 {
+						self.showContactViewController(contactGroup: group, contentType: .emptyContacts)
+					} else {
+						A.showEmptyContactsToPresent(of: .emptyContactsIsEmpty) {}
+					}
+				}
             }
         }
     }
     
     private func showContactCleanController(cleanType: ContactasCleaningType) {
+		
         self.scanningProcessIsRunning = !scanningProcessIsRunning
-        
+		
+		switch cleanType {
+			case .duplicatedPhoneNumnber:
+				self.currentlyScanningProcess = .duplicatedPhoneNumbersOperation
+			case .duplicatedContactName:
+				self.currentlyScanningProcess = .duplicatedNameOperation
+			case .duplicatedEmail:
+				self.currentlyScanningProcess = .duplicatedEmailsOperation
+			default:
+				self.currentlyScanningProcess = .none
+		}
+		
 		self.contactsManager.getSingleDuplicatedCleaningContacts(of: cleanType) { contactsGroup in
             self.updateContactsCleanSearchCount(groupType: cleanType, contactsGroup: contactsGroup)
             U.delay(0.5) {
 				ProgressSearchNotificationManager.instance.sendSingleSearchProgressNotification(notificationtype: cleanType.notificationType, totalProgressItems: 1, currentProgressItem: 1)
                 U.delay(0.5) {
                     self.scanningProcessIsRunning = !self.scanningProcessIsRunning
+					self.currentlyScanningProcess = .none
                     if contactsGroup.count != 0 {
                         let group = contactsGroup.sorted(by: {$0.name < $1.name})
                         self.showGroupedContactsViewController(contacts: group, group: cleanType, content:  cleanType.photoMediaType)
@@ -579,7 +606,6 @@ extension MediaContentViewController {
             default: return
         }
     }
-    
     
     @objc func handleChangeContactsContainers(_ notification: Notification) {
         
@@ -613,7 +639,30 @@ extension MediaContentViewController {
         guard let userInfo = notification.userInfo else { return }
         
         switch notification.name {
-                
+				/// `photo phasset
+			case .singleSearchSimilarPhotoScan:
+				recieveNotification(by: .similarPhoto, userInfo: userInfo)
+			case .singleSearchDuplicatedPhotoScan:
+				recieveNotification(by: .duplicatedPhoto, userInfo: userInfo)
+			case .singleSearchScreenShotsPhotoScan:
+				recieveNotification(by: .screenShots, userInfo: userInfo)
+			case .singleSearchSelfiePhotoScan:
+				recieveNotification(by: .selfies, userInfo: userInfo)
+			case .singleSearchLivePhotoScan:
+				recieveNotification(by: .livePhoto, userInfo: userInfo)
+			case .singleSearchRecentlyDeletedPhotoScan:
+				recieveNotification(by: .recentlyDeletedPhoto, userInfo: userInfo)
+				/// `videp phasset`
+			case .singleSearchLargeVideoScan:
+				recieveNotification(by: .largeVideo, userInfo: userInfo)
+			case .singleSearchDuplicatedVideoScan:
+				recieveNotification(by: .duplicatedVideo, userInfo: userInfo)
+			case .singleSearchSimilarVideoScan:
+				recieveNotification(by: .similarVideo, userInfo: userInfo)
+			case .singleSearchScreenRecordingVideoScan:
+				recieveNotification(by: .screenRecordings, userInfo: userInfo)
+			case .singleSearchRecentlyDeletedVideoScan:
+				recieveNotification(by: .recentlyDeletedVideo, userInfo: userInfo)
                     /// `contacts`
             case .singleSearchAllContactsScan:
                 recieveNotification(by: .allContacts, userInfo: userInfo)
@@ -639,7 +688,7 @@ extension MediaContentViewController {
         
         calculateProgressPercentage(total: totalProcessingCount, current: currentIndex) { optionalTitle, progress in
             U.UI {
-                self.progressUpdate(type, progrss: progress, title: optionalTitle)
+                self.progressUpdate(type, progress: progress, title: optionalTitle)
             }
         }
     }
@@ -647,18 +696,40 @@ extension MediaContentViewController {
     private func handleSearchProgress(by type: SingleContentSearchNotificationType, files count: Int) {
         
         switch type {
-                
+				/// `Photos`
+			case .similarPhoto:
+				totalSearchFindPhotosCountIn[0] = count
+			case .duplicatedPhoto:
+				totalSearchFindPhotosCountIn[1] = count
+			case .screenShots:
+				totalSearchFindPhotosCountIn[2] = count
+			case .selfies:
+				totalSearchFindPhotosCountIn[3] = count
+			case .livePhoto:
+				totalSearchFindPhotosCountIn[4] = count
+			case .recentlyDeletedPhoto:
+				totalSearchFindPhotosCountIn[5] = count
+			case .largeVideo:
+				totalSearchFindVideosCountInt[0] = count
+			case .duplicatedVideo:
+				totalSearchFindVideosCountInt[1] = count
+			case .similarVideo:
+				totalSearchFindVideosCountInt[2] = count
+			case .screenRecordings:
+				totalSearchFindVideosCountInt[3] = count
+			case .recentlyDeletedVideo:
+				totalSearchFindVideosCountInt[4] = count
                     /// `Contacts:
             case .allContacts:
-                totalSearchFindContactsCointIn[0] = count
+                totalSearchFindContactsCountIn[0] = count
             case .emptyContacts:
-                totalSearchFindContactsCointIn[1] = count
+				totalSearchFindContactsCountIn[1] = count
             case .duplicatesNames:
-                totalSearchFindContactsCointIn[2] = count
+				totalSearchFindContactsCountIn[2] = count
             case .duplicatesNumbers:
-                totalSearchFindContactsCointIn[3] = count
+				totalSearchFindContactsCountIn[3] = count
             case .duplicatesEmails:
-                totalSearchFindContactsCointIn[4] = count
+				totalSearchFindContactsCountIn[4] = count
             default:
                 return
         }
@@ -672,22 +743,44 @@ extension MediaContentViewController {
         completionHandler(stringFormat, totalPercent)
     }
     
-    private func progressUpdate(_ notificationType: SingleContentSearchNotificationType, progrss: CGFloat, title: String) {
+    private func progressUpdate(_ notificationType: SingleContentSearchNotificationType, progress: CGFloat, title: String) {
         
         let indexPath = notificationType.mediaTypeRawValue.singleSearchIndexPath
-        self.currentProgressForMediaType[notificationType.mediaTypeRawValue] = progrss
+        self.currentProgressForMediaType[notificationType.mediaTypeRawValue] = progress
         
         switch notificationType {
+			case .similarPhoto:
+				self.singleSearchPhotoProgress[0] = progress
+			case .duplicatedPhoto:
+				self.singleSearchPhotoProgress[1] = progress
+			case .screenShots:
+				self.singleSearchPhotoProgress[2] = progress
+			case .selfies:
+				self.singleSearchPhotoProgress[3] = progress
+			case .livePhoto:
+				self.singleSearchPhotoProgress[4] = progress
+			case .recentlyDeletedPhoto:
+				self.singleSearchPhotoProgress[5] = progress
+			case .largeVideo:
+				self.singleSearchVideoProgress[0] = progress
+			case .duplicatedVideo:
+				self.singleSearchVideoProgress[2] = progress
+			case .similarVideo:
+				self.singleSearchVideoProgress[3] = progress
+			case .screenRecordings:
+				self.singleSearchVideoProgress[4] = progress
+			case .recentlyDeletedVideo:
+				self.singleSearchVideoProgress[5] = progress
             case .allContacts:
-                self.singleSearchContactsProgress[0] = progrss
+                self.singleSearchContactsProgress[0] = progress
             case .emptyContacts:
-                self.singleSearchContactsProgress[1] = progrss
+                self.singleSearchContactsProgress[1] = progress
             case .duplicatesNames:
-                self.singleSearchContactsProgress[2] = progrss
+                self.singleSearchContactsProgress[2] = progress
             case .duplicatesNumbers:
-                self.singleSearchContactsProgress[3] = progrss
+                self.singleSearchContactsProgress[3] = progress
             case .duplicatesEmails:
-                self.singleSearchContactsProgress[4] = progrss
+                self.singleSearchContactsProgress[4] = progress
             default:
                 return
         }
@@ -695,7 +788,7 @@ extension MediaContentViewController {
         guard !indexPath.isEmpty else { return }
         guard let cell = tableView.cellForRow(at: indexPath) as? ContentTypeTableViewCell else { return }
         
-        let isSearchStarted = progrss != 0 || progrss != 1.0
+        let isSearchStarted = progress != 0 || progress != 1.0
         
         self.configure(cell, at: indexPath, isSearchingStarted: isSearchStarted)
     }
@@ -709,6 +802,119 @@ extension MediaContentViewController {
             }
         }
     }
+	
+	private func setCanselActiveOperation() {
+		
+		if self.mediaContentType == .userContacts {
+			if let operation = self.contactsProcessingOperationQueuer.operations.first(where: {$0.name == self.currentlyScanningProcess.rawValue}) {
+				if let name = operation.name {
+					self.contactsProcessingOperationQueuer.cancelOperation(with: name)
+					U.delay(3) {
+						self.updateProcessingCancel(for: name)
+					}
+				}
+			}
+		} else {
+			if let operation = self.phassetProcessingOperationQueuer.operations.first(where: {$0.name == self.currentlyScanningProcess.rawValue}) {
+				if let name = operation.name {
+					self.phassetProcessingOperationQueuer.cancelOperation(with: name)
+					U.delay(3) {
+						self.updateProcessingCancel(for: name)
+					}
+				}
+			}
+		}
+	}
+	
+	private func updateProcessingCancel(for operationName: String) {
+		
+		if let operation = CommonOperationSearchType.getOperationType(from: operationName) {
+			if let indexPath = updattingIndexPathForProcessingCancel(for: operation) {
+				self.resetSearchValue(at: indexPath.row)
+				self.reloadOperationCell(at: indexPath)
+			}
+		}
+	}
+	
+	private func updattingIndexPathForProcessingCancel(for operation: CommonOperationSearchType) -> IndexPath? {
+		
+		switch mediaContentType {
+			case .userPhoto:
+				switch operation {
+					case .similarPhotoAssetsOperaton:
+						return IndexPath(row: 0, section: 0)
+					case .utitlityDuplicatedPhotoTuplesOperation:
+						return IndexPath(row: 0, section: 0)
+					case .duplicatedPhotoAssetsOperation:
+						return IndexPath(row: 1, section: 0)
+					case .screenShotsAssetsOperation:
+						return IndexPath(row: 2, section: 0)
+					case .singleSelfieAssetsOperation:
+						return IndexPath(row: 3, section: 0)
+					case .livePhotoAssetsOperation:
+						return IndexPath(row: 4, section: 0)
+					case .recentlyDeletedOperation:
+						return IndexPath(row: 5, section: 0)
+					default:
+						return nil
+				}
+			case .userVideo:
+				switch operation {
+					case .largeVideoContentOperation:
+						return IndexPath(row: 0, section: 0)
+					case .duplicatedVideoAssetOperation:
+						return IndexPath(row: 1, section: 0)
+					case .similarVideoAssetsOperation:
+						return IndexPath(row: 2, section: 0)
+					case .screenRecordingsVideoOperation:
+						return IndexPath(row: 3, section: 0)
+					case .recentlyDeletedOperation:
+						return IndexPath(row: 4, section: 0)
+					default:
+						return nil
+				}
+			case .userContacts:
+				switch operation {
+					case .emptyContactOperation:
+						return IndexPath(row: 1, section: 0)
+					case .duplicatedNameOperation:
+						return IndexPath(row: 2, section: 0)
+					case .duplicatedPhoneNumbersOperation:
+						return IndexPath(row: 3, section: 0)
+					case .duplicatedEmailsOperation:
+						return IndexPath(row: 4, section: 0)
+					default:
+						return nil
+				}
+				
+			default:
+				return nil
+		}
+	}
+	
+	private func resetSearchValue(at index: Int) {
+		switch mediaContentType {
+				
+			case .userPhoto:
+				singleSearchPhotoProgress[index] = 0
+				totalSearchFindPhotosCountIn[index] = 0
+			case .userVideo:
+				singleSearchVideoProgress[index] = 0
+				totalSearchFindVideosCountInt[index] = 0
+			case .userContacts:
+				singleSearchContactsProgress[index] = 0
+				singleSearchContactsAfterProcessing[index] = 0
+			default:
+				return
+		}
+	}
+	
+	private func reloadOperationCell(at indexPath: IndexPath) {
+		if let cell = self.tableView.cellForRow(at: indexPath) as? ContentTypeTableViewCell {
+			cell.resetProgress()
+			self.tableView.reloadRows(at: [indexPath], with: .none)
+		}
+	}
 }
 
 
@@ -730,12 +936,109 @@ extension MediaContentViewController: DateSelectebleViewDelegate {
 extension MediaContentViewController: NavigationBarDelegate {
     
     func didTapLeftBarButton(_ sender: UIButton) {
-        self.navigationController?.popViewController(animated: true)
+		if scanningProcessIsRunning {
+			A.showStopSingleSearchProcess {
+				self.setCanselActiveOperation()
+			}
+		} else {
+			self.navigationController?.popViewController(animated: true)
+		}
     }
     
     func didTapRightBarButton(_ sender: UIButton) {}
 }
 
+extension MediaContentViewController: UITableViewDelegate, UITableViewDataSource {
+
+	private func setupTableView() {
+		
+		tableView.delegate = self
+		tableView.dataSource = self
+		tableView.separatorStyle = .none
+		tableView.register(UINib(nibName: C.identifiers.xibs.contentTypeCell, bundle: nil), forCellReuseIdentifier: C.identifiers.cells.contentTypeCell)
+		if mediaContentType == .userContacts {
+			tableView.contentInset.top = 20
+		} else {
+			tableView.contentInset.top = 50
+			tableView.contentInset.bottom = 40
+		}
+	}
+	
+	func configure(_ cell: ContentTypeTableViewCell, at indexPath: IndexPath, isSearchingStarted: Bool = false) {
+	
+		let  photoMediaType: PhotoMediaType = .getSingleSearchMediaContentType(from: indexPath, type: mediaContentType)
+		var assetContentCount: Int {
+			switch photoMediaType {
+				case .similarPhotos:
+					return self.similarPhoto.map({$0.assets}).reduce([], +).count
+				case .duplicatedPhotos:
+					return self.duplicatedPhoto.map({$0.assets}).reduce([], +).count
+				case .singleScreenShots:
+					return self.allScreenShots.count
+				case .singleLivePhotos:
+					return self.allLiveFotos.count
+				case .singleLargeVideos:
+					return self.allLargeVideos.count
+				case .duplicatedVideos:
+					return self.allDuplicatesVideos.map({$0.assets}).reduce([], +).count
+				case .similarVideos:
+					return self.allSimmilarVideos.map({$0.assets}).reduce([], +).count
+				case .singleSelfies:
+					return self.allSelfies.count
+				case .singleScreenRecordings:
+					return self.allScreenRecords.count
+				case .singleRecentlyDeletedPhotos:
+					return self.allRecentlyDeletedPhotos.count
+				case .singleRecentlyDeletedVideos:
+					return self.allRecentlyDeletedVideos.count
+				case .allContacts:
+					return self.allContacts.count
+				case .emptyContacts:
+					return self.allEmptyContacts.count
+				case .duplicatedContacts:
+					return self.allDuplicatedContacts.count
+				case .duplicatedPhoneNumbers:
+					return self.allDuplicatedPhoneNumbers.count
+				case .duplicatedEmails:
+					return self.allDuplicatedEmailAdresses.count
+				default:
+					return 0
+			}
+		}
+		
+		let progress = self.currentProgressForMediaType[photoMediaType] ?? 0
+		
+		cell.cellConfig(contentType: self.mediaContentType,
+						photoMediaType: photoMediaType,
+						indexPath: indexPath,
+						phasetCount: assetContentCount,
+						presentingType: .singleSearch,
+						progress: progress,
+						isProcessingComplete: isSearchingStarted)
+	}
+		
+	func numberOfSections(in tableView: UITableView) -> Int {
+		return mediaContentType.numberOfSection
+	}
+	
+	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+		let cell = tableView.dequeueReusableCell(withIdentifier: C.identifiers.cells.contentTypeCell, for: indexPath) as! ContentTypeTableViewCell
+		configure(cell, at: indexPath)
+		return cell
+	}
+	
+	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+		return mediaContentType.numberOfRows
+	}
+	
+	func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+		return 100
+	}
+	
+	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+		self.showMediaContent(by: mediaContentType, selected: indexPath.row)
+	}
+}
 
 extension MediaContentViewController: Themeble {
     
@@ -743,35 +1046,38 @@ extension MediaContentViewController: Themeble {
         
         if mediaContentType == .userContacts {
             dateSelectContainerHeigntConstraint.constant = 0
-            dateSelectContainerView.isHidden = true
-        }
-        
-        dateSelectableView.frame = dateSelectContainerView.bounds
-        dateSelectContainerView.addSubview(dateSelectableView)
-        
-        dateSelectableView.translatesAutoresizingMaskIntoConstraints = false
-        
-        NSLayoutConstraint.activate([
-            dateSelectableView.leadingAnchor.constraint(equalTo: dateSelectContainerView.leadingAnchor),
-            dateSelectableView.trailingAnchor.constraint(equalTo: dateSelectContainerView.trailingAnchor),
-            dateSelectableView.bottomAnchor.constraint(equalTo: dateSelectContainerView.bottomAnchor),
-            dateSelectableView.topAnchor.constraint(equalTo: dateSelectContainerView.topAnchor)])
+			dateSelectPickerView.isHidden = true
+		} else {
+			dateSelectContainerHeigntConstraint.constant = 60
+		}
+		dateSelectPickerView.layoutIfNeeded()
     }
     
     private func setupNavigation() {
         
-        self.navigationController?.navigationBar.isHidden = true
-        navigationBar.setupNavigation(title: mediaContentType.navigationTitle,
-                                      leftBarButtonImage: I.systemItems.navigationBarItems.back,
-                                      rightBarButtonImage: nil,
-                                      mediaType: mediaContentType,
-                                      leftButtonTitle: nil,
-                                      rightButtonTitle: nil)
+		if mediaContentType != .userContacts {
+			
+			navigationBar.setIsDropShadow = false
+			
+			navigationBar.setupNavigation(title: mediaContentType.navigationTitle,
+										  leftBarButtonImage: I.systemItems.navigationBarItems.back,
+										  rightBarButtonImage: I.systemItems.navigationBarItems.magic,
+										  mediaType: mediaContentType,
+										  leftButtonTitle: nil,
+										  rightButtonTitle: nil)
+		} else {
+			navigationBar.setupNavigation(title: mediaContentType.navigationTitle,
+										  leftBarButtonImage: I.systemItems.navigationBarItems.back,
+										  rightBarButtonImage: nil,
+										  mediaType: mediaContentType,
+										  leftButtonTitle: nil,
+										  rightButtonTitle: nil)
+		}
     }
     
     private func setupDelegate() {
-        
-        self.dateSelectableView.delegate = self
+		
+		self.dateSelectPickerView.delegate = self
         self.navigationBar.delegate = self
     }
     
@@ -779,9 +1085,20 @@ extension MediaContentViewController: Themeble {
         
         switch contentType {
             case .userPhoto:
-                debugPrint("")
+				    /// `photo notification updates`
+				U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchSimilarPhotoScan, object: nil)
+				U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchDuplicatedPhotoScan, object: nil)
+				U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchScreenShotsPhotoScan, object: nil)
+				U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchSelfiePhotoScan, object: nil)
+				U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchLivePhotoScan, object: nil)
+				U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchRecentlyDeletedPhotoScan, object: nil)
             case .userVideo:
-                debugPrint("")
+				    /// `video notification updates`
+				U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchLargeVideoScan, object: nil)
+				U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchDuplicatedVideoScan, object: nil)
+				U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchSimilarVideoScan, object: nil)
+				U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchScreenRecordingVideoScan, object: nil)
+				U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchRecentlyDeletedVideoScan, object: nil)
             case .userContacts:
                     /// `contacts notification updates`
                 U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchAllContactsScan, object: nil)
@@ -789,6 +1106,7 @@ extension MediaContentViewController: Themeble {
                 U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchDuplicatesNamesContactsScan, object: nil)
                 U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchDuplicatesNumbersContactsScan, object: nil)
                 U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchDupliatesEmailsContactsScan, object: nil)
+				
                 U.notificationCenter.addObserver(self, selector: #selector(handleChangeContactsContainers(_:)), name: .CNContactStoreDidChange, object: nil)
             case .none:
                 return
@@ -796,8 +1114,8 @@ extension MediaContentViewController: Themeble {
     }
     
     private func setupDateInterval() {
-        
-		self.dateSelectableView.setupDisplaysDate(lowerDate: self.lowerBoundDate, upperdDate: self.upperBoundDate)
+		
+		dateSelectPickerView.setupDisplaysDate(lowerDate: self.lowerBoundDate, upperdDate: self.upperBoundDate)
     }
     
     func updateColors() {
@@ -821,7 +1139,7 @@ extension MediaContentViewController: Themeble {
             
             dateSelectorController.selectedDateCompletion = { selectedDate in
                 self.isStartingDateSelected ? (self.lowerBoundDate = selectedDate) : (self.upperBoundDate = selectedDate)
-				self.dateSelectableView.setupDisplaysDate(lowerDate: self.lowerBoundDate, upperdDate: self.upperBoundDate)
+				self.dateSelectPickerView.setupDisplaysDate(lowerDate: self.lowerBoundDate, upperdDate: self.upperBoundDate)
             }
         }
     }

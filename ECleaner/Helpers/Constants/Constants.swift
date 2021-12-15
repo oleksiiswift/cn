@@ -123,24 +123,26 @@ class Constants {
 				static let fetchPHAssetCount = "fetchTotalPHAssetsOperation"
 				static let fetchFromGallery = "fetchFromGalleryOperation"
 				
-				static let largeVideo = "largeVideoOperation"
-				static let recentlyDeletedAlbums = "recentlyDeletedAlbumFetchOperation"
-				static let recentlyDeletedSortedAlbums = "recentlyDeletedSortedAlbumsFetchOperation"
-				static let videoCountOperation = "calculateTotalVideoProcessingOperation"
-				static let photoCouuntOperation = "calculateTotlaPhotoProcessingOperation"
-				static let screenRecordingOperation = "screenRecordsVideosOperation"
+				static let similarPhotoProcessingOperation = "similarPhotoProcessingOperation"
+				static let duplicatePhotoProcessingOperation = "duplicatePhotoProcessingOperation"
 				static let screenShotsOperation = "screenShotsOperation"
 				static let livePhotoOperation = "livePhotoOperation"
 				static let photoSelfiesOperation = "photoSelfiesOperation"
-				
-				static let similarPhotoProcessingOperation = "similarPhotoProcessingOperation"
-				static let duplicatePhotoProcessingOperation = "duplicatePhotoProcessingOperation"
 				static let similarLivePhotoProcessingOperation = "similarLivePhotoProcessingOperation"
 				
+				
+				static let recentlyDeletedAlbums = "recentlyDeletedAlbumFetchOperation"
+				static let recentlyDeletedSortedAlbums = "recentlyDeletedSortedAlbumsFetchOperation"
+				static let deletePhassetsOperation = "deletePhassetsOperation"
+
+				static let videoCountOperation = "calculateTotalVideoProcessingOperation"
+				static let photoCouuntOperation = "calculateTotlaPhotoProcessingOperation"
+				static let screenRecordingOperation = "screenRecordsVideosOperation"
+								
+				static let largeVideo = "largeVideoOperation"
 				static let similarVideoProcessingOperation = "similarVideoProcessingOperation"
 				static let duplicateVideoProcessingOperation = "duplicateVideoProcessingOperation"
 			
-				static let deletePhassetsOperation = "deletePhassetsOperation"
 				static let similarTuplesOperation = "serviceUtilityDuplicatedTuplesOperation"
 				static let findDuplicatedVideoOperation = "findDuplicatedVideoOperation"
 				static let getSimilarVideosByTimeStampOperation = "getSimilarVideosByTimeStampOperation"

@@ -76,6 +76,14 @@ public class OperationProcessingQueuer {
 	public func waitUntilAllOperationsAreFinished() {
 		operationQueue.waitUntilAllOperationsAreFinished()
 	}
+	
+	public func cancelOperation(with name: String) {
+		for operation in operations {
+			if operation.name == name {
+				operation.cancel()
+			}
+		}
+	}
 }
 
 

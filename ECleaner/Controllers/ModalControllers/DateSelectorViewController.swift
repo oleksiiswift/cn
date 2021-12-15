@@ -15,6 +15,7 @@ class DateSelectorViewController: UIViewController {
 	@IBOutlet weak var yearDatePicker: SegmentDatePicker!
 	@IBOutlet weak var pickerSpacerShadowView: UIView!
     @IBOutlet weak var customNavBar: StartingNavigationBar!
+	@IBOutlet weak var spaceStackEmptyView: UIView!
 	@IBOutlet weak var autoDatePickView: UIView!
     @IBOutlet weak var autoDatePickButton: UIButton!
     @IBOutlet weak var autoDatePickBackgroundImageView: UIImageView!
@@ -195,7 +196,8 @@ extension DateSelectorViewController: Themeble {
 		bottomButtonView.title("SUBMIT".localized())
         
 		autoDatePickView.isHidden = !isStartingDateSelected
-		
+		spaceStackEmptyView.isHidden = isStartingDateSelected
+	
         autoDatePickTextLabel.text = "SINCE_THE_LAST_CLEANING".localized()
         autoDatePickTextLabel.font = UIFont(font: FontManager.robotoBold, size: 14.0)
         autoDatePickImageView.image = I.systemElementsItems.checkBox

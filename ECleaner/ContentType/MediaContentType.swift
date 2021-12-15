@@ -90,8 +90,7 @@ enum MediaContentType {
                             1: "duplicate",
                             2: "similart",
                             3: "screen rec",
-                            4: "compress video",
-                            5: "recently deleted video"]]
+                            4: "recently deleted video"]]
             case .userContacts:
                 return [0: [0: "all contacts",
                             1: "empty",
@@ -112,7 +111,7 @@ enum MediaContentType {
             case .userPhoto:
                 return 6
             case .userVideo:
-                return 6
+                return 5
             case .userContacts:
                 return 5
             case .none:
@@ -180,9 +179,7 @@ enum MediaContentType {
                     case 3:
                         return "SCREEN_RECORDING".localized()
                     case 4:
-                        return "COMPRESS_VIDEO".localized()
-                    case 5:
-                        return "RECENTLY_DEL_VIDEO".localized()
+						return "RECENTLY_DEL_VIDEO".localized()
                     default:
                         return ""
                 }

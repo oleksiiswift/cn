@@ -270,6 +270,18 @@ extension Utils {
 		components.timeZone = TimeZone(secondsFromGMT: 0)
 		return calendar.date(from: components)!
 	}
+	
+	static func setUpperDefaultValue() {
+		
+		let currentDay = Date()
+		let numbersOfDayInThisMonth = numbersOfDays(at: currentDay.getMonth(), in: currentDay.getYear())
+		let upperDate = getDateFromComponents(day: numbersOfDayInThisMonth, month: currentDay.getMonth(), year: currentDay.getYear())
+		S.upperBoundSavedDate = upperDate
+	}
+	
+	static func setLowerDafaultValue() {
+		S.lowerBoundSavedDate = Date(timeIntervalSinceReferenceDate: 0)
+	}
 }
 
 //  TODO: temp get name from bundle, for future get localized app name

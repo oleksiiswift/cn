@@ -51,14 +51,6 @@ class AlertManager: NSObject {
         topController()?.present(alert, animated: true, completion: nil)
     }
     
-    static func showCantFindMediaContent(by type: AlertType, completion: @escaping () -> Void)  {
-        
-        let alertAction = UIAlertAction(title: "ok", style: .default) { _ in
-            completion()
-        }
-        showAlert(type.alertTitle, message: type.alertMessage, actions: [alertAction], withCancel: false, completion: nil)
-    }
-    
     private static func showPermissionAlert(alerttype: AlertType, actions: [UIAlertAction], cancelAction: @escaping (_ isDennyAccess: Bool) -> Void) {
         
         let alertController = UIAlertController(title: alerttype.alertTitle, message: alerttype.alertMessage, preferredStyle: alerttype.alertStyle)
@@ -166,9 +158,9 @@ extension AlertManager {
     
     static func showEmptyContactsToPresent(of type: AlertType, completion: @escaping () -> Void) {
         
-        self.showCantFindMediaContent(by: type) {
-            completion()
-        }
+		ErrorHandler.shared.showEmptySearchResultsFor(type) {
+			completion()
+		}
     }
 }
 
@@ -177,10 +169,18 @@ extension AlertManager {
 	
 	static func showStopDeepCleanSearchProcess(_ completion: @escaping () -> Void) {
 		
-		let stopDeepCleanAlertAction = UIAlertAction(title: "ok", style: .default) { _ in
+		let stopDeepCleanAlertAction = UIAlertAction(title: "stop", style: .default) { _ in
 			completion()
 		}
 		
 		showAlert(type: .setBreakDeepCleanSearch, actions: [stopDeepCleanAlertAction], withCancel: true, cancelCompletion: nil)
+	}
+	
+	static func showStopSingleSearchProcess(_ completion: @escaping () -> Void) {
+		
+		let stopSingleCleanAlertAction = UIAlertAction(title: "stop", style: .default) { _ in
+			completion()
+		}
+		showAlert(type: .setBreakSingleCleanSearch, actions: [stopSingleCleanAlertAction], withCancel: true, cancelCompletion: nil)
 	}
 }
