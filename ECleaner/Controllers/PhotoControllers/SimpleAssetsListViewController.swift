@@ -14,6 +14,9 @@ class SimpleAssetsListViewController: UIViewController {
 	@IBOutlet weak var navigationBar: NavigationBar!
 	@IBOutlet weak var collectionView: UICollectionView!
 	
+	@IBOutlet weak var bottomButtonView: BottomButtonBarView!
+	@IBOutlet weak var bottomMenuHeightConstraint: NSLayoutConstraint!
+	
 	var selectedAssetsDelegate: DeepCleanSelectableAssetsDelegate?
 	private var photoManager = PhotoManager.shared
 	public var mediaType: PhotoMediaType = .none
@@ -35,11 +38,6 @@ class SimpleAssetsListViewController: UIViewController {
 	private var previouslySelectedIndexPaths: [IndexPath] = []
 	public var isDeepCleaningSelectableFlow: Bool = false
 	
-    @IBOutlet weak var bottomMenuView: UIView!
-    @IBOutlet weak var deleteAssetsButtonView: UIView!
-    @IBOutlet weak var deleteAssetsTexetLabel: UILabel!
-    @IBOutlet weak var bottomMenuHeightConstraint: NSLayoutConstraint!
-     
     private var bottomMenuHeight: CGFloat = 80
 	
     override func viewDidLoad() {
@@ -57,10 +55,6 @@ class SimpleAssetsListViewController: UIViewController {
         super.viewWillAppear(animated)
         
         didSelectPreviouslyIndexPath()
-    }
-
-    @IBAction func didTapDeleteAssetsActionButton(_ sender: Any) {
-        showDeleteSelectedAssetsAlert()
     }
 }
 
@@ -280,17 +274,7 @@ extension SimpleAssetsListViewController {
 }
 
 extension SimpleAssetsListViewController {
-	
-	
 
-    @objc func handleSelectAllButtonTapped() {
-    
-        let selected = collectionView.indexPathsForSelectedItems?.count == assetCollection.count
-//        self.navigationItem.rightBarButtonItem = selected ? selectAllButton : deselectAllButton
-        setCollection(selected: selected)
-        handleBottomButtonMenu()
-    }
-    
     private func setCollection(selected: Bool) {
         
         if !selected {
@@ -308,6 +292,7 @@ extension SimpleAssetsListViewController {
                 cell.checkIsSelected()
             }
         }
+		handleBottomButtonMenu()
     }
     
     private func handleSelectAllButtonState() {
@@ -321,6 +306,8 @@ extension SimpleAssetsListViewController {
         
         if let selectedItems = collectionView.indexPathsForSelectedItems {
             bottomMenuHeightConstraint.constant = selectedItems.count > 0 ? (bottomMenuHeight + U.bottomSafeAreaHeight - 5) : 0
+			bottomButtonView.title("delete selected (\(selectedItems.count))")
+			
             self.collectionView.contentInset.bottom = selectedItems.count > 0 ? 10 : 5
             U.animate(0.5) {
                 self.collectionView.layoutIfNeeded()
@@ -405,21 +392,21 @@ extension SimpleAssetsListViewController {
 extension SimpleAssetsListViewController: Themeble {
     
     func setupUI() {
-        deleteAssetsButtonView.setCorner(12)
+        
         bottomMenuHeightConstraint.constant = 0
-        deleteAssetsTexetLabel.font = .systemFont(ofSize: 17, weight: .bold)
-        deleteAssetsTexetLabel.text = "delete photos"
+		self.bottomButtonView.setImage(I.systemItems.defaultItems.delete, with: CGSize(width: 18, height: 24))
     }
     
     func updateColors() {
 		
 		self.view.backgroundColor = theme.backgroundColor
 		self.collectionView.backgroundColor = .clear
-		
 
-        bottomMenuView.backgroundColor = theme.sectionBackgroundColor
-        deleteAssetsButtonView.backgroundColor = theme.accentBackgroundColor
-        deleteAssetsTexetLabel.textColor = theme.activeTitleTextColor
+		bottomButtonView.buttonColor = contentType.screenAcentTintColor
+		bottomButtonView.buttonTintColor = theme.activeTitleTextColor
+		bottomButtonView.buttonTitleColor = theme.activeTitleTextColor
+		bottomButtonView.activityIndicatorColor = theme.backgroundColor
+		bottomButtonView.updateColorsSettings()
     }
 }
 
@@ -438,6 +425,7 @@ extension SimpleAssetsListViewController {
 	
 	private func setupDelegate() {
 		navigationBar.delegate = self
+		bottomButtonView.delegate = self
 	}
 	
 	private func setupObservers() {
@@ -488,6 +476,13 @@ extension SimpleAssetsListViewController: SelectDropDownMenuDelegate {
 			default:
 				return
 		}
+	}
+}
+
+extension SimpleAssetsListViewController: BottomActionButtonDelegate {
+	
+	func didTapActionButton() {
+		debugPrint("did tap delete selected phassets")
 	}
 }
 
