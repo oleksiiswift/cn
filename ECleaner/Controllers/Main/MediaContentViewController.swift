@@ -23,7 +23,6 @@ class MediaContentViewController: UIViewController {
 	
 	public let phassetProcessingOperationQueuer = OperationProcessingQueuer(name: Constants.key.operation.queue.phassets, maxConcurrentOperationCount: 5, qualityOfService: .background)
 	public let contactsProcessingOperationQueuer = ContactsManager.shared.contactsProcessingOperationQueuer
-//	OperationProcessingQueuer(name: Constants.key.operation.queue.contacts, maxConcurrentOperationCount: 5, qualityOfService: .background)
     
     private var lowerBoundDate: Date {
         get {
@@ -63,8 +62,7 @@ class MediaContentViewController: UIViewController {
     public var allDuplicatedContacts: [ContactsGroup] = []
     public var allDuplicatedPhoneNumbers: [ContactsGroup] = []
     public var allDuplicatedEmailAdresses: [ContactsGroup] = []
-	
-	
+
 	/// `photos`
 	private var singleSearchPhotoProgress: [CGFloat] = [0,0,0,0,0,0]
 	private var totalSearchFindPhotosCountIn: [Int] = [0,0,0,0,0,0]
@@ -75,8 +73,7 @@ class MediaContentViewController: UIViewController {
     private var singleSearchContactsProgress: [CGFloat] = [0,0,0,0,0]
 	private var singleSearchContactsAfterProcessing: [CGFloat] = [0,0,0,0,0]
     private var totalSearchFindContactsCountIn: [Int] = [0,0,0,0,0]
-	
-	
+
     private var currentProgressForMediaType: [PhotoMediaType : CGFloat] = [:]
     
     override func viewDidLoad() {
@@ -96,7 +93,7 @@ class MediaContentViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        self.navigationItem.backButtonTitle = ""
+		self.resetAllProgressVisual()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -199,12 +196,13 @@ extension MediaContentViewController {
         self.navigationController?.pushViewController(viewController, animated: true)
     }
     
-    private func showAssetViewController(assets title: String, collection: [PHAsset], photoContent type: PhotoMediaType) {
+	private func showAssetViewController(assets title: String, collection: [PHAsset], photoContent type: PhotoMediaType, media content: MediaContentType) {
         let storyboard = UIStoryboard(name: C.identifiers.storyboards.media, bundle: nil)
         let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.assetsList) as! SimpleAssetsListViewController
         viewController.title = title
         viewController.assetCollection = collection
         viewController.mediaType = type
+		viewController.contentType = content
         self.navigationController?.pushViewController(viewController, animated: true)
     }
     
@@ -295,7 +293,7 @@ extension MediaContentViewController {
 					self.scanningProcessIsRunning = !self.scanningProcessIsRunning
 					self.currentlyScanningProcess = .none
 					if screenshots.count != 0 {
-						self.showAssetViewController(assets: PhotoMediaType.singleSelfies.mediaTypeName, collection: screenshots, photoContent: .singleScreenShots)
+						self.showAssetViewController(assets: PhotoMediaType.singleSelfies.mediaTypeName, collection: screenshots, photoContent: .singleScreenShots, media: .userPhoto)
 					} else {
 						ErrorHandler.shared.showEmptySearchResultsFor(.screenShotsIsEmpty, completion: nil)
 					}
@@ -316,7 +314,7 @@ extension MediaContentViewController {
 					self.scanningProcessIsRunning = !self.scanningProcessIsRunning
 					self.currentlyScanningProcess = .none
 					if selfies.count != 0 {
-						self.showAssetViewController(assets: PhotoMediaType.singleSelfies.mediaTypeName, collection: selfies, photoContent: .singleSelfies)
+						self.showAssetViewController(assets: PhotoMediaType.singleSelfies.mediaTypeName, collection: selfies, photoContent: .singleSelfies, media: .userPhoto)
 					} else {
 						ErrorHandler.shared.showEmptySearchResultsFor(.selfiesIsEmpty, completion: nil)
 					}
@@ -337,7 +335,7 @@ extension MediaContentViewController {
 					self.scanningProcessIsRunning = !self.scanningProcessIsRunning
 					self.currentlyScanningProcess = .none
 					if !livePhoto.isEmpty {
-						self.showAssetViewController(assets: PhotoMediaType.singleLivePhotos.mediaTypeName, collection: livePhoto, photoContent: .singleLivePhotos)
+						self.showAssetViewController(assets: PhotoMediaType.singleLivePhotos.mediaTypeName, collection: livePhoto, photoContent: .singleLivePhotos, media: .userPhoto)
 					} else {
 						ErrorHandler.shared.showEmptySearchResultsFor(.livePhotoIsEmpty, completion: nil)
 					}
@@ -358,7 +356,7 @@ extension MediaContentViewController {
 					self.scanningProcessIsRunning = !self.scanningProcessIsRunning
 					self.currentlyScanningProcess = .none
 					if photosAssets.count != 0 {
-						self.showAssetViewController(assets: PhotoMediaType.singleRecentlyDeletedPhotos.mediaTypeName, collection: photosAssets, photoContent: .singleRecentlyDeletedPhotos)
+						self.showAssetViewController(assets: PhotoMediaType.singleRecentlyDeletedPhotos.mediaTypeName, collection: photosAssets, photoContent: .singleRecentlyDeletedPhotos, media: .userPhoto)
 					} else {
 						ErrorHandler.shared.showEmptySearchResultsFor(.recentlyDeletedPhotosIsEmpty, completion: nil)
 					}
@@ -383,7 +381,7 @@ extension MediaContentViewController {
 					self.scanningProcessIsRunning = !self.scanningProcessIsRunning
 					self.currentlyScanningProcess = .none
 					if largeVodeoAsset.count != 0 {
-						self.showAssetViewController(assets: PhotoMediaType.singleLargeVideos.mediaTypeName, collection: largeVodeoAsset, photoContent: .singleLargeVideos)
+						self.showAssetViewController(assets: PhotoMediaType.singleLargeVideos.mediaTypeName, collection: largeVodeoAsset, photoContent: .singleLargeVideos, media: .userVideo)
 					} else {
 						ErrorHandler.shared.showEmptySearchResultsFor(.largeVideoIsEmpty, completion: nil)
 					}
@@ -448,7 +446,7 @@ extension MediaContentViewController {
 					self.scanningProcessIsRunning = !self.scanningProcessIsRunning
 					self.currentlyScanningProcess = .none
 					if screenRecordsAssets.count != 0 {
-						self.showAssetViewController(assets: PhotoMediaType.singleScreenRecordings.mediaTypeName, collection: screenRecordsAssets, photoContent: .singleScreenRecordings)
+						self.showAssetViewController(assets: PhotoMediaType.singleScreenRecordings.mediaTypeName, collection: screenRecordsAssets, photoContent: .singleScreenRecordings, media: .userVideo)
 					} else {
 						ErrorHandler.shared.showEmptySearchResultsFor(.screenRecordingIsEmpty, completion: nil)
 					}
@@ -469,7 +467,7 @@ extension MediaContentViewController {
 					self.scanningProcessIsRunning = !self.scanningProcessIsRunning
 					self.currentlyScanningProcess = .none
 					if videoAssets.count != 0 {
-						self.showAssetViewController(assets: PhotoMediaType.singleRecentlyDeletedVideos.mediaTypeName, collection: videoAssets, photoContent: .singleRecentlyDeletedVideos)
+						self.showAssetViewController(assets: PhotoMediaType.singleRecentlyDeletedVideos.mediaTypeName, collection: videoAssets, photoContent: .singleRecentlyDeletedVideos, media: .userVideo)
 					} else {
 						ErrorHandler.shared.showEmptySearchResultsFor(.recentlyDeletedVideosIsEmpty, completion: nil)
 					}
@@ -709,6 +707,7 @@ extension MediaContentViewController {
 				totalSearchFindPhotosCountIn[4] = count
 			case .recentlyDeletedPhoto:
 				totalSearchFindPhotosCountIn[5] = count
+				/// `Video`
 			case .largeVideo:
 				totalSearchFindVideosCountInt[0] = count
 			case .duplicatedVideo:
@@ -913,6 +912,17 @@ extension MediaContentViewController {
 		if let cell = self.tableView.cellForRow(at: indexPath) as? ContentTypeTableViewCell {
 			cell.resetProgress()
 			self.tableView.reloadRows(at: [indexPath], with: .none)
+		}
+	}
+	
+	private func resetAllProgressVisual() {
+		let numberOFOperationElemtnth = self.tableView.numberOfRows(inSection: 0)
+		let allSectionIndexPath = (0..<numberOFOperationElemtnth).map {IndexPath(row: $0, section: 0)}
+		
+		allSectionIndexPath.forEach { indexPath in
+			if let cell = tableView.cellForRow(at: indexPath) as? ContentTypeTableViewCell {
+				cell.resetProgress()
+			}
 		}
 	}
 }

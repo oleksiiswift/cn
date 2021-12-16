@@ -9,7 +9,7 @@ import UIKit
 
 class DropDownMenuViewController: UIViewController {
     
-    var menuSectionItems = [[DropDownOptionsMenuItem]]() {
+    var menuSectionItems = [DropDownOptionsMenuItem]() {
         didSet {
             self.calculateMenuContentSize()
         }
@@ -66,14 +66,14 @@ extension DropDownMenuViewController {
         guard let tableView = self.tableView else { return }
         
         let rowPosition = self.checkIndexPosition(from: indexPath, numberOfRows: tableView.numberOfRows(inSection: indexPath.section))
-        cell.configure(with: menuSectionItems[indexPath.section][indexPath.row], row: rowPosition)
+		cell.configure(with: menuSectionItems[indexPath.row], row: rowPosition)
     }
     
     private func calculateMenuContentSize() {
-        let itemsCount = CGFloat(menuSectionItems.flatMap({$0}).count)
+		let itemsCount = CGFloat(menuSectionItems.compactMap({$0}).count)
         var viewWidth: CGFloat = 150
         let viewHeight: CGFloat = itemsCount * 44
-        let flatItems = menuSectionItems.flatMap{$0}
+		let flatItems = menuSectionItems.compactMap({$0})
         for item in flatItems {
             if item.sizeForFutureText().width + 90 > viewWidth {
                 viewWidth = item.sizeForFutureText().width + 90
@@ -90,7 +90,7 @@ extension DropDownMenuViewController: UITableViewDataSource, UITableViewDelegate
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return menuSectionItems[section].count
+		return menuSectionItems.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -100,7 +100,7 @@ extension DropDownMenuViewController: UITableViewDataSource, UITableViewDelegate
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let selectedItem = menuSectionItems[indexPath.section][indexPath.row]
+		let selectedItem = menuSectionItems[indexPath.row]
         self.dismiss(animated: true) {
             self.delegate?.selectedItemListViewController(self, didSelectItem: selectedItem.menuItem)
         }

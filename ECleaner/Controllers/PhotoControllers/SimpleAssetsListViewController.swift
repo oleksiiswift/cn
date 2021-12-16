@@ -11,37 +11,46 @@ import AVKit
 
 class SimpleAssetsListViewController: UIViewController {
 
-    @IBOutlet weak var collectionView: UICollectionView!
+	@IBOutlet weak var navigationBar: NavigationBar!
+	@IBOutlet weak var collectionView: UICollectionView!
+	
+	var selectedAssetsDelegate: DeepCleanSelectableAssetsDelegate?
+	private var photoManager = PhotoManager.shared
+	public var mediaType: PhotoMediaType = .none
+	public var contentType: MediaContentType = .none
+	
+	private let flowLayout = SimpleColumnFlowLayout(cellsPerRow: 3,
+													minimumInterSpacing: 3,
+													minimumLineSpacing: 3,
+													inset: UIEdgeInsets(top: 10, left: 10, bottom: 0, right: 10))
+	
+	public var assetCollection: [PHAsset] = []
+	private var isSelectedAllPhassets: Bool {
+		if let indexPaths = self.collectionView.indexPathsForSelectedItems {
+			return indexPaths.count == self.assetCollection.count
+		} else {
+			return false
+		}
+	}
+	private var previouslySelectedIndexPaths: [IndexPath] = []
+	public var isDeepCleaningSelectableFlow: Bool = false
+	
     @IBOutlet weak var bottomMenuView: UIView!
     @IBOutlet weak var deleteAssetsButtonView: UIView!
     @IBOutlet weak var deleteAssetsTexetLabel: UILabel!
     @IBOutlet weak var bottomMenuHeightConstraint: NSLayoutConstraint!
      
-    private let flowLayout = SimpleColumnFlowLayout(cellsPerRow: 3, minimumInterSpacing: 3, minimumLineSpacing: 3, inset: UIEdgeInsets(top: 10, left: 10, bottom: 0, right: 10))
     private var bottomMenuHeight: CGFloat = 80
-    
-    private lazy var selectAllButton = UIBarButtonItem(title: "select all", style: .plain, target: self, action: #selector(handleSelectAllButtonTapped))
-    private lazy var deselectAllButton = UIBarButtonItem(title: "deselect all", style: .plain, target: self, action: #selector(handleSelectAllButtonTapped))
-    private lazy var backBarButtonItem = UIBarButtonItem(image: I.navigationItems.leftShevronBack, style: .plain, target: self, action: #selector(didTapBackButton))
-    
-    public var assetCollection: [PHAsset] = []
-    private var previouslySelectedIndexPaths: [IndexPath] = []
-    public var mediaType: PhotoMediaType = .none
-    
-    public var isDeepCleaningSelectableFlow: Bool = false
-    
-	private var photoManager = PhotoManager.shared
-    
-    var selectedAssetsDelegate: DeepCleanSelectableAssetsDelegate?
-
+	
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        setupUI()
+		setupUI()
+		setupNavigation()
+		setupDelegate()
+		setupObservers()
         updateColors()
         setupCollectionView()
-        setupNavigation()
-        setupListenersAndObservers()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -50,7 +59,6 @@ class SimpleAssetsListViewController: UIViewController {
         didSelectPreviouslyIndexPath()
     }
 
-    
     @IBAction func didTapDeleteAssetsActionButton(_ sender: Any) {
         showDeleteSelectedAssetsAlert()
     }
@@ -229,33 +237,63 @@ extension SimpleAssetsListViewController: PhotoCollectionViewCellDelegate {
 }
 
 extension SimpleAssetsListViewController {
-    
-    @objc func didTapBackButton() {
-        
-        guard let selectedIndexPath = self.collectionView.indexPathsForSelectedItems, isDeepCleaningSelectableFlow else { return }
-        
-        var selectedAssetsIDs: [String] = []
-        
-        selectedIndexPath.forEach { indexPath in
-            let assetInCollection = self.assetCollection[indexPath.row]
-            selectedAssetsIDs.append(assetInCollection.localIdentifier)
-        }
-            
-        self.selectedAssetsDelegate?.didSelect(assetsListIds: selectedAssetsIDs, mediaType: self.mediaType)
-        self.navigationController?.popViewController(animated: true)
-    }
+
+	private func deepCleanFlowBackActionButton() {
+			//    @objc func didTapBackButton() {
+			//
+			//        guard let selectedIndexPath = self.collectionView.indexPathsForSelectedItems, isDeepCleaningSelectableFlow else { return }
+			//
+			//        var selectedAssetsIDs: [String] = []
+			//
+			//        selectedIndexPath.forEach { indexPath in
+			//            let assetInCollection = self.assetCollection[indexPath.row]
+			//            selectedAssetsIDs.append(assetInCollection.localIdentifier)
+			//        }
+			//
+			//        self.selectedAssetsDelegate?.didSelect(assetsListIds: selectedAssetsIDs, mediaType: self.mediaType)
+			//        self.navigationController?.popViewController(animated: true)
+			//    }
+	}
+	
+	private func singleCleanFlowBackActionButton() {
+		self.navigationController?.popViewController(animated: true)
+	}
+	
+	private func didTapShowPopUPModalActionMenu() {
+		
+	}
+	
+	private func presentDropDownMenu(with items: [DropDownOptionsMenuItem], from navigationButton: UIButton) {
+		
+		let dropDownViewController = DropDownMenuViewController()
+		dropDownViewController.menuSectionItems = items
+		dropDownViewController.delegate = self
+		
+		guard let popoverPresentationController = dropDownViewController.popoverPresentationController else { return }
+		
+		popoverPresentationController.delegate = self
+		popoverPresentationController.sourceView = navigationButton
+		popoverPresentationController.sourceRect = CGRect(x: navigationButton.bounds.midX, y: navigationButton.bounds.maxY - 13, width: 0, height: 0)
+		popoverPresentationController.permittedArrowDirections = .up
+		self.present(dropDownViewController, animated: true, completion: nil)
+	}
+}
+
+extension SimpleAssetsListViewController {
+	
+	
 
     @objc func handleSelectAllButtonTapped() {
     
         let selected = collectionView.indexPathsForSelectedItems?.count == assetCollection.count
-        self.navigationItem.rightBarButtonItem = selected ? selectAllButton : deselectAllButton
+//        self.navigationItem.rightBarButtonItem = selected ? selectAllButton : deselectAllButton
         setCollection(selected: selected)
         handleBottomButtonMenu()
     }
     
     private func setCollection(selected: Bool) {
         
-        if selected {
+        if !selected {
             self.collectionView.deselectAllItems(in: 0, animated: true)
         } else {
             self.collectionView.selectAllItems(in: 0, animated: true)
@@ -274,7 +312,7 @@ extension SimpleAssetsListViewController {
     
     private func handleSelectAllButtonState() {
         
-        self.navigationItem.rightBarButtonItem = self.collectionView.indexPathsForSelectedItems?.count != assetCollection.count ? selectAllButton : deselectAllButton
+
     }
     
     private func handleBottomButtonMenu() {
@@ -374,32 +412,93 @@ extension SimpleAssetsListViewController: Themeble {
     }
     
     func updateColors() {
+		
+		self.view.backgroundColor = theme.backgroundColor
+		self.collectionView.backgroundColor = .clear
+		
+
         bottomMenuView.backgroundColor = theme.sectionBackgroundColor
         deleteAssetsButtonView.backgroundColor = theme.accentBackgroundColor
         deleteAssetsTexetLabel.textColor = theme.activeTitleTextColor
     }
-    
-    private func setupNavigation() {
-        
-        self.navigationItem.rightBarButtonItem = selectAllButton
-        
-        if isDeepCleaningSelectableFlow {
-            
-            self.navigationItem.leftBarButtonItem = backBarButtonItem
-        }
-    }
-    
-    private func setupListenersAndObservers() {
-        
-        UpdatingChangesInOpenedScreensMediator.instance.setListener(listener: self)
-        
-        
-        
-    }
+}
+
+//		MARK: - SETUP -
+extension SimpleAssetsListViewController {
+	
+	private func setupNavigation() {
+		
+		navigationBar.setupNavigation(title: mediaType.mediaTypeName,
+									  leftBarButtonImage: I.systemItems.navigationBarItems.back,
+									  rightBarButtonImage: I.systemItems.navigationBarItems.burgerDots,
+									  mediaType: contentType,
+									  leftButtonTitle: nil,
+									  rightButtonTitle: nil)
+	}
+	
+	private func setupDelegate() {
+		navigationBar.delegate = self
+	}
+	
+	private func setupObservers() {
+		UpdatingChangesInOpenedScreensMediator.instance.setListener(listener: self)
+	}
+}
+
+extension SimpleAssetsListViewController: NavigationBarDelegate {
+	
+	func didTapLeftBarButton(_ sender: UIButton) {
+		if isDeepCleaningSelectableFlow {
+			self.deepCleanFlowBackActionButton()
+		} else {
+			self.singleCleanFlowBackActionButton()
+		}
+	}
+
+	
+	func didTapRightBarButton(_ sender: UIButton) {
+		
+		let selectAllDropDownActionButton = DropDownOptionsMenuItem(titleMenu: "select all",
+																		 itemThumbnail: I.systemItems.selectItems.roundedCheckMark,
+																		 isSelected: !isSelectedAllPhassets,
+																		 menuItem: .selectAll)
+		
+		let deselectAllDrpDownActionButton = DropDownOptionsMenuItem(titleMenu: "deselect all",
+																		  itemThumbnail: I.systemItems.selectItems.circleMark,
+																		  isSelected: isSelectedAllPhassets,
+																		  menuItem: .deselectAll)
+		
+		presentDropDownMenu(with: [selectAllDropDownActionButton, deselectAllDrpDownActionButton], from: sender)
+	}
+}
+
+extension SimpleAssetsListViewController: SelectDropDownMenuDelegate {
+	
+	func selectedItemListViewController(_ controller: DropDownMenuViewController, didSelectItem: DropDownMenuItems) {
+		
+		switch didSelectItem {
+			case .deselectAll:
+				if isSelectedAllPhassets {
+					self.setCollection(selected: false)
+				}
+			case .selectAll:
+				if !isSelectedAllPhassets {
+					self.setCollection(selected: true)
+				}
+			default:
+				return
+		}
+	}
+}
+
+extension SimpleAssetsListViewController: UIPopoverPresentationControllerDelegate {
+	
+	func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
+		return .none
+	}
 }
 
 //      MARK: - updating screen if photolibrary did change it content -
-
 extension SimpleAssetsListViewController: UpdatingChangesInOpenedScreensListeners {
     
     /// updating screenshots

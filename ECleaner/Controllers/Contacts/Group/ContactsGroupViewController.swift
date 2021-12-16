@@ -17,17 +17,17 @@ class ContactsGroupViewController: UIViewController {
     
     lazy var selectAllOptionItem = DropDownOptionsMenuItem(titleMenu: "select all",
                                                            itemThumbnail: I.systemItems.selectItems.roundedCheckMark,
-                                                           isSelected: false,
-                                                           menuItem: .unselectAll)
+                                                           isSelected: true,
+                                                           menuItem: .selectAll)
     
     lazy var deselectAllOptionItem = DropDownOptionsMenuItem(titleMenu: "deselect all",
                                                              itemThumbnail: I.systemItems.selectItems.circleMark,
-                                                             isSelected: false,
-                                                             menuItem: .unselectAll)
+                                                             isSelected: true,
+                                                             menuItem: .deselectAll)
     
     lazy var exportSelectedContacts = DropDownOptionsMenuItem(titleMenu: "export selected",
                                                               itemThumbnail: I.systemItems.defaultItems.share,
-                                                              isSelected: false,
+                                                              isSelected: true,
                                                               menuItem: .share)
     
     private var contactsManager = ContactsManager.shared
@@ -281,10 +281,10 @@ extension ContactsGroupViewController: SelectDropDownMenuDelegate {
         
         let firstRowItem = isSelectedAllItems ? self.deselectAllOptionItem : self.selectAllOptionItem
         let secontRowItem = exportSelectedContacts
-        self.presentDropDonwMenu(with: [[firstRowItem, secontRowItem]], from: navigationBar.rightBarButtonItem)
+        self.presentDropDonwMenu(with: [firstRowItem, secontRowItem], from: navigationBar.rightBarButtonItem)
     }
 
-    private func presentDropDonwMenu(with items: [[DropDownOptionsMenuItem]], from navigationButton: UIButton) {
+    private func presentDropDonwMenu(with items: [DropDownOptionsMenuItem], from navigationButton: UIButton) {
         let dropDownViewController = DropDownMenuViewController()
         dropDownViewController.menuSectionItems = items
         dropDownViewController.delegate = self
@@ -301,7 +301,7 @@ extension ContactsGroupViewController: SelectDropDownMenuDelegate {
     func selectedItemListViewController(_ controller: DropDownMenuViewController, didSelectItem: DropDownMenuItems) {
         
         switch didSelectItem {
-            case .unselectAll:
+            case .deselectAll:
                 self.didSelectDeselecAllItems()
             case .share:
                 self.exportBackupSelectedItems()

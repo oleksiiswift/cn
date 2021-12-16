@@ -87,10 +87,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="UHg-uZ-vmZ">
-                                <rect key="frame" x="0.0" y="44" width="414" height="742"/>
+                                <rect key="frame" x="0.0" y="114" width="414" height="672"/>
                                 <subviews>
                                     <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="qrX-u6-Im9">
-                                        <rect key="frame" x="0.0" y="0.0" width="414" height="742"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="672"/>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                         <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="VJG-xX-e8T">
                                             <size key="itemSize" width="128" height="128"/>
@@ -110,12 +110,19 @@
                                         </cells>
                                     </collectionView>
                                 </subviews>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="trailing" secondItem="qrX-u6-Im9" secondAttribute="trailing" id="2IL-Jb-Byx"/>
+                                    <constraint firstItem="qrX-u6-Im9" firstAttribute="top" secondItem="UHg-uZ-vmZ" secondAttribute="top" id="33i-fg-x4B"/>
                                     <constraint firstItem="qrX-u6-Im9" firstAttribute="leading" secondItem="UHg-uZ-vmZ" secondAttribute="leading" id="RrP-HC-cek"/>
                                     <constraint firstAttribute="bottom" secondItem="qrX-u6-Im9" secondAttribute="bottom" id="Yjx-vg-Zmf"/>
-                                    <constraint firstItem="qrX-u6-Im9" firstAttribute="top" secondItem="UHg-uZ-vmZ" secondAttribute="top" id="rA7-8L-XLZ"/>
+                                </constraints>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="DJk-mj-GNF" customClass="NavigationBar" customModule="ECleaner" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="44" width="414" height="70"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="70" id="2DQ-dB-3zP"/>
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZQk-j7-UIW">
@@ -163,11 +170,14 @@
                         <constraints>
                             <constraint firstItem="ZQk-j7-UIW" firstAttribute="top" secondItem="UHg-uZ-vmZ" secondAttribute="bottom" id="0NF-8b-EYB"/>
                             <constraint firstItem="ZQk-j7-UIW" firstAttribute="top" secondItem="UHg-uZ-vmZ" secondAttribute="bottom" id="48v-Cp-6To"/>
+                            <constraint firstItem="UHg-uZ-vmZ" firstAttribute="top" secondItem="DJk-mj-GNF" secondAttribute="bottom" id="FZ2-dC-JRt"/>
+                            <constraint firstItem="DJk-mj-GNF" firstAttribute="leading" secondItem="YNe-GM-yhH" secondAttribute="leading" id="M7e-7V-ahd"/>
                             <constraint firstItem="UHg-uZ-vmZ" firstAttribute="leading" secondItem="YNe-GM-yhH" secondAttribute="leading" id="QaK-E0-ZuA"/>
                             <constraint firstItem="ZQk-j7-UIW" firstAttribute="leading" secondItem="YNe-GM-yhH" secondAttribute="leading" id="XWW-es-fgd"/>
                             <constraint firstItem="YNe-GM-yhH" firstAttribute="trailing" secondItem="UHg-uZ-vmZ" secondAttribute="trailing" id="akF-ms-8ck"/>
                             <constraint firstAttribute="bottom" secondItem="ZQk-j7-UIW" secondAttribute="bottom" id="au0-iv-A7u"/>
-                            <constraint firstItem="UHg-uZ-vmZ" firstAttribute="top" secondItem="YNe-GM-yhH" secondAttribute="top" id="xwV-vD-8na"/>
+                            <constraint firstItem="YNe-GM-yhH" firstAttribute="trailing" secondItem="DJk-mj-GNF" secondAttribute="trailing" id="ktY-iH-IfD"/>
+                            <constraint firstItem="DJk-mj-GNF" firstAttribute="top" secondItem="YNe-GM-yhH" secondAttribute="top" id="qNJ-fT-0w2"/>
                             <constraint firstItem="YNe-GM-yhH" firstAttribute="trailing" secondItem="ZQk-j7-UIW" secondAttribute="trailing" id="ypv-QY-1ub"/>
                         </constraints>
                     </view>
@@ -177,11 +187,12 @@
                         <outlet property="collectionView" destination="qrX-u6-Im9" id="DvB-dn-Ev9"/>
                         <outlet property="deleteAssetsButtonView" destination="hes-dy-uOu" id="exq-rE-8c5"/>
                         <outlet property="deleteAssetsTexetLabel" destination="kay-0G-Ajy" id="w78-L0-zpm"/>
+                        <outlet property="navigationBar" destination="DJk-mj-GNF" id="gCm-BN-JZ0"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="eh2-31-QPm" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2146" y="410"/>
+            <point key="canvasLocation" x="2143.4782608695655" y="409.82142857142856"/>
         </scene>
         <!--Grouped Asset List View Controller-->
         <scene sceneID="dfX-mG-VDd">
