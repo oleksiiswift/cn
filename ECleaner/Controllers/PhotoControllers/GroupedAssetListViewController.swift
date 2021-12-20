@@ -50,7 +50,8 @@ class GroupedAssetListViewController: UIViewController, UIPageViewControllerDele
     
     /// - assets -
     public var assetGroups: [PhassetGroup] = []
-    public var mediaType: PhotoMediaType = .none
+	public var mediaType: PhotoMediaType = .none
+	public var contentType: MediaContentType = .none
     
     private var selectedAssets: [PHAsset] = []
     private var selectedSection: Set<Int> = []
@@ -154,7 +155,9 @@ extension GroupedAssetListViewController: UICollectionViewDelegate, UICollection
         
         cell.delegate = self
         cell.indexPath = indexPath
-        cell.cellContentType = self.mediaType
+		cell.cellMediaType = self.mediaType
+		cell.cellContentType = self.contentType
+		
         cell.selectButtonSetup(by: self.mediaType)
         
         if let path = self.collectionView.indexPathsForSelectedItems, path.contains(indexPath) {

@@ -13,7 +13,7 @@ class AssetContextPreviewViewController: UIViewController {
     private let assetImageView = UIImageView()
     
     override func loadView() {
-        
+		
         view = assetImageView
     }
     

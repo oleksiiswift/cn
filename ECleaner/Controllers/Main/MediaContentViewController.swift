@@ -203,6 +203,9 @@ extension MediaContentViewController {
         viewController.assetCollection = collection
         viewController.mediaType = type
 		viewController.contentType = content
+		viewController.changedPhassetCompletionHandler = { changedPhasset in
+			self.updateSingleChanged(phasset: changedPhasset, content: type)
+		}
         self.navigationController?.pushViewController(viewController, animated: true)
     }
     
@@ -225,6 +228,30 @@ extension MediaContentViewController {
         viewController.mediaType = .userContacts
         self.navigationController?.pushViewController(viewController, animated: true)
     }
+	
+	private func updateSingleChanged(phasset collection: [PHAsset], content type: PhotoMediaType) {
+		switch type {
+			case .singleScreenShots:
+				self.allScreenShots = collection
+			case .singleLivePhotos:
+				self.allLiveFotos = collection
+			case .singleSelfies:
+				self.allSelfies = collection
+			case .singleRecentlyDeletedPhotos:
+				self.allRecentlyDeletedPhotos = collection
+			case .singleLargeVideos:
+				self.allLargeVideos = collection
+			case .singleScreenRecordings:
+				self.allScreenRecords = collection
+			case .singleRecentlyDeletedVideos:
+				self.allRecentlyDeletedPhotos = collection
+			default:
+				return
+		}
+		
+		let indexPath = type.singleSearchIndexPath
+		self.tableView.reloadRows(at: [indexPath], with: .none)
+	}
 }
 
 //      MARK: - photo content -

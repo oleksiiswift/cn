@@ -23,9 +23,9 @@ class SimpleAssetsListViewController: UIViewController {
 	public var contentType: MediaContentType = .none
 	
 	private let flowLayout = SimpleColumnFlowLayout(cellsPerRow: 3,
-													minimumInterSpacing: 3,
-													minimumLineSpacing: 3,
-													inset: UIEdgeInsets(top: 10, left: 10, bottom: 0, right: 10))
+													minimumInterSpacing: 0,
+													minimumLineSpacing: 0,
+													inset: UIEdgeInsets(top: 10, left: 4, bottom: 0, right: 4))
 	
 	public var assetCollection: [PHAsset] = []
 	private var isSelectedAllPhassets: Bool {
@@ -35,6 +35,7 @@ class SimpleAssetsListViewController: UIViewController {
 			return false
 		}
 	}
+	public var changedPhassetCompletionHandler: ((_ changedPhasset: [PHAsset]) -> Void)?
 	private var previouslySelectedIndexPaths: [IndexPath] = []
 	public var isDeepCleaningSelectableFlow: Bool = false
 	
@@ -68,7 +69,7 @@ extension SimpleAssetsListViewController: UICollectionViewDelegate, UICollection
             case .singleLargeVideos:
                 flowLayout.isSquare = true
             default:
-                flowLayout.itemHieght = ((U.screenWidth - 26) / 3) / U.ratio
+                flowLayout.itemHieght = ((U.screenWidth - 30) / 3) / U.ratio
         }
         
         self.collectionView.dataSource = self
@@ -77,17 +78,15 @@ extension SimpleAssetsListViewController: UICollectionViewDelegate, UICollection
         self.collectionView.collectionViewLayout = flowLayout
         self.collectionView.allowsMultipleSelection = true
         self.collectionView.reloadData()
-        
-        if U.hasTopNotch {
-//            self.collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: U.bottomSafeAreaHeight * 2, right: 0)
-        }
+		self.collectionView.contentInset.top = 20
     }
     
     private func configure(_ cell: PhotoCollectionViewCell, at indexPath: IndexPath) {
         
         cell.delegate = self
         cell.indexPath = indexPath
-        cell.cellContentType = self.mediaType
+		cell.cellMediaType = self.mediaType
+		cell.cellContentType = self.contentType
         
         if let paths = self.collectionView.indexPathsForSelectedItems, paths.contains([indexPath]) {
             cell.isSelected = true
@@ -132,6 +131,8 @@ extension SimpleAssetsListViewController: UICollectionViewDelegate, UICollection
                                        size: CGSize(width: (U.screenWidth - 26) / 2,
                                                     height: ((U.screenWidth - 26) / 2) / U.ratio))
         }
+		
+		cell.updateColors()
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -156,21 +157,39 @@ extension SimpleAssetsListViewController: UICollectionViewDelegate, UICollection
         
     func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
         let asset = self.assetCollection[indexPath.row]
-        
+		let identifier = IndexPath(item: indexPath.item, section: indexPath.section) as NSCopying
         if asset.mediaType == .video {
-            return UIContextMenuConfiguration(identifier: nil) {
+            return UIContextMenuConfiguration(identifier: identifier) {
                 return PreviewAVController(asset: asset)
             } actionProvider: { _ in
                 return self.createCellContextMenu(for: asset, at: indexPath)
             }
         } else {
-            return UIContextMenuConfiguration(identifier: nil) {
+            return UIContextMenuConfiguration(identifier: identifier) {
                 return AssetContextPreviewViewController(asset: asset)
             } actionProvider: { _ in
                 return self.createCellContextMenu(for: asset, at: indexPath)
             }
         }
     }
+	
+	func collectionView(_ collectionView: UICollectionView, previewForHighlightingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview? {
+		
+		guard let indexPath = configuration.identifier as? IndexPath,  let cell = collectionView.cellForItem(at: indexPath) else { return nil}
+		
+		let targetPreview = UITargetedPreview(view: cell)
+		targetPreview.parameters.backgroundColor = .clear
+		
+		return targetPreview
+	}
+	
+	func collectionView(_ collectionView: UICollectionView, previewForDismissingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview? {
+		guard let indexPath = configuration.identifier as? IndexPath, let cell = collectionView.cellForItem(at: indexPath) else { return nil}
+		
+		let targetPreview = UITargetedPreview(view: cell)
+		targetPreview.parameters.backgroundColor = .clear
+		return targetPreview
+	}
 }
 
 extension SimpleAssetsListViewController: PhotoCollectionViewCellDelegate {
@@ -250,26 +269,8 @@ extension SimpleAssetsListViewController {
 	}
 	
 	private func singleCleanFlowBackActionButton() {
+		self.changedPhassetCompletionHandler?(assetCollection)
 		self.navigationController?.popViewController(animated: true)
-	}
-	
-	private func didTapShowPopUPModalActionMenu() {
-		
-	}
-	
-	private func presentDropDownMenu(with items: [DropDownOptionsMenuItem], from navigationButton: UIButton) {
-		
-		let dropDownViewController = DropDownMenuViewController()
-		dropDownViewController.menuSectionItems = items
-		dropDownViewController.delegate = self
-		
-		guard let popoverPresentationController = dropDownViewController.popoverPresentationController else { return }
-		
-		popoverPresentationController.delegate = self
-		popoverPresentationController.sourceView = navigationButton
-		popoverPresentationController.sourceRect = CGRect(x: navigationButton.bounds.midX, y: navigationButton.bounds.maxY - 13, width: 0, height: 0)
-		popoverPresentationController.permittedArrowDirections = .up
-		self.present(dropDownViewController, animated: true, completion: nil)
 	}
 }
 
@@ -288,16 +289,17 @@ extension SimpleAssetsListViewController {
         for indexPath in (0..<numbersOfItemsInSection).map({IndexPath(item: $0, section: 0)}) {
             
             if let cell = collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell {
-                cell.isSelected = !selected
+                cell.isSelected = selected
                 cell.checkIsSelected()
             }
         }
 		handleBottomButtonMenu()
+		handleSelectAllButtonState()
     }
     
     private func handleSelectAllButtonState() {
-        
-
+		let rightButtonTitle = isSelectedAllPhassets ? "deselect all" : "select all"
+		self.navigationBar.changeHotRightTitle(newTitle: rightButtonTitle)
     }
     
     private func handleBottomButtonMenu() {
@@ -306,9 +308,15 @@ extension SimpleAssetsListViewController {
         
         if let selectedItems = collectionView.indexPathsForSelectedItems {
             bottomMenuHeightConstraint.constant = selectedItems.count > 0 ? (bottomMenuHeight + U.bottomSafeAreaHeight - 5) : 0
-			bottomButtonView.title("delete selected (\(selectedItems.count))")
 			
-            self.collectionView.contentInset.bottom = selectedItems.count > 0 ? 10 : 5
+			switch mediaType {
+				case .singleRecentlyDeletedPhotos, .singleRecentlyDeletedVideos:
+					bottomButtonView.title("recover selected (\(selectedItems.count)")
+				default:
+					bottomButtonView.title("delete selected (\(selectedItems.count))")
+			}
+			
+			self.collectionView.contentInset.bottom = selectedItems.count > 0 ? 70 + U.bottomSafeAreaHeight : 5
             U.animate(0.5) {
                 self.collectionView.layoutIfNeeded()
                 self.view.layoutIfNeeded()
@@ -334,19 +342,53 @@ extension SimpleAssetsListViewController {
             let assetInCollection = self.assetCollection[indexPath.row]
                 assetsToDelete.append(assetInCollection)
         }
+		self.deleteOperationWith(selectedPHAassets: assetsToDelete, at: selectedIndexPath)
+    }
+	
+	private func deleteSinglePhasset(at indexPath: IndexPath) {
 		
-		let deleteOperation = photoManager.deleteSelectedOperation(assets: assetsToDelete) { success in
+		self.deleteOperationWith(selectedPHAassets: [self.assetCollection[indexPath.row]], at: [indexPath])
+	}
+	
+	private func deleteOperationWith(selectedPHAassets: [PHAsset], at indexPath: [IndexPath]) {
+		let deleteOperation = photoManager.deleteSelectedOperation(assets: selectedPHAassets) { success in
 			if success {
-				let assetIdentifiers = assetsToDelete.map({ $0.localIdentifier})
+				let assetIdentifiers = selectedPHAassets.map({ $0.localIdentifier})
 				self.assetCollection = self.assetCollection.filter({!assetIdentifiers.contains($0.localIdentifier)})
-				self.collectionView.reloadData()
-				self.handleSelectAllButtonState()
-				self.handleBottomButtonMenu()
+				U.UI {
+					self.collectionView.performBatchUpdates {
+						self.collectionView.deleteItems(at: indexPath)
+					} completion: { _ in
+						self.handleSelectAllButtonState()
+						self.handleBottomButtonMenu()
+					}
+				}
 			}
 		}
-            
+			
 		photoManager.serviceUtilsCalculatedOperationsQueuer.addOperation(deleteOperation)
-    }
+	}
+	
+	private func recoverSeletedAssets() {
+		guard let selectedIndexPath = self.collectionView.indexPathsForSelectedItems else { return }
+		
+		var receoveredAssets: [PHAsset] = []
+		
+		selectedIndexPath.forEach { indexPath in
+			let asset = self.assetCollection[indexPath.row]
+			receoveredAssets.append(asset)
+		}
+		
+		let recoverOperation = photoManager.recoverSelectedOperation(assets: receoveredAssets) { suxxess in
+			if suxxess {
+				debugPrint(suxxess)
+			} else {
+				debugPrint()
+			}
+		}
+		
+		photoManager.serviceUtilsCalculatedOperationsQueuer.addOperation(recoverOperation)
+	}
     
     private func createCellContextMenu(for asset: PHAsset, at indexPath: IndexPath) -> UIMenu {
         
@@ -359,8 +401,7 @@ extension SimpleAssetsListViewController {
         }
         
         let deleteAssetAction = UIAction(title: "delete", image: I.cellElementsItems.trashBin) { _ in
-            debugPrint("delete action at :\(asset.imageSize)")
-            debugPrint(indexPath)
+			self.deleteSinglePhasset(at: indexPath)
         }
         
         return UIMenu(title: "", children: [fullScreenPreviewAction, deleteAssetAction])
@@ -394,7 +435,13 @@ extension SimpleAssetsListViewController: Themeble {
     func setupUI() {
         
         bottomMenuHeightConstraint.constant = 0
-		self.bottomButtonView.setImage(I.systemItems.defaultItems.delete, with: CGSize(width: 18, height: 24))
+		
+		switch mediaType {
+			case .singleRecentlyDeletedPhotos, .singleRecentlyDeletedVideos:
+				self.bottomButtonView.setImage(I.systemItems.defaultItems.recover, with: CGSize(width: 18, height: 24))
+			default:
+				self.bottomButtonView.setImage(I.systemItems.defaultItems.delete, with: CGSize(width: 18, height: 24))
+		}
     }
     
     func updateColors() {
@@ -417,10 +464,10 @@ extension SimpleAssetsListViewController {
 		
 		navigationBar.setupNavigation(title: mediaType.mediaTypeName,
 									  leftBarButtonImage: I.systemItems.navigationBarItems.back,
-									  rightBarButtonImage: I.systemItems.navigationBarItems.burgerDots,
+									  rightBarButtonImage: nil,
 									  mediaType: contentType,
 									  leftButtonTitle: nil,
-									  rightButtonTitle: nil)
+									  rightButtonTitle: isSelectedAllPhassets ? "deselect all" : "select all")
 	}
 	
 	private func setupDelegate() {
@@ -445,44 +492,19 @@ extension SimpleAssetsListViewController: NavigationBarDelegate {
 
 	
 	func didTapRightBarButton(_ sender: UIButton) {
-		
-		let selectAllDropDownActionButton = DropDownOptionsMenuItem(titleMenu: "select all",
-																		 itemThumbnail: I.systemItems.selectItems.roundedCheckMark,
-																		 isSelected: !isSelectedAllPhassets,
-																		 menuItem: .selectAll)
-		
-		let deselectAllDrpDownActionButton = DropDownOptionsMenuItem(titleMenu: "deselect all",
-																		  itemThumbnail: I.systemItems.selectItems.circleMark,
-																		  isSelected: isSelectedAllPhassets,
-																		  menuItem: .deselectAll)
-		
-		presentDropDownMenu(with: [selectAllDropDownActionButton, deselectAllDrpDownActionButton], from: sender)
-	}
-}
-
-extension SimpleAssetsListViewController: SelectDropDownMenuDelegate {
-	
-	func selectedItemListViewController(_ controller: DropDownMenuViewController, didSelectItem: DropDownMenuItems) {
-		
-		switch didSelectItem {
-			case .deselectAll:
-				if isSelectedAllPhassets {
-					self.setCollection(selected: false)
-				}
-			case .selectAll:
-				if !isSelectedAllPhassets {
-					self.setCollection(selected: true)
-				}
-			default:
-				return
-		}
+		self.setCollection(selected: !isSelectedAllPhassets)
 	}
 }
 
 extension SimpleAssetsListViewController: BottomActionButtonDelegate {
 	
 	func didTapActionButton() {
-		debugPrint("did tap delete selected phassets")
+		
+		if mediaType == .singleRecentlyDeletedVideos || mediaType == .singleRecentlyDeletedPhotos {
+			recoverSeletedAssets()
+		} else {
+			showDeleteSelectedAssetsAlert()
+		}
 	}
 }
 
@@ -503,11 +525,13 @@ extension SimpleAssetsListViewController: UpdatingChangesInOpenedScreensListener
 			
 			let screenShotsOperation = photoManager.getScreenShotsOperation(from: S.lowerBoundSavedDate, to: S.upperBoundSavedDate) { screenShots in
 				if self.assetCollection.count != screenShots.count {
-					self.assetCollection = screenShots
-					self.collectionView.reloadData()
+					U.UI {
+						self.assetCollection = screenShots
+						self.setCollection(selected: false)
+						self.collectionView.reloadData()
+					}
 				}
 			}
-			
 			photoManager.phassetProcessingOperationQueuer.addOperation(screenShotsOperation)
         }
     }

@@ -410,7 +410,7 @@ extension PHAssetFetchManager {
 		return recentlyDeletedAlbumsSortFetch
 	}
 	
-	private func fetchRecentlyDeletedCollection(completionHandler: @escaping ((PHAssetCollection?) -> Void)) {
+	public func fetchRecentlyDeletedCollection(completionHandler: @escaping ((PHAssetCollection?) -> Void)) {
 		
 		let result = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .albumRegular, options: nil)
 		

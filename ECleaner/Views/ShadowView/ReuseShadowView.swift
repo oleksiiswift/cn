@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 class ReuseShadowView: UIView {
-    
+	    
     var topShadowView = UIView()
     
     public var viewShadowOffsetOriginX: CGFloat = 6

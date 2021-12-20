@@ -87,7 +87,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="qrX-u6-Im9">
-                                <rect key="frame" x="0.0" y="44" width="414" height="852"/>
+                                <rect key="frame" x="0.0" y="114" width="414" height="782"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="VJG-xX-e8T">
                                     <size key="itemSize" width="128" height="128"/>
@@ -130,10 +130,10 @@
                             <constraint firstItem="YNe-GM-yhH" firstAttribute="trailing" secondItem="Mpi-YQ-KXC" secondAttribute="trailing" id="VVG-Pd-Ax4"/>
                             <constraint firstAttribute="bottom" secondItem="qrX-u6-Im9" secondAttribute="bottom" id="Xvz-oW-1a7"/>
                             <constraint firstItem="qrX-u6-Im9" firstAttribute="trailing" secondItem="YNe-GM-yhH" secondAttribute="trailing" id="Z0z-Qw-art"/>
+                            <constraint firstItem="qrX-u6-Im9" firstAttribute="top" secondItem="DJk-mj-GNF" secondAttribute="bottom" id="iv1-8d-v4V"/>
                             <constraint firstItem="YNe-GM-yhH" firstAttribute="trailing" secondItem="DJk-mj-GNF" secondAttribute="trailing" id="ktY-iH-IfD"/>
                             <constraint firstItem="DJk-mj-GNF" firstAttribute="top" secondItem="YNe-GM-yhH" secondAttribute="top" id="qNJ-fT-0w2"/>
                             <constraint firstAttribute="bottom" secondItem="Mpi-YQ-KXC" secondAttribute="bottom" id="qcU-sr-hXH"/>
-                            <constraint firstItem="qrX-u6-Im9" firstAttribute="top" secondItem="YNe-GM-yhH" secondAttribute="top" id="xzA-OD-FKI"/>
                         </constraints>
                     </view>
                     <connections>
