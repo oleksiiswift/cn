@@ -540,6 +540,7 @@
 		04649B37268C624F00336FE4 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				4FE56A982729973B006CD946 /* DeepCleanInfoView.xib */,
 				97CA4240273EBC33001FEA15 /* BottomButtonBarView.xib */,
 				97B01A5A2745830500DDE03C /* BottomDoubleButtonBarView.xib */,
 				04467CE5270DA3B200DBBB39 /* DateSelectebleView.xib */,
@@ -851,7 +852,6 @@
 		04E5835E267A3E7D00EDC3A3 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
-				4FE56A9727299714006CD946 /* DeepCleanInfoView */,
 				4F56072327205ADC00CA19E9 /* CustomCircular */,
 				4F4A17A2271D73B100CAF157 /* Fonts */,
 				0447A68C26B2A9170074919B /* Operation */,
@@ -859,7 +859,7 @@
 				049CC22826831D540002F988 /* Constants */,
 				049CC2382683730E0002F988 /* FlowLayout */,
 				04CFFFEA26846A3E000CA850 /* Device */,
-				9770C807274D34A90046EF84 /* FileFormats.swift */,
+				979278672771241F0090F368 /* FileFormats */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -906,6 +906,7 @@
 		04E58364267A3F1600EDC3A3 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				4FE56A9727299714006CD946 /* DeepCleanInfoView */,
 				97CA4242273ECB59001FEA15 /* BottomButtonBarView */,
 				97B01A5C274584AC00DDE03C /* BottomDoubleButtonBarView */,
 				4F4A17B7271D80D400CAF157 /* NavigationBar */,
@@ -1093,7 +1094,6 @@
 		4FE56A9727299714006CD946 /* DeepCleanInfoView */ = {
 			isa = PBXGroup;
 			children = (
-				4FE56A982729973B006CD946 /* DeepCleanInfoView.xib */,
 				4FE56A9A27299A11006CD946 /* DeepCleanInfoView.swift */,
 			);
 			path = DeepCleanInfoView;
@@ -1235,6 +1235,14 @@
 				97D2BECB275A3D06002082EB /* CNContactVCard+ImageData.swift */,
 			);
 			path = CNContacts;
+			sourceTree = "<group>";
+		};
+		979278672771241F0090F368 /* FileFormats */ = {
+			isa = PBXGroup;
+			children = (
+				9770C807274D34A90046EF84 /* FileFormats.swift */,
+			);
+			path = FileFormats;
 			sourceTree = "<group>";
 		};
 		979998D82747F4CC00175DE5 /* Preview */ = {

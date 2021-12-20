@@ -42,6 +42,19 @@ enum MediaContentType {
                 return theme.defaulTintColor
         }
     }
+	
+	var selectableAssetsCheckMark: UIImage {
+		switch self {
+			case .userPhoto:
+				return I.personalisation.photo.checkmark
+			case .userVideo:
+				return I.personalisation.video.checkmark
+			case .userContacts:
+				return I.personalisation.contacts.sectionSelect
+			case .none:
+				return UIImage()
+		}
+	}
     
     
         /// ``MAIN SCREEN CONTENT TYPE PROPERTIES``

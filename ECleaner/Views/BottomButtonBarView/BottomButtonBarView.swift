@@ -69,6 +69,8 @@ class BottomButtonBarView: UIView {
 
     public func updateColorsSettings() {
         
+		self.backgroundColor = .clear
+		
         let buttonBackgroundColor: UIColor = configureShadow ? .clear : self.buttonColor
         
         activityIndicatorView.color = activityIndicatorColor

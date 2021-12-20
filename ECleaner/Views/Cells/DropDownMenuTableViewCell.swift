@@ -34,6 +34,9 @@ extension DropDownMenuTableViewCell {
         if position != .bottom {
             setupSeparatorView()
         }
+		
+		menuTitileTextLabel.alpha = menuItem.isSelected ? 1 : 0.5
+		thumbnailImageView.alpha = menuItem.isSelected ? 1 : 0.5
     }
     
     private func setupSeparatorView() {

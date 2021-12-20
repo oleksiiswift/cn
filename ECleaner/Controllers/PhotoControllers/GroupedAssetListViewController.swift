@@ -34,8 +34,8 @@ class GroupedAssetListViewController: UIViewController, UIPageViewControllerDele
     
     private let sliderMenuOptionItem = DropDownOptionsMenuItem(titleMenu: "slider", itemThumbnail: I.systemElementsItems.sliderView, isSelected: false, menuItem: .changeLayout)
     private let tileMenuOptionItem = DropDownOptionsMenuItem(titleMenu: "tile", itemThumbnail: I.systemElementsItems.tileView, isSelected: false, menuItem: .changeLayout)
-    private let selectAllOptionItem = DropDownOptionsMenuItem(titleMenu: "select all", itemThumbnail: I.systemElementsItems.circleBox!, isSelected: false, menuItem: .unselectAll)
-    private let deselectAllOptionItem = DropDownOptionsMenuItem(titleMenu: "deselect all", itemThumbnail: I.systemElementsItems.circleCheckBox!, isSelected: false, menuItem: .unselectAll)
+	private let selectAllOptionItem = DropDownOptionsMenuItem(titleMenu: "select all", itemThumbnail: I.systemElementsItems.circleBox!, isSelected: false, menuItem: .selectAll)
+    private let deselectAllOptionItem = DropDownOptionsMenuItem(titleMenu: "deselect all", itemThumbnail: I.systemElementsItems.circleCheckBox!, isSelected: false, menuItem: .deselectAll)
     
     private lazy var backBarButtonItem = UIBarButtonItem(image: I.navigationItems.leftShevronBack, style: .plain, target: self, action: #selector(didTapBackButton))
     
@@ -50,7 +50,8 @@ class GroupedAssetListViewController: UIViewController, UIPageViewControllerDele
     
     /// - assets -
     public var assetGroups: [PhassetGroup] = []
-    public var mediaType: PhotoMediaType = .none
+	public var mediaType: PhotoMediaType = .none
+	public var contentType: MediaContentType = .none
     
     private var selectedAssets: [PHAsset] = []
     private var selectedSection: Set<Int> = []
@@ -154,7 +155,9 @@ extension GroupedAssetListViewController: UICollectionViewDelegate, UICollection
         
         cell.delegate = self
         cell.indexPath = indexPath
-        cell.cellContentType = self.mediaType
+		cell.cellMediaType = self.mediaType
+		cell.cellContentType = self.contentType
+		
         cell.selectButtonSetup(by: self.mediaType)
         
         if let path = self.collectionView.indexPathsForSelectedItems, path.contains(indexPath) {
@@ -714,7 +717,7 @@ extension GroupedAssetListViewController: SelectDropDownMenuDelegate {
         switch didSelectItem {
             case .changeLayout:
                 self.changeFlowLayoutAndFocus(at: IndexPath(row: 0, section: 0))
-            case .unselectAll:
+            case .deselectAll:
                 self.shouldSelectAllAssetsInSections(isSelectAllAssetsMode)
                 isSelectAllAssetsMode = !isSelectAllAssetsMode
             default:
@@ -730,10 +733,10 @@ extension GroupedAssetListViewController {
         
         let firstRowMenuItem = isSelectAllAssetsMode ? deselectAllOptionItem : selectAllOptionItem
         let secondRowMenuItem = isSliderFlowLayout ? tileMenuOptionItem : sliderMenuOptionItem
-        presentingDropDownBurgerMenu(with: [[firstRowMenuItem, secondRowMenuItem]], from: burgerOptionSettingButton)
+        presentingDropDownBurgerMenu(with: [firstRowMenuItem, secondRowMenuItem], from: burgerOptionSettingButton)
     }
     
-    private func presentingDropDownBurgerMenu(with items: [[DropDownOptionsMenuItem]], from barButtonItem: UIBarButtonItem) {
+    private func presentingDropDownBurgerMenu(with items: [DropDownOptionsMenuItem], from barButtonItem: UIBarButtonItem) {
         
         let drobDownViewController = DropDownMenuViewController()
         drobDownViewController.menuSectionItems = items

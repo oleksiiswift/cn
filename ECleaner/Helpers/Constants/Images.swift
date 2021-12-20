@@ -41,9 +41,11 @@ class Images {
             static let buttonShare = UIImage(named: "defaultButtonShare")!
             static let merge = UIImage(named: "mergeArrowTop")!
             static let delete = UIImage(named: "deleteItem")!
+			static let recover = UIImage(named: "recoverTrashBin")!
             static let refresh = UIImage(named: "circleArrow")!
             static let deepClean = UIImage(named: "deepClean")!
             static let refreshFull = UIImage(named: "circleRoundedArrows")!
+			static let onViewPlayButton = UIImage(named: "playTransparentItem")!
         }
         
         struct backroundStaticItems {
@@ -68,12 +70,14 @@ class Images {
             
             static let processingThumb = UIImage(named: "photoProcessingEmptyItem")!
             static let unavailibleThumb = UIImage(named: "photoThumbUnselect")!
+			static let checkmark = UIImage(named: "photoSectionSelect")!
         }
         
         struct video {
             
             static let processingThumb = UIImage(named: "videoProcessingEmptyItem")!
             static let unavailibleThumb = UIImage(named: "videoThumbUnselect")!
+			static let checkmark = UIImage(named: "videoSectionSelect")!
         }
     }
 

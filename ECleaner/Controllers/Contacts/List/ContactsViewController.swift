@@ -25,12 +25,12 @@ class ContactsViewController: UIViewController {
     
     lazy var setEditingModeOptionItem = DropDownOptionsMenuItem(titleMenu: "edit",
                                                                 itemThumbnail: I.systemItems.selectItems.roundedCheckMark,
-                                                                isSelected: false,
+                                                                isSelected: true,
                                                                 menuItem: .edit)
     
     lazy var exportAllContactOptionItem = DropDownOptionsMenuItem(titleMenu: "export",
                                                               itemThumbnail: I.systemItems.defaultItems.share,
-                                                              isSelected: false,
+                                                              isSelected: true,
                                                               menuItem: .share)
     private var bottomButtonHeight: CGFloat = 70
     public var contactContentIsEditing: Bool = false
@@ -350,10 +350,10 @@ extension ContactsViewController {
         
     private func didTapOpenBurgerMenu() {
         
-        presentDropDonwMenu(with: [[setEditingModeOptionItem, exportAllContactOptionItem]], from: navigationBar.rightBarButtonItem)
+        presentDropDonwMenu(with: [setEditingModeOptionItem, exportAllContactOptionItem], from: navigationBar.rightBarButtonItem)
     }
 
-    private func presentDropDonwMenu(with items: [[DropDownOptionsMenuItem]], from navigationButton: UIButton) {
+    private func presentDropDonwMenu(with items: [DropDownOptionsMenuItem], from navigationButton: UIButton) {
         let dropDownViewController = DropDownMenuViewController()
         dropDownViewController.menuSectionItems = items
         dropDownViewController.delegate = self

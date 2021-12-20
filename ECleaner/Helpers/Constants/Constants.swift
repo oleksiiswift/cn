@@ -134,6 +134,7 @@ class Constants {
 				static let recentlyDeletedAlbums = "recentlyDeletedAlbumFetchOperation"
 				static let recentlyDeletedSortedAlbums = "recentlyDeletedSortedAlbumsFetchOperation"
 				static let deletePhassetsOperation = "deletePhassetsOperation"
+				static let recoverPhassetsOperation = "recoverPhassetsOperation"
 
 				static let videoCountOperation = "calculateTotalVideoProcessingOperation"
 				static let photoCouuntOperation = "calculateTotlaPhotoProcessingOperation"
