@@ -15,29 +15,33 @@ protocol ContentGroupedDataProviderDelegate: AnyObject {
 
 class GroupedAssetListViewController: UIViewController, UIPageViewControllerDelegate {
 
-    /// - outlets -
-    @IBOutlet weak var collectionView: UICollectionView!
-    @IBOutlet weak var bottomMenuView: UIView!
-    @IBOutlet weak var deleteAssetsButtonView: UIView!
-    @IBOutlet weak var deleteAssetsTexetLabel: UILabel!
-    @IBOutlet weak var bottomMenuHeightConstraint: NSLayoutConstraint!
+		/// `outlets`
+	@IBOutlet weak var navigationBar: NavigationBar!
+	@IBOutlet weak var bottomButtonBarView: BottomButtonBarView!
+	@IBOutlet weak var collectionView: UICollectionView!
+	@IBOutlet weak var bottomMenuHeightConstraint: NSLayoutConstraint!
+	
+		/// `assets`
+	public var assetGroups: [PhassetGroup] = []
+	public var mediaType: PhotoMediaType = .none
+	public var contentType: MediaContentType = .none
+	
+		/// `properties`
+	public var isDeepCleaningSelectableFlow: Bool = false
+	public var changedPhassetGroupCompletionHandler: ((_ phassetGroup: [PhassetGroup]) -> Void)?
+	
+	var scrollView = UIScrollView()
+	
+	
+	
+    
+
     @IBOutlet weak var photoPreviewContainerView: UIView!
     @IBOutlet weak var photoContentContainerView: UIView!
     
     @IBOutlet weak var optionalViewerHeightConstraint: NSLayoutConstraint!
     
-    var scrollView = UIScrollView()
-
-    /// menu and bar items
-    lazy var burgerOptionSettingButton = UIBarButtonItem(image: I.navigationItems.elipseBurger, style: .plain, target: self, action: #selector(openOptionsBurgerMenu))
-    lazy var customBackButton = UIBarButtonItem(image: I.navigationItems.leftShevronBack, style: .plain, target: self, action: #selector(didBackActionChangeLayout))
     
-    private let sliderMenuOptionItem = DropDownOptionsMenuItem(titleMenu: "slider", itemThumbnail: I.systemElementsItems.sliderView, isSelected: false, menuItem: .changeLayout)
-    private let tileMenuOptionItem = DropDownOptionsMenuItem(titleMenu: "tile", itemThumbnail: I.systemElementsItems.tileView, isSelected: false, menuItem: .changeLayout)
-	private let selectAllOptionItem = DropDownOptionsMenuItem(titleMenu: "select all", itemThumbnail: I.systemElementsItems.circleBox!, isSelected: false, menuItem: .selectAll)
-    private let deselectAllOptionItem = DropDownOptionsMenuItem(titleMenu: "deselect all", itemThumbnail: I.systemElementsItems.circleCheckBox!, isSelected: false, menuItem: .deselectAll)
-    
-    private lazy var backBarButtonItem = UIBarButtonItem(image: I.navigationItems.leftShevronBack, style: .plain, target: self, action: #selector(didTapBackButton))
     
     /// - controllers -
     #warning("hide photopreviewLogic for TODO later")
@@ -48,10 +52,7 @@ class GroupedAssetListViewController: UIViewController, UIPageViewControllerDele
     var selectedAssetsDelegate: DeepCleanSelectableAssetsDelegate?
 //    private weak var delegate: ContentDataProviderDelegate?
     
-    /// - assets -
-    public var assetGroups: [PhassetGroup] = []
-	public var mediaType: PhotoMediaType = .none
-	public var contentType: MediaContentType = .none
+  
     
     private var selectedAssets: [PHAsset] = []
     private var selectedSection: Set<Int> = []
@@ -68,7 +69,7 @@ class GroupedAssetListViewController: UIViewController, UIPageViewControllerDele
     let collectionViewFlowLayout = SNCollectionViewLayout()
     let carouselCollectionFlowLayout = ZoomAndSnapFlowLayout()
     
-    /// - properties -
+ 
     private var isSliderFlowLayout: Bool = false
     private var isSelectAllAssetsMode: Bool = false
     private var isCarouselViewMode: Bool = false
@@ -79,18 +80,21 @@ class GroupedAssetListViewController: UIViewController, UIPageViewControllerDele
     private var defaultContainerHeight: CGFloat = 0
     private var carouselPreviewCollectionHeight: CGFloat = 150 + U.bottomSafeAreaHeight
     
-    public var isDeepCleaningSelectableFlow: Bool = false
+   
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
+		setupNavigation()
+		setupUI()
+		setupCollectionView()
+		setupDelegate()
+		setupObservers()
+		updateColors()
+		
+		
 //        splitAllAssetsForPreview() /// hide temporary for future
-        setupUI()
 //        setupPhotoPreviewController() /// hide
-        updateColors()
-        setupCollectionView()
-        setupNavigation()
-        setupListenersAndObservers()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -106,209 +110,378 @@ class GroupedAssetListViewController: UIViewController, UIPageViewControllerDele
         
         self.defaultContainerHeight = self.photoContentContainerView.frame.height
     }
-
-    @IBAction func didTapDeleteAssetsActionButton(_ sender: Any) {
-        showDeleteConfirmAlert()
-    }
 }
 
-//      MARK: - setup collection view with flow layout -
+extension GroupedAssetListViewController {
+	
+	private func didTapBackSingleCleanActionButton() {
+		changedPhassetGroupCompletionHandler?(assetGroups)
+		self.navigationController?.popViewController(animated: true)
+	}
+	
+	private func didTapBackDeepCleanActionButton() {
+//		func didTapBackButton() {
+//
+//			guard isDeepCleaningSelectableFlow else { return }
+//
+//			let selectedAssetsIDs: [String] = selectedAssets.compactMap({ $0.localIdentifier})
+//			self.selectedAssetsDelegate?.didSelect(assetsListIds: selectedAssetsIDs, mediaType: self.mediaType)
+//			self.navigationController?.popViewController(animated: true)
+//		}
+	}
+	
+	private func preSelectCleaningPhassetAccordingControllerType() {
+		
+		guard isDeepCleaningSelectableFlow else { return }
+	}
+}
 
-extension GroupedAssetListViewController: UICollectionViewDelegate, UICollectionViewDataSource {
-    
-    private func setupCollectionView() {
-        
-        /// `delegates` subscribe
-        
-        collectionViewFlowLayout.delegate = self
-        self.collectionView.dataSource = self
-        self.collectionView.delegate = self
-        self.collectionView.prefetchDataSource = self
-        
-        /// `register xib`
-        
-        self.collectionView.register(UINib(nibName: C.identifiers.xibs.photoSimpleCell,
-                                           bundle: nil),
-                                     forCellWithReuseIdentifier: C.identifiers.cells.photoSimpleCell)
-        
-        self.collectionView.register(UINib(nibName: C.identifiers.xibs.groupHeader,
-                                           bundle: nil),
-                                     forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
-                                     withReuseIdentifier: C.identifiers.views.groupHeaderView)
-        
-        /// collection view `setup`
-        self.collectionView.contentInset = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
-        collectionViewFlowLayout.fixedDivisionCount = 4
-        collectionViewFlowLayout.itemSpacing = 5
-            
-        carouselCollectionFlowLayout.itemSize = CGSize(width: 80, height: 80)
-        carouselCollectionFlowLayout.minimumLineSpacing = 10
-        carouselCollectionFlowLayout.minimumInteritemSpacing = 10
-        carouselCollectionFlowLayout.headerReferenceSize = CGSize.zero
-        
-        self.collectionView.collectionViewLayout = collectionViewFlowLayout
-        self.collectionView.allowsMultipleSelection = true
-        self.collectionView.reloadData()
-    }
+	//      MARK: - Popup viewController drop down menu setup -
+extension GroupedAssetListViewController {
+	
+	func openBurgerMenu() {
+		
+//		let sliderMenuOptionItem = DropDownOptionsMenuItem(titleMenu: "slider", itemThumbnail: I.systemElementsItems.sliderView, isSelected: false, menuItem: .changeLayout)
+//		let tileMenuOptionItem = DropDownOptionsMenuItem(titleMenu: "tile", itemThumbnail: I.systemElementsItems.tileView, isSelected: false, menuItem: .changeLayout)
+//		let selectAllOptionItem = DropDownOptionsMenuItem(titleMenu: "select all", itemThumbnail: I.systemElementsItems.circleBox!, isSelected: false, menuItem: .selectAll)
+//		let deselectAllOptionItem = DropDownOptionsMenuItem(titleMenu: "deselect all", itemThumbnail: I.systemElementsItems.circleCheckBox!, isSelected: false, menuItem: .deselectAll)
+//
+//		let firstRowMenuItem = isSelectAllAssetsMode ? deselectAllOptionItem : selectAllOptionItem
+//		let secondRowMenuItem = isSliderFlowLayout ? tileMenuOptionItem : sliderMenuOptionItem
+//		presentingDropDownBurgerMenu(with: [firstRowMenuItem, secondRowMenuItem], from: navigationBar.rightBarButtonItem)
+	}
+	
+	private func presentingDropDownBurgerMenu(with items: [DropDownOptionsMenuItem], from sourceView: UIButton) {
+		
+		let drobDownViewController = DropDownMenuViewController()
+		drobDownViewController.menuSectionItems = items
+		drobDownViewController.delegate = self
+		guard let popoverPresentationController = drobDownViewController.popoverPresentationController else { fatalError("Error modal presentation style")}
 
-    private func configure(_ cell: PhotoCollectionViewCell, at indexPath: IndexPath) {
-        
-        cell.delegate = self
-        cell.indexPath = indexPath
+		popoverPresentationController.sourceView = sourceView
+		popoverPresentationController.sourceRect = CGRect(x: sourceView.bounds.midX, y: sourceView.bounds.maxY - 13, width: 0, height: 0)
+		
+		popoverPresentationController.delegate = self
+		popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirection(rawValue: 0)
+		self.present(drobDownViewController, animated: true, completion: nil)
+	}
+		
+	public func handlePreviousSelected(selectedAssetsIDs: [String], assetGroupCollection: [PhassetGroup]) {
+		
+		for selectedAssetsID in selectedAssetsIDs {
+			
+			let sectionIndex = assetGroupCollection.firstIndex(where: {
+				$0.assets.contains(where: {$0.localIdentifier == selectedAssetsID})
+			}).flatMap({
+				$0
+			})
+			
+			if let section = sectionIndex {
+				let index: Int = Int(section)
+				let indexPath = assetGroupCollection[index].assets.firstIndex(where: {
+					$0.localIdentifier == selectedAssetsID
+				}).flatMap({
+					IndexPath(row: $0, section: index)
+				})
+				
+				if let existingIndexPath = indexPath {
+					self.previouslySelectedIndexPaths.append(existingIndexPath)
+				}
+			}
+		}
+	}
+	
+	private func didSelectPreviouslyIndexPath() {
+		
+		guard isDeepCleaningSelectableFlow, !previouslySelectedIndexPaths.isEmpty else { return }
+		
+		for indexPath in previouslySelectedIndexPaths {
+			self.collectionView.selectItem(at: indexPath, animated: false, scrollPosition: [])
+			self.collectionView.delegate?.collectionView?(self.collectionView, didSelectItemAt: indexPath)
+		}
+		self.lazyHardcoreCheckForSelectedItemsAndAssets()
+	}
+}
+
+
+
+
+
+
+extension GroupedAssetListViewController: NavigationBarDelegate {
+	
+	func didTapLeftBarButton(_ sender: UIButton) {
+		isDeepCleaningSelectableFlow ? didTapBackDeepCleanActionButton() : didTapBackSingleCleanActionButton()
+	}
+	
+	func didTapRightBarButton(_ sender: UIButton) {
+		openBurgerMenu()
+	}
+}
+
+extension GroupedAssetListViewController: BottomActionButtonDelegate {
+	
+	func didTapActionButton() {
+		showDeleteConfirmAlert()
+	}
+}
+
+//		MARK: - configure collection view -
+extension GroupedAssetListViewController {
+	
+	private func setupCollectionView() {
+		
+			/// `delegates` subscribe
+		collectionViewFlowLayout.delegate = self
+		self.collectionView.dataSource = self
+		self.collectionView.delegate = self
+		self.collectionView.prefetchDataSource = self
+		
+			/// `register xib`
+		self.collectionView.register(UINib(nibName: C.identifiers.xibs.photoSimpleCell,
+										   bundle: nil),
+									 forCellWithReuseIdentifier: C.identifiers.cells.photoSimpleCell)
+		
+		self.collectionView.register(UINib(nibName: C.identifiers.xibs.groupHeader,
+										   bundle: nil),
+									 forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+									 withReuseIdentifier: C.identifiers.views.groupHeaderView)
+		
+			/// collection view `setup`
+		self.collectionView.contentInset = UIEdgeInsets(top: 15, left: 18, bottom: 5, right: 18)
+		collectionViewFlowLayout.fixedDivisionCount = 4
+		collectionViewFlowLayout.itemSpacing = 5
+		
+		carouselCollectionFlowLayout.itemSize = CGSize(width: 80, height: 80)
+		carouselCollectionFlowLayout.minimumLineSpacing = 0
+		carouselCollectionFlowLayout.minimumInteritemSpacing = 0
+		carouselCollectionFlowLayout.headerReferenceSize = CGSize.zero
+		
+		self.collectionView.collectionViewLayout = collectionViewFlowLayout
+		self.collectionView.allowsMultipleSelection = true
+		self.collectionView.reloadData()
+	}
+	
+	private func configure(_ cell: PhotoCollectionViewCell, at indexPath: IndexPath) {
+		
+		cell.delegate = self
+		cell.indexPath = indexPath
 		cell.cellMediaType = self.mediaType
 		cell.cellContentType = self.contentType
+		cell.setupUI()
+		cell.updateColors()
+		cell.selectButtonSetup(by: self.mediaType)
 		
-        cell.selectButtonSetup(by: self.mediaType)
-        
-        if let path = self.collectionView.indexPathsForSelectedItems, path.contains(indexPath) {
-            cell.isSelected = true
-        } else {
-            cell.isSelected = false
-        }
-        
-        cell.checkIsSelected()
-        
-        if indexPath.row == 0 {
-            var size = CGSize.zero
-            let asset = assetGroups[indexPath.section].assets[indexPath.row]
-            
-            switch mediaType {
-                case .duplicatedVideos, .similarVideos:
-                    size = CGSize(width: asset.pixelWidth, height: asset.pixelHeight)
-                default:
-                    if asset.pixelWidth > asset.pixelHeight {
-                        size = CGSize(width: U.screenWidth / 2 / U.ratio, height: U.screenWidth / 2)
-                    } else {
-                        size = CGSize(width: U.screenWidth / 2, height: U.screenHeight / 2)
-                    }
-            }
-            
-            cell.bestView.isHidden = false
-            cell.bestLabel.isHidden = false
-            cell.bestLabel.text = "best"
-            cell.loadCellThumbnail(asset, size: size)
-        } else {
-            cell.bestLabel.isHidden = true
-            cell.bestView.isHidden = true
-            cell.loadCellThumbnail(assetGroups[indexPath.section].assets[indexPath.row], size: CGSize(width: 300, height: 300))
-        }
-    }
-    
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return assetGroups.count
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return assetGroups[section].assets.count
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: C.identifiers.cells.photoSimpleCell, for: indexPath) as! PhotoCollectionViewCell
-        configure(cell, at: indexPath)
-        return cell
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        
-        guard !isCarouselViewMode else {
-            return UICollectionReusableView()
-        }
-        
-        switch kind {
-            
-            case UICollectionView.elementKindSectionHeader:
-                
-                let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: C.identifiers.views.groupHeaderView, for: indexPath)
-                
-                guard let sectionHeader = headerView as? GroupedAssetsReusableHeaderView else { return headerView }
-                
-                sectionHeader.assetsSelectedCountTextLabel.text = "\(assetGroups[indexPath.section].assets.count) itmes"
-                
-                checkSelectedHeaderView(for: indexPath, headerView: sectionHeader)
-                
-                sectionHeader.onSelectAll = {
-                    let indexPaths = self.getIndexPathInSectionWithoutFirst(section: indexPath.section)
-                    let sectionsCells = self.getSectionsCells(at: indexPaths)
-                    
-                    if !sectionsCells.isEmpty {
-                        
-                        /// check if section contains selected cells
-                        let selectedCell = sectionsCells.filter({ $0.isSelected })
-                        if !selectedCell.isEmpty {
-                            
-                            let cells = sectionsCells.filter({ !$0.isSelected })
-                            /// check if section contains selected and not selected cells
-                            if !cells.isEmpty {
-                                cells.forEach { cell in
-                                    if let cellIndexPath = self.collectionView.indexPath(for: cell), cellIndexPath != IndexPath(row: 0, section: indexPath.section) {
-                                        if !self.selectedAssets.contains(self.assetGroups[cellIndexPath.section].assets[cellIndexPath.row]) {
-                                            self.selectedAssets.append(self.assetGroups[cellIndexPath.section].assets[cellIndexPath.row])
-                                            collectionView.selectItem(at: cellIndexPath, animated: true, scrollPosition: .centeredHorizontally)
-                                        }
-                                    }
-                                }
-                                
-                                if !self.selectedSection.contains(indexPath.section) {
-                                    self.selectedSection.insert(indexPath.section)
-                                }
-                                
-                                sectionHeader.setSelectDeselectButton(true)
-                                
-                            } else {
-                                /// select - deselect all section withoit first cell
-                                /// section are full selected or deselected
-                                self.didSelectAllAssets(at: indexPath, in: sectionHeader)
-                            }
-                        } else {
-                            self.didSelectAllAssets(at: indexPath, in: sectionHeader)
-                        }
-                    }
-                }
-                return sectionHeader
-                
-            default:
-                assert(false, "Invalid element type")
-        }
-        return UICollectionReusableView()
-    }
-    
-    /// if need select cell from custom cell-button and tap on cell need - return `false`
-    
-    func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
-//        #warning("TODO: hide temporary")
-//        self.changeFlowLayoutAndFocus(at: indexPath)
-        return false
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        //        self.lazyHardcoreCheckForSelectedItemsAndAssets()
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, willDisplaySupplementaryView view: UICollectionReusableView, forElementKind elementKind: String, at indexPath: IndexPath) {
-        
-        guard let headerview = view as? GroupedAssetsReusableHeaderView else { return }
-        
-        checkSelectedHeaderView(for: indexPath, headerView: headerview)
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
-        let asset = self.assetGroups[indexPath.section].assets[indexPath.row]
-        
-        if asset.mediaType == .video {
-            return UIContextMenuConfiguration(identifier: nil) {
-                return PreviewAVController(asset: asset)
-            } actionProvider: { _ in
-                return self.createCellContextMenu(for: asset, at: indexPath)
-            }
-        } else {
-            return UIContextMenuConfiguration(identifier: nil) {
-                return AssetContextPreviewViewController(asset: asset)
-            } actionProvider: { _ in
-                return self.createCellContextMenu(for: asset, at: indexPath)
-            }
-        }
-    }
+		if let path = self.collectionView.indexPathsForSelectedItems, path.contains(indexPath) {
+			cell.isSelected = true
+		} else {
+			cell.isSelected = false
+		}
+		
+		cell.checkIsSelected()
+		
+		if indexPath.row == 0 {
+			var size = CGSize.zero
+			let asset = assetGroups[indexPath.section].assets[indexPath.row]
+			
+			switch mediaType {
+				case .duplicatedVideos, .similarVideos:
+					size = CGSize(width: asset.pixelWidth, height: asset.pixelHeight)
+				default:
+					if asset.pixelWidth > asset.pixelHeight {
+						size = CGSize(width: U.screenWidth / 2 / U.ratio, height: U.screenWidth / 2)
+					} else {
+						size = CGSize(width: U.screenWidth / 2, height: U.screenHeight / 2)
+					}
+			}
+			cell.loadCellThumbnail(asset, size: size)
+		} else {
+			cell.loadCellThumbnail(assetGroups[indexPath.section].assets[indexPath.row], size: CGSize(width: 300, height: 300))
+		}
+	}
 }
+
+	//      MARK: - setup collection view with flow layout -
+extension GroupedAssetListViewController: UICollectionViewDelegate, UICollectionViewDataSource {
+	
+	func numberOfSections(in collectionView: UICollectionView) -> Int {
+		return assetGroups.count
+	}
+	
+	func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+		return assetGroups[section].assets.count
+	}
+	
+	func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: C.identifiers.cells.photoSimpleCell, for: indexPath) as! PhotoCollectionViewCell
+		configure(cell, at: indexPath)
+		return cell
+	}
+	
+	func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+		
+		guard !isCarouselViewMode else {
+			return UICollectionReusableView()
+		}
+		
+		switch kind {
+				
+			case UICollectionView.elementKindSectionHeader:
+				
+				let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: C.identifiers.views.groupHeaderView, for: indexPath)
+				
+				guard let sectionHeader = headerView as? GroupedAssetsReusableHeaderView else { return headerView }
+				
+				sectionHeader.assetsSelectedCountTextLabel.text = "\(assetGroups[indexPath.section].assets.count) itmes"
+				
+				checkSelectedHeaderView(for: indexPath, headerView: sectionHeader)
+				
+				sectionHeader.onSelectAll = {
+					let indexPaths = self.getIndexPathInSectionWithoutFirst(section: indexPath.section)
+					let sectionsCells = self.getSectionsCells(at: indexPaths)
+					
+					if !sectionsCells.isEmpty {
+						
+							/// check if section contains selected cells
+						let selectedCell = sectionsCells.filter({ $0.isSelected })
+						if !selectedCell.isEmpty {
+							
+							let cells = sectionsCells.filter({ !$0.isSelected })
+								/// check if section contains selected and not selected cells
+							if !cells.isEmpty {
+								cells.forEach { cell in
+									if let cellIndexPath = self.collectionView.indexPath(for: cell), cellIndexPath != IndexPath(row: 0, section: indexPath.section) {
+										if !self.selectedAssets.contains(self.assetGroups[cellIndexPath.section].assets[cellIndexPath.row]) {
+											self.selectedAssets.append(self.assetGroups[cellIndexPath.section].assets[cellIndexPath.row])
+											collectionView.selectItem(at: cellIndexPath, animated: true, scrollPosition: .centeredHorizontally)
+										}
+									}
+								}
+								
+								if !self.selectedSection.contains(indexPath.section) {
+									self.selectedSection.insert(indexPath.section)
+								}
+								
+								sectionHeader.setSelectDeselectButton(true)
+								
+							} else {
+									/// select - deselect all section withoit first cell
+									/// section are full selected or deselected
+								self.didSelectAllAssets(at: indexPath, in: sectionHeader)
+							}
+						} else {
+							self.didSelectAllAssets(at: indexPath, in: sectionHeader)
+						}
+					}
+				}
+				return sectionHeader
+				
+			default:
+				assert(false, "Invalid element type")
+		}
+		return UICollectionReusableView()
+	}
+	
+		/// if need select cell from custom cell-button and tap on cell need - return `false`
+	
+	func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
+			//        #warning("TODO: hide temporary")
+			//        self.changeFlowLayoutAndFocus(at: indexPath)
+		return false
+	}
+	
+	func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+			//        self.lazyHardcoreCheckForSelectedItemsAndAssets()
+	}
+	
+	func collectionView(_ collectionView: UICollectionView, willDisplaySupplementaryView view: UICollectionReusableView, forElementKind elementKind: String, at indexPath: IndexPath) {
+		
+		guard let headerview = view as? GroupedAssetsReusableHeaderView else { return }
+		
+		checkSelectedHeaderView(for: indexPath, headerView: headerview)
+	}
+	
+	func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+		let asset = self.assetGroups[indexPath.section].assets[indexPath.row]
+		
+		if asset.mediaType == .video {
+			return UIContextMenuConfiguration(identifier: nil) {
+				return PreviewAVController(asset: asset)
+			} actionProvider: { _ in
+				return self.createCellContextMenu(for: asset, at: indexPath)
+			}
+		} else {
+			return UIContextMenuConfiguration(identifier: nil) {
+				return AssetContextPreviewViewController(asset: asset)
+			} actionProvider: { _ in
+				return self.createCellContextMenu(for: asset, at: indexPath)
+			}
+		}
+	}
+}
+
+extension GroupedAssetListViewController {
+		
+	private func setupUI() {
+		
+		let bottomButtonImageSize = CGSize(width: 18, height: 24)
+		switch mediaType {
+			case .singleRecentlyDeletedPhotos, .singleRecentlyDeletedVideos:
+				self.bottomButtonBarView.setImage(I.systemItems.defaultItems.recover, with: bottomButtonImageSize)
+			default:
+				self.bottomButtonBarView.setImage(I.systemItems.defaultItems.delete, with: bottomButtonImageSize)
+		}
+	}
+	
+	private func setupNavigation() {
+		
+		navigationBar.setupNavigation(title: self.mediaType.mediaTypeName,
+									  leftBarButtonImage: I.systemItems.navigationBarItems.back,
+									  rightBarButtonImage: I.systemItems.navigationBarItems.burgerDots,
+									  contentType: self.contentType,
+									  leftButtonTitle: nil,
+									  rightButtonTitle: nil)
+	}
+	
+	private func setupObservers() {
+		
+	}
+	
+	private func setupDelegate() {
+		
+		scrollView.delegate = self
+		navigationBar.delegate = self
+		bottomButtonBarView.delegate = self
+	}
+	
+	func updateColors() {
+		
+		self.view.backgroundColor = theme.backgroundColor
+		self.collectionView.backgroundColor = .clear
+		
+		bottomButtonBarView.buttonColor = contentType.screenAcentTintColor
+		bottomButtonBarView.buttonTintColor = theme.activeTitleTextColor
+		bottomButtonBarView.buttonTitleColor = theme.activeTitleTextColor
+		bottomButtonBarView.activityIndicatorColor = theme.backgroundColor
+		bottomButtonBarView.updateColorsSettings()
+	}
+}
+
+
+
+
+
+//	MARK: - check from this line
+
+
+
+
+
+
+
+
+
+
 
 //  MARK: - flow with select deselect cell
 extension GroupedAssetListViewController: PhotoCollectionViewCellDelegate {
@@ -726,73 +899,7 @@ extension GroupedAssetListViewController: SelectDropDownMenuDelegate {
     }
 }
 
-//      MARK: - Popup viewController drop down menu setup -
-extension GroupedAssetListViewController {
-    
-    @objc func openOptionsBurgerMenu() {
-        
-        let firstRowMenuItem = isSelectAllAssetsMode ? deselectAllOptionItem : selectAllOptionItem
-        let secondRowMenuItem = isSliderFlowLayout ? tileMenuOptionItem : sliderMenuOptionItem
-        presentingDropDownBurgerMenu(with: [firstRowMenuItem, secondRowMenuItem], from: burgerOptionSettingButton)
-    }
-    
-    private func presentingDropDownBurgerMenu(with items: [DropDownOptionsMenuItem], from barButtonItem: UIBarButtonItem) {
-        
-        let drobDownViewController = DropDownMenuViewController()
-        drobDownViewController.menuSectionItems = items
-        drobDownViewController.delegate = self
-        guard let popoverPresentationController = drobDownViewController.popoverPresentationController else { fatalError("Error modal presentation style")}
-        popoverPresentationController.barButtonItem = barButtonItem
-        popoverPresentationController.delegate = self
-        popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirection(rawValue: 0) 
-        self.present(drobDownViewController, animated: true, completion: nil)
-    }
-    
-    @objc func didTapBackButton() {
-        
-        guard isDeepCleaningSelectableFlow else { return }
-        
-        let selectedAssetsIDs: [String] = selectedAssets.compactMap({ $0.localIdentifier})
-        self.selectedAssetsDelegate?.didSelect(assetsListIds: selectedAssetsIDs, mediaType: self.mediaType)
-        self.navigationController?.popViewController(animated: true)
-    }
-    
-    public func handlePreviousSelected(selectedAssetsIDs: [String], assetGroupCollection: [PhassetGroup]) {
-        
-        for selectedAssetsID in selectedAssetsIDs {
-            
-            let sectionIndex = assetGroupCollection.firstIndex(where: {
-                $0.assets.contains(where: {$0.localIdentifier == selectedAssetsID})
-            }).flatMap({
-                $0
-            })
-            
-            if let section = sectionIndex {
-                let index: Int = Int(section)
-                let indexPath = assetGroupCollection[index].assets.firstIndex(where: {
-                    $0.localIdentifier == selectedAssetsID
-                }).flatMap({
-                    IndexPath(row: $0, section: index)
-                })
-                
-                if let existingIndexPath = indexPath {
-                    self.previouslySelectedIndexPaths.append(existingIndexPath)
-                }
-            }
-        }
-    }
-    
-    private func didSelectPreviouslyIndexPath() {
-        
-        guard isDeepCleaningSelectableFlow, !previouslySelectedIndexPaths.isEmpty else { return }
-        
-        for indexPath in previouslySelectedIndexPaths {
-            self.collectionView.selectItem(at: indexPath, animated: false, scrollPosition: [])
-            self.collectionView.delegate?.collectionView?(self.collectionView, didSelectItemAt: indexPath)
-        }
-        self.lazyHardcoreCheckForSelectedItemsAndAssets()
-    }
-}
+
 
 //      MARK: - delegates flow - 
 
@@ -982,12 +1089,7 @@ extension GroupedAssetListViewController: UIScrollViewDelegate {
 
 extension GroupedAssetListViewController: Themeble {
 
-    func setupUI() {
-        deleteAssetsButtonView.setCorner(12)
-        bottomMenuHeightConstraint.constant = 0
-        deleteAssetsTexetLabel.font = .systemFont(ofSize: 17, weight: .bold)
-        deleteAssetsTexetLabel.text = "delete photos"
-    }
+
     
     private func setupPhotoPreviewController() {
         
@@ -1005,30 +1107,10 @@ extension GroupedAssetListViewController: Themeble {
 //        photoPreviewContainerView.addSubview(photoPreviewController.view)
 //        photoPreviewController.didMove(toParent: self)
     }
-
-    func updateColors() {
-        bottomMenuView.backgroundColor = theme.sectionBackgroundColor
-        deleteAssetsButtonView.backgroundColor = theme.accentBackgroundColor
-        deleteAssetsTexetLabel.textColor = theme.activeTitleTextColor
-    }
-
-    private func setupNavigation() {
-        
-        self.navigationItem.rightBarButtonItem = burgerOptionSettingButton
-        
-        if isDeepCleaningSelectableFlow {
-            self.navigationItem.leftBarButtonItem = backBarButtonItem
-        } else {
-        
-        self.navigationItem.leftBarButtonItem = customBackButton
-        }
-    }
-    
-    private func setupListenersAndObservers() {
-        
-        scrollView.delegate = self
-    }
 }
+
+
+
 
 extension UIPageViewController {
 

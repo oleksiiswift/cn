@@ -29,9 +29,9 @@ class ReuseShadowView: UIView {
     
     private func setupViews() {
         
-        let cellBackgroundColor: UIColor = theme.cellBackGroundColor
-        let topShadowColor: UIColor = theme.topShadowColor
-        let cellShadowColor: UIColor = theme.sideShadowColor
+		let cellBackgroundColor: UIColor = theme.cellBackGroundColor
+		let topShadowColor: UIColor = theme.topShadowColor
+		let cellShadowColor: UIColor = theme.sideShadowColor
         
         self.backgroundColor = .clear
 

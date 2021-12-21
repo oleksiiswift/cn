@@ -172,7 +172,7 @@ enum Theme: Int {
     var sideShadowColor: UIColor {
         switch self {
             case .light:
-                return UIColor().colorFromHexString("D8DFEB")
+                return UIColor().colorFromHexString("c2c8d3")
             case .dark :
                 return UIColor().colorFromHexString("D8DFEB")
         }
@@ -225,7 +225,7 @@ enum Theme: Int {
         }
     }
     
-    var phoneTintColor: UIColor {
+    var photoTintColor: UIColor {
         switch self {
             case .light:
                 return UIColor().colorFromHexString("F07378")
@@ -233,7 +233,62 @@ enum Theme: Int {
                 return UIColor().colorFromHexString("F07378")
         }
     }
-    
+	
+	
+	var videoTopGradientColor: UIColor {
+		switch self {
+			case .light:
+				return UIColor().colorFromHexString("5E92FF")
+			case .dark :
+				return UIColor().colorFromHexString("5E92FF")
+		}
+	}
+	
+	var videoBottomGradientColor: UIColor {
+		switch self {
+			case .light:
+				return UIColor().colorFromHexString("2AB6FF")
+			case .dark :
+				return UIColor().colorFromHexString("2AB6FF")
+		}
+	}
+	
+	var photoTopGradientColor: UIColor {
+		switch self {
+			case .light:
+				return UIColor().colorFromHexString("FF7B93")
+			case .dark :
+				return UIColor().colorFromHexString("FF7B93")
+		}
+	}
+	
+	var photoBottomGradientColor: UIColor {
+		switch self {
+			case .light:
+				return UIColor().colorFromHexString("FF934C")
+			case .dark :
+				return UIColor().colorFromHexString("FF934C")
+		}
+	}
+	
+	var contactTopGradientColor: UIColor {
+		switch self {
+			case .light:
+				return UIColor().colorFromHexString("16C08A")
+			case .dark :
+				return UIColor().colorFromHexString("16C08A")
+		}
+	}
+	
+	var contactBottomGradientColor: UIColor {
+		switch self {
+			case .light:
+				return UIColor().colorFromHexString("43C9BB")
+			case .dark :
+				return UIColor().colorFromHexString("43C9BB")
+		}
+	}
+
     var defaulTintColor: UIColor {
         switch self {
             case .light:

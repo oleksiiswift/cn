@@ -187,12 +187,16 @@ extension MediaContentViewController {
         }
     }
     
-    private func showGropedContoller(assets title: String, grouped collection: [PhassetGroup], photoContent type: PhotoMediaType) {
+	private func showGropedContoller(assets title: String, grouped collection: [PhassetGroup], photoContent type: PhotoMediaType, media content: MediaContentType) {
         let storyboard = UIStoryboard(name: C.identifiers.storyboards.media, bundle: nil)
         let viewController  = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.groupedList) as! GroupedAssetListViewController
         viewController.title = title
         viewController.assetGroups = collection
         viewController.mediaType = type
+		viewController.contentType = content
+		viewController.changedPhassetGroupCompletionHandler = { phassetGroup  in
+			self.updateGroupedChanged(phasset: phassetGroup, media: type)
+		}
         self.navigationController?.pushViewController(viewController, animated: true)
     }
     
@@ -252,6 +256,10 @@ extension MediaContentViewController {
 		let indexPath = type.singleSearchIndexPath
 		self.tableView.reloadRows(at: [indexPath], with: .none)
 	}
+	
+	private func updateGroupedChanged(phasset group: [PhassetGroup], media type: PhotoMediaType) {
+		
+	}
 }
 
 //      MARK: - photo content -
@@ -275,7 +283,7 @@ extension MediaContentViewController {
 					self.scanningProcessIsRunning = !self.scanningProcessIsRunning
 					self.currentlyScanningProcess = .none
 					if !similarGroup.isEmpty {
-						self.showGropedContoller(assets: PhotoMediaType.similarPhotos.mediaTypeName, grouped: similarGroup, photoContent: .similarPhotos)
+						self.showGropedContoller(assets: PhotoMediaType.similarPhotos.mediaTypeName, grouped: similarGroup, photoContent: .similarPhotos, media: .userPhoto)
 					} else {
 						ErrorHandler.shared.showEmptySearchResultsFor(.similarPhotoIsEmpty, completion: nil)
 					}
@@ -298,7 +306,7 @@ extension MediaContentViewController {
 					self.scanningProcessIsRunning = !self.scanningProcessIsRunning
 					self.currentlyScanningProcess = .none
 					if !duplicateGroup.isEmpty {
-						self.showGropedContoller(assets: PhotoMediaType.duplicatedPhotos.mediaTypeName, grouped: duplicateGroup, photoContent: .duplicatedPhotos)
+						self.showGropedContoller(assets: PhotoMediaType.duplicatedPhotos.mediaTypeName, grouped: duplicateGroup, photoContent: .duplicatedPhotos, media: .userPhoto)
 					} else {
 						ErrorHandler.shared.showEmptySearchResultsFor(.duplicatedPhotoIsEmpty, completion: nil)
 					}
@@ -430,7 +438,7 @@ extension MediaContentViewController {
 					self.scanningProcessIsRunning = !self.scanningProcessIsRunning
 					self.currentlyScanningProcess = .none
 					if duplicatedVideoAsset.count != 0 {
-						self.showGropedContoller(assets: PhotoMediaType.duplicatedVideos.mediaTypeName, grouped: duplicatedVideoAsset, photoContent: .duplicatedVideos)
+						self.showGropedContoller(assets: PhotoMediaType.duplicatedVideos.mediaTypeName, grouped: duplicatedVideoAsset, photoContent: .duplicatedVideos, media: .userVideo)
 					} else {
 						ErrorHandler.shared.showEmptySearchResultsFor(.duplicatedVideoIsEmpty, completion: nil)
 					}
@@ -452,7 +460,7 @@ extension MediaContentViewController {
 					self.scanningProcessIsRunning = !self.scanningProcessIsRunning
 					self.currentlyScanningProcess = .none
 					if similiarVideoAsset.count != 0 {
-						self.showGropedContoller(assets: PhotoMediaType.similarVideos.mediaTypeName, grouped: similiarVideoAsset, photoContent: .similarVideos)
+						self.showGropedContoller(assets: PhotoMediaType.similarVideos.mediaTypeName, grouped: similiarVideoAsset, photoContent: .similarVideos, media: .userVideo)
 					} else {
 						ErrorHandler.shared.showEmptySearchResultsFor(.similarVideoIsEmpty, completion: nil)
 					}
@@ -509,7 +517,7 @@ extension MediaContentViewController {
 		let getSimilarVideosByTimeStamp = photoManager.getSimilarVideosByTimeStampOperation(from: lowerBoundDate, to: upperBoundDate, enableSingleProcessingNotification: true) { similarVideos in
 			self.scanningProcessIsRunning = !self.scanningProcessIsRunning
 			if similarVideos.count != 0 {
-				self.showGropedContoller(assets: "similar by time stam", grouped: similarVideos, photoContent: .similarVideos)
+				self.showGropedContoller(assets: "similar by time stam", grouped: similarVideos, photoContent: .similarVideos, media: .userVideo)
 			} else {
 				ErrorHandler.shared.showEmptySearchResultsFor(.similarVideoIsEmpty, completion: nil)
 			}
@@ -1099,14 +1107,14 @@ extension MediaContentViewController: Themeble {
 			navigationBar.setupNavigation(title: mediaContentType.navigationTitle,
 										  leftBarButtonImage: I.systemItems.navigationBarItems.back,
 										  rightBarButtonImage: I.systemItems.navigationBarItems.magic,
-										  mediaType: mediaContentType,
+										  contentType: mediaContentType,
 										  leftButtonTitle: nil,
 										  rightButtonTitle: nil)
 		} else {
 			navigationBar.setupNavigation(title: mediaContentType.navigationTitle,
 										  leftBarButtonImage: I.systemItems.navigationBarItems.back,
 										  rightBarButtonImage: nil,
-										  mediaType: mediaContentType,
+										  contentType: mediaContentType,
 										  leftButtonTitle: nil,
 										  rightButtonTitle: nil)
 		}

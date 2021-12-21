@@ -829,7 +829,7 @@ extension DeepCleaningViewController {
           navigationBar.setupNavigation(title: "DEEP_CLEEN".localized(),
                                         leftBarButtonImage: I.systemItems.navigationBarItems.back,
                                         rightBarButtonImage: I.systemItems.navigationBarItems.magic,
-                                        mediaType: .none,
+										contentType: .none,
                                         leftButtonTitle: nil,
                                         rightButtonTitle: nil)
      }
