@@ -54,6 +54,7 @@ class ContentTypeTableViewCell: UITableViewCell {
         tempAddTextLabel.heightAnchor.constraint(equalToConstant: 50).isActive = true
         tempAddTextLabel.widthAnchor.constraint(equalToConstant: 100).isActive = true
     }
+	
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)

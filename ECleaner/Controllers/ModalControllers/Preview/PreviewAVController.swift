@@ -15,7 +15,7 @@ class PreviewAVController: AVPlayerViewController {
         super.init(nibName: nil, bundle: nil)
         
         self.showsPlaybackControls = false
-        
+		self.view.backgroundColor = theme.backgroundColor
         preferredContentSize = CGSize(width: asset.pixelWidth, height: asset.pixelHeight)
         
         PHCachingImageManager().requestAVAsset(forVideo: asset, options: nil) { (avAsset, _, _) in

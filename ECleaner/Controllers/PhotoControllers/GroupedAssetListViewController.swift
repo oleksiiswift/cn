@@ -38,7 +38,6 @@ class GroupedAssetListViewController: UIViewController, UIPageViewControllerDele
 
     @IBOutlet weak var photoPreviewContainerView: UIView!
     @IBOutlet weak var photoContentContainerView: UIView!
-    
     @IBOutlet weak var optionalViewerHeightConstraint: NSLayoutConstraint!
     
     
@@ -248,9 +247,10 @@ extension GroupedAssetListViewController {
 									 withReuseIdentifier: C.identifiers.views.groupHeaderView)
 		
 			/// collection view `setup`
-		self.collectionView.contentInset = UIEdgeInsets(top: 15, left: 18, bottom: 5, right: 18)
+		self.collectionView.contentInset = UIEdgeInsets(top: 15, left: 10, bottom: 5, right: 10)
 		collectionViewFlowLayout.fixedDivisionCount = 4
-		collectionViewFlowLayout.itemSpacing = 5
+		collectionViewFlowLayout.itemSpacing = 0
+
 		
 		carouselCollectionFlowLayout.itemSize = CGSize(width: 80, height: 80)
 		carouselCollectionFlowLayout.minimumLineSpacing = 0
@@ -332,7 +332,7 @@ extension GroupedAssetListViewController: UICollectionViewDelegate, UICollection
 				
 				guard let sectionHeader = headerView as? GroupedAssetsReusableHeaderView else { return headerView }
 				
-				sectionHeader.assetsSelectedCountTextLabel.text = "\(assetGroups[indexPath.section].assets.count) itmes"
+//				sectionHeader.assetsSelectedCountTextLabel.text = "\(assetGroups[indexPath.section].assets.count) itmes"
 				
 				checkSelectedHeaderView(for: indexPath, headerView: sectionHeader)
 				
@@ -403,20 +403,31 @@ extension GroupedAssetListViewController: UICollectionViewDelegate, UICollection
 	
 	func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
 		let asset = self.assetGroups[indexPath.section].assets[indexPath.row]
+		let identifier = IndexPath(item: indexPath.item, section: indexPath.section) as NSCopying
 		
 		if asset.mediaType == .video {
-			return UIContextMenuConfiguration(identifier: nil) {
+			return UIContextMenuConfiguration(identifier: identifier) {
 				return PreviewAVController(asset: asset)
 			} actionProvider: { _ in
 				return self.createCellContextMenu(for: asset, at: indexPath)
 			}
 		} else {
-			return UIContextMenuConfiguration(identifier: nil) {
+			return UIContextMenuConfiguration(identifier: identifier) {
 				return AssetContextPreviewViewController(asset: asset)
 			} actionProvider: { _ in
 				return self.createCellContextMenu(for: asset, at: indexPath)
 			}
 		}
+	}
+	
+	func collectionView(_ collectionView: UICollectionView, previewForHighlightingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview? {
+		
+		guard let indexPath = configuration.identifier as? IndexPath,  let cell = collectionView.cellForItem(at: indexPath) else { return nil}
+		
+		let targetPreview = UITargetedPreview(view: cell)
+		targetPreview.parameters.backgroundColor = .clear
+		
+		return targetPreview
 	}
 }
 
@@ -518,7 +529,7 @@ extension GroupedAssetListViewController: SNCollectionViewLayoutDelegate {
     }
     
     func headerFlexibleDimension(inCollectionView collectionView: UICollectionView, withLayout layout: UICollectionViewLayout, fixedDimension: CGFloat) -> CGFloat {
-        return 44
+        return 50
     }
 }
 

@@ -10,9 +10,11 @@ import UIKit
 class GroupedAssetsReusableHeaderView: UICollectionReusableView {
     
     @IBOutlet weak var baseView: UIView!
-    @IBOutlet weak var assetsSelectedCountTextLabel: UILabel!
-    @IBOutlet weak var selectAllButtonTextLabel: UILabel!
-    
+	@IBOutlet weak var currentAssetsDate: UILabel!
+//	@IBOutlet weak var assetsSelectedCountTextLabel: UILabel!
+//    @IBOutlet weak var selectAllButtonTextLabel: UILabel!
+	@IBOutlet weak var deleteSelectedButton: ShadowMultiplyerButton!
+	
     public var onSelectAll: (() -> Void)?
 
     public var indexPath: IndexPath?
@@ -20,8 +22,8 @@ class GroupedAssetsReusableHeaderView: UICollectionReusableView {
     override func prepareForReuse() {
         super.prepareForReuse()
         
-        assetsSelectedCountTextLabel.text = ""
-        selectAllButtonTextLabel.text = "select all"
+//        assetsSelectedCountTextLabel.text = ""
+//        selectAllButtonTextLabel.text = "select all"
     }
     
     override func awakeFromNib() {
@@ -43,12 +45,12 @@ extension GroupedAssetsReusableHeaderView: Themeble {
     
     public func setSelectDeselectButton(_ isSelectAll: Bool) {
         
-        self.selectAllButtonTextLabel.text = isSelectAll ? "deselect all" : "select all"
+//        self.selectAllButtonTextLabel.text = isSelectAll ? "deselect all" : "select all"
     }
     
     public func updateColors() {
         
-        assetsSelectedCountTextLabel.textColor = theme.titleTextColor
-        selectAllButtonTextLabel.textColor = theme.titleTextColor
+//        assetsSelectedCountTextLabel.textColor = theme.titleTextColor
+//        selectAllButtonTextLabel.textColor = theme.titleTextColor
     }
 }

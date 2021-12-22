@@ -18,7 +18,7 @@
                 <rect key="frame" x="0.0" y="0.0" width="258" height="247"/>
                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 <subviews>
-                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cZE-Vl-ZQw" customClass="ReuseShadowView" customModule="ECleaner" customModuleProvider="target">
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cZE-Vl-ZQw" customClass="CollectionShadowView" customModule="ECleaner" customModuleProvider="target">
                         <rect key="frame" x="8" y="8" width="242" height="231"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     </view>
@@ -60,10 +60,10 @@
                         <constraints>
                             <constraint firstItem="t63-kq-mOP" firstAttribute="leading" secondItem="ZPH-1G-hQC" secondAttribute="leading" constant="5" id="OuC-82-ofQ"/>
                             <constraint firstAttribute="trailing" secondItem="ZPH-1G-hQC" secondAttribute="trailing" constant="7" id="XHf-Ld-F8r"/>
+                            <constraint firstItem="ZPH-1G-hQC" firstAttribute="top" secondItem="s5I-X3-emN" secondAttribute="top" constant="7" id="aoq-It-rVb"/>
                             <constraint firstItem="BYc-LT-Vun" firstAttribute="centerY" secondItem="s5I-X3-emN" secondAttribute="centerY" id="bBB-mT-PPB"/>
                             <constraint firstItem="t63-kq-mOP" firstAttribute="bottom" secondItem="ZPH-1G-hQC" secondAttribute="bottom" constant="-5" id="cGf-A5-9O4"/>
                             <constraint firstItem="ZPH-1G-hQC" firstAttribute="leading" secondItem="s5I-X3-emN" secondAttribute="leading" constant="7" id="iJs-M1-6oA"/>
-                            <constraint firstItem="ZPH-1G-hQC" firstAttribute="top" secondItem="s5I-X3-emN" secondAttribute="top" constant="7" id="wJW-UM-5QB"/>
                             <constraint firstItem="BYc-LT-Vun" firstAttribute="centerX" secondItem="s5I-X3-emN" secondAttribute="centerX" id="wMZ-Bz-9HA"/>
                             <constraint firstAttribute="bottom" secondItem="ZPH-1G-hQC" secondAttribute="bottom" constant="7" id="wcp-6W-D1M"/>
                         </constraints>
@@ -162,12 +162,16 @@
                 <outlet property="bestLabel" destination="aPm-5O-pit" id="dnZ-Bn-Die"/>
                 <outlet property="bestView" destination="7Dz-ja-sh9" id="QS9-Hi-I4q"/>
                 <outlet property="bulbview" destination="sC6-Dw-WPj" id="238-Ch-aVn"/>
-                <outlet property="buttonView" destination="ZPH-1G-hQC" id="EFb-r9-KgJ"/>
+                <outlet property="buttonView" destination="AMQ-wD-MHf" id="bdr-gc-Ldd"/>
                 <outlet property="circleSelectThumbView" destination="3UQ-LW-5nr" id="3dz-SQ-bbj"/>
                 <outlet property="photoCheckmarkImageView" destination="13M-k1-GIX" id="55a-Mk-Ia4"/>
                 <outlet property="photoThumbnailImageView" destination="ZPH-1G-hQC" id="PYV-g7-Lg2"/>
                 <outlet property="playPhassetImageView" destination="BYc-LT-Vun" id="5aN-Mv-jzD"/>
+                <outlet property="reuseBottomConstraint" destination="9VS-3I-qqH" id="wv0-FU-l7C"/>
+                <outlet property="reuseLeadingConstraint" destination="aN5-m6-fcA" id="wPA-SL-qrp"/>
                 <outlet property="reuseShadowView" destination="cZE-Vl-ZQw" id="BN2-eF-jQc"/>
+                <outlet property="reuseTopConstraint" destination="fhM-9X-BDu" id="Sdn-9S-j10"/>
+                <outlet property="reuseTrailingConstraint" destination="LBt-gc-cnQ" id="POr-Hw-cRz"/>
                 <outlet property="selectCellButtonHeightConstraint" destination="kyc-uO-zhj" id="oo3-xL-XmB"/>
                 <outlet property="selectCellButtonWidthConstraint" destination="HkE-ib-MoR" id="hYS-rp-LBw"/>
                 <outlet property="selectableView" destination="AXa-27-ZoL" id="42l-F0-tDk"/>
