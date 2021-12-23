@@ -344,6 +344,18 @@ enum Theme: Int {
 				return UIColor().colorFromHexString("FFFFFF")
 		}
 	}
+	
+	var helperTitleTextColor: UIColor {
+		switch self {
+			case .light:
+				return UIColor().colorFromHexString("8D94A5")
+			case .dark:
+				return UIColor().colorFromHexString("8D94A5")
+		}
+	}
+	
+	
+	
     
     
     
@@ -351,10 +363,6 @@ enum Theme: Int {
     
     #warning("check colors") 
 // MARK: - `neeed! Check colors for new aftet this linge!!!!!
-    
-
-    
-
     
     var subTitleTextColor: UIColor {
         switch self {

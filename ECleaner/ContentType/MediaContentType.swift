@@ -58,6 +58,21 @@ enum MediaContentType {
 		}
 	}
 	
+	var screeAcentGradientUICoror: [UIColor] {
+		let theme = ThemeManager.theme
+		
+		switch self {
+			case .userPhoto:
+				return [theme.photoTopGradientColor, theme.photoBottomGradientColor]
+			case .userVideo:
+				return [theme.videoTopGradientColor, theme.videoBottomGradientColor]
+			case .userContacts:
+				return [theme.contactTopGradientColor, theme.contactBottomGradientColor]
+			case .none:
+				return [UIColor.clear, UIColor.clear]
+		}
+	}
+	
 	var selectableAssetsCheckMark: UIImage {
 		switch self {
 			case .userPhoto:
@@ -67,6 +82,17 @@ enum MediaContentType {
 			case .userContacts:
 				return I.personalisation.contacts.sectionSelect
 			case .none:
+				return UIImage()
+		}
+	}
+	
+	var selectedAllImage: UIImage {
+		switch self {
+			case .userPhoto:
+				return I.personalisation.photo.selectableAssets
+			case .userVideo:
+				return I.personalisation.video.selectableAssets
+			default:
 				return UIImage()
 		}
 	}

@@ -299,6 +299,13 @@ extension GroupedAssetListViewController {
 			cell.loadCellThumbnail(assetGroups[indexPath.section].assets[indexPath.row], size: CGSize(width: 300, height: 300))
 		}
 	}
+	
+	public func hederConfigure(_ view: GroupedAssetsReusableHeaderView, at indexPath: IndexPath) {
+		
+		view.mediaContentType = self.contentType
+		view.deleteSelectedButton.contentType = self.contentType
+		view.setupUI()
+	}
 }
 
 	//      MARK: - setup collection view with flow layout -
@@ -331,6 +338,9 @@ extension GroupedAssetListViewController: UICollectionViewDelegate, UICollection
 				let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: C.identifiers.views.groupHeaderView, for: indexPath)
 				
 				guard let sectionHeader = headerView as? GroupedAssetsReusableHeaderView else { return headerView }
+				
+				self.hederConfigure(sectionHeader, at: indexPath)
+				
 				
 //				sectionHeader.assetsSelectedCountTextLabel.text = "\(assetGroups[indexPath.section].assets.count) itmes"
 				
@@ -529,7 +539,7 @@ extension GroupedAssetListViewController: SNCollectionViewLayoutDelegate {
     }
     
     func headerFlexibleDimension(inCollectionView collectionView: UICollectionView, withLayout layout: UICollectionViewLayout, fixedDimension: CGFloat) -> CGFloat {
-        return 50
+        return 55
     }
 }
 

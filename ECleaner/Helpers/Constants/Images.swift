@@ -71,6 +71,7 @@ class Images {
             static let processingThumb = UIImage(named: "photoProcessingEmptyItem")!
             static let unavailibleThumb = UIImage(named: "photoThumbUnselect")!
 			static let checkmark = UIImage(named: "photoSectionSelect")!
+			static let selectableAssets = UIImage(named: "photoSelectableImageItem")!
         }
         
         struct video {
@@ -78,6 +79,7 @@ class Images {
             static let processingThumb = UIImage(named: "videoProcessingEmptyItem")!
             static let unavailibleThumb = UIImage(named: "videoThumbUnselect")!
 			static let checkmark = UIImage(named: "videoSectionSelect")!
+			static let selectableAssets = UIImage(named: "videoSelectableImageItem")!
         }
     }
 
