@@ -48,7 +48,7 @@ class PhotoCollectionViewCell: UICollectionViewCell {
         
         photoCheckmarkImageView.image = I.systemElementsItems.circleBox
     }
-    
+
     override func awakeFromNib() {
         super.awakeFromNib()
 

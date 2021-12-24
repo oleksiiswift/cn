@@ -406,7 +406,7 @@ extension SimpleAssetsListViewController {
             }
         }
         
-        let deleteAssetAction = UIAction(title: "delete", image: I.cellElementsItems.trashBin) { _ in
+        let deleteAssetAction = UIAction(title: "delete", image: I.systemItems.defaultItems.trashBin) { _ in
 			self.deleteSinglePhasset(at: indexPath)
         }
         

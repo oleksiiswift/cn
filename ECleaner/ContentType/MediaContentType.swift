@@ -86,18 +86,6 @@ enum MediaContentType {
 		}
 	}
 	
-	var selectedAllImage: UIImage {
-		switch self {
-			case .userPhoto:
-				return I.personalisation.photo.selectableAssets
-			case .userVideo:
-				return I.personalisation.video.selectableAssets
-			default:
-				return UIImage()
-		}
-	}
-    
-    
         /// ``MAIN SCREEN CONTENT TYPE PROPERTIES``
     
     var mainScreenIndexPath: IndexPath {

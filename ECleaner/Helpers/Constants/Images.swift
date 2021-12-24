@@ -46,6 +46,7 @@ class Images {
             static let deepClean = UIImage(named: "deepClean")!
             static let refreshFull = UIImage(named: "circleRoundedArrows")!
 			static let onViewPlayButton = UIImage(named: "playTransparentItem")!
+			static let trashBin = UIImage(named: "defaultTrashBin")!
         }
         
         struct backroundStaticItems {
@@ -71,7 +72,6 @@ class Images {
             static let processingThumb = UIImage(named: "photoProcessingEmptyItem")!
             static let unavailibleThumb = UIImage(named: "photoThumbUnselect")!
 			static let checkmark = UIImage(named: "photoSectionSelect")!
-			static let selectableAssets = UIImage(named: "photoSelectableImageItem")!
         }
         
         struct video {
@@ -79,7 +79,6 @@ class Images {
             static let processingThumb = UIImage(named: "videoProcessingEmptyItem")!
             static let unavailibleThumb = UIImage(named: "videoThumbUnselect")!
 			static let checkmark = UIImage(named: "videoSectionSelect")!
-			static let selectableAssets = UIImage(named: "videoSelectableImageItem")!
         }
     }
 
@@ -104,6 +103,6 @@ class Images {
     
     struct cellElementsItems {
         static let fullScreen = UIImage(systemName: "arrow.up.backward.and.arrow.down.forward")
-        static let trashBin = UIImage(systemName: "trash")
+        
     }
 }

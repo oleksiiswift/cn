@@ -11,12 +11,12 @@ class GroupedAssetsReusableHeaderView: UICollectionReusableView {
     
     @IBOutlet weak var baseView: UIView!
 	@IBOutlet weak var currentAssetsDate: UILabel!
-	@IBOutlet weak var deleteSelectedButton: ShadowMultiplyerButton!
+	@IBOutlet weak var deleteSelectedButton: ShadowButtonWithImage!
 	@IBOutlet weak var selectAllButton: ShadowButton!
 	
 	public var indexPath: IndexPath?
     public var onSelectAll: (() -> Void)?
-	public var onDeletteSelected: (() -> Void)?
+	public var onDeleteSelected: (() -> Void)?
 	
 	public var mediaContentType: MediaContentType = .none
     
@@ -25,7 +25,7 @@ class GroupedAssetsReusableHeaderView: UICollectionReusableView {
         
 //        assetsSelectedCountTextLabel.text = ""
 //        selectAllButtonTextLabel.text = "select all"
-		deleteSelectedButton.setHelperText(nil)
+		
 		currentAssetsDate.text = nil
     }
     
@@ -34,12 +34,11 @@ class GroupedAssetsReusableHeaderView: UICollectionReusableView {
 		
     }
 	
-	@IBAction func didTapDeleteSelectedAssetsActionButton(_ sender: Any) {
-	
+	@IBAction func didTapDeleteSelectedAssetsActionButton(_ sender: ShadowButtonWithImage) {
+		onDeleteSelected?()
 	}
 	
-    @IBAction func didTapSelectAllActionButton(_ sender: Any) {
-        
+    @IBAction func didTapSelectAllActionButton(_ sender: ShadowButton) {
         onSelectAll?()
     }
 }
@@ -49,32 +48,51 @@ extension GroupedAssetsReusableHeaderView: Themeble {
     public func setupUI() {
 		
 		let deletedText = "delete selected".uppercased()
+		let image = I.systemItems.defaultItems.trashBin
 		deleteSelectedButton.contentType = mediaContentType
-		deleteSelectedButton.setMainButton(text: deletedText, with: mediaContentType.screenAcentTintColor, tintColor: theme.cellBackGroundColor)
-		
-		deleteSelectedButton.updateColors()
-	
-		selectAllButton.addImage(mediaContentType.selectedAllImage)
-		
+		selectAllButton.contentType = mediaContentType
+		deleteSelectedButton.setMainButton(text: deletedText, image: image)
+				
 		currentAssetsDate.font = .systemFont(ofSize: 14, weight: .bold)
 		currentAssetsDate.textColor = theme.helperTitleTextColor
 	}
-    
-    public func setSelectDeselectButton(_ isSelectAll: Bool) {
-        
-//        self.selectAllButtonTextLabel.text = isSelectAll ? "deselect all" : "select all"
-    }
 	
-	public func changeSelectableAssets(_ count: Int) {
+
+    
+//    public func setSelectDeselectButton(_ isSelectAll: Bool) {
+//        
+////        self.selectAllButtonTextLabel.text = isSelectAll ? "deselect all" : "select all"
+//		
+//    }
+	
+//	public func changeSelectableAssets(to select: Bool) {
+//		
+//		deleteSelectedButton.updateColors(for: select)
+//		
+//		if !select {
+//			deleteSelectedButton.isEnabled = false
+//			selectAllButton.setImage(I.systemItems.selectItems.circleMark, enabled: false)
+//			
+//		} else {
+//			deleteSelectedButton.isEnabled = true
+//			selectAllButton.setImage(I.systemItems.selectItems.roundedCheckMark, enabled: true)
+//		}
+//	}
+//	
+	
+	public func handleSelectableAsstes(to select: Bool) {
 		
-		if count == 0 {
-			deleteSelectedButton.isEnabled = false
-			deleteSelectedButton.setHelperText(String(""))
-		} else {
-			deleteSelectedButton.isEnabled = true
-			deleteSelectedButton.setHelperText(String("\(count)"))
-		}
+		let handledImage = !select ? I.systemItems.selectItems.circleMark : I.systemItems.selectItems.roundedCheckMark
+		selectAllButton.setImage(handledImage, enabled: select)
 	}
+	
+	public func handleDeleteAssets(to select: Bool) {
+		
+		deleteSelectedButton.updateColors(for: select)
+		deleteSelectedButton.isEnabled = select
+	}
+	
+	
 	
 	public func setGroupTitle(title: String) {
 			

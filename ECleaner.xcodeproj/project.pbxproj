@@ -191,6 +191,9 @@
 		97C44FBB274EF93B001B61AB /* ContactasCleaningType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97C44FBA274EF93B001B61AB /* ContactasCleaningType.swift */; };
 		97C44FBD274EF959001B61AB /* ContactsContainerType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97C44FBC274EF959001B61AB /* ContactsContainerType.swift */; };
 		97C656B32773CABE00E88BBF /* ShadowMultiplyerButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97C656B22773CABE00E88BBF /* ShadowMultiplyerButton.swift */; };
+		97C70B50277633AC0033F466 /* UIImage+Gradient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97C70B4F277633AC0033F466 /* UIImage+Gradient.swift */; };
+		97C70B52277634280033F466 /* ShadowButtonWithImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97C70B51277634280033F466 /* ShadowButtonWithImage.swift */; };
+		97C70B54277634AC0033F466 /* ShadowButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97C70B53277634AC0033F466 /* ShadowButton.swift */; };
 		97C909CA2748F68B00BC2E47 /* ECFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97C909C92748F68B00BC2E47 /* ECFileManager.swift */; };
 		97C909CC2748FA5300BC2E47 /* ShareManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97C909CB2748FA5300BC2E47 /* ShareManager.swift */; };
 		97C909CE274950D300BC2E47 /* TemproraryClassMethodsCellBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97C909CD274950D300BC2E47 /* TemproraryClassMethodsCellBlock.swift */; };
@@ -422,6 +425,9 @@
 		97C44FBA274EF93B001B61AB /* ContactasCleaningType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactasCleaningType.swift; sourceTree = "<group>"; };
 		97C44FBC274EF959001B61AB /* ContactsContainerType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsContainerType.swift; sourceTree = "<group>"; };
 		97C656B22773CABE00E88BBF /* ShadowMultiplyerButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowMultiplyerButton.swift; sourceTree = "<group>"; };
+		97C70B4F277633AC0033F466 /* UIImage+Gradient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Gradient.swift"; sourceTree = "<group>"; };
+		97C70B51277634280033F466 /* ShadowButtonWithImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowButtonWithImage.swift; sourceTree = "<group>"; };
+		97C70B53277634AC0033F466 /* ShadowButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowButton.swift; sourceTree = "<group>"; };
 		97C909C92748F68B00BC2E47 /* ECFileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ECFileManager.swift; sourceTree = "<group>"; };
 		97C909CB2748FA5300BC2E47 /* ShareManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareManager.swift; sourceTree = "<group>"; };
 		97C909CD274950D300BC2E47 /* TemproraryClassMethodsCellBlock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemproraryClassMethodsCellBlock.swift; sourceTree = "<group>"; };
@@ -847,6 +853,7 @@
 				970D7788275B70E70048F41D /* UIAlertController */,
 				970D7787275B70D70048F41D /* PHAsset */,
 				97AC5DBB276790A600C20F73 /* UILabel */,
+				97C70B4F277633AC0033F466 /* UIImage+Gradient.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -1224,7 +1231,6 @@
 				9776F57D27359406009D806A /* ShadowRoundedView.swift */,
 				9776F5832735953A009D806A /* ShadowView.swift */,
 				9784D3A72742CDDB00340D97 /* ReuseShadowView.swift */,
-				97C656B22773CABE00E88BBF /* ShadowMultiplyerButton.swift */,
 				97CB351027395802005DA881 /* SectionShadowView.swift */,
 				975617D7273BC32A00E07A62 /* ReuseShadowRoundedView.swift */,
 			);
@@ -1404,8 +1410,11 @@
 		97DC39B1273C091C00D487BE /* ShadowButtons */ = {
 			isa = PBXGroup;
 			children = (
+				97C656B22773CABE00E88BBF /* ShadowMultiplyerButton.swift */,
 				97DC39AD273C003300D487BE /* PrimaryShadowButton.swift */,
 				97DC39AF273C08ED00D487BE /* PrimaryShadowImageWithTextButton.swift */,
+				97C70B51277634280033F466 /* ShadowButtonWithImage.swift */,
+				97C70B53277634AC0033F466 /* ShadowButton.swift */,
 			);
 			path = ShadowButtons;
 			sourceTree = "<group>";
@@ -1667,6 +1676,8 @@
 				97238A0F2689EE2700C523DC /* CustomDoneHud.swift in Sources */,
 				04E5837E267B60F600EDC3A3 /* AlertManager.swift in Sources */,
 				975AF440272898AE00744E3B /* ContactsViewController.swift in Sources */,
+				97C70B54277634AC0033F466 /* ShadowButton.swift in Sources */,
+				97C70B50277633AC0033F466 /* UIImage+Gradient.swift in Sources */,
 				4F4A17BB271D819F00CAF157 /* StartingNavigationBar.swift in Sources */,
 				97FC789A2688D907000D7F26 /* SimpleColumnFlowLayout.swift in Sources */,
 				977BA0472733171F0018DF53 /* CNContacts+FillRows.swift in Sources */,
@@ -1717,6 +1728,7 @@
 				97CC2F3E268743A80072EF8C /* SegueManager.swift in Sources */,
 				978FEF1A274C1C5400ADE1D9 /* UIAlertController+Colors.swift in Sources */,
 				970D778F275B9D170048F41D /* DeepCleanNotificationType.swift in Sources */,
+				97C70B52277634280033F466 /* ShadowButtonWithImage.swift in Sources */,
 				04649B35268C52B100336FE4 /* GroupedAssetsReusableFooterView.swift in Sources */,
 				4FE56A9B27299A11006CD946 /* DeepCleanInfoView.swift in Sources */,
 				049CC217268221DE0002F988 /* MainViewController.swift in Sources */,
