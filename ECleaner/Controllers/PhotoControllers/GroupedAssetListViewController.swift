@@ -34,17 +34,14 @@ class GroupedAssetListViewController: UIViewController, UIPageViewControllerDele
 	public var isDeepCleaningSelectableFlow: Bool = false
 	public var changedPhassetGroupCompletionHandler: ((_ phassetGroup: [PhassetGroup]) -> Void)?
 	
+	private var selectedAssets: [PHAsset] = []
+	private var selectedSection: Set<Int> = []
+	
 	var scrollView = UIScrollView()
 	
-	
-	
-    
-
     @IBOutlet weak var photoPreviewContainerView: UIView!
     @IBOutlet weak var photoContentContainerView: UIView!
     @IBOutlet weak var optionalViewerHeightConstraint: NSLayoutConstraint!
-    
-    
     
     /// - controllers -
     #warning("hide photopreviewLogic for TODO later")
@@ -52,11 +49,9 @@ class GroupedAssetListViewController: UIViewController, UIPageViewControllerDele
 
 
 //    private weak var delegate: ContentDataProviderDelegate?
+
     
-  
-    
-    private var selectedAssets: [PHAsset] = []
-    private var selectedSection: Set<Int> = []
+ 
     private var previouslySelectedIndexPaths: [IndexPath] = []
     
     private var splitAssetsNumberOfItems: Int = 0
@@ -92,7 +87,7 @@ class GroupedAssetListViewController: UIViewController, UIPageViewControllerDele
 		setupObservers()
 		updateColors()
 		handleStartingSelectableAssets()
-		
+		handleDeleteAssetsButton()
 		
 //        splitAllAssetsForPreview() /// hide temporary for future
 //        setupPhotoPreviewController() /// hide
@@ -121,14 +116,9 @@ extension GroupedAssetListViewController {
 	}
 	
 	private func didTapBackDeepCleanActionButton() {
-//		func didTapBackButton() {
-//
-//			guard isDeepCleaningSelectableFlow else { return }
-//
-//			let selectedAssetsIDs: [String] = selectedAssets.compactMap({ $0.localIdentifier})
-//			self.selectedAssetsDelegate?.didSelect(assetsListIds: selectedAssetsIDs, mediaType: self.mediaType)
-//			self.navigationController?.popViewController(animated: true)
-//		}
+		let selectedAssetsIDs: [String] = selectedAssets.compactMap({ $0.localIdentifier})
+		self.selectedAssetsDelegate?.didSelect(assetsListIds: selectedAssetsIDs, mediaType: self.mediaType)
+		self.navigationController?.popViewController(animated: true)
 	}
 	
 	private func preSelectCleaningPhassetAccordingControllerType() {
@@ -404,6 +394,14 @@ extension GroupedAssetListViewController: UICollectionViewDelegate, UICollection
 		
 		return targetPreview
 	}
+	
+	private func smoothReloadData() {
+		UIView.transition(with: self.collectionView, duration: 0.35, options: .transitionCrossDissolve) {
+			self.collectionView.reloadData()
+		} completion: { _ in
+			self.handleDeleteAssetsButton()
+		}
+	}
 }
 
 	//  MARK: - flow with select deselect cell
@@ -595,6 +593,63 @@ extension GroupedAssetListViewController {
 	
 	private func onDeleteAllSelectedInSectionButtonTapped(for sectionHeader: GroupedAssetsReusableHeaderView, at indexPath: IndexPath) {
 		
+		let indexPathsOfSection = self.getIndexPathInSectionWithoutFirst(section: indexPath.section)
+		let sectionCells = self.getSectionsCells(at: indexPathsOfSection)
+		
+		if !sectionCells.isEmpty {
+			let selectedCells = sectionCells.filter({$0.isSelected})
+			if !selectedCells.isEmpty {
+		
+				let changedGroup = assetGroups[indexPath.section]
+				var phassets: [PHAsset] = []
+				
+				selectedCells.forEach { cell in
+					if let index = collectionView.indexPath(for: cell) {
+						phassets.append(changedGroup.assets[index.item])
+					}
+				}
+				
+				if !phassets.isEmpty {
+					self.showDelecteConfirmAlert(for: phassets) { suxxess in
+						
+						phassets.forEach { asset in
+							self.selectedAssets.removeAll(asset)
+						}
+						
+						U.UI {
+							if indexPathsOfSection.count == phassets.count {
+						
+								self.assetGroups.remove(at: indexPath.section)
+								
+								self.collectionView.performBatchUpdates {
+									self.collectionView.deleteSections(IndexSet(integer: indexPath.section))
+								} completion: { _ in
+									self.handleDeleteAssetsButton()
+								}
+							} else {
+								var indexPathsSelectedSections: [IndexPath] = []
+								
+								selectedCells.forEach { cell in
+									if let indexPath = self.collectionView.indexPath(for: cell) {
+										indexPathsSelectedSections.append(indexPath)
+									}
+								}
+								
+								phassets.forEach { asset in
+									self.assetGroups[indexPath.section].assets.removeAll(asset)
+								}
+								
+								self.collectionView.performBatchUpdates {
+									self.collectionView.deleteItems(at: indexPathsSelectedSections)
+								} completion: { _ in
+									self.handleDeleteAssetsButton()
+								}
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 	
 	private func lazyHardcoreCheckForSelectedItemsAndAssets() {
@@ -663,6 +718,7 @@ extension GroupedAssetListViewController {
 	private func handleStartingSelectableAssets() {
 		guard isDeepCleaningSelectableFlow else { return }
 		self.shouldSelectAllAssetsInSections(false)
+		self.bottomMenuHeightConstraint.constant = 0
 	}
 }
 
@@ -670,23 +726,31 @@ extension GroupedAssetListViewController {
 	
 	private func handleDeleteAssetsButton() {
 		
-		guard !isDeepCleaningSelectableFlow else { return }
-		
-		let calculatedBottomMenuHeight: CGFloat = bottomMenuHeight + U.bottomSafeAreaHeight - 5
-		
-		/// `collection`
-		if isCarouselViewMode {
-			optionalViewerHeightConstraint.constant = defaultContainerHeight - (carouselPreviewCollectionHeight + (!selectedAssets.isEmpty ?  calculatedBottomMenuHeight : 0))
-		} else {
-			optionalViewerHeightConstraint.constant = 0
-		}
-		
-		/// `bottom menu`
-		bottomMenuHeightConstraint.constant = !selectedAssets.isEmpty ? (calculatedBottomMenuHeight) : 0
-		self.collectionView.contentInset.bottom = !selectedAssets.isEmpty ? 20 : 10
-		U.animate(0.5) {
-			self.photoContentContainerView.layoutIfNeeded()
-			self.view.layoutIfNeeded()
+		U.UI { [self] in
+			guard !isDeepCleaningSelectableFlow else {
+				bottomMenuHeightConstraint.constant = 0
+				return
+			}
+			
+			let calculatedBottomMenuHeight: CGFloat = bottomMenuHeight + U.bottomSafeAreaHeight - 5
+			
+				/// `collection`
+			if isCarouselViewMode {
+				optionalViewerHeightConstraint.constant = defaultContainerHeight - (carouselPreviewCollectionHeight + (!selectedAssets.isEmpty ?  calculatedBottomMenuHeight : 0))
+			} else {
+				optionalViewerHeightConstraint.constant = 0
+			}
+			
+				/// `bottom menu`
+			bottomMenuHeightConstraint.constant = !selectedAssets.isEmpty ? (calculatedBottomMenuHeight) : 0
+			
+			bottomButtonBarView.title("delete selected (\(selectedAssets.count))")
+			
+			self.collectionView.contentInset.bottom = !selectedAssets.isEmpty ? 20 : 10
+			U.animate(0.5) {
+				self.photoContentContainerView.layoutIfNeeded()
+				self.view.layoutIfNeeded()
+			}
 		}
 	}
 }
@@ -736,6 +800,8 @@ extension GroupedAssetListViewController {
 		bottomButtonBarView.activityIndicatorColor = theme.backgroundColor
 		bottomButtonBarView.updateColorsSettings()
 	}
+	
+	
 }
 
 extension GroupedAssetListViewController: SNCollectionViewLayoutDelegate {
@@ -780,36 +846,83 @@ extension GroupedAssetListViewController: UICollectionViewDataSourcePrefetching 
 
 //      MARK: - assets processing -
 extension GroupedAssetListViewController {
-    
-
-    
+	
     private func showDeleteConfirmAlert() {
         
         AlertManager.showDeletePhotoAssetsAlert {
             self.deleteSelectedAssets()
         }
     }
-    
+	
+	private func deleteAsset(at indexPath: IndexPath) {
+		
+		
+		let phasset = self.assetGroups[indexPath.section].assets[indexPath.row]
+		
+		self.showDelecteConfirmAlert(for: [phasset]) { suxxess in
+			U.UI {
+				
+				if suxxess {
+					self.selectedAssets.removeAll(phasset)
+					self.assetGroups[indexPath.section].assets.remove(at: indexPath.item)
+				
+					let oldGropsValue = self.assetGroups.count
+
+					self.assetGroups = self.assetGroups.filter({$0.assets.count != 1})
+					
+					if oldGropsValue != self.assetGroups.count {
+						self.collectionView.deleteSections(IndexSet(integer: indexPath.section))
+						self.smoothReloadData()
+					} else {
+						
+						self.collectionView.performBatchUpdates {
+							self.collectionView.deleteItems(at: [indexPath])
+							
+						} completion: { _ in
+							self.handleDeleteAssetsButton()
+						}
+					}
+				}
+			}
+		}
+	}
+		
+	
+	private func showDelecteConfirmAlert(for assets: [PHAsset], completionHandler: @escaping (Bool) -> Void) {
+		
+		let deletePhassetOperation = photoManager.deleteSelectedOperation(assets: assets) { suxxess in
+			if !suxxess {
+				U.UI {
+					ErrorHandler.shared.showDeleteAlertError(.errorDeletePhasset)
+				}
+			}
+			completionHandler(suxxess)
+		}
+		AlertManager.showDeletePhotoAssetsAlert {
+			self.photoManager.phassetProcessingOperationQueuer.addOperation(deletePhassetOperation)
+		}
+	}
+	
     private func deleteSelectedAssets() {
         
         let identifiers = selectedAssets.map({$0.localIdentifier})
         
 		let deletePhassetOperation = photoManager.deleteSelectedOperation(assets: selectedAssets) { success in
-			if success {
-				for group in self.assetGroups {
-					group.assets = group.assets.filter({!identifiers.contains($0.localIdentifier)})
+			U.UI {
+				if success {
+					for group in self.assetGroups {
+						group.assets = group.assets.filter({!identifiers.contains($0.localIdentifier)})
+					}
+					self.assetGroups = self.assetGroups.filter({$0.assets.count != 1})
 				}
-				self.assetGroups = self.assetGroups.filter({$0.assets.count != 1})
+				self.selectedAssets = []
+				self.smoothReloadData()
 			}
-			self.selectedAssets = []
-			self.collectionView.reloadData()
 		}
 		
 		photoManager.phassetProcessingOperationQueuer.addOperation(deletePhassetOperation)
     }
-    
 
-    
     private func createCellContextMenu(for asset: PHAsset, at indexPath: IndexPath) -> UIMenu {
         
         let fullScreenPreviewAction = UIAction(title: "full screen preview", image: I.cellElementsItems.fullScreen) { _ in
@@ -822,8 +935,7 @@ extension GroupedAssetListViewController {
         }
         
 		let deleteAssetAction = UIAction(title: "delete", image: I.systemItems.defaultItems.trashBin) { _ in
-            debugPrint("delete action at :\(asset.imageSize)")
-            debugPrint(indexPath)
+			self.deleteAsset(at: indexPath)
         }
         
         return UIMenu(title: "", children: [fullScreenPreviewAction, deleteAssetAction])

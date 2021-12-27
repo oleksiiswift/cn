@@ -572,79 +572,42 @@ extension DeepCleaningViewController {
      }
      
      private func showCleaningListViewControler(by type: PhotoMediaType) {
-          
-//
-//          #warning("refactor!!>")
-//          switch type {
-//               case .similarPhotos:
-//                    if !similarPhoto.isEmpty {
-//                         self.showGropedContoller(assets: type.mediaTypeName,
-//                                                  grouped: similarPhoto,
-//                                                  photoContent: type)
-//                    }
-//               case .duplicatedPhotos:
-//                    if !duplicatedPhoto.isEmpty {
-//                         self.showGropedContoller(assets: type.mediaTypeName,
-//                                                  grouped: duplicatedPhoto,
-//                                                  photoContent: type)
-//                    }
-//               case .singleScreenShots:
-//                    if !screenShots.isEmpty {
-//                         self.showAssetViewController(assets: type.mediaTypeName,
-//                                                      collection: screenShots,
-//                                                      photoContent: type)
-//                    }
-//               case .similarLivePhotos:
-//                    if !similarLivePhotos.isEmpty {
-//                         self.showGropedContoller(assets: type.mediaTypeName,
-//                                                  grouped: similarLivePhotos,
-//                                                  photoContent: type)
-//                    }
-//               case .singleLargeVideos:
-//                    if !largeVideos.isEmpty {
-//                         self.showAssetViewController(assets: type.mediaTypeName,
-//                                                      collection: largeVideos,
-//                                                      photoContent: type)
-//                    }
-//               case .duplicatedVideos:
-//                    if !duplicatedVideo.isEmpty {
-//                         self.showGropedContoller(assets: type.mediaTypeName,
-//                                                  grouped: duplicatedVideo,
-//                                                  photoContent: type)
-//                    }
-//               case .similarVideos:
-//                    if !similarVideo.isEmpty {
-//                         self.showGropedContoller(assets: type.mediaTypeName,
-//                                                  grouped: similarVideo,
-//                                                  photoContent: type)
-//                    }
-//               case .singleScreenRecordings:
-//                    if !screenRecordings.isEmpty {
-//                         self.showAssetViewController(assets: type.mediaTypeName,
-//                                                      collection: screenRecordings,
-//                                                      photoContent: type)
-//                    }
-//               default:
-//                    return
-//          }
+		  
+          switch type {
+			   case .similarPhotos, .duplicatedPhotos, .similarLivePhotos, .duplicatedVideos, .similarVideos:
+					if let group = photoVideoFlowGroup[type], !group.isEmpty {
+						 self.showGropedContoller(assets: type.rawValue, grouped: group, photoContent: type, media: type.contenType)
+					}
+		
+			   case .singleScreenShots, .singleLargeVideos, .singleScreenRecordings:
+					if let group = photoVideoFlowGroup[type], !group.isEmpty {
+						 if let assets = group.first?.assets {
+							  self.showAssetViewController(assets: type.rawValue, collection: assets, photoContent: type, media: type.contenType)
+						 }
+					}
+               default:
+                    return
+          }
      }
      
-     private func showGropedContoller(assets title: String, grouped collection: [PhassetGroup], photoContent type: PhotoMediaType) {
+	 private func showGropedContoller(assets title: String, grouped collection: [PhassetGroup], photoContent type: PhotoMediaType, media content: MediaContentType) {
           let storyboard = UIStoryboard(name: C.identifiers.storyboards.media, bundle: nil)
           let viewController  = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.groupedList) as! GroupedAssetListViewController
           viewController.title = title
           viewController.isDeepCleaningSelectableFlow = true
           viewController.assetGroups = collection
-          viewController.selectedAssetsDelegate = self
-          viewController.mediaType = type
-          
+		  viewController.mediaType = type
+		  viewController.contentType = content
+		  
+		  viewController.selectedAssetsDelegate = self
+
           if let selectedStrings = selectedAssetsCollectionID[type] {
                viewController.handlePreviousSelected(selectedAssetsIDs: selectedStrings, assetGroupCollection: collection)
           }
           self.navigationController?.pushViewController(viewController, animated: true)
      }
      
-     private func showAssetViewController(assets title: String, collection: [PHAsset], photoContent type: PhotoMediaType) {
+	 private func showAssetViewController(assets title: String, collection: [PHAsset], photoContent type: PhotoMediaType, media content: MediaContentType) {
           let storyboard = UIStoryboard(name: C.identifiers.storyboards.media, bundle: nil)
           let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.assetsList) as! SimpleAssetsListViewController
           viewController.title = title
@@ -652,7 +615,8 @@ extension DeepCleaningViewController {
           viewController.assetCollection = collection
           viewController.selectedAssetsDelegate = self
           viewController.mediaType = type
-          
+		  viewController.contentType = content
+
           if let selectedStrings = selectedAssetsCollectionID[type] {
                viewController.handleAssetsPreviousSelected(selectedAssetsIDs: selectedStrings, assetCollection: collection)
           }

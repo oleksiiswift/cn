@@ -35,6 +35,19 @@ enum PhotoMediaType: String {
     case duplicatedEmails = "duplicatedEmails"
     
     case none = ""
+	
+	var contenType: MediaContentType {
+		switch self {
+			case .similarPhotos, .duplicatedPhotos, .singleScreenShots, .singleLivePhotos, .similarLivePhotos, .singleSelfies, .singleRecentlyDeletedPhotos:
+				return .userPhoto
+			case .singleLargeVideos, .duplicatedVideos, .similarVideos, .singleScreenRecordings, .singleRecentlyDeletedVideos:
+				return .userVideo
+			case .allContacts, .emptyContacts, .duplicatedContacts, .duplicatedPhoneNumbers, .duplicatedEmails:
+				return .userContacts
+			default:
+				return .none
+		}
+	}
     
         /// `name`
     var mediaTypeName: String {
