@@ -22,9 +22,6 @@ class GroupedAssetsReusableHeaderView: UICollectionReusableView {
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        
-//        assetsSelectedCountTextLabel.text = ""
-//        selectAllButtonTextLabel.text = "select all"
 		
 		currentAssetsDate.text = nil
     }
@@ -57,29 +54,6 @@ extension GroupedAssetsReusableHeaderView: Themeble {
 		currentAssetsDate.textColor = theme.helperTitleTextColor
 	}
 	
-
-    
-//    public func setSelectDeselectButton(_ isSelectAll: Bool) {
-//        
-////        self.selectAllButtonTextLabel.text = isSelectAll ? "deselect all" : "select all"
-//		
-//    }
-	
-//	public func changeSelectableAssets(to select: Bool) {
-//		
-//		deleteSelectedButton.updateColors(for: select)
-//		
-//		if !select {
-//			deleteSelectedButton.isEnabled = false
-//			selectAllButton.setImage(I.systemItems.selectItems.circleMark, enabled: false)
-//			
-//		} else {
-//			deleteSelectedButton.isEnabled = true
-//			selectAllButton.setImage(I.systemItems.selectItems.roundedCheckMark, enabled: true)
-//		}
-//	}
-//	
-	
 	public func handleSelectableAsstes(to select: Bool) {
 		
 		let handledImage = !select ? I.systemItems.selectItems.circleMark : I.systemItems.selectItems.roundedCheckMark
@@ -92,16 +66,15 @@ extension GroupedAssetsReusableHeaderView: Themeble {
 		deleteSelectedButton.isEnabled = select
 	}
 	
-	
-	
-	public func setGroupTitle(title: String) {
+	public func setGroupDate(_ date: Date?) {
 			
-		currentAssetsDate.text = title
+		if let date = date {
+			let headerTitle = Date().convertDateFormatterFromDate(date: date, format: C.dateFormat.monthDateYear)
+			currentAssetsDate.text = headerTitle
+		} else {
+			currentAssetsDate.text = "-"
+		}
 	}
     
-    public func updateColors() {
-        
-//        assetsSelectedCountTextLabel.textColor = theme.titleTextColor
-//        selectAllButtonTextLabel.textColor = theme.titleTextColor
-    }
+    public func updateColors() {}
 }

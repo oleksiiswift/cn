@@ -114,10 +114,10 @@
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Mpi-YQ-KXC" customClass="BottomButtonBarView" customModule="ECleaner" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="786" width="414" height="110"/>
+                                <rect key="frame" x="0.0" y="896" width="414" height="0.0"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="110" id="Drw-r8-NaI"/>
+                                    <constraint firstAttribute="height" id="Drw-r8-NaI"/>
                                 </constraints>
                             </view>
                         </subviews>
@@ -217,10 +217,10 @@
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zRX-2V-WJa" customClass="BottomButtonBarView" customModule="ECleaner" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="786" width="414" height="110"/>
+                                <rect key="frame" x="0.0" y="896" width="414" height="0.0"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="110" id="zyu-XX-Vdc"/>
+                                    <constraint firstAttribute="height" id="zyu-XX-Vdc"/>
                                 </constraints>
                             </view>
                         </subviews>

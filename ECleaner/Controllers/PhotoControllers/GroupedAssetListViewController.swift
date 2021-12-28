@@ -67,7 +67,10 @@ class GroupedAssetListViewController: UIViewController, UIPageViewControllerDele
     
  
     private var isSliderFlowLayout: Bool = false
-    private var isSelectAllAssetsMode: Bool = false
+	private var isSelectAllAssetsMode: Bool {
+		return self.selectedSection.count == self.collectionView.numberOfSections
+	}
+	
     private var isCarouselViewMode: Bool = false
     private var focusedIndexPath: IndexPath?
     private var previousPreheatRect: CGRect = CGRect()
@@ -86,7 +89,6 @@ class GroupedAssetListViewController: UIViewController, UIPageViewControllerDele
 		setupDelegate()
 		setupObservers()
 		updateColors()
-		handleStartingSelectableAssets()
 		handleDeleteAssetsButton()
 		
 //        splitAllAssetsForPreview() /// hide temporary for future
@@ -96,7 +98,11 @@ class GroupedAssetListViewController: UIViewController, UIPageViewControllerDele
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        didSelectPreviouslyIndexPath()
+		if previouslySelectedIndexPaths.isEmpty {
+			handleStartingSelectableAssets()
+		} else {
+			didSelectPreviouslyIndexPath()
+		}
 //        updateCachedAssets()
 //        setupPhotoPreviewController()
     }
@@ -117,7 +123,7 @@ extension GroupedAssetListViewController {
 	
 	private func didTapBackDeepCleanActionButton() {
 		let selectedAssetsIDs: [String] = selectedAssets.compactMap({ $0.localIdentifier})
-		self.selectedAssetsDelegate?.didSelect(assetsListIds: selectedAssetsIDs, mediaType: self.mediaType)
+		self.selectedAssetsDelegate?.didSelect(assetsListIds: selectedAssetsIDs, contenType: self.mediaType, updatableGroup: assetGroups, updatableAssets: [])
 		self.navigationController?.popViewController(animated: true)
 	}
 	
@@ -134,29 +140,33 @@ extension GroupedAssetListViewController {
 		
 //		let sliderMenuOptionItem = DropDownOptionsMenuItem(titleMenu: "slider", itemThumbnail: I.systemElementsItems.sliderView, isSelected: false, menuItem: .changeLayout)
 //		let tileMenuOptionItem = DropDownOptionsMenuItem(titleMenu: "tile", itemThumbnail: I.systemElementsItems.tileView, isSelected: false, menuItem: .changeLayout)
-//		let selectAllOptionItem = DropDownOptionsMenuItem(titleMenu: "select all", itemThumbnail: I.systemElementsItems.circleBox!, isSelected: false, menuItem: .selectAll)
-//		let deselectAllOptionItem = DropDownOptionsMenuItem(titleMenu: "deselect all", itemThumbnail: I.systemElementsItems.circleCheckBox!, isSelected: false, menuItem: .deselectAll)
+		
+
+		
+		let selectAllOptionItem = DropDownOptionsMenuItem(titleMenu: "select all", itemThumbnail: I.systemElementsItems.circleCheckBox!, isSelected: true, menuItem: .selectAll)
+		let deselectAllOptionItem = DropDownOptionsMenuItem(titleMenu: "deselect all", itemThumbnail: I.systemElementsItems.circleBox!, isSelected: true, menuItem: .deselectAll)
+		let deleteOptionItem = DropDownOptionsMenuItem(titleMenu: "delete", itemThumbnail: I.systemItems.defaultItems.trashBin, isSelected: true, menuItem: .delete)
 //
-//		let firstRowMenuItem = isSelectAllAssetsMode ? deselectAllOptionItem : selectAllOptionItem
+		let firstRowMenuItem = isSelectAllAssetsMode ? deselectAllOptionItem : selectAllOptionItem
 //		let secondRowMenuItem = isSliderFlowLayout ? tileMenuOptionItem : sliderMenuOptionItem
-//		presentingDropDownBurgerMenu(with: [firstRowMenuItem, secondRowMenuItem], from: navigationBar.rightBarButtonItem)
+		
+		presentDropDonwMenu(with: [firstRowMenuItem, deleteOptionItem], from:  navigationBar.rightBarButtonItem)
 	}
 	
-	private func presentingDropDownBurgerMenu(with items: [DropDownOptionsMenuItem], from sourceView: UIButton) {
+	private func presentDropDonwMenu(with items: [DropDownOptionsMenuItem], from navigationButton: UIButton) {
+		let dropDownViewController = DropDownMenuViewController()
+		dropDownViewController.menuSectionItems = items
+		dropDownViewController.delegate = self
 		
-		let drobDownViewController = DropDownMenuViewController()
-		drobDownViewController.menuSectionItems = items
-		drobDownViewController.delegate = self
-		guard let popoverPresentationController = drobDownViewController.popoverPresentationController else { fatalError("Error modal presentation style")}
-
-		popoverPresentationController.sourceView = sourceView
-		popoverPresentationController.sourceRect = CGRect(x: sourceView.bounds.midX, y: sourceView.bounds.maxY - 13, width: 0, height: 0)
+		guard let popoverPresentationController = dropDownViewController.popoverPresentationController else { return }
 		
 		popoverPresentationController.delegate = self
-		popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirection(rawValue: 0)
-		self.present(drobDownViewController, animated: true, completion: nil)
+		popoverPresentationController.sourceView = navigationButton
+		popoverPresentationController.sourceRect = CGRect(x: navigationButton.bounds.midX, y: navigationButton.bounds.maxY - 13, width: 0, height: 0)
+		popoverPresentationController.permittedArrowDirections = .up
+		self.present(dropDownViewController, animated: true, completion: nil)
 	}
-		
+	
 	public func handlePreviousSelected(selectedAssetsIDs: [String], assetGroupCollection: [PhassetGroup]) {
 		
 		for selectedAssetsID in selectedAssetsIDs {
@@ -189,8 +199,35 @@ extension GroupedAssetListViewController {
 		for indexPath in previouslySelectedIndexPaths {
 			self.collectionView.selectItem(at: indexPath, animated: false, scrollPosition: [])
 			self.collectionView.delegate?.collectionView?(self.collectionView, didSelectItemAt: indexPath)
+			
+			if let cell = collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell {
+				cell.isSelected = true
+				cell.checkIsSelected()
+			}
+			self.selectedAssets.append(self.assetGroups[indexPath.section].assets[indexPath.item])
 		}
-		self.lazyHardcoreCheckForSelectedItemsAndAssets()
+		checkForCelectedSection()
+	}
+	
+	private func checkForCelectedSection() {
+		
+		for section in 0..<self.collectionView.numberOfSections - 1 {
+			let allSectionIndexPaths = self.getIndexPathInSectionWithoutFirst(section: section)
+			var selectedIndexPathInSection: [IndexPath] = []
+			
+			if let selectedIndexPaths = collectionView.indexPathsForSelectedItems {
+				allSectionIndexPaths.forEach { indexPath in
+					if let path = selectedIndexPaths.first(where: {$0 == indexPath}) {
+						selectedIndexPathInSection.append(path)
+					}
+				}
+				if allSectionIndexPaths.count == selectedIndexPathInSection.count {
+					if !selectedSection.contains(section) {
+						selectedSection.insert(section)
+					}
+				}
+			}
+		}
 	}
 }
 
@@ -292,6 +329,7 @@ extension GroupedAssetListViewController {
 		view.mediaContentType = self.contentType
 		view.deleteSelectedButton.contentType = self.contentType
 		view.setupUI()
+		view.setGroupDate(self.assetGroups[indexPath.section].creationDate)
 	}
 }
 
@@ -624,6 +662,9 @@ extension GroupedAssetListViewController {
 								self.collectionView.performBatchUpdates {
 									self.collectionView.deleteSections(IndexSet(integer: indexPath.section))
 								} completion: { _ in
+									UIView.performWithoutAnimation {
+										self.collectionView.reloadData()
+									}
 									self.handleDeleteAssetsButton()
 								}
 							} else {
@@ -642,6 +683,9 @@ extension GroupedAssetListViewController {
 								self.collectionView.performBatchUpdates {
 									self.collectionView.deleteItems(at: indexPathsSelectedSections)
 								} completion: { _ in
+									UIView.performWithoutAnimation {
+										self.collectionView.reloadData()
+									}
 									self.handleDeleteAssetsButton()
 								}
 							}
@@ -709,8 +753,18 @@ extension GroupedAssetListViewController {
 					}
 				}
 			}
+			
 			/// check header button state availible
 			self.handleSelectAllButtonSection(IndexPath(item: 0, section: section))
+			
+			if !self.selectedSection.contains(section) {
+				self.selectedSection.insert(section)
+			}
+			
+		}
+		
+		if isSelect {
+			selectedSection.removeAll()
 		}
 		self.handleDeleteAssetsButton()
 	}
@@ -800,8 +854,6 @@ extension GroupedAssetListViewController {
 		bottomButtonBarView.activityIndicatorColor = theme.backgroundColor
 		bottomButtonBarView.updateColorsSettings()
 	}
-	
-	
 }
 
 extension GroupedAssetListViewController: SNCollectionViewLayoutDelegate {
@@ -861,7 +913,6 @@ extension GroupedAssetListViewController {
 		
 		self.showDelecteConfirmAlert(for: [phasset]) { suxxess in
 			U.UI {
-				
 				if suxxess {
 					self.selectedAssets.removeAll(phasset)
 					self.assetGroups[indexPath.section].assets.remove(at: indexPath.item)
@@ -872,13 +923,15 @@ extension GroupedAssetListViewController {
 					
 					if oldGropsValue != self.assetGroups.count {
 						self.collectionView.deleteSections(IndexSet(integer: indexPath.section))
+						self.assetGroups.remove(at: indexPath.section)
 						self.smoothReloadData()
 					} else {
-						
 						self.collectionView.performBatchUpdates {
 							self.collectionView.deleteItems(at: [indexPath])
-							
 						} completion: { _ in
+							UIView.performWithoutAnimation {
+								self.collectionView.reloadData()
+							}
 							self.handleDeleteAssetsButton()
 						}
 					}
@@ -887,7 +940,6 @@ extension GroupedAssetListViewController {
 		}
 	}
 		
-	
 	private func showDelecteConfirmAlert(for assets: [PHAsset], completionHandler: @escaping (Bool) -> Void) {
 		
 		let deletePhassetOperation = photoManager.deleteSelectedOperation(assets: assets) { suxxess in
@@ -1040,8 +1092,11 @@ extension GroupedAssetListViewController: SelectDropDownMenuDelegate {
             case .changeLayout:
                 self.changeFlowLayoutAndFocus(at: IndexPath(row: 0, section: 0))
             case .deselectAll:
-                self.shouldSelectAllAssetsInSections(isSelectAllAssetsMode)
-                isSelectAllAssetsMode = !isSelectAllAssetsMode
+                self.shouldSelectAllAssetsInSections(true)
+			case .selectAll:
+				self.shouldSelectAllAssetsInSections(false)
+			case .delete:
+				self.deleteSelectedAssets()
             default:
                 return
         }

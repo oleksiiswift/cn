@@ -17,8 +17,11 @@ class PreviewAVController: AVPlayerViewController {
         self.showsPlaybackControls = false
 		self.view.backgroundColor = theme.backgroundColor
         preferredContentSize = CGSize(width: asset.pixelWidth, height: asset.pixelHeight)
+		let options = PHVideoRequestOptions()
+		options.version = .current
+		options.isNetworkAccessAllowed = true
         
-        PHCachingImageManager().requestAVAsset(forVideo: asset, options: nil) { (avAsset, _, _) in
+        PHCachingImageManager().requestAVAsset(forVideo: asset, options: options) { (avAsset, _, _) in
             
             U.UI {
                 if avAsset != nil {

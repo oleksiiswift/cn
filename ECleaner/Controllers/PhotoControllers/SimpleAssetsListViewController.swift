@@ -258,20 +258,18 @@ extension SimpleAssetsListViewController: PhotoCollectionViewCellDelegate {
 extension SimpleAssetsListViewController {
 
 	private func deepCleanFlowBackActionButton() {
-			//    @objc func didTapBackButton() {
-			//
-			//        guard let selectedIndexPath = self.collectionView.indexPathsForSelectedItems, isDeepCleaningSelectableFlow else { return }
-			//
-			//        var selectedAssetsIDs: [String] = []
-			//
-			//        selectedIndexPath.forEach { indexPath in
-			//            let assetInCollection = self.assetCollection[indexPath.row]
-			//            selectedAssetsIDs.append(assetInCollection.localIdentifier)
-			//        }
-			//
-			//        self.selectedAssetsDelegate?.didSelect(assetsListIds: selectedAssetsIDs, mediaType: self.mediaType)
-			//        self.navigationController?.popViewController(animated: true)
-			//    }
+		
+		guard let selectedIndexPaths = self.collectionView.indexPathsForSelectedItems, isDeepCleaningSelectableFlow else { return }
+		
+		var selectedAsstsIDs: [String] = []
+		
+		selectedIndexPaths.forEach { indexPath in
+			let assetInCollection = self.assetCollection[indexPath.row]
+			selectedAsstsIDs.append(assetInCollection.localIdentifier)
+		}
+		
+		self.selectedAssetsDelegate?.didSelect(assetsListIds: selectedAsstsIDs, contenType: self.mediaType, updatableGroup: [], updatableAssets: assetCollection)
+		self.navigationController?.popViewController(animated: true)
 	}
 	
 	private func singleCleanFlowBackActionButton() {

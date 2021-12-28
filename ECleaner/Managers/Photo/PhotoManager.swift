@@ -418,7 +418,7 @@ extension PhotoManager {
 							})
 							
 							if groupAssets.count >= 2 {
-								duplicateVideoGroups.append(PhassetGroup(name: "", assets: groupAssets))
+								duplicateVideoGroups.append(PhassetGroup(name: "", assets: groupAssets, creationDate: groupAssets.first?.creationDate))
 							}
 						}
 					}
@@ -478,7 +478,7 @@ extension PhotoManager {
 							}
 						}
 						if compareAsset.count != 0 {
-							grouped.append(PhassetGroup.init(name: "", assets: compareAsset))
+							grouped.append(PhassetGroup.init(name: "", assets: compareAsset, creationDate: compareAsset.first?.creationDate))
 						}
 					}
 					completionHandler(grouped.isEmpty ? [] : grouped)
@@ -667,7 +667,8 @@ extension PhotoManager {
 						}
 						if similar.count != 0 {
 							debugPrint("apend new group")
-							group.append(PhassetGroup(name: "", assets: similar))
+							let date = similar.first?.creationDate
+							group.append(PhassetGroup(name: "", assets: similar, creationDate: date))
 						}
 					}
 					
@@ -878,7 +879,7 @@ extension PhotoManager {
 						}
 					})
 					if group.count >= 2 {
-						duplicatedGroup.append(PhassetGroup(name: "", assets: group))
+						duplicatedGroup.append(PhassetGroup(name: "", assets: group, creationDate: group.first?.creationDate))
 					}
 				}
 			}
@@ -935,7 +936,7 @@ extension PhotoManager {
 				let groupIndex2 = assetToGroupIndex[asset2]
 				if groupIndex1 == nil && groupIndex2 == nil {
 					
-					let group = PhassetGroup.init(name: "", assets: [asset1, asset2])
+					let group = PhassetGroup.init(name: "", assets: [asset1, asset2], creationDate: asset1.creationDate)
 					phassetGroup.append(group)
 					let groupIndex = phassetGroup.count - 1
 					assetToGroupIndex[asset1] = groupIndex

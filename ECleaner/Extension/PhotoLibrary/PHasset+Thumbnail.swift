@@ -41,6 +41,7 @@ extension PHAsset {
         let options = PHImageRequestOptions()
         options.version = .current
         options.isSynchronous = true
+		options.isNetworkAccessAllowed = true
         manager.requestImage(for: self, targetSize: CGSize(width: self.pixelWidth, height: self.pixelHeight), contentMode: .aspectFit, options: options) { image, info in
             if let image = image {
                 result = image

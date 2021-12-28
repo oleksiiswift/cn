@@ -19,7 +19,7 @@ enum DeepCleaningState {
 
 protocol DeepCleanSelectableAssetsDelegate: AnyObject {
      
-     func didSelect(assetsListIds: [String], mediaType: PhotoMediaType)
+	 func didSelect(assetsListIds: [String], contenType: PhotoMediaType, updatableGroup: [PhassetGroup], updatableAssets: [PHAsset])
 }
 
 class DeepCleaningViewController: UIViewController {
@@ -85,7 +85,7 @@ class DeepCleaningViewController: UIViewController {
           /// `finding duplicates and assets`
      private var photoVideoFlowGroup: [PhotoMediaType : [PhassetGroup]] = [:]
      private var contactsFlowGroups: [PhotoMediaType : [ContactsGroup]] = [:]
-     
+
      override func viewDidLoad() {
           super.viewDidLoad()
           
@@ -208,7 +208,7 @@ extension DeepCleaningViewController {
                     /// `processing single screenshots`
                let photoMediaType: PhotoMediaType = .singleScreenShots
                debugPrint(assets.count, photoMediaType.rawValue)
-               let screenShotGroup = PhassetGroup(name: photoMediaType.rawValue, assets: assets)
+			   let screenShotGroup = PhassetGroup(name: photoMediaType.rawValue, assets: assets, creationDate: assets.first?.creationDate)
                self.updateAssetsProcessingOfType(group: [screenShotGroup], mediaType: .userPhoto, contentType: photoMediaType, phassetsCount: assets.count)
           } similarPhoto: { assetsGroup in
                     /// `processing similar assets group`
@@ -232,7 +232,7 @@ extension DeepCleaningViewController {
                     /// `processing large video group`
                let photoMediaType: PhotoMediaType = .singleLargeVideos
                debugPrint(assets.count, photoMediaType.rawValue)
-               let largeVideoGroup = PhassetGroup(name: photoMediaType.rawValue, assets: assets)
+			   let largeVideoGroup = PhassetGroup(name: photoMediaType.rawValue, assets: assets, creationDate: assets.first?.creationDate)
                self.updateAssetsProcessingOfType(group: [largeVideoGroup], mediaType: .userVideo  , contentType: photoMediaType, phassetsCount: assets.count)
           } similarVideo: { assetsGroup in
                     /// `processing similar videos`
@@ -250,7 +250,7 @@ extension DeepCleaningViewController {
                     /// `screen recording`
                let photoMediaType: PhotoMediaType = .singleScreenRecordings
                debugPrint(assets.count, photoMediaType.rawValue)
-               let screenRecordings = PhassetGroup(name: photoMediaType.rawValue, assets: assets)
+			   let screenRecordings = PhassetGroup(name: photoMediaType.rawValue, assets: assets, creationDate: assets.first?.creationDate)
                self.updateAssetsProcessingOfType(group: [screenRecordings], mediaType: .userVideo  , contentType: photoMediaType, phassetsCount: assets.count)
           } emptyContacts: { contactsGroup in
                     /// `empty contacts`
@@ -373,17 +373,27 @@ extension DeepCleaningViewController: DateSelectebleViewDelegate {
 }
 
 extension DeepCleaningViewController: DeepCleanSelectableAssetsDelegate {
-     
-     
-     func didSelect(assetsListIds: [String], mediaType: PhotoMediaType) {
+
+	 func didSelect(assetsListIds: [String], contenType: PhotoMediaType, updatableGroup: [PhassetGroup], updatableAssets: [PHAsset]) {
           
-          if let cell = self.tableView.cellForRow(at: mediaType.deepCleanIndexPath) as? ContentTypeTableViewCell {
+          if let cell = self.tableView.cellForRow(at: contenType.deepCleanIndexPath) as? ContentTypeTableViewCell {
                let isSelected = !assetsListIds.isEmpty
-               self.handleSelectedAssetsForRowMediatype[mediaType] = isSelected
-               self.selectedAssetsCollectionID[mediaType] = assetsListIds
+               self.handleSelectedAssetsForRowMediatype[contenType] = isSelected
+               self.selectedAssetsCollectionID[contenType] = assetsListIds
+			   
+			   switch contenType {
+					case .singleScreenShots, .singleLargeVideos, .singleScreenRecordings:
+						 self.photoVideoFlowGroup[contenType]?.first?.assets = updatableAssets
+						 updateCellInfoCount(by: contenType.contenType, contentType: contenType, assetsCount: updatableAssets.count)
+					case .similarPhotos, .duplicatedPhotos, .similarLivePhotos, .similarVideos, .duplicatedVideos:
+						 self.photoVideoFlowGroup[contenType] = updatableGroup
+						 updateCellInfoCount(by: contenType.contenType, contentType: contenType, assetsCount: updatableGroup.count)
+					default:
+						 return
+			   }
                
                U.UI {
-                    cell.setupCellSelected(at: mediaType.deepCleanIndexPath, isSelected: isSelected)
+                    cell.setupCellSelected(at: contenType.deepCleanIndexPath, isSelected: isSelected)
 					self.checkCleaningButtonState()
                }
           }
@@ -593,34 +603,30 @@ extension DeepCleaningViewController {
 	 private func showGropedContoller(assets title: String, grouped collection: [PhassetGroup], photoContent type: PhotoMediaType, media content: MediaContentType) {
           let storyboard = UIStoryboard(name: C.identifiers.storyboards.media, bundle: nil)
           let viewController  = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.groupedList) as! GroupedAssetListViewController
+		  if let selectedStringsIDs = selectedAssetsCollectionID[type] {
+			   viewController.handlePreviousSelected(selectedAssetsIDs: selectedStringsIDs, assetGroupCollection: collection)
+		  }
           viewController.title = title
           viewController.isDeepCleaningSelectableFlow = true
           viewController.assetGroups = collection
 		  viewController.mediaType = type
 		  viewController.contentType = content
-		  
 		  viewController.selectedAssetsDelegate = self
-
-          if let selectedStrings = selectedAssetsCollectionID[type] {
-               viewController.handlePreviousSelected(selectedAssetsIDs: selectedStrings, assetGroupCollection: collection)
-          }
           self.navigationController?.pushViewController(viewController, animated: true)
      }
      
 	 private func showAssetViewController(assets title: String, collection: [PHAsset], photoContent type: PhotoMediaType, media content: MediaContentType) {
           let storyboard = UIStoryboard(name: C.identifiers.storyboards.media, bundle: nil)
           let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.assetsList) as! SimpleAssetsListViewController
+		  if let selectedStringsIDs = selectedAssetsCollectionID[type] {
+			   viewController.handleAssetsPreviousSelected(selectedAssetsIDs: selectedStringsIDs, assetCollection: collection)
+		  }
           viewController.title = title
           viewController.isDeepCleaningSelectableFlow = true
           viewController.assetCollection = collection
           viewController.selectedAssetsDelegate = self
           viewController.mediaType = type
 		  viewController.contentType = content
-
-          if let selectedStrings = selectedAssetsCollectionID[type] {
-               viewController.handleAssetsPreviousSelected(selectedAssetsIDs: selectedStrings, assetCollection: collection)
-          }
-          
           self.navigationController?.pushViewController(viewController, animated: true)
      }
 }
