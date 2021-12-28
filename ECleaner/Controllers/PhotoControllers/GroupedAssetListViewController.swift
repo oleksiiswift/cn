@@ -968,6 +968,7 @@ extension GroupedAssetListViewController {
 					self.assetGroups = self.assetGroups.filter({$0.assets.count != 1})
 				}
 				self.selectedAssets = []
+				self.selectedSection = []
 				self.smoothReloadData()
 			}
 		}
