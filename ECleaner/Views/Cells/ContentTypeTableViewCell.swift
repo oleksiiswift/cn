@@ -39,6 +39,7 @@ class ContentTypeTableViewCell: UITableViewCell {
         horizontalProgressView.progress = 0
         horizontalProgressView.setNeedsDisplay()
 		reuseShadowRoundedView.setImage(nil)
+		rightArrowImageView.isHidden = true
     }
     
     override func awakeFromNib() {
@@ -81,80 +82,91 @@ extension ContentTypeTableViewCell {
                            photoMediaType: PhotoMediaType = .none,
                            indexPath: IndexPath,
                            phasetCount: Int,
+						   selectedCount: Int?,
                            presentingType: ProcessingPresentType,
                            progress: CGFloat,
-                           isProcessingComplete: Bool = false) {
+                           isProcessingComplete: Bool = false,
+						   isReadyForCleaning: Bool) {
         
-        switch presentingType {
-            case .deepCleen:
-                contentTypeTextLabel.text = contentType.getDeepCellTitle(index: indexPath.row)
-                
-                let processingCellImage = isProcessingComplete ? contentType.imageOfRows : contentType.unAbleImageOfRows
+		switch presentingType {
+			case .deepCleen:
+				contentTypeTextLabel.text = contentType.getDeepCellTitle(index: indexPath.row)
 				
-                reuseShadowRoundedView.setImage(processingCellImage)
+				self.handleSelectedDeletedPHassets(content: contentType, isCompleted: isProcessingComplete, isSelected: isReadyForCleaning)
+				
 				let handledProgressSubtitle = progress == 0.0 ? "-" : String("progress - \(progress.rounded().cleanValue) %")
-                let progressStringText = isProcessingComplete ? "processing wait" : handledProgressSubtitle
-                let updatingCountValuesDeepClean: String = progressStringText
-                let updatingCountValuesContactDeepClean: String = progressStringText
+				let progressStringText = isProcessingComplete ? "processing wait" : handledProgressSubtitle
+				let updatingCountValuesDeepClean: String = progressStringText
+				let updatingCountValuesContactDeepClean: String = progressStringText
+				let selectedPhassetsCount: String = selectedCount != nil ? String("(\(selectedCount ?? 0) selected)") : ""
 				
 				U.delay(0.5) {
 					self.horizontalProgressView.progress = progress / 100
 					self.horizontalProgressView.layoutIfNeeded()
 				}
-		
-                switch contentType {
-                    case .userPhoto, .userVideo:
-                        contentSubtitleTextLabel.text = isProcessingComplete ? phasetCount != 0 ? String("\(phasetCount) \("FILES".localized())") : "no files to clean" : updatingCountValuesDeepClean
-                    case .userContacts:
-                
-                        contentSubtitleTextLabel.text = isProcessingComplete ? phasetCount != 0 ? String("\(phasetCount) \("contacts")") : "no contacts to clean" : updatingCountValuesContactDeepClean
-                    case .none:
-                        contentSubtitleTextLabel.text = ""
-                }
 				
-//				if isProcessingComplete || horizontalProgressView.progress == 1.0 {
-//					U.animate(1, delay: 2) {
-//						self.horizontalProgressView.alpha = 0
-//					} completion: {
-//						self.horizontalProgressView.progress = 0
-//						self.horizontalProgressView.alpha = 1
-//					}
-//				}
-                
-            case .singleSearch:
-                contentTypeTextLabel.text = contentType.getCellTitle(index: indexPath.row)
-                
-                if !isProcessingComplete || progress == 1 {
-                    self.horizontalProgressView.progress = progress
-                    self.horizontalProgressView.progress = 0
-                    self.reuseShadowRoundedView.setImage(contentType.imageOfRows)
-                    reuseShadowRoundedView.hideIndicator()
-                } else {
-                    self.reuseShadowRoundedView.setImage(contentType.processingImageOfRows)
-                    reuseShadowRoundedView.showIndicator()
-                    horizontalProgressView.progress = progress
-                }
-                
-                switch photoMediaType {
-                        
-                    case .similarPhotos, .duplicatedPhotos, .similarVideos, .duplicatedVideos:
+				switch contentType {
+					case .userPhoto, .userVideo:
+						contentSubtitleTextLabel.text = isProcessingComplete ? phasetCount != 0 ? String("\(phasetCount) \("FILES".localized()) \(selectedPhassetsCount)") : "no files to clean" : updatingCountValuesDeepClean
+					case .userContacts:
+						contentSubtitleTextLabel.text = isProcessingComplete ? phasetCount != 0 ? String("\(phasetCount) \("contacts")") : "no contacts to clean" : updatingCountValuesContactDeepClean
+					case .none:
+						contentSubtitleTextLabel.text = ""
+				}
+				
+					//				if isProcessingComplete || horizontalProgressView.progress == 1.0 {
+					//					U.animate(1, delay: 2) {
+					//						self.horizontalProgressView.alpha = 0
+					//					} completion: {
+					//						self.horizontalProgressView.progress = 0
+					//						self.horizontalProgressView.alpha = 1
+					//					}
+					//				}
+				
+			case .singleSearch:
+				contentTypeTextLabel.text = contentType.getCellTitle(index: indexPath.row)
+				
+				if !isProcessingComplete || progress == 1 {
+					self.horizontalProgressView.progress = progress
+					self.horizontalProgressView.progress = 0
+					self.reuseShadowRoundedView.setImage(contentType.imageOfRows)
+					reuseShadowRoundedView.hideIndicator()
+				} else {
+					self.reuseShadowRoundedView.setImage(contentType.processingImageOfRows)
+					reuseShadowRoundedView.showIndicator()
+					horizontalProgressView.progress = progress
+				}
+				
+				switch photoMediaType {
+						
+					case .similarPhotos, .duplicatedPhotos, .similarVideos, .duplicatedVideos:
 						contentSubtitleTextLabel.text = phasetCount != 0 ? String("\(phasetCount) \("duplicated phasset")") : "-"
-                    case .singleScreenShots, .singleSelfies, .singleLivePhotos, .singleLargeVideos, .singleScreenRecordings, .singleRecentlyDeletedPhotos, .singleRecentlyDeletedVideos:
-                        contentSubtitleTextLabel.text = phasetCount != 0 ?  String("\(phasetCount) \("FILES".localized())") : "no files"
-                    case .allContacts, .emptyContacts:
-                        contentSubtitleTextLabel.text  = phasetCount != 0 ? String("\(phasetCount) contacts") : ""
-                    case .duplicatedContacts, .duplicatedPhoneNumbers, .duplicatedEmails:
-                        contentSubtitleTextLabel.text = phasetCount != 0 ? String("\(phasetCount) duplicated groups") : "-"
-                    case .compress:
-                        contentSubtitleTextLabel.text = ""
-                    default:
-                        return
-                }
-        }
+					case .singleScreenShots, .singleSelfies, .singleLivePhotos, .singleLargeVideos, .singleScreenRecordings, .singleRecentlyDeletedPhotos, .singleRecentlyDeletedVideos:
+						contentSubtitleTextLabel.text = phasetCount != 0 ?  String("\(phasetCount) \("FILES".localized())") : "no files"
+					case .allContacts, .emptyContacts:
+						contentSubtitleTextLabel.text  = phasetCount != 0 ? String("\(phasetCount) contacts") : ""
+					case .duplicatedContacts, .duplicatedPhoneNumbers, .duplicatedEmails:
+						contentSubtitleTextLabel.text = phasetCount != 0 ? String("\(phasetCount) duplicated groups") : "-"
+					case .compress:
+						contentSubtitleTextLabel.text = ""
+					default:
+						return
+				}
+		}
+		
+		if isProcessingComplete && phasetCount != 0 {
+			rightArrowImageView.isHidden = false
+		}
     }
 	
 	public func resetProgress() {
 		self.horizontalProgressView.resetProgressLayer()
+	}
+	
+	public func handleSelectedDeletedPHassets(content type: MediaContentType, isCompleted: Bool, isSelected: Bool) {
+		
+		let processingCellImage = isSelected ? type.selectableAssetsCheckMark : isCompleted ? type.imageOfRows : type.unAbleImageOfRows
+		reuseShadowRoundedView.setImage(processingCellImage)
 	}
 
     public func setupCellSelected(at indexPath: IndexPath, isSelected: Bool) {
@@ -168,8 +180,8 @@ extension ContentTypeTableViewCell {
 extension ContentTypeTableViewCell: Themeble {
     
     func setupCellUI() {
-        
         selectionStyle = .none
+		rightArrowImageView.isHidden = true
         
         baseView.setCorner(14)
         contentTypeTextLabel.font = UIFont(font: FontManager.robotoBold, size: 18.0)

@@ -1052,14 +1052,16 @@ extension MediaContentViewController: UITableViewDelegate, UITableViewDataSource
 		}
 		
 		let progress = self.currentProgressForMediaType[photoMediaType] ?? 0
-		
+			
 		cell.cellConfig(contentType: self.mediaContentType,
 						photoMediaType: photoMediaType,
 						indexPath: indexPath,
 						phasetCount: assetContentCount,
+						selectedCount: nil,
 						presentingType: .singleSearch,
 						progress: progress,
-						isProcessingComplete: isSearchingStarted)
+						isProcessingComplete: isSearchingStarted,
+						isReadyForCleaning: false)
 	}
 		
 	func numberOfSections(in tableView: UITableView) -> Int {

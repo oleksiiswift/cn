@@ -9,6 +9,7 @@ import UIKit
 import Photos
 import PhotosUI
 import SwiftMessages
+import Contacts
 
 enum DeepCleaningState {
 	 case redyForStartingCleaning
@@ -74,6 +75,7 @@ class DeepCleaningViewController: UIViewController {
      private var totalFilesChecked: Int = 0
      private var totalPercentageCalculated: CGFloat = 0
      private var totalPartitinAssetsCount: [AssetsGroupType: Int] = [:]
+	 private var futuredCleaningSpacve: Int64?
      
      private var totalDeepCleanProgress: [CGFloat] = [0,0,0,0,0,0,0,0,0,0,0,0]
      private var totalDeepCleanFilesCountIn: [Int] = [0,0,0,0,0,0,0,0,0,0,0,0]
@@ -375,7 +377,7 @@ extension DeepCleaningViewController: DateSelectebleViewDelegate {
 extension DeepCleaningViewController: DeepCleanSelectableAssetsDelegate {
 
 	 func didSelect(assetsListIds: [String], contenType: PhotoMediaType, updatableGroup: [PhassetGroup], updatableAssets: [PHAsset]) {
-          
+	
           if let cell = self.tableView.cellForRow(at: contenType.deepCleanIndexPath) as? ContentTypeTableViewCell {
                let isSelected = !assetsListIds.isEmpty
                self.handleSelectedAssetsForRowMediatype[contenType] = isSelected
@@ -391,7 +393,19 @@ extension DeepCleaningViewController: DeepCleanSelectableAssetsDelegate {
 					default:
 						 return
 			   }
-               
+			   
+			   let allSelectedAssetsIDS = Array(Set(selectedAssetsCollectionID.map({$0.value}).reduce([], +)))
+			   
+			   if !allSelectedAssetsIDS.isEmpty {
+					let diskSpacePperation = photoManager.getAssetsUsedMemmoty(by: allSelectedAssetsIDS) { result in
+						 self.futuredCleaningSpacve = result
+						 U.UI {
+							  self.tableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .none)
+						 }
+					}
+					deepCleanManager.deepCleanOperationQue.addOperation(diskSpacePperation)
+			   }
+			   
                U.UI {
                     cell.setupCellSelected(at: contenType.deepCleanIndexPath, isSelected: isSelected)
 					self.checkCleaningButtonState()
@@ -518,7 +532,7 @@ extension DeepCleaningViewController {
                } else {
                     cell.setProgress(files: totalFilesChecked)
                }
-               cell.setRoundedProgress(value: totalPercentageCalculated.rounded())
+			   cell.setRoundedProgress(value: totalPercentageCalculated.rounded(), futuredCleaningSpace: self.futuredCleaningSpacve)
           }
      }
      
@@ -588,12 +602,19 @@ extension DeepCleaningViewController {
 					if let group = photoVideoFlowGroup[type], !group.isEmpty {
 						 self.showGropedContoller(assets: type.rawValue, grouped: group, photoContent: type, media: type.contenType)
 					}
-		
 			   case .singleScreenShots, .singleLargeVideos, .singleScreenRecordings:
 					if let group = photoVideoFlowGroup[type], !group.isEmpty {
 						 if let assets = group.first?.assets {
 							  self.showAssetViewController(assets: type.rawValue, collection: assets, photoContent: type, media: type.contenType)
 						 }
+					}
+			   case .duplicatedContacts, .duplicatedPhoneNumbers, .duplicatedEmails:
+					if let group = contactsFlowGroups[type], !group.isEmpty {
+						 self.showGroupedContactsViewController(contacts: group, group: type.contactsCleaningType, content: type)
+					}
+			   case .emptyContacts:
+					if let group = contactsFlowGroups[type], !group.isEmpty {
+						 self.showContactViewController(contactGroup: group, contentType: .emptyContacts)
 					}
                default:
                     return
@@ -629,6 +650,31 @@ extension DeepCleaningViewController {
 		  viewController.contentType = content
           self.navigationController?.pushViewController(viewController, animated: true)
      }
+	 
+	 private func showContactViewController(contacts: [CNContact] = [], contactGroup: [ContactsGroup] = [], contentType: PhotoMediaType) {
+		  let storyboard = UIStoryboard(name: C.identifiers.storyboards.contacts, bundle: nil)
+		  let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.contacts) as! ContactsViewController
+		  if let selectedStringsIDs = selectedAssetsCollectionID[contentType] {
+			   viewController.handleContactsPreviousSelected(selectedContactsIDs: selectedStringsIDs, contactsCollection: contacts, contactsGroupCollection: contactGroup)
+		  }
+		  viewController.isDeepCleaningSelectableFlow = true
+		  viewController.contacts = contacts
+		  viewController.contactGroup = contactGroup
+		  viewController.mediaType = .userContacts
+		  viewController.contentType = contentType
+		  self.navigationController?.pushViewController(viewController, animated: true)
+	 }
+		 
+	 private func showGroupedContactsViewController(contacts group: [ContactsGroup], group type: ContactasCleaningType, content: PhotoMediaType) {
+		  let storyboard = UIStoryboard(name: C.identifiers.storyboards.contactsGroup, bundle: nil)
+		  let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.contactsGroup) as! ContactsGroupViewController
+		  viewController.isDeepCleaningSelectableFlow = true
+		  viewController.contactGroup = group
+		  viewController.navigationTitle = content.mediaTypeName
+		  viewController.contentType = content
+		  viewController.mediaType = .userContacts
+		  self.navigationController?.pushViewController(viewController, animated: true)
+	 }
 }
 
 extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource {
@@ -665,14 +711,26 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
                     return 0
                }
           }
+		  
+		  var isReadyForCleanding: Bool {
+			   if let ids = selectedAssetsCollectionID[photoMediaType] {
+					return ids.count != 0
+			   } else {
+					return false
+			   }
+		  }
+		  
+		  let selectedPhassetsCount = selectedAssetsCollectionID[photoMediaType]?.count
 
           cell.cellConfig(contentType: contentType,
                           photoMediaType: photoMediaType,
                           indexPath: indexPath,
-                          phasetCount: phassetMediaTupeCount,
+						  phasetCount: phassetMediaTupeCount,
+						  selectedCount: selectedPhassetsCount,
                           presentingType: .deepCleen,
                           progress: progress,
-                          isProcessingComplete: self.doneProcessingDeepCleanForMedia[photoMediaType] ?? false)
+						  isProcessingComplete: self.doneProcessingDeepCleanForMedia[photoMediaType] ?? false,
+						  isReadyForCleaning: isReadyForCleanding)
      }
      
      private func configureInfoCell(_ cell: DeepCleanInfoTableViewCell, at indexPath: IndexPath) {
@@ -680,7 +738,7 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
 		  cell.selectionStyle = .none
 		  cell.isUserInteractionEnabled = false
           cell.setProgress(files: self.totalFilesChecked)
-          cell.setRoundedProgress(value: totalPercentageCalculated)
+		  cell.setRoundedProgress(value: totalPercentageCalculated, futuredCleaningSpace: self.futuredCleaningSpacve)
      }
      
      func numberOfSections(in tableView: UITableView) -> Int {
@@ -833,15 +891,15 @@ extension DeepCleaningViewController {
 					case .redyForStartingCleaning:
 						 self.bottomButtonView.setButtonProcess(false)
 						 self.bottomButtonView.setImage(I.systemItems.defaultItems.deepClean, with: CGSize(width: 24, height: 22))
-						 self.bottomButtonView.title("start cleaning".uppercased())
+						 self.bottomButtonView.title("start analyzing".uppercased())
 					case .willStartCleaning:
 						 self.bottomButtonView.setButtonProcess(true)
 					case .didCleaning:
 						 self.bottomButtonView.setImage(I.systemItems.defaultItems.refreshFull, with: CGSize(width: 24, height: 22))
-						 self.bottomButtonView.title("stop".uppercased())
+						 self.bottomButtonView.title("stop analyzing".uppercased())
 						 self.bottomButtonView.setButtonProcess(false)
 					case .willAvailibleDelete:
-						 self.bottomButtonView.title("delete".uppercased())
+						 self.bottomButtonView.title("start cleaning".uppercased())
 						 self.bottomButtonView.setButtonProcess(false)
 						 self.bottomButtonView.setImage(I.systemItems.defaultItems.delete, with: CGSize(width: 18, height: 24))
 			   }

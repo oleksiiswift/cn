@@ -215,11 +215,9 @@ extension SimpleAssetsListViewController: PhotoCollectionViewCellDelegate {
                 cell.isSelected = true
             }
         }
-        
         handleSelectAllButtonState()
         handleBottomButtonMenu()
     }
-    
     
     /// handle previously selected indexPath if back from deep clean screen
     public func handleAssetsPreviousSelected(selectedAssetsIDs: [String], assetCollection: [PHAsset]) {
@@ -250,7 +248,6 @@ extension SimpleAssetsListViewController: PhotoCollectionViewCellDelegate {
                 cell.checkIsSelected()
             }
         }
-        
         handleSelectAllButtonState()
     }
 }

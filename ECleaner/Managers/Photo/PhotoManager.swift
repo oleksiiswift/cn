@@ -1237,3 +1237,18 @@ extension PhotoManager {
 		phassetProcessingOperationQueuer.addOperation(screenRecordingsVideosOperation)
 	}
 }
+
+extension PhotoManager {
+	
+	public func getAssetsUsedMemmoty(by ids: [String], completionHandler: @escaping (Int64) -> Void) -> ConcurrentProcessOperation {
+		
+		let getAssetsByIdOperation = ConcurrentProcessOperation { operation in
+		
+			self.fetchManager.fetchImagesDiskUsageFromGallery(with: ids) { calculatedResult in
+				completionHandler(calculatedResult)
+			}
+		}
+		
+		return getAssetsByIdOperation
+	}
+}

@@ -41,6 +41,9 @@ class ContactsGroupViewController: UIViewController {
     private var isSelectedAllItems: Bool {
         return contactGroup.count == contactGroupListDataSource.selectedSections.count
     }
+	public var isDeepCleaningSelectableFlow: Bool = false
+	
+	private var previouslySelectedIndexPaths: [IndexPath] = []
     
     private var isMergeContactsProcessing: Bool = true
     
@@ -62,12 +65,17 @@ class ContactsGroupViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+		
+		if previouslySelectedIndexPaths.isEmpty {
+			handleStartingSelectableAssets()
+		} else {
+			didSelectPreviouslyIndexPath()
+		}
     }
-    
+	
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        
+
     }
 }
 
@@ -138,6 +146,25 @@ extension ContactsGroupViewController {
             }
         }
     }
+	
+	private func didSelectPreviouslyIndexPath() {
+		
+		guard isDeepCleaningSelectableFlow, !previouslySelectedIndexPaths.isEmpty else { return }
+		
+		for indexPath in previouslySelectedIndexPaths {
+			if !contactGroupListDataSource.selectedSections.contains(indexPath.section) {
+				contactGroupListDataSource.selectedSections.append(indexPath.section)
+			}
+		}
+		
+		U.UI {
+			self.tableView.reloadData()
+		}
+	}
+	
+	private func handleStartingSelectableAssets() {
+		self.didSelectDeselecAllItems()
+	}
     
     /// `merge single section`
     private func mergeContacts(in section: Int) {
@@ -222,6 +249,32 @@ extension ContactsGroupViewController {
             }
         }
     }
+	
+	
+	public func handleContactsPreviousSelected(selectedContactsIDs: [String], contactsGroupCollection: [ContactsGroup]) {
+		
+		for selectedContactsID in selectedContactsIDs {
+			
+			let sectionIndex = contactsGroupCollection.firstIndex(where: {
+				$0.contacts.contains(where: {$0.identifier == selectedContactsID})
+			}).flatMap({
+				$0
+			})
+			
+			if let section = sectionIndex {
+				let index: Int = Int(section)
+				let indexPath = contactsGroupCollection[index].contacts.firstIndex(where: {
+					$0.identifier == selectedContactsID
+				}).flatMap({
+					IndexPath(row: $0, section: index)
+				})
+				
+				if let existingIndexPath = indexPath {
+					self.previouslySelectedIndexPaths.append(existingIndexPath)
+				}
+			}
+		}
+	}
 }
 
 extension ContactsGroupViewController: ProgressAlertControllerDelegate {
@@ -372,6 +425,11 @@ extension ContactsGroupViewController {
     }
     
     private func handleMergeContactsAppearButton(disableAnimation: Bool = false) {
+		
+		guard !isDeepCleaningSelectableFlow else {
+			bottomButtonHeightConstraint.constant = 0
+			return
+		}
         
         let calculatedBottomButtonHeight: CGFloat = bottomButtonHeight + U.bottomSafeAreaHeight
         bottomButtonHeightConstraint.constant = !self.contactGroupListDataSource.selectedSections.isEmpty ? calculatedBottomButtonHeight : 0

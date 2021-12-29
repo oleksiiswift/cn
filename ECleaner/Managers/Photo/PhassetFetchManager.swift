@@ -161,6 +161,43 @@ extension PHAssetFetchManager {
             return PHAsset.fetchAssets(with: fetchOption)
         }
     }
+	
+	public func fetchImagesDiskUsageFromGallery(with identifiers: [String], completionHandler: @escaping (Int64) -> Void) {
+		
+		let manager = PHImageManager.default()
+		let fetchOptions = PHFetchOptions()
+		let results = PHAsset.fetchAssets(withLocalIdentifiers: identifiers, options: fetchOptions)
+		var analyzingPhassets: Int = 0
+		var resultsDiskUssage: Int64 = 0
+		results.enumerateObjects { phasset, index, stopped in
+			let resource = PHAssetResource.assetResources(for: phasset)
+			let fileSize = resource.first?.value(forKey: "fileSize") as! Int64
+			
+			resultsDiskUssage += fileSize
+			analyzingPhassets += 1
+			
+			if analyzingPhassets == results.count {
+				completionHandler(resultsDiskUssage)
+			}
+			
+			
+//			let requesteOptions = PHImageRequestOptions.init()
+//			requesteOptions.isSynchronous = false
+//			manager.requestImageDataAndOrientation(for: phasset, options: requesteOptions) { imageData, _, _, _ in
+//				if imageData != nil {
+//					let fileSize = Int64(imageData!.count)
+//					resultsDiskUssage += fileSize
+//				}
+//				analyzingPhassets += 1
+//				if analyzingPhassets == results.count {
+//					completionHandler(resultsDiskUssage)
+//				}
+//			}
+		}
+		
+//		let resource = PHAssetResource.assetResources(for: asset)
+//		   let imageSizeByte = resource.first?.value(forKey: "fileSize") as! Float
+	}
     
 //     MARK: get thumnail from asset
     public func getThumbnail(from asset: PHAsset, size: CGSize) -> UIImage {
