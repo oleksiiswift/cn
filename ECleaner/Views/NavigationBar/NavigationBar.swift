@@ -63,9 +63,9 @@ class NavigationBar: UIView {
         leftBarButtonItem.titleLabel?.font = .systemFont(ofSize: 17, weight: .medium)
     }
     
-    public func setupNavigation(title: String?, leftBarButtonImage: UIImage?, rightBarButtonImage: UIImage?, mediaType: MediaContentType, leftButtonTitle: String? = nil, rightButtonTitle: String? = nil) {
+    public func setupNavigation(title: String?, leftBarButtonImage: UIImage?, rightBarButtonImage: UIImage?, contentType: MediaContentType, leftButtonTitle: String? = nil, rightButtonTitle: String? = nil) {
         
-        self.setAccentColorFor(buttonsTintColor: mediaType.screenAcentTintColor, title: theme.tintColor)
+        self.setAccentColorFor(buttonsTintColor: contentType.screenAcentTintColor, title: theme.tintColor)
         setDropShadow(visible: setIsDropShadow)
         
         if let title = title {

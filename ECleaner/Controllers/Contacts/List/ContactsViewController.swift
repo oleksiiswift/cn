@@ -590,7 +590,7 @@ extension ContactsViewController: Themeble {
             navigationBar.setupNavigation(title: contentType.mediaTypeName,
                                           leftBarButtonImage: I.systemItems.navigationBarItems.back,
                                           rightBarButtonImage: I.systemItems.navigationBarItems.burgerDots,
-                                          mediaType: .userContacts,
+										  contentType: .userContacts,
                                           leftButtonTitle: nil,
                                           rightButtonTitle: nil)
         } else if contentType == .emptyContacts {
@@ -598,7 +598,7 @@ extension ContactsViewController: Themeble {
             navigationBar.setupNavigation(title: contentType.mediaTypeName,
                                           leftBarButtonImage: I.systemItems.navigationBarItems.back,
                                           rightBarButtonImage: nil,
-                                          mediaType: .userContacts,
+										  contentType: .userContacts,
                                           leftButtonTitle: nil, rightButtonTitle: "edit")
         }
     }
@@ -617,7 +617,7 @@ extension ContactsViewController: Themeble {
             navigationBar.setupNavigation(title: mediaType.navigationTitle,
                                           leftBarButtonImage: nil,
                                           rightBarButtonImage: nil,
-                                          mediaType: .userContacts,
+										  contentType: .userContacts,
                                           leftButtonTitle: "cancel",
                                           rightButtonTitle: rightNavigationTitle)
         } else {

@@ -11,9 +11,11 @@ import Photos
 class PhassetGroup {
 	var name: String
 	var assets: [PHAsset]
+	var creationDate: Date?
 	
-	init(name: String, assets: [PHAsset]) {
+	init(name: String, assets: [PHAsset], creationDate: Date?) {
 		self.name = name
 		self.assets = assets
+		self.creationDate = creationDate
 	}
 }

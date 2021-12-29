@@ -36,6 +36,8 @@ class SimpleAssetsListViewController: UIViewController {
 		}
 	}
 	public var changedPhassetCompletionHandler: ((_ changedPhasset: [PHAsset]) -> Void)?
+	public var selectedPhassetCompletionHandler: ((_ selectedPhassets: [PHAsset]) -> Void)?
+	
 	private var previouslySelectedIndexPaths: [IndexPath] = []
 	public var isDeepCleaningSelectableFlow: Bool = false
 	
@@ -74,6 +76,7 @@ extension SimpleAssetsListViewController: UICollectionViewDelegate, UICollection
         
         self.collectionView.dataSource = self
         self.collectionView.delegate = self
+		
         self.collectionView.register(UINib(nibName: C.identifiers.xibs.photoSimpleCell, bundle: nil), forCellWithReuseIdentifier: C.identifiers.cells.photoSimpleCell)
         self.collectionView.collectionViewLayout = flowLayout
         self.collectionView.allowsMultipleSelection = true
@@ -87,6 +90,9 @@ extension SimpleAssetsListViewController: UICollectionViewDelegate, UICollection
         cell.indexPath = indexPath
 		cell.cellMediaType = self.mediaType
 		cell.cellContentType = self.contentType
+		cell.setBestView(availible: false)
+		cell.setupUI()
+		cell.updateColors()
         
         if let paths = self.collectionView.indexPathsForSelectedItems, paths.contains([indexPath]) {
             cell.isSelected = true
@@ -252,20 +258,18 @@ extension SimpleAssetsListViewController: PhotoCollectionViewCellDelegate {
 extension SimpleAssetsListViewController {
 
 	private func deepCleanFlowBackActionButton() {
-			//    @objc func didTapBackButton() {
-			//
-			//        guard let selectedIndexPath = self.collectionView.indexPathsForSelectedItems, isDeepCleaningSelectableFlow else { return }
-			//
-			//        var selectedAssetsIDs: [String] = []
-			//
-			//        selectedIndexPath.forEach { indexPath in
-			//            let assetInCollection = self.assetCollection[indexPath.row]
-			//            selectedAssetsIDs.append(assetInCollection.localIdentifier)
-			//        }
-			//
-			//        self.selectedAssetsDelegate?.didSelect(assetsListIds: selectedAssetsIDs, mediaType: self.mediaType)
-			//        self.navigationController?.popViewController(animated: true)
-			//    }
+		
+		guard let selectedIndexPaths = self.collectionView.indexPathsForSelectedItems, isDeepCleaningSelectableFlow else { return }
+		
+		var selectedAsstsIDs: [String] = []
+		
+		selectedIndexPaths.forEach { indexPath in
+			let assetInCollection = self.assetCollection[indexPath.row]
+			selectedAsstsIDs.append(assetInCollection.localIdentifier)
+		}
+		
+		self.selectedAssetsDelegate?.didSelect(assetsListIds: selectedAsstsIDs, contenType: self.mediaType, updatableGroup: [], updatableAssets: assetCollection)
+		self.navigationController?.popViewController(animated: true)
 	}
 	
 	private func singleCleanFlowBackActionButton() {
@@ -400,7 +404,7 @@ extension SimpleAssetsListViewController {
             }
         }
         
-        let deleteAssetAction = UIAction(title: "delete", image: I.cellElementsItems.trashBin) { _ in
+        let deleteAssetAction = UIAction(title: "delete", image: I.systemItems.defaultItems.trashBin) { _ in
 			self.deleteSinglePhasset(at: indexPath)
         }
         
@@ -465,7 +469,7 @@ extension SimpleAssetsListViewController {
 		navigationBar.setupNavigation(title: mediaType.mediaTypeName,
 									  leftBarButtonImage: I.systemItems.navigationBarItems.back,
 									  rightBarButtonImage: nil,
-									  mediaType: contentType,
+									  contentType: contentType,
 									  leftButtonTitle: nil,
 									  rightButtonTitle: isSelectedAllPhassets ? "deselect all" : "select all")
 	}
@@ -483,11 +487,7 @@ extension SimpleAssetsListViewController {
 extension SimpleAssetsListViewController: NavigationBarDelegate {
 	
 	func didTapLeftBarButton(_ sender: UIButton) {
-		if isDeepCleaningSelectableFlow {
-			self.deepCleanFlowBackActionButton()
-		} else {
-			self.singleCleanFlowBackActionButton()
-		}
+		isDeepCleaningSelectableFlow ? self.deepCleanFlowBackActionButton() : self.singleCleanFlowBackActionButton()
 	}
 
 	

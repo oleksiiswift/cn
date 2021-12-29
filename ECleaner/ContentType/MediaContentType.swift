@@ -33,7 +33,7 @@ enum MediaContentType {
         
         switch self {
             case .userPhoto:
-                return theme.phoneTintColor
+                return theme.photoTintColor
             case .userVideo:
                 return theme.videosTintColor
             case .userContacts:
@@ -42,6 +42,36 @@ enum MediaContentType {
                 return theme.defaulTintColor
         }
     }
+	
+	var screeAcentGradientColorSet: [CGColor] {
+		let theme = ThemeManager.theme
+		
+		switch self {
+			case .userPhoto:
+				return [theme.photoTopGradientColor.cgColor, theme.photoBottomGradientColor.cgColor]
+			case .userVideo:
+				return [theme.videoTopGradientColor.cgColor, theme.videoBottomGradientColor.cgColor]
+			case .userContacts:
+				return [theme.contactTopGradientColor.cgColor, theme.contactBottomGradientColor.cgColor]
+			case .none:
+				return [UIColor.clear.cgColor, UIColor.clear.cgColor]
+		}
+	}
+	
+	var screeAcentGradientUICoror: [UIColor] {
+		let theme = ThemeManager.theme
+		
+		switch self {
+			case .userPhoto:
+				return [theme.photoTopGradientColor, theme.photoBottomGradientColor]
+			case .userVideo:
+				return [theme.videoTopGradientColor, theme.videoBottomGradientColor]
+			case .userContacts:
+				return [theme.contactTopGradientColor, theme.contactBottomGradientColor]
+			case .none:
+				return [UIColor.clear, UIColor.clear]
+		}
+	}
 	
 	var selectableAssetsCheckMark: UIImage {
 		switch self {
@@ -55,8 +85,7 @@ enum MediaContentType {
 				return UIImage()
 		}
 	}
-    
-    
+	
         /// ``MAIN SCREEN CONTENT TYPE PROPERTIES``
     
     var mainScreenIndexPath: IndexPath {

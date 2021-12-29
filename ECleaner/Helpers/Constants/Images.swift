@@ -46,6 +46,7 @@ class Images {
             static let deepClean = UIImage(named: "deepClean")!
             static let refreshFull = UIImage(named: "circleRoundedArrows")!
 			static let onViewPlayButton = UIImage(named: "playTransparentItem")!
+			static let trashBin = UIImage(named: "defaultTrashBin")!
         }
         
         struct backroundStaticItems {
@@ -102,6 +103,6 @@ class Images {
     
     struct cellElementsItems {
         static let fullScreen = UIImage(systemName: "arrow.up.backward.and.arrow.down.forward")
-        static let trashBin = UIImage(systemName: "trash")
+        
     }
 }

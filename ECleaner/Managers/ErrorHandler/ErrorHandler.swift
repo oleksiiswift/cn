@@ -17,6 +17,7 @@ class ErrorHandler {
     enum DeleteError {
         case errorDeleteContact
         case errorDeleteContacts
+		case errorDeletePhasset
     }
     
     enum MeergeError {
@@ -93,7 +94,9 @@ class ErrorHandler {
                 return "cant delete contact"
             case .errorDeleteContacts:
                 return "cant delete contacts"
-        }
+			case .errorDeletePhasset:
+				return "error delete selected assets"
+		}
     }
     
     private func mergeErrorForKey(_ error: MeergeError) -> String {

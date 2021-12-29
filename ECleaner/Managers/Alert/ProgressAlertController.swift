@@ -29,7 +29,7 @@ class AlertProgressAlertController: Themeble {
     var progressBarTintColor: UIColor {
         switch contentProgressType {
             case .userPhoto:
-                return theme.phoneTintColor
+                return theme.photoTintColor
             case .userVideo:
                 return theme.videosTintColor
             case .userContacts:
