@@ -15,6 +15,8 @@ class DeepCleanManager {
 	private var fetchManager = PHAssetFetchManager.shared
 	private var progressNotificationManager = ProgressSearchNotificationManager.instance
     
+	let wholeCleanOperationQueuer = OperationProcessingQueuer(name: C.key.operation.queue.deepClean, maxConcurrentOperationCount: 5, qualityOfService: .background)
+	
 	let deepCleanOperationQue = OperationProcessingQueuer(name: C.key.operation.queue.deepClean, maxConcurrentOperationCount: 5, qualityOfService: .default)
         
     public func startDeepCleaningFetch(_ optionMediaType: [PhotoMediaType], startingFetchingDate: Date, endingFetchingDate: Date,
@@ -182,5 +184,33 @@ class DeepCleanManager {
 		self.progressNotificationManager.sendDeepProgressNotificatin(notificationType: .duplicatePhoto, totalProgressItems: 0, currentProgressItem: 0)
 		self.progressNotificationManager.sendDeepProgressNotificatin(notificationType: .screenshots, totalProgressItems: 0, currentProgressItem: 0)
 		self.progressNotificationManager.sendDeepProgressNotificatin(notificationType: .similarLivePhoto, totalProgressItems: 0, currentProgressItem: 0)
+	}
+}
+
+extension DeepCleanManager {
+	
+	public func startingDeepCleanProcessing(with selectedCollectionsIDs: [PhotoMediaType : [String]], completionHamdler: @escaping () -> Void) {
+		
+		var photoVideoProcessingIDS: [String] = []
+		var mergeContactsGroupsProcessingIDS:  [String] = []
+		var deleteContactsProcessingODS: [String] = []
+ 
+			
+		for (key, value) in selectedCollectionsIDs {
+			switch key {
+				case .similarPhotos, .duplicatedPhotos, .singleScreenShots, .singleLivePhotos, .similarLivePhotos, .singleSelfies, .singleRecentlyDeletedPhotos, .singleLargeVideos, .duplicatedVideos, .similarVideos:
+					photoVideoProcessingIDS.append(contentsOf: value)
+				case .emptyContacts:
+					deleteContactsProcessingODS.append(contentsOf: value)
+				case .duplicatedContacts, .duplicatedPhoneNumbers, .duplicatedEmails:
+					mergeContactsGroupsProcessingIDS.append(contentsOf: value)
+				default:
+					return
+			}
+		}
+		
+		debugPrint(photoVideoProcessingIDS)
+		debugPrint(mergeContactsGroupsProcessingIDS)
+		debugPrint(deleteContactsProcessingODS)
 	}
 }

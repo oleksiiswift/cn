@@ -32,6 +32,9 @@ class ContactsViewController: UIViewController {
                                                               itemThumbnail: I.systemItems.defaultItems.share,
                                                               isSelected: true,
                                                               menuItem: .share)
+	
+	public var selectedContactsDelegate: DeepCleanSelectableAssetsDelegate?
+	
     private var bottomButtonHeight: CGFloat = 70
     public var contactContentIsEditing: Bool = false
 	public var isDeepCleaningSelectableFlow: Bool = false
@@ -181,14 +184,14 @@ extension ContactsViewController {
 	private func didSelectPreviousIndexPath() {
 		
 		guard isDeepCleaningSelectableFlow, !previouslySelectedIndexPaths.isEmpty else { return }
-		
-		self.handleEdit()
-		
+	
 		for indexPath in previouslySelectedIndexPaths {
 			_ = tableView.delegate?.tableView?(tableView, willSelectRowAt: indexPath)
 			tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
 			tableView.delegate?.tableView?(tableView, didSelectRowAt: indexPath)
 		}
+		
+		self.handleEdit()
 	}
     
     @objc func didSelectDeselectContact() {
@@ -267,12 +270,6 @@ extension ContactsViewController {
             }
         }
     }
-	
-	private func didSelectPreviuslyIndexPath() {
-		
-		
-		
-	}
 }
 
 //      MARK: - handle actions buttons -
@@ -641,7 +638,11 @@ extension ContactsViewController: NavigationBarDelegate {
     
     func didTapLeftBarButton(_ sender: UIButton) {
         
-        self.contactContentIsEditing ?  self.didTapCancelEditingButton() : self.closeController()
+		if isDeepCleaningSelectableFlow {
+			self.didTapDeepCleanCloseController()
+		} else {
+			self.contactContentIsEditing ?  self.didTapCancelEditingButton() : self.closeController()
+		}
     }
     
     func didTapRightBarButton(_ sender: UIButton) {
@@ -652,6 +653,20 @@ extension ContactsViewController: NavigationBarDelegate {
             self.contactContentIsEditing ? self.didTapSelectDeselectNavigationButton() : self.didTapSelectEditingMode()
         }
     }
+	
+	private func didTapDeepCleanCloseController() {
+		
+		if let selectedIndexPath = self.tableView.indexPathsForSelectedRows {
+			if contentType == .emptyContacts {
+				let contactsToRemove = emptyContactGroupListViewModel.getContacts(at: selectedIndexPath)
+				let selectableIDs = contactsToRemove.map({$0.identifier})
+				self.selectedContactsDelegate?.didSelect(assetsListIds: selectableIDs, contentType: contentType, updatableGroup: [], updatableAssets: [], updatableContactsGroup: contactGroup)
+				self.navigationController?.popViewController(animated: true)
+			}
+		} else {
+			self.navigationController?.popViewController(animated: true)
+		}
+	}
 }
 
 extension ContactsViewController: UIPopoverPresentationControllerDelegate {

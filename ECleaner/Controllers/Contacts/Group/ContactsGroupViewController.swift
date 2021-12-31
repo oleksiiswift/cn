@@ -29,6 +29,8 @@ class ContactsGroupViewController: UIViewController {
                                                               itemThumbnail: I.systemItems.defaultItems.share,
                                                               isSelected: true,
                                                               menuItem: .share)
+	
+	public var selectedContactsDelegate: DeepCleanSelectableAssetsDelegate?
     
     private var contactsManager = ContactsManager.shared
     private var progressAlert = AlertProgressAlertController.shared
@@ -255,23 +257,8 @@ extension ContactsGroupViewController {
 		
 		for selectedContactsID in selectedContactsIDs {
 			
-			let sectionIndex = contactsGroupCollection.firstIndex(where: {
-				$0.contacts.contains(where: {$0.identifier == selectedContactsID})
-			}).flatMap({
-				$0
-			})
-			
-			if let section = sectionIndex {
-				let index: Int = Int(section)
-				let indexPath = contactsGroupCollection[index].contacts.firstIndex(where: {
-					$0.identifier == selectedContactsID
-				}).flatMap({
-					IndexPath(row: $0, section: index)
-				})
-				
-				if let existingIndexPath = indexPath {
-					self.previouslySelectedIndexPaths.append(existingIndexPath)
-				}
+			if let sectionIndex = contactsGroupCollection.firstIndex(where: {$0.groupIdentifier == selectedContactsID}) {
+				self.previouslySelectedIndexPaths.append(IndexPath(row: 0, section: sectionIndex))
 			}
 		}
 	}
@@ -394,7 +381,8 @@ extension ContactsGroupViewController: UIPopoverPresentationControllerDelegate {
 extension ContactsGroupViewController: NavigationBarDelegate {
     
     func didTapLeftBarButton(_ sender: UIButton) {
-        closeController()
+		
+		isDeepCleaningSelectableFlow ? didTapCloseDeepCleanController() : closeController()
     }
 
     func didTapRightBarButton(_ sender: UIButton) {
@@ -404,6 +392,15 @@ extension ContactsGroupViewController: NavigationBarDelegate {
     func closeController() {
         self.navigationController?.popViewController(animated: true)
     }
+	
+	func didTapCloseDeepCleanController() {
+		
+		let indexesForMergedSet = contactGroupListDataSource.selectedSections
+		let filteredContacts = indexesForMergedSet.map({contactGroup[$0]})
+		let selectedGroupsIDs = filteredContacts.map({$0.groupIdentifier})
+		self.selectedContactsDelegate?.didSelect(assetsListIds: selectedGroupsIDs, contentType: self.contentType, updatableGroup: [], updatableAssets: [], updatableContactsGroup: contactGroup)
+		self.navigationController?.popViewController(animated: true)
+	}
 }
 
 extension ContactsGroupViewController: BottomActionButtonDelegate {

@@ -113,7 +113,7 @@ extension GroupedAssetListViewController {
 	
 	private func didTapBackDeepCleanActionButton() {
 		let selectedAssetsIDs: [String] = selectedAssets.compactMap({ $0.localIdentifier})
-		self.selectedAssetsDelegate?.didSelect(assetsListIds: selectedAssetsIDs, contenType: self.mediaType, updatableGroup: assetGroups, updatableAssets: [])
+		self.selectedAssetsDelegate?.didSelect(assetsListIds: selectedAssetsIDs, contentType: self.mediaType, updatableGroup: assetGroups, updatableAssets: [], updatableContactsGroup: [])
 		self.navigationController?.popViewController(animated: true)
 	}
 	

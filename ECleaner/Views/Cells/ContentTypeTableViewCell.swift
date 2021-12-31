@@ -98,7 +98,12 @@ extension ContentTypeTableViewCell {
 				let progressStringText = isProcessingComplete ? "processing wait" : handledProgressSubtitle
 				let updatingCountValuesDeepClean: String = progressStringText
 				let updatingCountValuesContactDeepClean: String = progressStringText
-				let selectedPhassetsCount: String = selectedCount != nil ? String("(\(selectedCount ?? 0) selected)") : ""
+				
+				var selectedCleaningItemsText = ""
+				
+				if let selected = selectedCount, selected != 0 {
+					selectedCleaningItemsText = String("(\(selectedCount ?? 0) selected)")
+				}
 				
 				U.delay(0.5) {
 					self.horizontalProgressView.progress = progress / 100
@@ -107,9 +112,9 @@ extension ContentTypeTableViewCell {
 				
 				switch contentType {
 					case .userPhoto, .userVideo:
-						contentSubtitleTextLabel.text = isProcessingComplete ? phasetCount != 0 ? String("\(phasetCount) \("FILES".localized()) \(selectedPhassetsCount)") : "no files to clean" : updatingCountValuesDeepClean
+						contentSubtitleTextLabel.text = isProcessingComplete ? phasetCount != 0 ? String("\(phasetCount) \("FILES".localized()) \(selectedCleaningItemsText)") : "no files to clean" : updatingCountValuesDeepClean
 					case .userContacts:
-						contentSubtitleTextLabel.text = isProcessingComplete ? phasetCount != 0 ? String("\(phasetCount) \("contacts")") : "no contacts to clean" : updatingCountValuesContactDeepClean
+						contentSubtitleTextLabel.text = isProcessingComplete ? phasetCount != 0 ? String("\(phasetCount) \("contacts") \(selectedCleaningItemsText)") : "no contacts to clean" : updatingCountValuesContactDeepClean
 					case .none:
 						contentSubtitleTextLabel.text = ""
 				}

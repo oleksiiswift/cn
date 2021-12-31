@@ -264,8 +264,7 @@ extension SimpleAssetsListViewController {
 			let assetInCollection = self.assetCollection[indexPath.row]
 			selectedAsstsIDs.append(assetInCollection.localIdentifier)
 		}
-		
-		self.selectedAssetsDelegate?.didSelect(assetsListIds: selectedAsstsIDs, contenType: self.mediaType, updatableGroup: [], updatableAssets: assetCollection)
+		self.selectedAssetsDelegate?.didSelect(assetsListIds: selectedAsstsIDs, contentType: self.mediaType, updatableGroup: [], updatableAssets: assetCollection, updatableContactsGroup: [])
 		self.navigationController?.popViewController(animated: true)
 	}
 	
