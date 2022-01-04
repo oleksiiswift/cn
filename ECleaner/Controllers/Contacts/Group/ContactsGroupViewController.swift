@@ -174,7 +174,7 @@ extension ContactsGroupViewController {
         let mergedSingleGroup = contactGroup[section]
         self.showMergeProgressAlert()
         self.updateProgressMergeAlert(with: 0, total: "0 / 1")
-		self.contactsManager.contactsMerge(in: mergedSingleGroup) { contactsToDelete in
+		self.contactsManager.contactsMerge(in: mergedSingleGroup) { _, contactsToDelete in
             self.contactsManager.deleteContacts(contactsToDelete) { suxxess, deletedCount in
                 U.delay(0.5) {
                     self.updateProgressMergeAlert(with: 1, total: "1 / 1")
@@ -244,7 +244,7 @@ extension ContactsGroupViewController {
     private func exportBackupSelectedItems() {
 		
         for itemInGroup in contactGroup {
-            self.contactsManager.contactsMerge(in: itemInGroup) { deletingContacts in
+            self.contactsManager.contactsMerge(in: itemInGroup) { _, deletingContacts in
                 self.contactsManager.deleteContacts(deletingContacts) { suxxess, deletetCount in
                     
                 }

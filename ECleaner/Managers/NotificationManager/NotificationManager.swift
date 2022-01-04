@@ -19,6 +19,8 @@ extension Notification.Name {
     static let videoSpaceDidChange =    Notification.Name(C.key.notification.videoSpaceNotificationName)
     static let mediaSpaceDidChange =    Notification.Name(C.key.notification.mediaSpaceNotificationName)
     static let contactsCountDidChange = Notification.Name(C.key.notification.contactsCountNotificationName)
+	static let removeContactsStoreObserver = Notification.Name(C.key.notification.removeStoreObserver)
+	static let addContactsStoreObserver = Notification.Name(C.key.notification.addStoreObserver)
     
         /// `deep clean progress notification`
     static let deepCleanSimilarPhotoPhassetScan =       Notification.Name(C.key.notification.deepClean.deepCleanSimilarPhotoPhassetScan)

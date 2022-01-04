@@ -164,7 +164,6 @@ extension PHAssetFetchManager {
 	
 	public func fetchImagesDiskUsageFromGallery(with identifiers: [String], completionHandler: @escaping (Int64) -> Void) {
 		
-		let manager = PHImageManager.default()
 		let fetchOptions = PHFetchOptions()
 		let results = PHAsset.fetchAssets(withLocalIdentifiers: identifiers, options: fetchOptions)
 		var analyzingPhassets: Int = 0
@@ -179,24 +178,18 @@ extension PHAssetFetchManager {
 			if analyzingPhassets == results.count {
 				completionHandler(resultsDiskUssage)
 			}
-			
-			
-//			let requesteOptions = PHImageRequestOptions.init()
-//			requesteOptions.isSynchronous = false
-//			manager.requestImageDataAndOrientation(for: phasset, options: requesteOptions) { imageData, _, _, _ in
-//				if imageData != nil {
-//					let fileSize = Int64(imageData!.count)
-//					resultsDiskUssage += fileSize
-//				}
-//				analyzingPhassets += 1
-//				if analyzingPhassets == results.count {
-//					completionHandler(resultsDiskUssage)
-//				}
-//			}
 		}
+	}
+	
+	public func fetchPhassetFromGallery(with identifiers: [String], completionHandler: @escaping ([PHAsset]) -> Void) {
 		
-//		let resource = PHAssetResource.assetResources(for: asset)
-//		   let imageSizeByte = resource.first?.value(forKey: "fileSize") as! Float
+		let fetchOptions = PHFetchOptions()
+		let results = PHAsset.fetchAssets(withLocalIdentifiers: identifiers, options: fetchOptions)
+		var fetchedPhassets: [PHAsset] = []
+		results.enumerateObjects { phasset, index, stopped in
+			fetchedPhassets.append(phasset)
+		}
+		completionHandler(fetchedPhassets)
 	}
     
 //     MARK: get thumnail from asset

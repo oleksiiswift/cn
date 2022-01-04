@@ -188,29 +188,97 @@ class DeepCleanManager {
 }
 
 extension DeepCleanManager {
-	
-	public func startingDeepCleanProcessing(with selectedCollectionsIDs: [PhotoMediaType : [String]], completionHamdler: @escaping () -> Void) {
 		
-		var photoVideoProcessingIDS: [String] = []
+	public func startingDeepCleanProcessing(with selectedCollectionsIDs: [PhotoMediaType : [String]], photoVideoGroups: [PhotoMediaType : [PhassetGroup]], contactsFlowGroups: [PhotoMediaType : [ContactsGroup]], completionHandler: @escaping () -> Void) {
+		
+		var numberOFProcessingClean = 0
+		var photoVideoDeleteProcessingIDS: [String] = []
 		var mergeContactsGroupsProcessingIDS:  [String] = []
 		var deleteContactsProcessingODS: [String] = []
- 
-			
+		var mergeContactsGroups: [ContactsGroup] = []
+		
+		U.notificationCenter.post(name: .removeContactsStoreObserver, object: nil)
+		
 		for (key, value) in selectedCollectionsIDs {
 			switch key {
 				case .similarPhotos, .duplicatedPhotos, .singleScreenShots, .singleLivePhotos, .similarLivePhotos, .singleSelfies, .singleRecentlyDeletedPhotos, .singleLargeVideos, .duplicatedVideos, .similarVideos:
-					photoVideoProcessingIDS.append(contentsOf: value)
+					photoVideoDeleteProcessingIDS.append(contentsOf: value)
 				case .emptyContacts:
 					deleteContactsProcessingODS.append(contentsOf: value)
 				case .duplicatedContacts, .duplicatedPhoneNumbers, .duplicatedEmails:
-					mergeContactsGroupsProcessingIDS.append(contentsOf: value)
+						mergeContactsGroupsProcessingIDS.append(contentsOf: value)
+					if let duplicatedContacts = contactsFlowGroups[key] {
+						for id in value {
+							if let group = duplicatedContacts.first(where: {$0.groupIdentifier == id}) {
+								mergeContactsGroups.append(group)
+							}
+						}
+					}
 				default:
 					return
 			}
 		}
 		
-		debugPrint(photoVideoProcessingIDS)
-		debugPrint(mergeContactsGroupsProcessingIDS)
-		debugPrint(deleteContactsProcessingODS)
+		/// `deleting photos and videos`
+		photoVideoDeleteProcessingIDS = Array(Set(photoVideoDeleteProcessingIDS))
+		fetchManager.fetchPhassetFromGallery(with: photoVideoDeleteProcessingIDS) { phassets in
+			if !phassets.isEmpty {
+				let deleteOperaion = self.photoManager.deleteSelectedOperation(assets: phassets) { isDeleted in
+					if isDeleted {
+						ErrorHandler.shared.deepCleanDeleteAlertError(.photoVideoCleanSuxxessfully, errorsCount: 0)
+					} else {
+						ErrorHandler.shared.deepCleanDeleteAlertError(.errorPhotoClean, errorsCount: 0)
+					}
+					numberOFProcessingClean += 1
+					if numberOFProcessingClean == 3 {
+						completionHandler()
+					}
+				}
+				self.wholeCleanOperationQueuer.addOperation(deleteOperaion)
+			} else {
+				numberOFProcessingClean += 1
+				if numberOFProcessingClean == 3 {
+					completionHandler()
+				}
+			}
+		}
+		
+		
+		/// `deleting empty contacts`
+		contactManager.getPredicateContacts(with: deleteContactsProcessingODS) { contacts in
+			if !contacts.isEmpty {
+				self.contactManager.deleteContacts(contacts) { isDeleted, count in
+					if isDeleted {
+						ErrorHandler.shared.deepCleanDeleteAlertError(.emptyContactsSuxxessfylly, errorsCount: 0)
+					} else {
+						ErrorHandler.shared.deepCleanDeleteAlertError(.errorEmptyContactsClean, errorsCount: count)
+					}
+					
+					numberOFProcessingClean += 1
+					if numberOFProcessingClean == 3 {
+						completionHandler()
+					}
+				}
+			} else {
+				numberOFProcessingClean += 1
+				if numberOFProcessingClean == 3 {
+					completionHandler()
+				}
+			}
+		}
+		
+		/// `merge and delete whole duplicates`
+		contactManager.deepCleanDuplicatedSmartMerge(mergeContactsGroups) { suxxess, numberOfErrors in
+			if suxxess {
+				ErrorHandler.shared.deepCleanDeleteAlertError(.contactsCleanSuxxessfully, errorsCount: 0)
+			} else {
+				ErrorHandler.shared.deepCleanDeleteAlertError(.errorContactsClean, errorsCount: numberOfErrors)
+			}
+			numberOFProcessingClean += 1
+			if numberOFProcessingClean == 3 {
+				completionHandler()
+			}
+			
+		}		
 	}
 }

@@ -391,6 +391,7 @@ extension DeepCleaningViewController: DeepCleanSelectableAssetsDelegate {
 						 updateCellInfoCount(by: contentType.contenType, contentType: contentType, assetsCount: updatableGroup.count)
 					case .emptyContacts, .duplicatedContacts, .duplicatedPhoneNumbers, .duplicatedEmails:
 						 self.contactsFlowGroups[contentType] = updatableContactsGroup
+						 updateCellInfoCount(by: contentType.contenType, contentType: contentType, assetsCount: updatableAssets.count)
 					default:
 						 return
 			   }
@@ -976,8 +977,22 @@ extension DeepCleaningViewController: BottomActionButtonDelegate {
      }
 	 
 	 private func startDeepCleanProcessing() {
-		  deepCleanManager.startingDeepCleanProcessing(with: selectedAssetsCollectionID) {
+		  
+		  deepCleanManager.startingDeepCleanProcessing(with: selectedAssetsCollectionID, photoVideoGroups: photoVideoFlowGroup, contactsFlowGroups: contactsFlowGroups) {
 			   
+			   
+			   self.resetAllValues()
+			   U.delay(2) {
+					self.resetProgress()
+					self.tableView.reloadData()
+					U.delay(1) {
+						 P.hideIndicator()
+						 self.setProcessingActionButton(.redyForStartingCleaning)
+						 self.showBottomButtonBar()
+					}
+			   }
+			   
+			   U.notificationCenter.post(name: .addContactsStoreObserver, object: nil)
 		  }
 	 }
 }

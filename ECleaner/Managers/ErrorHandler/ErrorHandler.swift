@@ -13,6 +13,15 @@ class ErrorHandler {
         let instance = ErrorHandler()
         return instance
     }()
+	
+	enum DeepCleanError {
+		case errorPhotoClean
+		case errorEmptyContactsClean
+		case errorContactsClean
+		case photoVideoCleanSuxxessfully
+		case contactsCleanSuxxessfully
+		case emptyContactsSuxxessfylly
+	}
     
     enum DeleteError {
         case errorDeleteContact
@@ -87,15 +96,33 @@ class ErrorHandler {
 		case duplicatedNumbersIsEmpty
 		case duplicatedEmailsIsEmpty
 	}
+	
+	private func deepCleanErrorForKey(_ error: DeepCleanError, errorsCount: Int) -> String {
+		switch error {
+			case .errorPhotoClean:
+				return "photo - video deep clean complete with errors"
+			case .errorEmptyContactsClean:
+				return "cleaing empty contacts complete with errors, cant delete \(errorsCount) contacts"
+			case .errorContactsClean:
+				return "cleaning contacts completed with error, cant delete \(errorsCount) contacts"
+			case .photoVideoCleanSuxxessfully:
+				return "photo - video clean suxxessfully"
+			case .contactsCleanSuxxessfully:
+				return "contacts clean suxxessfully"
+			case .emptyContactsSuxxessfylly:
+				return "empty contacts suxessfully removed"
+			
+		}
+	}
 
     private func deleteErrorForKey(_ error: DeleteError) -> String {
         switch error {
             case .errorDeleteContact:
-                return "cant delete contact"
+                return "can't delete contact"
             case .errorDeleteContacts:
-                return "cant delete contacts"
+                return "can't delete contacts"
 			case .errorDeletePhasset:
-				return "error delete selected assets"
+				return "error delete assets"
 		}
     }
     
@@ -171,7 +198,17 @@ class ErrorHandler {
 }
 
 extension ErrorHandler {
-    
+	
+	public func deepCleanDeleteAlertError(_ errortype: DeepCleanError, errorsCount: Int) {
+		let alertTitle = "Deep Clean Warning"
+		let alertAction = UIAlertAction(title: "ok", style: .default)
+		let alertMessage = deepCleanErrorForKey(errortype, errorsCount: errorsCount)
+		
+		DispatchQueue.main.async {
+			A.showAlert(alertTitle, message: alertMessage, actions: [alertAction], withCancel: false, completion: nil)
+		}
+	}
+	
     public func showDeleteAlertError(_ errorType: DeleteError) {
         let alertTitle = "Error"
         let alertAction = UIAlertAction(title: "ok", style: .default)

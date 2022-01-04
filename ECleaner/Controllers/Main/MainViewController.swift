@@ -333,7 +333,17 @@ extension MainViewController: UpdateColorsDelegate {
         U.notificationCenter.addObserver(self, selector: #selector(updatingContentDisplayInformation(_:)), name: .mediaSpaceDidChange, object: nil)
         U.notificationCenter.addObserver(self, selector: #selector(updatingContentDisplayInformation(_:)), name: .contactsCountDidChange, object: nil)
         U.notificationCenter.addObserver(self, selector: #selector(contactsStoreDidChange), name: .CNContactStoreDidChange, object: nil)
+		U.notificationCenter.addObserver(self, selector: #selector(removeStoreObserver), name: .removeContactsStoreObserver, object: nil)
+		U.notificationCenter.addObserver(self, selector: #selector(addStoreObserver), name: .addContactsStoreObserver, object: nil)
     }
+	
+	@objc func removeStoreObserver() {
+		U.notificationCenter.removeObserver(self, name: .CNContactStoreDidChange, object: nil)
+	}
+	
+	@objc func addStoreObserver() {
+		U.notificationCenter.addObserver(self, selector: #selector(contactsStoreDidChange), name: .CNContactStoreDidChange, object: nil)
+	}
     
     private func setupNavigation() {
             
