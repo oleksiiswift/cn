@@ -55,7 +55,6 @@ class ContentTypeTableViewCell: UITableViewCell {
         tempAddTextLabel.heightAnchor.constraint(equalToConstant: 50).isActive = true
         tempAddTextLabel.widthAnchor.constraint(equalToConstant: 100).isActive = true
     }
-	
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
@@ -105,7 +104,13 @@ extension ContentTypeTableViewCell {
 					selectedCleaningItemsText = String("(\(selectedCount ?? 0) selected)")
 				}
 				
-				U.delay(0.5) {
+				if isProcessingComplete {
+					self.horizontalProgressView.progress = 0
+					self.horizontalProgressView.layoutIfNeeded()
+					self.resetProgress()
+				} else if progress == 100.0 {
+					self.resetProgress()
+				} else {
 					self.horizontalProgressView.progress = progress / 100
 					self.horizontalProgressView.layoutIfNeeded()
 				}
@@ -118,15 +123,6 @@ extension ContentTypeTableViewCell {
 					case .none:
 						contentSubtitleTextLabel.text = ""
 				}
-				
-					//				if isProcessingComplete || horizontalProgressView.progress == 1.0 {
-					//					U.animate(1, delay: 2) {
-					//						self.horizontalProgressView.alpha = 0
-					//					} completion: {
-					//						self.horizontalProgressView.progress = 0
-					//						self.horizontalProgressView.alpha = 1
-					//					}
-					//				}
 				
 			case .singleSearch:
 				contentTypeTextLabel.text = contentType.getCellTitle(index: indexPath.row)

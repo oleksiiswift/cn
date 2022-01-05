@@ -979,7 +979,6 @@ extension PhotoManager {
 			
 			let deletedAssets = PHAsset.fetchAssets(withLocalIdentifiers: assetsSelectedIdentifiers, options: nil)
 			
-			
 			PHPhotoLibrary.shared().performChanges {
 				if operation.isCancelled {
 					return
@@ -989,6 +988,7 @@ extension PhotoManager {
 					completion(success)
 			}
 		}
+		
 		deletePhassetsOperation.name = C.key.operation.name.deletePhassetsOperation
 		return deletePhassetsOperation
 	}

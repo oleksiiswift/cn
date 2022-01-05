@@ -36,6 +36,8 @@ class DeepCleaningViewController: UIViewController {
      private var deepCleanManager = DeepCleanManager()
 	 private var photoManager = PhotoManager.shared
 	 private var contactsManager = ContactsManager.shared
+	 
+	 private var progressAlert = ProgressAlertController.shared
      
      /// protocols and delegates
      weak var selectableAssetsDelegate: DeepCleanSelectableAssetsDelegate?
@@ -98,7 +100,8 @@ class DeepCleaningViewController: UIViewController {
           setupTableView()
           setupDateInterval()
           updateTotalFilesTitleChecked()
-          setupObserversAndDelegate()
+          setupObservers()
+		  setupDelegate()
           updateColors()
      }
      
@@ -195,6 +198,7 @@ extension DeepCleaningViewController {
 		  currentProgressForRawMediatype = [:]
 		  photoVideoFlowGroup = [:]
 		  contactsFlowGroups = [:]
+		  selectedAssetsCollectionID = [:]
 	 }
 	 
      private func startDeepCleanScan() {
@@ -293,12 +297,14 @@ extension DeepCleaningViewController {
      
      private func updateAssetsProcessingOfType(group: [PhassetGroup], mediaType: MediaContentType, contentType: PhotoMediaType, phassetsCount: Int) {
           self.doneProcessingDeepCleanForMedia[contentType] = true
+		  self.currentProgressForRawMediatype[contentType] = 100.0
           self.photoVideoFlowGroup[contentType] = group
           self.updateCellInfoCount(by: mediaType, contentType: contentType, assetsCount: phassetsCount)
      }
      
      private func updateContactsProcessing(group: [ContactsGroup], contentType: PhotoMediaType, contactsCount: Int) {
           self.doneProcessingDeepCleanForMedia[contentType] = true
+		  self.currentProgressForRawMediatype[contentType] = 100.0
           self.contactsFlowGroups[contentType] = group
           self.updateCellInfoCount(by: .userContacts, contentType: contentType, assetsCount: contactsCount)
      }
@@ -538,7 +544,6 @@ extension DeepCleaningViewController {
                     let total = (totalPartitinAssetsCount[.photo] ?? 0) + (totalPartitinAssetsCount[.video] ?? 0)
                     totalFilesChecked = total
                     cell.setProgress(files: total)
-                    P.showIndicator(in: self)
                } else {
                     cell.setProgress(files: totalFilesChecked)
                }
@@ -548,34 +553,40 @@ extension DeepCleaningViewController {
      
      private func progressUpdate(_ notificationType: DeepCleanNotificationType, progress: CGFloat, title: String) {
           
+		  var currentProgressValue: CGFloat = progress
+	 
+		  if let doneProcessing = self.doneProcessingDeepCleanForMedia[notificationType.mediaTypeRawValue] {
+			   doneProcessing ? currentProgressValue = 100 : ()
+		  }
+	
           let indexPath = notificationType.mediaTypeRawValue.deepCleanIndexPath
-          self.currentProgressForRawMediatype[notificationType.mediaTypeRawValue] = progress
-  
+          self.currentProgressForRawMediatype[notificationType.mediaTypeRawValue] = currentProgressValue
+		  
           switch notificationType {
                case .similarPhoto:
-                    self.totalDeepCleanProgress[0] = progress
+                    self.totalDeepCleanProgress[0] = currentProgressValue
                case .duplicatePhoto:
-                    self.totalDeepCleanProgress[1] = progress
+                    self.totalDeepCleanProgress[1] = currentProgressValue
                case .screenshots:
-                    self.totalDeepCleanProgress[2] = progress
+                    self.totalDeepCleanProgress[2] = currentProgressValue
                case .similarLivePhoto:
-                    self.totalDeepCleanProgress[3] = progress
+                    self.totalDeepCleanProgress[3] = currentProgressValue
                case .largeVideo:
-                    self.totalDeepCleanProgress[4] = progress
+                    self.totalDeepCleanProgress[4] = currentProgressValue
                case .duplicateVideo:
-                    self.totalDeepCleanProgress[5] = progress
+                    self.totalDeepCleanProgress[5] = currentProgressValue
                case .similarVideo:
-                    self.totalDeepCleanProgress[6] = progress
+                    self.totalDeepCleanProgress[6] = currentProgressValue
                case .screenRecordings:
-                    self.totalDeepCleanProgress[7] = progress
+                    self.totalDeepCleanProgress[7] = currentProgressValue
                case .emptyContacts:
-                    self.totalDeepCleanProgress[8] = progress
+                    self.totalDeepCleanProgress[8] = currentProgressValue
                case .duplicateContacts:
-                    self.totalDeepCleanProgress[9] = progress
+                    self.totalDeepCleanProgress[9] = currentProgressValue
                case .duplicatedPhoneNumbers:
-                    self.totalDeepCleanProgress[10] = progress
+                    self.totalDeepCleanProgress[10] = currentProgressValue
                case .duplicatedEmails:
-                    self.totalDeepCleanProgress[11] = progress
+                    self.totalDeepCleanProgress[11] = currentProgressValue
           }
           
           guard !indexPath.isEmpty else { return }
@@ -583,6 +594,7 @@ extension DeepCleaningViewController {
           guard let cell = tableView.cellForRow(at: indexPath) as? ContentTypeTableViewCell else { return }
 
           self.configure(cell, at: indexPath, currentProgress: progress)
+				  
           updateTotalFilesTitleChecked()
      }
      
@@ -841,7 +853,7 @@ extension DeepCleaningViewController {
 		  dateSelectPickerView.setupDisplaysDate(lowerDate: self.lowerBoundDate, upperdDate: self.upperBoundDate)
      }
      
-     private func setupObserversAndDelegate() {
+     private func setupObservers() {
           
           U.notificationCenter.addObserver(self, selector: #selector(flowRoatingHandleNotification(_:)), name: .deepCleanSimilarPhotoPhassetScan, object: nil)
           U.notificationCenter.addObserver(self, selector: #selector(flowRoatingHandleNotification(_:)), name: .deepCleanDuplicatedPhotoPhassetScan, object: nil)
@@ -857,12 +869,17 @@ extension DeepCleaningViewController {
           U.notificationCenter.addObserver(self, selector: #selector(flowRoatingHandleNotification(_:)), name: .deepCleanDuplicatedContactsScan, object: nil)
           U.notificationCenter.addObserver(self, selector: #selector(flowRoatingHandleNotification(_:)), name: .deepCleanDuplicatedPhoneNumbersScan, object: nil)
           U.notificationCenter.addObserver(self, selector: #selector(flowRoatingHandleNotification(_:)), name: .deepCleanDupLicatedMailsScan, object: nil)
-          
-          dateSelectPickerView.delegate = self
-          bottomButtonView.delegate = self
-          selectableAssetsDelegate = self
-          navigationBar.delegate = self
+		  
+		  U.notificationCenter.addObserver(self, selector: #selector(handleDeepCleanProgressNotification(_:)), name: .progressDeepCleanDidChangeProgress, object: nil)
      }
+	 
+	 private func setupDelegate() {
+		  dateSelectPickerView.delegate = self
+		  bottomButtonView.delegate = self
+		  selectableAssetsDelegate = self
+		  navigationBar.delegate = self
+		  progressAlert.delegate = self
+	 }
      
      private func setupNavigation() {
           
@@ -943,7 +960,14 @@ extension DeepCleaningViewController {
 	 
 	 private func showBottomButtonBar() {
 		  bottomContainerHeightConstraint.constant = (bottomMenuHeight + U.bottomSafeAreaHeight - 5)
-		  self.tableView.contentInset.bottom = 10
+		  self.tableView.contentInset.bottom = 25
+		  self.tableView.layoutIfNeeded()
+		  self.view.layoutIfNeeded()
+	 }
+	 
+	 private func hideBottomButtonBar() {
+		  bottomContainerHeightConstraint.constant = 0
+		  self.tableView.contentInset.bottom = 25
 		  self.tableView.layoutIfNeeded()
 		  self.view.layoutIfNeeded()
 	 }
@@ -952,7 +976,7 @@ extension DeepCleaningViewController {
 		  
 		  let selectedAssetsCount = selectedAssetsCollectionID.values.compactMap({$0}).flatMap({$0}).count
 		  bottomContainerHeightConstraint.constant = selectedAssetsCount > 0 ? (bottomMenuHeight + U.bottomSafeAreaHeight - 5) : 0
-		  self.tableView.contentInset.bottom = selectedAssetsCount > 0 ? 10 : 5
+		  self.tableView.contentInset.bottom = selectedAssetsCount > 0 ? 25 : 5
 		  
 		  U.animate(0.5) {
 			   self.tableView.layoutIfNeeded()
@@ -972,27 +996,76 @@ extension DeepCleaningViewController: BottomActionButtonDelegate {
 			   self.showStopDeepCleanScanAlert()
 			   
 		  } else if deepCleaningState == .willAvailibleDelete {
-			   self.startDeepCleanProcessing()
+			   self.hideBottomButtonBar()
+			   U.delay(1) {
+					self.showProgressAlert()
+					U.delay(1) {
+						 self.startDeepCleanProcessing()
+					}
+			   }
 		  }
      }
 	 
 	 private func startDeepCleanProcessing() {
 		  
 		  deepCleanManager.startingDeepCleanProcessing(with: selectedAssetsCollectionID, photoVideoGroups: photoVideoFlowGroup, contactsFlowGroups: contactsFlowGroups) {
-			   
-			   
-			   self.resetAllValues()
-			   U.delay(2) {
-					self.resetProgress()
-					self.tableView.reloadData()
-					U.delay(1) {
-						 P.hideIndicator()
-						 self.setProcessingActionButton(.redyForStartingCleaning)
-						 self.showBottomButtonBar()
-					}
+			   U.UI {
+					self.progressAlert.closeForceController()
+					debugPrint("all data clean")
+					self.cleanAndResetAllValues()
+					
 			   }
-			   
-			   U.notificationCenter.post(name: .addContactsStoreObserver, object: nil)
+		  } canceledConpletionHandler: {
+			   U.UI {
+					self.progressAlert.closeForceController()
+					debugPrint("cancel completion")
+					self.cleanAndResetAllValues()
+			   }
+		  }
+	 }
+	 
+	 private func cleanAndResetAllValues() {
+		  P.showIndicator()
+		  self.resetAllValues()
+		  U.delay(2) {
+			   self.resetProgress()
+			   self.tableView.reloadData()
+			   U.delay(1) {
+					P.hideIndicator()
+					self.setProcessingActionButton(.redyForStartingCleaning)
+					self.showBottomButtonBar()
+			   }
+		  }
+		  U.notificationCenter.post(name: .addContactsStoreObserver, object: nil)
+	 }
+}
+
+extension DeepCleaningViewController: ProgressAlertControllerDelegate {
+	 
+	 func didTapCancelOperation() {
+		  deepCleanManager.stopDeepCleanOperation()
+	 }
+	 
+	 func didAutoCloseController() {
+		  debugPrint("do thms")
+	 }
+	 	 
+	 private func showProgressAlert() {
+		  self.progressAlert.showDeepCleanProgressAlert()
+	 }
+	 
+	 @objc func handleDeepCleanProgressNotification(_ notification: Notification) {
+		  
+		  guard let userInfo = notification.userInfo else { return }
+		  handleDeepCleanProgress(userInfo)
+	 }
+
+	 private func handleDeepCleanProgress(_ userInfo: [AnyHashable: Any]) {
+		  if let progress = userInfo[C.key.notificationDictionary.progressAlert.deepCleanProgressValue] as? CGFloat,
+			 let processingTitle = userInfo[C.key.notificationDictionary.progressAlert.deepCleanProcessingChangedTitle] as? String {
+			   U.UI {
+					self.progressAlert.updateChangedProgress(progress, processingTitle: processingTitle)
+			   }
 		  }
 	 }
 }

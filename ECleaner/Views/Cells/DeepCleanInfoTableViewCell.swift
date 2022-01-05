@@ -45,6 +45,7 @@ extension DeepCleanInfoTableViewCell {
     
 	func setRoundedProgress(value: CGFloat, futuredCleaningSpace: Int64?) {
         progressRing.progress = value
+		debugPrint("--- \(value)")
 		
 		if let futuredCleaningSpace = futuredCleaningSpace {
 			let stringSpace = U.getSpaceFromInt(futuredCleaningSpace)
@@ -70,7 +71,7 @@ extension DeepCleanInfoTableViewCell: Themeble {
                                            lineWidth: 13)
         
         progressRing.progressLabel.textColor = UIColor().colorFromHexString("FF845A")//theme.titleTextColor
-        progressRing.progressLabel.font = UIFont(font: FontManager.robotoBold, size: 18)
+		progressRing.progressLabel.font = .systemFont(ofSize: 16, weight: .bold)
         progressRing.progressLabel.translatesAutoresizingMaskIntoConstraints = false
         progressRing.progressLabel.frame = CGRect(origin: .zero, size: CGSize(width: 50, height: 30))
         progressRing.progressLabel.center = position

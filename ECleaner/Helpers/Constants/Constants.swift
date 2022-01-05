@@ -150,6 +150,9 @@ class Constants {
 				static let similarTuplesOperation = "serviceUtilityDuplicatedTuplesOperation"
 				static let findDuplicatedVideoOperation = "findDuplicatedVideoOperation"
 				static let getSimilarVideosByTimeStampOperation = "getSimilarVideosByTimeStampOperation"
+				
+					/// `deep clean`
+				static let deepCleanProcessingCleaningOperation = "deepCleanProcessingCleaningOperation"
 			}
 		}
         
@@ -218,6 +221,9 @@ class Constants {
             struct progressAlert {
                 static let progrssAlertValue = "progressAlertValue"
                 static let progressAlertFilesCount = "progressAlertFilesCount"
+				
+				static let deepCleanProgressValue = "deepCleanProgressValue"
+				static let deepCleanProcessingChangedTitle = "deepCleanProcessingChangedTitle"
             }
         }
     }

@@ -7,6 +7,30 @@
 
 import Foundation
 import Photos
+import Contacts
+
+enum DeepCleaningType {
+	case prepareCleaning
+	case photoCleaning
+	case contactsEmptyCleaning
+	case contactsMergeCleaning
+	case contactsDeleteCleaning
+	
+	var progressTitle: String {
+		switch self {
+			case .photoCleaning:
+				return "deleting photo (video):"
+			case .contactsEmptyCleaning:
+				return "removing empty contacts:"
+			case .contactsMergeCleaning:
+				return "merge selecting contacts:"
+			case .contactsDeleteCleaning:
+				return "deleting selected contacts:"
+			case .prepareCleaning:
+				return "prepare cleaning"
+		}
+	}
+}
 
 class DeepCleanManager {
     
@@ -15,7 +39,7 @@ class DeepCleanManager {
 	private var fetchManager = PHAssetFetchManager.shared
 	private var progressNotificationManager = ProgressSearchNotificationManager.instance
     
-	let wholeCleanOperationQueuer = OperationProcessingQueuer(name: C.key.operation.queue.deepClean, maxConcurrentOperationCount: 5, qualityOfService: .background)
+	let wholeCleanOperationQueuer = OperationProcessingQueuer(name: C.key.operation.queue.deepClean, maxConcurrentOperationCount: 1, qualityOfService: .background)
 	
 	let deepCleanOperationQue = OperationProcessingQueuer(name: C.key.operation.queue.deepClean, maxConcurrentOperationCount: 5, qualityOfService: .default)
         
@@ -189,15 +213,15 @@ class DeepCleanManager {
 
 extension DeepCleanManager {
 		
-	public func startingDeepCleanProcessing(with selectedCollectionsIDs: [PhotoMediaType : [String]], photoVideoGroups: [PhotoMediaType : [PhassetGroup]], contactsFlowGroups: [PhotoMediaType : [ContactsGroup]], completionHandler: @escaping () -> Void) {
+	public func startingDeepCleanProcessing(with selectedCollectionsIDs: [PhotoMediaType : [String]], photoVideoGroups: [PhotoMediaType : [PhassetGroup]], contactsFlowGroups: [PhotoMediaType : [ContactsGroup]], completionHandler: @escaping () -> Void, canceledConpletionHandler: @escaping () -> Void) {
 		
-		var numberOFProcessingClean = 0
 		var photoVideoDeleteProcessingIDS: [String] = []
 		var mergeContactsGroupsProcessingIDS:  [String] = []
 		var deleteContactsProcessingODS: [String] = []
 		var mergeContactsGroups: [ContactsGroup] = []
 		
 		U.notificationCenter.post(name: .removeContactsStoreObserver, object: nil)
+		self.handleProgressNotification(of: .prepareCleaning, with: 0, and: 0)
 		
 		for (key, value) in selectedCollectionsIDs {
 			switch key {
@@ -215,70 +239,141 @@ extension DeepCleanManager {
 						}
 					}
 				default:
-					return
+					debugPrint("no key")
 			}
 		}
 		
-		/// `deleting photos and videos`
-		photoVideoDeleteProcessingIDS = Array(Set(photoVideoDeleteProcessingIDS))
-		fetchManager.fetchPhassetFromGallery(with: photoVideoDeleteProcessingIDS) { phassets in
-			if !phassets.isEmpty {
-				let deleteOperaion = self.photoManager.deleteSelectedOperation(assets: phassets) { isDeleted in
-					if isDeleted {
-						ErrorHandler.shared.deepCleanDeleteAlertError(.photoVideoCleanSuxxessfully, errorsCount: 0)
-					} else {
-						ErrorHandler.shared.deepCleanDeleteAlertError(.errorPhotoClean, errorsCount: 0)
-					}
-					numberOFProcessingClean += 1
-					if numberOFProcessingClean == 3 {
-						completionHandler()
-					}
-				}
-				self.wholeCleanOperationQueuer.addOperation(deleteOperaion)
-			} else {
-				numberOFProcessingClean += 1
-				if numberOFProcessingClean == 3 {
-					completionHandler()
-				}
-			}
-		}
-		
-		
-		/// `deleting empty contacts`
-		contactManager.getPredicateContacts(with: deleteContactsProcessingODS) { contacts in
-			if !contacts.isEmpty {
-				self.contactManager.deleteContacts(contacts) { isDeleted, count in
-					if isDeleted {
-						ErrorHandler.shared.deepCleanDeleteAlertError(.emptyContactsSuxxessfylly, errorsCount: 0)
-					} else {
-						ErrorHandler.shared.deepCleanDeleteAlertError(.errorEmptyContactsClean, errorsCount: count)
-					}
-					
-					numberOFProcessingClean += 1
-					if numberOFProcessingClean == 3 {
-						completionHandler()
+		let deepCleanProcessingCleaningOperation = ConcurrentProcessOperation { operation in
+			
+			photoVideoDeleteProcessingIDS = Array(Set(photoVideoDeleteProcessingIDS))
+			
+			
+			self.fetchManager.fetchPhassetFromGallery(with: photoVideoDeleteProcessingIDS) { phassets in
+				if !phassets.isEmpty {
+					let assetsSelectedIdentifiers = phassets.map({ $0.localIdentifier})
+					let deletedAssets = PHAsset.fetchAssets(withLocalIdentifiers: assetsSelectedIdentifiers, options: nil)
+					PHPhotoLibrary.shared().performChanges {
+						if operation.isCancelled {
+							canceledConpletionHandler()
+							return
+						}
+						PHAssetChangeRequest.deleteAssets(deletedAssets)
+					} completionHandler: { success, error in
+						for position in 1...phassets.count {
+							U.delay(0.1) {
+								self.handleProgressNotification(of: .photoCleaning, with: position, and: phassets.count)
+							}
+						}
 					}
 				}
-			} else {
-				numberOFProcessingClean += 1
-				if numberOFProcessingClean == 3 {
-					completionHandler()
-				}
-			}
-		}
-		
-		/// `merge and delete whole duplicates`
-		contactManager.deepCleanDuplicatedSmartMerge(mergeContactsGroups) { suxxess, numberOfErrors in
-			if suxxess {
-				ErrorHandler.shared.deepCleanDeleteAlertError(.contactsCleanSuxxessfully, errorsCount: 0)
-			} else {
-				ErrorHandler.shared.deepCleanDeleteAlertError(.errorContactsClean, errorsCount: numberOfErrors)
-			}
-			numberOFProcessingClean += 1
-			if numberOFProcessingClean == 3 {
-				completionHandler()
 			}
 			
-		}		
+			sleep(UInt32(3))
+				/// delete contacts
+			self.contactManager.getPredicateContacts(with: deleteContactsProcessingODS) { contacts in
+				if !contacts.isEmpty {
+					var errorsCount = 0
+					var operationDeleteCount = 0
+					
+					for contact in contacts {
+						if operation.isCancelled {
+							canceledConpletionHandler()
+							return
+						}
+						
+						self.contactManager.deleteContact(contact) { success in
+							
+							operationDeleteCount += 1
+							!success ? errorsCount += 1 : ()
+							
+							self.handleProgressNotification(of: .contactsEmptyCleaning, with: operationDeleteCount, and: contacts.count)
+						}
+					}
+				}
+			}
+			
+			if mergeContactsGroups.isEmpty {
+				completionHandler()
+				return
+			}
+			
+			var deletingContacts: [CNContact] = []
+			var bestContactsIDs: [String] = []
+			var index = 0
+			
+				/// merge contacts
+			let dispatchGroup = DispatchGroup()
+			dispatchGroup.enter()
+			
+			for group in mergeContactsGroups {
+				
+				if operation.isCancelled {
+					canceledConpletionHandler()
+					return
+				}
+				
+				self.contactManager.contactsMerge(in: group) { mutableID, contacts in
+					deletingContacts.append(contentsOf: contacts)
+					bestContactsIDs.append(mutableID)
+					index += 1
+					
+					self.handleProgressNotification(of: .contactsMergeCleaning, with: index, and: mergeContactsGroups.count)
+					
+					if index == mergeContactsGroups.count {
+						dispatchGroup.leave()
+					}
+				}
+			}
+			/// delete contacts after merge
+			dispatchGroup.notify(queue: DispatchQueue.global()) {
+					
+				self.contactManager.getPredicateContacts(with: bestContactsIDs) { contacts in
+					let _ = Set(contacts).intersection(Set(deletingContacts))
+					let deletingContacts = Set(deletingContacts).subtracting(Set(contacts))
+					
+					var errorsCount = 0
+					var operationDeleteCount = 0
+					
+					for deletingContact in deletingContacts {
+						
+						if operation.isCancelled {
+							canceledConpletionHandler()
+							return
+						}
+						
+						self.contactManager.deleteContact(deletingContact) { success in
+							
+							operationDeleteCount += 1
+							!success ? errorsCount += 1 : ()
+							
+							self.handleProgressNotification(of: .contactsDeleteCleaning, with: operationDeleteCount, and: deletingContacts.count)
+							
+							if deletingContacts.count == operationDeleteCount {
+								completionHandler()
+							}
+							
+						}
+					}
+				}
+			}
+		}
+		
+		deepCleanProcessingCleaningOperation.name = C.key.operation.name.deepCleanProcessingCleaningOperation
+		wholeCleanOperationQueuer.addOperation(deepCleanProcessingCleaningOperation)
+	}
+	
+	private func handleProgressNotification(of type: DeepCleaningType, with position: Int, and count: Int) {
+		
+		let progress: CGFloat = type == .prepareCleaning ? 0 : CGFloat(100 * position / count)
+		let processingTitle: String = type == .prepareCleaning ? type.progressTitle : type.progressTitle + " \(Int(progress))%"
+		
+		let infoDictionary: [String: Any ] = [C.key.notificationDictionary.progressAlert.deepCleanProgressValue: type == .prepareCleaning ? CGFloat(0) : progress / 100,
+											  C.key.notificationDictionary.progressAlert.deepCleanProcessingChangedTitle: processingTitle]
+		sleep(UInt32(0.5))
+		U.notificationCenter.post(name: .progressDeepCleanDidChangeProgress, object: nil, userInfo: infoDictionary)
+	}
+	
+	public func stopDeepCleanOperation() {
+		self.wholeCleanOperationQueuer.cancelAll()
 	}
 }

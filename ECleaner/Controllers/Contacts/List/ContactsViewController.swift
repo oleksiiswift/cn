@@ -64,7 +64,7 @@ class ContactsViewController: UIViewController {
     public var mediaType: MediaContentType = .none
     private var contactManager = ContactsManager.shared
     private var shareManager = ShareManager.shared
-    private var progressAlert = AlertProgressAlertController.shared
+    private var progressAlert = ProgressAlertController.shared
     
     override func viewDidLoad() {
         super.viewDidLoad()

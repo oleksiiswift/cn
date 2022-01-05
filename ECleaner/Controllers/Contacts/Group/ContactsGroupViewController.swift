@@ -33,7 +33,7 @@ class ContactsGroupViewController: UIViewController {
 	public var selectedContactsDelegate: DeepCleanSelectableAssetsDelegate?
     
     private var contactsManager = ContactsManager.shared
-    private var progressAlert = AlertProgressAlertController.shared
+    private var progressAlert = ProgressAlertController.shared
     public var contactGroup: [ContactsGroup] = []
     public var contactGroupListViewModel: ContactGroupListViewModel!
     public var contactGroupListDataSource: ContactsGroupDataSource!
@@ -232,7 +232,6 @@ extension ContactsGroupViewController {
             self.tableView.dataSource = self.contactGroupListDataSource
             self.handleMergeContactsAppearButton()
             
-            
             UIView.transition(with: self.tableView, duration: 0.35, options: .transitionCrossDissolve) {
                 self.tableView.reloadData()
             } completion: { _ in
@@ -251,7 +250,6 @@ extension ContactsGroupViewController {
             }
         }
     }
-	
 	
 	public func handleContactsPreviousSelected(selectedContactsIDs: [String], contactsGroupCollection: [ContactsGroup]) {
 		

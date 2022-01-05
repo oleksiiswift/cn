@@ -732,20 +732,6 @@ extension ContactsManager {
 		emailDuplicatedOperation.name = COT.duplicatedEmailsOperation.rawValue
 		return emailDuplicatedOperation
 	}
-	
-	
-	public func deepCleanDuplicatedSmartMerge(_ groups: [ContactsGroup], completionHandler: @escaping (Bool, Int) -> Void) {
-		
-		smartMergeGroups(groups) { bestContactsID, removableContacts in
-			self.getPredicateContacts(with: bestContactsID) { contacts in
-				let leftContacts = Set(contacts).intersection(Set(removableContacts))
-				let deletedContacts = Set(removableContacts).subtracting(Set(contacts))
-				self.deepCleanDelete(Array(deletedContacts)) { deleted, errorsCount in
-					completionHandler(deleted, errorsCount + leftContacts.count)
-				}
-			}
-		}
-	}
 
 	private func smartMergeGroups(_ groups: [ContactsGroup], completionHandler: @escaping ([String], [CNContact]) -> Void) {
 		
@@ -1104,35 +1090,6 @@ extension ContactsManager {
 		contactsProcessingOperationQueuer.addOperation(deleteContactsOperation)
 	}
 	
-	public func deepCleanDelete(_ contacts: [CNContact], _ completionHandler: @escaping (Bool, Int) -> Void) {
-		
-		let deleteContactsOperation = ConcurrentProcessOperation { operation in
-			
-			var errorsCount = 0
-			var operationCount = 0
-			
-			for contact in contacts {
-				if operation.isCancelled {
-					completionHandler(false, errorsCount)
-					return
-				}
-				
-				self.deleteContact(contact) { success in
-					debugPrint("ciurrent position")
-					debugPrint(operationCount)
-					operationCount += 1
-					!success ? errorsCount += 1 : ()
-					if contacts.count == operationCount {
-						completionHandler(true, errorsCount)
-					}
-				}
-			}
-		}
-		
-		deleteContactsOperation.name = C.key.operation.name.deleteContacts
-		contactsProcessingOperationQueuer.addOperation(deleteContactsOperation)
-	}
-
 	public func deleteContact(_ contact: CNContact, _ handler: @escaping ((_ success: Bool) -> Void)) {
 		
 		delete(contact: contact.mutableCopy() as! CNMutableContact, completionHandler: { (result) in
