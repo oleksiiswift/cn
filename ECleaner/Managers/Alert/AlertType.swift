@@ -38,10 +38,10 @@ enum AlertType {
     case allowPhotoLibrary
     case allowDeleteSelectedPhotos
     case withCancel
-    
 
 	case setBreakDeepCleanSearch
 	case setBreakSingleCleanSearch
+	case setBreakDeepCleanDelete
     
     /// `contacts module`
         /// ask
@@ -90,7 +90,8 @@ enum AlertType {
 				
 			case .setBreakDeepCleanSearch, .setBreakSingleCleanSearch:
 				return "stop search process?"
-
+			case .setBreakDeepCleanDelete:
+				return "stop cleaningProcess?"
             case .allowNotification:
                 return "locomark set title for allow notification"
             case .allowConstacStore:
@@ -101,8 +102,6 @@ enum AlertType {
                 return ""
             case .allowDeleteSelectedPhotos:
                 return "locomark delete assets?"
-				
-           
             case .deleteContacts:
                 return "delete contacts"
             case .deleteContact:
@@ -115,8 +114,6 @@ enum AlertType {
                 return "good need locale"
             case .suxxessMergedContact, .suxxessMergedContacts:
                 return "good merged locale"
-		
-
 			case .none:
 				return ""
 		}
@@ -172,8 +169,8 @@ enum AlertType {
 				return "this will reset all search progress"
 			case .setBreakSingleCleanSearch:
 				return "stop executing search process"
-				
-				
+			case .setBreakDeepCleanDelete:
+				return "this will stop cleaning process"
             case .allowNotification:
                 return "locomark notification message"
             case .allowConstacStore:
@@ -186,8 +183,6 @@ enum AlertType {
                 return "none"
             case .allowDeleteSelectedPhotos:
                 return "delete selecteds assets are you shure????"
-        
-	
             case .deleteContacts:
                 return "shure delete contacts"
             case .deleteContact:
@@ -243,7 +238,7 @@ enum AlertType {
 				
             case .allowNotification, .allowConstacStore, .allowPhotoLibrary, .allowDeleteSelectedPhotos, .withCancel:
                 return true
-			case .setBreakDeepCleanSearch, .setBreakSingleCleanSearch:
+			case .setBreakDeepCleanSearch, .setBreakSingleCleanSearch, .setBreakDeepCleanDelete:
 				return true
             case .deleteContacts, .mergeContacts, .deleteContact, .mergeContact:
                 return true

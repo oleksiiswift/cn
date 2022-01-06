@@ -213,12 +213,13 @@ class DeepCleanManager {
 
 extension DeepCleanManager {
 		
-	public func startingDeepCleanProcessing(with selectedCollectionsIDs: [PhotoMediaType : [String]], photoVideoGroups: [PhotoMediaType : [PhassetGroup]], contactsFlowGroups: [PhotoMediaType : [ContactsGroup]], completionHandler: @escaping () -> Void, canceledConpletionHandler: @escaping () -> Void) {
+	public func startingDeepCleanProcessing(with selectedCollectionsIDs: [PhotoMediaType : [String]], photoVideoGroups: [PhotoMediaType : [PhassetGroup]], contactsFlowGroups: [PhotoMediaType : [ContactsGroup]], completionHandler: @escaping (Int) -> Void, canceledConpletionHandler: @escaping () -> Void) {
 		
 		var photoVideoDeleteProcessingIDS: [String] = []
 		var mergeContactsGroupsProcessingIDS:  [String] = []
 		var deleteContactsProcessingODS: [String] = []
 		var mergeContactsGroups: [ContactsGroup] = []
+		var errorsCount: Int = 0
 		
 		U.notificationCenter.post(name: .removeContactsStoreObserver, object: nil)
 		self.handleProgressNotification(of: .prepareCleaning, with: 0, and: 0)
@@ -259,6 +260,8 @@ extension DeepCleanManager {
 						}
 						PHAssetChangeRequest.deleteAssets(deletedAssets)
 					} completionHandler: { success, error in
+						error != nil ? errorsCount += 1 : ()
+					
 						for position in 1...phassets.count {
 							U.delay(0.1) {
 								self.handleProgressNotification(of: .photoCleaning, with: position, and: phassets.count)
@@ -272,7 +275,6 @@ extension DeepCleanManager {
 				/// delete contacts
 			self.contactManager.getPredicateContacts(with: deleteContactsProcessingODS) { contacts in
 				if !contacts.isEmpty {
-					var errorsCount = 0
 					var operationDeleteCount = 0
 					
 					for contact in contacts {
@@ -282,10 +284,8 @@ extension DeepCleanManager {
 						}
 						
 						self.contactManager.deleteContact(contact) { success in
-							
 							operationDeleteCount += 1
 							!success ? errorsCount += 1 : ()
-							
 							self.handleProgressNotification(of: .contactsEmptyCleaning, with: operationDeleteCount, and: contacts.count)
 						}
 					}
@@ -293,7 +293,7 @@ extension DeepCleanManager {
 			}
 			
 			if mergeContactsGroups.isEmpty {
-				completionHandler()
+				completionHandler(errorsCount)
 				return
 			}
 			
@@ -331,7 +331,6 @@ extension DeepCleanManager {
 					let _ = Set(contacts).intersection(Set(deletingContacts))
 					let deletingContacts = Set(deletingContacts).subtracting(Set(contacts))
 					
-					var errorsCount = 0
 					var operationDeleteCount = 0
 					
 					for deletingContact in deletingContacts {
@@ -349,9 +348,8 @@ extension DeepCleanManager {
 							self.handleProgressNotification(of: .contactsDeleteCleaning, with: operationDeleteCount, and: deletingContacts.count)
 							
 							if deletingContacts.count == operationDeleteCount {
-								completionHandler()
+								completionHandler(errorsCount)
 							}
-							
 						}
 					}
 				}

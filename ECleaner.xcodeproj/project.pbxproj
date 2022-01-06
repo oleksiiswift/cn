@@ -622,7 +622,6 @@
 		049CC21026821D560002F988 /* Photo */ = {
 			isa = PBXGroup;
 			children = (
-				047DE61B26AAD5F000733CD5 /* DeepCleanManager.swift */,
 				970D7783275B66CE0048F41D /* PhotoManager.swift */,
 				04E5837F267B9F6B00EDC3A3 /* PhassetFetchManager.swift */,
 			);
@@ -876,6 +875,7 @@
 		04E5835F267A3EB600EDC3A3 /* Managers */ = {
 			isa = PBXGroup;
 			children = (
+				97F8E64D2787047F00B01D6B /* DeepCleanManager */,
 				97A61EDF2726AB8B00F2E6DE /* Contacts */,
 				049CC21026821D560002F988 /* Photo */,
 				049CC21126821D5F0002F988 /* Alert */,
@@ -1461,6 +1461,14 @@
 				97CC2F3D268743A80072EF8C /* SegueManager.swift */,
 			);
 			name = SegueManager;
+			sourceTree = "<group>";
+		};
+		97F8E64D2787047F00B01D6B /* DeepCleanManager */ = {
+			isa = PBXGroup;
+			children = (
+				047DE61B26AAD5F000733CD5 /* DeepCleanManager.swift */,
+			);
+			path = DeepCleanManager;
 			sourceTree = "<group>";
 		};
 		97FC78A32689144D000D7F26 /* ContentType */ = {

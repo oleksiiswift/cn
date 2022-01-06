@@ -14,13 +14,21 @@ class ErrorHandler {
         return instance
     }()
 	
-	enum DeepCleanError {
-		case errorPhotoClean
-		case errorEmptyContactsClean
-		case errorContactsClean
-		case photoVideoCleanSuxxessfully
-		case contactsCleanSuxxessfully
-		case emptyContactsSuxxessfylly
+	enum DeepCleanStateHandler {
+		case deepCleanCompleteWithErrors
+		case deepCleanCompleteSuxxessfull
+		case deepCleanCanceled
+		
+		var titleHandler: String {
+			switch self {
+				case .deepCleanCompleteWithErrors:
+					return "Complete with Errors"
+				case .deepCleanCompleteSuxxessfull:
+					return "Complete suxxessfully"
+				case .deepCleanCanceled:
+					return "canceled"
+			}
+		}
 	}
     
     enum DeleteError {
@@ -97,21 +105,14 @@ class ErrorHandler {
 		case duplicatedEmailsIsEmpty
 	}
 	
-	private func deepCleanErrorForKey(_ error: DeepCleanError, errorsCount: Int) -> String {
-		switch error {
-			case .errorPhotoClean:
-				return "photo - video deep clean complete with errors"
-			case .errorEmptyContactsClean:
-				return "cleaing empty contacts complete with errors, cant delete \(errorsCount) contacts"
-			case .errorContactsClean:
-				return "cleaning contacts completed with error, cant delete \(errorsCount) contacts"
-			case .photoVideoCleanSuxxessfully:
-				return "photo - video clean suxxessfully"
-			case .contactsCleanSuxxessfully:
-				return "contacts clean suxxessfully"
-			case .emptyContactsSuxxessfylly:
-				return "empty contacts suxessfully removed"
-			
+	private func deepCleanHandlerForKey(_ handler: DeepCleanStateHandler) -> String {
+		switch handler {
+			case .deepCleanCompleteWithErrors:
+				return "deep clean complete witgh errors"
+			case .deepCleanCompleteSuxxessfull:
+				return "deep clean complete suxxessfully"
+			case .deepCleanCanceled:
+				return "deep clean canseled"
 		}
 	}
 
@@ -199,15 +200,14 @@ class ErrorHandler {
 
 extension ErrorHandler {
 	
-	public func deepCleanDeleteAlertError(_ errortype: DeepCleanError, errorsCount: Int) {
-		let alertTitle = "Deep Clean Warning"
+	public func deepCleanCompleteStateHandler(for type: DeepCleanStateHandler) {
 		let alertAction = UIAlertAction(title: "ok", style: .default)
-		let alertMessage = deepCleanErrorForKey(errortype, errorsCount: errorsCount)
 		
 		DispatchQueue.main.async {
-			A.showAlert(alertTitle, message: alertMessage, actions: [alertAction], withCancel: false, completion: nil)
+			A.showAlert(type.titleHandler, message: self.deepCleanHandlerForKey(type), actions: [alertAction], withCancel: false, completion: nil)
 		}
 	}
+
 	
     public func showDeleteAlertError(_ errorType: DeleteError) {
         let alertTitle = "Error"

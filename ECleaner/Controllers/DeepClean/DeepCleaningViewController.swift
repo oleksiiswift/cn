@@ -10,6 +10,7 @@ import Photos
 import PhotosUI
 import SwiftMessages
 import Contacts
+import SwiftMessages
 
 enum DeepCleaningState {
 	 case redyForStartingCleaning
@@ -43,10 +44,9 @@ class DeepCleaningViewController: UIViewController {
      weak var selectableAssetsDelegate: DeepCleanSelectableAssetsDelegate?
      
      /// properties
-     
      private var bottomMenuHeight: CGFloat = 80
-     private var processing: Bool = false
      private var isStartingDateSelected: Bool = false
+	 private var isDeepCleanSearchingProcessRunning: Bool = false
 
 	 public var scansOptions: [PhotoMediaType]?
      private var deepCleaningState: DeepCleaningState = .willStartCleaning
@@ -93,7 +93,6 @@ class DeepCleaningViewController: UIViewController {
           super.viewDidLoad()
           
 		  deepCleanManager.cancelAllOperation()
-		  
           setupUI()
           setProcessingActionButton(.redyForStartingCleaning)
           setupNavigation()
@@ -206,6 +205,7 @@ extension DeepCleaningViewController {
           guard let options = scansOptions else { return }
 		  
 		  navigationBar.temporaryLockLeftButton(true)
+		  isDeepCleanSearchingProcessRunning = !isDeepCleanSearchingProcessRunning
           
           deepCleanManager.startDeepCleaningFetch(options, startingFetchingDate: lowerBoundDate, endingFetchingDate: upperBoundDate) { mediaType in
                self.scansOptions = mediaType
@@ -282,16 +282,12 @@ extension DeepCleaningViewController {
                debugPrint(contactsGroup.count, contentType.rawValue)
                self.updateContactsProcessing(group: contactsGroup, contentType: contentType, contactsCount: contactsCount)
           } completionHandler: {
-               self.processing = false
+			   self.isDeepCleanSearchingProcessRunning = !self.isDeepCleanSearchingProcessRunning
                U.UI {
 					self.setProcessingActionButton(.willAvailibleDelete)
-					self.checkCleaningButtonState()
+					self.handleButtonStateActive()
 					self.navigationBar.temporaryLockLeftButton(false)
                }
-          }
-          
-          U.delay(1) {
-               self.processing = true
           }
      }
      
@@ -493,35 +489,7 @@ extension DeepCleaningViewController {
      
      private func handleTotalFilesChecked(by type: DeepCleanNotificationType, files count: Int) {
 
-          debugPrint("-!!!>>>> \(type.mediaTypeRawValue)")
-     
-//          self.totalDeepCleanFilesCountIn[type.mediaTypeRawValue] =  count
-          switch type {
-               case .similarPhoto:
-                    self.totalDeepCleanFilesCountIn[0] = count
-               case .duplicatePhoto:
-                    self.totalDeepCleanFilesCountIn[1] = count
-               case .screenshots:
-                    self.totalDeepCleanFilesCountIn[2] = count
-               case .similarLivePhoto:
-                    self.totalDeepCleanFilesCountIn[3] = count
-               case .largeVideo:
-                    self.totalDeepCleanFilesCountIn[4] = count
-               case .duplicateVideo:
-                    self.totalDeepCleanFilesCountIn[5] = count
-               case .similarVideo:
-                    self.totalDeepCleanFilesCountIn[6] = count
-               case .screenRecordings:
-                    self.totalDeepCleanFilesCountIn[7] = count
-               case .emptyContacts:
-                    self.totalDeepCleanFilesCountIn[8] = count
-               case .duplicateContacts:
-                    self.totalDeepCleanFilesCountIn[9] = count
-               case .duplicatedPhoneNumbers:
-                    self.totalDeepCleanFilesCountIn[10] = count
-               case .duplicatedEmails:
-                    self.totalDeepCleanFilesCountIn[11] = count
-          }
+		  self.totalDeepCleanFilesCountIn[type.positionInDeepCleanRowValue] = count
      }
      
      private func updateTotalFilesTitleChecked() {
@@ -561,34 +529,8 @@ extension DeepCleaningViewController {
 	
           let indexPath = notificationType.mediaTypeRawValue.deepCleanIndexPath
           self.currentProgressForRawMediatype[notificationType.mediaTypeRawValue] = currentProgressValue
-		  
-          switch notificationType {
-               case .similarPhoto:
-                    self.totalDeepCleanProgress[0] = currentProgressValue
-               case .duplicatePhoto:
-                    self.totalDeepCleanProgress[1] = currentProgressValue
-               case .screenshots:
-                    self.totalDeepCleanProgress[2] = currentProgressValue
-               case .similarLivePhoto:
-                    self.totalDeepCleanProgress[3] = currentProgressValue
-               case .largeVideo:
-                    self.totalDeepCleanProgress[4] = currentProgressValue
-               case .duplicateVideo:
-                    self.totalDeepCleanProgress[5] = currentProgressValue
-               case .similarVideo:
-                    self.totalDeepCleanProgress[6] = currentProgressValue
-               case .screenRecordings:
-                    self.totalDeepCleanProgress[7] = currentProgressValue
-               case .emptyContacts:
-                    self.totalDeepCleanProgress[8] = currentProgressValue
-               case .duplicateContacts:
-                    self.totalDeepCleanProgress[9] = currentProgressValue
-               case .duplicatedPhoneNumbers:
-                    self.totalDeepCleanProgress[10] = currentProgressValue
-               case .duplicatedEmails:
-                    self.totalDeepCleanProgress[11] = currentProgressValue
-          }
-          
+		  self.totalDeepCleanProgress[notificationType.positionInDeepCleanRowValue] = currentProgressValue
+  
           guard !indexPath.isEmpty else { return }
           
           guard let cell = tableView.cellForRow(at: indexPath) as? ContentTypeTableViewCell else { return }
@@ -618,6 +560,8 @@ extension DeepCleaningViewController {
      }
      
      private func showCleaningListViewControler(by type: PhotoMediaType) {
+		  
+		  guard !isDeepCleanSearchingProcessRunning else { return }
 		  
           switch type {
 			   case .similarPhotos, .duplicatedPhotos, .similarLivePhotos, .duplicatedVideos, .similarVideos:
@@ -801,7 +745,7 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
 	      
      func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
           
-          guard indexPath.section != 0, !processing else { return}
+          guard indexPath.section != 0 else { return}
           
           self.selectCleaningMedia(at: indexPath)
      }
@@ -931,31 +875,91 @@ extension DeepCleaningViewController {
 						 self.bottomButtonView.title("stop analyzing".uppercased())
 						 self.bottomButtonView.setButtonProcess(false)
 					case .willAvailibleDelete:
-						 self.updatingBottomProcessingButtonTitle()
+						 self.bottomButtonView.title("start cleaning".uppercased())
 						 self.bottomButtonView.setButtonProcess(false)
 						 self.bottomButtonView.setImage(I.systemItems.defaultItems.delete, with: CGSize(width: 18, height: 24))
 			   }
 		  }
      }
 	 
-	 private func updatingBottomProcessingButtonTitle() {
+	 private func updateCleaningItemPopUpinfo() {
 		  
-		  if let deleteSpaceUsage = self.futuredCleaningSpaceUsage, deleteSpaceUsage != 0 {
-			   let stringSpace = U.getSpaceFromInt(deleteSpaceUsage)
-			   self.bottomButtonView.title("start cleaning (\(stringSpace))".uppercased())
-		  } else {
-			   self.bottomButtonView.title("start cleaning".uppercased())
+		  var fullMessageBody: String = ""
+		  let deepCleanSelectedTitle: String = "Deep Clean Selected Info:"
+		  let diskSpaceAfterCleanMessage: String = "Calculated space after clean:"
+		  let selectedPhotoVideoMessage: String = "Selected photo (video):"
+		  let selectedContactsMessage: String = "Selected contacts:"
+		  
+		  var photosVideoID: [String] = []
+		  var contactsIDS: [String] = []
+		  
+		  if let spaceUsage = self.futuredCleaningSpaceUsage, spaceUsage != 0 {
+			   let stringSpace = U.getSpaceFromInt(spaceUsage)
+			   fullMessageBody = diskSpaceAfterCleanMessage + " " + stringSpace
 		  }
+		  
+		  
+		  for (key, value) in selectedAssetsCollectionID {
+			   switch key {
+					case .similarPhotos, .duplicatedPhotos, .similarLivePhotos, .duplicatedVideos, .similarVideos:
+						 photosVideoID.append(contentsOf: value)
+					case .singleScreenShots, .singleLivePhotos, .singleSelfies, .singleScreenRecordings, .singleLargeVideos:
+						 photosVideoID.append(contentsOf: value)
+					case .emptyContacts:
+						 contactsIDS.append(contentsOf: value)
+					case .duplicatedContacts, .duplicatedPhoneNumbers, .duplicatedEmails:
+						 if let groups = contactsFlowGroups[key] {
+							  for id in value {
+								   if let group = groups.first(where: {$0.groupIdentifier == id}) {
+										contactsIDS.append(contentsOf: group.contacts.map({$0.identifier}))
+								   }
+							  }
+						 }
+					default:
+						 debugPrint("do nothing")
+			   }
+		  }
+		  
+		  let photoVideoCount: Int = Set(photosVideoID).count
+		  let contactsSelectedCount: Int = Set(contactsIDS).count
+		
+		  if photoVideoCount != 0 {
+			   fullMessageBody = fullMessageBody + "\n" + selectedPhotoVideoMessage + " " + "\(photoVideoCount)"
+		  }
+		  
+		  if contactsSelectedCount != 0 {
+			   fullMessageBody = fullMessageBody + "\n" + selectedContactsMessage + " " + "\(contactsSelectedCount)"
+		  }
+
+		  guard !fullMessageBody.isEmpty else { return }
+	 
+		  U.delay(1) {
+			   self.showInfoPopUpMessage(with: deepCleanSelectedTitle, and: fullMessageBody)
+		  }
+	 }
+	 
+	 private func showInfoPopUpMessage(with title: String, and body: String) {
+		  
+		  let messageView = MessageView.viewFromNib(layout: .cardView)
+		  var config = SwiftMessages.Config()
+		  config.presentationStyle = .top
+		  config.duration = .seconds(seconds: 5)
+		  messageView.configureContent(title: title, body: body, iconImage: nil, iconText: nil, buttonImage: nil, buttonTitle: nil, buttonTapHandler: nil)
+		  messageView.titleLabel?.font = .systemFont(ofSize: 14, weight: .bold)
+		  messageView.titleLabel?.textColor = theme.titleTextColor
+		  messageView.bodyLabel?.font = .systemFont(ofSize: 12, weight: .semibold)
+		  messageView.bodyLabel?.textColor = theme.subTitleTextColor
+		  messageView.backgroundView.backgroundColor = theme.backgroundColor
+		  messageView.configureDropShadow()
+		  SwiftMessages.show(config: config, view: messageView)
 	 }
 	 
 	 private func checkCleaningButtonState() {
 		  
-		  if deepCleaningState == .willAvailibleDelete {
-			   updatingBottomProcessingButtonTitle()
-			   handleButtonStateActive()
-		  } else {
-			   
-		  }
+		  guard deepCleaningState == .willAvailibleDelete else { return }
+		  
+		  updateCleaningItemPopUpinfo()
+		  handleButtonStateActive()
 	 }
 	 
 	 private func showBottomButtonBar() {
@@ -1008,18 +1012,21 @@ extension DeepCleaningViewController: BottomActionButtonDelegate {
 	 
 	 private func startDeepCleanProcessing() {
 		  
-		  deepCleanManager.startingDeepCleanProcessing(with: selectedAssetsCollectionID, photoVideoGroups: photoVideoFlowGroup, contactsFlowGroups: contactsFlowGroups) {
+		  deepCleanManager.startingDeepCleanProcessing(with: selectedAssetsCollectionID, photoVideoGroups: photoVideoFlowGroup, contactsFlowGroups: contactsFlowGroups) { errorsCount in
 			   U.UI {
 					self.progressAlert.closeForceController()
-					debugPrint("all data clean")
 					self.cleanAndResetAllValues()
-					
+					U.delay(1) {
+						 ErrorHandler.shared.deepCleanCompleteStateHandler(for: errorsCount == 0 ? .deepCleanCompleteSuxxessfull : .deepCleanCompleteWithErrors)
+					}
 			   }
 		  } canceledConpletionHandler: {
 			   U.UI {
 					self.progressAlert.closeForceController()
-					debugPrint("cancel completion")
 					self.cleanAndResetAllValues()
+					U.delay(1) {
+						 ErrorHandler.shared.deepCleanCompleteStateHandler(for: .deepCleanCanceled)
+					}
 			   }
 		  }
 	 }

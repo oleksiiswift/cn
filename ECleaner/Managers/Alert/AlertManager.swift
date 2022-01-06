@@ -183,4 +183,12 @@ extension AlertManager {
 		}
 		showAlert(type: .setBreakSingleCleanSearch, actions: [stopSingleCleanAlertAction], withCancel: true, cancelCompletion: nil)
 	}
+	
+	static func showStopDeepCleanProcessing(_ completion: @escaping () -> Void) {
+		
+		let stopDeepCleanAlertAction = UIAlertAction(title: "stop", style: .default) { _ in
+			completion()
+		}
+		showAlert(type: .setBreakDeepCleanDelete, actions: [stopDeepCleanAlertAction], withCancel: true, cancelCompletion: nil)
+	}
 }
