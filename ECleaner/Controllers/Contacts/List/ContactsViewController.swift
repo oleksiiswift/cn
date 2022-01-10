@@ -92,12 +92,15 @@ class ContactsViewController: UIViewController {
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 		
-		if previouslySelectedIndexPaths.isEmpty {
-			handleStartingSelectableContacts()
-		} else {
-			didSelectPreviousIndexPath()
-		}
+		!previouslySelectedIndexPaths.isEmpty ? didSelectPreviousIndexPath() : ()
 	}
+	
+	override func viewDidAppear(_ animated: Bool) {
+		super.viewDidAppear(animated)
+		
+		previouslySelectedIndexPaths.isEmpty ? handleStartingSelectableContacts() : ()
+	}
+	
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         switch segue.identifier {
@@ -138,6 +141,7 @@ extension ContactsViewController {
             self.setContactsSelect(setSelect) {
                 P.hideIndicator()
                 self.handleBottomButtonChangeAppearence()
+				self.handleSelectAssetsNavigationCount()
             }
         }
     }
@@ -177,8 +181,11 @@ extension ContactsViewController {
 		guard isDeepCleaningSelectableFlow else { return }
 		
 		self.handleEdit()
-		self.navigationBar.handleChangeRightButtonSelectState(selectAll: true)
-		self.setContactsSelect(true) {}
+		
+		A.showSelectAllStarterAlert(for: self.contentType) {
+			self.navigationBar.handleChangeRightButtonSelectState(selectAll: true)
+			self.setContactsSelect(true) {}
+		}
 	}
 	
 	private func didSelectPreviousIndexPath() {
@@ -196,6 +203,7 @@ extension ContactsViewController {
     
     @objc func didSelectDeselectContact() {
         handleBottomButtonChangeAppearence()
+		handleSelectAssetsNavigationCount()
     }
     
     private func selectedItems() -> Int {
@@ -205,6 +213,20 @@ extension ContactsViewController {
             return 0
         }
     }
+	
+	private func handleSelectAssetsNavigationCount() {
+		
+		guard isDeepCleaningSelectableFlow else { return }
+		
+		if selectedItems() != 0 {
+			self.navigationBar.changeHotLeftTitleWithImage(newTitle: String(" (\(selectedItems()))"), image: I.systemItems.navigationBarItems.back)
+		} else {
+			self.navigationBar.changeHotLeftTitleWithImage(newTitle: "", image: I.systemItems.navigationBarItems.back)
+		}
+		
+		let rightNavigationTitle: String = isSelectedAllItems ? "deselect all" : "select all"
+		self.navigationBar.changeHotRightTitle(newTitle: rightNavigationTitle)
+	}
     
     private func handleBottomButtonChangeAppearence(disableAnimation: Bool = false) {
 		

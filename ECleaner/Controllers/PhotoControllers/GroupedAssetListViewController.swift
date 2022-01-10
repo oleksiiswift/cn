@@ -88,11 +88,8 @@ class GroupedAssetListViewController: UIViewController, UIPageViewControllerDele
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-		if previouslySelectedIndexPaths.isEmpty {
-			handleStartingSelectableAssets()
-		} else {
-			didSelectPreviouslyIndexPath()
-		}
+		!previouslySelectedIndexPaths.isEmpty ? didSelectPreviouslyIndexPath() : ()
+
 //        updateCachedAssets()
 //        setupPhotoPreviewController()
     }
@@ -100,6 +97,7 @@ class GroupedAssetListViewController: UIViewController, UIPageViewControllerDele
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
+		previouslySelectedIndexPaths.isEmpty ? handleStartingSelectableAssets() : ()
         self.defaultContainerHeight = self.photoContentContainerView.frame.height
     }
 }
@@ -193,11 +191,12 @@ extension GroupedAssetListViewController {
 			self.selectedAssets.append(self.assetGroups[indexPath.section].assets[indexPath.item])
 		}
 		checkForCelectedSection()
+		handleSelectAssetsNavigationCount()
 	}
 	
 	private func checkForCelectedSection() {
 		
-		for section in 0..<self.collectionView.numberOfSections - 1 {
+		for section in 0..<self.collectionView.numberOfSections {
 			let allSectionIndexPaths = self.getIndexPathInSectionWithoutFirst(section: section)
 			var selectedIndexPathInSection: [IndexPath] = []
 			
@@ -424,6 +423,7 @@ extension GroupedAssetListViewController: UICollectionViewDelegate, UICollection
 			self.collectionView.reloadData()
 		} completion: { _ in
 			self.handleDeleteAssetsButton()
+			self.handleSelectAssetsNavigationCount()
 		}
 	}
 }
@@ -448,6 +448,7 @@ extension GroupedAssetListViewController: PhotoCollectionViewCellDelegate {
 			}
 			self.handleSelectAllButtonSection(indexPath)
 			self.handleDeleteAssetsButton()
+			self.handleSelectAssetsNavigationCount()
 		}
 	}
 }
@@ -502,6 +503,7 @@ extension GroupedAssetListViewController {
 		sectionHeader.handleSelectableAsstes(to: addingSection)
 		sectionHeader.handleDeleteAssets(to: addingSection)
 		self.handleDeleteAssetsButton()
+		self.handleSelectAssetsNavigationCount()
 	}
 	
 	private func getIndexPathInSectionWithoutFirst(section: Int) -> [IndexPath] {
@@ -652,6 +654,7 @@ extension GroupedAssetListViewController {
 										self.collectionView.reloadData()
 									}
 									self.handleDeleteAssetsButton()
+									self.handleSelectAssetsNavigationCount()
 								}
 							} else {
 								var indexPathsSelectedSections: [IndexPath] = []
@@ -673,6 +676,7 @@ extension GroupedAssetListViewController {
 										self.collectionView.reloadData()
 									}
 									self.handleDeleteAssetsButton()
+									self.handleSelectAssetsNavigationCount()
 								}
 							}
 						}
@@ -746,19 +750,22 @@ extension GroupedAssetListViewController {
 			if !self.selectedSection.contains(section) {
 				self.selectedSection.insert(section)
 			}
-			
 		}
 		
 		if isSelect {
 			selectedSection.removeAll()
 		}
 		self.handleDeleteAssetsButton()
+		self.handleSelectAssetsNavigationCount()
 	}
 	
 	private func handleStartingSelectableAssets() {
 		guard isDeepCleaningSelectableFlow else { return }
-		self.shouldSelectAllAssetsInSections(false)
-		self.bottomMenuHeightConstraint.constant = 0
+		
+		A.showSelectAllStarterAlert(for: mediaType) {
+			self.shouldSelectAllAssetsInSections(false)
+			self.bottomMenuHeightConstraint.constant = 0
+		}
 	}
 }
 
@@ -793,6 +800,17 @@ extension GroupedAssetListViewController {
 			}
 		}
 	}
+	
+	private func handleSelectAssetsNavigationCount() {
+		
+		guard isDeepCleaningSelectableFlow else { return }
+	
+		if !selectedAssets.isEmpty {
+			self.navigationBar.changeHotLeftTitleWithImage(newTitle: String(" (\(selectedAssets.count))"), image: I.systemItems.navigationBarItems.back)
+		} else {
+			self.navigationBar.changeHotLeftTitleWithImage(newTitle: "", image: I.systemItems.navigationBarItems.back)
+		}
+	}
 }
 
 extension GroupedAssetListViewController {
@@ -818,9 +836,7 @@ extension GroupedAssetListViewController {
 									  rightButtonTitle: nil)
 	}
 	
-	private func setupObservers() {
-		
-	}
+	private func setupObservers() {}
 	
 	private func setupDelegate() {
 		
@@ -919,6 +935,7 @@ extension GroupedAssetListViewController {
 								self.collectionView.reloadData()
 							}
 							self.handleDeleteAssetsButton()
+							self.handleSelectAssetsNavigationCount()
 						}
 					}
 				}

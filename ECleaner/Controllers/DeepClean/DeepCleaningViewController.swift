@@ -10,7 +10,6 @@ import Photos
 import PhotosUI
 import SwiftMessages
 import Contacts
-import SwiftMessages
 
 enum DeepCleaningState {
 	 case redyForStartingCleaning
@@ -47,9 +46,13 @@ class DeepCleaningViewController: UIViewController {
      private var bottomMenuHeight: CGFloat = 80
      private var isStartingDateSelected: Bool = false
 	 private var isDeepCleanSearchingProcessRunning: Bool = false
-
+	 
 	 public var scansOptions: [PhotoMediaType]?
      private var deepCleaningState: DeepCleaningState = .willStartCleaning
+	 
+	 private var handleSearchingResults: Bool {
+		  return (self.photoVideoFlowGroup.flatMap({$0.value}).count + self.contactsFlowGroups.flatMap({$0.value}).count) > 0
+	 }
 
      private var lowerBoundDate: Date {
           get {
@@ -417,6 +420,10 @@ extension DeepCleaningViewController: DeepCleanSelectableAssetsDelegate {
 						 default:
 							  return
 					}
+			   } else {
+					self.futuredCleaningSpaceUsage = 0
+					self.tableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .none)
+					self.checkCleaningButtonState()
 			   }
 		     
                U.UI {
@@ -662,7 +669,7 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
      }
      
      private func configure(_ cell: ContentTypeTableViewCell, at indexPath: IndexPath, currentProgress: CGFloat? = nil) {
-          
+		  var selectedPhassetsCount: Int = 0
           let photoMediaType: PhotoMediaType = .getDeepCleanMediaContentType(from: indexPath)
           let contentType: MediaContentType = .getDeepCleanSectionType(indexPath: indexPath)
           
@@ -691,8 +698,33 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
 			   }
 		  }
 		  
-		  let selectedPhassetsCount = selectedAssetsCollectionID[photoMediaType]?.count
-
+		  switch photoMediaType {
+			   case .similarPhotos, .duplicatedPhotos, .similarLivePhotos, .duplicatedVideos, .similarVideos:
+					if let selectedPhassetsIDS = selectedAssetsCollectionID[photoMediaType] {
+						 selectedPhassetsCount = selectedPhassetsIDS.count
+					}
+			   case .singleScreenShots, .singleLargeVideos, .singleScreenRecordings:
+					if let selectedPhassetsIDS = selectedAssetsCollectionID[photoMediaType] {
+						 selectedPhassetsCount = selectedPhassetsIDS.count
+					}
+			   case .emptyContacts:
+					if let selectedContactsIDS = selectedAssetsCollectionID[photoMediaType] {
+						 selectedPhassetsCount = selectedContactsIDS.count
+					}
+			   case .duplicatedContacts, .duplicatedPhoneNumbers, .duplicatedEmails:
+					if let groups = contactsFlowGroups[photoMediaType] {
+						 if let ids = selectedAssetsCollectionID[photoMediaType] {
+							  for id in ids {
+								   if let group = groups.first(where: {$0.groupIdentifier == id}) {
+										selectedPhassetsCount += group.contacts.count
+								   }
+							  }
+						 }
+					}
+			   default:
+					selectedPhassetsCount = 0
+		  }
+		  
           cell.cellConfig(contentType: contentType,
                           photoMediaType: photoMediaType,
                           indexPath: indexPath,
@@ -832,7 +864,7 @@ extension DeepCleaningViewController {
           navigationBar.setIsDropShadow = false
           navigationBar.setupNavigation(title: "DEEP_CLEEN".localized(),
                                         leftBarButtonImage: I.systemItems.navigationBarItems.back,
-                                        rightBarButtonImage: I.systemItems.navigationBarItems.magic,
+                                        rightBarButtonImage: nil,
 										contentType: .none,
                                         leftButtonTitle: nil,
                                         rightButtonTitle: nil)
@@ -884,6 +916,8 @@ extension DeepCleaningViewController {
 	 
 	 private func updateCleaningItemPopUpinfo() {
 		  
+		  guard !selectedAssetsCollectionID.isEmpty else { return }
+		  
 		  var fullMessageBody: String = ""
 		  let deepCleanSelectedTitle: String = "Deep Clean Selected Info:"
 		  let diskSpaceAfterCleanMessage: String = "Calculated space after clean:"
@@ -933,7 +967,7 @@ extension DeepCleaningViewController {
 
 		  guard !fullMessageBody.isEmpty else { return }
 	 
-		  U.delay(1) {
+		  U.delay(0.5) {
 			   self.showInfoPopUpMessage(with: deepCleanSelectedTitle, and: fullMessageBody)
 		  }
 	 }
@@ -943,7 +977,7 @@ extension DeepCleaningViewController {
 		  let messageView = MessageView.viewFromNib(layout: .cardView)
 		  var config = SwiftMessages.Config()
 		  config.presentationStyle = .top
-		  config.duration = .seconds(seconds: 5)
+		  config.duration = .seconds(seconds: 3)
 		  messageView.configureContent(title: title, body: body, iconImage: nil, iconText: nil, buttonImage: nil, buttonTitle: nil, buttonTapHandler: nil)
 		  messageView.titleLabel?.font = .systemFont(ofSize: 14, weight: .bold)
 		  messageView.titleLabel?.textColor = theme.titleTextColor
@@ -1017,7 +1051,7 @@ extension DeepCleaningViewController: BottomActionButtonDelegate {
 					self.progressAlert.closeForceController()
 					self.cleanAndResetAllValues()
 					U.delay(1) {
-						 ErrorHandler.shared.deepCleanCompleteStateHandler(for: errorsCount == 0 ? .deepCleanCompleteSuxxessfull : .deepCleanCompleteWithErrors)
+						 AlertHandler.deepCleanCompleteStateHandler(for: errorsCount == 0 ? .deepCleanCompleteSuxxessfull : .deepCleanCompleteWithErrors)
 					}
 			   }
 		  } canceledConpletionHandler: {
@@ -1025,7 +1059,7 @@ extension DeepCleaningViewController: BottomActionButtonDelegate {
 					self.progressAlert.closeForceController()
 					self.cleanAndResetAllValues()
 					U.delay(1) {
-						 ErrorHandler.shared.deepCleanCompleteStateHandler(for: .deepCleanCanceled)
+						 AlertHandler.deepCleanCompleteStateHandler(for: .deepCleanCanceled)
 					}
 			   }
 		  }
@@ -1095,7 +1129,13 @@ extension DeepCleaningViewController: Themeble {
 extension DeepCleaningViewController: NavigationBarDelegate {
      
      func didTapLeftBarButton(_ sender: UIButton) {
-          self.navigationController?.popViewController(animated: true)
+		  if handleSearchingResults {
+			   A.showQuiteDeepCleanResults {
+					self.navigationController?.popViewController(animated: true)
+			   }
+		  } else {
+			   self.navigationController?.popViewController(animated: true)
+		  }
      }
      
      func didTapRightBarButton(_ sender: UIButton) {

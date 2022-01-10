@@ -27,7 +27,6 @@ class NavigationBar: UIView {
         
         self.configure()
         self.actionButtonsSetup()
-        
     }
     
     override init(frame: CGRect) {
@@ -125,6 +124,20 @@ class NavigationBar: UIView {
 //        rightBarButtonItem.sizeToFit()
         rightBarButtonItem.setTitleWithoutAnimation(title: newTitle)
     }
+	
+	public func changeHotLeftTitleWithImage(newTitle: String, image: UIImage) {
+		
+		if newTitle.isEmpty {
+			leftButtonLeadingConstraint.constant = 5
+			leftBarButtonItem.setImage(image, for: .normal)
+			leftBarButtonItem.setTitle(nil, for: .normal)
+		} else {
+			leftBarButtonItem.setImage(image, for: .normal)
+			leftBarButtonItem.setTitle(newTitle, for: .normal)
+			leftButtonLeadingConstraint.constant = 15
+		}
+		leftBarButtonItem.layoutIfNeeded()
+	}
 
     private func setAccentColorFor(buttonsTintColor: UIColor, title: UIColor) {
         

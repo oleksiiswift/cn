@@ -53,12 +53,19 @@ class SimpleAssetsListViewController: UIViewController {
         updateColors()
         setupCollectionView()
     }
-    
+	
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        didSelectPreviouslyIndexPath()
+		!previouslySelectedIndexPaths.isEmpty ? didSelectPreviouslyIndexPath() : ()
     }
+	
+	override func viewDidAppear(_ animated: Bool) {
+		super.viewDidAppear(animated)
+		
+		previouslySelectedIndexPaths.isEmpty ? didSelectAll() : ()
+	}
+	
 }
 
 //  MARK: - collection view setup -
@@ -217,6 +224,7 @@ extension SimpleAssetsListViewController: PhotoCollectionViewCellDelegate {
         }
         handleSelectAllButtonState()
         handleBottomButtonMenu()
+		handleSelectAssetsNavigationCount()
     }
     
     /// handle previously selected indexPath if back from deep clean screen
@@ -238,7 +246,7 @@ extension SimpleAssetsListViewController: PhotoCollectionViewCellDelegate {
     
     private func didSelectPreviouslyIndexPath() {
         
-        guard isDeepCleaningSelectableFlow, !previouslySelectedIndexPaths.isEmpty else { return }
+        guard isDeepCleaningSelectableFlow else { return }
         
         for indexPath in previouslySelectedIndexPaths {
             self.collectionView.selectItem(at: indexPath, animated: false, scrollPosition: [])
@@ -250,6 +258,13 @@ extension SimpleAssetsListViewController: PhotoCollectionViewCellDelegate {
         }
         handleSelectAllButtonState()
     }
+	
+	private func didSelectAll() {
+		
+		A.showSelectAllStarterAlert(for: mediaType) {
+			self.setCollection(selected: true)
+		}
+	}
 }
 
 extension SimpleAssetsListViewController {
@@ -295,6 +310,7 @@ extension SimpleAssetsListViewController {
         }
 		handleBottomButtonMenu()
 		handleSelectAllButtonState()
+		handleSelectAssetsNavigationCount()
     }
     
     private func handleSelectAllButtonState() {
@@ -323,6 +339,21 @@ extension SimpleAssetsListViewController {
             }
         }
     }
+	
+	private func handleSelectAssetsNavigationCount() {
+		
+		guard isDeepCleaningSelectableFlow else { return }
+	
+		if let selectedItems = self.collectionView.indexPathsForSelectedItems {
+			if selectedItems.count > 0 {
+				self.navigationBar.changeHotLeftTitleWithImage(newTitle: String(" (\(selectedItems.count))"), image: I.systemItems.navigationBarItems.back)
+			} else {
+				self.navigationBar.changeHotLeftTitleWithImage(newTitle: "", image: I.systemItems.navigationBarItems.back)
+			}
+		} else {
+			self.navigationBar.changeHotLeftTitleWithImage(newTitle: "", image: I.systemItems.navigationBarItems.back)
+		}
+	}
     
     private func showDeleteSelectedAssetsAlert() {
         
@@ -361,6 +392,7 @@ extension SimpleAssetsListViewController {
 					} completion: { _ in
 						self.handleSelectAllButtonState()
 						self.handleBottomButtonMenu()
+						self.handleSelectAssetsNavigationCount()
 					}
 				}
 			}

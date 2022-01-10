@@ -68,12 +68,14 @@ class ContactsGroupViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 		
-		if previouslySelectedIndexPaths.isEmpty {
-			handleStartingSelectableAssets()
-		} else {
-			didSelectPreviouslyIndexPath()
-		}
+		!previouslySelectedIndexPaths.isEmpty ? didSelectPreviouslyIndexPath() : ()
     }
+	
+	override func viewDidAppear(_ animated: Bool) {
+		super.viewDidAppear(animated)
+		
+		previouslySelectedIndexPaths.isEmpty ? showSelectStartingAllContactsAlert() : ()
+	}
 	
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
@@ -97,12 +99,14 @@ extension ContactsGroupViewController {
         }
         self.tableView.reloadData()
         self.handleMergeContactsAppearButton()
+		handleSelectedAssetsNavigationCount()
     }
     
     private func forceDeselectAllItems() {
         contactGroupListDataSource.selectedSections.removeAll()
         self.tableView.reloadData()
         self.handleMergeContactsAppearButton()
+		handleSelectedAssetsNavigationCount()
     }
     
     private func mergeSelectedItems() {
@@ -161,11 +165,19 @@ extension ContactsGroupViewController {
 		
 		U.UI {
 			self.tableView.reloadData()
+			self.handleSelectedAssetsNavigationCount()
 		}
 	}
 	
 	private func handleStartingSelectableAssets() {
 		self.didSelectDeselecAllItems()
+	}
+	
+	private func showSelectStartingAllContactsAlert() {
+		
+		A.showSelectAllStarterAlert(for: self.contentType) {
+			self.handleStartingSelectableAssets()
+		}
 	}
     
     /// `merge single section`
@@ -190,7 +202,6 @@ extension ContactsGroupViewController {
                             }
                         } else {
                             ErrorHandler.shared.showMergeAlertError(.errorMergeContact)
-                            
                         }
                     }
                 }
@@ -236,6 +247,7 @@ extension ContactsGroupViewController {
                 self.tableView.reloadData()
             } completion: { _ in
                 debugPrint("data source reloaded")
+				self.handleSelectedAssetsNavigationCount()
             }
         }
     }
@@ -417,6 +429,7 @@ extension ContactsGroupViewController {
     @objc func mergeContactsDidChange(_ notification: Notification) {
         
         handleMergeContactsAppearButton()
+		handleSelectedAssetsNavigationCount()
     }
     
     private func handleMergeContactsAppearButton(disableAnimation: Bool = false) {
@@ -442,8 +455,21 @@ extension ContactsGroupViewController {
             self.tableView.contentInset.bottom = !self.contactGroupListDataSource.selectedSections.isEmpty ? calculatedBottomButtonHeight :  34
         }
     }
+	
+	private func handleSelectedAssetsNavigationCount() {
+		
+		guard isDeepCleaningSelectableFlow else { return }
+		
+		if self.contactGroupListDataSource.selectedSections.isEmpty {
+			self.navigationBar.changeHotLeftTitleWithImage(newTitle: "", image: I.systemItems.navigationBarItems.back)
+		} else {
+			
+			let indexesForMergedSet = contactGroupListDataSource.selectedSections
+			let contacts = indexesForMergedSet.map({contactGroup[$0]}).flatMap({$0.contacts}).count
+			self.navigationBar.changeHotLeftTitleWithImage(newTitle: String(" (\(contacts))"), image: I.systemItems.navigationBarItems.back)
+		}
+	}
 }
-
 
 extension ContactsGroupViewController: Themeble {
     

@@ -14,23 +14,6 @@ class ErrorHandler {
         return instance
     }()
 	
-	enum DeepCleanStateHandler {
-		case deepCleanCompleteWithErrors
-		case deepCleanCompleteSuxxessfull
-		case deepCleanCanceled
-		
-		var titleHandler: String {
-			switch self {
-				case .deepCleanCompleteWithErrors:
-					return "Complete with Errors"
-				case .deepCleanCompleteSuxxessfull:
-					return "Complete suxxessfully"
-				case .deepCleanCanceled:
-					return "canceled"
-			}
-		}
-	}
-    
     enum DeleteError {
         case errorDeleteContact
         case errorDeleteContacts
@@ -71,7 +54,7 @@ class ErrorHandler {
 		}
 	}
 	
-	
+
 	enum FatalError {
 		case datePickerMinimumDateError
 		
@@ -105,17 +88,6 @@ class ErrorHandler {
 		case duplicatedEmailsIsEmpty
 	}
 	
-	private func deepCleanHandlerForKey(_ handler: DeepCleanStateHandler) -> String {
-		switch handler {
-			case .deepCleanCompleteWithErrors:
-				return "deep clean complete witgh errors"
-			case .deepCleanCompleteSuxxessfull:
-				return "deep clean complete suxxessfully"
-			case .deepCleanCanceled:
-				return "deep clean canseled"
-		}
-	}
-
     private func deleteErrorForKey(_ error: DeleteError) -> String {
         switch error {
             case .errorDeleteContact:
@@ -199,15 +171,6 @@ class ErrorHandler {
 }
 
 extension ErrorHandler {
-	
-	public func deepCleanCompleteStateHandler(for type: DeepCleanStateHandler) {
-		let alertAction = UIAlertAction(title: "ok", style: .default)
-		
-		DispatchQueue.main.async {
-			A.showAlert(type.titleHandler, message: self.deepCleanHandlerForKey(type), actions: [alertAction], withCancel: false, completion: nil)
-		}
-	}
-
 	
     public func showDeleteAlertError(_ errorType: DeleteError) {
         let alertTitle = "Error"

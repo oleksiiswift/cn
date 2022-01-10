@@ -13,6 +13,10 @@ enum AlertType {
 	case contactsRestricted
 	case photoLibraryRestricted
 	
+	case allowNotification
+	case allowConstacStore
+	case allowPhotoLibrary
+		///  `empty search`
 	case similarPhotoIsEmpty
 	case duplicatedPhotoIsEmpty
 	case screenShotsIsEmpty
@@ -33,15 +37,16 @@ enum AlertType {
 	case duplicatedNumbersIsEmpty
 	case duplicatedEmailsIsEmpty
 	
-    case allowNotification
-    case allowConstacStore
-    case allowPhotoLibrary
+
+		/// `permite delete`
     case allowDeleteSelectedPhotos
     case withCancel
-
+		
+		/// `set break alerts`
 	case setBreakDeepCleanSearch
 	case setBreakSingleCleanSearch
 	case setBreakDeepCleanDelete
+	case resetDeepCleanResults
     
     /// `contacts module`
         /// ask
@@ -67,6 +72,14 @@ enum AlertType {
 				
 			case .photoLibraryRestricted:
 				return ErrorHandler.AccessRestrictedError.photoLibraryRestrictedError.title
+				
+					//				MARK: permition alert
+			case .allowNotification:
+				return AlertHandler.AllowAccessHandler.notification.title
+			case .allowConstacStore:
+				return AlertHandler.AllowAccessHandler.contactStore.title
+			case .allowPhotoLibrary:
+				return AlertHandler.AllowAccessHandler.photoLibrary.title
 
 //				MARK: no searching data
 			case .similarPhotoIsEmpty,
@@ -92,12 +105,9 @@ enum AlertType {
 				return "stop search process?"
 			case .setBreakDeepCleanDelete:
 				return "stop cleaningProcess?"
-            case .allowNotification:
-                return "locomark set title for allow notification"
-            case .allowConstacStore:
-                return "locomark set title for contacts"
-            case .allowPhotoLibrary:
-                return "locomark set title for photo library"
+			case .resetDeepCleanResults:
+				return "Atension!"
+
             case .withCancel:
                 return ""
             case .allowDeleteSelectedPhotos:
@@ -128,6 +138,14 @@ enum AlertType {
 				return ErrorHandler.AccessRestrictedError.contactsRestrictedError.errorRawValue
 			case .photoLibraryRestricted:
 				return ErrorHandler.AccessRestrictedError.photoLibraryRestrictedError.errorRawValue
+
+//				MARK: allow access for content
+			case .allowNotification:
+				return AlertHandler.AllowAccessHandler.notification.message
+			case .allowConstacStore:
+				return AlertHandler.AllowAccessHandler.contactStore.message
+			case .allowPhotoLibrary:
+				return AlertHandler.AllowAccessHandler.photoLibrary.message
 				
 //				MARK: no searching data
 			case .similarPhotoIsEmpty:
@@ -171,34 +189,34 @@ enum AlertType {
 				return "stop executing search process"
 			case .setBreakDeepCleanDelete:
 				return "this will stop cleaning process"
-            case .allowNotification:
-                return "locomark notification message"
-            case .allowConstacStore:
-                return "locomark contacts message"
-            case .allowPhotoLibrary:
-                return "locomark library photo"
+			case .resetDeepCleanResults:
+				return "by quitting all search results will be loose"
+				
+//				MARK: delete merge sections
+			case .allowDeleteSelectedPhotos:
+				return "delete selecteds assets are you shure????"
+			case .deleteContacts:
+				return "shure delete contacts"
+			case .deleteContact:
+				return "shure delete contact"
+			case .mergeContacts:
+				return "merge selected contacts"
+			case .mergeContact:
+				return "merge contacts"
+			case .suxxessDeleteContact:
+				return "contact deleted"
+			case .suxxessDeleteContacts:
+				return "contacts deleted"
+			case .suxxessMergedContact:
+				return "cintact suxx merged"
+			case .suxxessMergedContacts:
+				return "contacts suxx merged"
+				
+//				MARK: cancel none
             case .withCancel:
                 return "cancel"
             case .none:
                 return "none"
-            case .allowDeleteSelectedPhotos:
-                return "delete selecteds assets are you shure????"
-            case .deleteContacts:
-                return "shure delete contacts"
-            case .deleteContact:
-                return "shure delete contact"
-            case .mergeContacts:
-                return "merge selected contacts"
-            case .mergeContact:
-                return "merge contacts"
-            case .suxxessDeleteContact:
-                return "contact deleted"
-            case .suxxessDeleteContacts:
-                return "contacts deleted"
-            case .suxxessMergedContact:
-                return "cintact suxx merged"
-            case .suxxessMergedContacts:
-                return "contacts suxx merged"
 		}
     }
     
@@ -238,7 +256,7 @@ enum AlertType {
 				
             case .allowNotification, .allowConstacStore, .allowPhotoLibrary, .allowDeleteSelectedPhotos, .withCancel:
                 return true
-			case .setBreakDeepCleanSearch, .setBreakSingleCleanSearch, .setBreakDeepCleanDelete:
+			case .setBreakDeepCleanSearch, .setBreakSingleCleanSearch, .setBreakDeepCleanDelete, .resetDeepCleanResults:
 				return true
             case .deleteContacts, .mergeContacts, .deleteContact, .mergeContact:
                 return true
