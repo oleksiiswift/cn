@@ -172,6 +172,21 @@ enum PhotoMediaType: String {
                 return IndexPath()
         }
     }
+	
+	var contactsCleaningType: ContactasCleaningType {
+		switch self {
+			case .emptyContacts:
+				return .emptyContacts
+			case .duplicatedContacts:
+				return .duplicatedContactName
+			case .duplicatedPhoneNumbers:
+				return .duplicatedPhoneNumnber
+			case .duplicatedEmails:
+				return .duplicatedEmail
+			default:
+				return .none
+		}
+	}
     
     /// `use this only for deep clean screen section:
     public static func getDeepCleanMediaContentType(from indexPath: IndexPath) -> PhotoMediaType {
@@ -281,3 +296,5 @@ enum PhotoMediaType: String {
         }
     }
 }
+
+

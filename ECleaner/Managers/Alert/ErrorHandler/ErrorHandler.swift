@@ -13,7 +13,7 @@ class ErrorHandler {
         let instance = ErrorHandler()
         return instance
     }()
-    
+	
     enum DeleteError {
         case errorDeleteContact
         case errorDeleteContacts
@@ -54,7 +54,7 @@ class ErrorHandler {
 		}
 	}
 	
-	
+
 	enum FatalError {
 		case datePickerMinimumDateError
 		
@@ -87,15 +87,15 @@ class ErrorHandler {
 		case duplicatedNumbersIsEmpty
 		case duplicatedEmailsIsEmpty
 	}
-
+	
     private func deleteErrorForKey(_ error: DeleteError) -> String {
         switch error {
             case .errorDeleteContact:
-                return "cant delete contact"
+                return "can't delete contact"
             case .errorDeleteContacts:
-                return "cant delete contacts"
+                return "can't delete contacts"
 			case .errorDeletePhasset:
-				return "error delete selected assets"
+				return "error delete assets"
 		}
     }
     
@@ -171,7 +171,7 @@ class ErrorHandler {
 }
 
 extension ErrorHandler {
-    
+	
     public func showDeleteAlertError(_ errorType: DeleteError) {
         let alertTitle = "Error"
         let alertAction = UIAlertAction(title: "ok", style: .default)

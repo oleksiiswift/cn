@@ -66,7 +66,7 @@ class ContactsManager {
 		}
 	}
 	
-	private func isStoreOpen() -> Bool {
+	private var isStoreOpen: Bool {
 		
 		switch CNContactStore.authorizationStatus(for: .contacts) {
 				
@@ -175,7 +175,7 @@ extension ContactsManager {
 		/// fetch all contacts
 	public func getAllContacts(_ completionHandler: @escaping ([CNContact]) -> Void) {
 		
-		guard isStoreOpen() else { return }
+		guard isStoreOpen else { return }
 		
 		U.BG {
 			self.fetchContacts(keys: self.fetchingKeys) { result in
@@ -187,6 +187,25 @@ extension ContactsManager {
 						completionHandler([])
 						break
 				}
+			}
+		}
+	}
+	
+	public func getPredicateContacts(with identifiers: [String], complationHandler: @escaping ([CNContact]) -> Void) {
+		
+		let predicate = CNContact.predicateForContacts(withIdentifiers: identifiers)
+		var contacts: [CNContact] = []
+		
+		if isStoreOpen {
+			let contactStore: CNContactStore = CNContactStore()
+			
+			do {
+				contacts = try contactStore.unifiedContacts(matching: predicate, keysToFetch: self.fetchingKeys)
+				if !contacts.isEmpty {
+					complationHandler(contacts)
+				}
+			} catch {
+				complationHandler([])
 			}
 		}
 	}
@@ -713,6 +732,23 @@ extension ContactsManager {
 		emailDuplicatedOperation.name = COT.duplicatedEmailsOperation.rawValue
 		return emailDuplicatedOperation
 	}
+
+	private func smartMergeGroups(_ groups: [ContactsGroup], completionHandler: @escaping ([String], [CNContact]) -> Void) {
+		
+		var deletingContacts: [CNContact] = []
+		var leftContacts: [String] = []
+		var index = 0
+		for group in groups {
+			self.contactsMerge(in: group) { mutableID, contacts in
+				deletingContacts.append(contentsOf: contacts)
+				leftContacts.append(mutableID)
+				index += 1
+				if index == groups.count {
+					completionHandler(leftContacts, deletingContacts)
+				}
+			}
+		}
+	}
 }
 
 //		MARK: - MERGE CONTACTS -
@@ -725,7 +761,7 @@ extension ContactsManager {
 			var errorsCount: Int = 0
 			var deleteSelectionIndexCount: Int = 0
 			var indexesForUpdate: [Int] = []
-			
+			var fullCircleIndexesCount = 0
 			
 			for index in indexes {
 	
@@ -734,7 +770,8 @@ extension ContactsManager {
 					return
 				}
 				
-				self.contactsMerge(in: group[index]) { deleteContacts in
+				
+				self.contactsMerge(in: group[index]) { _, deleteContacts in
 					self.deleteContacts(deleteContacts) { suxxess, deleteCount in
 						if suxxess {
 							deleteSelectionIndexCount += 1
@@ -743,6 +780,8 @@ extension ContactsManager {
 							let errors = deleteContacts.count - deleteCount
 							errorsCount += errors
 						}
+						
+						fullCircleIndexesCount += 1
 						
 						let calculetedProgress: CGFloat = CGFloat(100 * deleteSelectionIndexCount / indexes.count) / 100
 						let totalProcessing: String = "\(deleteSelectionIndexCount) / \(indexes.count)"
@@ -755,6 +794,8 @@ extension ContactsManager {
 						
 						if indexes.count == deleteSelectionIndexCount {
 							completionHandler(true, indexesForUpdate)
+						} else if indexes.count == fullCircleIndexesCount {
+							completionHandler(false, indexesForUpdate)
 						}
 					}
 				}
@@ -764,97 +805,100 @@ extension ContactsManager {
 		contactsProcessingOperationQueuer.addOperation(mergeContactsOperation)
 	}
 	
-	public func contactsMerge(in group: ContactsGroup, deletingContactsCompletion: @escaping ([CNContact]) -> Void) {
+	public func contactsMerge(in group: ContactsGroup, deletingContactsCompletion: @escaping (String, [CNContact]) -> Void) {
 		
-		var contactsDuplicates: [CNContact] = group.contacts
+		let contactsIDS: [String] = group.contacts.map({$0.identifier})
 		
-		var futureBestContact = CNMutableContact()
-		var bestGroupValue: Int = 0
-		
-			/// `main user names data`
-		var givenName: [String] = []
-		var familyName: [String] = []
-		var middleName: [String] = []
-		var organizationName: [String] = []
-			/// `optional user data`
-		var jobTitle: [String] = []
-		var departmentName: [String] = []
-		
-			/// `ìmage data`
-		var thumbnailsImageData: [Data] = []
-		var imagesData: [Data] = []
-		
-			/// `user phone numbers and social`
-		var phoneNumbers: [CNLabeledValue<CNPhoneNumber>] = []
-		var emailAddresses: [CNLabeledValue<NSString>] = []
-		var postalAddresses: [CNLabeledValue<CNPostalAddress>] = []
-		var urlAddresses: [CNLabeledValue<NSString>] = []
-		var contactRelations: [CNLabeledValue<CNContactRelation>] = []
-		var socialProfiles: [CNLabeledValue<CNSocialProfile>] = []
-		var instantMessageAddresses: [CNLabeledValue<CNInstantMessageAddress>] = []
-		
-			/// `grouping contacts`
-		for contact in contactsDuplicates {
+		self.getPredicateContacts(with: contactsIDS) { contactsDuplicates in
 			
-			if contact.fieldStatus() > bestGroupValue {
-				bestGroupValue = contact.fieldStatus()
-				futureBestContact = contact.mutableCopy() as! CNMutableContact
-			}
+			var futureBestContact = CNMutableContact()
+			var bestGroupValue: Int = 0
 			
-			givenName.append(contact.givenName)
-			familyName.append(contact.familyName)
-			middleName.append(contact.middleName)
+				/// `main user names data`
+			var givenName: [String] = []
+			var familyName: [String] = []
+			var middleName: [String] = []
+			var organizationName: [String] = []
+				/// `optional user data`
+			var jobTitle: [String] = []
+			var departmentName: [String] = []
 			
-			jobTitle.append(contact.jobTitle)
-			departmentName.append(contact.departmentName)
+				/// `ìmage data`
+			var thumbnailsImageData: [Data] = []
+			var imagesData: [Data] = []
 			
-			organizationName.append(contact.organizationName)
-			contact.phoneNumbers.forEach { phoneNumbers.append($0) }
-			contact.emailAddresses.forEach { emailAddresses.append($0) }
-			contact.postalAddresses.forEach { postalAddresses.append($0) }
-			contact.urlAddresses.forEach { urlAddresses.append($0) }
-			contact.contactRelations.forEach { contactRelations.append($0)}
-			contact.socialProfiles.forEach { socialProfiles.append($0)}
-			contact.instantMessageAddresses.forEach {instantMessageAddresses.append($0) }
+				/// `user phone numbers and social`
+			var phoneNumbers: [CNLabeledValue<CNPhoneNumber>] = []
+			var emailAddresses: [CNLabeledValue<NSString>] = []
+			var postalAddresses: [CNLabeledValue<CNPostalAddress>] = []
+			var urlAddresses: [CNLabeledValue<NSString>] = []
+			var contactRelations: [CNLabeledValue<CNContactRelation>] = []
+			var socialProfiles: [CNLabeledValue<CNSocialProfile>] = []
+			var instantMessageAddresses: [CNLabeledValue<CNInstantMessageAddress>] = []
 			
-			if contact.imageDataAvailable {
-				if let data = contact.thumbnailImageData {
-					thumbnailsImageData.append(data)
+				/// `grouping contacts`
+			for contact in contactsDuplicates {
+				
+				if contact.fieldStatus() > bestGroupValue {
+					bestGroupValue = contact.fieldStatus()
+					futureBestContact = contact.mutableCopy() as! CNMutableContact
 				}
 				
-				if let imageData = contact.imageData {
-					imagesData.append(imageData)
-				}
-			}
-		}
-		
-		if let mutableContact = futureBestContact.mutableCopy() as? CNMutableContact {
-			
-			mutableContact.givenName = givenName.bestElement ?? ""
-			mutableContact.familyName = familyName.bestElement ?? ""
-			mutableContact.middleName = middleName.bestElement ?? ""
-			mutableContact.organizationName = organizationName.bestElement ?? ""
-			
-			mutableContact.jobTitle = jobTitle.bestElement ?? ""
-			mutableContact.departmentName = departmentName.bestElement ?? ""
-			
-			phoneNumbers.forEach { mutableContact.phoneNumbers.append($0) }
-			emailAddresses.forEach { mutableContact.emailAddresses.append($0) }
-			postalAddresses.forEach { mutableContact.postalAddresses.append($0) }
-			urlAddresses.forEach { mutableContact.urlAddresses.append($0) }
-			contactRelations.forEach { mutableContact.contactRelations.append($0) }
-			socialProfiles.forEach { mutableContact.socialProfiles.append($0) }
-			instantMessageAddresses.forEach { mutableContact.instantMessageAddresses.append($0) }
-			
-			if !imagesData.isEmpty {
-				if let imageData = self.checkImages(from: imagesData) {
-					mutableContact.imageData = imageData
+				givenName.append(contact.givenName)
+				familyName.append(contact.familyName)
+				middleName.append(contact.middleName)
+				
+				jobTitle.append(contact.jobTitle)
+				departmentName.append(contact.departmentName)
+				
+				organizationName.append(contact.organizationName)
+				contact.phoneNumbers.forEach { phoneNumbers.append($0) }
+				contact.emailAddresses.forEach { emailAddresses.append($0) }
+				contact.postalAddresses.forEach { postalAddresses.append($0) }
+				contact.urlAddresses.forEach { urlAddresses.append($0) }
+				contact.contactRelations.forEach { contactRelations.append($0)}
+				contact.socialProfiles.forEach { socialProfiles.append($0)}
+				contact.instantMessageAddresses.forEach {instantMessageAddresses.append($0) }
+				
+				if contact.imageDataAvailable {
+					if let data = contact.thumbnailImageData {
+						thumbnailsImageData.append(data)
+					}
+					
+					if let imageData = contact.imageData {
+						imagesData.append(imageData)
+					}
 				}
 			}
 			
-			self.update(contact: mutableContact) { result in
-				contactsDuplicates = contactsDuplicates.filter({ $0.identifier != mutableContact.identifier })
-				deletingContactsCompletion(contactsDuplicates)
+			if let mutableContact = futureBestContact.mutableCopy() as? CNMutableContact {
+				
+				mutableContact.givenName = givenName.bestElement ?? ""
+				mutableContact.familyName = familyName.bestElement ?? ""
+				mutableContact.middleName = middleName.bestElement ?? ""
+				mutableContact.organizationName = organizationName.bestElement ?? ""
+				
+				mutableContact.jobTitle = jobTitle.bestElement ?? ""
+				mutableContact.departmentName = departmentName.bestElement ?? ""
+				
+				phoneNumbers.forEach { mutableContact.phoneNumbers.append($0) }
+				emailAddresses.forEach { mutableContact.emailAddresses.append($0) }
+				postalAddresses.forEach { mutableContact.postalAddresses.append($0) }
+				urlAddresses.forEach { mutableContact.urlAddresses.append($0) }
+				contactRelations.forEach { mutableContact.contactRelations.append($0) }
+				socialProfiles.forEach { mutableContact.socialProfiles.append($0) }
+				instantMessageAddresses.forEach { mutableContact.instantMessageAddresses.append($0) }
+				
+				if !imagesData.isEmpty {
+					if let imageData = self.checkImages(from: imagesData) {
+						mutableContact.imageData = imageData
+					}
+				}
+				
+				self.update(contact: mutableContact) { result in
+					let removableContacts = contactsDuplicates.filter({ $0.identifier != mutableContact.identifier })
+					deletingContactsCompletion(mutableContact.identifier, removableContacts)
+				}
 			}
 		}
 	}
@@ -1002,16 +1046,22 @@ extension ContactsManager {
 		
 		let deleteContactsOperation = ConcurrentProcessOperation { operation in
 			
+			var deletedOperationCount = 0
 			var deletedContactsCount = 0
+			var errorsCount = 0
+			
 			
 			for contact in contacts {
 	
 				if operation.isCancelled {
-					completionHandler(false, deletedContactsCount)
+					completionHandler(false, errorsCount)
 					return
 				}
 				
 				self.deleteContact(contact) { success in
+						
+					deletedOperationCount += 1
+					
 					if success {
 						deletedContactsCount += 1
 						
@@ -1021,21 +1071,25 @@ extension ContactsManager {
 													   C.key.notificationDictionary.progressAlert.progressAlertFilesCount: "\(deletedContactsCount) / \(contacts.count)"]
 						
 						U.notificationCenter.post(name: .progressDeleteContactsAlertDidChangeProgress, object: nil, userInfo: userInfo)
-						debugPrint(deletedContactsCount)
+						debugPrint(deletedOperationCount)
+					} else {
+						errorsCount += 1
+					}
+					
+					if contacts.count == deletedContactsCount {
+						completionHandler(true, deletedContactsCount)
+					} else {
+						completionHandler(false,deletedContactsCount)
 					}
 				}
 			}
 			
-			if contacts.count == deletedContactsCount {
-				completionHandler(true, deletedContactsCount)
-			} else {
-				completionHandler(false,deletedContactsCount)
-			}
+		
 		}
 		deleteContactsOperation.name = C.key.operation.name.deleteContacts
 		contactsProcessingOperationQueuer.addOperation(deleteContactsOperation)
 	}
-
+	
 	public func deleteContact(_ contact: CNContact, _ handler: @escaping ((_ success: Bool) -> Void)) {
 		
 		delete(contact: contact.mutableCopy() as! CNMutableContact, completionHandler: { (result) in

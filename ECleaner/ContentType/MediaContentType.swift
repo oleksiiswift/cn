@@ -186,6 +186,19 @@ enum MediaContentType {
                 return UIImage()
         }
     }
+	
+	var checkedImageOfRows: UIImage {
+		switch self {
+			case .userPhoto:
+				return I.personalisation.photo.checkmark
+			case .userVideo:
+				return I.personalisation.video.checkmark
+			case .userContacts:
+				return I.personalisation.contacts.sectionSelect
+			case .none:
+				return UIImage()
+		}
+	}
     
     public func getCellTitle(index: Int) -> String {
         switch self {

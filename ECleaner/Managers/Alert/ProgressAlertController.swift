@@ -13,9 +13,9 @@ protocol ProgressAlertControllerDelegate: AnyObject {
     func didAutoCloseController()
 }
 
-class AlertProgressAlertController: Themeble {
+class ProgressAlertController: Themeble {
 
-    static var shared = AlertProgressAlertController()
+    static var shared = ProgressAlertController()
     
     var alertController = UIAlertController()
     let progressBar = ProgressAlertBar()
@@ -35,7 +35,7 @@ class AlertProgressAlertController: Themeble {
             case .userContacts:
                 return theme.contactsTintColor
             case .none:
-                return .black
+				return theme.photoTintColor
         }
     }
     
@@ -78,23 +78,31 @@ class AlertProgressAlertController: Themeble {
         }
     }
     
-    public func setProgress(_ progress: CGFloat, totalFilesProcessong: String) {
-        debugPrint("set Progress: \(progress)")
+	public func setProgress(_ progress: CGFloat, totalFilesProcessong: String) {
         alertController.message = totalFilesProcessong
         progressBar.progress = CGFloat(progress)
         if progress == 1 {
             self.closeAlertController()
         }
     }
+	
+	public func updateChangedProgress(_ progress: CGFloat, processingTitle: String) {
+		alertController.message = processingTitle
+		progressBar.progress = CGFloat(progress)
+	}
     
     private func closeAlertController() {
         alertController.dismiss(animated: true) {
             self.delegate?.didAutoCloseController()
         }
     }
+	
+	public func closeForceController() {
+		alertController.dismiss(animated: true, completion: nil)
+	}
 }
 
-extension AlertProgressAlertController {
+extension ProgressAlertController {
     
     public func showDeleteContactsProgressAlert() {
         setProgress(controllerType: .userContacts, title: "delete contacts")
@@ -103,8 +111,11 @@ extension AlertProgressAlertController {
     public func showMergeContactsProgressAlert() {
         setProgress(controllerType: .userContacts, title: "merged contacts")
     }
+	
+	public func showDeepCleanProgressAlert() {
+		setProgress(controllerType: .none, title: "deep clean processing")
+	}
 }
-
 
 class ProgressAlertBar: UIView {
     

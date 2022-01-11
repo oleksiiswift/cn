@@ -142,4 +142,33 @@ enum DeepCleanNotificationType {
 				return .duplicatedEmails
 		}
 	}
+	
+	var positionInDeepCleanRowValue: Int {
+		switch self {
+			case .similarPhoto:
+				return 0
+			case .duplicatePhoto:
+				return 1
+			case .screenshots:
+				return 2
+			case .similarLivePhoto:
+				return 3
+			case .largeVideo:
+				return 4
+			case .duplicateVideo:
+				return 5
+			case .similarVideo:
+				return 6
+			case .screenRecordings:
+				return 7
+			case .emptyContacts:
+				return 8
+			case .duplicateContacts:
+				return 9
+			case .duplicatedPhoneNumbers:
+				return 10
+			case .duplicatedEmails:
+				return 11
+		}
+	}
 }

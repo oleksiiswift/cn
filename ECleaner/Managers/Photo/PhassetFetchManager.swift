@@ -161,6 +161,36 @@ extension PHAssetFetchManager {
             return PHAsset.fetchAssets(with: fetchOption)
         }
     }
+	
+	public func fetchImagesDiskUsageFromGallery(with identifiers: [String], completionHandler: @escaping (Int64) -> Void) {
+		
+		let fetchOptions = PHFetchOptions()
+		let results = PHAsset.fetchAssets(withLocalIdentifiers: identifiers, options: fetchOptions)
+		var analyzingPhassets: Int = 0
+		var resultsDiskUssage: Int64 = 0
+		results.enumerateObjects { phasset, index, stopped in
+			let resource = PHAssetResource.assetResources(for: phasset)
+			let fileSize = resource.first?.value(forKey: "fileSize") as! Int64
+			
+			resultsDiskUssage += fileSize
+			analyzingPhassets += 1
+			
+			if analyzingPhassets == results.count {
+				completionHandler(resultsDiskUssage)
+			}
+		}
+	}
+	
+	public func fetchPhassetFromGallery(with identifiers: [String], completionHandler: @escaping ([PHAsset]) -> Void) {
+		
+		let fetchOptions = PHFetchOptions()
+		let results = PHAsset.fetchAssets(withLocalIdentifiers: identifiers, options: fetchOptions)
+		var fetchedPhassets: [PHAsset] = []
+		results.enumerateObjects { phasset, index, stopped in
+			fetchedPhassets.append(phasset)
+		}
+		completionHandler(fetchedPhassets)
+	}
     
 //     MARK: get thumnail from asset
     public func getThumbnail(from asset: PHAsset, size: CGSize) -> UIImage {

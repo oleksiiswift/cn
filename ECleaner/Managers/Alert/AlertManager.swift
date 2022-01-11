@@ -183,4 +183,37 @@ extension AlertManager {
 		}
 		showAlert(type: .setBreakSingleCleanSearch, actions: [stopSingleCleanAlertAction], withCancel: true, cancelCompletion: nil)
 	}
+	
+	static func showStopDeepCleanProcessing(_ completion: @escaping () -> Void) {
+		
+		let stopDeepCleanAlertAction = UIAlertAction(title: "stop", style: .default) { _ in
+			completion()
+		}
+		showAlert(type: .setBreakDeepCleanDelete, actions: [stopDeepCleanAlertAction], withCancel: true, cancelCompletion: nil)
+	}
+	
+	static func showQuiteDeepCleanResults(_ completion: @escaping () -> Void) {
+	
+		let quiteDeepCleanAlertAction = UIAlertAction(title: "exit", style: .default) { _ in
+			completion()
+		}
+		
+		showAlert(type: .resetDeepCleanResults, actions: [quiteDeepCleanAlertAction], withCancel: true, cancelCompletion: nil)
+	}
+}
+
+
+extension AlertManager {
+	
+	public static func showSelectAllStarterAlert(for type: PhotoMediaType, completionHandler: @escaping () -> Void) {
+		
+		let alertAction = UIAlertAction(title: "Select all", style: .default) { _ in
+			completionHandler()
+		}
+		
+		let alertMessage = AlertHandler.getSelectableAutimaticAletMessage(for: type)
+		
+		
+		showAlert("Select Items?", message: alertMessage, actions: [alertAction], withCancel: true, completion: nil)
+	}
 }

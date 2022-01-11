@@ -979,7 +979,6 @@ extension PhotoManager {
 			
 			let deletedAssets = PHAsset.fetchAssets(withLocalIdentifiers: assetsSelectedIdentifiers, options: nil)
 			
-			
 			PHPhotoLibrary.shared().performChanges {
 				if operation.isCancelled {
 					return
@@ -989,6 +988,7 @@ extension PhotoManager {
 					completion(success)
 			}
 		}
+		
 		deletePhassetsOperation.name = C.key.operation.name.deletePhassetsOperation
 		return deletePhassetsOperation
 	}
@@ -1235,5 +1235,20 @@ extension PhotoManager {
 		phassetProcessingOperationQueuer.addOperation(screenShotCountOperation)
 		phassetProcessingOperationQueuer.addOperation(livePhotoCountOperation)
 		phassetProcessingOperationQueuer.addOperation(screenRecordingsVideosOperation)
+	}
+}
+
+extension PhotoManager {
+	
+	public func getAssetsUsedMemmoty(by ids: [String], completionHandler: @escaping (Int64) -> Void) -> ConcurrentProcessOperation {
+		
+		let getAssetsByIdOperation = ConcurrentProcessOperation { operation in
+		
+			self.fetchManager.fetchImagesDiskUsageFromGallery(with: ids) { calculatedResult in
+				completionHandler(calculatedResult)
+			}
+		}
+		
+		return getAssetsByIdOperation
 	}
 }

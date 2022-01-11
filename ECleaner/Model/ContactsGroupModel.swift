@@ -22,11 +22,13 @@ class ContactsGroup {
 	let name: String
 	var contacts: [CNContact]
 	var groupType: ContactasCleaningType
+	var groupIdentifier: String
 	
 	init(name: String, contacts: [CNContact], groupType: ContactasCleaningType, countryIdentifier: ContactsCountryIdentifier) {
 		self.countryIdentifier = countryIdentifier
 		self.name = name
 		self.contacts = contacts
 		self.groupType = groupType
+		self.groupIdentifier = UUID().uuidString
 	}
 }

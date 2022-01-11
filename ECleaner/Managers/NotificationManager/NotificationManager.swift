@@ -15,10 +15,12 @@ extension Notification.Name {
     static let premiumDidChange = Notification.Name("premiumDidChange")
     
         /// `disk space`
-    static let photoSpaceDidChange =    Notification.Name(C.key.notification.photoSpaceNotificationName)
-    static let videoSpaceDidChange =    Notification.Name(C.key.notification.videoSpaceNotificationName)
-    static let mediaSpaceDidChange =    Notification.Name(C.key.notification.mediaSpaceNotificationName)
-    static let contactsCountDidChange = Notification.Name(C.key.notification.contactsCountNotificationName)
+    static let photoSpaceDidChange =         Notification.Name(C.key.notification.photoSpaceNotificationName)
+    static let videoSpaceDidChange =         Notification.Name(C.key.notification.videoSpaceNotificationName)
+    static let mediaSpaceDidChange =    	 Notification.Name(C.key.notification.mediaSpaceNotificationName)
+    static let contactsCountDidChange =      Notification.Name(C.key.notification.contactsCountNotificationName)
+	static let removeContactsStoreObserver = Notification.Name(C.key.notification.removeStoreObserver)
+	static let addContactsStoreObserver = 	 Notification.Name(C.key.notification.addStoreObserver)
     
         /// `deep clean progress notification`
     static let deepCleanSimilarPhotoPhassetScan =       Notification.Name(C.key.notification.deepClean.deepCleanSimilarPhotoPhassetScan)
@@ -35,7 +37,6 @@ extension Notification.Name {
     static let deepCleanDupLicatedMailsScan =           Notification.Name(C.key.notification.deepClean.deepCleanDupLicatedMailsScan)
     
         ///  `single search scan progress notification`
-		
 	static let singleSearchSimilarPhotoScan = 				Notification.Name(C.key.notification.singleSearch.singleSearchSimilarPhotoPHAssetScan)
 	static let singleSearchDuplicatedPhotoScan = 			Notification.Name(C.key.notification.singleSearch.singleDuplicatedPhotoPHAssetScan)
 	static let singleSearchSimilarLivePhotoScan =			Notification.Name(C.key.notification.singleSearch.singleLivePhotoPHAssetScan)
@@ -65,4 +66,5 @@ extension Notification.Name {
         /// `progress alert notification`
     static let progressDeleteContactsAlertDidChangeProgress =   Notification.Name("progressDeleteContactsAlertDidChangeProgress")
     static let progressMergeContactsAlertDidChangeProgress =    Notification.Name("progressMergeContactsAlertDidChangeProgress")
+	static let progressDeepCleanDidChangeProgress = 			Notification.Name("progressDeepCleanDidChangeProgress")
 }

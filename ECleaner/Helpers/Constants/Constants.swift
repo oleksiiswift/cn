@@ -46,6 +46,8 @@ class Constants {
             static let videoSpaceNotificationName = "videoSpaceDidChange"
             static let mediaSpaceNotificationName = "mediaSpaceDidChange"
             static let contactsCountNotificationName = "contactsCountDidChange"
+			static let removeStoreObserver = "removeStoreObserver"
+			static let addStoreObserver = "addStoreObserver"
             
                 /// `deep clean update progress notification name`
             struct deepClean {
@@ -102,6 +104,7 @@ class Constants {
 				static let contacts = "contactsCleanSearchOperationQueuer"
 				static let phassets = "phassetsCleanSearchOperationQueuer"
 				static let deepClean = "deepCleanSearchOperationQueuer"
+				static let cleaningProcess = "cleaningProcessOprationQueuer"
 				static let utils = "utilsBackgroudSpaceCalculated"
 			}
 			
@@ -147,6 +150,9 @@ class Constants {
 				static let similarTuplesOperation = "serviceUtilityDuplicatedTuplesOperation"
 				static let findDuplicatedVideoOperation = "findDuplicatedVideoOperation"
 				static let getSimilarVideosByTimeStampOperation = "getSimilarVideosByTimeStampOperation"
+				
+					/// `deep clean`
+				static let deepCleanProcessingCleaningOperation = "deepCleanProcessingCleaningOperation"
 			}
 		}
         
@@ -215,6 +221,9 @@ class Constants {
             struct progressAlert {
                 static let progrssAlertValue = "progressAlertValue"
                 static let progressAlertFilesCount = "progressAlertFilesCount"
+				
+				static let deepCleanProgressValue = "deepCleanProgressValue"
+				static let deepCleanProcessingChangedTitle = "deepCleanProcessingChangedTitle"
             }
         }
     }

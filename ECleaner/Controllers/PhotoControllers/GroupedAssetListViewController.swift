@@ -21,6 +21,8 @@ class GroupedAssetListViewController: UIViewController, UIPageViewControllerDele
 	@IBOutlet weak var collectionView: UICollectionView!
 	@IBOutlet weak var bottomMenuHeightConstraint: NSLayoutConstraint!
 	
+	var scrollView = UIScrollView()
+	let collectionViewFlowLayout = SNCollectionViewLayout()
 		/// - delegates -
 	private weak var delegate: ContentGroupedDataProviderDelegate?
 	var selectedAssetsDelegate: DeepCleanSelectableAssetsDelegate?
@@ -31,46 +33,35 @@ class GroupedAssetListViewController: UIViewController, UIPageViewControllerDele
 	public var contentType: MediaContentType = .none
 	
 		/// `properties`
+	private var isSelectAllAssetsMode: Bool {
+		return self.selectedSection.count == self.collectionView.numberOfSections
+	}
 	public var isDeepCleaningSelectableFlow: Bool = false
 	public var changedPhassetGroupCompletionHandler: ((_ phassetGroup: [PhassetGroup]) -> Void)?
 	
 	private var selectedAssets: [PHAsset] = []
 	private var selectedSection: Set<Int> = []
-	
-	var scrollView = UIScrollView()
-	
+	private var previouslySelectedIndexPaths: [IndexPath] = []
+
     @IBOutlet weak var photoPreviewContainerView: UIView!
     @IBOutlet weak var photoContentContainerView: UIView!
     @IBOutlet weak var optionalViewerHeightConstraint: NSLayoutConstraint!
     
     /// - controllers -
     #warning("hide photopreviewLogic for TODO later")
-//    private var photoPreviewController = PhotoPreviewViewController()
-
-
+//    private var photoPreviewController = PhotoPreviewViewController(
 //    private weak var delegate: ContentDataProviderDelegate?
 
-    
- 
-    private var previouslySelectedIndexPaths: [IndexPath] = []
-    
     private var splitAssetsNumberOfItems: Int = 0
     private var splitAssets: [PHAsset] = []
     
     /// - managers -
     private var cacheImageManager = PHCachingImageManager()
 	private var photoManager = PhotoManager.shared
-    
-    /// - flow layout -
-    let collectionViewFlowLayout = SNCollectionViewLayout()
+
     let carouselCollectionFlowLayout = ZoomAndSnapFlowLayout()
-    
- 
-    private var isSliderFlowLayout: Bool = false
-	private var isSelectAllAssetsMode: Bool {
-		return self.selectedSection.count == self.collectionView.numberOfSections
-	}
 	
+    private var isSliderFlowLayout: Bool = false
     private var isCarouselViewMode: Bool = false
     private var focusedIndexPath: IndexPath?
     private var previousPreheatRect: CGRect = CGRect()
@@ -78,7 +69,6 @@ class GroupedAssetListViewController: UIViewController, UIPageViewControllerDele
     private var bottomMenuHeight: CGFloat = 80
     private var defaultContainerHeight: CGFloat = 0
     private var carouselPreviewCollectionHeight: CGFloat = 150 + U.bottomSafeAreaHeight
-    
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -98,11 +88,8 @@ class GroupedAssetListViewController: UIViewController, UIPageViewControllerDele
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-		if previouslySelectedIndexPaths.isEmpty {
-			handleStartingSelectableAssets()
-		} else {
-			didSelectPreviouslyIndexPath()
-		}
+		!previouslySelectedIndexPaths.isEmpty ? didSelectPreviouslyIndexPath() : ()
+
 //        updateCachedAssets()
 //        setupPhotoPreviewController()
     }
@@ -110,6 +97,7 @@ class GroupedAssetListViewController: UIViewController, UIPageViewControllerDele
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
+		previouslySelectedIndexPaths.isEmpty ? handleStartingSelectableAssets() : ()
         self.defaultContainerHeight = self.photoContentContainerView.frame.height
     }
 }
@@ -123,7 +111,7 @@ extension GroupedAssetListViewController {
 	
 	private func didTapBackDeepCleanActionButton() {
 		let selectedAssetsIDs: [String] = selectedAssets.compactMap({ $0.localIdentifier})
-		self.selectedAssetsDelegate?.didSelect(assetsListIds: selectedAssetsIDs, contenType: self.mediaType, updatableGroup: assetGroups, updatableAssets: [])
+		self.selectedAssetsDelegate?.didSelect(assetsListIds: selectedAssetsIDs, contentType: self.mediaType, updatableGroup: assetGroups, updatableAssets: [], updatableContactsGroup: [])
 		self.navigationController?.popViewController(animated: true)
 	}
 	
@@ -140,16 +128,12 @@ extension GroupedAssetListViewController {
 		
 //		let sliderMenuOptionItem = DropDownOptionsMenuItem(titleMenu: "slider", itemThumbnail: I.systemElementsItems.sliderView, isSelected: false, menuItem: .changeLayout)
 //		let tileMenuOptionItem = DropDownOptionsMenuItem(titleMenu: "tile", itemThumbnail: I.systemElementsItems.tileView, isSelected: false, menuItem: .changeLayout)
-		
-
-		
 		let selectAllOptionItem = DropDownOptionsMenuItem(titleMenu: "select all", itemThumbnail: I.systemElementsItems.circleCheckBox!, isSelected: true, menuItem: .selectAll)
 		let deselectAllOptionItem = DropDownOptionsMenuItem(titleMenu: "deselect all", itemThumbnail: I.systemElementsItems.circleBox!, isSelected: true, menuItem: .deselectAll)
 		let deleteOptionItem = DropDownOptionsMenuItem(titleMenu: "delete", itemThumbnail: I.systemItems.defaultItems.trashBin, isSelected: true, menuItem: .delete)
 //
 		let firstRowMenuItem = isSelectAllAssetsMode ? deselectAllOptionItem : selectAllOptionItem
 //		let secondRowMenuItem = isSliderFlowLayout ? tileMenuOptionItem : sliderMenuOptionItem
-		
 		presentDropDonwMenu(with: [firstRowMenuItem, deleteOptionItem], from:  navigationBar.rightBarButtonItem)
 	}
 	
@@ -207,11 +191,12 @@ extension GroupedAssetListViewController {
 			self.selectedAssets.append(self.assetGroups[indexPath.section].assets[indexPath.item])
 		}
 		checkForCelectedSection()
+		handleSelectAssetsNavigationCount()
 	}
 	
 	private func checkForCelectedSection() {
 		
-		for section in 0..<self.collectionView.numberOfSections - 1 {
+		for section in 0..<self.collectionView.numberOfSections {
 			let allSectionIndexPaths = self.getIndexPathInSectionWithoutFirst(section: section)
 			var selectedIndexPathInSection: [IndexPath] = []
 			
@@ -438,6 +423,7 @@ extension GroupedAssetListViewController: UICollectionViewDelegate, UICollection
 			self.collectionView.reloadData()
 		} completion: { _ in
 			self.handleDeleteAssetsButton()
+			self.handleSelectAssetsNavigationCount()
 		}
 	}
 }
@@ -462,6 +448,7 @@ extension GroupedAssetListViewController: PhotoCollectionViewCellDelegate {
 			}
 			self.handleSelectAllButtonSection(indexPath)
 			self.handleDeleteAssetsButton()
+			self.handleSelectAssetsNavigationCount()
 		}
 	}
 }
@@ -516,6 +503,7 @@ extension GroupedAssetListViewController {
 		sectionHeader.handleSelectableAsstes(to: addingSection)
 		sectionHeader.handleDeleteAssets(to: addingSection)
 		self.handleDeleteAssetsButton()
+		self.handleSelectAssetsNavigationCount()
 	}
 	
 	private func getIndexPathInSectionWithoutFirst(section: Int) -> [IndexPath] {
@@ -666,6 +654,7 @@ extension GroupedAssetListViewController {
 										self.collectionView.reloadData()
 									}
 									self.handleDeleteAssetsButton()
+									self.handleSelectAssetsNavigationCount()
 								}
 							} else {
 								var indexPathsSelectedSections: [IndexPath] = []
@@ -687,6 +676,7 @@ extension GroupedAssetListViewController {
 										self.collectionView.reloadData()
 									}
 									self.handleDeleteAssetsButton()
+									self.handleSelectAssetsNavigationCount()
 								}
 							}
 						}
@@ -760,19 +750,22 @@ extension GroupedAssetListViewController {
 			if !self.selectedSection.contains(section) {
 				self.selectedSection.insert(section)
 			}
-			
 		}
 		
 		if isSelect {
 			selectedSection.removeAll()
 		}
 		self.handleDeleteAssetsButton()
+		self.handleSelectAssetsNavigationCount()
 	}
 	
 	private func handleStartingSelectableAssets() {
 		guard isDeepCleaningSelectableFlow else { return }
-		self.shouldSelectAllAssetsInSections(false)
-		self.bottomMenuHeightConstraint.constant = 0
+		
+		A.showSelectAllStarterAlert(for: mediaType) {
+			self.shouldSelectAllAssetsInSections(false)
+			self.bottomMenuHeightConstraint.constant = 0
+		}
 	}
 }
 
@@ -807,6 +800,17 @@ extension GroupedAssetListViewController {
 			}
 		}
 	}
+	
+	private func handleSelectAssetsNavigationCount() {
+		
+		guard isDeepCleaningSelectableFlow else { return }
+	
+		if !selectedAssets.isEmpty {
+			self.navigationBar.changeHotLeftTitleWithImage(newTitle: String(" (\(selectedAssets.count))"), image: I.systemItems.navigationBarItems.back)
+		} else {
+			self.navigationBar.changeHotLeftTitleWithImage(newTitle: "", image: I.systemItems.navigationBarItems.back)
+		}
+	}
 }
 
 extension GroupedAssetListViewController {
@@ -832,9 +836,7 @@ extension GroupedAssetListViewController {
 									  rightButtonTitle: nil)
 	}
 	
-	private func setupObservers() {
-		
-	}
+	private func setupObservers() {}
 	
 	private func setupDelegate() {
 		
@@ -933,6 +935,7 @@ extension GroupedAssetListViewController {
 								self.collectionView.reloadData()
 							}
 							self.handleDeleteAssetsButton()
+							self.handleSelectAssetsNavigationCount()
 						}
 					}
 				}
