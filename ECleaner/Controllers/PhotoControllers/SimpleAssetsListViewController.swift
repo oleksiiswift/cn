@@ -424,7 +424,7 @@ extension SimpleAssetsListViewController {
     
     private func createCellContextMenu(for asset: PHAsset, at indexPath: IndexPath) -> UIMenu {
         
-        let fullScreenPreviewAction = UIAction(title: "full screen preview", image: I.cellElementsItems.fullScreen) { _ in
+        let fullScreenPreviewAction = UIAction(title: "full screen preview", image: I.systemItems.defaultItems.arrowUP) { _ in
             if asset.mediaType == .video {
                 self.showVideoPreviewController(asset)
             } else {

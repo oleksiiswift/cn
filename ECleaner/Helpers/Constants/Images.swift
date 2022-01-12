@@ -47,6 +47,8 @@ class Images {
             static let refreshFull = UIImage(named: "circleRoundedArrows")!
 			static let onViewPlayButton = UIImage(named: "playTransparentItem")!
 			static let trashBin = UIImage(named: "defaultTrashBin")!
+            static let star = UIImage(named: "starItem")!
+            static let arrowUP = UIImage(named: "arrowUpDown")!
         }
         
         struct backroundStaticItems {
@@ -99,10 +101,5 @@ class Images {
         static let circleCheckBox = UIImage(systemName: "checkmark.circle.fill")
         static let tileView = UIImage(systemName: "square.grid.2x2.fill")
         static let sliderView = UIImage(named: "sliderItem")
-    }
-    
-    struct cellElementsItems {
-        static let fullScreen = UIImage(systemName: "arrow.up.backward.and.arrow.down.forward")
-        
     }
 }

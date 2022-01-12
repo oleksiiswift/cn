@@ -982,37 +982,52 @@ extension GroupedAssetListViewController {
 
     private func createCellContextMenu(for asset: PHAsset, at indexPath: IndexPath) -> UIMenu {
         
-        let fullScreenPreviewAction = UIAction(title: "full screen preview", image: I.cellElementsItems.fullScreen) { _ in
+        let fullScreenPreviewActionImage = I.systemItems.defaultItems.arrowUP.withTintColor(theme.titleTextColor).withRenderingMode(.alwaysTemplate)
+        let setAsBestActionImage =         I.systemItems.defaultItems.star.withTintColor(theme.titleTextColor).withRenderingMode(.alwaysTemplate)
+        let deleteActionImage =            I.systemItems.defaultItems.trashBin.withTintColor(theme.actionTintColor).withRenderingMode(.alwaysTemplate)
+        
+        let fullScreenPreviewAction = UIAction(title: "full screen preview", image: fullScreenPreviewActionImage) { _ in
             if asset.mediaType == .video {
                 self.showVideoPreviewController(asset)
             } else {
-                #warning("TODO: hide collection")
 //                self.showFullScreenAssetPreviewAndFocus(at: indexPath)
             }
         }
-		
-		let setAsBestAction = UIAction(title: "set as best", image: I.systemItems.defaultItems.refresh) { _ in
+        
+		let setAsBestAction = UIAction(title: "set as best", image: setAsBestActionImage) { _ in
 			self.setAsBest(asset: asset, at: indexPath)
 		}
         
-		let deleteAssetAction = UIAction(title: "delete", image: I.systemItems.defaultItems.trashBin) { _ in
+		let deleteAssetAction = UIAction(title: "delete", image: deleteActionImage) { _ in
 			self.deleteAsset(at: indexPath)
         }
-        
-//        return UIMenu(title: "", children: [fullScreenPreviewAction, deleteAssetAction])
-		if indexPath.row != 0 {
-			return UIMenu(title: "", children: [setAsBestAction, deleteAssetAction])
-		} else {
-			return UIMenu(title: "", children: [setAsBestAction])
-		}
+                
+        if indexPath.row == 0 {
+            return UIMenu(title: "", children: [fullScreenPreviewAction, deleteAssetAction])
+        } else {
+            return UIMenu(title: "", children: [fullScreenPreviewAction, setAsBestAction, deleteAssetAction])
+        }
     }
 	
 	private func setAsBest(asset: PHAsset, at indexPath: IndexPath) {
-		
+        
 		assetGroups[indexPath.section].assets.move(at: indexPath.row, to: 0)
 		collectionView.performBatchUpdates {
 			collectionView.moveItem(at: indexPath, to: IndexPath(row: 0, section: indexPath.section))
 		} completion: { _ in
+            
+//            if let bestCell = self.collectionView.cellForItem(at: IndexPath(item: 0, section: indexPath.section)) as? PhotoCollectionViewCell,
+//               let secondartyCell = self.collectionView.cellForItem(at: IndexPath(item: 1, section: indexPath.section)) as? PhotoCollectionViewCell {
+//                bestCell.selectButtonSetup(by: self.mediaType)
+//                secondartyCell.selectButtonSetup(by: self.mediaType)
+//            }
+            
+//            UIView.transition(with: self.collectionView, duration: 0.35, options: .curveEaseInOut) {
+//                self.collectionView.reloadSections(IndexSet(integer: indexPath.section))
+//            } completion: { _ in
+//                debugPrint("data source reloaded")
+//            }
+//
 			UIView.performWithoutAnimation {
 				self.collectionView.reloadSections(IndexSet(integer: indexPath.section))
 			}
@@ -1373,6 +1388,3 @@ extension UIPageViewController {
 //        }
 //    }
 }
-
-
-

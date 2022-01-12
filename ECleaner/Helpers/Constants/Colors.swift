@@ -156,7 +156,15 @@ enum Theme: Int {
 				return UIColor().colorFromHexString("ECF0F6")
 		}
 	}
-
+    
+    var actionTintColor: UIColor {
+        switch self {
+            case .light:
+                return UIColor().colorFromHexString("FF3B30")
+            case .dark:
+                return UIColor().colorFromHexString("FF3B30")
+        }
+    }
     
 //    MARK: - shadow colors -
     
@@ -353,6 +361,8 @@ enum Theme: Int {
 				return UIColor().colorFromHexString("8D94A5")
 		}
 	}
+    
+    
 	
 	
 	
@@ -392,16 +402,7 @@ enum Theme: Int {
 //                return UIColor().colorFromHexString("EAF0F6")
 //        }
 //    }
-    
 
-    
-    
-    
-    
-    
-  
-  
-    
     var contentBackgroundColor: UIColor {
         switch self {
             case .light:
@@ -442,14 +443,7 @@ enum Theme: Int {
         }
     }
     
-    var sectionBackgroundColor: UIColor {
-        switch self {
-            case .light:
-                return UIColor().colorFromHexString("C4C4C4")
-            case .dark:
-                return UIColor().colorFromHexString("C4C4C4")
-        }
-    }
+
 }
 
 
