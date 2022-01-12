@@ -176,7 +176,6 @@ extension MainViewController: UpdateContentDataBaseListener {
     func getAllDuplicatedEmailsContactsGroup(_ contctsGroup: [ContactsGroup]) {
         self.allDuplicatedEmailAdresses = contctsGroup
     }
-    
 }
 
 extension MainViewController {

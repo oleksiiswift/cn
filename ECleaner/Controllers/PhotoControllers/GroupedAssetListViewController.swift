@@ -413,7 +413,8 @@ extension GroupedAssetListViewController: UICollectionViewDelegate, UICollection
 		guard let indexPath = configuration.identifier as? IndexPath,  let cell = collectionView.cellForItem(at: indexPath) else { return nil}
 		
 		let targetPreview = UITargetedPreview(view: cell)
-		targetPreview.parameters.backgroundColor = .clear
+		targetPreview.parameters.backgroundColor = theme.backgroundColor
+		targetPreview.view.backgroundColor = theme.backgroundColor
 		
 		return targetPreview
 	}
@@ -848,7 +849,7 @@ extension GroupedAssetListViewController {
 	func updateColors() {
 		
 		self.view.backgroundColor = theme.backgroundColor
-		self.collectionView.backgroundColor = .clear
+		self.collectionView.backgroundColor = theme.backgroundColor
 		
 		bottomButtonBarView.buttonColor = contentType.screenAcentTintColor
 		bottomButtonBarView.buttonTintColor = theme.activeTitleTextColor
@@ -989,14 +990,35 @@ extension GroupedAssetListViewController {
 //                self.showFullScreenAssetPreviewAndFocus(at: indexPath)
             }
         }
+		
+		let setAsBestAction = UIAction(title: "set as best", image: I.systemItems.defaultItems.refresh) { _ in
+			self.setAsBest(asset: asset, at: indexPath)
+		}
         
 		let deleteAssetAction = UIAction(title: "delete", image: I.systemItems.defaultItems.trashBin) { _ in
 			self.deleteAsset(at: indexPath)
         }
         
-        return UIMenu(title: "", children: [fullScreenPreviewAction, deleteAssetAction])
+//        return UIMenu(title: "", children: [fullScreenPreviewAction, deleteAssetAction])
+		if indexPath.row != 0 {
+			return UIMenu(title: "", children: [setAsBestAction, deleteAssetAction])
+		} else {
+			return UIMenu(title: "", children: [setAsBestAction])
+		}
     }
-    
+	
+	private func setAsBest(asset: PHAsset, at indexPath: IndexPath) {
+		
+		assetGroups[indexPath.section].assets.move(at: indexPath.row, to: 0)
+		collectionView.performBatchUpdates {
+			collectionView.moveItem(at: indexPath, to: IndexPath(row: 0, section: indexPath.section))
+		} completion: { _ in
+			UIView.performWithoutAnimation {
+				self.collectionView.reloadSections(IndexSet(integer: indexPath.section))
+			}
+		}
+	}
+	
     private func showVideoPreviewController(_ asset: PHAsset) {
         PHCachingImageManager().requestAVAsset(forVideo: asset, options: nil) { (avAsset, _, _) in
             U.UI {

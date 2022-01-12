@@ -115,8 +115,10 @@ extension PhotoCollectionViewCell: Themeble {
     }
     
     func updateColors() {
-        
+		
+		self.contentView.backgroundColor = .clear
 		baseView.backgroundColor = .clear
+		
         photoCheckmarkImageView.tintColor = theme.accentBackgroundColor
 	
 		bestLabel.textColor  = theme.activeTitleTextColor

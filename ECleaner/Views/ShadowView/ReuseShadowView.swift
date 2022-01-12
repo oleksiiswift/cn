@@ -76,6 +76,7 @@ class CollectionShadowView: UIView {
 		setupViews()
 	}
 	
+	
 	private func setupViews() {
 		
 		let cellBackgroundColor: UIColor = theme.cellBackGroundColor
@@ -83,7 +84,8 @@ class CollectionShadowView: UIView {
 		let cellShadowColor: UIColor = theme.sideShadowColor
 		
 		self.backgroundColor = .clear
-
+		self.topShadowView.backgroundColor = .clear
+		
 		self.layer.setShadowAndCustomCorners(backgroundColor: cellBackgroundColor,
 											 shadow: cellShadowColor,
 											 alpha: 1,
@@ -94,9 +96,7 @@ class CollectionShadowView: UIView {
 											 radius: 14)
 	
 		topShadowView.frame = CGRect(x: 0, y: 0, width: self.frame.width, height: self.frame.height)
-		
 		self.insertSubview(topShadowView, at: 0)
-
 		self.topShadowView.layer.setShadowAndCustomCorners(backgroundColor: .clear,
 														   shadow: topShadowColor,
 														   alpha: topAlpha,

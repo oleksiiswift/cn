@@ -12,6 +12,5 @@ enum UsageDataNotificationType {
     case photoDiskUsageNotification
     case videoDiskUsageNotification
     case contactsTotalCountNotification
-
 }
 
