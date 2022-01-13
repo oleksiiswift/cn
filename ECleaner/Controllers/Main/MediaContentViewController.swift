@@ -95,6 +95,12 @@ class MediaContentViewController: UIViewController {
         
 		self.resetAllProgressVisual()
     }
+	
+	override func viewDidDisappear(_ animated: Bool) {
+		super.viewDidDisappear(animated)
+		
+		U.application.isIdleTimerDisabled = true
+	}
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         switch segue.identifier {
@@ -131,6 +137,7 @@ extension MediaContentViewController {
     private func showMediaContent(by selectedType: MediaContentType, selected index: Int) {
         
         guard !scanningProcessIsRunning else { return }
+		U.application.isIdleTimerDisabled = true
         
         switch selectedType {
             case .userPhoto:

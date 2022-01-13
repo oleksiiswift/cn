@@ -209,6 +209,7 @@ extension DeepCleaningViewController {
 		  
 		  navigationBar.temporaryLockLeftButton(true)
 		  isDeepCleanSearchingProcessRunning = !isDeepCleanSearchingProcessRunning
+		  U.application.isIdleTimerDisabled = true
           
           deepCleanManager.startDeepCleaningFetch(options, startingFetchingDate: lowerBoundDate, endingFetchingDate: upperBoundDate) { mediaType in
                self.scansOptions = mediaType
@@ -290,6 +291,7 @@ extension DeepCleaningViewController {
 					self.setProcessingActionButton(.willAvailibleDelete)
 					self.handleButtonStateActive()
 					self.navigationBar.temporaryLockLeftButton(false)
+					U.application.isIdleTimerDisabled = true
                }
           }
      }
