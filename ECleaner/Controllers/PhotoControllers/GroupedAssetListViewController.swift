@@ -868,20 +868,26 @@ extension GroupedAssetListViewController: SNCollectionViewLayoutDelegate {
 extension GroupedAssetListViewController: UICollectionViewDataSourcePrefetching {
 
     func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
+		
+		var fetchassets: [PHAsset] = []
+		indexPaths.forEach { indexPath in
+			fetchassets.append(assetGroups[indexPath.section].assets[indexPath.row])
+		}
+		self.photoManager.prefetchImagesForAsset(fetchassets)
         
-        U.UI { [weak self] in
-            
-            guard let `self` = self, let _ = self.collectionView else { return }
-            guard self.splitAssetsNumberOfItems > 0 else { return }
-            
-            if indexPaths.count <= self.splitAssetsNumberOfItems {
-                
-                let scale = max(UIScreen.main.scale,2)
-                let targetSize = CGSize(width: U.screenWidth * scale, height: U.screenHeight * scale)
-                
-                self.cacheImageManager.startCachingImages(for: self.splitAssets, targetSize: targetSize, contentMode: .aspectFill, options: nil)
-            }
-        }
+//        U.UI { [weak self] in
+//
+//            guard let `self` = self, let _ = self.collectionView else { return }
+//            guard self.splitAssetsNumberOfItems > 0 else { return }
+//
+//            if indexPaths.count <= self.splitAssetsNumberOfItems {
+//
+//                let scale = max(UIScreen.main.scale,2)
+//                let targetSize = CGSize(width: U.screenWidth * scale, height: U.screenHeight * scale)
+//
+//                self.cacheImageManager.startCachingImages(for: self.splitAssets, targetSize: targetSize, contentMode: .aspectFill, options: nil)
+//            }
+//        }
     }
 }
 
