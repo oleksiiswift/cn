@@ -42,6 +42,8 @@ class PhotoCollectionViewCell: UICollectionViewCell {
 	public var cellContentType: MediaContentType = .none
     
     var delegate: PhotoCollectionViewCellDelegate?
+	
+	var pointOfNowReturn = 3
         
     override func prepareForReuse() {
         super.prepareForReuse()
@@ -53,6 +55,11 @@ class PhotoCollectionViewCell: UICollectionViewCell {
         super.awakeFromNib()
 
     }
+	
+	override func layoutSubviews() {
+		 super.layoutSubviews()
+	
+	}
     
     @IBAction func didTapSetSelectedCellActionButton(_ sender: Any) {
         
@@ -66,7 +73,10 @@ class PhotoCollectionViewCell: UICollectionViewCell {
 extension PhotoCollectionViewCell: Themeble {
     
     public func setupUI() {
-	
+		
+		self.setCorner(6)
+		self.contentView.setCorner(8)
+		
 		bestView.setCorner(11)
 		bestLabel.text = "best".uppercased()
 		bestLabel.font = .systemFont(ofSize: 10, weight: .bold)
@@ -115,10 +125,8 @@ extension PhotoCollectionViewCell: Themeble {
     }
     
     func updateColors() {
-		
-		self.contentView.backgroundColor = .clear
-		baseView.backgroundColor = .clear
-		
+	
+		baseView.backgroundColor = theme.backgroundColor
         photoCheckmarkImageView.tintColor = theme.accentBackgroundColor
 	
 		bestLabel.textColor  = theme.activeTitleTextColor
@@ -130,10 +138,10 @@ extension PhotoCollectionViewCell: Themeble {
 		bulbview.backgroundColor = cellContentType.screenAcentTintColor
     }
     
-    public func loadCellThumbnail(_ asset: PHAsset, size: CGSize) {
-        let thumbnail = PHAssetFetchManager.shared.getThumbnail(from: asset, size: size)
+    public func loadCellThumbnail(_ asset: PHAsset, image: UIImage?) {
+
         photoThumbnailImageView.contentMode = .scaleAspectFill
-        photoThumbnailImageView.image = thumbnail
+        photoThumbnailImageView.image = image
 		playPhassetImageView.image = I.systemItems.defaultItems.onViewPlayButton
                 
         switch cellMediaType {

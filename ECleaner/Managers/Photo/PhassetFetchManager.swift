@@ -200,7 +200,6 @@ extension PHAssetFetchManager {
         let option = PHImageRequestOptions()
         
         option.isSynchronous = true
-        
         manager.requestImage(for: asset, targetSize: size, contentMode: .aspectFit, options: option, resultHandler: {(result, info) -> Void in
             if let image = result {
             thumbnail = image

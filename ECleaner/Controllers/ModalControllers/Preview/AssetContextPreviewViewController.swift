@@ -23,7 +23,7 @@ class AssetContextPreviewViewController: UIViewController {
         assetImageView.clipsToBounds = true
         assetImageView.contentMode = .scaleAspectFit
         preferredContentSize = CGSize(width: asset.pixelWidth, height: asset.pixelHeight)
-
+		
         if let preview = asset.getImage {
             assetImageView.image = preview
         } else {

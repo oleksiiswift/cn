@@ -289,23 +289,9 @@ extension GroupedAssetListViewController {
 		
 		cell.checkIsSelected()
 		
-		if indexPath.row == 0 {
-			var size = CGSize.zero
-			let asset = assetGroups[indexPath.section].assets[indexPath.row]
-			
-			switch mediaType {
-				case .duplicatedVideos, .similarVideos:
-					size = CGSize(width: asset.pixelWidth, height: asset.pixelHeight)
-				default:
-					if asset.pixelWidth > asset.pixelHeight {
-						size = CGSize(width: U.screenWidth / 2 / U.ratio, height: U.screenWidth / 2)
-					} else {
-						size = CGSize(width: U.screenWidth / 2, height: U.screenHeight / 2)
-					}
-			}
-			cell.loadCellThumbnail(asset, size: size)
-		} else {
-			cell.loadCellThumbnail(assetGroups[indexPath.section].assets[indexPath.row], size: CGSize(width: 300, height: 300))
+        let asset = assetGroups[indexPath.section].assets[indexPath.row]
+		self.photoManager.requestChacheImageForPhasset(asset) { image in
+			cell.loadCellThumbnail(asset, image: image)
 		}
 	}
 	
@@ -985,7 +971,7 @@ extension GroupedAssetListViewController {
         let fullScreenPreviewActionImage = I.systemItems.defaultItems.arrowUP.withTintColor(theme.titleTextColor).withRenderingMode(.alwaysTemplate)
         let setAsBestActionImage =         I.systemItems.defaultItems.star.withTintColor(theme.titleTextColor).withRenderingMode(.alwaysTemplate)
         let deleteActionImage =            I.systemItems.defaultItems.trashBin.withTintColor(theme.actionTintColor).withRenderingMode(.alwaysTemplate)
-        
+		
         let fullScreenPreviewAction = UIAction(title: "full screen preview", image: fullScreenPreviewActionImage) { _ in
             if asset.mediaType == .video {
                 self.showVideoPreviewController(asset)
@@ -993,15 +979,15 @@ extension GroupedAssetListViewController {
 //                self.showFullScreenAssetPreviewAndFocus(at: indexPath)
             }
         }
-        
+		
 		let setAsBestAction = UIAction(title: "set as best", image: setAsBestActionImage) { _ in
 			self.setAsBest(asset: asset, at: indexPath)
 		}
         
-		let deleteAssetAction = UIAction(title: "delete", image: deleteActionImage) { _ in
+		let deleteAssetAction = UIAction(title: "delete", image: deleteActionImage, attributes: .destructive) { _ in
 			self.deleteAsset(at: indexPath)
         }
-                
+		
         if indexPath.row == 0 {
             return UIMenu(title: "", children: [fullScreenPreviewAction, deleteAssetAction])
         } else {
@@ -1015,19 +1001,6 @@ extension GroupedAssetListViewController {
 		collectionView.performBatchUpdates {
 			collectionView.moveItem(at: indexPath, to: IndexPath(row: 0, section: indexPath.section))
 		} completion: { _ in
-            
-//            if let bestCell = self.collectionView.cellForItem(at: IndexPath(item: 0, section: indexPath.section)) as? PhotoCollectionViewCell,
-//               let secondartyCell = self.collectionView.cellForItem(at: IndexPath(item: 1, section: indexPath.section)) as? PhotoCollectionViewCell {
-//                bestCell.selectButtonSetup(by: self.mediaType)
-//                secondartyCell.selectButtonSetup(by: self.mediaType)
-//            }
-            
-//            UIView.transition(with: self.collectionView, duration: 0.35, options: .curveEaseInOut) {
-//                self.collectionView.reloadSections(IndexSet(integer: indexPath.section))
-//            } completion: { _ in
-//                debugPrint("data source reloaded")
-//            }
-//
 			UIView.performWithoutAnimation {
 				self.collectionView.reloadSections(IndexSet(integer: indexPath.section))
 			}

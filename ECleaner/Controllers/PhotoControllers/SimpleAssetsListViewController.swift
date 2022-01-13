@@ -92,7 +92,7 @@ extension SimpleAssetsListViewController: UICollectionViewDelegate, UICollection
     }
     
     private func configure(_ cell: PhotoCollectionViewCell, at indexPath: IndexPath) {
-        
+
         cell.delegate = self
         cell.indexPath = indexPath
 		cell.cellMediaType = self.mediaType
@@ -110,40 +110,11 @@ extension SimpleAssetsListViewController: UICollectionViewDelegate, UICollection
         cell.checkIsSelected()
         
         /// config thumbnail according screen type
-        switch mediaType {
-            case .singleScreenShots:
-                cell.loadCellThumbnail(assetCollection[indexPath.row],
-                                       size: CGSize(width: ((U.screenWidth - 26) / 2),
-                                                    height: ((U.screenHeight - 26) / 2) / U.ratio ))
-            case .singleSelfies:
-                cell.loadCellThumbnail(assetCollection[indexPath.row],
-                                       size: CGSize(width: (U.screenWidth - 26) / 2,
-                                                    height: ((U.screenHeight - 26) / 2) / U.ratio))
-            case .singleLivePhotos:
-                cell.loadCellThumbnail(assetCollection[indexPath.row],
-                                       size: CGSize(width: (U.screenWidth - 26) / 2,
-                                                    height: ((U.screenWidth - 26) / 2) / U.ratio))
-            case .singleLargeVideos:
-                cell.loadCellThumbnail(assetCollection[indexPath.row],
-                                       size: CGSize(width: (U.screenWidth - 26) / 2,
-                                                    height: ((U.screenWidth - 26) / 2) / U.ratio))
-            case .similarVideos:
-                cell.loadCellThumbnail(assetCollection[indexPath.row],
-                                       size: CGSize(width: (U.screenWidth - 26) / 2,
-                                                    height: ((U.screenWidth - 26) / 2) / U.ratio))
-            case .duplicatedVideos:
-                cell.loadCellThumbnail(assetCollection[indexPath.row],
-                                       size: CGSize(width: (U.screenWidth - 26) / 2,
-                                                    height: ((U.screenWidth - 26) / 2) / U.ratio))
-            case .singleScreenRecordings:
-                cell.loadCellThumbnail(assetCollection[indexPath.row],
-                                       size: CGSize(width: (U.screenWidth - 26) / 2,
-                                                    height: ((U.screenWidth - 26) / 2) / U.ratio))
-            default:
-                cell.loadCellThumbnail(assetCollection[indexPath.row],
-                                       size: CGSize(width: (U.screenWidth - 26) / 2,
-                                                    height: ((U.screenWidth - 26) / 2) / U.ratio))
-        }
+		let asset = assetCollection[indexPath.row]
+		
+		photoManager.requestChacheImageForPhasset(asset) { image in
+			cell.loadCellThumbnail(asset, image: image)
+		}
 		
 		cell.updateColors()
     }
@@ -432,7 +403,7 @@ extension SimpleAssetsListViewController {
             }
         }
         
-        let deleteAssetAction = UIAction(title: "delete", image: I.systemItems.defaultItems.trashBin) { _ in
+		let deleteAssetAction = UIAction(title: "delete", image: I.systemItems.defaultItems.trashBin, attributes: .destructive) { _ in
 			self.deleteSinglePhasset(at: indexPath)
         }
         
@@ -579,3 +550,4 @@ extension SimpleAssetsListViewController: UpdatingChangesInOpenedScreensListener
         }
     }
 }
+
