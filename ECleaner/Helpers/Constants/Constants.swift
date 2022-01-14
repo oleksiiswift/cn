@@ -55,6 +55,7 @@ class Constants {
                 static let deepCleanSimilarPhotoPhassetScan = "deepCleanSimilarPhotoPhassetScan"
                 static let deepCleanDuplicatedPhotoPhassetScan = "deepCleanDuplicatedPhotoPhassetScan"
                 static let deepCleanScreenShotsPhotoPhassetScan = "deepCleanScreenShotsPhassetScan"
+				static let deepCleanSimilarSelfiesPhotoPhassetScan = "deepCleanSimilarSelfiesPhotoPhassetScan"
                 static let deepCleanSimilarLivePhotosPhassetScan = "deepCleanSimilarLivePhotosPhaassetScan"
                 static let deepCleanLargeVideoPhassetScan = "deepCleanLargeVideoPhassetScan"
                     /// video
@@ -62,7 +63,6 @@ class Constants {
                 static let deepCleanSimilarVideoPhassetScan = "deepCleanSimilarVideoPhassetScan"
                 static let deepCleanScreenRecordingsPhassetScan = "deepCleanScreenRecordingsPhassetScant"
                     /// contacts
-                
                 static let deepCleanEmptyContactsScan = "deepCleanEmptyContactsScan"
                 static let deepCleanDuplicatedContactsScan = "deepCleanDuplicatedContactsScan"
                 static let deepCleanDuplicatedPhoneNumbersScan = "deepCleanDuplicatedPhoneNumbersScan"
@@ -82,7 +82,7 @@ class Constants {
 				static let singleDuplicatedPhotoPHAssetScan = "singleDuplicatedPhotoPHAssetScant"
 				static let singleSimilarLivePhotoPHAssetScan = "singleSimilarLivePhotoPHAssetScan"
 				static let singleScreeenshotsPhotoPHAssetScan = "singleScreeenshotsPhotoPHAssetScan"
-				static let singleSelfiePHAssetScan = "singleSelfiePHAssetScan"
+				static let singleSimilarSelfiesPHassetScan = "singleSimilarSelfiesPHassetScan"
 				static let singleLivePhotoPHAssetScan = "singleLivePhotoPHAssetScan"
 				static let singleRecentlyDeletedPHAssetScan = "singleRecentlyDeletedPHAssetScan"
 					/// video
@@ -130,9 +130,8 @@ class Constants {
 				static let duplicatePhotoProcessingOperation = "duplicatePhotoProcessingOperation"
 				static let screenShotsOperation = "screenShotsOperation"
 				static let livePhotoOperation = "livePhotoOperation"
-				static let photoSelfiesOperation = "photoSelfiesOperation"
+				static let similarSelfiesOperation = "similarSelfiesOperation"
 				static let similarLivePhotoProcessingOperation = "similarLivePhotoProcessingOperation"
-				
 				
 				static let recentlyDeletedAlbums = "recentlyDeletedAlbumFetchOperation"
 				static let recentlyDeletedSortedAlbums = "recentlyDeletedSortedAlbumsFetchOperation"
@@ -172,7 +171,7 @@ class Constants {
                 static let duplicatePhotoIndex = "deepCleanDuplicatePhotoProcessingIndex"
                 static let screenShotsIndex = "deepCleanscreenShotsIndex"
                 static let livePhotosIndex = "deepCleanlivePhotosIndex"
-				static let selfiePhotosIndex = "selfiePhotosIndex"
+				static let similarSelfiePhotoIndex = "similarSelfiePhotoIndex"
 				static let recentlyDeletedPhotoIndex = "recentlyDeletedPhotoIndex"
                     /// video part
                 static let largeVideoIndex = "deepCleanlargeVideoIndex"
@@ -195,7 +194,7 @@ class Constants {
                 static let duplicatePhotoCount = "deepCleanDuplicatePhotoTotalAssetsCount"
                 static let screenShotsCount = "deepCleanscreenShotsCount"
                 static let livePhotosSimilarCount = "deepCleanlivePhotosCount"
-				static let selfiePhotosCount = "selfiePhotosCount"
+				static let similarSelfiePhotosCount = "similarSelfiePhotosCount"
 				static let recentlyDeletedPhotoCount = "recentlyDeletedPhotoCount"
                     /// video part
                 static let largeVideoCount = "deepCleanlargeVideoCount"

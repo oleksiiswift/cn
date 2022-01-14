@@ -140,9 +140,9 @@ extension ContentTypeTableViewCell {
 				
 				switch photoMediaType {
 						
-					case .similarPhotos, .duplicatedPhotos, .similarVideos, .duplicatedVideos:
+					case .similarPhotos, .duplicatedPhotos, .similarSelfies, .similarVideos, .duplicatedVideos:
 						contentSubtitleTextLabel.text = phasetCount != 0 ? String("\(phasetCount) \("duplicated phasset")") : "-"
-					case .singleScreenShots, .singleSelfies, .singleLivePhotos, .singleLargeVideos, .singleScreenRecordings, .singleRecentlyDeletedPhotos, .singleRecentlyDeletedVideos:
+					case .singleScreenShots, .singleLivePhotos, .singleLargeVideos, .singleScreenRecordings, .singleRecentlyDeletedPhotos, .singleRecentlyDeletedVideos:
 						contentSubtitleTextLabel.text = phasetCount != 0 ?  String("\(phasetCount) \("FILES".localized())") : "no files"
 					case .allContacts, .emptyContacts:
 						contentSubtitleTextLabel.text  = phasetCount != 0 ? String("\(phasetCount) contacts") : ""

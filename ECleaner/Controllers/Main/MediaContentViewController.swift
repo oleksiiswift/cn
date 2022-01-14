@@ -47,7 +47,7 @@ class MediaContentViewController: UIViewController {
 	public var similarPhoto: [PhassetGroup] = []
 	public var duplicatedPhoto: [PhassetGroup] = []
     public var allScreenShots: [PHAsset] = []
-	public var allSelfies: [PHAsset] = []
+	public var allSimilarSelfies: [PhassetGroup] = []
     public var allLiveFotos: [PHAsset] = []
     public var allRecentlyDeletedPhotos: [PHAsset] = []
     
@@ -118,7 +118,7 @@ extension MediaContentViewController {
         /// `0` - simmilar photos
         /// `1` - duplicates
         /// `2` - screenshots
-        /// `3` - selfies
+        /// `3` - similar selfies
         /// `4` - live photos
         /// `5` - recently deleted
     
@@ -149,7 +149,7 @@ extension MediaContentViewController {
                     case 2:
                         self.showScreenshots()
                     case 3:
-                        self.showSelfies()
+						self.showSimilarSelfies()
                     case 4:
                         self.showLivePhotos()
                     case 5:
@@ -246,8 +246,6 @@ extension MediaContentViewController {
 				self.allScreenShots = collection
 			case .singleLivePhotos:
 				self.allLiveFotos = collection
-			case .singleSelfies:
-				self.allSelfies = collection
 			case .singleRecentlyDeletedPhotos:
 				self.allRecentlyDeletedPhotos = collection
 			case .singleLargeVideos:
@@ -284,7 +282,7 @@ extension MediaContentViewController {
 		
 		let getSimilarPhotosAssetsOperation = photoManager.getSimilarPhotosAssetsOperation(from: lowerBoundDate, to: upperBoundDate, enableSingleProcessingNotification: true) { similarGroup in
 			self.similarPhoto = similarGroup
-			self.photoManager.prefetchImagesForAsset(similarGroup.flatMap({$0.assets}))
+//			self.photoManager.prefetchImagesForAsset(similarGroup.flatMap({$0.assets}))
 			U.delay(0.5) {
 				ProgressSearchNotificationManager.instance.sendSingleSearchProgressNotification(notificationtype: .similarPhoto, totalProgressItems: 1, currentProgressItem: 1)
 				U.delay(1) {
@@ -337,8 +335,8 @@ extension MediaContentViewController {
 				U.delay(1) {
 					self.scanningProcessIsRunning = !self.scanningProcessIsRunning
 					self.currentlyScanningProcess = .none
-					if screenshots.count != 0 {
-						self.showAssetViewController(assets: PhotoMediaType.singleSelfies.mediaTypeName, collection: screenshots, photoContent: .singleScreenShots, media: .userPhoto)
+					if !screenshots.isEmpty {
+						self.showAssetViewController(assets: PhotoMediaType.singleScreenShots.mediaTypeName, collection: screenshots, photoContent: .singleScreenShots, media: .userPhoto)
 					} else {
 						ErrorHandler.shared.showEmptySearchResultsFor(.screenShotsIsEmpty, completion: nil)
 					}
@@ -348,26 +346,27 @@ extension MediaContentViewController {
 		phassetProcessingOperationQueuer.addOperation(getScreenShotsAssetsOperation)
 	}
 	
-	private func showSelfies() {
+	private func showSimilarSelfies() {
 		self.scanningProcessIsRunning = !self.scanningProcessIsRunning
-		self.currentlyScanningProcess = .singleSelfieAssetsOperation
-		let getSelfiesPhotoAssetOperation = photoManager.getSelfiePhotosOperation(from: lowerBoundDate, to: upperBoundDate, enableSingleProcessingNotification: true) { selfies in
-			self.allSelfies = selfies
-			self.photoManager.prefetchImagesForAsset(selfies)
+		self.currentlyScanningProcess = .similarSelfiesAssetsOperation
+		
+		let getSimilarSelfiesPhotoPhassetsOperation = photoManager.getSimilarSelfiePhotosOperation(from: lowerBoundDate, to: upperBoundDate, enableDeepCleanProcessingNotification: true) { similartSelfiesGroup in
+			self.allSimilarSelfies = similartSelfiesGroup
+			self.photoManager.prefetchImagesForAsset(similartSelfiesGroup.flatMap({$0.assets}))
 			U.delay(0.5) {
-				ProgressSearchNotificationManager.instance.sendSingleSearchProgressNotification(notificationtype: .selfies, totalProgressItems: 1, currentProgressItem: 1)
+				ProgressSearchNotificationManager.instance.sendSingleSearchProgressNotification(notificationtype: .similarSelfiesPhoto, totalProgressItems: 1, currentProgressItem: 1)
 				U.delay(1) {
 					self.scanningProcessIsRunning = !self.scanningProcessIsRunning
 					self.currentlyScanningProcess = .none
-					if selfies.count != 0 {
-						self.showAssetViewController(assets: PhotoMediaType.singleSelfies.mediaTypeName, collection: selfies, photoContent: .singleSelfies, media: .userPhoto)
+					if !similartSelfiesGroup.isEmpty {
+						self.showGropedContoller(assets: PhotoMediaType.similarSelfies.mediaTypeName, grouped: similartSelfiesGroup, photoContent: .similarSelfies, media: .userPhoto)
 					} else {
-						ErrorHandler.shared.showEmptySearchResultsFor(.selfiesIsEmpty, completion: nil)
+						ErrorHandler.shared.showEmptySearchResultsFor(.similarSelfiesIsEmpty, completion: nil)
 					}
 				}
 			}
 		}
-		phassetProcessingOperationQueuer.addOperation(getSelfiesPhotoAssetOperation)
+		phassetProcessingOperationQueuer.addOperation(getSimilarSelfiesPhotoPhassetsOperation)
 	}
 	
     private func showLivePhotos() {
@@ -694,8 +693,8 @@ extension MediaContentViewController {
 				recieveNotification(by: .duplicatedPhoto, userInfo: userInfo)
 			case .singleSearchScreenShotsPhotoScan:
 				recieveNotification(by: .screenShots, userInfo: userInfo)
-			case .singleSearchSelfiePhotoScan:
-				recieveNotification(by: .selfies, userInfo: userInfo)
+			case .singleSearchSimilarSelfiePhotoScan:
+				recieveNotification(by: .similarSelfiesPhoto, userInfo: userInfo)
 			case .singleSearchLivePhotoScan:
 				recieveNotification(by: .livePhoto, userInfo: userInfo)
 			case .singleSearchRecentlyDeletedPhotoScan:
@@ -751,7 +750,7 @@ extension MediaContentViewController {
 				totalSearchFindPhotosCountIn[1] = count
 			case .screenShots:
 				totalSearchFindPhotosCountIn[2] = count
-			case .selfies:
+			case .similarSelfiesPhoto:
 				totalSearchFindPhotosCountIn[3] = count
 			case .livePhoto:
 				totalSearchFindPhotosCountIn[4] = count
@@ -768,7 +767,7 @@ extension MediaContentViewController {
 				totalSearchFindVideosCountInt[3] = count
 			case .recentlyDeletedVideo:
 				totalSearchFindVideosCountInt[4] = count
-                    /// `Contacts:
+				/// `Contacts:
             case .allContacts:
                 totalSearchFindContactsCountIn[0] = count
             case .emptyContacts:
@@ -804,7 +803,7 @@ extension MediaContentViewController {
 				self.singleSearchPhotoProgress[1] = progress
 			case .screenShots:
 				self.singleSearchPhotoProgress[2] = progress
-			case .selfies:
+			case .similarSelfiesPhoto:
 				self.singleSearchPhotoProgress[3] = progress
 			case .livePhoto:
 				self.singleSearchPhotoProgress[4] = progress
@@ -898,7 +897,7 @@ extension MediaContentViewController {
 						return IndexPath(row: 1, section: 0)
 					case .screenShotsAssetsOperation:
 						return IndexPath(row: 2, section: 0)
-					case .singleSelfieAssetsOperation:
+					case .similarSelfiesAssetsOperation:
 						return IndexPath(row: 3, section: 0)
 					case .livePhotoAssetsOperation:
 						return IndexPath(row: 4, section: 0)
@@ -1030,27 +1029,28 @@ extension MediaContentViewController: UITableViewDelegate, UITableViewDataSource
 		var assetContentCount: Int {
 			switch photoMediaType {
 				case .similarPhotos:
-					return self.similarPhoto.map({$0.assets}).reduce([], +).count
+					return self.similarPhoto.flatMap({$0.assets}).count
 				case .duplicatedPhotos:
-					return self.duplicatedPhoto.map({$0.assets}).reduce([], +).count
+					return self.duplicatedPhoto.flatMap({$0.assets}).count
 				case .singleScreenShots:
 					return self.allScreenShots.count
+				case .similarSelfies:
+					return self.allSimilarSelfies.flatMap({$0.assets}).count
 				case .singleLivePhotos:
 					return self.allLiveFotos.count
 				case .singleLargeVideos:
 					return self.allLargeVideos.count
 				case .duplicatedVideos:
-					return self.allDuplicatesVideos.map({$0.assets}).reduce([], +).count
+					return self.allDuplicatesVideos.flatMap({$0.assets}).count
 				case .similarVideos:
-					return self.allSimmilarVideos.map({$0.assets}).reduce([], +).count
-				case .singleSelfies:
-					return self.allSelfies.count
+					return self.allSimmilarVideos.flatMap({$0.assets}).count
 				case .singleScreenRecordings:
 					return self.allScreenRecords.count
 				case .singleRecentlyDeletedPhotos:
 					return self.allRecentlyDeletedPhotos.count
 				case .singleRecentlyDeletedVideos:
 					return self.allRecentlyDeletedVideos.count
+					
 				case .allContacts:
 					return self.allContacts.count
 				case .emptyContacts:
@@ -1151,7 +1151,7 @@ extension MediaContentViewController: Themeble {
 				U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchSimilarPhotoScan, object: nil)
 				U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchDuplicatedPhotoScan, object: nil)
 				U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchScreenShotsPhotoScan, object: nil)
-				U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchSelfiePhotoScan, object: nil)
+				U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchSimilarSelfiePhotoScan, object: nil)
 				U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchLivePhotoScan, object: nil)
 				U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchRecentlyDeletedPhotoScan, object: nil)
             case .userVideo:

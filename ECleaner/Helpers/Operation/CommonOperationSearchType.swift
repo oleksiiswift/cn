@@ -13,7 +13,7 @@ enum CommonOperationSearchType: CaseIterable {
 	case utitlityDuplicatedPhotoTuplesOperation
 	case duplicatedPhotoAssetsOperation
 	case screenShotsAssetsOperation
-	case singleSelfieAssetsOperation
+	case similarSelfiesAssetsOperation
 	case livePhotoAssetsOperation
 	case recentlyDeletedOperation
 	
@@ -39,8 +39,8 @@ enum CommonOperationSearchType: CaseIterable {
 				return C.key.operation.name.duplicatePhotoProcessingOperation
 			case .screenShotsAssetsOperation:
 				return C.key.operation.name.screenShotsOperation
-			case .singleSelfieAssetsOperation:
-				return C.key.operation.name.photoSelfiesOperation
+			case .similarSelfiesAssetsOperation:
+				return C.key.operation.name.similarSelfiesOperation
 			case .livePhotoAssetsOperation:
 				return C.key.operation.name.livePhotoOperation
 			case .recentlyDeletedOperation:

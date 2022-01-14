@@ -14,8 +14,6 @@ protocol UpdateContentDataBaseListener {
     func updateContentStoreCount(mediaType: MediaContentType, itemsCount: Int, calculatedSpace: Int64?)    
     func getScreenAssets(_ assets: [PHAsset])
     func getLivePhotosAssets(_ assets: [PHAsset])
-    func getFrontCameraAssets(_ assets: [PHAsset])
-    
     func getLargeVideosAssets(_ assets: [PHAsset])
     func getSimmilarVideosAssets(_ assets: [PhassetGroup])
     func getDuplicateVideosAssets(_ assets: [PhassetGroup])

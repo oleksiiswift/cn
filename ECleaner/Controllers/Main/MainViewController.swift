@@ -28,7 +28,6 @@ class MainViewController: UIViewController {
     private var diskSpaceForStartingScreen: [MediaContentType : Int64] = [:]
 
     private var allScreenShots: [PHAsset] = []
-    private var allSelfies: [PHAsset] = []
     private var allLiveFotos: [PHAsset] = []
     
     private var allLargeVidoes: [PHAsset] = []
@@ -125,10 +124,6 @@ extension MainViewController: UpdateContentDataBaseListener {
         self.allLiveFotos = assets
     }
     
-    func getFrontCameraAssets(_ assets: [PHAsset]) {
-        self.allSelfies = assets
-    }
-            
     func getLargeVideosAssets(_ assets: [PHAsset]) {
         self.allLargeVidoes = assets
     }
@@ -187,7 +182,6 @@ extension MainViewController {
         switch type {
             case .userPhoto:
                 viewController.allScreenShots = self.allScreenShots
-                viewController.allSelfies = self.allSelfies
                 viewController.allLiveFotos = self.allLiveFotos
                 viewController.allRecentlyDeletedPhotos = self.allRecentlyDeletedPhotos
             case .userVideo:
@@ -214,12 +208,19 @@ extension MainViewController {
         let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.deepClean) as! DeepCleaningViewController
     
         viewController.scansOptions = [.similarPhotos,
-                                       .similarVideos,
-                                       .duplicatedPhotos,
-                                       .duplicatedVideos,
-                                       .similarLivePhotos,
-                                       .singleScreenShots,
-                                       .singleScreenRecordings]
+									   .duplicatedPhotos,
+									   .singleScreenShots,
+									   .similarSelfies,
+									   .similarLivePhotos,
+									   .singleLargeVideos,
+									   .duplicatedVideos,
+									   .similarVideos,
+									   .singleScreenRecordings,
+									   .emptyContacts,
+									   .duplicatedContacts,
+									   .duplicatedPhoneNumbers,
+									   .duplicatedEmails
+		]
         self.navigationController?.pushViewController(viewController, animated: true)
     }
     

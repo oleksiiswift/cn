@@ -81,8 +81,8 @@ class DeepCleaningViewController: UIViewController {
      private var totalPartitinAssetsCount: [AssetsGroupType: Int] = [:]
 	 private var futuredCleaningSpaceUsage: Int64?
      
-     private var totalDeepCleanProgress: [CGFloat] = [0,0,0,0,0,0,0,0,0,0,0,0]
-     private var totalDeepCleanFilesCountIn: [Int] = [0,0,0,0,0,0,0,0,0,0,0,0]
+     private var totalDeepCleanProgress: [CGFloat] = [0,0,0,0,0,0,0,0,0,0,0,0,0]
+     private var totalDeepCleanFilesCountIn: [Int] = [0,0,0,0,0,0,0,0,0,0,0,0,0]
      
      private var handleSelectedAssetsForRowMediatype: [PhotoMediaType: Bool] = [:]
      private var doneProcessingDeepCleanForMedia: [PhotoMediaType : Bool] = [:]
@@ -193,8 +193,8 @@ extension DeepCleaningViewController {
 		  totalFilesChecked = 0
 		  totalPercentageCalculated = 0
 		  totalPartitinAssetsCount = [:]
-		  totalDeepCleanProgress = [0,0,0,0,0,0,0,0,0,0,0,0]
-		  totalDeepCleanFilesCountIn = [0,0,0,0,0,0,0,0,0,0,0,0]
+		  totalDeepCleanProgress = [0,0,0,0,0,0,0,0,0,0,0,0,0]
+		  totalDeepCleanFilesCountIn = [0,0,0,0,0,0,0,0,0,0,0,0,0]
 		  handleSelectedAssetsForRowMediatype = [:]
 		  doneProcessingDeepCleanForMedia = [:]
 		  currentProgressForRawMediatype = [:]
@@ -231,13 +231,19 @@ extension DeepCleaningViewController {
                let photoMediaType: PhotoMediaType = .duplicatedPhotos
                debugPrint(assetsGroup.count, photoMediaType.rawValue)
                self.updateAssetsProcessingOfType(group: assetsGroup, mediaType: .userPhoto, contentType: photoMediaType, phassetsCount: assetsCount)
-          } similarLivePhotos: { assetsGroup in
-                    /// `processing similar live video group`
-               let assetsCount = self.getAssetsCount(for: assetsGroup)
-               let photoMediaType: PhotoMediaType = .similarLivePhotos
-               debugPrint(assetsGroup.count, photoMediaType.rawValue)
-               self.updateAssetsProcessingOfType(group: assetsGroup, mediaType: .userPhoto, contentType: photoMediaType, phassetsCount: assetsCount)
-          } largeVideo: { assets in
+		  } similarSelfiesPhoto: { assetsGroup in
+					/// `processing similar selfies assets group`
+			   let assetsCount = self.getAssetsCount(for: assetsGroup)
+			   let photoMediaType: PhotoMediaType = .similarSelfies
+			   debugPrint(assetsGroup.count, photoMediaType.rawValue)
+			   self.updateAssetsProcessingOfType(group: assetsGroup, mediaType: .userPhoto, contentType: photoMediaType, phassetsCount: assetsCount)
+		  } similarLivePhotos: { assetsGroup in
+					/// `processing similar live video group`
+			   let assetsCount = self.getAssetsCount(for: assetsGroup)
+			   let photoMediaType: PhotoMediaType = .similarLivePhotos
+			   debugPrint(assetsGroup.count, photoMediaType.rawValue)
+			   self.updateAssetsProcessingOfType(group: assetsGroup, mediaType: .userPhoto, contentType: photoMediaType, phassetsCount: assetsCount)
+		  } largeVideo: { assets in
                     /// `processing large video group`
                let photoMediaType: PhotoMediaType = .singleLargeVideos
                debugPrint(assets.count, photoMediaType.rawValue)
@@ -329,11 +335,11 @@ extension DeepCleaningViewController {
      }
      
      private func getAssetsCount(for groups: [PhassetGroup]) -> Int {
-          return groups.map({$0.assets}).map({$0}).count
+		  return groups.flatMap({$0.assets}).count
      }
      
      private func getContactsCount(for groups: [ContactsGroup]) -> Int {
-          return groups.map({$0.contacts}).map({$0}).count
+		  return groups.flatMap({$0.contacts}).count
      }
      
      private func getPhassetTotalCount(for contentType: PhotoMediaType) -> Int {
@@ -450,6 +456,9 @@ extension DeepCleaningViewController {
                case .deepCleanScreenShotsPhassetScan:
                     self.recieveNotification(by: .screenshots,
                                              info: notification.userInfo)
+			   case .deepCleanSimilarSelfiesPhassetScan:
+					self.recieveNotification(by: .similarSelfiePhotos,
+											 info: notification.userInfo)
                case .deepCleanSimilarLivePhotosPhaassetScan:
                     self.recieveNotification(by: .similarLivePhoto,
                                              info: notification.userInfo)
@@ -512,7 +521,7 @@ extension DeepCleaningViewController {
                totalPercentageCalculated = 0
           } else {
 			   debugPrint("--> \(self.totalDeepCleanProgress)")
-               totalPercentageCalculated = self.totalDeepCleanProgress.sum() / 12
+               totalPercentageCalculated = self.totalDeepCleanProgress.sum() / 13
           }
           
           if let cell = self.tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? DeepCleanInfoTableViewCell {
@@ -937,9 +946,9 @@ extension DeepCleaningViewController {
 		  
 		  for (key, value) in selectedAssetsCollectionID {
 			   switch key {
-					case .similarPhotos, .duplicatedPhotos, .similarLivePhotos, .duplicatedVideos, .similarVideos:
+					case .similarPhotos, .duplicatedPhotos, .similarSelfies, .similarLivePhotos, .duplicatedVideos, .similarVideos:
 						 photosVideoID.append(contentsOf: value)
-					case .singleScreenShots, .singleLivePhotos, .singleSelfies, .singleScreenRecordings, .singleLargeVideos:
+					case .singleScreenShots, .singleLivePhotos, .singleScreenRecordings, .singleLargeVideos:
 						 photosVideoID.append(contentsOf: value)
 					case .emptyContacts:
 						 contactsIDS.append(contentsOf: value)

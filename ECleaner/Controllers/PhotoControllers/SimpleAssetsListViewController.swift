@@ -516,6 +516,9 @@ extension SimpleAssetsListViewController: UIPopoverPresentationControllerDelegat
 
 //      MARK: - updating screen if photolibrary did change it content -
 extension SimpleAssetsListViewController: UpdatingChangesInOpenedScreensListeners {
+	
+	func getUpdatingSelfies() {}
+	
     
     /// updating screenshots
     func getUpdatingScreenShots() {
@@ -536,18 +539,5 @@ extension SimpleAssetsListViewController: UpdatingChangesInOpenedScreensListener
     }
     
     /// updating selfies
-    func getUpdatingSelfies() {
-        
-        if mediaType == .singleSelfies {
-			
-			let selfiePhotosOperation = photoManager.getSelfiePhotosOperation(from: S.lowerBoundSavedDate, to: S.upperBoundSavedDate) { selfies in
-				if self.assetCollection.count != selfies.count {
-					self.assetCollection = selfies
-					self.collectionView.reloadData()
-				}
-			}
-			photoManager.phassetProcessingOperationQueuer.addOperation(selfiePhotosOperation)
-        }
-    }
 }
 
