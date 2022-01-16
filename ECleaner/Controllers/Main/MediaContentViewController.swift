@@ -350,7 +350,7 @@ extension MediaContentViewController {
 		self.scanningProcessIsRunning = !self.scanningProcessIsRunning
 		self.currentlyScanningProcess = .similarSelfiesAssetsOperation
 		
-		let getSimilarSelfiesPhotoPhassetsOperation = photoManager.getSimilarSelfiePhotosOperation(from: lowerBoundDate, to: upperBoundDate, enableDeepCleanProcessingNotification: true) { similartSelfiesGroup in
+		let getSimilarSelfiesPhotoPhassetsOperation = photoManager.getSimilarSelfiePhotosOperation(from: lowerBoundDate, to: upperBoundDate, enableSingleProcessingNotification: true) { similartSelfiesGroup in
 			self.allSimilarSelfies = similartSelfiesGroup
 			self.photoManager.prefetchImagesForAsset(similartSelfiesGroup.flatMap({$0.assets}))
 			U.delay(0.5) {
@@ -684,7 +684,7 @@ extension MediaContentViewController {
     @objc func handleContentProgressUpdateNotification(_ notification: Notification) {
         
         guard let userInfo = notification.userInfo else { return }
-        
+		
         switch notification.name {
 				/// `photo phasset
 			case .singleSearchSimilarPhotoScan:

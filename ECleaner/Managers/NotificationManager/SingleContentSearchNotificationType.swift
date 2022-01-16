@@ -136,7 +136,7 @@ enum SingleContentSearchNotificationType {
 			case .screenShots:
 				return .singleSearchScreenShotsPhotoScan
 			case .similarSelfiesPhoto:
-				return .deepCleanSimilarSelfiesPhassetScan
+				return .singleSearchSimilarSelfiePhotoScan
 			case .livePhoto:
 				return .singleSearchLivePhotoScan
 			case .recentlyDeletedPhoto:

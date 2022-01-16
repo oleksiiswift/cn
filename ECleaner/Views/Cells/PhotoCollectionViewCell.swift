@@ -42,8 +42,6 @@ class PhotoCollectionViewCell: UICollectionViewCell {
 	public var cellContentType: MediaContentType = .none
     
     var delegate: PhotoCollectionViewCellDelegate?
-	
-	var pointOfNowReturn = 3
         
     override func prepareForReuse() {
         super.prepareForReuse()
@@ -91,7 +89,7 @@ extension PhotoCollectionViewCell: Themeble {
         videoAssetDurationView.setCorner(6)
 		
 		switch cellMediaType {
-			case .similarPhotos, .duplicatedPhotos, .duplicatedVideos, .similarVideos:
+			case .similarPhotos, .duplicatedPhotos, .duplicatedVideos, .similarVideos, .similarSelfies:
 				reuseTopConstraint.constant = 6
 				reuseBottomConstraint.constant = 6
 				reuseLeadingConstraint.constant = 6
@@ -106,7 +104,7 @@ extension PhotoCollectionViewCell: Themeble {
 	
     public func selectButtonSetup(by contentType: PhotoMediaType) {
         switch contentType {
-            case .duplicatedVideos, .similarVideos, .similarPhotos, .duplicatedPhotos:
+			case .duplicatedVideos, .similarVideos, .similarPhotos, .duplicatedPhotos, .similarSelfies:
                 if indexPath?.row != 0 {
                     selectCellButtonWidthConstraint.constant = 40
                     selectCellButtonHeightConstraint.constant = 40
@@ -151,7 +149,7 @@ extension PhotoCollectionViewCell: Themeble {
                     videoAssetDurationTextLabel.text = duration.durationText
 					playPhassetImageView.isHidden = false
                 }
-            case .duplicatedPhotos, .similarPhotos:
+			case .duplicatedPhotos, .similarPhotos, .similarSelfies, .similarLivePhotos:
                 videoAssetDurationView.isHidden = true
 				playPhassetImageView.isHidden = true
 			case .singleScreenRecordings, .singleRecentlyDeletedVideos, .singleLargeVideos:

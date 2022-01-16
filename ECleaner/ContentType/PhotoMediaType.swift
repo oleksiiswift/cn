@@ -104,8 +104,10 @@ enum PhotoMediaType: String {
                 return IndexPath(row: 1, section: 1)
             case .singleScreenShots:
                 return IndexPath(row: 2, section: 1)
+			case.similarSelfies:
+				return IndexPath(row: 3, section: 1)
             case .similarLivePhotos:
-                return IndexPath(row: 3, section: 1)
+                return IndexPath(row: 4, section: 1)
             case .singleLargeVideos:
                 return IndexPath(row: 0, section: 2)
             case .duplicatedVideos:
@@ -199,7 +201,9 @@ enum PhotoMediaType: String {
                         return .duplicatedPhotos
                     case 2:
                         return .singleScreenShots
-                    case 3:
+					case 3:
+						return .similarSelfies
+                    case 4:
                         return .similarLivePhotos
                     default:
                         return .none

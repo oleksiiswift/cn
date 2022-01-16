@@ -353,7 +353,7 @@ extension DeepCleaningViewController {
                     } else {
                          return 0
                     }
-               case .similarPhotos, .duplicatedPhotos, .similarLivePhotos, .similarVideos, .duplicatedVideos:
+			   case .similarPhotos, .duplicatedPhotos, .similarLivePhotos, .similarVideos, .duplicatedVideos, .similarSelfies:
                     if let phassetGroup = photoVideoFlowGroup[contentType] {
                          return getAssetsCount(for: phassetGroup)
                     } else {
@@ -399,7 +399,7 @@ extension DeepCleaningViewController: DeepCleanSelectableAssetsDelegate {
 					case .singleScreenShots, .singleLargeVideos, .singleScreenRecordings:
 						 self.photoVideoFlowGroup[contentType]?.first?.assets = updatableAssets
 						 updateCellInfoCount(by: contentType.contenType, contentType: contentType, assetsCount: updatableAssets.count)
-					case .similarPhotos, .duplicatedPhotos, .similarLivePhotos, .similarVideos, .duplicatedVideos:
+					case .similarPhotos, .duplicatedPhotos, .similarSelfies, .similarLivePhotos, .similarVideos, .duplicatedVideos:
 						 self.photoVideoFlowGroup[contentType] = updatableGroup
 						 updateCellInfoCount(by: contentType.contenType, contentType: contentType, assetsCount: updatableGroup.count)
 					case .emptyContacts, .duplicatedContacts, .duplicatedPhoneNumbers, .duplicatedEmails:
@@ -414,7 +414,7 @@ extension DeepCleaningViewController: DeepCleanSelectableAssetsDelegate {
 			   if !allSelectedAssetsIDS.isEmpty {
 					
 					switch contentType {
-						 case .singleScreenShots, .singleLargeVideos, .singleScreenRecordings, .similarPhotos, .duplicatedPhotos, .similarLivePhotos, .similarVideos, .duplicatedVideos:
+						 case .singleScreenShots, .singleLargeVideos, .singleScreenRecordings, .similarPhotos, .duplicatedPhotos, .similarLivePhotos, .similarVideos, .duplicatedVideos, .similarSelfies:
 							  let diskSpacePperation = photoManager.getAssetsUsedMemmoty(by: allSelectedAssetsIDS) { result in
 								   self.futuredCleaningSpaceUsage = result
 								   U.UI {
@@ -445,7 +445,7 @@ extension DeepCleaningViewController: DeepCleanSelectableAssetsDelegate {
 extension DeepCleaningViewController {
      
      @objc func flowRoatingHandleNotification(_ notification: Notification) {
-          
+		  
           switch notification.name {
                case .deepCleanSimilarPhotoPhassetScan:
                     self.recieveNotification(by: .similarPhoto,
@@ -496,6 +496,10 @@ extension DeepCleaningViewController {
           guard let userInfo = info,
                 let totalProcessingAssetsCount = userInfo[type.dictionaryCountName] as? Int,
                 let index = userInfo[type.dictionaryIndexName] as? Int else { return }
+		  
+		  if type == .similarSelfiePhotos {
+			   
+		  }
 		  
           calculateProgressPercentage(total: totalProcessingAssetsCount, current: index) { title, progress in
 			   U.delay(0.5) {
@@ -548,7 +552,7 @@ extension DeepCleaningViewController {
           let indexPath = notificationType.mediaTypeRawValue.deepCleanIndexPath
           self.currentProgressForRawMediatype[notificationType.mediaTypeRawValue] = currentProgressValue
 		  self.totalDeepCleanProgress[notificationType.positionInDeepCleanRowValue] = currentProgressValue
-  
+	 
           guard !indexPath.isEmpty else { return }
           
           guard let cell = tableView.cellForRow(at: indexPath) as? ContentTypeTableViewCell else { return }
@@ -582,7 +586,7 @@ extension DeepCleaningViewController {
 		  guard !isDeepCleanSearchingProcessRunning else { return }
 		  
           switch type {
-			   case .similarPhotos, .duplicatedPhotos, .similarLivePhotos, .duplicatedVideos, .similarVideos:
+			   case .similarPhotos, .duplicatedPhotos, .similarSelfies, .similarLivePhotos, .duplicatedVideos, .similarVideos:
 					if let group = photoVideoFlowGroup[type], !group.isEmpty {
 						 self.showGropedContoller(assets: type.rawValue, grouped: group, photoContent: type, media: type.contenType)
 					}
@@ -710,7 +714,7 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
 		  }
 		  
 		  switch photoMediaType {
-			   case .similarPhotos, .duplicatedPhotos, .similarLivePhotos, .duplicatedVideos, .similarVideos:
+			   case .similarPhotos, .duplicatedPhotos, .similarLivePhotos, .duplicatedVideos, .similarVideos, .similarSelfies:
 					if let selectedPhassetsIDS = selectedAssetsCollectionID[photoMediaType] {
 						 selectedPhassetsCount = selectedPhassetsIDS.count
 					}
@@ -845,6 +849,7 @@ extension DeepCleaningViewController {
           U.notificationCenter.addObserver(self, selector: #selector(flowRoatingHandleNotification(_:)), name: .deepCleanSimilarPhotoPhassetScan, object: nil)
           U.notificationCenter.addObserver(self, selector: #selector(flowRoatingHandleNotification(_:)), name: .deepCleanDuplicatedPhotoPhassetScan, object: nil)
           U.notificationCenter.addObserver(self, selector: #selector(flowRoatingHandleNotification(_:)), name: .deepCleanScreenShotsPhassetScan, object: nil)
+		  U.notificationCenter.addObserver(self, selector: #selector(flowRoatingHandleNotification(_:)), name: .deepCleanSimilarSelfiesPhassetScan, object: nil)
           U.notificationCenter.addObserver(self, selector: #selector(flowRoatingHandleNotification(_:)), name: .deepCleanSimilarLivePhotosPhaassetScan, object: nil)
           
           U.notificationCenter.addObserver(self, selector: #selector(flowRoatingHandleNotification(_:)), name: .deepCleanLargeVideoPhassetScan, object: nil)

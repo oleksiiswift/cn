@@ -48,7 +48,7 @@ class PhotoManager {
 	
 	private lazy var requestOptions: PHImageRequestOptions = {
 		let options = PHImageRequestOptions()
-		options.deliveryMode = .highQualityFormat
+		options.deliveryMode = .opportunistic
 		options.resizeMode = .fast
 		options.isNetworkAccessAllowed = true
 		return options
@@ -1205,6 +1205,11 @@ extension PhotoManager {
 
 extension PhotoManager {
 	
+	public func photoTargetSize() -> CGSize {
+		let scale = UIScreen.main.scale
+		return CGSize(width: 400 * scale, height: 400 * scale)
+	}
+	
 	public func sizeForAsset(_ asset: PHAsset, scale: CGFloat = 1) -> CGSize {
 		
 		let assetPropotion = CGFloat(asset.pixelWidth) / CGFloat(asset.pixelHeight)
@@ -1215,12 +1220,11 @@ extension PhotoManager {
 	}
 	
 	public func prefetchImagesForAsset(_ assets: [PHAsset]) {
-		
-		assets.forEach { asset in
-			debugPrint("chache thumnail: \(asset.localIdentifier)")
-			let targetSize = sizeForAsset(asset, scale: UIScreen.main.scale)
-			prefetchManager.startCachingImages(for: [asset], targetSize: targetSize, contentMode: .aspectFill, options: self.requestOptions)
-		}
+		prefetchManager.startCachingImages(for: assets, targetSize: photoTargetSize(), contentMode: .aspectFill, options: self.requestOptions)
+	}
+	
+	public func cancelPrefetchImagesFor(_ assets: [PHAsset]) {
+		prefetchManager.stopCachingImages(for: assets, targetSize: photoTargetSize(), contentMode: .aspectFill, options: self.requestOptions)
 	}
 	
 	public func requestChacheImageForPhasset(_ asset: PHAsset, completion: @escaping (_ image: UIImage?) -> Void) {
