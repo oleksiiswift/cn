@@ -867,14 +867,14 @@ extension GroupedAssetListViewController: SNCollectionViewLayoutDelegate {
 //      MARK: - prefetching data source -
 extension GroupedAssetListViewController: UICollectionViewDataSourcePrefetching {
 		
-	private func requestPhassets(for indexPaths: [IndexPath]) -> [PHAsset] {
-		return indexPaths.compactMap({ self.assetGroups[$0.section].assets[$0.item]})
-	}
-		
+    private func requestPhassets(for indexPaths: [IndexPath]) -> [PHAsset] {
+        return indexPaths.compactMap({ self.assetGroups[$0.section].assets[$0.item]})
+    }
+
     func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
 		
 		let phassets = requestPhassets(for: indexPaths)
-		self.photoManager.prefetchImagesForAsset(phassets)
+        self.photoManager.prefetchsForPHAssets(phassets)
         
 //        U.UI { [weak self] in
 //
@@ -892,7 +892,8 @@ extension GroupedAssetListViewController: UICollectionViewDataSourcePrefetching 
     }
 	
 	func collectionView(_ collectionView: UICollectionView, cancelPrefetchingForItemsAt indexPaths: [IndexPath]) {
-		
+        let phassets = requestPhassets(for: indexPaths)
+        self.photoManager.cancelFetchForPHAseets(phassets)
 	}
 }
 

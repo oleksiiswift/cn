@@ -45,10 +45,10 @@ class PhotoManager {
 	
 	private var fetchManager = PHAssetFetchManager.shared
 	private var prefetchManager = PHCachingImageManager()
-	
 	private lazy var requestOptions: PHImageRequestOptions = {
 		let options = PHImageRequestOptions()
-		options.deliveryMode = .opportunistic
+        options.isSynchronous = false
+        options.deliveryMode = .opportunistic
 		options.resizeMode = .fast
 		options.isNetworkAccessAllowed = true
 		return options
@@ -58,6 +58,7 @@ class PhotoManager {
 
 	public let phassetProcessingOperationQueuer = OperationProcessingQueuer(name: Constants.key.operation.queue.phassets, maxConcurrentOperationCount: 10, qualityOfService: .background)
 	public let serviceUtilsCalculatedOperationsQueuer = OperationProcessingQueuer(name: Constants.key.operation.queue.utils, maxConcurrentOperationCount: 10, qualityOfService: .background)
+    public let prefetchOperationQueue = OperationProcessingQueuer(name: C.key.operation.queue.deepClean, maxConcurrentOperationCount: 5, qualityOfService: .background)
 	
 	var assetCollection: PHAssetCollection?
 	
@@ -678,7 +679,7 @@ extension PhotoManager {
 						if enableSingleProcessingNotification {
 							self.progressSearchNotificationManager.sendSingleSearchProgressNotification(notificationtype: .livePhoto, totalProgressItems: livePhotosLibrary.count, currentProgressItem: livePhotoPosition)
 						} else if enableDeepCleanProcessingNotification {
-//							self.progressSearchNotificationManager.sendDeepProgressNotificatin(notificationType: ., totalProgressItems: livePhotosLibrary.count, currentProgressItem: livePhotoPosition)
+                            self.progressSearchNotificationManager.sendDeepProgressNotificatin(notificationType: .similarLivePhoto, totalProgressItems: livePhotosLibrary.count, currentProgressItem: livePhotoPosition)
 						}
 						livePhotos.append(livePhotosLibrary[livePhotoPosition - 1])
 					}
@@ -1089,8 +1090,6 @@ extension PhotoManager {
 		deletePhassetsOperation.name = C.key.operation.name.deletePhassetsOperation
 		return deletePhassetsOperation
 	}
-	
-	
 }
 
 
@@ -1197,55 +1196,62 @@ extension PhotoManager {
 				completionHandler(calculatedResult)
 			}
 		}
-		
 		return getAssetsByIdOperation
 	}
 }
 
-
+//  MARK: -fetch prefetch operations-
 extension PhotoManager {
-	
-	public func photoTargetSize() -> CGSize {
-		let scale = UIScreen.main.scale
-		return CGSize(width: 400 * scale, height: 400 * scale)
-	}
-	
-	public func sizeForAsset(_ asset: PHAsset, scale: CGFloat = 1) -> CGSize {
-		
-		let assetPropotion = CGFloat(asset.pixelWidth) / CGFloat(asset.pixelHeight)
-		let imageHeight: CGFloat = 400
-		let imageWidth = floor(assetPropotion * imageHeight)
-		
-		return CGSize(width: imageWidth * scale, height: imageHeight * scale)
-	}
-	
-	public func prefetchImagesForAsset(_ assets: [PHAsset]) {
-		prefetchManager.startCachingImages(for: assets, targetSize: photoTargetSize(), contentMode: .aspectFill, options: self.requestOptions)
-	}
-	
-	public func cancelPrefetchImagesFor(_ assets: [PHAsset]) {
-		prefetchManager.stopCachingImages(for: assets, targetSize: photoTargetSize(), contentMode: .aspectFill, options: self.requestOptions)
-	}
-	
-	public func requestChacheImageForPhasset(_ asset: PHAsset, completion: @escaping (_ image: UIImage?) -> Void) {
-		let targetSize = sizeForAsset(asset, scale: UIScreen.main.scale)
-		requestOptions.isSynchronous = true
-		
-		if asset.representsBurst {
-			prefetchManager.requestImageDataAndOrientation(for: asset, options: requestOptions) { data, _, _, _ in
-				let image = data.flatMap { UIImage(data: $0) }
-				completion(image)
-			}
-		}
-		else {
-			prefetchManager.requestImage(for: asset, targetSize: targetSize, contentMode: .aspectFill, options: requestOptions) { image, _ in
-				completion(image)
-			}
-		}
-	}
+    
+    public func prefetchsForPHAssets(_ assets: [PHAsset]) {
+
+            let phassetOperation = ConcurrentProcessOperation { operation in
+                
+                self.prefetchManager.startCachingImages(for: assets, targetSize: self.prefetchPhotoTargetSize(), contentMode: .aspectFill, options: self.requestOptions)
+            }
+
+            prefetchOperationQueue.addOperation(phassetOperation)
+    }
+    
+    public func cancelFetchForPHAseets(_ assets: [PHAsset]) {
+        
+        self.prefetchManager.stopCachingImages(for: assets, targetSize: self.prefetchPhotoTargetSize(), contentMode: .aspectFill, options: self.requestOptions)
+    }
+    
+    public func requestChacheImageForPhasset(_ asset: PHAsset, completion: @escaping (_ image: UIImage?) -> Void) {
+        let targetSize = self.prefetchPhotoTargetSize()
+        
+        if asset.representsBurst {
+            prefetchManager.requestImageDataAndOrientation(for: asset, options: self.requestOptions) { data, _, _, _ in
+                let image = data.flatMap { UIImage(data: $0) }
+                completion(image)
+            }
+        }
+        else {
+            prefetchManager.requestImage(for: asset, targetSize: targetSize, contentMode: .aspectFill, options: requestOptions) { image, _ in
+                completion(image)
+            }
+        }
+    }
+    
+        /// 'get size for asset'
+    public func prefetchPhotoTargetSize() -> CGSize {
+        let scale = UIScreen.main.scale
+        return CGSize(width: 150 * scale, height: 150 * scale)
+    }
+    
+    public func sizeForAsset(_ asset: PHAsset, scale: CGFloat = 1) -> CGSize {
+        
+        let assetPropotion = CGFloat(asset.pixelWidth) / CGFloat(asset.pixelHeight)
+        let imageHeight: CGFloat = 400
+        let imageWidth = floor(assetPropotion * imageHeight)
+        
+        return CGSize(width: imageWidth * scale, height: imageHeight * scale)
+    }
 }
 
 
+#warning("WORK IN PROGRESS")
 extension PhotoManager {
 	
 	public func recoverSelectedOperation(assets: [PHAsset], completion: @escaping ((Bool) -> Void)) -> ConcurrentProcessOperation {

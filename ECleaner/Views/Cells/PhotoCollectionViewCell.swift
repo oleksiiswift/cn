@@ -47,6 +47,7 @@ class PhotoCollectionViewCell: UICollectionViewCell {
         super.prepareForReuse()
         
         photoCheckmarkImageView.image = I.systemElementsItems.circleBox
+        photoThumbnailImageView.image = nil
     }
 
     override func awakeFromNib() {

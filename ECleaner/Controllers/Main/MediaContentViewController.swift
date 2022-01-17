@@ -306,7 +306,7 @@ extension MediaContentViewController {
 		
 		let duplicatedPhotoAssetOperation = photoManager.getDuplicatedPhotosAsset(from: lowerBoundDate, to: upperBoundDate, enableSingleProcessingNotification: true) { duplicateGroup in
 			self.duplicatedPhoto = duplicateGroup
-			self.photoManager.prefetchImagesForAsset(duplicateGroup.flatMap({$0.assets}))
+//			self.photoManager.prefetchImagesForAsset(duplicateGroup.flatMap({$0.assets}))
 			U.delay(0.5) {
 				ProgressSearchNotificationManager.instance.sendSingleSearchProgressNotification(notificationtype: .duplicatedPhoto, totalProgressItems: 1, currentProgressItem: 1)
 				U.delay(1) {
@@ -329,7 +329,7 @@ extension MediaContentViewController {
 		
 		let getScreenShotsAssetsOperation = photoManager.getScreenShotsOperation(from: lowerBoundDate, to: upperBoundDate, enableSingleProcessingNotification: true) { screenshots in
 			self.allScreenShots = screenshots
-			self.photoManager.prefetchImagesForAsset(screenshots)
+//			self.photoManager.prefetchImagesForAsset(screenshots)
 			U.delay(0.5) {
 				ProgressSearchNotificationManager.instance.sendSingleSearchProgressNotification(notificationtype: .screenShots, totalProgressItems: 1, currentProgressItem: 1)
 				U.delay(1) {
@@ -352,7 +352,7 @@ extension MediaContentViewController {
 		
 		let getSimilarSelfiesPhotoPhassetsOperation = photoManager.getSimilarSelfiePhotosOperation(from: lowerBoundDate, to: upperBoundDate, enableSingleProcessingNotification: true) { similartSelfiesGroup in
 			self.allSimilarSelfies = similartSelfiesGroup
-			self.photoManager.prefetchImagesForAsset(similartSelfiesGroup.flatMap({$0.assets}))
+//			self.photoManager.prefetchImagesForAsset(similartSelfiesGroup.flatMap({$0.assets}))
 			U.delay(0.5) {
 				ProgressSearchNotificationManager.instance.sendSingleSearchProgressNotification(notificationtype: .similarSelfiesPhoto, totalProgressItems: 1, currentProgressItem: 1)
 				U.delay(1) {
@@ -374,7 +374,7 @@ extension MediaContentViewController {
 		self.currentlyScanningProcess = .livePhotoAssetsOperation
 		let getLivePhotoAssetsOperation = photoManager.getLivePhotosOperation(from: lowerBoundDate, to: upperBoundDate, enableSingleProcessingNotification: true) { livePhoto in
 			self.allLiveFotos = livePhoto
-			self.photoManager.prefetchImagesForAsset(livePhoto)
+//			self.photoManager.prefetchImagesForAsset(livePhoto)
 			U.delay(0.5) {
 				ProgressSearchNotificationManager.instance.sendSingleSearchProgressNotification(notificationtype: .livePhoto, totalProgressItems: 1, currentProgressItem: 1)
 				U.delay(1) {
@@ -421,7 +421,7 @@ extension MediaContentViewController {
 		self.currentlyScanningProcess = .largeVideoContentOperation
 		let getLargevideoContentOperation = photoManager.getLargevideoContentOperation(from: lowerBoundDate, to: upperBoundDate, enableSingleProcessingNotification: true) { largeVodeoAsset in
 			self.allLargeVideos = largeVodeoAsset
-			self.photoManager.prefetchImagesForAsset(largeVodeoAsset)
+//			self.photoManager.prefetchImagesForAsset(largeVodeoAsset)
 			U.delay(0.5) {
 				ProgressSearchNotificationManager.instance.sendSingleSearchProgressNotification(notificationtype: .largeVideo, totalProgressItems: 1, currentProgressItem: 1)
 				U.delay(1) {
@@ -444,7 +444,7 @@ extension MediaContentViewController {
 		self.currentlyScanningProcess = .duplicatedVideoAssetOperation
 		let getDuplicatedVideoAssetOperatioon = photoManager.getDuplicatedVideoAssetOperation(from: lowerBoundDate, to: upperBoundDate, enableSingleProcessingNotification: true) { duplicatedVideoAsset in
 			self.allDuplicatesVideos = duplicatedVideoAsset
-			self.photoManager.prefetchImagesForAsset(duplicatedVideoAsset.flatMap({$0.assets}))
+//			self.photoManager.prefetchImagesForAsset(duplicatedVideoAsset.flatMap({$0.assets}))
 			U.delay(0.5) {
 				ProgressSearchNotificationManager.instance.sendSingleSearchProgressNotification(notificationtype: .duplicatedVideo, totalProgressItems: 1, currentProgressItem: 1)
 				U.delay(1) {
@@ -466,7 +466,7 @@ extension MediaContentViewController {
 		self.currentlyScanningProcess = .similarVideoAssetsOperation
 		let getSimilarVideoAssetsOperation = photoManager.getSimilarVideoAssetsOperation(from: lowerBoundDate, to: upperBoundDate, enableSingleProcessingNotification: true) { similiarVideoAsset in
 			self.allSimmilarVideos = similiarVideoAsset
-			self.photoManager.prefetchImagesForAsset(similiarVideoAsset.flatMap({$0.assets}))
+//			self.photoManager.prefetchImagesForAsset(similiarVideoAsset.flatMap({$0.assets}))
 			U.delay(0.5) {
 				ProgressSearchNotificationManager.instance.sendSingleSearchProgressNotification(notificationtype: .similarVideo, totalProgressItems: 1, currentProgressItem: 1)
 				U.delay(1) {
@@ -488,7 +488,7 @@ extension MediaContentViewController {
 		self.currentlyScanningProcess = .screenRecordingsVideoOperation
 		let getScreenRecordsVideosOperation = photoManager.getScreenRecordsVideosOperation(from: lowerBoundDate, to: upperBoundDate, enableSingleProcessingNotification: true) { screenRecordsAssets in
 			self.allScreenRecords = screenRecordsAssets
-			self.photoManager.prefetchImagesForAsset(screenRecordsAssets)
+//			self.photoManager.prefetchImagesForAsset(screenRecordsAssets)
 			U.delay(0.5) {
 				ProgressSearchNotificationManager.instance.sendSingleSearchProgressNotification(notificationtype: .screenRecordings, totalProgressItems: 1, currentProgressItem: 1)
 				U.delay(1) {
