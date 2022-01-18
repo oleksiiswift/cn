@@ -48,7 +48,7 @@ class PhotoManager {
 	private lazy var requestOptions: PHImageRequestOptions = {
 		let options = PHImageRequestOptions()
         options.isSynchronous = false
-        options.deliveryMode = .opportunistic
+		options.deliveryMode = .opportunistic
 		options.resizeMode = .fast
 		options.isNetworkAccessAllowed = true
 		return options
@@ -232,6 +232,9 @@ extension PhotoManager {
 					completionHandler(videos)
 				} else {
 					completionHandler([])
+					if enableDeepCleanProcessingNotification {
+						self.sendZeroPhassetsNotification(of: .largeVideo)
+					}
 				}
 			}
 		}
@@ -278,6 +281,9 @@ extension PhotoManager {
 					completionHandler(screenRecords)
 				} else {
 					completionHandler([])
+					if enableDeepCleanProcessingNotification {
+						self.sendZeroPhassetsNotification(of: .screenRecordings)
+					}
 				}
 			}
 		}
@@ -314,6 +320,9 @@ extension PhotoManager {
 				
 			} else {
 				completionHandler([])
+				if enableDeepCleanProcessingNotification {
+					self.sendZeroPhassetsNotification(of: .similarVideo)
+				}
 			}
 		}
 	}
@@ -428,6 +437,9 @@ extension PhotoManager {
 					completionHandler(duplicateVideoGroups)
 				} else {
 					completionHandler([])
+					if enableDeepCleanProcessingNotification {
+						self.sendZeroPhassetsNotification(of: .duplicateVideo)
+					}
 				}
 			}
 		}
@@ -578,6 +590,9 @@ extension PhotoManager {
 					completionHandler(group)
 				} else {
 					completionHandler([])
+					if enableDeepCleanProcessingNotification {
+						self.sendZeroPhassetsNotification(of: .similarSelfiePhotos)
+					}
 				}
 			}
 		}
@@ -652,6 +667,9 @@ extension PhotoManager {
 					completionHandler(screens)
 				} else {
 					completionHandler([])
+					if enableDeepCleanProcessingNotification {
+						self.sendZeroPhassetsNotification(of: .screenshots)
+					}
 				}
 			}
 		}
@@ -686,6 +704,9 @@ extension PhotoManager {
 					completionHandler(livePhotos)
 				} else {
 					completionHandler([])
+					if enableDeepCleanProcessingNotification {
+						self.sendZeroPhassetsNotification(of: .similarLivePhoto)
+					}
 				}
 			}
 		}
@@ -775,6 +796,9 @@ extension PhotoManager {
 					completionHandler(group)
 				} else {
 					completionHandler([])
+					if enableDeepCleanProcessingNotification {
+						self.sendZeroPhassetsNotification(of: .similarPhoto)
+					}
 				}
 			}
 		}
@@ -826,6 +850,9 @@ extension PhotoManager {
 					
 				} else {
 					completionHandler([])
+					if enableDeepCleanProcessingNotification {
+						self.sendZeroPhassetsNotification(of: .similarLivePhoto)
+					}
 				}
 			}
 		}
@@ -880,6 +907,9 @@ extension PhotoManager {
 					
 				} else {
 					completionHandler([])
+					if enableDeepCleanProcessingNotification {
+						self.sendZeroPhassetsNotification(of: .duplicatePhoto)
+					}
 				}
 			}
 		}
@@ -1067,6 +1097,16 @@ extension PhotoManager {
 	}
 }
 
+extension PhotoManager {
+	
+	private func sendZeroPhassetsNotification(of type: DeepCleanNotificationType) {
+		U.delay(1) {
+			self.progressSearchNotificationManager.sendDeepProgressNotificatin(notificationType: type,
+																			   totalProgressItems: 1,
+																			   currentProgressItem: 1)
+		}
+	}
+}
 
 extension PhotoManager {
 	
@@ -1206,38 +1246,44 @@ extension PhotoManager {
     public func prefetchsForPHAssets(_ assets: [PHAsset]) {
 
             let phassetOperation = ConcurrentProcessOperation { operation in
-                
-                self.prefetchManager.startCachingImages(for: assets, targetSize: self.prefetchPhotoTargetSize(), contentMode: .aspectFill, options: self.requestOptions)
+                self.prefetchManager.startCachingImages(for: assets, targetSize: self.prefetchPhotoTargetSize(), contentMode: .aspectFit, options: self.requestOptions)
             }
-
             prefetchOperationQueue.addOperation(phassetOperation)
     }
     
     public func cancelFetchForPHAseets(_ assets: [PHAsset]) {
-        
-        self.prefetchManager.stopCachingImages(for: assets, targetSize: self.prefetchPhotoTargetSize(), contentMode: .aspectFill, options: self.requestOptions)
+        self.prefetchManager.stopCachingImages(for: assets, targetSize: self.prefetchPhotoTargetSize(), contentMode: .aspectFit, options: self.requestOptions)
     }
     
-    public func requestChacheImageForPhasset(_ asset: PHAsset, completion: @escaping (_ image: UIImage?) -> Void) {
+	public func requestChacheImageForPhasset(_ asset: PHAsset, completion: @escaping (_ image: UIImage?,_ id: String) -> Void) {
         let targetSize = self.prefetchPhotoTargetSize()
-        
+	
         if asset.representsBurst {
-            prefetchManager.requestImageDataAndOrientation(for: asset, options: self.requestOptions) { data, _, _, _ in
+			prefetchManager.requestImageDataAndOrientation(for: asset, options: self.requestOptions) { data, _, _, _ in
                 let image = data.flatMap { UIImage(data: $0) }
-                completion(image)
+				completion(image, asset.localIdentifier)
             }
         }
         else {
-            prefetchManager.requestImage(for: asset, targetSize: targetSize, contentMode: .aspectFill, options: requestOptions) { image, _ in
-                completion(image)
+			prefetchManager.requestImage(for: asset, targetSize: targetSize, contentMode: .aspectFit, options: self.requestOptions) { image, _ in
+					completion(image, asset.localIdentifier)
             }
         }
     }
+	
+	
+	public func loadChacheImageForPhasset(_ asset: PHAsset) -> UIImage? {
+		var resultImage: UIImage?
+		prefetchManager.requestImage(for: asset, targetSize: self.prefetchPhotoTargetSize(), contentMode: .aspectFill, options: self.requestOptions) { image, _ in
+			resultImage = image
+		}
+		return resultImage
+	}
     
         /// 'get size for asset'
     public func prefetchPhotoTargetSize() -> CGSize {
         let scale = UIScreen.main.scale
-        return CGSize(width: 150 * scale, height: 150 * scale)
+        return CGSize(width: 300 * scale, height: 300 * scale)
     }
     
     public func sizeForAsset(_ asset: PHAsset, scale: CGFloat = 1) -> CGSize {
@@ -1404,3 +1450,7 @@ extension PhotoManager {
 		return recoverPhassetsOperation
 	}
 }
+
+
+
+

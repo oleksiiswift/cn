@@ -354,7 +354,7 @@ extension MainViewController: UpdateColorsDelegate {
     private func setupUI() {
                 
         scrollView.alwaysBounceVertical = true
-        bottomButtonBarView.title("DEEP_CLEANING_BUTTON_TITLE".localized())
+        bottomButtonBarView.title("START DEEP CLEAN")
         bottomButtonBarView.actionButton.imageSize = CGSize(width: 25, height: 25)
         bottomButtonBarView.setImage(I.mainStaticItems.clean)
     }

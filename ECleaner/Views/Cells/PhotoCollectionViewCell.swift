@@ -136,11 +136,17 @@ extension PhotoCollectionViewCell: Themeble {
 		circleSelectThumbView.backgroundColor = theme.cellBackGroundColor
 		bulbview.backgroundColor = cellContentType.screenAcentTintColor
     }
+	
+	public func loadThumnailImage(_ image: UIImage) {
+		self.photoThumbnailImageView.image = image
+	}
     
-    public func loadCellThumbnail(_ asset: PHAsset, image: UIImage?) {
+    public func loadCellThumbnail(_ asset: PHAsset) {
+		
+		let image = PhotoManager.shared.loadChacheImageForPhasset(asset)
+		self.photoThumbnailImageView.contentMode = .scaleAspectFill
+		self.photoThumbnailImageView.image = image
 
-        photoThumbnailImageView.contentMode = .scaleAspectFill
-        photoThumbnailImageView.image = image
 		playPhassetImageView.image = I.systemItems.defaultItems.onViewPlayButton
                 
         switch cellMediaType {

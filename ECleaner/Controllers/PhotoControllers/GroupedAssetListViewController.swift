@@ -42,6 +42,7 @@ class GroupedAssetListViewController: UIViewController, UIPageViewControllerDele
 	private var selectedAssets: [PHAsset] = []
 	private var selectedSection: Set<Int> = []
 	private var previouslySelectedIndexPaths: [IndexPath] = []
+	private var fetchPhaset: [IndexPath : UIImage] = [:]
 
     @IBOutlet weak var photoPreviewContainerView: UIView!
     @IBOutlet weak var photoContentContainerView: UIView!
@@ -273,6 +274,8 @@ extension GroupedAssetListViewController {
 	
 	private func configure(_ cell: PhotoCollectionViewCell, at indexPath: IndexPath) {
 		
+		let asset = assetGroups[indexPath.section].assets[indexPath.row]
+		
 		cell.delegate = self
 		cell.indexPath = indexPath
 		cell.cellMediaType = self.mediaType
@@ -288,11 +291,7 @@ extension GroupedAssetListViewController {
 		}
 		
 		cell.checkIsSelected()
-		
-        let asset = assetGroups[indexPath.section].assets[indexPath.row]
-		self.photoManager.requestChacheImageForPhasset(asset) { image in
-			cell.loadCellThumbnail(asset, image: image)
-		}
+		cell.loadCellThumbnail(asset)
 	}
 	
 	public func hederConfigure(_ view: GroupedAssetsReusableHeaderView, at indexPath: IndexPath) {

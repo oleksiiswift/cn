@@ -97,7 +97,6 @@ class DeepCleaningViewController: UIViewController {
           
 		  deepCleanManager.cancelAllOperation()
           setupUI()
-          setProcessingActionButton(.redyForStartingCleaning)
           setupNavigation()
           setupTableView()
           setupDateInterval()
@@ -105,6 +104,8 @@ class DeepCleaningViewController: UIViewController {
           setupObservers()
 		  setupDelegate()
           updateColors()
+		  setProcessingActionButton(.willStartCleaning)
+		  prepareStartDeepCleanProcessing()
      }
      
      override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -552,7 +553,7 @@ extension DeepCleaningViewController {
           let indexPath = notificationType.mediaTypeRawValue.deepCleanIndexPath
           self.currentProgressForRawMediatype[notificationType.mediaTypeRawValue] = currentProgressValue
 		  self.totalDeepCleanProgress[notificationType.positionInDeepCleanRowValue] = currentProgressValue
-	 
+		  
           guard !indexPath.isEmpty else { return }
           
           guard let cell = tableView.cellForRow(at: indexPath) as? ContentTypeTableViewCell else { return }
@@ -615,6 +616,7 @@ extension DeepCleaningViewController {
 		  if let selectedStringsIDs = selectedAssetsCollectionID[type] {
 			   viewController.handlePreviousSelected(selectedAssetsIDs: selectedStringsIDs, assetGroupCollection: collection)
 		  }
+		  self.prefetchPHAssets(collection.flatMap({$0.assets}))
           viewController.title = title
           viewController.isDeepCleaningSelectableFlow = true
           viewController.assetGroups = collection
@@ -630,6 +632,7 @@ extension DeepCleaningViewController {
 		  if let selectedStringsIDs = selectedAssetsCollectionID[type] {
 			   viewController.handleAssetsPreviousSelected(selectedAssetsIDs: selectedStringsIDs, assetCollection: collection)
 		  }
+		  self.prefetchPHAssets(collection)
           viewController.title = title
           viewController.isDeepCleaningSelectableFlow = true
           viewController.assetCollection = collection
@@ -667,6 +670,12 @@ extension DeepCleaningViewController {
 		  viewController.mediaType = .userContacts
 		  viewController.selectedContactsDelegate = self
 		  self.navigationController?.pushViewController(viewController, animated: true)
+	 }
+	 
+	 private func prefetchPHAssets(_ assets: [PHAsset]) {
+		  U.BG {
+			   self.photoManager.prefetchsForPHAssets(assets)
+		  }
 	 }
 }
 
