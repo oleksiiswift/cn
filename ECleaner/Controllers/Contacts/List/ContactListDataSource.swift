@@ -91,6 +91,14 @@ extension ContactListDataSource: UITableViewDelegate, UITableViewDataSource {
         tableView.deselectRow(at: indexPath, animated: false)
         self.didSelectDeselectContact()
     }
+	
+	func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+		if contactContentIsEditing {
+			return indexPath
+		} else {
+			return nil
+		}
+	}
 }
 
 extension ContactListDataSource: UIScrollViewDelegate {

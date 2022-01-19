@@ -93,12 +93,12 @@ class ContactsViewController: UIViewController {
 		super.viewWillAppear(animated)
 		
 		!previouslySelectedIndexPaths.isEmpty ? didSelectPreviousIndexPath() : ()
+		previouslySelectedIndexPaths.isEmpty ? handleStartingSelectableContacts() : ()
 	}
 	
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
 		
-		previouslySelectedIndexPaths.isEmpty ? handleStartingSelectableContacts() : ()
 	}
 	
     
@@ -157,7 +157,7 @@ extension ContactsViewController {
     }
     
     private func setContactsSelect(_ allSelected: Bool, completionHandler: @escaping () -> Void) {
-        
+		
         for section in 0..<tableView.numberOfSections {
             for row in 0..<tableView.numberOfRows(inSection: section) {
                 let indexPath = IndexPath(row: row, section: section)
@@ -191,14 +191,12 @@ extension ContactsViewController {
 	private func didSelectPreviousIndexPath() {
 		
 		guard isDeepCleaningSelectableFlow, !previouslySelectedIndexPaths.isEmpty else { return }
-	
+		self.handleEdit()
 		for indexPath in previouslySelectedIndexPaths {
 			_ = tableView.delegate?.tableView?(tableView, willSelectRowAt: indexPath)
 			tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
 			tableView.delegate?.tableView?(tableView, didSelectRowAt: indexPath)
 		}
-		
-		self.handleEdit()
 	}
     
     @objc func didSelectDeselectContact() {
@@ -334,7 +332,7 @@ extension ContactsViewController {
 	}
 	
 	private func handleGroupedPreviousSelected(contactsGroups: [ContactsGroup], selectedContactsIDs: [String]) {
-		
+	
 		for selectedContactsID in selectedContactsIDs {
 			
 			let sectionIndex = contactsGroups.firstIndex(where: {
@@ -685,6 +683,7 @@ extension ContactsViewController: NavigationBarDelegate {
 				self.navigationController?.popViewController(animated: true)
 			}
 		} else {
+			self.selectedContactsDelegate?.didSelect(assetsListIds: [], contentType: contentType, updatableGroup: [], updatableAssets: [], updatableContactsGroup: contactGroup)
 			self.navigationController?.popViewController(animated: true)
 		}
 	}

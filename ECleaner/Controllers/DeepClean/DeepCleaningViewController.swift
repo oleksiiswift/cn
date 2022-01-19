@@ -646,11 +646,11 @@ extension DeepCleaningViewController {
 		  let storyboard = UIStoryboard(name: C.identifiers.storyboards.contacts, bundle: nil)
 		  let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.contacts) as! ContactsViewController
 		  if let selectedStringsIDs = selectedAssetsCollectionID[contentType] {
-			   viewController.handleContactsPreviousSelected(selectedContactsIDs: selectedStringsIDs, contactsCollection: contacts, contactsGroupCollection: contactGroup)
+			   viewController.handleContactsPreviousSelected(selectedContactsIDs: selectedStringsIDs, contactsCollection: contacts, contactsGroupCollection: contactGroup.filter({!$0.contacts.isEmpty}))
 		  }
 		  viewController.isDeepCleaningSelectableFlow = true
 		  viewController.contacts = contacts
-		  viewController.contactGroup = contactGroup
+		  viewController.contactGroup = contactGroup.filter({!$0.contacts.isEmpty})
 		  viewController.mediaType = .userContacts
 		  viewController.contentType = contentType
 		  viewController.selectedContactsDelegate = self
@@ -661,10 +661,10 @@ extension DeepCleaningViewController {
 		  let storyboard = UIStoryboard(name: C.identifiers.storyboards.contactsGroup, bundle: nil)
 		  let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.contactsGroup) as! ContactsGroupViewController
 		  if let selectedStringsIDs = selectedAssetsCollectionID[content] {
-			   viewController.handleContactsPreviousSelected(selectedContactsIDs: selectedStringsIDs, contactsGroupCollection: group)
+			   viewController.handleContactsPreviousSelected(selectedContactsIDs: selectedStringsIDs, contactsGroupCollection:  group.filter({!$0.contacts.isEmpty}))
 		  }
 		  viewController.isDeepCleaningSelectableFlow = true
-		  viewController.contactGroup = group
+		  viewController.contactGroup = group.filter({!$0.contacts.isEmpty})
 		  viewController.navigationTitle = content.mediaTypeName
 		  viewController.contentType = content
 		  viewController.mediaType = .userContacts

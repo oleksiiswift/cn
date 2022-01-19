@@ -11,7 +11,6 @@ import UIKit
 class EmptyContactListDataSource: NSObject {
     
     public var emptyContactGroupListViewModel: ContactGroupListViewModel
-    
     public var isContactAvailable: ((Bool) -> (Void)) = {_ in}
     public var didSelectContact: ((ContactListViewModel) -> Void) = {_ in}
     public var contactContentIsEditing: Bool = false
@@ -80,4 +79,12 @@ extension EmptyContactListDataSource: UITableViewDelegate, UITableViewDataSource
         tableView.deselectRow(at: indexPath, animated: false)
         self.didSelectDeselectContact()
     }
+	
+	func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+		if contactContentIsEditing {
+			return indexPath
+		} else {
+			return nil
+		}
+	}
 }
