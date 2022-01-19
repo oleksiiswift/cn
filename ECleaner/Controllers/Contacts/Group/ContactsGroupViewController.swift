@@ -7,6 +7,7 @@
 
 import UIKit
 import Contacts
+import SwiftMessages
 
 class ContactsGroupViewController: UIViewController {
     
@@ -15,25 +16,11 @@ class ContactsGroupViewController: UIViewController {
     @IBOutlet weak var bottomButtonBarView: BottomButtonBarView!
     @IBOutlet weak var bottomButtonHeightConstraint: NSLayoutConstraint!
     
-    lazy var selectAllOptionItem = DropDownOptionsMenuItem(titleMenu: "select all",
-                                                           itemThumbnail: I.systemItems.selectItems.roundedCheckMark,
-                                                           isSelected: true,
-                                                           menuItem: .selectAll)
-    
-    lazy var deselectAllOptionItem = DropDownOptionsMenuItem(titleMenu: "deselect all",
-                                                             itemThumbnail: I.systemItems.selectItems.circleMark,
-                                                             isSelected: true,
-                                                             menuItem: .deselectAll)
-    
-    lazy var exportSelectedContacts = DropDownOptionsMenuItem(titleMenu: "export selected",
-                                                              itemThumbnail: I.systemItems.defaultItems.share,
-                                                              isSelected: true,
-                                                              menuItem: .share)
-	
 	public var selectedContactsDelegate: DeepCleanSelectableAssetsDelegate?
-    
+	
     private var contactsManager = ContactsManager.shared
     private var progressAlert = ProgressAlertController.shared
+	private var shareManager = ShareManager.shared
     public var contactGroup: [ContactsGroup] = []
     public var contactGroupListViewModel: ContactGroupListViewModel!
     public var contactGroupListDataSource: ContactsGroupDataSource!
@@ -81,6 +68,15 @@ class ContactsGroupViewController: UIViewController {
         super.viewDidDisappear(animated)
 
     }
+	
+	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+		switch segue.identifier {
+			case C.identifiers.segue.showExportContacts:
+				self.setupShowExportContactController(segue: segue)
+			default:
+				return
+		}
+	}
 }
 
 //      MARK: - operations with contacts methods -
@@ -89,11 +85,11 @@ extension ContactsGroupViewController {
     private func didSelectDeselecAllItems() {
         
         if !isSelectedAllItems {
-            for index in 0...self.contactGroup.count - 1 {
-                if !contactGroupListDataSource.selectedSections.contains(index) {
-                    contactGroupListDataSource.selectedSections.append(index)
-                }
-            }
+			for (index, _) in self.contactGroup.enumerated() {
+				if !contactGroupListDataSource.selectedSections.contains(index) {
+					contactGroupListDataSource.selectedSections.append(index)
+				}
+			}
         } else {
             contactGroupListDataSource.selectedSections.removeAll()
         }
@@ -251,17 +247,6 @@ extension ContactsGroupViewController {
             }
         }
     }
-    
-    private func exportBackupSelectedItems() {
-		
-        for itemInGroup in contactGroup {
-            self.contactsManager.contactsMerge(in: itemInGroup) { _, deletingContacts in
-                self.contactsManager.deleteContacts(deletingContacts) { suxxess, deletetCount in
-                    
-                }
-            }
-        }
-    }
 	
 	public func handleContactsPreviousSelected(selectedContactsIDs: [String], contactsGroupCollection: [ContactsGroup]) {
 		
@@ -269,6 +254,61 @@ extension ContactsGroupViewController {
 			
 			if let sectionIndex = contactsGroupCollection.firstIndex(where: {$0.groupIdentifier == selectedContactsID}) {
 				self.previouslySelectedIndexPaths.append(IndexPath(row: 0, section: sectionIndex))
+			}
+		}
+	}
+}
+
+extension ContactsGroupViewController {
+	
+	private func didTapSharePopUpMenuButton() {
+
+		guard !contactGroupListDataSource.selectedSections.isEmpty else { return }
+		self.performSegue(withIdentifier: C.identifiers.segue.showExportContacts, sender: self)
+	}
+	
+	private func shareSelectedItems(with format: ExportContactsAvailibleFormat) {
+
+		guard !contactGroupListDataSource.selectedSections.isEmpty else { return }
+		let contacts = contactGroupListDataSource.selectedSections.compactMap({self.contactGroup[$0]}).flatMap({$0.contacts})
+		self.export(contacts: contacts, with: format)
+	}
+	
+	private func shareAllItems(with format: ExportContactsAvailibleFormat) {
+		P.showIndicator()
+		let contacts = contactGroup.flatMap({$0.contacts})
+		self.export(contacts: contacts, with: format)
+	}
+	
+	private func export(contacts: [CNContact], with format: ExportContactsAvailibleFormat) {
+		if contacts.isEmpty {
+			P.hideIndicator()
+			ErrorHandler.shared.showEmptySearchResultsFor(.contactsIsEmpty) {}
+		} else {
+			self.shareManager.shareContacts(contacts, of: format) { fileCreated in
+				P.hideIndicator()
+				!fileCreated ? ErrorHandler.shared.showLoadAlertError(.errorCreateExportFile) : ()
+				self.forceDeselectAllItems()
+			}
+		}
+	}
+	
+	private func setupShowExportContactController(segue: UIStoryboardSegue) {
+		
+		guard let segue = segue as? SwiftMessagesSegue else { return }
+		
+		segue.configure(layout: .bottomMessage)
+		segue.dimMode = .gray(interactive: true)
+		segue.interactiveHide = false
+		segue.messageView.setupForShadow(shadowColor: theme.bottomShadowColor, cornerRadius: 14, shadowOffcet: CGSize(width: 6, height: 6), shadowOpacity: 10, shadowRadius: 14)
+		segue.messageView.configureNoDropShadow()
+		
+		if let exportContactsViewController = segue.destination as? ExportContactsViewController {
+			exportContactsViewController.leftExportFileFormat = .vcf
+			exportContactsViewController.rightExportFileFormat = .csv
+			
+			exportContactsViewController.selectExportFormatCompletion = { format in
+				self.isSelectedAllItems ? self.shareAllItems(with: format) : self.shareSelectedItems(with: format)
 			}
 		}
 	}
@@ -328,8 +368,25 @@ extension ContactsGroupViewController: ProgressAlertControllerDelegate {
 extension ContactsGroupViewController: SelectDropDownMenuDelegate {
     
     private func didTapOpenBurgerMenu() {
-        
-        let firstRowItem = isSelectedAllItems ? self.deselectAllOptionItem : self.selectAllOptionItem
+		
+		let selectAllOptionItem = DropDownOptionsMenuItem(titleMenu: "select all",
+															   itemThumbnail: I.systemItems.selectItems.roundedCheckMark,
+															   isSelected: true,
+															   menuItem: .selectAll)
+		
+		let deselectAllOptionItem = DropDownOptionsMenuItem(titleMenu: "deselect all",
+																 itemThumbnail: I.systemItems.selectItems.circleMark,
+																 isSelected: true,
+																 menuItem: .deselectAll)
+		
+		let availibleExportOtion = !self.contactGroupListDataSource.selectedSections.isEmpty
+		
+		let exportSelectedContacts = DropDownOptionsMenuItem(titleMenu: "export selected",
+																  itemThumbnail: I.systemItems.defaultItems.share,
+																  isSelected: availibleExportOtion,
+																  menuItem: .share)
+		
+        let firstRowItem = isSelectedAllItems ? deselectAllOptionItem : selectAllOptionItem
         let secontRowItem = exportSelectedContacts
         self.presentDropDonwMenu(with: [firstRowItem, secontRowItem], from: navigationBar.rightBarButtonItem)
     }
@@ -351,10 +408,10 @@ extension ContactsGroupViewController: SelectDropDownMenuDelegate {
     func selectedItemListViewController(_ controller: DropDownMenuViewController, didSelectItem: DropDownMenuItems) {
         
         switch didSelectItem {
-            case .deselectAll:
+			case .deselectAll, .selectAll:
                 self.didSelectDeselecAllItems()
             case .share:
-                self.exportBackupSelectedItems()
+				self.didTapSharePopUpMenuButton()
             default:
                 return
         }

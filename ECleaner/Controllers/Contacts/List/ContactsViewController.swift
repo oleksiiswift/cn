@@ -515,7 +515,6 @@ extension ContactsViewController {
             self.setCancelAndDeselectAllItems()
             self.handleEdit()
         } else {
-            
             if let indexPaths = self.tableView.indexPathsForSelectedRows {
                 var contacts: [CNContact] = []
                 
@@ -888,11 +887,7 @@ extension ContactsViewController: Themeble {
             exportContactsViewController.rightExportFileFormat = .csv
             
             exportContactsViewController.selectExportFormatCompletion = { format in
-                if self.contactContentIsEditing {
-                    self.exportSelectedContacts(with: format)
-                } else {
-                    self.exportAllContacts(with: format)
-                }
+				self.contactContentIsEditing ? self.exportSelectedContacts(with: format) : self.exportAllContacts(with: format)
             }
         }
     }
