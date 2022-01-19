@@ -151,9 +151,9 @@ enum MediaContentType {
     var numberOfRows: Int {
         switch self {
             case .userPhoto:
-                return 6
-            case .userVideo:
                 return 5
+            case .userVideo:
+                return 4
             case .userContacts:
                 return 5
             case .none:
@@ -211,7 +211,7 @@ enum MediaContentType {
                     case 2:
                         return "SCREENSHOTS".localized()
                     case 3:
-                        return "SELFIE".localized()
+                        return "similar selfie"
                     case 4:
                         return "LIVE_PHOTO".localized()
                     case 5:
@@ -264,7 +264,7 @@ enum MediaContentType {
     var deepCleanNumbersOfRows: Int {
         switch self {
             case .userPhoto:
-                return 4
+                return 5
             case .userVideo:
                 return 4
             case .userContacts:
@@ -284,7 +284,9 @@ enum MediaContentType {
                         return "DUBLICATES_PHOTO".localized()
                     case 2:
                         return "SCREENSHOTS".localized()
-                    case 3:
+					case 3:
+						return "similar selfies"
+                    case 4:
                         return "SIMILAR_ALLIVE_PHOTOS".localized()
                     default:
                         return ""

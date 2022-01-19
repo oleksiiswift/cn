@@ -42,6 +42,7 @@ class GroupedAssetListViewController: UIViewController, UIPageViewControllerDele
 	private var selectedAssets: [PHAsset] = []
 	private var selectedSection: Set<Int> = []
 	private var previouslySelectedIndexPaths: [IndexPath] = []
+	private var fetchPhaset: [IndexPath : UIImage] = [:]
 
     @IBOutlet weak var photoPreviewContainerView: UIView!
     @IBOutlet weak var photoContentContainerView: UIView!
@@ -273,6 +274,8 @@ extension GroupedAssetListViewController {
 	
 	private func configure(_ cell: PhotoCollectionViewCell, at indexPath: IndexPath) {
 		
+		let asset = assetGroups[indexPath.section].assets[indexPath.row]
+		
 		cell.delegate = self
 		cell.indexPath = indexPath
 		cell.cellMediaType = self.mediaType
@@ -288,11 +291,7 @@ extension GroupedAssetListViewController {
 		}
 		
 		cell.checkIsSelected()
-		
-        let asset = assetGroups[indexPath.section].assets[indexPath.row]
-		self.photoManager.requestChacheImageForPhasset(asset) { image in
-			cell.loadCellThumbnail(asset, image: image)
-		}
+		cell.loadCellThumbnail(asset)
 	}
 	
 	public func hederConfigure(_ view: GroupedAssetsReusableHeaderView, at indexPath: IndexPath) {
@@ -866,14 +865,15 @@ extension GroupedAssetListViewController: SNCollectionViewLayoutDelegate {
 
 //      MARK: - prefetching data source -
 extension GroupedAssetListViewController: UICollectionViewDataSourcePrefetching {
+		
+    private func requestPhassets(for indexPaths: [IndexPath]) -> [PHAsset] {
+        return indexPaths.compactMap({ self.assetGroups[$0.section].assets[$0.item]})
+    }
 
     func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
 		
-		var fetchassets: [PHAsset] = []
-		indexPaths.forEach { indexPath in
-			fetchassets.append(assetGroups[indexPath.section].assets[indexPath.row])
-		}
-		self.photoManager.prefetchImagesForAsset(fetchassets)
+		let phassets = requestPhassets(for: indexPaths)
+        self.photoManager.prefetchsForPHAssets(phassets)
         
 //        U.UI { [weak self] in
 //
@@ -889,6 +889,11 @@ extension GroupedAssetListViewController: UICollectionViewDataSourcePrefetching 
 //            }
 //        }
     }
+	
+	func collectionView(_ collectionView: UICollectionView, cancelPrefetchingForItemsAt indexPaths: [IndexPath]) {
+        let phassets = requestPhassets(for: indexPaths)
+        self.photoManager.cancelFetchForPHAseets(phassets)
+	}
 }
 
 //      MARK: - assets processing -

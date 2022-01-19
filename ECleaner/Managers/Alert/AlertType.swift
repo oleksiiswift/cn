@@ -20,7 +20,7 @@ enum AlertType {
 	case similarPhotoIsEmpty
 	case duplicatedPhotoIsEmpty
 	case screenShotsIsEmpty
-	case selfiesIsEmpty
+	case similarSelfiesIsEmpty
 	case livePhotoIsEmpty
 	case similarLivePhotoIsEmpty
 	case recentlyDeletedPhotosIsEmpty
@@ -85,7 +85,7 @@ enum AlertType {
 			case .similarPhotoIsEmpty,
 					.duplicatedPhotoIsEmpty,
 					.screenShotsIsEmpty,
-					.selfiesIsEmpty,
+					.similarSelfiesIsEmpty,
 					.livePhotoIsEmpty,
 					.similarLivePhotoIsEmpty,
 					.recentlyDeletedPhotosIsEmpty,
@@ -154,8 +154,8 @@ enum AlertType {
 				return ErrorHandler.shared.emptyResultsForKey(.duplicatedPhotoIsEmpty)
 			case .screenShotsIsEmpty:
 				return ErrorHandler.shared.emptyResultsForKey(.screenShotsIsEmpty)
-			case .selfiesIsEmpty:
-				return ErrorHandler.shared.emptyResultsForKey(.selfiesIsEmpty)
+			case .similarSelfiesIsEmpty:
+				return ErrorHandler.shared.emptyResultsForKey(.similarSelfiesIsEmpty)
 			case .livePhotoIsEmpty:
 				return ErrorHandler.shared.emptyResultsForKey(.livePhotoIsEmpty)
 			case .similarLivePhotoIsEmpty:
@@ -238,7 +238,7 @@ enum AlertType {
 			case .similarPhotoIsEmpty,
 					.duplicatedPhotoIsEmpty,
 					.screenShotsIsEmpty,
-					.selfiesIsEmpty,
+					.similarSelfiesIsEmpty,
 					.livePhotoIsEmpty,
 					.similarLivePhotoIsEmpty,
 					.recentlyDeletedPhotosIsEmpty,

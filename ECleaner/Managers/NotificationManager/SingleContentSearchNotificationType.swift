@@ -14,7 +14,7 @@ enum SingleContentSearchNotificationType {
 	case duplicatedPhoto
 	case similarLivePhoto
 	case screenShots
-	case selfies
+	case similarSelfiesPhoto
 	case livePhoto
 	case recentlyDeletedPhoto
 	
@@ -46,8 +46,8 @@ enum SingleContentSearchNotificationType {
 				return C.key.notificationDictionary.count.livePhotosSimilarCount
 			case .screenShots:
 				return C.key.notificationDictionary.count.screenShotsCount
-			case .selfies:
-				return C.key.notificationDictionary.count.selfiePhotosCount
+			case .similarSelfiesPhoto:
+				return C.key.notificationDictionary.count.similarSelfiePhotosCount
 			case .livePhoto:
 				return C.key.notificationDictionary.count.livePhotosSimilarCount
 			case .recentlyDeletedPhoto:
@@ -90,8 +90,8 @@ enum SingleContentSearchNotificationType {
 				return C.key.notificationDictionary.index.livePhotosIndex
 			case .screenShots:
 				return C.key.notificationDictionary.index.screenShotsIndex
-			case .selfies:
-				return C.key.notificationDictionary.index.selfiePhotosIndex
+			case .similarSelfiesPhoto:
+				return C.key.notificationDictionary.index.similarSelfiePhotoIndex
 			case .livePhoto:
 				return C.key.notificationDictionary.index.livePhotosIndex
 			case .recentlyDeletedPhoto:
@@ -135,8 +135,8 @@ enum SingleContentSearchNotificationType {
 				return .singleSearchSimilarLivePhotoScan
 			case .screenShots:
 				return .singleSearchScreenShotsPhotoScan
-			case .selfies:
-				return .singleSearchSelfiePhotoScan
+			case .similarSelfiesPhoto:
+				return .singleSearchSimilarSelfiePhotoScan
 			case .livePhoto:
 				return .singleSearchLivePhotoScan
 			case .recentlyDeletedPhoto:
@@ -165,7 +165,6 @@ enum SingleContentSearchNotificationType {
 				return .singleSearchDupliatesEmailsContactsScan
 			case .none:
 				return Notification.Name("")
-
 		}
 	}
 	
@@ -180,8 +179,8 @@ enum SingleContentSearchNotificationType {
 				return .similarLivePhotos
 			case .screenShots:
 				return .singleScreenShots
-			case .selfies:
-				return .singleSelfies
+			case .similarSelfiesPhoto:
+				return .similarSelfies
 			case .livePhoto:
 				return .singleLivePhotos
 			case .recentlyDeletedPhoto:
@@ -208,7 +207,6 @@ enum SingleContentSearchNotificationType {
 				return .duplicatedEmails
 			case .none:
 				return .none
-
 		}
 	}
 }

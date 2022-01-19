@@ -16,7 +16,7 @@ enum PhotoMediaType: String {
     case singleScreenShots = "singleScreenShots"
     case singleLivePhotos = "singleLivePhotos"
     case similarLivePhotos = "similarLivePhotos"
-    case singleSelfies = "singleSelfies"
+    case similarSelfies = "similarSelfies"
     case singleRecentlyDeletedPhotos = "singleRecentlyDeletedPhotos"
 
         /// `video section section`
@@ -38,7 +38,7 @@ enum PhotoMediaType: String {
 	
 	var contenType: MediaContentType {
 		switch self {
-			case .similarPhotos, .duplicatedPhotos, .singleScreenShots, .singleLivePhotos, .similarLivePhotos, .singleSelfies, .singleRecentlyDeletedPhotos:
+			case .similarPhotos, .duplicatedPhotos, .singleScreenShots, .singleLivePhotos, .similarLivePhotos, .similarSelfies, .singleRecentlyDeletedPhotos:
 				return .userPhoto
 			case .singleLargeVideos, .duplicatedVideos, .similarVideos, .singleScreenRecordings, .singleRecentlyDeletedVideos:
 				return .userVideo
@@ -63,7 +63,7 @@ enum PhotoMediaType: String {
                 return "similar video"
             case .similarLivePhotos:
                 return "similar live photo"
-            case .singleSelfies:
+            case .similarSelfies:
                 return "similar selfie"
             case .singleLivePhotos:
                 return "single live video"
@@ -104,8 +104,10 @@ enum PhotoMediaType: String {
                 return IndexPath(row: 1, section: 1)
             case .singleScreenShots:
                 return IndexPath(row: 2, section: 1)
+			case.similarSelfies:
+				return IndexPath(row: 3, section: 1)
             case .similarLivePhotos:
-                return IndexPath(row: 3, section: 1)
+                return IndexPath(row: 4, section: 1)
             case .singleLargeVideos:
                 return IndexPath(row: 0, section: 2)
             case .duplicatedVideos:
@@ -137,14 +139,12 @@ enum PhotoMediaType: String {
                 return IndexPath(row: 1, section: 0)
             case .singleScreenShots:
                 return IndexPath(row: 2, section: 0)
-			case .singleSelfies:
+			case .similarSelfies:
 				return IndexPath(row: 3, section: 0)
             case .singleLivePhotos:
                 return IndexPath(row: 4, section: 0)
 			case .singleRecentlyDeletedPhotos:
 				return IndexPath(row: 5, section: 0)
-
-				
             case .singleLargeVideos:
                 return IndexPath(row: 0, section: 0)
             case .duplicatedVideos:
@@ -201,7 +201,9 @@ enum PhotoMediaType: String {
                         return .duplicatedPhotos
                     case 2:
                         return .singleScreenShots
-                    case 3:
+					case 3:
+						return .similarSelfies
+                    case 4:
                         return .similarLivePhotos
                     default:
                         return .none
@@ -251,7 +253,7 @@ enum PhotoMediaType: String {
                     case 2:
                         return .singleScreenShots
                     case 3:
-                        return .singleSelfies
+                        return .similarSelfies
                     case 4:
                         return .singleLivePhotos
                     case 5:

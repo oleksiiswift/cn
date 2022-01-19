@@ -70,7 +70,7 @@ class ErrorHandler {
 		case similarPhotoIsEmpty
 		case duplicatedPhotoIsEmpty
 		case screenShotsIsEmpty
-		case selfiesIsEmpty
+		case similarSelfiesIsEmpty
 		case livePhotoIsEmpty
 		case similarLivePhotoIsEmpty
 		case recentlyDeletedPhotosIsEmpty
@@ -134,8 +134,8 @@ class ErrorHandler {
 				return "no duplicated photo"
 			case .screenShotsIsEmpty:
 				return "no screenshots"
-			case .selfiesIsEmpty:
-				return "no selfies"
+			case .similarSelfiesIsEmpty:
+				return "no similar selfies"
 			case .livePhotoIsEmpty:
 				return "no live photo"
 			case .similarLivePhotoIsEmpty:

@@ -30,10 +30,6 @@ class UpdateContentDataBaseMediator {
         listener?.updateContentStoreCount(mediaType: mediaType, itemsCount: itemsCount, calculatedSpace: calculatedSpace)
     }
     
-    func getFrontCameraAssets(_ assets: [PHAsset]) {
-        listener?.getFrontCameraAssets(assets)
-    }
-    
     func getScreenshots(_ assets: [PHAsset]) {
         listener?.getScreenAssets(assets)
     }

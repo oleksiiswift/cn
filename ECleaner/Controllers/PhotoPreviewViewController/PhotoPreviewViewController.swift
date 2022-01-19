@@ -83,9 +83,9 @@ extension PhotoPreviewViewController {
     public func mediaContentTypeSetup() {
         
         switch photoMediaContentType {
-            case .singleSelfies, .singleLivePhotos, .singleLargeVideos, .singleScreenShots, .singleScreenRecordings:
+            case .singleLivePhotos, .singleLargeVideos, .singleScreenShots, .singleScreenRecordings:
                 self.collectionType = .single
-            case .duplicatedPhotos, .duplicatedVideos, .similarPhotos, .similarVideos, .similarLivePhotos:
+			case .duplicatedPhotos, .duplicatedVideos, .similarPhotos, .similarVideos, .similarLivePhotos, .similarSelfies:
                 self.collectionType = .grouped
             default:
                 self.collectionType = .none

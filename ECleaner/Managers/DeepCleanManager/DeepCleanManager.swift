@@ -41,13 +41,14 @@ class DeepCleanManager {
     
 	let wholeCleanOperationQueuer = OperationProcessingQueuer(name: C.key.operation.queue.deepClean, maxConcurrentOperationCount: 1, qualityOfService: .background)
 	
-	let deepCleanOperationQue = OperationProcessingQueuer(name: C.key.operation.queue.deepClean, maxConcurrentOperationCount: 5, qualityOfService: .default)
+	let deepCleanOperationQue = OperationProcessingQueuer(name: C.key.operation.queue.deepClean, maxConcurrentOperationCount: 3, qualityOfService: .default)
         
     public func startDeepCleaningFetch(_ optionMediaType: [PhotoMediaType], startingFetchingDate: Date, endingFetchingDate: Date,
                                        handler: @escaping ([PhotoMediaType]) -> Void,
                                        screenShots: @escaping ([PHAsset]) -> Void,
                                        similarPhoto: @escaping ([PhassetGroup]) -> Void,
                                        duplicatedPhoto: @escaping ([PhassetGroup]) -> Void,
+									   similarSelfiesPhoto: @escaping ([PhassetGroup]) -> Void,
                                        similarLivePhotos: @escaping ([PhassetGroup]) -> Void,
                                        largeVideo: @escaping ([PHAsset]) -> Void,
                                        similarVideo: @escaping ([PhassetGroup]) -> Void,
@@ -68,7 +69,7 @@ class DeepCleanManager {
 		let getSimilarPhotosAssetsOperation = photoManager.getSimilarPhotosAssetsOperation(from: startingFetchingDate, to: endingFetchingDate, enableDeepCleanProcessingNotification: true) { similarGroup in
 			similarPhoto(similarGroup)
 			totalResultCount += 1
-			if totalResultCount == 12 {
+			if totalResultCount == 13 {
 				completionHandler()
 			}
 		}
@@ -78,7 +79,7 @@ class DeepCleanManager {
 		let duplicatedPhotoAssetOperation = photoManager.getDuplicatedPhotosAsset(from: startingFetchingDate, to: endingFetchingDate, enableDeepCleanProcessingNotification: true) { duplicateGroup in
 			duplicatedPhoto(duplicateGroup)
 			totalResultCount += 1
-			if totalResultCount == 12 {
+			if totalResultCount == 13 {
 				completionHandler()
 			}
 		}
@@ -87,7 +88,17 @@ class DeepCleanManager {
 		let getScreenShotsAssetsOperation = photoManager.getScreenShotsOperation(from: startingFetchingDate, to: endingFetchingDate, enableDeepCleanProcessingNotification: true) { screenshots in
 			screenShots(screenshots)
 			totalResultCount += 1
-			if totalResultCount == 12 {
+			if totalResultCount == 13 {
+				completionHandler()
+			}
+		}
+		
+//		MARK: - similar selfies photo -
+		
+		let getSimilarSelfiesPhotoPhassetOperation = photoManager.getSimilarSelfiePhotosOperation(from: startingFetchingDate, to: endingFetchingDate, enableDeepCleanProcessingNotification: true) { similartSelfiesGroup in
+			similarSelfiesPhoto(similartSelfiesGroup)
+			totalResultCount += 1
+			if totalResultCount == 13 {
 				completionHandler()
 			}
 		}
@@ -96,7 +107,7 @@ class DeepCleanManager {
 		let getLivePhotoAssetsOperation = photoManager.getSimilarLivePhotosOperation(from: startingFetchingDate, to: endingFetchingDate, enableDeepCleanProcessingNotification: true) { similarAssets in
 			similarLivePhotos(similarAssets)
 			totalResultCount += 1
-			if totalResultCount == 12 {
+			if totalResultCount == 13 {
 				completionHandler()
 			}
 		}
@@ -106,7 +117,7 @@ class DeepCleanManager {
 			largeVideo(largeVodepAsset)
 			
 			totalResultCount += 1
-			if totalResultCount == 12 {
+			if totalResultCount == 13 {
 				completionHandler()
 			}
 		}
@@ -116,7 +127,7 @@ class DeepCleanManager {
 			duplicatedVideo(duplicatedVideoAsset)
 
 			totalResultCount += 1
-			if totalResultCount == 12 {
+			if totalResultCount == 13 {
 				completionHandler()
 			}
 		}
@@ -126,7 +137,7 @@ class DeepCleanManager {
 			similarVideo(similiarVideoAsset)
 
 			totalResultCount += 1
-			if totalResultCount == 12 {
+			if totalResultCount == 13 {
 				completionHandler()
 			}
 		}
@@ -136,7 +147,7 @@ class DeepCleanManager {
 			screenRecordings(screenRecordsAssets)
 
 			totalResultCount += 1
-			if totalResultCount == 12 {
+			if totalResultCount == 13 {
 				completionHandler()
 			}
 		}
@@ -144,6 +155,7 @@ class DeepCleanManager {
 		deepCleanOperationQue.addOperation(getSimilarPhotosAssetsOperation)
 		deepCleanOperationQue.addOperation(duplicatedPhotoAssetOperation)
 		deepCleanOperationQue.addOperation(getScreenShotsAssetsOperation)
+		deepCleanOperationQue.addOperation(getSimilarSelfiesPhotoPhassetOperation)
 		deepCleanOperationQue.addOperation(getLivePhotoAssetsOperation)
 		deepCleanOperationQue.addOperation(getLargevideoContentOperation)
 		deepCleanOperationQue.addOperation(getDuplicatedVideoAssetOperatioon)
@@ -159,28 +171,28 @@ class DeepCleanManager {
 				/// - empty fields contacts
 			emptyContacts(emptyContactsGroup)
 			totalResultCount += 1
-			if totalResultCount == 12 {
+			if totalResultCount == 13 {
 				completionHandler()
 			}
 		} duplicatedContactsCompletion: { duplicatedContactsGroup in
 				/// - duplicated contacts -
 			duplicatedContats(duplicatedContactsGroup)
 			totalResultCount += 1
-			if totalResultCount == 12 {
+			if totalResultCount == 13 {
 				completionHandler()
 			}
 		} duplicatedPhoneNumbersCompletion: { duplicatedNumbersContactsGroup in
 				/// - duplicated phone numbers contacts -
 			duplicatedPhoneNumbers(duplicatedNumbersContactsGroup)
 			totalResultCount += 1
-			if totalResultCount == 12 {
+			if totalResultCount == 13 {
 				completionHandler()
 			}
 		} duplicatedEmailsContactsCompletion: { duplicatedEmailsContactsGroup in
 				/// duplicated email contact s-
 			duplicatedEmails(duplicatedEmailsContactsGroup)
 			totalResultCount += 1
-			if totalResultCount == 12 {
+			if totalResultCount == 13 {
 				completionHandler()
 			}
 		}
@@ -226,7 +238,7 @@ extension DeepCleanManager {
 		
 		for (key, value) in selectedCollectionsIDs {
 			switch key {
-				case .similarPhotos, .duplicatedPhotos, .singleScreenShots, .singleLivePhotos, .similarLivePhotos, .singleSelfies, .singleRecentlyDeletedPhotos, .singleLargeVideos, .duplicatedVideos, .similarVideos:
+				case .similarPhotos, .duplicatedPhotos, .singleScreenShots, .singleLivePhotos, .similarLivePhotos, .similarSelfies, .singleRecentlyDeletedPhotos, .singleLargeVideos, .duplicatedVideos, .similarVideos:
 					photoVideoDeleteProcessingIDS.append(contentsOf: value)
 				case .emptyContacts:
 					deleteContactsProcessingODS.append(contentsOf: value)

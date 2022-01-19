@@ -31,6 +31,7 @@ class ProgressSearchNotificationManager {
 		
 		let infoDictionary = [notificationType.dictionaryIndexName: currentProgressItem,
 							  notificationType.dictionaryCountName: totalProgressItems]
+		
 		sleep(UInt32(0.1))
 		NotificationCenter.default.post(name: notificationType.notificationName, object: nil, userInfo: infoDictionary)
 	}

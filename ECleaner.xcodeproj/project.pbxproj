@@ -220,6 +220,7 @@
 		97D2BECC275A3D06002082EB /* CNContactVCard+ImageData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97D2BECB275A3D06002082EB /* CNContactVCard+ImageData.swift */; };
 		97D2BED0275A3F88002082EB /* ContactsExportManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97D2BECF275A3F88002082EB /* ContactsExportManager.swift */; };
 		97D2BED2275A4227002082EB /* ContactsGroupModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97D2BED1275A4227002082EB /* ContactsGroupModel.swift */; };
+		97DA18F12797502B00427587 /* Thread+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97DA18F02797502B00427587 /* Thread+Extension.swift */; };
 		97DAB62E272C164A00F05CEA /* GroupContactTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97DAB62C272C164A00F05CEA /* GroupContactTableViewCell.swift */; };
 		97DAB62F272C164A00F05CEA /* GroupContactTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 97DAB62D272C164A00F05CEA /* GroupContactTableViewCell.xib */; };
 		97DC39AA273BE9C800D487BE /* GroupedContactsHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97DC39A9273BE9C800D487BE /* GroupedContactsHeaderView.swift */; };
@@ -455,6 +456,7 @@
 		97D2BECB275A3D06002082EB /* CNContactVCard+ImageData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CNContactVCard+ImageData.swift"; sourceTree = "<group>"; };
 		97D2BECF275A3F88002082EB /* ContactsExportManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsExportManager.swift; sourceTree = "<group>"; };
 		97D2BED1275A4227002082EB /* ContactsGroupModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsGroupModel.swift; sourceTree = "<group>"; };
+		97DA18F02797502B00427587 /* Thread+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Thread+Extension.swift"; sourceTree = "<group>"; };
 		97DAB62C272C164A00F05CEA /* GroupContactTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupContactTableViewCell.swift; sourceTree = "<group>"; };
 		97DAB62D272C164A00F05CEA /* GroupContactTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GroupContactTableViewCell.xib; sourceTree = "<group>"; };
 		97DC39A9273BE9C800D487BE /* GroupedContactsHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupedContactsHeaderView.swift; sourceTree = "<group>"; };
@@ -857,6 +859,7 @@
 				970D7787275B70D70048F41D /* PHAsset */,
 				97AC5DBB276790A600C20F73 /* UILabel */,
 				97C70B4F277633AC0033F466 /* UIImage+Gradient.swift */,
+				97DA18F02797502B00427587 /* Thread+Extension.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -1717,6 +1720,7 @@
 				0459DF9B26A6CDCC0085EEDF /* PHCachingImageManager+RequestExtension.swift in Sources */,
 				04CF0003268602DE000CA850 /* MediaContentType.swift in Sources */,
 				97D2BED0275A3F88002082EB /* ContactsExportManager.swift in Sources */,
+				97DA18F12797502B00427587 /* Thread+Extension.swift in Sources */,
 				97C909CE274950D300BC2E47 /* TemproraryClassMethodsCellBlock.swift in Sources */,
 				04467CE0270D929D00DBBB39 /* HorizontalProgressBar.swift in Sources */,
 				97CE449D273D311400DF6114 /* NavigationBarDelegate.swift in Sources */,

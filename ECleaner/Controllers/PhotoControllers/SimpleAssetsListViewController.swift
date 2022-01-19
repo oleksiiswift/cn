@@ -83,7 +83,7 @@ extension SimpleAssetsListViewController: UICollectionViewDelegate, UICollection
         
         self.collectionView.dataSource = self
         self.collectionView.delegate = self
-		
+		self.collectionView.prefetchDataSource = self
         self.collectionView.register(UINib(nibName: C.identifiers.xibs.photoSimpleCell, bundle: nil), forCellWithReuseIdentifier: C.identifiers.cells.photoSimpleCell)
         self.collectionView.collectionViewLayout = flowLayout
         self.collectionView.allowsMultipleSelection = true
@@ -111,11 +111,7 @@ extension SimpleAssetsListViewController: UICollectionViewDelegate, UICollection
         
         /// config thumbnail according screen type
 		let asset = assetCollection[indexPath.row]
-		
-		photoManager.requestChacheImageForPhasset(asset) { image in
-			cell.loadCellThumbnail(asset, image: image)
-		}
-		
+		cell.loadCellThumbnail(asset)
 		cell.updateColors()
     }
     
@@ -176,6 +172,23 @@ extension SimpleAssetsListViewController: UICollectionViewDelegate, UICollection
 	}
 }
 
+extension SimpleAssetsListViewController: UICollectionViewDataSourcePrefetching {
+
+	private func requestPHAssets(for indexPaths: [IndexPath]) -> [PHAsset] {
+		return indexPaths.compactMap({self.assetCollection[$0.row]})
+	}
+	
+	func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
+		let phassets = requestPHAssets(for: indexPaths)
+		self.photoManager.prefetchsForPHAssets(phassets)
+	}
+	
+	func collectionView(_ collectionView: UICollectionView, cancelPrefetchingForItemsAt indexPaths: [IndexPath]) {
+		let phassets = requestPHAssets(for: indexPaths)
+		self.photoManager.cancelFetchForPHAseets(phassets)
+	}
+}
+
 extension SimpleAssetsListViewController: PhotoCollectionViewCellDelegate {
     
     /// custom select deselect button for selected cells
@@ -231,6 +244,8 @@ extension SimpleAssetsListViewController: PhotoCollectionViewCellDelegate {
     }
 	
 	private func didSelectAll() {
+		
+		guard isDeepCleaningSelectableFlow else { return }
 		
 		A.showSelectAllStarterAlert(for: mediaType) {
 			self.setCollection(selected: true)
@@ -516,6 +531,9 @@ extension SimpleAssetsListViewController: UIPopoverPresentationControllerDelegat
 
 //      MARK: - updating screen if photolibrary did change it content -
 extension SimpleAssetsListViewController: UpdatingChangesInOpenedScreensListeners {
+	
+	func getUpdatingSelfies() {}
+	
     
     /// updating screenshots
     func getUpdatingScreenShots() {
@@ -536,18 +554,5 @@ extension SimpleAssetsListViewController: UpdatingChangesInOpenedScreensListener
     }
     
     /// updating selfies
-    func getUpdatingSelfies() {
-        
-        if mediaType == .singleSelfies {
-			
-			let selfiePhotosOperation = photoManager.getSelfiePhotosOperation(from: S.lowerBoundSavedDate, to: S.upperBoundSavedDate) { selfies in
-				if self.assetCollection.count != selfies.count {
-					self.assetCollection = selfies
-					self.collectionView.reloadData()
-				}
-			}
-			photoManager.phassetProcessingOperationQueuer.addOperation(selfiePhotosOperation)
-        }
-    }
 }
 

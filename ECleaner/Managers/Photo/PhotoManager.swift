@@ -45,10 +45,10 @@ class PhotoManager {
 	
 	private var fetchManager = PHAssetFetchManager.shared
 	private var prefetchManager = PHCachingImageManager()
-	
 	private lazy var requestOptions: PHImageRequestOptions = {
 		let options = PHImageRequestOptions()
-		options.deliveryMode = .highQualityFormat
+        options.isSynchronous = false
+		options.deliveryMode = .opportunistic
 		options.resizeMode = .fast
 		options.isNetworkAccessAllowed = true
 		return options
@@ -58,6 +58,7 @@ class PhotoManager {
 
 	public let phassetProcessingOperationQueuer = OperationProcessingQueuer(name: Constants.key.operation.queue.phassets, maxConcurrentOperationCount: 10, qualityOfService: .background)
 	public let serviceUtilsCalculatedOperationsQueuer = OperationProcessingQueuer(name: Constants.key.operation.queue.utils, maxConcurrentOperationCount: 10, qualityOfService: .background)
+    public let prefetchOperationQueue = OperationProcessingQueuer(name: C.key.operation.queue.deepClean, maxConcurrentOperationCount: 5, qualityOfService: .background)
 	
 	var assetCollection: PHAssetCollection?
 	
@@ -162,11 +163,7 @@ extension PhotoManager {
 		let getLivePhotoOperation = self.getLivePhotosOperation { assets in
 			UpdateContentDataBaseMediator.instance.getLivePhotosAssets(assets)
 		}
-		
-		let getSelfiesPhotoOperation = self.getSelfiePhotosOperation { assets in
-			UpdateContentDataBaseMediator.instance.getFrontCameraAssets(assets)
-		}
-		
+	
 			/// `add operation phasset`
 		if !serviceUtilsCalculatedOperationsQueuer.operations.contains(where: {$0.name == calculatedAllDiskSpaceOperation.name}) {
 			serviceUtilsCalculatedOperationsQueuer.addOperation(calculatedAllDiskSpaceOperation)
@@ -198,10 +195,6 @@ extension PhotoManager {
 		
 		if !serviceUtilsCalculatedOperationsQueuer.operations.contains(where: {$0.name == getLivePhotoOperation.name}) {
 			serviceUtilsCalculatedOperationsQueuer.addOperation(getLivePhotoOperation)
-		}
-		
-		if !serviceUtilsCalculatedOperationsQueuer.operations.contains(where: {$0.name == getSelfiesPhotoOperation.name}) {
-			serviceUtilsCalculatedOperationsQueuer.addOperation(getSelfiesPhotoOperation)
 		}
 	}
 }
@@ -239,6 +232,9 @@ extension PhotoManager {
 					completionHandler(videos)
 				} else {
 					completionHandler([])
+					if enableDeepCleanProcessingNotification {
+						self.sendZeroPhassetsNotification(of: .largeVideo)
+					}
 				}
 			}
 		}
@@ -285,6 +281,9 @@ extension PhotoManager {
 					completionHandler(screenRecords)
 				} else {
 					completionHandler([])
+					if enableDeepCleanProcessingNotification {
+						self.sendZeroPhassetsNotification(of: .screenRecordings)
+					}
 				}
 			}
 		}
@@ -321,6 +320,9 @@ extension PhotoManager {
 				
 			} else {
 				completionHandler([])
+				if enableDeepCleanProcessingNotification {
+					self.sendZeroPhassetsNotification(of: .similarVideo)
+				}
 			}
 		}
 	}
@@ -435,6 +437,9 @@ extension PhotoManager {
 					completionHandler(duplicateVideoGroups)
 				} else {
 					completionHandler([])
+					if enableDeepCleanProcessingNotification {
+						self.sendZeroPhassetsNotification(of: .duplicateVideo)
+					}
 				}
 			}
 		}
@@ -507,33 +512,133 @@ extension PhotoManager {
 extension PhotoManager {
 	
 		/// `load selfies` from gallery
-	public func getSelfiePhotosOperation(from lowerDate: Date = lowerDateValue, to upperDate: Date = upperDateValue, enableDeepCleanProcessingNotification: Bool = false, enableSingleProcessingNotification: Bool = false, completionHandler: @escaping ((_ assets: [PHAsset]) -> Void)) -> ConcurrentProcessOperation {
+	
+	public func getSimilarSelfiePhotosOperation(from lowerDate: Date = lowerDateValue, to upperDate: Date = upperDateValue, enableDeepCleanProcessingNotification: Bool = false, enableSingleProcessingNotification: Bool = false, completionHandler: @escaping ((_ similartSelfiesGroup: [PhassetGroup]) -> Void)) -> ConcurrentProcessOperation {
 		
-		let photoSelfiesOperation = ConcurrentProcessOperation { operation in
+		let similarPhotoProcessingOperation = ConcurrentProcessOperation { operation in
 			
-			self.fetchManager.fetchFromGallery(from: lowerDate, to: upperDate, collectiontype: .smartAlbumSelfPortraits, by: PHAssetMediaType.image.rawValue) { selfiesInLibrary in
-				var selfies: [PHAsset] = []
+			self.fetchManager.fetchFromGallery(from: lowerDate, to: upperDate, collectiontype: .smartAlbumSelfPortraits, by: PHAssetMediaType.image.rawValue) { photosInGallery in
 				
-				if selfiesInLibrary.count != 0 {
-					for selfiePos in 1...selfiesInLibrary.count {
+				var group: [PhassetGroup] = []
+				var containsAdd: [Int] = []
+				var similarPhotos: [(asset: PHAsset, date: Int64, imageSize: Int64)] = []
+				
+				similarPhotos.reserveCapacity(photosInGallery.count)
+				
+				
+				if photosInGallery.count != 0 {
+					
+					for index in 1...photosInGallery.count {
+						debugPrint("index preocessing duplicate")
+						debugPrint("index \(index)")
+							
+						if operation.isCancelled {
+							completionHandler([])
+							return
+						}
+					
+						if enableSingleProcessingNotification {
+							self.progressSearchNotificationManager.sendSingleSearchProgressNotification(notificationtype: .similarSelfiesPhoto,
+																										totalProgressItems: photosInGallery.count,
+																										currentProgressItem: index)
+						} else if enableDeepCleanProcessingNotification {
+							self.progressSearchNotificationManager.sendDeepProgressNotificatin(notificationType: .similarSelfiePhotos,
+																							   totalProgressItems: photosInGallery.count,
+																							   currentProgressItem: index)
+						}
+						
+						similarPhotos.append((asset: photosInGallery[index - 1],
+											  date: Int64(photosInGallery[index - 1].creationDate!.timeIntervalSince1970),
+											  imageSize: photosInGallery[index - 1].imageSize))
+					}
+					
+					similarPhotos.sort { similarPhotoNumberOne, similarPhotoNumberTwo in
+						return similarPhotoNumberOne.date > similarPhotoNumberTwo.date
+					}
+					
+					for index in 0...similarPhotos.count - 1 {
 						
 						if operation.isCancelled {
 							completionHandler([])
 							return
 						}
 						
-						selfies.append(selfiesInLibrary[selfiePos - 1])
+						debugPrint("similar index precessing: ", index)
+						var similarIndex = index + 1
+						if containsAdd.contains(index) { continue }
+						var similar: [PHAsset] = []
+						
+						if (similarIndex < similarPhotos.count && abs(similarPhotos[index].date - similarPhotos[similarIndex].date) <= 10) {
+							similar.append(similarPhotos[index].asset)
+							containsAdd.append(index)
+							repeat {
+								if containsAdd.contains(similarIndex) {
+									continue
+								}
+								similar.append(similarPhotos[similarIndex].asset)
+								containsAdd.append(similarIndex)
+								similarIndex += 1
+							} while similarIndex < similarPhotos.count && abs(similarPhotos[index].date - similarPhotos[similarIndex].date) <= 10
+						}
+						if similar.count != 0 {
+							debugPrint("apend new group")
+							let date = similar.first?.creationDate
+							group.append(PhassetGroup(name: "", assets: similar, creationDate: date))
+						}
 					}
-					completionHandler(selfies)
+					
+					completionHandler(group)
 				} else {
 					completionHandler([])
+					if enableDeepCleanProcessingNotification {
+						self.sendZeroPhassetsNotification(of: .similarSelfiePhotos)
+					}
 				}
 			}
 		}
-		photoSelfiesOperation.name = CommonOperationSearchType.singleSelfieAssetsOperation.rawValue
-		return photoSelfiesOperation
+		similarPhotoProcessingOperation.name = CommonOperationSearchType.similarPhotoAssetsOperaton.rawValue
+		return similarPhotoProcessingOperation
+		
+//		let similarSelfiesOperationTest = ConcurrentProcessOperation { operation in
+//
+//			self.fetchManager.fetchFromGallery(from: lowerDate, to: upperDate, collectiontype: .smartAlbumSelfPortraits, by: PHAssetMediaType.image.rawValue) { selfiesInLibrary in
+//				var photos: [OSTuple<NSString, NSData>] = []
+//
+//				if selfiesInLibrary.count != 0 {
+//					selfiesInLibrary.enumerateObjects { phasset, index, object in
+//						if operation.isCancelled {
+//							completionHandler([])
+//							return
+//						}
+//
+//
+//
+//						if enableSingleProcessingNotification {
+//							self.progressSearchNotificationManager.sendSingleSearchProgressNotification(notificationtype: .similarSelfiesPhoto, totalProgressItems: selfiesInLibrary.count, currentProgressItem: index)
+//						} else {
+//							self.progressSearchNotificationManager.sendDeepProgressNotificatin(notificationType: .similarSelfiePhotos, totalProgressItems: selfiesInLibrary.count, currentProgressItem: index)
+//						}
+//
+//						let photo = self.fetchManager.getThumbnail(from: selfiesInLibrary[index], size: CGSize(width: 300, height: 300))
+//						if let data = photo.jpegData(compressionQuality: 0.8) {
+//							let tuple = OSTuple<NSString, NSData>(first: "image\(index)" as NSString, andSecond: data as NSData)
+//							photos.append(tuple)
+//						}
+//					}
+//
+//					let similarTupleOperation = self.getDuplicatedTuplesOperation(for: photos, photosInGallery: selfiesInLibrary, deepCleanTyep: .similarSelfiePhotos, singleCleanType: .similarSelfiesPhoto, enableDeepCleanProcessingNotification: enableDeepCleanProcessingNotification, enableSingleProcessingNotification: enableSingleProcessingNotification) { similarSelfiesGroup in
+//						completionHandler(similarSelfiesGroup)
+//					}
+//					self.serviceUtilsCalculatedOperationsQueuer.addOperation(similarTupleOperation)
+//				} else {
+//					completionHandler([])
+//				}
+//			}
+//		}
+//		similarSelfiesOperation.name = COT.similarSelfiesAssetsOperation.rawValue
+//		return similarSelfiesOperation
 	}
-	
+		
 		/// `load screenshots` from gallery
 	public func getScreenShotsOperation(from lowerDate: Date = lowerDateValue, to upperDate: Date = upperDateValue, enableDeepCleanProcessingNotification: Bool = false, enableSingleProcessingNotification: Bool = false, completionHandler: @escaping ((_ assets: [PHAsset]) -> Void)) -> ConcurrentProcessOperation {
 		
@@ -562,6 +667,9 @@ extension PhotoManager {
 					completionHandler(screens)
 				} else {
 					completionHandler([])
+					if enableDeepCleanProcessingNotification {
+						self.sendZeroPhassetsNotification(of: .screenshots)
+					}
 				}
 			}
 		}
@@ -589,13 +697,16 @@ extension PhotoManager {
 						if enableSingleProcessingNotification {
 							self.progressSearchNotificationManager.sendSingleSearchProgressNotification(notificationtype: .livePhoto, totalProgressItems: livePhotosLibrary.count, currentProgressItem: livePhotoPosition)
 						} else if enableDeepCleanProcessingNotification {
-//							self.progressSearchNotificationManager.sendDeepProgressNotificatin(notificationType: ., totalProgressItems: livePhotosLibrary.count, currentProgressItem: livePhotoPosition)
+                            self.progressSearchNotificationManager.sendDeepProgressNotificatin(notificationType: .similarLivePhoto, totalProgressItems: livePhotosLibrary.count, currentProgressItem: livePhotoPosition)
 						}
 						livePhotos.append(livePhotosLibrary[livePhotoPosition - 1])
 					}
 					completionHandler(livePhotos)
 				} else {
 					completionHandler([])
+					if enableDeepCleanProcessingNotification {
+						self.sendZeroPhassetsNotification(of: .similarLivePhoto)
+					}
 				}
 			}
 		}
@@ -685,6 +796,9 @@ extension PhotoManager {
 					completionHandler(group)
 				} else {
 					completionHandler([])
+					if enableDeepCleanProcessingNotification {
+						self.sendZeroPhassetsNotification(of: .similarPhoto)
+					}
 				}
 			}
 		}
@@ -736,6 +850,9 @@ extension PhotoManager {
 					
 				} else {
 					completionHandler([])
+					if enableDeepCleanProcessingNotification {
+						self.sendZeroPhassetsNotification(of: .similarLivePhoto)
+					}
 				}
 			}
 		}
@@ -754,7 +871,6 @@ extension PhotoManager {
 				var photos: [OSTuple<NSString, NSData>] = []
 				
 				if photoGallery.count != 0 {
-					
 					
 					for photoPos in 1...photoGallery.count {
 						debugPrint("loading duplicate")
@@ -776,7 +892,7 @@ extension PhotoManager {
 																							   currentProgressItem: photoPos / 2)
 						}
 						
-						let image = self.fetchManager.getThumbnail(from: photoGallery[photoPos - 1], size: CGSize(width: 150, height: 150))
+						let image = self.fetchManager.getThumbnail(from: photoGallery[photoPos - 1], size: CGSize(width: 300, height: 300))
 						if let data = image.jpegData(compressionQuality: 0.8) {
 							let tuple = OSTuple<NSString, NSData>(first: "image\(photoPos)" as NSString, andSecond: data as NSData)
 							photos.append(tuple)
@@ -791,6 +907,9 @@ extension PhotoManager {
 					
 				} else {
 					completionHandler([])
+					if enableDeepCleanProcessingNotification {
+						self.sendZeroPhassetsNotification(of: .duplicatePhoto)
+					}
 				}
 			}
 		}
@@ -810,7 +929,6 @@ extension PhotoManager {
 			var duplicatedPhotosCount: [Int] = []
 			var duplicatedGroup: [PhassetGroup] = []
 			let duplicatedIDS = OSImageHashing.sharedInstance().similarImages(with: OSImageHashingQuality.high, forImages: photos)
-			
 			
 			guard duplicatedIDS.count >= 1 else {
 				completionHandler([])
@@ -979,6 +1097,16 @@ extension PhotoManager {
 	}
 }
 
+extension PhotoManager {
+	
+	private func sendZeroPhassetsNotification(of type: DeepCleanNotificationType) {
+		U.delay(1) {
+			self.progressSearchNotificationManager.sendDeepProgressNotificatin(notificationType: type,
+																			   totalProgressItems: 1,
+																			   currentProgressItem: 1)
+		}
+	}
+}
 
 extension PhotoManager {
 	
@@ -1002,8 +1130,6 @@ extension PhotoManager {
 		deletePhassetsOperation.name = C.key.operation.name.deletePhassetsOperation
 		return deletePhassetsOperation
 	}
-	
-	
 }
 
 
@@ -1110,51 +1236,68 @@ extension PhotoManager {
 				completionHandler(calculatedResult)
 			}
 		}
-		
 		return getAssetsByIdOperation
 	}
 }
 
-
+//  MARK: -fetch prefetch operations-
 extension PhotoManager {
+    
+    public func prefetchsForPHAssets(_ assets: [PHAsset]) {
+
+            let phassetOperation = ConcurrentProcessOperation { operation in
+                self.prefetchManager.startCachingImages(for: assets, targetSize: self.prefetchPhotoTargetSize(), contentMode: .aspectFit, options: self.requestOptions)
+            }
+            prefetchOperationQueue.addOperation(phassetOperation)
+    }
+    
+    public func cancelFetchForPHAseets(_ assets: [PHAsset]) {
+        self.prefetchManager.stopCachingImages(for: assets, targetSize: self.prefetchPhotoTargetSize(), contentMode: .aspectFit, options: self.requestOptions)
+    }
+    
+	public func requestChacheImageForPhasset(_ asset: PHAsset, completion: @escaping (_ image: UIImage?,_ id: String) -> Void) {
+        let targetSize = self.prefetchPhotoTargetSize()
 	
-	public func sizeForAsset(_ asset: PHAsset, scale: CGFloat = 1) -> CGSize {
-		
-		let assetPropotion = CGFloat(asset.pixelWidth) / CGFloat(asset.pixelHeight)
-		let imageHeight: CGFloat = 400
-		let imageWidth = floor(assetPropotion * imageHeight)
-		
-		return CGSize(width: imageWidth * scale, height: imageHeight * scale)
-	}
+        if asset.representsBurst {
+			prefetchManager.requestImageDataAndOrientation(for: asset, options: self.requestOptions) { data, _, _, _ in
+                let image = data.flatMap { UIImage(data: $0) }
+				completion(image, asset.localIdentifier)
+            }
+        }
+        else {
+			prefetchManager.requestImage(for: asset, targetSize: targetSize, contentMode: .aspectFit, options: self.requestOptions) { image, _ in
+					completion(image, asset.localIdentifier)
+            }
+        }
+    }
 	
-	public func prefetchImagesForAsset(_ assets: [PHAsset]) {
-		
-		assets.forEach { asset in
-			debugPrint("chache thumnail: \(asset.localIdentifier)")
-			let targetSize = sizeForAsset(asset, scale: UIScreen.main.scale)
-			prefetchManager.startCachingImages(for: [asset], targetSize: targetSize, contentMode: .aspectFill, options: self.requestOptions)
-		}
-	}
 	
-	public func requestChacheImageForPhasset(_ asset: PHAsset, completion: @escaping (_ image: UIImage?) -> Void) {
-		let targetSize = sizeForAsset(asset, scale: UIScreen.main.scale)
-		requestOptions.isSynchronous = true
-		
-		if asset.representsBurst {
-			prefetchManager.requestImageDataAndOrientation(for: asset, options: requestOptions) { data, _, _, _ in
-				let image = data.flatMap { UIImage(data: $0) }
-				completion(image)
-			}
+	public func loadChacheImageForPhasset(_ asset: PHAsset) -> UIImage? {
+		var resultImage: UIImage?
+		prefetchManager.requestImage(for: asset, targetSize: self.prefetchPhotoTargetSize(), contentMode: .aspectFill, options: self.requestOptions) { image, _ in
+			resultImage = image
 		}
-		else {
-			prefetchManager.requestImage(for: asset, targetSize: targetSize, contentMode: .aspectFill, options: requestOptions) { image, _ in
-				completion(image)
-			}
-		}
+		return resultImage
 	}
+    
+        /// 'get size for asset'
+    public func prefetchPhotoTargetSize() -> CGSize {
+        let scale = UIScreen.main.scale
+        return CGSize(width: 300 * scale, height: 300 * scale)
+    }
+    
+    public func sizeForAsset(_ asset: PHAsset, scale: CGFloat = 1) -> CGSize {
+        
+        let assetPropotion = CGFloat(asset.pixelWidth) / CGFloat(asset.pixelHeight)
+        let imageHeight: CGFloat = 400
+        let imageWidth = floor(assetPropotion * imageHeight)
+        
+        return CGSize(width: imageWidth * scale, height: imageHeight * scale)
+    }
 }
 
 
+#warning("WORK IN PROGRESS")
 extension PhotoManager {
 	
 	public func recoverSelectedOperation(assets: [PHAsset], completion: @escaping ((Bool) -> Void)) -> ConcurrentProcessOperation {
@@ -1307,3 +1450,7 @@ extension PhotoManager {
 		return recoverPhassetsOperation
 	}
 }
+
+
+
+

@@ -12,6 +12,7 @@ enum DeepCleanNotificationType {
 	case similarPhoto
 	case duplicatePhoto
 	case screenshots
+	case similarSelfiePhotos
 	case similarLivePhoto
 	
 	case largeVideo
@@ -33,6 +34,8 @@ enum DeepCleanNotificationType {
 				return C.key.notificationDictionary.count.duplicatePhotoCount
 			case .screenshots:
 				return C.key.notificationDictionary.count.screenShotsCount
+			case .similarSelfiePhotos:
+				return C.key.notificationDictionary.count.similarSelfiePhotosCount
 			case .similarLivePhoto:
 				return C.key.notificationDictionary.count.livePhotosSimilarCount
 			case .largeVideo:
@@ -64,6 +67,8 @@ enum DeepCleanNotificationType {
 				return C.key.notificationDictionary.index.duplicatePhotoIndex
 			case .screenshots:
 				return C.key.notificationDictionary.index.screenShotsIndex
+			case .similarSelfiePhotos:
+				return C.key.notificationDictionary.index.similarSelfiePhotoIndex
 			case .similarLivePhoto:
 				return C.key.notificationDictionary.index.livePhotosIndex
 			case .largeVideo:
@@ -93,6 +98,8 @@ enum DeepCleanNotificationType {
 				return .deepCleanDuplicatedPhotoPhassetScan
 			case .screenshots:
 				return .deepCleanScreenShotsPhassetScan
+			case .similarSelfiePhotos:
+				return .deepCleanSimilarSelfiesPhassetScan
 			case .similarLivePhoto:
 				return .deepCleanSimilarLivePhotosPhaassetScan
 			case .largeVideo:
@@ -122,6 +129,8 @@ enum DeepCleanNotificationType {
 				return .duplicatedPhotos
 			case .screenshots:
 				return .singleScreenShots
+			case .similarSelfiePhotos:
+				return .similarSelfies
 			case .similarLivePhoto:
 				return .similarLivePhotos
 			case .largeVideo:
@@ -151,24 +160,26 @@ enum DeepCleanNotificationType {
 				return 1
 			case .screenshots:
 				return 2
-			case .similarLivePhoto:
+			case .similarSelfiePhotos:
 				return 3
-			case .largeVideo:
+			case .similarLivePhoto:
 				return 4
-			case .duplicateVideo:
+			case .largeVideo:
 				return 5
-			case .similarVideo:
+			case .duplicateVideo:
 				return 6
-			case .screenRecordings:
+			case .similarVideo:
 				return 7
-			case .emptyContacts:
+			case .screenRecordings:
 				return 8
-			case .duplicateContacts:
+			case .emptyContacts:
 				return 9
-			case .duplicatedPhoneNumbers:
+			case .duplicateContacts:
 				return 10
-			case .duplicatedEmails:
+			case .duplicatedPhoneNumbers:
 				return 11
+			case .duplicatedEmails:
+				return 12
 		}
 	}
 }
