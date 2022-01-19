@@ -126,6 +126,8 @@ extension PhotoManager {
 	
 	public func getPhotoLibraryContentAndCalculateSpace() {
 		
+		let lowerUpperDateOperation = self.fetchManager.getLowerUppedDateFromPhasset()
+		serviceUtilsCalculatedOperationsQueuer.addOperation(lowerUpperDateOperation)
 			/// `calculate all sizes phassets`
 		let calculatedAllDiskSpaceOperation = self.fetchManager.getCalculatePHAssetSizesSingleOperation { photoSpace, videoSpace, allAssetsSpace in
 			S.phassetPhotoFilesSizes = photoSpace

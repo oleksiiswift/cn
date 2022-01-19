@@ -304,6 +304,42 @@ extension PHAssetFetchManager {
 		return calculatedAllPHAssetOperation
 	}
 	
+	public func getLowerUppedDateFromPhasset() -> ConcurrentProcessOperation {
+		let dateCalculatedOperation = ConcurrentProcessOperation { _ in
+			
+			U.GLB(qos: .background, {
+
+				var lowerDateValue: Date {
+					return S.lowerBoundSavedDate
+				}
+				
+				var upperDateValue: Date {
+					return S.upperBoundSavedDate
+				}
+				
+				let fetchOption = PHFetchOptions()
+				fetchOption.sortDescriptors = [NSSortDescriptor(key: SortingDesriptionKey.creationDate.value, ascending: false)]
+				fetchOption.predicate = NSPredicate(format: SDKey.allMediaType.value, PHAssetMediaType.image.rawValue, PHAssetMediaType.video.rawValue)
+				let assets = PHAsset.fetchAssets(with: fetchOption)
+
+				assets.enumerateObjects { object, index, stopped in
+					
+					if let date = object.creationDate {
+						if date.isLessThanDate(dateToCompare: lowerDateValue) {
+							S.lowerBoundSavedDate = date
+						}
+						
+						if date.isGreaterThanDate(dateToCompare: upperDateValue) {
+							S.upperBoundSavedDate = date
+						}
+					}
+				}
+			})
+			
+		}
+		return dateCalculatedOperation
+	}
+	
 		/// `all assets file size, and in one loop get photo video`
 	public func getCalculatePHAssetSizesSingleOperation(_ completionHandler: @escaping (_ photoSpace: Int64,_ videoSpace: Int64,_ allAssetsSpace: Int64) -> Void) -> ConcurrentProcessOperation {
 		
