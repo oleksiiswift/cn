@@ -352,13 +352,7 @@ extension SimpleAssetsListViewController {
     private func deleteSelectedAssets() {
         
         guard let selectedIndexPath = self.collectionView.indexPathsForSelectedItems else { return }
-        
-        var assetsToDelete: [PHAsset] = []
-        
-        selectedIndexPath.forEach { indexPath in
-            let assetInCollection = self.assetCollection[indexPath.row]
-                assetsToDelete.append(assetInCollection)
-        }
+		let assetsToDelete: [PHAsset] = selectedIndexPath.compactMap({self.assetCollection[$0.row]})
 		self.deleteOperationWith(selectedPHAassets: assetsToDelete, at: selectedIndexPath)
     }
 	
@@ -376,15 +370,23 @@ extension SimpleAssetsListViewController {
 					self.collectionView.performBatchUpdates {
 						self.collectionView.deleteItems(at: indexPath)
 					} completion: { _ in
-						self.handleSelectAllButtonState()
-						self.handleBottomButtonMenu()
-						self.handleSelectAssetsNavigationCount()
+						self.smoothReloadData()
 					}
 				}
 			}
 		}
 			
 		photoManager.serviceUtilsCalculatedOperationsQueuer.addOperation(deleteOperation)
+	}
+	
+	private func smoothReloadData() {
+		UIView.transition(with: self.collectionView, duration: 0.35, options: .transitionCrossDissolve) {
+			self.collectionView.reloadData()
+		} completion: { _ in
+			self.handleSelectAssetsNavigationCount()
+			self.handleSelectAllButtonState()
+			self.handleBottomButtonMenu()
+		}
 	}
 	
 	private func recoverSeletedAssets() {
