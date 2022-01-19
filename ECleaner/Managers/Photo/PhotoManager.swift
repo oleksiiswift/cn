@@ -933,6 +933,9 @@ extension PhotoManager {
 			let duplicatedIDS = OSImageHashing.sharedInstance().similarImages(with: OSImageHashingQuality.high, forImages: photos)
 			
 			guard duplicatedIDS.count >= 1 else {
+				if enableDeepCleanProcessingNotification {
+					self.sendZeroPhassetsNotification(of: deepCleanTyep)
+				}
 				completionHandler([])
 				return
 			}
