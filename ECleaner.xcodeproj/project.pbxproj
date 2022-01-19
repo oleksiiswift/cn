@@ -197,7 +197,6 @@
 		97C70B54277634AC0033F466 /* ShadowButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97C70B53277634AC0033F466 /* ShadowButton.swift */; };
 		97C909CA2748F68B00BC2E47 /* ECFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97C909C92748F68B00BC2E47 /* ECFileManager.swift */; };
 		97C909CC2748FA5300BC2E47 /* ShareManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97C909CB2748FA5300BC2E47 /* ShareManager.swift */; };
-		97C909CE274950D300BC2E47 /* TemproraryClassMethodsCellBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97C909CD274950D300BC2E47 /* TemproraryClassMethodsCellBlock.swift */; };
 		97CA423F273EBBFA001FEA15 /* BottomButtonBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CA423E273EBBFA001FEA15 /* BottomButtonBarView.swift */; };
 		97CA4241273EBC33001FEA15 /* BottomButtonBarView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 97CA4240273EBC33001FEA15 /* BottomButtonBarView.xib */; };
 		97CB351127395803005DA881 /* SectionShadowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CB351027395802005DA881 /* SectionShadowView.swift */; };
@@ -433,7 +432,6 @@
 		97C70B53277634AC0033F466 /* ShadowButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowButton.swift; sourceTree = "<group>"; };
 		97C909C92748F68B00BC2E47 /* ECFileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ECFileManager.swift; sourceTree = "<group>"; };
 		97C909CB2748FA5300BC2E47 /* ShareManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareManager.swift; sourceTree = "<group>"; };
-		97C909CD274950D300BC2E47 /* TemproraryClassMethodsCellBlock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemproraryClassMethodsCellBlock.swift; sourceTree = "<group>"; };
 		97CA423E273EBBFA001FEA15 /* BottomButtonBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomButtonBarView.swift; sourceTree = "<group>"; };
 		97CA4240273EBC33001FEA15 /* BottomButtonBarView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BottomButtonBarView.xib; sourceTree = "<group>"; };
 		97CB351027395802005DA881 /* SectionShadowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionShadowView.swift; sourceTree = "<group>"; };
@@ -1353,7 +1351,6 @@
 		97B01A802747CB9100DDE03C /* Export */ = {
 			isa = PBXGroup;
 			children = (
-				97C909CD274950D300BC2E47 /* TemproraryClassMethodsCellBlock.swift */,
 				97B01A7E2747CB8C00DDE03C /* ExportContactsViewController.swift */,
 			);
 			path = Export;
@@ -1721,7 +1718,6 @@
 				04CF0003268602DE000CA850 /* MediaContentType.swift in Sources */,
 				97D2BED0275A3F88002082EB /* ContactsExportManager.swift in Sources */,
 				97DA18F12797502B00427587 /* Thread+Extension.swift in Sources */,
-				97C909CE274950D300BC2E47 /* TemproraryClassMethodsCellBlock.swift in Sources */,
 				04467CE0270D929D00DBBB39 /* HorizontalProgressBar.swift in Sources */,
 				97CE449D273D311400DF6114 /* NavigationBarDelegate.swift in Sources */,
 				044281FE2692F9B800B6B47C /* SelectDropDownMenuDelegate.swift in Sources */,

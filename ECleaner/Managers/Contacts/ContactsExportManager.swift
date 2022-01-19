@@ -57,7 +57,7 @@ extension ContactsExportManager {
 	public func csvContactsExportAll(_ completion: @escaping (_ fileURL: URL?) -> Void) {
 		
 		contactsManager.getAllContacts { contacts in
-			self.csvContactsExportAll { fileURL in
+			self.exportContactsAsCSV(contacts) { fileURL in
 				completion(fileURL)
 			}
 		}
