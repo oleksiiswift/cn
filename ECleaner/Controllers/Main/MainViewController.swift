@@ -19,7 +19,8 @@ class MainViewController: UIViewController {
     @IBOutlet weak var circleProgressView: MMTGradientArcView!
     @IBOutlet weak var mediaCollectionView: UICollectionView!
     @IBOutlet weak var collectionViewHeightConstraint: NSLayoutConstraint!
-    
+	@IBOutlet weak var sectionHeaderTextLabel: UILabel!
+	
     private let baseCarouselLayout = BaseCarouselFlowLayout()
         
 	private var photoMenager = PhotoManager.shared
@@ -357,12 +358,15 @@ extension MainViewController: UpdateColorsDelegate {
         bottomButtonBarView.title("START DEEP CLEAN")
         bottomButtonBarView.actionButton.imageSize = CGSize(width: 25, height: 25)
         bottomButtonBarView.setImage(I.mainStaticItems.clean)
+		
+		sectionHeaderTextLabel.text = "Select Category"
+		sectionHeaderTextLabel.font = .systemFont(ofSize: 14, weight: .heavy)
     }
     
     func updateColors() {
         
         self.view.backgroundColor = theme.backgroundColor
-        
+		sectionHeaderTextLabel.textColor = theme.subTitleTextColor
         bottomButtonBarView.buttonColor = theme.cellBackGroundColor
         bottomButtonBarView.buttonTintColor = theme.secondaryTintColor
         bottomButtonBarView.buttonTitleColor = theme.activeLinkTitleTextColor
@@ -373,8 +377,8 @@ extension MainViewController: UpdateColorsDelegate {
     
     private func setupProgressAndCollectionSize() {
         
-      circleTotlaSpaceView.font = UIFont(font: FontManager.robotoBlack, size: 61.0)!
-      circleTotlaSpaceView.percentLabel.font = UIFont(font: FontManager.robotoBlack, size: 61.0)
+		circleTotlaSpaceView.font = .systemFont(ofSize: 50, weight: .black)
+		circleTotlaSpaceView.percentLabel.font = .systemFont(ofSize: 50, weight: .black)
       circleTotlaSpaceView.percentLabelCenterInset = 45
       
       switch Screen.size {
