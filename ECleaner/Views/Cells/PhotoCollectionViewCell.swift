@@ -142,11 +142,9 @@ extension PhotoCollectionViewCell: Themeble {
 	}
     
     public func loadCellThumbnail(_ asset: PHAsset) {
-		
-		let image = PhotoManager.shared.loadChacheImageForPhasset(asset)
+			/// `First time!!!!`
+		self.photoThumbnailImageView.image = PhotoManager.shared.loadChacheImageForPhasset(asset)
 		self.photoThumbnailImageView.contentMode = .scaleAspectFill
-		self.photoThumbnailImageView.image = image
-
 		playPhassetImageView.image = I.systemItems.defaultItems.onViewPlayButton
                 
         switch cellMediaType {
@@ -169,6 +167,8 @@ extension PhotoCollectionViewCell: Themeble {
                 videoAssetDurationView.isHidden = true
 				playPhassetImageView.isHidden = true
         }
+//		/// `second time!!!!
+//		self.photoThumbnailImageView.image = PhotoManager.shared.loadChacheImageForPhasset(asset)
     }
 
     public func checkIsSelected() {
@@ -194,3 +194,4 @@ extension PhotoCollectionViewCell: Themeble {
 		selectableView.isHidden = !availible
 	}
 }
+

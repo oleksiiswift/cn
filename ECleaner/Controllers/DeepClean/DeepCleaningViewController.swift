@@ -304,24 +304,35 @@ extension DeepCleaningViewController {
      }
      
      private func updateAssetsProcessingOfType(group: [PhassetGroup], mediaType: MediaContentType, contentType: PhotoMediaType, phassetsCount: Int) {
-          self.doneProcessingDeepCleanForMedia[contentType] = true
-		  self.currentProgressForRawMediatype[contentType] = 100.0
-          self.photoVideoFlowGroup[contentType] = group
-          self.updateCellInfoCount(by: mediaType, contentType: contentType, assetsCount: phassetsCount)
+		  U.BG {
+			   let prefetchPhasset = group.flatMap({$0.assets})
+			   self.photoManager.prefetchsForPHAssets(prefetchPhasset)
+		  }
+		  U.UI {
+			   self.doneProcessingDeepCleanForMedia[contentType] = true
+			   self.currentProgressForRawMediatype[contentType] = 100.0
+			   self.photoVideoFlowGroup[contentType] = group
+			   self.updateCellInfoCount(by: mediaType, contentType: contentType, assetsCount: phassetsCount)
+			   self.updateTotalFilesTitleChecked()
+		  }
      }
      
-     private func updateContactsProcessing(group: [ContactsGroup], contentType: PhotoMediaType, contactsCount: Int) {
-          self.doneProcessingDeepCleanForMedia[contentType] = true
-		  self.currentProgressForRawMediatype[contentType] = 100.0
-          self.contactsFlowGroups[contentType] = group
-          self.updateCellInfoCount(by: .userContacts, contentType: contentType, assetsCount: contactsCount)
-     }
+	 private func updateContactsProcessing(group: [ContactsGroup], contentType: PhotoMediaType, contactsCount: Int) {
+		  U.UI {
+			   self.doneProcessingDeepCleanForMedia[contentType] = true
+			   self.currentProgressForRawMediatype[contentType] = 100.0
+			   self.contactsFlowGroups[contentType] = group
+			   self.updateCellInfoCount(by: .userContacts, contentType: contentType, assetsCount: contactsCount)
+			   self.updateTotalFilesTitleChecked()
+		  }
+	 }
      
      private func updateAssetsFieldCount(at indexPath: IndexPath, assetsCount: Int) {
           
           guard !indexPath.isEmpty, let cell = self.tableView.cellForRow(at: indexPath) as? ContentTypeTableViewCell else { return }
-          
-          self.configure(cell, at: indexPath)
+		  U.UI {
+			   self.configure(cell, at: indexPath)
+		  }
      }
      
      private func updateCellInfoCount(by type: MediaContentType, contentType: PhotoMediaType, assetsCount: Int) {
@@ -377,13 +388,21 @@ extension DeepCleaningViewController {
 extension DeepCleaningViewController: DateSelectebleViewDelegate {
      
      func didSelectStartingDate() {
-          self.isStartingDateSelected = true
-          performSegue(withIdentifier: C.identifiers.segue.showDatePicker, sender: self)
+		  if isDeepCleanSearchingProcessRunning {
+			   showStopDeepCleanScanAlert()
+		  } else {
+			   self.isStartingDateSelected = true
+			   performSegue(withIdentifier: C.identifiers.segue.showDatePicker, sender: self)
+		  }
      }
      
      func didSelectEndingDate() {
+		  if isDeepCleanSearchingProcessRunning {
+			   showStopDeepCleanScanAlert()
+		  } else {
           self.isStartingDateSelected = false
           performSegue(withIdentifier: C.identifiers.segue.showDatePicker, sender: self)
+		  }
      }
 }
 
@@ -446,50 +465,51 @@ extension DeepCleaningViewController: DeepCleanSelectableAssetsDelegate {
 extension DeepCleaningViewController {
      
      @objc func flowRoatingHandleNotification(_ notification: Notification) {
-		  
-          switch notification.name {
-               case .deepCleanSimilarPhotoPhassetScan:
-                    self.recieveNotification(by: .similarPhoto,
-                                             info: notification.userInfo)
-               case .deepCleanDuplicatedPhotoPhassetScan:
-                    self.recieveNotification(by: .duplicatePhoto,
-                                             info: notification.userInfo)
-               case .deepCleanScreenShotsPhassetScan:
-                    self.recieveNotification(by: .screenshots,
-                                             info: notification.userInfo)
-			   case .deepCleanSimilarSelfiesPhassetScan:
-					self.recieveNotification(by: .similarSelfiePhotos,
-											 info: notification.userInfo)
-               case .deepCleanSimilarLivePhotosPhaassetScan:
-                    self.recieveNotification(by: .similarLivePhoto,
-                                             info: notification.userInfo)
-               case .deepCleanLargeVideoPhassetScan:
-                    self.recieveNotification(by: .largeVideo,
-                                             info: notification.userInfo)
-               case .deepCleanDuplicateVideoPhassetScan:
-                    self.recieveNotification(by: .duplicateVideo,
-                                             info: notification.userInfo)
-               case .deepCleanSimilarVideoPhassetScan:
-                    self.recieveNotification(by: .similarVideo,
-                                             info: notification.userInfo)
-               case .deepCleanScreenRecordingsPhassetScan:
-                    self.recieveNotification(by: .screenRecordings,
-                                             info: notification.userInfo)
-               case .deepCleanEmptyContactsScan:
-                    self.recieveNotification(by: .emptyContacts,
-                                             info: notification.userInfo)
-               case .deepCleanDuplicatedContactsScan:
-                    self.recieveNotification(by: .duplicateContacts,
-                                             info: notification.userInfo)
-               case .deepCleanDuplicatedPhoneNumbersScan:
-                    self.recieveNotification(by: .duplicatedPhoneNumbers,
-                                             info: notification.userInfo)
-               case .deepCleanDupLicatedMailsScan:
-                    self.recieveNotification(by: .duplicatedEmails,
-                                             info: notification.userInfo)
-               default:
-                    return
-          }
+		  U.UI {
+			   switch notification.name {
+					case .deepCleanSimilarPhotoPhassetScan:
+						 self.recieveNotification(by: .similarPhoto,
+												  info: notification.userInfo)
+					case .deepCleanDuplicatedPhotoPhassetScan:
+						 self.recieveNotification(by: .duplicatePhoto,
+												  info: notification.userInfo)
+					case .deepCleanScreenShotsPhassetScan:
+						 self.recieveNotification(by: .screenshots,
+												  info: notification.userInfo)
+					case .deepCleanSimilarSelfiesPhassetScan:
+						 self.recieveNotification(by: .similarSelfiePhotos,
+												  info: notification.userInfo)
+					case .deepCleanSimilarLivePhotosPhaassetScan:
+						 self.recieveNotification(by: .similarLivePhoto,
+												  info: notification.userInfo)
+					case .deepCleanLargeVideoPhassetScan:
+						 self.recieveNotification(by: .largeVideo,
+												  info: notification.userInfo)
+					case .deepCleanDuplicateVideoPhassetScan:
+						 self.recieveNotification(by: .duplicateVideo,
+												  info: notification.userInfo)
+					case .deepCleanSimilarVideoPhassetScan:
+						 self.recieveNotification(by: .similarVideo,
+												  info: notification.userInfo)
+					case .deepCleanScreenRecordingsPhassetScan:
+						 self.recieveNotification(by: .screenRecordings,
+												  info: notification.userInfo)
+					case .deepCleanEmptyContactsScan:
+						 self.recieveNotification(by: .emptyContacts,
+												  info: notification.userInfo)
+					case .deepCleanDuplicatedContactsScan:
+						 self.recieveNotification(by: .duplicateContacts,
+												  info: notification.userInfo)
+					case .deepCleanDuplicatedPhoneNumbersScan:
+						 self.recieveNotification(by: .duplicatedPhoneNumbers,
+												  info: notification.userInfo)
+					case .deepCleanDupLicatedMailsScan:
+						 self.recieveNotification(by: .duplicatedEmails,
+												  info: notification.userInfo)
+					default:
+						 return
+			   }
+		  }
      }
      
      private func recieveNotification(by type: DeepCleanNotificationType, info: [AnyHashable: Any]?) {
@@ -498,12 +518,9 @@ extension DeepCleaningViewController {
                 let totalProcessingAssetsCount = userInfo[type.dictionaryCountName] as? Int,
                 let index = userInfo[type.dictionaryIndexName] as? Int else { return }
 		  
-		  if type == .similarSelfiePhotos {
-			   
-		  }
-		  
           calculateProgressPercentage(total: totalProcessingAssetsCount, current: index) { title, progress in
-			   U.delay(0.5) {
+//			   U.delay(0.0) {
+			   U.UI {
 					self.handleTotalFilesChecked(by: type, files: index)
 					self.progressUpdate(type, progress: progress, title: title)
 			   }
@@ -517,10 +534,10 @@ extension DeepCleaningViewController {
      
      private func updateTotalFilesTitleChecked() {
                     
-          let totalVideoProcessing = (totalDeepCleanFilesCountIn[5] + totalDeepCleanFilesCountIn[6]) / 2
-          let totalPhotoProcessing = (totalDeepCleanFilesCountIn[0] + totalDeepCleanFilesCountIn[1]) / 2
+//          let totalVideoProcessing = (totalDeepCleanFilesCountIn[5] + totalDeepCleanFilesCountIn[6]) / 2
+//          let totalPhotoProcessing = (totalDeepCleanFilesCountIn[0] + totalDeepCleanFilesCountIn[1] + totalDeepCleanFilesCountIn[3] + totalDeepCleanFilesCountIn[4]) / 4
           
-          totalFilesChecked = (totalPhotoProcessing + totalVideoProcessing)
+//          totalFilesChecked = (totalPhotoProcessing + totalVideoProcessing)
    
           if self.totalFilesOnDevice == 0 {
                totalPercentageCalculated = 0
@@ -528,11 +545,15 @@ extension DeepCleaningViewController {
 			   debugPrint("--> \(self.totalDeepCleanProgress)")
                totalPercentageCalculated = self.totalDeepCleanProgress.sum() / 13
           }
+		  
+		  totalFilesChecked = (totalFilesOnDevice / 100) * Int(totalPercentageCalculated)
+		  
           
           if let cell = self.tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? DeepCleanInfoTableViewCell {
                
                if totalPercentageCalculated == 100 {
-                    let total = (totalPartitinAssetsCount[.photo] ?? 0) + (totalPartitinAssetsCount[.video] ?? 0)
+//                    let total = (totalPartitinAssetsCount[.photo] ?? 0) + (totalPartitinAssetsCount[.video] ?? 0)
+					let total = self.totalFilesOnDevice
                     totalFilesChecked = total
                     cell.setProgress(files: total)
                } else {
@@ -557,8 +578,7 @@ extension DeepCleaningViewController {
           guard !indexPath.isEmpty else { return }
           
           guard let cell = tableView.cellForRow(at: indexPath) as? ContentTypeTableViewCell else { return }
-
-          self.configure(cell, at: indexPath, currentProgress: progress)
+		  self.configure(cell, at: indexPath, currentProgress: progress)
 				  
           updateTotalFilesTitleChecked()
      }
@@ -568,7 +588,9 @@ extension DeepCleaningViewController {
 			   let percentLabelFormat: String = "%.f %%"
 			   let totalPercent = CGFloat(Double(current) / Double(total)) * 100
 			   let stingFormat = String(format: percentLabelFormat, totalPercent)
-			   completion(stingFormat, totalPercent)
+			   U.UI {
+					completion(stingFormat, totalPercent)
+			   }
 		  }
      }
 }

@@ -89,15 +89,14 @@ extension MainViewController {
     }
     
     private func updateInformation(_ contentType: MediaContentType) {
-        
-        let contentCount = contentCount[contentType]
-        let diskUsage = SettingsManager.getDiskSpaceFiles(of: contentType)
-        diskSpaceForStartingScreen[contentType] = diskUsage
-        U.UI {
-            if let cell = self.mediaCollectionView.cellForItem(at: contentType.mainScreenIndexPath) as? MediaTypeCollectionViewCell {
-                cell.configureCell(mediaType: contentType, contentCount: contentCount, diskSpace: diskUsage)
-            }
-        }
+		U.UI {
+			let contentCount = self.contentCount[contentType]
+			let diskUsage = SettingsManager.getDiskSpaceFiles(of: contentType)
+			self.diskSpaceForStartingScreen[contentType] = diskUsage
+			if let cell = self.mediaCollectionView.cellForItem(at: contentType.mainScreenIndexPath) as? MediaTypeCollectionViewCell {
+				cell.configureCell(mediaType: contentType, contentCount: contentCount, diskSpace: diskUsage)
+			}
+		}
     }
     
     private func updateCircleProgress() {}
@@ -107,13 +106,15 @@ extension MainViewController {
 extension MainViewController: UpdateContentDataBaseListener {
     
     func updateContentStoreCount(mediaType: MediaContentType, itemsCount: Int, calculatedSpace: Int64?) {
-        self.contentCount[mediaType] = itemsCount
-        diskSpaceForStartingScreen[mediaType] = calculatedSpace
-        U.UI {
-            if let cell = self.mediaCollectionView.cellForItem(at: mediaType.mainScreenIndexPath) as? MediaTypeCollectionViewCell {
-                cell.configureCell(mediaType: mediaType, contentCount: itemsCount, diskSpace: calculatedSpace)
-            }
-        }
+		U.delay(1) {
+			self.contentCount[mediaType] = itemsCount
+			if let calculatedSpace = calculatedSpace {
+				self.diskSpaceForStartingScreen[mediaType] = calculatedSpace
+			}
+			if let cell = self.mediaCollectionView.cellForItem(at: mediaType.mainScreenIndexPath) as? MediaTypeCollectionViewCell {
+				cell.configureCell(mediaType: mediaType, contentCount: itemsCount, diskSpace: calculatedSpace)
+			}
+		}
     }
 
     #warning("REFACORORING!!!!!! TODO ->")

@@ -870,7 +870,7 @@ extension PhotoManager {
 			
 			self.fetchManager.fetchFromGallery(from: lowerDate, to: upperDate, collectiontype: .smartAlbumUserLibrary, by: PHAssetMediaType.image.rawValue) { photoGallery in
 				
-				var photos: [OSTuple<NSString, NSData>] = []
+				var photosTuple: [OSTuple<NSString, NSData>] = []
 				
 				if photoGallery.count != 0 {
 					
@@ -897,11 +897,11 @@ extension PhotoManager {
 						let image = self.fetchManager.getThumbnail(from: photoGallery[photoPos - 1], size: CGSize(width: 300, height: 300))
 						if let data = image.jpegData(compressionQuality: 0.8) {
 							let tuple = OSTuple<NSString, NSData>(first: "image\(photoPos)" as NSString, andSecond: data as NSData)
-							photos.append(tuple)
+							photosTuple.append(tuple)
 						}
 					}
 					
-					let duplicatedTuplesOperation = self.getDuplicatedTuplesOperation(for: photos, photosInGallery: photoGallery, deepCleanTyep: .duplicatePhoto, singleCleanType: .duplicatedPhoto,  enableDeepCleanProcessingNotification: enableDeepCleanProcessingNotification, enableSingleProcessingNotification: enableSingleProcessingNotification) { duplicatedPhotoAssetsGroup in
+					let duplicatedTuplesOperation = self.getDuplicatedTuplesOperation(for: photosTuple, photosInGallery: photoGallery, deepCleanTyep: .duplicatePhoto, singleCleanType: .duplicatedPhoto,  enableDeepCleanProcessingNotification: enableDeepCleanProcessingNotification, enableSingleProcessingNotification: enableSingleProcessingNotification) { duplicatedPhotoAssetsGroup in
 						completionHandler(duplicatedPhotoAssetsGroup)
 					}
 					
@@ -931,6 +931,8 @@ extension PhotoManager {
 			var duplicatedPhotosCount: [Int] = []
 			var duplicatedGroup: [PhassetGroup] = []
 			let duplicatedIDS = OSImageHashing.sharedInstance().similarImages(with: OSImageHashingQuality.high, forImages: photos)
+//			let duplicatedIDS = OSImageHashing.sharedInstance().similarImages(with: .high, withHashDistanceThreshold: .max, forImages: photos)
+				
 			
 			guard duplicatedIDS.count >= 1 else {
 				if enableDeepCleanProcessingNotification {
@@ -946,7 +948,7 @@ extension PhotoManager {
 					completionHandler([])
 					return
 				}
-				
+				debugPrint(currentPosition)
 				let duplicatedTuple = duplicatedIDS[currentPosition - 1]
 				var group: [PHAsset] = []
 				
@@ -1251,6 +1253,7 @@ extension PhotoManager {
     public func prefetchsForPHAssets(_ assets: [PHAsset]) {
 
             let phassetOperation = ConcurrentProcessOperation { operation in
+				self.prefetchManager.allowsCachingHighQualityImages = true
                 self.prefetchManager.startCachingImages(for: assets, targetSize: self.prefetchPhotoTargetSize(), contentMode: .aspectFit, options: self.requestOptions)
             }
             prefetchOperationQueue.addOperation(phassetOperation)
@@ -1279,6 +1282,7 @@ extension PhotoManager {
 	
 	public func loadChacheImageForPhasset(_ asset: PHAsset) -> UIImage? {
 		var resultImage: UIImage?
+		
 		prefetchManager.requestImage(for: asset, targetSize: self.prefetchPhotoTargetSize(), contentMode: .aspectFill, options: self.requestOptions) { image, _ in
 			resultImage = image
 		}
@@ -1288,7 +1292,7 @@ extension PhotoManager {
         /// 'get size for asset'
     public func prefetchPhotoTargetSize() -> CGSize {
         let scale = UIScreen.main.scale
-        return CGSize(width: 300 * scale, height: 300 * scale)
+        return CGSize(width: 400 * scale, height: 400 * scale)
     }
     
     public func sizeForAsset(_ asset: PHAsset, scale: CGFloat = 1) -> CGSize {

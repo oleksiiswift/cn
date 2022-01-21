@@ -280,6 +280,9 @@ extension GroupedAssetListViewController {
 		cell.indexPath = indexPath
 		cell.cellMediaType = self.mediaType
 		cell.cellContentType = self.contentType
+		
+		cell.loadCellThumbnail(asset)
+		
 		cell.setupUI()
 		cell.updateColors()
 		cell.selectButtonSetup(by: self.mediaType)
@@ -291,7 +294,6 @@ extension GroupedAssetListViewController {
 		}
 		
 		cell.checkIsSelected()
-		cell.loadCellThumbnail(asset)
 	}
 	
 	public func hederConfigure(_ view: GroupedAssetsReusableHeaderView, at indexPath: IndexPath) {
@@ -367,6 +369,7 @@ extension GroupedAssetListViewController: UICollectionViewDelegate, UICollection
 			//        self.lazyHardcoreCheckForSelectedItemsAndAssets()
 	}
 	
+
 	func collectionView(_ collectionView: UICollectionView, willDisplaySupplementaryView view: UICollectionReusableView, forElementKind elementKind: String, at indexPath: IndexPath) {
 		
 		guard let headerview = view as? GroupedAssetsReusableHeaderView else { return }

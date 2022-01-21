@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import cisua
 
 enum ElementhCount {
     case one
@@ -47,8 +46,9 @@ class AlertManager: NSObject {
         if withCancel {
             alert.addAction(cancelAction)
         }
-        
-        topController()?.present(alert, animated: true, completion: nil)
+		U.UI {
+			topController()?.present(alert, animated: true, completion: nil)			
+		}
     }
     
     private static func showPermissionAlert(alerttype: AlertType, actions: [UIAlertAction], cancelAction: @escaping (_ isDennyAccess: Bool) -> Void) {
