@@ -873,10 +873,15 @@ extension PhotoManager {
 				var photosTuple: [OSTuple<NSString, NSData>] = []
 				
 				if photoGallery.count != 0 {
-					
-					for photoPos in 1...photoGallery.count {
+                    
+                    photoGallery.enumerateObjects { phasset, positionIndex, _ in
+                        
+                    
+
+                    
+//					for photoPos in 1...photoGallery.count {
 						debugPrint("loading duplicate")
-						debugPrint("photoposition \(photoPos)")
+						debugPrint("photoposition \(positionIndex)")
 						
 						if operation.isCancelled {
 							completionHandler([])
@@ -887,24 +892,28 @@ extension PhotoManager {
 						if enableSingleProcessingNotification {
 							self.progressSearchNotificationManager.sendSingleSearchProgressNotification(notificationtype: .duplicatedPhoto,
 																										totalProgressItems: photoGallery.count,
-																										currentProgressItem: photoPos / 2)
+																										currentProgressItem: positionIndex / 2)
 						} else {
 							self.progressSearchNotificationManager.sendDeepProgressNotificatin(notificationType: .duplicatePhoto,
 																							   totalProgressItems: photoGallery.count,
-																							   currentProgressItem: photoPos / 2)
+																							   currentProgressItem: positionIndex / 2)
 						}
 						
-						let image = self.fetchManager.getThumbnail(from: photoGallery[photoPos - 1], size: CGSize(width: 300, height: 300))
+						let image = self.fetchManager.getThumbnail(from: phasset, size: CGSize(width: 150, height: 150))
+         
 						if let data = image.jpegData(compressionQuality: 0.8) {
-							let tuple = OSTuple<NSString, NSData>(first: "image\(photoPos)" as NSString, andSecond: data as NSData)
+							let tuple = OSTuple<NSString, NSData>(first: "image\(positionIndex + 1)" as NSString, andSecond: data as NSData)
 							photosTuple.append(tuple)
 						}
 					}
+                    
+                    debugPrint(photosTuple)
 					
 					let duplicatedTuplesOperation = self.getDuplicatedTuplesOperation(for: photosTuple, photosInGallery: photoGallery, deepCleanTyep: .duplicatePhoto, singleCleanType: .duplicatedPhoto,  enableDeepCleanProcessingNotification: enableDeepCleanProcessingNotification, enableSingleProcessingNotification: enableSingleProcessingNotification) { duplicatedPhotoAssetsGroup in
+                        
 						completionHandler(duplicatedPhotoAssetsGroup)
 					}
-					
+                    
 					self.serviceUtilsCalculatedOperationsQueuer.addOperation(duplicatedTuplesOperation)
 					
 				} else {
@@ -930,10 +939,26 @@ extension PhotoManager {
 			
 			var duplicatedPhotosCount: [Int] = []
 			var duplicatedGroup: [PhassetGroup] = []
-			let duplicatedIDS = OSImageHashing.sharedInstance().similarImages(with: OSImageHashingQuality.high, forImages: photos)
-//			let duplicatedIDS = OSImageHashing.sharedInstance().similarImages(with: .high, withHashDistanceThreshold: .max, forImages: photos)
-				
-			
+            let duplicatedIDS = OSImageHashing.sharedInstance().similarImages(with: OSImageHashingQuality.high, forImages: photos)
+            
+            
+            
+            for duplicatedId in duplicatedIDS {
+                
+                if let first = photos.first(where: {$0.first == duplicatedId.first})  {
+                    
+                }
+                
+            }
+            
+            
+            
+            
+            
+            
+            
+            
+            
 			guard duplicatedIDS.count >= 1 else {
 				if enableDeepCleanProcessingNotification {
 					self.sendZeroPhassetsNotification(of: deepCleanTyep)
@@ -941,15 +966,23 @@ extension PhotoManager {
 				completionHandler([])
 				return
 			}
+            
+            for id in duplicatedIDS {
+                debugPrint(id)
+            }
+            
+            
 			
-			for currentPosition in 1...duplicatedIDS.count {
+            for (currentPosition, tupleValue) in duplicatedIDS.enumerated() {
+//			for currentPosition in 1...duplicatedIDS.count {
 				
 				if operation.isCancelled {
 					completionHandler([])
 					return
 				}
-				debugPrint(currentPosition)
-				let duplicatedTuple = duplicatedIDS[currentPosition - 1]
+	
+				let duplicatedTuple = tupleValue
+//                duplicatedIDS[currentPosition - 1]
 				var group: [PHAsset] = []
 				
 				debugPrint("checkDuplicated")
@@ -971,7 +1004,7 @@ extension PhotoManager {
 					debugPrint(first)
 					debugPrint(second)
 					
-					if abs(secondInteger - firstInteger) >= 10 { continue }
+					if abs(secondInteger - firstInteger) >= 2 { continue }
 					if !duplicatedPhotosCount.contains(firstInteger) {
 						duplicatedPhotosCount.append(firstInteger)
 						group.append(photosInGallery[firstInteger])
@@ -993,7 +1026,7 @@ extension PhotoManager {
 							let firstInt = first.replacingStringAndConvertToIntegerForImage() - 1
 							let socondInt = second.replacingStringAndConvertToIntegerForImage() - 1
 							
-							if abs(secondInteger - firstInteger) >= 10 {
+							if abs(secondInteger - firstInteger) >= 2 {
 								return
 							}
 							
