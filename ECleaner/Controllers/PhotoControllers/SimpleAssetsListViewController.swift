@@ -111,7 +111,7 @@ extension SimpleAssetsListViewController: UICollectionViewDelegate, UICollection
         
         /// config thumbnail according screen type
 		let asset = assetCollection[indexPath.row]
-		cell.loadCellThumbnail(asset)
+		cell.loadCellThumbnail(asset, imageManager: self.photoManager.prefetchManager)
 		cell.updateColors()
     }
     
@@ -399,15 +399,15 @@ extension SimpleAssetsListViewController {
 			receoveredAssets.append(asset)
 		}
 		
-		let recoverOperation = photoManager.recoverSelectedOperation(assets: receoveredAssets) { suxxess in
-			if suxxess {
-				debugPrint(suxxess)
-			} else {
-				debugPrint()
-			}
-		}
-		
-		photoManager.serviceUtilsCalculatedOperationsQueuer.addOperation(recoverOperation)
+//		let recoverOperation = photoManager.recoverSelectedOperation(assets: receoveredAssets) { suxxess in
+//			if suxxess {
+//				debugPrint(suxxess)
+//			} else {
+//				debugPrint()
+//			}
+//		}
+//		
+//		photoManager.serviceUtilsCalculatedOperationsQueuer.addOperation(recoverOperation)
 	}
     
     private func createCellContextMenu(for asset: PHAsset, at indexPath: IndexPath) -> UIMenu {

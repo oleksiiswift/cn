@@ -34,7 +34,7 @@ enum CommonOperationSearchType: CaseIterable {
 			case .similarPhotoAssetsOperaton:
 				return C.key.operation.name.similarPhotoProcessingOperation
 			case .utitlityDuplicatedPhotoTuplesOperation:
-				return C.key.operation.name.similarTuplesOperation
+				return C.key.operation.name.duplicatedTuplesOperation
 			case .duplicatedPhotoAssetsOperation:
 				return C.key.operation.name.duplicatePhotoProcessingOperation
 			case .screenShotsAssetsOperation:

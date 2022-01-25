@@ -6,7 +6,7 @@
 //
 
 import UIKit
-
+import Photos
 
 
 //      MARK: - ui setup -
@@ -590,4 +590,162 @@ import UIKit
 ////        }
 ////        topController()?.present(dkImagePickerController, animated: true)
 //    }
+//}
+
+
+
+
+
+#warning("WORK IN PROGRESS")
+//extension PhotoManager {
+//	
+//	public func recoverSelectedOperation(assets: [PHAsset], completion: @escaping ((Bool) -> Void)) -> ConcurrentProcessOperation {
+//		
+//		let recoverPhassetsOperation = ConcurrentProcessOperation { operation in
+//			
+//			self.fetchManager.fetchRecentlyDeletedCollection { recentlyDeletedCollection in
+//				PHPhotoLibrary.shared().performChanges {
+//					if let recentlyDeletedAlbum = recentlyDeletedCollection {
+//						let assetsIdentifiers = assets.map({$0.localIdentifier})
+//						
+//						
+////						PHPhotoLibrary.shared().performChanges({
+//								guard let request = PHAssetCollectionChangeRequest(for: recentlyDeletedAlbum) else {
+//									return
+//								}
+////								request.removeAssets([asset] as NSArray)
+////						request.removeAssets([assets] as NSArray)
+//						
+////						let albumPhoto: PHFetchResult<PHAssetCollection> = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .smartAlbumRecentlyAdded, options: nil)
+////
+////						albumPhoto.enumerateObjects { collection, index, object in
+////							let result = PHAsset.fetchAssets(in: collection, options: nil)
+////
+////
+////
+////							var a = PHAsset.fetchAssets(in: collection, options: nil)
+////
+////							var z: [PHAsset] = []
+////							a.enumerateObjects { asset, index, object in
+////								z.append(asset)
+////							}
+////
+////							let id = z.map({$0.localIdentifier})
+////
+////
+////
+////							let s = PHAsset.fetchAssets(withLocalIdentifiers: id, options: nil)
+////
+////							let albumChangeR = PHAssetCollectionChangeRequest(for: collection, assets: s)
+////
+////							s.enumerateObjects { assets, index, object in
+////								debugPrint(assets.localIdentifier)
+////							}
+////						}
+//						
+////						let recent = PHAsset.fetchAssets(in: recentlyDeletedAlbum, options: .none)
+//						
+//					
+//						
+//						
+//						
+////						fetchOptions.sortDescriptors = [NSSortDescriptor(key: SortingDesriptionKey.creationDate.value, ascending: false)]
+////						fetchOptions.predicate = NSPredicate(
+////							format: "\(SDKey.mediaType.value) = %d AND (\(SDKey.creationDate.value) >= %@) AND (\(SDKey.creationDate.value) <= %@)",
+////							type,
+////							lowerDate as NSDate,
+////							upperDate as NSDate
+////						)
+////						albumPhoto.enumerateObjects({(collection, index, object) in
+////							completionHandler(PHAsset.fetchAssets(in: collection, options: fetchOptions))
+////
+//						
+////						let options = PHFetchOptions()
+//						
+//						
+//						
+//						
+//						
+////						let results = PHAsset.fetchAssets(withLocalIdentifiers: assetsIdentifiers, options: options)
+////						debugPrint(results.count)
+////						results.enumerateObjects { asset, index, object in
+////							debugPrint(asset.localIdentifier)
+////						}
+////
+////
+////
+//						
+////						NSPredicate(format: "localIdentifier = %@", assetsIdentifiers)
+//						
+//						
+////						let albumChangeRequest = PHAssetCollectionChangeRequest(for: recentlyDeletedAlbum, assets: recent)
+////
+//						let fastEnumeration = NSArray(array: assets)
+////						albumChangeRequest?.removeAssets(fastEnumeration)
+////
+////						request.removeAssets(fastEnumeration)
+//				
+////						PHPhotoLibrary.shared()
+//						
+////
+////						let assetIdentifiers = assetsToDeleteFromDevice.map({ $0.localIdentifier })
+////						let assets = PHAsset.fetchAssets(withLocalIdentifiers: assetIdentifiers, options: nil)
+//					
+//						
+//						
+//			
+//					}
+//				} completionHandler: { suxxess, error in
+//					completion(false)
+//				}
+//			}
+//			
+//			
+//			
+////			var albumPlaceholder: PHObjectPlaceholder?
+////			   PHPhotoLibrary.shared().performChanges({
+////				   // Request creating an album with parameter name
+////				   let createAlbumRequest = PHAssetCollectionChangeRequest.creationRequestForAssetCollection(withTitle: name)
+////				   // Get a placeholder for the new album
+////				   albumPlaceholder = createAlbumRequest.placeholderForCreatedAssetCollection
+////			   }, completionHandler: { success, error in
+////				   if success {
+////					   guard let placeholder = albumPlaceholder else {
+////						   fatalError("Album placeholder is nil")
+////					   }
+////
+////					   let fetchResult = PHAssetCollection.fetchAssetCollections(withLocalIdentifiers: [placeholder.localIdentifier], options: nil)
+////					   guard let album: PHAssetCollection = fetchResult.firstObject else {
+////						   // FetchResult has no PHAssetCollection
+////						   return
+////					   }
+////
+////					   // Saved successfully!
+////					   print(album.assetCollectionType)
+////				   }
+////				   else if let e = error {
+////					   // Save album failed with error
+////				   }
+////
+//
+////
+////
+//			
+////			PHPhotoLibrary.shared().performChanges({
+////				   let assetRequest = PHAssetChangeRequest.creationRequestForAsset(from: image)
+////				   let placeholder = assetRequest.placeholderForCreatedAsset
+////				   guard let _placeholder = placeholder else { completion(nil); return }
+////
+////				   let albumChangeRequest = PHAssetCollectionChangeRequest(for: album)
+////				   albumChangeRequest?.addAssets([_placeholder] as NSFastEnumeration)
+////			   }) { success, error in
+////				   completion(nil)
+////			   }
+//			
+//			
+//		}
+//		
+//		recoverPhassetsOperation.name = C.key.operation.name.recoverPhassetsOperation
+//		return recoverPhassetsOperation
+//	}
 //}

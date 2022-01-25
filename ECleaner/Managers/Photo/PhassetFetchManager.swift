@@ -198,7 +198,8 @@ extension PHAssetFetchManager {
         var thumbnail = UIImage()
         let manager = PHImageManager.default()
         let option = PHImageRequestOptions()
-        
+		option.isNetworkAccessAllowed = true
+		option.deliveryMode = .opportunistic
         option.isSynchronous = true
         manager.requestImage(for: asset, targetSize: size, contentMode: .aspectFit, options: option, resultHandler: {(result, info) -> Void in
             if let image = result {

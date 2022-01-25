@@ -44,7 +44,7 @@ class PhotoManager {
 	}()
 	
 	private var fetchManager = PHAssetFetchManager.shared
-	private var prefetchManager = PHCachingImageManager()
+	public var prefetchManager = PHCachingImageManager()
 	private lazy var requestOptions: PHImageRequestOptions = {
 		let options = PHImageRequestOptions()
         options.isSynchronous = false
@@ -600,45 +600,6 @@ extension PhotoManager {
 		}
 		similarPhotoProcessingOperation.name = CommonOperationSearchType.similarPhotoAssetsOperaton.rawValue
 		return similarPhotoProcessingOperation
-		
-//		let similarSelfiesOperationTest = ConcurrentProcessOperation { operation in
-//
-//			self.fetchManager.fetchFromGallery(from: lowerDate, to: upperDate, collectiontype: .smartAlbumSelfPortraits, by: PHAssetMediaType.image.rawValue) { selfiesInLibrary in
-//				var photos: [OSTuple<NSString, NSData>] = []
-//
-//				if selfiesInLibrary.count != 0 {
-//					selfiesInLibrary.enumerateObjects { phasset, index, object in
-//						if operation.isCancelled {
-//							completionHandler([])
-//							return
-//						}
-//
-//
-//
-//						if enableSingleProcessingNotification {
-//							self.progressSearchNotificationManager.sendSingleSearchProgressNotification(notificationtype: .similarSelfiesPhoto, totalProgressItems: selfiesInLibrary.count, currentProgressItem: index)
-//						} else {
-//							self.progressSearchNotificationManager.sendDeepProgressNotificatin(notificationType: .similarSelfiePhotos, totalProgressItems: selfiesInLibrary.count, currentProgressItem: index)
-//						}
-//
-//						let photo = self.fetchManager.getThumbnail(from: selfiesInLibrary[index], size: CGSize(width: 300, height: 300))
-//						if let data = photo.jpegData(compressionQuality: 0.8) {
-//							let tuple = OSTuple<NSString, NSData>(first: "image\(index)" as NSString, andSecond: data as NSData)
-//							photos.append(tuple)
-//						}
-//					}
-//
-//					let similarTupleOperation = self.getDuplicatedTuplesOperation(for: photos, photosInGallery: selfiesInLibrary, deepCleanTyep: .similarSelfiePhotos, singleCleanType: .similarSelfiesPhoto, enableDeepCleanProcessingNotification: enableDeepCleanProcessingNotification, enableSingleProcessingNotification: enableSingleProcessingNotification) { similarSelfiesGroup in
-//						completionHandler(similarSelfiesGroup)
-//					}
-//					self.serviceUtilsCalculatedOperationsQueuer.addOperation(similarTupleOperation)
-//				} else {
-//					completionHandler([])
-//				}
-//			}
-//		}
-//		similarSelfiesOperation.name = COT.similarSelfiesAssetsOperation.rawValue
-//		return similarSelfiesOperation
 	}
 		
 		/// `load screenshots` from gallery
@@ -863,59 +824,54 @@ extension PhotoManager {
 	}
 	
 		// `duplicate photo algorithm`
-	public func getDuplicatedPhotosAsset(from lowerDate: Date = lowerDateValue, to upperDate: Date = upperDateValue, enableDeepCleanProcessingNotification: Bool = false, enableSingleProcessingNotification: Bool = false, completionHandler: @escaping ((_ assets: [PhassetGroup]) -> Void)) -> ConcurrentProcessOperation {
+	public func getDuplicatedPhotosAsset(strictness: Strictness = .closeToIdentical, from lowerDate: Date = lowerDateValue, to upperDate: Date = upperDateValue, enableDeepCleanProcessingNotification: Bool = false, enableSingleProcessingNotification: Bool = false, completionHandler: @escaping ((_ assets: [PhassetGroup]) -> Void)) -> ConcurrentProcessOperation {
 		
 		let duplicatedPhotoAssetOperation = ConcurrentProcessOperation { operation in
-			
-			
 			self.fetchManager.fetchFromGallery(from: lowerDate, to: upperDate, collectiontype: .smartAlbumUserLibrary, by: PHAssetMediaType.image.rawValue) { photoGallery in
 				
-				var photosTuple: [OSTuple<NSString, NSData>] = []
-				
 				if photoGallery.count != 0 {
-                    
-                    photoGallery.enumerateObjects { phasset, positionIndex, _ in
-                        
-                    
-
-                    
-//					for photoPos in 1...photoGallery.count {
-						debugPrint("loading duplicate")
-						debugPrint("photoposition \(positionIndex)")
-						
+				
+					var assets: [PHAsset] = []
+					photoGallery.enumerateObjects { phasset, index, stop in
 						if operation.isCancelled {
 							completionHandler([])
 							return
 						}
-						
-							/// adding notification to handle progress similar photos processing
+						assets.append(phasset)
+					}
+					
+						/// adding notification to handle progress similar photos processing
+					if enableSingleProcessingNotification {
+						self.progressSearchNotificationManager.sendSingleSearchProgressNotification(notificationtype: .duplicatedPhoto,
+																									totalProgressItems: photoGallery.count,
+																									currentProgressItem: 1)
+					} else {
+						self.progressSearchNotificationManager.sendDeepProgressNotificatin(notificationType: .duplicatePhoto,
+																						   totalProgressItems: photoGallery.count,
+																						   currentProgressItem: 1)
+					}
+				
+					let rowTuples: [OSTuple<NSString, NSData>] = assets.enumerated().map({ (index, asset) -> OSTuple<NSString, NSData> in
+						let imageData = asset.thumbnailSync?.pngData()
 						if enableSingleProcessingNotification {
 							self.progressSearchNotificationManager.sendSingleSearchProgressNotification(notificationtype: .duplicatedPhoto,
-																										totalProgressItems: photoGallery.count,
-																										currentProgressItem: positionIndex / 2)
+																										totalProgressItems: assets.count,
+																										currentProgressItem: index)
 						} else {
 							self.progressSearchNotificationManager.sendDeepProgressNotificatin(notificationType: .duplicatePhoto,
-																							   totalProgressItems: photoGallery.count,
-																							   currentProgressItem: positionIndex / 2)
+																							   totalProgressItems: assets.count,
+																							   currentProgressItem: index)
 						}
-						
-						let image = self.fetchManager.getThumbnail(from: phasset, size: CGSize(width: 150, height: 150))
-         
-						if let data = image.jpegData(compressionQuality: 0.8) {
-							let tuple = OSTuple<NSString, NSData>(first: "image\(positionIndex + 1)" as NSString, andSecond: data as NSData)
-							photosTuple.append(tuple)
-						}
-					}
-                    
-                    debugPrint(photosTuple)
+						return OSTuple<NSString, NSData>.init(first: "\(index)" as NSString, andSecond: imageData as NSData?)
+					})
 					
-					let duplicatedTuplesOperation = self.getDuplicatedTuplesOperation(for: photosTuple, photosInGallery: photoGallery, deepCleanTyep: .duplicatePhoto, singleCleanType: .duplicatedPhoto,  enableDeepCleanProcessingNotification: enableDeepCleanProcessingNotification, enableSingleProcessingNotification: enableSingleProcessingNotification) { duplicatedPhotoAssetsGroup in
-                        
-						completionHandler(duplicatedPhotoAssetsGroup)
+				
+					let photoTuples = rowTuples.filter({$0.second != nil})
+					let duplicatedTuplesOperation = self.getTuplesOperation(for: photoTuples, photosInGallery: assets, deepCleanType: .duplicatePhoto, sinlgeCleanType: .duplicatedPhoto, enableDeepCleanProcessingNotification: enableDeepCleanProcessingNotification, enableSingleProcessingNotification: enableSingleProcessingNotification, strictness: strictness) { duplicatedPhotoAssetsGroups in
+						completionHandler(duplicatedPhotoAssetsGroups)
 					}
-                    
+					duplicatedTuplesOperation.name = CommonOperationSearchType.utitlityDuplicatedPhotoTuplesOperation.rawValue
 					self.serviceUtilsCalculatedOperationsQueuer.addOperation(duplicatedTuplesOperation)
-					
 				} else {
 					completionHandler([])
 					if enableDeepCleanProcessingNotification {
@@ -932,7 +888,100 @@ extension PhotoManager {
 //		MARK: - HELPER DUPLICATEDS TYPE SEARCH -
 extension PhotoManager {
 	
-		/// `private duplicated tuples` need for service compare
+	private func getTuplesOperation(for photoTuples: [OSTuple<NSString, NSData>], photosInGallery: [PHAsset], deepCleanType: DeepCleanNotificationType, sinlgeCleanType: SingleContentSearchNotificationType, enableDeepCleanProcessingNotification: Bool = false, enableSingleProcessingNotification: Bool = false, strictness: Strictness, completionHandler: @escaping ([PhassetGroup]) -> Void) -> ConcurrentProcessOperation {
+		
+		let serviceUtilityDuplicatedTuplesOperation = ConcurrentProcessOperation { operation in
+			
+			let providerID = OSImageHashingProviderIdForHashingQuality(.high)
+			let provider = OSImageHashingProviderFromImageHashingProviderId(providerID)
+			let defaultHashDistanceTreshHold = provider.hashDistanceSimilarityThreshold()
+			var hashDistanseTrashold: Int64 {
+				switch strictness {
+					case .similar:
+						return defaultHashDistanceTreshHold
+					case .closeToIdentical:
+						return 1
+				}
+			}
+			
+			var dupliatedGroups: [PhassetGroup] = []
+			var duplicateGroups = [[PHAsset]]()
+			var groupIndexesPhassets: [PHAsset: Int] = [:]
+			let duplicatedPhotosIDsAsTuples = OSImageHashing.sharedInstance().similarImages(withProvider: providerID, withHashDistanceThreshold: hashDistanseTrashold, forImages: photoTuples)
+			
+			if operation.isCancelled {
+				completionHandler([])
+				return
+			}
+			
+			guard duplicatedPhotosIDsAsTuples.count >= 1 else {
+				if enableDeepCleanProcessingNotification {
+					self.sendZeroPhassetsNotification(of: deepCleanType)
+				}
+				completionHandler([])
+				return
+			}
+			
+			for (index, pair) in duplicatedPhotosIDsAsTuples.enumerated() {
+				if operation.isCancelled {
+					completionHandler([])
+					return
+				}
+				let assetIndex1 = Int(pair.first! as String)!
+				let assetIndex2 = Int(pair.second! as String)!
+				let asset1 = photosInGallery[assetIndex1]
+				let asset2 = photosInGallery[assetIndex2]
+				let groupIndex1 = groupIndexesPhassets[asset1]
+				let groupIndex2 = groupIndexesPhassets[asset2]
+				
+				if enableSingleProcessingNotification {
+					self.progressSearchNotificationManager.sendSingleSearchProgressNotification(notificationtype: sinlgeCleanType,
+																								totalProgressItems: duplicatedPhotosIDsAsTuples.count,
+																								currentProgressItem: index)
+				} else if enableDeepCleanProcessingNotification {
+					self.progressSearchNotificationManager.sendDeepProgressNotificatin(notificationType: deepCleanType,
+																					   totalProgressItems: duplicatedPhotosIDsAsTuples.count,
+																					   currentProgressItem: index)
+				}
+				
+				if groupIndex1 == nil && groupIndex2 == nil {
+						// new group
+					duplicateGroups.append([asset1, asset2])
+					let groupIndex = duplicateGroups.count - 1
+					groupIndexesPhassets[asset1] = groupIndex
+					groupIndexesPhassets[asset2] = groupIndex
+				} else if groupIndex1 == nil && groupIndex2 != nil {
+						// add 1 to 2's group
+					duplicateGroups[groupIndex2!].append(asset1)
+					groupIndexesPhassets[asset1] = groupIndex2!
+				} else if groupIndex1 != nil && groupIndex2 == nil {
+						// add 2 to 1's group
+					duplicateGroups[groupIndex1!].append(asset2)
+					groupIndexesPhassets[asset2] = groupIndex1!
+				}
+			}
+			
+			for group in duplicateGroups {
+				
+				if operation.isCancelled {
+					completionHandler([])
+					return
+				}
+				
+				if group.count >= 2 {
+					debugPrint("create new group \(group)")
+					dupliatedGroups.append(PhassetGroup(name: "", assets: group, creationDate: group.first?.creationDate))
+				}
+			}
+			completionHandler(dupliatedGroups)
+		}
+		
+		serviceUtilityDuplicatedTuplesOperation.name = CommonOperationSearchType.utitlityDuplicatedPhotoTuplesOperation.rawValue
+		return serviceUtilityDuplicatedTuplesOperation
+	}
+	
+	
+		/// `private duplicated tuples` need for service compare (not working properly as duplicate))
 	private func getDuplicatedTuplesOperation(for photos: [OSTuple<NSString, NSData>], photosInGallery: PHFetchResult<PHAsset>, deepCleanTyep: DeepCleanNotificationType, singleCleanType: SingleContentSearchNotificationType, enableDeepCleanProcessingNotification: Bool = false, enableSingleProcessingNotification: Bool = false, completionHandler: @escaping ([PhassetGroup]) -> Void) -> ConcurrentProcessOperation{
 		
 		let serviceUtilityDuplicatedTuplesOperation = ConcurrentProcessOperation { operation in
@@ -941,24 +990,6 @@ extension PhotoManager {
 			var duplicatedGroup: [PhassetGroup] = []
             let duplicatedIDS = OSImageHashing.sharedInstance().similarImages(with: OSImageHashingQuality.high, forImages: photos)
             
-            
-            
-            for duplicatedId in duplicatedIDS {
-                
-                if let first = photos.first(where: {$0.first == duplicatedId.first})  {
-                    
-                }
-                
-            }
-            
-            
-            
-            
-            
-            
-            
-            
-            
 			guard duplicatedIDS.count >= 1 else {
 				if enableDeepCleanProcessingNotification {
 					self.sendZeroPhassetsNotification(of: deepCleanTyep)
@@ -966,15 +997,8 @@ extension PhotoManager {
 				completionHandler([])
 				return
 			}
-            
-            for id in duplicatedIDS {
-                debugPrint(id)
-            }
-            
-            
-			
+
             for (currentPosition, tupleValue) in duplicatedIDS.enumerated() {
-//			for currentPosition in 1...duplicatedIDS.count {
 				
 				if operation.isCancelled {
 					completionHandler([])
@@ -982,7 +1006,6 @@ extension PhotoManager {
 				}
 	
 				let duplicatedTuple = tupleValue
-//                duplicatedIDS[currentPosition - 1]
 				var group: [PHAsset] = []
 				
 				debugPrint("checkDuplicated")
@@ -1004,7 +1027,7 @@ extension PhotoManager {
 					debugPrint(first)
 					debugPrint(second)
 					
-					if abs(secondInteger - firstInteger) >= 2 { continue }
+					if abs(secondInteger - firstInteger) >= 10 { continue }
 					if !duplicatedPhotosCount.contains(firstInteger) {
 						duplicatedPhotosCount.append(firstInteger)
 						group.append(photosInGallery[firstInteger])
@@ -1026,7 +1049,7 @@ extension PhotoManager {
 							let firstInt = first.replacingStringAndConvertToIntegerForImage() - 1
 							let socondInt = second.replacingStringAndConvertToIntegerForImage() - 1
 							
-							if abs(secondInteger - firstInteger) >= 2 {
+							if abs(secondInteger - firstInteger) >= 10 {
 								return
 							}
 							
@@ -1337,162 +1360,3 @@ extension PhotoManager {
         return CGSize(width: imageWidth * scale, height: imageHeight * scale)
     }
 }
-
-
-#warning("WORK IN PROGRESS")
-extension PhotoManager {
-	
-	public func recoverSelectedOperation(assets: [PHAsset], completion: @escaping ((Bool) -> Void)) -> ConcurrentProcessOperation {
-		
-		let recoverPhassetsOperation = ConcurrentProcessOperation { operation in
-			
-			self.fetchManager.fetchRecentlyDeletedCollection { recentlyDeletedCollection in
-				PHPhotoLibrary.shared().performChanges {
-					if let recentlyDeletedAlbum = recentlyDeletedCollection {
-						let assetsIdentifiers = assets.map({$0.localIdentifier})
-						
-						
-//						PHPhotoLibrary.shared().performChanges({
-								guard let request = PHAssetCollectionChangeRequest(for: recentlyDeletedAlbum) else {
-									return
-								}
-//								request.removeAssets([asset] as NSArray)
-//						request.removeAssets([assets] as NSArray)
-						
-//						let albumPhoto: PHFetchResult<PHAssetCollection> = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .smartAlbumRecentlyAdded, options: nil)
-//
-//						albumPhoto.enumerateObjects { collection, index, object in
-//							let result = PHAsset.fetchAssets(in: collection, options: nil)
-//
-//
-//
-//							var a = PHAsset.fetchAssets(in: collection, options: nil)
-//
-//							var z: [PHAsset] = []
-//							a.enumerateObjects { asset, index, object in
-//								z.append(asset)
-//							}
-//
-//							let id = z.map({$0.localIdentifier})
-//
-//
-//
-//							let s = PHAsset.fetchAssets(withLocalIdentifiers: id, options: nil)
-//
-//							let albumChangeR = PHAssetCollectionChangeRequest(for: collection, assets: s)
-//
-//							s.enumerateObjects { assets, index, object in
-//								debugPrint(assets.localIdentifier)
-//							}
-//						}
-						
-//						let recent = PHAsset.fetchAssets(in: recentlyDeletedAlbum, options: .none)
-						
-					
-						
-						
-						
-//						fetchOptions.sortDescriptors = [NSSortDescriptor(key: SortingDesriptionKey.creationDate.value, ascending: false)]
-//						fetchOptions.predicate = NSPredicate(
-//							format: "\(SDKey.mediaType.value) = %d AND (\(SDKey.creationDate.value) >= %@) AND (\(SDKey.creationDate.value) <= %@)",
-//							type,
-//							lowerDate as NSDate,
-//							upperDate as NSDate
-//						)
-//						albumPhoto.enumerateObjects({(collection, index, object) in
-//							completionHandler(PHAsset.fetchAssets(in: collection, options: fetchOptions))
-//
-						
-//						let options = PHFetchOptions()
-						
-						
-						
-						
-						
-//						let results = PHAsset.fetchAssets(withLocalIdentifiers: assetsIdentifiers, options: options)
-//						debugPrint(results.count)
-//						results.enumerateObjects { asset, index, object in
-//							debugPrint(asset.localIdentifier)
-//						}
-//
-//
-//
-						
-//						NSPredicate(format: "localIdentifier = %@", assetsIdentifiers)
-						
-						
-//						let albumChangeRequest = PHAssetCollectionChangeRequest(for: recentlyDeletedAlbum, assets: recent)
-//
-						let fastEnumeration = NSArray(array: assets)
-//						albumChangeRequest?.removeAssets(fastEnumeration)
-//
-//						request.removeAssets(fastEnumeration)
-				
-//						PHPhotoLibrary.shared()
-						
-//
-//						let assetIdentifiers = assetsToDeleteFromDevice.map({ $0.localIdentifier })
-//						let assets = PHAsset.fetchAssets(withLocalIdentifiers: assetIdentifiers, options: nil)
-					
-						
-						
-			
-					}
-				} completionHandler: { suxxess, error in
-					completion(false)
-				}
-			}
-			
-			
-			
-//			var albumPlaceholder: PHObjectPlaceholder?
-//			   PHPhotoLibrary.shared().performChanges({
-//				   // Request creating an album with parameter name
-//				   let createAlbumRequest = PHAssetCollectionChangeRequest.creationRequestForAssetCollection(withTitle: name)
-//				   // Get a placeholder for the new album
-//				   albumPlaceholder = createAlbumRequest.placeholderForCreatedAssetCollection
-//			   }, completionHandler: { success, error in
-//				   if success {
-//					   guard let placeholder = albumPlaceholder else {
-//						   fatalError("Album placeholder is nil")
-//					   }
-//
-//					   let fetchResult = PHAssetCollection.fetchAssetCollections(withLocalIdentifiers: [placeholder.localIdentifier], options: nil)
-//					   guard let album: PHAssetCollection = fetchResult.firstObject else {
-//						   // FetchResult has no PHAssetCollection
-//						   return
-//					   }
-//
-//					   // Saved successfully!
-//					   print(album.assetCollectionType)
-//				   }
-//				   else if let e = error {
-//					   // Save album failed with error
-//				   }
-//
-
-//
-//
-			
-//			PHPhotoLibrary.shared().performChanges({
-//				   let assetRequest = PHAssetChangeRequest.creationRequestForAsset(from: image)
-//				   let placeholder = assetRequest.placeholderForCreatedAsset
-//				   guard let _placeholder = placeholder else { completion(nil); return }
-//
-//				   let albumChangeRequest = PHAssetCollectionChangeRequest(for: album)
-//				   albumChangeRequest?.addAssets([_placeholder] as NSFastEnumeration)
-//			   }) { success, error in
-//				   completion(nil)
-//			   }
-			
-			
-		}
-		
-		recoverPhassetsOperation.name = C.key.operation.name.recoverPhassetsOperation
-		return recoverPhassetsOperation
-	}
-}
-
-
-
-

@@ -280,9 +280,7 @@ extension GroupedAssetListViewController {
 		cell.indexPath = indexPath
 		cell.cellMediaType = self.mediaType
 		cell.cellContentType = self.contentType
-		
-		cell.loadCellThumbnail(asset)
-		
+		cell.loadCellThumbnail(asset, imageManager: self.photoManager.prefetchManager)
 		cell.setupUI()
 		cell.updateColors()
 		cell.selectButtonSetup(by: self.mediaType)

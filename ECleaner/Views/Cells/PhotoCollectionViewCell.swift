@@ -40,6 +40,9 @@ class PhotoCollectionViewCell: UICollectionViewCell {
     public var indexPath: IndexPath?
     public var cellMediaType: PhotoMediaType = .none
 	public var cellContentType: MediaContentType = .none
+	
+	private var imageManager: PHCachingImageManager?
+	private var imageRequestID: PHImageRequestID?
     
     var delegate: PhotoCollectionViewCellDelegate?
         
@@ -47,7 +50,7 @@ class PhotoCollectionViewCell: UICollectionViewCell {
         super.prepareForReuse()
         
         photoCheckmarkImageView.image = I.systemElementsItems.circleBox
-        photoThumbnailImageView.image = nil
+        unload()
     }
 
     override func awakeFromNib() {
@@ -141,9 +144,25 @@ extension PhotoCollectionViewCell: Themeble {
 		self.photoThumbnailImageView.image = image
 	}
     
-    public func loadCellThumbnail(_ asset: PHAsset) {
+	public func loadCellThumbnail(_ asset: PHAsset, imageManager: PHCachingImageManager) {
+		self.unload()
+		self.imageManager = imageManager
+		
+		let scale = U.mainScreen.scale
+		let thumbnailSize = CGSize(width: 50 * scale, height: 50 * scale)
+		let requestedAssetIdentifier = asset.localIdentifier
+		imageRequestID = imageManager.requestImage(for: asset, targetSize: thumbnailSize, contentMode: .aspectFill, options: nil, resultHandler: { image, _ in
+			if requestedAssetIdentifier == asset.localIdentifier {
+				if let image = image {
+					self.photoThumbnailImageView.image = image
+				}
+			}
+		})
+		
+		
+		
 			/// `First time!!!!`
-		self.photoThumbnailImageView.image = PhotoManager.shared.loadChacheImageForPhasset(asset)
+//		self.photoThumbnailImageView.image = PhotoManager.shared.loadChacheImageForPhasset(asset)
 		self.photoThumbnailImageView.contentMode = .scaleAspectFill
 		playPhassetImageView.image = I.systemItems.defaultItems.onViewPlayButton
                 
@@ -167,9 +186,18 @@ extension PhotoCollectionViewCell: Themeble {
                 videoAssetDurationView.isHidden = true
 				playPhassetImageView.isHidden = true
         }
-//		/// `second time!!!!
-//		self.photoThumbnailImageView.image = PhotoManager.shared.loadChacheImageForPhasset(asset)
     }
+	
+	
+	private func unload() {
+		if imageRequestID != nil && imageManager != nil {
+			imageManager!.cancelImageRequest(imageRequestID!)
+		}
+		imageRequestID = nil
+		imageManager = nil
+		photoThumbnailImageView.image = nil
+		
+	}
 
     public func checkIsSelected() {
 		self.photoCheckmarkImageView.image = self.isSelected ? cellContentType.selectableAssetsCheckMark : nil

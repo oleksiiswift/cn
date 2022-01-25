@@ -147,7 +147,8 @@ class Constants {
 				static let similarVideoProcessingOperation = "similarVideoProcessingOperation"
 				static let duplicateVideoProcessingOperation = "duplicateVideoProcessingOperation"
 			
-				static let similarTuplesOperation = "serviceUtilityDuplicatedTuplesOperation"
+				static let similarTuplesOperation = "serviceUtilitySimilarTuplesOperation"
+				static let duplicatedTuplesOperation = "serviceUtilityDuplicatedTuplesOperation"
 				static let findDuplicatedVideoOperation = "findDuplicatedVideoOperation"
 				static let getSimilarVideosByTimeStampOperation = "getSimilarVideosByTimeStampOperation"
 				
