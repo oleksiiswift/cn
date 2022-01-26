@@ -638,7 +638,6 @@ extension DeepCleaningViewController {
 		  if let selectedStringsIDs = selectedAssetsCollectionID[type] {
 			   viewController.handlePreviousSelected(selectedAssetsIDs: selectedStringsIDs, assetGroupCollection: collection)
 		  }
-		  self.prefetchPHAssets(collection.flatMap({$0.assets}))
           viewController.title = title
           viewController.isDeepCleaningSelectableFlow = true
           viewController.assetGroups = collection
@@ -654,7 +653,6 @@ extension DeepCleaningViewController {
 		  if let selectedStringsIDs = selectedAssetsCollectionID[type] {
 			   viewController.handleAssetsPreviousSelected(selectedAssetsIDs: selectedStringsIDs, assetCollection: collection)
 		  }
-		  self.prefetchPHAssets(collection)
           viewController.title = title
           viewController.isDeepCleaningSelectableFlow = true
           viewController.assetCollection = collection

@@ -42,14 +42,13 @@ class GroupedAssetListViewController: UIViewController, UIPageViewControllerDele
 	private var selectedAssets: [PHAsset] = []
 	private var selectedSection: Set<Int> = []
 	private var previouslySelectedIndexPaths: [IndexPath] = []
-	private var fetchPhaset: [IndexPath : UIImage] = [:]
-
-    @IBOutlet weak var photoPreviewContainerView: UIView!
-    @IBOutlet weak var photoContentContainerView: UIView!
-    @IBOutlet weak var optionalViewerHeightConstraint: NSLayoutConstraint!
-    
+	
+	private var thumbnailSize: CGSize!
     /// - controllers -
     #warning("hide photopreviewLogic for TODO later")
+	@IBOutlet weak var photoPreviewContainerView: UIView!
+	@IBOutlet weak var photoContentContainerView: UIView!
+	@IBOutlet weak var optionalViewerHeightConstraint: NSLayoutConstraint!
 //    private var photoPreviewController = PhotoPreviewViewController(
 //    private weak var delegate: ContentDataProviderDelegate?
 
@@ -58,6 +57,7 @@ class GroupedAssetListViewController: UIViewController, UIPageViewControllerDele
     
     /// - managers -
     private var cacheImageManager = PHCachingImageManager()
+	private var prefetchCacheImageManager = PhotoManager.shared.prefetchManager
 	private var photoManager = PhotoManager.shared
 
     let carouselCollectionFlowLayout = ZoomAndSnapFlowLayout()
@@ -90,14 +90,13 @@ class GroupedAssetListViewController: UIViewController, UIPageViewControllerDele
         super.viewWillAppear(animated)
         
 		!previouslySelectedIndexPaths.isEmpty ? didSelectPreviouslyIndexPath() : ()
-
-//        updateCachedAssets()
 //        setupPhotoPreviewController()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
+		updateCachedAssets()
 		previouslySelectedIndexPaths.isEmpty ? handleStartingSelectableAssets() : ()
         self.defaultContainerHeight = self.photoContentContainerView.frame.height
     }
@@ -261,7 +260,6 @@ extension GroupedAssetListViewController {
 		collectionViewFlowLayout.fixedDivisionCount = 4
 		collectionViewFlowLayout.itemSpacing = 0
 
-		
 		carouselCollectionFlowLayout.itemSize = CGSize(width: 80, height: 80)
 		carouselCollectionFlowLayout.minimumLineSpacing = 0
 		carouselCollectionFlowLayout.minimumInteritemSpacing = 0
@@ -280,7 +278,7 @@ extension GroupedAssetListViewController {
 		cell.indexPath = indexPath
 		cell.cellMediaType = self.mediaType
 		cell.cellContentType = self.contentType
-		cell.loadCellThumbnail(asset, imageManager: self.photoManager.prefetchManager)
+		cell.loadCellThumbnail(asset, imageManager: self.prefetchCacheImageManager)
 		cell.setupUI()
 		cell.updateColors()
 		cell.selectButtonSetup(by: self.mediaType)
@@ -801,114 +799,15 @@ extension GroupedAssetListViewController {
 }
 
 extension GroupedAssetListViewController {
+	
+	private func showDeleteConfirmAlert() {
 		
-	private func setupUI() {
-		
-		let bottomButtonImageSize = CGSize(width: 18, height: 24)
-		switch mediaType {
-			case .singleRecentlyDeletedPhotos, .singleRecentlyDeletedVideos:
-				self.bottomButtonBarView.setImage(I.systemItems.defaultItems.recover, with: bottomButtonImageSize)
-			default:
-				self.bottomButtonBarView.setImage(I.systemItems.defaultItems.delete, with: bottomButtonImageSize)
+		AlertManager.showDeletePhotoAssetsAlert {
+			self.deleteSelectedAssets()
 		}
 	}
 	
-	private func setupNavigation() {
-		
-		navigationBar.setupNavigation(title: self.mediaType.mediaTypeName,
-									  leftBarButtonImage: I.systemItems.navigationBarItems.back,
-									  rightBarButtonImage: I.systemItems.navigationBarItems.burgerDots,
-									  contentType: self.contentType,
-									  leftButtonTitle: nil,
-									  rightButtonTitle: nil)
-	}
-	
-	private func setupObservers() {}
-	
-	private func setupDelegate() {
-		
-		scrollView.delegate = self
-		navigationBar.delegate = self
-		bottomButtonBarView.delegate = self
-	}
-	
-	func updateColors() {
-		
-		self.view.backgroundColor = theme.backgroundColor
-		self.collectionView.backgroundColor = theme.backgroundColor
-		
-		bottomButtonBarView.buttonColor = contentType.screenAcentTintColor
-		bottomButtonBarView.buttonTintColor = theme.activeTitleTextColor
-		bottomButtonBarView.buttonTitleColor = theme.activeTitleTextColor
-		bottomButtonBarView.activityIndicatorColor = theme.backgroundColor
-		bottomButtonBarView.updateColorsSettings()
-	}
-}
-
-extension GroupedAssetListViewController: SNCollectionViewLayoutDelegate {
-//    MARK: TODO: set if 3 asset
-    func scaleForItem(inCollectionView collectionView: UICollectionView, withLayout layout: UICollectionViewLayout, atIndexPath indexPath: IndexPath) -> UInt {
-        if indexPath.row == 0 {
-            return 2
-        }
-        return 1
-    }
-    
-    func headerFlexibleDimension(inCollectionView collectionView: UICollectionView, withLayout layout: UICollectionViewLayout, fixedDimension: CGFloat) -> CGFloat {
-        return 55
-    }
-}
-
-
-// MARK: -> refacotor after this line
-#warning("check after line->")
-
-
-//      MARK: - prefetching data source -
-extension GroupedAssetListViewController: UICollectionViewDataSourcePrefetching {
-		
-    private func requestPhassets(for indexPaths: [IndexPath]) -> [PHAsset] {
-        return indexPaths.compactMap({ self.assetGroups[$0.section].assets[$0.item]})
-    }
-
-    func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
-		
-		let phassets = requestPhassets(for: indexPaths)
-        self.photoManager.prefetchsForPHAssets(phassets)
-        
-//        U.UI { [weak self] in
-//
-//            guard let `self` = self, let _ = self.collectionView else { return }
-//            guard self.splitAssetsNumberOfItems > 0 else { return }
-//
-//            if indexPaths.count <= self.splitAssetsNumberOfItems {
-//
-//                let scale = max(UIScreen.main.scale,2)
-//                let targetSize = CGSize(width: U.screenWidth * scale, height: U.screenHeight * scale)
-//
-//                self.cacheImageManager.startCachingImages(for: self.splitAssets, targetSize: targetSize, contentMode: .aspectFill, options: nil)
-//            }
-//        }
-    }
-	
-	func collectionView(_ collectionView: UICollectionView, cancelPrefetchingForItemsAt indexPaths: [IndexPath]) {
-        let phassets = requestPhassets(for: indexPaths)
-        self.photoManager.cancelFetchForPHAseets(phassets)
-	}
-}
-
-//      MARK: - assets processing -
-extension GroupedAssetListViewController {
-	
-    private func showDeleteConfirmAlert() {
-        
-        AlertManager.showDeletePhotoAssetsAlert {
-            self.deleteSelectedAssets()
-        }
-    }
-	
 	private func deleteAsset(at indexPath: IndexPath) {
-		
 		
 		let phasset = self.assetGroups[indexPath.section].assets[indexPath.row]
 		
@@ -957,10 +856,10 @@ extension GroupedAssetListViewController {
 		}
 	}
 	
-    private func deleteSelectedAssets() {
-        
-        let identifiers = selectedAssets.map({$0.localIdentifier})
-        
+	private func deleteSelectedAssets() {
+		
+		let identifiers = selectedAssets.map({$0.localIdentifier})
+		
 		let deletePhassetOperation = photoManager.deleteSelectedOperation(assets: selectedAssets) { success in
 			U.UI {
 				if success {
@@ -976,39 +875,39 @@ extension GroupedAssetListViewController {
 		}
 		
 		photoManager.phassetProcessingOperationQueuer.addOperation(deletePhassetOperation)
-    }
+	}
 
-    private func createCellContextMenu(for asset: PHAsset, at indexPath: IndexPath) -> UIMenu {
-        
-        let fullScreenPreviewActionImage = I.systemItems.defaultItems.arrowUP.withTintColor(theme.titleTextColor).withRenderingMode(.alwaysTemplate)
-        let setAsBestActionImage =         I.systemItems.defaultItems.star.withTintColor(theme.titleTextColor).withRenderingMode(.alwaysTemplate)
-        let deleteActionImage =            I.systemItems.defaultItems.trashBin.withTintColor(theme.actionTintColor).withRenderingMode(.alwaysTemplate)
+	private func createCellContextMenu(for asset: PHAsset, at indexPath: IndexPath) -> UIMenu {
 		
-        let fullScreenPreviewAction = UIAction(title: "full screen preview", image: fullScreenPreviewActionImage) { _ in
-            if asset.mediaType == .video {
-                self.showVideoPreviewController(asset)
-            } else {
+		let fullScreenPreviewActionImage = I.systemItems.defaultItems.arrowUP.withTintColor(theme.titleTextColor).withRenderingMode(.alwaysTemplate)
+		let setAsBestActionImage =         I.systemItems.defaultItems.star.withTintColor(theme.titleTextColor).withRenderingMode(.alwaysTemplate)
+		let deleteActionImage =            I.systemItems.defaultItems.trashBin.withTintColor(theme.actionTintColor).withRenderingMode(.alwaysTemplate)
+		
+		let fullScreenPreviewAction = UIAction(title: "full screen preview", image: fullScreenPreviewActionImage) { _ in
+			if asset.mediaType == .video {
+				self.showVideoPreviewController(asset)
+			} else {
 //                self.showFullScreenAssetPreviewAndFocus(at: indexPath)
-            }
-        }
+			}
+		}
 		
 		let setAsBestAction = UIAction(title: "set as best", image: setAsBestActionImage) { _ in
 			self.setAsBest(asset: asset, at: indexPath)
 		}
-        
+		
 		let deleteAssetAction = UIAction(title: "delete", image: deleteActionImage, attributes: .destructive) { _ in
 			self.deleteAsset(at: indexPath)
-        }
+		}
 		
-        if indexPath.row == 0 {
-            return UIMenu(title: "", children: [fullScreenPreviewAction, deleteAssetAction])
-        } else {
-            return UIMenu(title: "", children: [fullScreenPreviewAction, setAsBestAction, deleteAssetAction])
-        }
-    }
+		if indexPath.row == 0 {
+			return UIMenu(title: "", children: [fullScreenPreviewAction, deleteAssetAction])
+		} else {
+			return UIMenu(title: "", children: [fullScreenPreviewAction, setAsBestAction, deleteAssetAction])
+		}
+	}
 	
 	private func setAsBest(asset: PHAsset, at indexPath: IndexPath) {
-        
+		
 		assetGroups[indexPath.section].assets.move(at: indexPath.row, to: 0)
 		collectionView.performBatchUpdates {
 			collectionView.moveItem(at: indexPath, to: IndexPath(row: 0, section: indexPath.section))
@@ -1019,96 +918,257 @@ extension GroupedAssetListViewController {
 		}
 	}
 	
-    private func showVideoPreviewController(_ asset: PHAsset) {
-        PHCachingImageManager().requestAVAsset(forVideo: asset, options: nil) { (avAsset, _, _) in
-            U.UI {
-                if avAsset != nil {
-                    let playerController = AVPlayerViewController()
-                    let player = AVPlayer(playerItem: AVPlayerItem(asset: avAsset!))
-                    playerController.player = player
-                    self.present(playerController, animated: true) {
-                        playerController.player!.play()
-                    }
-                } else {
-                    return
-                }
-            }
-        }
-    }
-    
-    private func showFullScreenAssetPreviewAndFocus(at indexPath: IndexPath) {
-        self.changeFlowLayoutAndFocus(at: indexPath)
-    }
-    
-    private func changeFlowLayoutAndFocus(at indexPath: IndexPath) {
-        
-        isCarouselViewMode = !isCarouselViewMode
-        optionalViewerHeightConstraint.constant = isCarouselViewMode ? defaultContainerHeight - carouselPreviewCollectionHeight : 0
-        photoPreviewContainerView.isHidden = !isCarouselViewMode
-        
-        self.collectionView.collectionViewLayout = isCarouselViewMode ? carouselCollectionFlowLayout : collectionViewFlowLayout
-        
-        let carouselEdgeInsets: UIEdgeInsets = UIEdgeInsets(top: 0, left: self.collectionView.frame.width / 2 - 30, bottom: 0, right: self.collectionView.frame.width / 2 - 30)
-        let collectionEdgeInsets: UIEdgeInsets = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
-        
-        collectionView.contentInset = isCarouselViewMode ? carouselEdgeInsets : collectionEdgeInsets
-        self.collectionView.reloadData()
-        self.collectionView.collectionViewLayout.invalidateLayout()
-        
-        if isCarouselViewMode {
-            self.collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: false)
+	private func showVideoPreviewController(_ asset: PHAsset) {
+		PHCachingImageManager().requestAVAsset(forVideo: asset, options: nil) { (avAsset, _, _) in
+			U.UI {
+				if avAsset != nil {
+					let playerController = AVPlayerViewController()
+					let player = AVPlayer(playerItem: AVPlayerItem(asset: avAsset!))
+					playerController.player = player
+					self.present(playerController, animated: true) {
+						playerController.player!.play()
+					}
+				} else {
+					return
+				}
+			}
+		}
+	}
+	
+	private func showFullScreenAssetPreviewAndFocus(at indexPath: IndexPath) {
+		self.changeFlowLayoutAndFocus(at: indexPath)
+	}
+	
+	private func changeFlowLayoutAndFocus(at indexPath: IndexPath) {
+		
+		isCarouselViewMode = !isCarouselViewMode
+		optionalViewerHeightConstraint.constant = isCarouselViewMode ? defaultContainerHeight - carouselPreviewCollectionHeight : 0
+		photoPreviewContainerView.isHidden = !isCarouselViewMode
+		
+		self.collectionView.collectionViewLayout = isCarouselViewMode ? carouselCollectionFlowLayout : collectionViewFlowLayout
+		
+		let carouselEdgeInsets: UIEdgeInsets = UIEdgeInsets(top: 0, left: self.collectionView.frame.width / 2 - 30, bottom: 0, right: self.collectionView.frame.width / 2 - 30)
+		let collectionEdgeInsets: UIEdgeInsets = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
+		
+		collectionView.contentInset = isCarouselViewMode ? carouselEdgeInsets : collectionEdgeInsets
+		self.collectionView.reloadData()
+		self.collectionView.collectionViewLayout.invalidateLayout()
+		
+		if isCarouselViewMode {
+			self.collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: false)
 //            let index = getSplitIndex(from: indexPath)
 //            TODO: hide temporary preview
 //            photoPreviewController.slideToPage(index: index) {
 //                debugPrint("done")
 //            }
 
-        } else {
-            self.collectionView.scrollToItem(at: IndexPath(row: 0, section: indexPath.section == 0 ? 0 : indexPath.section - 1), at: [.centeredVertically, .centeredHorizontally], animated: false)
-        }
-        
-        if isCarouselViewMode {
+		} else {
+			self.collectionView.scrollToItem(at: IndexPath(row: 0, section: indexPath.section == 0 ? 0 : indexPath.section - 1), at: [.centeredVertically, .centeredHorizontally], animated: false)
+		}
+		
+		if isCarouselViewMode {
 //            if let image = assetGroups[indexPath.section].assets[indexPath.row].getImage {
 //                #warning("TODO")
 ////                self.imageView.image = image
 //            } else {
 //                self.changeFlowLayoutAndFocus(at: indexPath)
 //            }
-            
-        }
-    }
-    
-    @objc func didBackActionChangeLayout() {
-        
-        if isCarouselViewMode {
-            if let indexPath = focusedIndexPath {
-                changeFlowLayoutAndFocus(at: indexPath)
-            } else {
-                changeFlowLayoutAndFocus(at: IndexPath(item: 0, section: 8))
-            }
-        } else {
-            self.navigationController?.popViewController(animated: true)
-        }
-    }
-    
-    private func splitAllAssetsForPreview() {
-        
-        for group in assetGroups {
-            splitAssetsNumberOfItems += group.assets.count
-            splitAssets.append(contentsOf: group.assets)
-        }
-    }
-    
-    private func getSplitIndex(from indexPath: IndexPath) -> Int {
-        
-        let asset = assetGroups[indexPath.section].assets[indexPath.row]
-        if let index = splitAssets.firstIndex(where: {$0 == asset}) {
-            return index
-        }
-        
-        return 0
-    }
+			
+		}
+	}
+	
+	@objc func didBackActionChangeLayout() {
+		
+		if isCarouselViewMode {
+			if let indexPath = focusedIndexPath {
+				changeFlowLayoutAndFocus(at: indexPath)
+			} else {
+				changeFlowLayoutAndFocus(at: IndexPath(item: 0, section: 8))
+			}
+		} else {
+			self.navigationController?.popViewController(animated: true)
+		}
+	}
+	
+	private func splitAllAssetsForPreview() {
+		
+		for group in assetGroups {
+			splitAssetsNumberOfItems += group.assets.count
+			splitAssets.append(contentsOf: group.assets)
+		}
+	}
+	
+	private func getSplitIndex(from indexPath: IndexPath) -> Int {
+		
+		let asset = assetGroups[indexPath.section].assets[indexPath.row]
+		if let index = splitAssets.firstIndex(where: {$0 == asset}) {
+			return index
+		}
+		
+		return 0
+	}
  }
+
+extension GroupedAssetListViewController {
+		
+	private func setupUI() {
+		
+		let bottomButtonImageSize = CGSize(width: 18, height: 24)
+		switch mediaType {
+			case .singleRecentlyDeletedPhotos, .singleRecentlyDeletedVideos:
+				self.bottomButtonBarView.setImage(I.systemItems.defaultItems.recover, with: bottomButtonImageSize)
+			default:
+				self.bottomButtonBarView.setImage(I.systemItems.defaultItems.delete, with: bottomButtonImageSize)
+		}
+	}
+	
+	private func setupNavigation() {
+		
+		navigationBar.setupNavigation(title: self.mediaType.mediaTypeName,
+									  leftBarButtonImage: I.systemItems.navigationBarItems.back,
+									  rightBarButtonImage: I.systemItems.navigationBarItems.burgerDots,
+									  contentType: self.contentType,
+									  leftButtonTitle: nil,
+									  rightButtonTitle: nil)
+	}
+	
+	private func setupObservers() {}
+	
+	private func setupDelegate() {
+		
+		scrollView.delegate = self
+		navigationBar.delegate = self
+		bottomButtonBarView.delegate = self
+	}
+	
+	func updateColors() {
+		
+		self.view.backgroundColor = theme.backgroundColor
+		self.collectionView.backgroundColor = theme.backgroundColor
+		
+		bottomButtonBarView.buttonColor = contentType.screenAcentTintColor
+		bottomButtonBarView.buttonTintColor = theme.activeTitleTextColor
+		bottomButtonBarView.buttonTitleColor = theme.activeTitleTextColor
+		bottomButtonBarView.activityIndicatorColor = theme.backgroundColor
+		bottomButtonBarView.updateColorsSettings()
+	}
+}
+
+extension GroupedAssetListViewController: SNCollectionViewLayoutDelegate {
+//    MARK: TODO: set if 3 asset
+    func scaleForItem(inCollectionView collectionView: UICollectionView, withLayout layout: UICollectionViewLayout, atIndexPath indexPath: IndexPath) -> UInt {
+		return indexPath.row == 0 ? 2 : 1
+    }
+    
+    func headerFlexibleDimension(inCollectionView collectionView: UICollectionView, withLayout layout: UICollectionViewLayout, fixedDimension: CGFloat) -> CGFloat {
+        return 55
+    }
+}
+
+extension GroupedAssetListViewController {
+	
+	private func updateCachedAssets() {
+		
+		guard isViewLoaded && view.window != nil else { return }
+		
+		let visibleRect = CGRect(origin: collectionView!.contentOffset, size: collectionView!.bounds.size)
+		let preheatRect = visibleRect.insetBy(dx: 0, dy: -0.5 * visibleRect.height)
+		
+		let delta = abs(preheatRect.midY - previousPreheatRect.midY)
+		guard delta > view.bounds.height / 3 else { return }
+		
+		let (addedRects, removedRects) = differencesBetweenRects(previousPreheatRect, preheatRect)
+		let addedAssets = addedRects
+			.flatMap { rect in collectionView!.indexPathsForElements(in: rect) }
+			.compactMap { indexPath in self.assetGroups[indexPath.section].assets[indexPath.item] }
+		let removedAssets = removedRects
+			.flatMap { rect in collectionView!.indexPathsForElements(in: rect) }
+			.compactMap { indexPath in self.assetGroups[indexPath.section].assets[indexPath.item] }
+		
+		let options = PHImageRequestOptions()
+		options.isNetworkAccessAllowed = true
+		let size = CGSize(width: 300, height: 300)
+		
+		prefetchCacheImageManager.startCachingImages(for: addedAssets, targetSize: size, contentMode: .aspectFill, options: options)
+		prefetchCacheImageManager.stopCachingImages(for: removedAssets, targetSize: size, contentMode: .aspectFill, options: options)
+		previousPreheatRect = preheatRect
+	}
+	
+	private func resetCachedAssets() {
+		prefetchCacheImageManager.stopCachingImagesForAllAssets()
+		previousPreheatRect = .zero
+	}
+	
+	
+	 private func differencesBetweenRects(_ old: CGRect, _ new: CGRect) -> (added: [CGRect], removed: [CGRect]) {
+		if old.intersects(new) {
+			var added = [CGRect]()
+			if new.maxY > old.maxY {
+				added += [CGRect(x: new.origin.x, y: old.maxY,
+								 width: new.width, height: new.maxY - old.maxY)]
+			}
+			if old.minY > new.minY {
+				added += [CGRect(x: new.origin.x, y: new.minY,
+								 width: new.width, height: old.minY - new.minY)]
+			}
+			var removed = [CGRect]()
+			if new.maxY < old.maxY {
+				removed += [CGRect(x: new.origin.x, y: new.maxY,
+								   width: new.width, height: old.maxY - new.maxY)]
+			}
+			if old.minY < new.minY {
+				removed += [CGRect(x: new.origin.x, y: old.minY,
+								   width: new.width, height: new.minY - old.minY)]
+			}
+			return (added, removed)
+		} else {
+			return ([new], [old])
+		}
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+// MARK: -> refacotor after this line
+#warning("check after line->")
+
+
+//      MARK: - prefetching data source -
+extension GroupedAssetListViewController: UICollectionViewDataSourcePrefetching {
+		
+    private func requestPhassets(for indexPaths: [IndexPath]) -> [PHAsset] {
+        return indexPaths.compactMap({ self.assetGroups[$0.section].assets[$0.item]})
+    }
+
+    func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
+		
+//        U.UI { [weak self] in
+//
+//            guard let `self` = self, let _ = self.collectionView else { return }
+//            guard self.splitAssetsNumberOfItems > 0 else { return }
+//
+//            if indexPaths.count <= self.splitAssetsNumberOfItems {
+//
+//                let scale = max(UIScreen.main.scale,2)
+//                let targetSize = CGSize(width: U.screenWidth * scale, height: U.screenHeight * scale)
+//
+//                self.cacheImageManager.startCachingImages(for: self.splitAssets, targetSize: targetSize, contentMode: .aspectFill, options: nil)
+//            }
+//        }
+    }
+	
+	func collectionView(_ collectionView: UICollectionView, cancelPrefetchingForItemsAt indexPaths: [IndexPath]) {}
+}
 
 extension GroupedAssetListViewController: SelectDropDownMenuDelegate {
     
@@ -1175,14 +1235,18 @@ extension GroupedAssetListViewController: PhotoPreviewDataSource {
 extension GroupedAssetListViewController: UIScrollViewDelegate {
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        loadPreviewImageThumb(isScrolling: true)
+//        loadPreviewImageThumb(isScrolling: true)
+		updateCachedAssets()
     }
     
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        loadPreviewImageThumb(isScrolling: false)
+//        loadPreviewImageThumb(isScrolling: false)
+		debugPrint("scrollViewDidEndDecelerating")
     }
     
-    func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {}
+    func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+		debugPrint("scrollViewDidEndScrollingAnimation")
+	}
     
     func loadPreviewImageThumb(isScrolling: Bool) {
         
@@ -1280,7 +1344,6 @@ extension GroupedAssetListViewController: UIScrollViewDelegate {
         let  assets = indexPaths.map{self.assetGroups[$0.item].assets[$0.row]}
         return assets
     }
-    
     
     private func computeDifferenceBetweenRect(oldRect: CGRect, andRect newRect: CGRect, removedHandler: (CGRect)->Void, addedHandler: (CGRect)->Void) {
         if newRect.intersects(oldRect) {

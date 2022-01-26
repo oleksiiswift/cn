@@ -85,6 +85,7 @@ extension PhotoCollectionViewCell: Themeble {
 		
         baseView.setCorner(14)
 		photoThumbnailImageView.setCorner(10)
+		photoThumbnailImageView.contentMode = .scaleAspectFill
 		
 		circleSelectThumbView.rounded()
 		bulbview.rounded()
@@ -146,24 +147,23 @@ extension PhotoCollectionViewCell: Themeble {
     
 	public func loadCellThumbnail(_ asset: PHAsset, imageManager: PHCachingImageManager) {
 		self.unload()
+		
 		self.imageManager = imageManager
 		
+		let options = PhotoManager.shared.requestOptions
 		let scale = U.mainScreen.scale
-		let thumbnailSize = CGSize(width: 50 * scale, height: 50 * scale)
+		let thumbnailSize = CGSize(width: 300 * scale, height: 300 * scale)
+		
 		let requestedAssetIdentifier = asset.localIdentifier
-		imageRequestID = imageManager.requestImage(for: asset, targetSize: thumbnailSize, contentMode: .aspectFill, options: nil, resultHandler: { image, _ in
+		
+		imageRequestID = imageManager.requestImage(for: asset, targetSize: thumbnailSize, contentMode: .aspectFill, options: options, resultHandler: { image, _ in
 			if requestedAssetIdentifier == asset.localIdentifier {
 				if let image = image {
 					self.photoThumbnailImageView.image = image
 				}
 			}
 		})
-		
-		
-		
-			/// `First time!!!!`
-//		self.photoThumbnailImageView.image = PhotoManager.shared.loadChacheImageForPhasset(asset)
-		self.photoThumbnailImageView.contentMode = .scaleAspectFill
+				
 		playPhassetImageView.image = I.systemItems.defaultItems.onViewPlayButton
                 
         switch cellMediaType {
@@ -187,7 +187,6 @@ extension PhotoCollectionViewCell: Themeble {
 				playPhassetImageView.isHidden = true
         }
     }
-	
 	
 	private func unload() {
 		if imageRequestID != nil && imageManager != nil {

@@ -13,21 +13,24 @@ class SimpleAssetsListViewController: UIViewController {
 
 	@IBOutlet weak var navigationBar: NavigationBar!
 	@IBOutlet weak var collectionView: UICollectionView!
-	
 	@IBOutlet weak var bottomButtonView: BottomButtonBarView!
 	@IBOutlet weak var bottomMenuHeightConstraint: NSLayoutConstraint!
 	
+	var scrollView = UIScrollView()
 	var selectedAssetsDelegate: DeepCleanSelectableAssetsDelegate?
 	private var photoManager = PhotoManager.shared
+	private var prefetchCacheImageManager = PhotoManager.shared.prefetchManager
 	public var mediaType: PhotoMediaType = .none
 	public var contentType: MediaContentType = .none
 	
+
+	private var previousPreheatRect: CGRect = CGRect()
+	private var bottomMenuHeight: CGFloat = 80
 	private let flowLayout = SimpleColumnFlowLayout(cellsPerRow: 3,
 													minimumInterSpacing: 0,
 													minimumLineSpacing: 0,
 													inset: UIEdgeInsets(top: 10, left: 4, bottom: 0, right: 4))
 	
-	public var assetCollection: [PHAsset] = []
 	private var isSelectedAllPhassets: Bool {
 		if let indexPaths = self.collectionView.indexPathsForSelectedItems {
 			return indexPaths.count == self.assetCollection.count
@@ -35,13 +38,13 @@ class SimpleAssetsListViewController: UIViewController {
 			return false
 		}
 	}
+	
+	public var assetCollection: [PHAsset] = []
 	public var changedPhassetCompletionHandler: ((_ changedPhasset: [PHAsset]) -> Void)?
 	public var selectedPhassetCompletionHandler: ((_ selectedPhassets: [PHAsset]) -> Void)?
 	
 	private var previouslySelectedIndexPaths: [IndexPath] = []
 	public var isDeepCleaningSelectableFlow: Bool = false
-	
-    private var bottomMenuHeight: CGFloat = 80
 	
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -63,13 +66,12 @@ class SimpleAssetsListViewController: UIViewController {
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
 		
+		updateCachedAssets()
 		previouslySelectedIndexPaths.isEmpty ? didSelectAll() : ()
 	}
-	
 }
 
 //  MARK: - collection view setup -
-
 extension SimpleAssetsListViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     
     private func setupCollectionView() {
@@ -111,7 +113,7 @@ extension SimpleAssetsListViewController: UICollectionViewDelegate, UICollection
         
         /// config thumbnail according screen type
 		let asset = assetCollection[indexPath.row]
-		cell.loadCellThumbnail(asset, imageManager: self.photoManager.prefetchManager)
+		cell.loadCellThumbnail(asset, imageManager: self.prefetchCacheImageManager)
 		cell.updateColors()
     }
     
@@ -178,16 +180,72 @@ extension SimpleAssetsListViewController: UICollectionViewDataSourcePrefetching 
 		return indexPaths.compactMap({self.assetCollection[$0.row]})
 	}
 	
-	func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
-		let phassets = requestPHAssets(for: indexPaths)
-		self.photoManager.prefetchsForPHAssets(phassets)
+	func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {}
+	
+	func collectionView(_ collectionView: UICollectionView, cancelPrefetchingForItemsAt indexPaths: [IndexPath]) {}
+}
+
+extension SimpleAssetsListViewController {
+	
+	private func updateCachedAssets() {
+		
+		guard isViewLoaded && view.window != nil else { return }
+		
+		let visibleRect = CGRect(origin: collectionView!.contentOffset, size: collectionView!.bounds.size)
+		let preheatRect = visibleRect.insetBy(dx: 0, dy: -0.5 * visibleRect.height)
+		
+		let delta = abs(preheatRect.midY - previousPreheatRect.midY)
+		guard delta > view.bounds.height / 3 else { return }
+		
+		let (addedRects, removedRects) = differencesBetweenRects(previousPreheatRect, preheatRect)
+		let addedAssets = addedRects
+			.flatMap { rect in collectionView!.indexPathsForElements(in: rect) }
+			.compactMap { indexPath in self.assetCollection[indexPath.row] }
+		let removedAssets = removedRects
+			.flatMap { rect in collectionView!.indexPathsForElements(in: rect) }
+			.compactMap { indexPath in self.assetCollection[indexPath.row] }
+		
+		let options = PHImageRequestOptions()
+		options.isNetworkAccessAllowed = true
+		let size = CGSize(width: 300, height: 300)
+		
+		prefetchCacheImageManager.startCachingImages(for: addedAssets, targetSize: size, contentMode: .aspectFill, options: options)
+		prefetchCacheImageManager.stopCachingImages(for: removedAssets, targetSize: size, contentMode: .aspectFill, options: options)
+		previousPreheatRect = preheatRect
 	}
 	
-	func collectionView(_ collectionView: UICollectionView, cancelPrefetchingForItemsAt indexPaths: [IndexPath]) {
-		let phassets = requestPHAssets(for: indexPaths)
-		self.photoManager.cancelFetchForPHAseets(phassets)
+	private func resetCachedAssets() {
+		prefetchCacheImageManager.stopCachingImagesForAllAssets()
+		previousPreheatRect = .zero
+	}
+	
+	 private func differencesBetweenRects(_ old: CGRect, _ new: CGRect) -> (added: [CGRect], removed: [CGRect]) {
+		if old.intersects(new) {
+			var added = [CGRect]()
+			if new.maxY > old.maxY {
+				added += [CGRect(x: new.origin.x, y: old.maxY,
+								 width: new.width, height: new.maxY - old.maxY)]
+			}
+			if old.minY > new.minY {
+				added += [CGRect(x: new.origin.x, y: new.minY,
+								 width: new.width, height: old.minY - new.minY)]
+			}
+			var removed = [CGRect]()
+			if new.maxY < old.maxY {
+				removed += [CGRect(x: new.origin.x, y: new.maxY,
+								   width: new.width, height: old.maxY - new.maxY)]
+			}
+			if old.minY < new.minY {
+				removed += [CGRect(x: new.origin.x, y: old.minY,
+								   width: new.width, height: new.minY - old.minY)]
+			}
+			return (added, removed)
+		} else {
+			return ([new], [old])
+		}
 	}
 }
+
 
 extension SimpleAssetsListViewController: PhotoCollectionViewCellDelegate {
     
@@ -493,10 +551,18 @@ extension SimpleAssetsListViewController {
 	private func setupDelegate() {
 		navigationBar.delegate = self
 		bottomButtonView.delegate = self
+		scrollView.delegate = self
 	}
 	
 	private func setupObservers() {
 		UpdatingChangesInOpenedScreensMediator.instance.setListener(listener: self)
+	}
+}
+
+extension SimpleAssetsListViewController: UIScrollViewDelegate {
+	
+	func scrollViewDidScroll(_ scrollView: UIScrollView) {
+		updateCachedAssets()
 	}
 }
 

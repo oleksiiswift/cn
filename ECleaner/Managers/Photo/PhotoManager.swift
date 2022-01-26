@@ -45,7 +45,7 @@ class PhotoManager {
 	
 	private var fetchManager = PHAssetFetchManager.shared
 	public var prefetchManager = PHCachingImageManager()
-	private lazy var requestOptions: PHImageRequestOptions = {
+	public lazy var requestOptions: PHImageRequestOptions = {
 		let options = PHImageRequestOptions()
         options.isSynchronous = false
 		options.deliveryMode = .opportunistic
