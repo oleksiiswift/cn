@@ -243,6 +243,7 @@ class Constants {
             static let main = "Main"
             static let media = "MediaContent"
             static let deep = "DeepClean"
+			static let preview = "MediaPreview"
             static let contacts = "Contacts"
             static let contactsGroup = "ContactsGroup"
             static let exportContacts = "ExportContact"
@@ -255,6 +256,7 @@ class Constants {
             static let datePicker = "DateSelectorViewController"
             static let assetsList = "SimpleAssetsListViewController"
             static let groupedList = "GroupedAssetListViewController"
+			static let preview = "MediaPreviewViewController"
             static let contacts = "ContactsViewController"
             static let deepClean = "DeepCleaningViewController"
             static let contactsGroup = "ContactsGroupViewController"
@@ -306,7 +308,7 @@ class Constants {
             static let navigationBar = "NavigationBar"
             
             /// controllers
-//            static let photoPreview = "PhotoPreviewViewController"
+//            static let photoPreview = "PhotoPreviewViewControllerOLDVers"
         }
         
         struct segue {

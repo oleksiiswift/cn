@@ -145,7 +145,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="eh2-31-QPm" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2329" y="575"/>
+            <point key="canvasLocation" x="2067" y="795"/>
         </scene>
         <!--Grouped Asset List View Controller-->
         <scene sceneID="dfX-mG-VDd">
@@ -251,7 +251,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="w3y-Ft-b1X" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2328.985507246377" y="-174.10714285714286"/>
+            <point key="canvasLocation" x="2067" y="46"/>
         </scene>
         <!--DatePicker-->
         <scene sceneID="LgX-wh-p4w">
@@ -294,7 +294,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="D4M-RM-XHx" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2328" y="-766"/>
+            <point key="canvasLocation" x="3003" y="-65"/>
         </scene>
     </scenes>
     <resources>

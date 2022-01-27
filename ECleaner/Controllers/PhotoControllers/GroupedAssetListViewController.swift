@@ -26,7 +26,9 @@ class GroupedAssetListViewController: UIViewController, UIPageViewControllerDele
 		/// - delegates -
 	private weak var delegate: ContentGroupedDataProviderDelegate?
 	var selectedAssetsDelegate: DeepCleanSelectableAssetsDelegate?
-	
+		/// - managers -
+	private var prefetchCacheImageManager = PhotoManager.shared.prefetchManager
+	private var photoManager = PhotoManager.shared
 		/// `assets`
 	public var assetGroups: [PhassetGroup] = []
 	public var mediaType: PhotoMediaType = .none
@@ -44,21 +46,27 @@ class GroupedAssetListViewController: UIViewController, UIPageViewControllerDele
 	private var previouslySelectedIndexPaths: [IndexPath] = []
 	
 	private var thumbnailSize: CGSize!
+	
+	
+	
+	
+	
+	
+	
+	
+	
     /// - controllers -
     #warning("hide photopreviewLogic for TODO later")
 	@IBOutlet weak var photoPreviewContainerView: UIView!
 	@IBOutlet weak var photoContentContainerView: UIView!
 	@IBOutlet weak var optionalViewerHeightConstraint: NSLayoutConstraint!
-//    private var photoPreviewController = PhotoPreviewViewController(
+//    private var photoPreviewController = PhotoPreviewViewControllerOLDVers(
 //    private weak var delegate: ContentDataProviderDelegate?
 
     private var splitAssetsNumberOfItems: Int = 0
     private var splitAssets: [PHAsset] = []
     
-    /// - managers -
-    private var cacheImageManager = PHCachingImageManager()
-	private var prefetchCacheImageManager = PhotoManager.shared.prefetchManager
-	private var photoManager = PhotoManager.shared
+
 
     let carouselCollectionFlowLayout = ZoomAndSnapFlowLayout()
 	

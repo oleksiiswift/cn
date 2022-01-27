@@ -10,7 +10,7 @@ import Photos
 
 
 //      MARK: - ui setup -
-//extension PhotoPreviewViewController {
+//extension PhotoPreviewViewControllerOLDVers {
 //
 //    private func setupUI() {
 //    }
@@ -82,7 +82,7 @@ import Photos
 
 
 
-//extension PhotoPreviewViewController: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDataSourcePrefetching {
+//extension PhotoPreviewViewControllerOLDVers: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDataSourcePrefetching {
 //
 //    func numberOfSections(in collectionView: UICollectionView) -> Int {
 //        return collectionType == .single ? 1 : groupAssetsCollection.count
@@ -222,7 +222,7 @@ import Photos
 
 
 
-//extension PhotoPreviewViewController: UIPageViewControllerDataSource {
+//extension PhotoPreviewViewControllerOLDVers: UIPageViewControllerDataSource {
 //
 //    func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
 //        guard let viewControllerIndex = loadedViewControllers.firstIndex(of: viewController) else { return nil}

@@ -23,7 +23,6 @@ class SimpleAssetsListViewController: UIViewController {
 	public var mediaType: PhotoMediaType = .none
 	public var contentType: MediaContentType = .none
 	
-
 	private var previousPreheatRect: CGRect = CGRect()
 	private var bottomMenuHeight: CGFloat = 80
 	private let flowLayout = SimpleColumnFlowLayout(cellsPerRow: 3,
@@ -66,7 +65,7 @@ class SimpleAssetsListViewController: UIViewController {
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
 		
-		updateCachedAssets()
+//		updateCachedAssets()
 		previouslySelectedIndexPaths.isEmpty ? didSelectAll() : ()
 	}
 }
@@ -89,8 +88,8 @@ extension SimpleAssetsListViewController: UICollectionViewDelegate, UICollection
         self.collectionView.register(UINib(nibName: C.identifiers.xibs.photoSimpleCell, bundle: nil), forCellWithReuseIdentifier: C.identifiers.cells.photoSimpleCell)
         self.collectionView.collectionViewLayout = flowLayout
         self.collectionView.allowsMultipleSelection = true
-        self.collectionView.reloadData()
 		self.collectionView.contentInset.top = 20
+		self.collectionView.reloadData()
     }
     
     private func configure(_ cell: PhotoCollectionViewCell, at indexPath: IndexPath) {
@@ -99,6 +98,9 @@ extension SimpleAssetsListViewController: UICollectionViewDelegate, UICollection
         cell.indexPath = indexPath
 		cell.cellMediaType = self.mediaType
 		cell.cellContentType = self.contentType
+			/// config thumbnail according screen type
+		let asset = assetCollection[indexPath.row]
+		cell.loadCellThumbnail(asset, imageManager: self.prefetchCacheImageManager)
 		cell.setBestView(availible: false)
 		cell.setupUI()
 		cell.updateColors()
@@ -110,10 +112,6 @@ extension SimpleAssetsListViewController: UICollectionViewDelegate, UICollection
         }
 
         cell.checkIsSelected()
-        
-        /// config thumbnail according screen type
-		let asset = assetCollection[indexPath.row]
-		cell.loadCellThumbnail(asset, imageManager: self.prefetchCacheImageManager)
 		cell.updateColors()
     }
     
@@ -134,6 +132,7 @@ extension SimpleAssetsListViewController: UICollectionViewDelegate, UICollection
     func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
         /// use delegate select cell
         /// on tap on cell opened full screen photo preivew
+		self.showFullScreenAssetPreview(focus: indexPath)
         return false
     }
         
@@ -471,11 +470,7 @@ extension SimpleAssetsListViewController {
     private func createCellContextMenu(for asset: PHAsset, at indexPath: IndexPath) -> UIMenu {
         
         let fullScreenPreviewAction = UIAction(title: "full screen preview", image: I.systemItems.defaultItems.arrowUP) { _ in
-            if asset.mediaType == .video {
-                self.showVideoPreviewController(asset)
-            } else {
-                self.showFullScreenAssetPreview(asset)
-            }
+			self.showFullScreenAssetPreview(focus: indexPath)
         }
         
 		let deleteAssetAction = UIAction(title: "delete", image: I.systemItems.defaultItems.trashBin, attributes: .destructive) { _ in
@@ -504,7 +499,15 @@ extension SimpleAssetsListViewController {
         }
     }
     
-    private func showFullScreenAssetPreview(_ asset: PHAsset) {}
+	private func showFullScreenAssetPreview(focus indexPath: IndexPath ) {
+		
+		let storyboard = UIStoryboard(name: C.identifiers.storyboards.preview, bundle: nil)
+		let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.preview) as! MediaPreviewViewController
+		viewController.collectionType = .single
+		viewController.focusedIndexPath = indexPath
+		viewController.assetCollection = self.assetCollection
+		self.navigationController?.pushViewController(viewController, animated: false)
+	}
 }
 
 //      MARK: - setup UI -

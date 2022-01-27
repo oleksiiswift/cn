@@ -1,5 +1,5 @@
 //
-//  PhotoPreviewViewController.swift
+//  PhotoPreviewViewControllerOLDVers.swift
 //  ECleaner
 //
 //  Created by alekseii sorochan on 19.07.2021.
@@ -8,13 +8,8 @@
 import UIKit
 import Photos
 
-enum CollectionType {
-    case grouped
-    case single
-    case none
-}
 
-class PhotoPreviewViewController: UIPageViewController {
+class PhotoPreviewViewControllerOLDVers: UIPageViewController {
     
     /// managers
     private var chacheManager = PHCachingImageManager()
@@ -60,7 +55,7 @@ class PhotoPreviewViewController: UIPageViewController {
     }
 }
 
-extension PhotoPreviewViewController {
+extension PhotoPreviewViewControllerOLDVers {
     
     private func setupDelegate() {
         
@@ -141,13 +136,13 @@ extension PhotoPreviewViewController {
     }
 }
 
-extension PhotoPreviewViewController: Themeble {
+extension PhotoPreviewViewControllerOLDVers: Themeble {
     
     private func setupUI() {}
     func updateColors() {}
 }
 
-extension PhotoPreviewViewController: PhassetPreviewPageDelegate {
+extension PhotoPreviewViewControllerOLDVers: PhassetPreviewPageDelegate {
 
     func photoPreviewControllerDidAppear(_ controller: PhassetPreviewPageProtocol) {
         debugPrint("photoPreviewControllerDidAppear")
