@@ -502,7 +502,7 @@ extension SimpleAssetsListViewController {
 	private func showFullScreenAssetPreview(focus indexPath: IndexPath ) {
 		
 		let storyboard = UIStoryboard(name: C.identifiers.storyboards.preview, bundle: nil)
-		let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.preview) as! MediaPreviewViewController
+		let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.media) as! MediaViewController
 		viewController.collectionType = .single
 		viewController.focusedIndexPath = indexPath
 		viewController.assetCollection = self.assetCollection

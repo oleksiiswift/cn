@@ -18,9 +18,9 @@ class PhotoPreviewViewControllerOLDVers: UIPageViewController {
     private var loadedViewControllers: [UIViewController] = []
     
     /// delegates
-    private var initialViewController: PhassetPreviewPageProtocol?
-    public var pagingDataSource: PhotoPreviewPagingDataSource?
-    public var photosDataSource: PhotoPreviewDataSource?
+    private var initialViewController: PhassetPreviewPageProtocolOLD?
+    public var pagingDataSource: PhotoPreviewPagingDataSourceOLD?
+    public var photosDataSource: PhotoPreviewDataSourceOLD?
     
     /// assets
     private var collectionType: CollectionType = .none
@@ -66,12 +66,12 @@ extension PhotoPreviewViewControllerOLDVers {
         
         /// before baging need to check if collection is single or groped
         if let dataSource = photosDataSource {
-            self.pagingDataSource = PhotoPreviewPagingDataSource(dataSource: dataSource, isGroupedAssets: self.collectionType == .grouped)
+            self.pagingDataSource = PhotoPreviewPagingDataSourceOLD(dataSource: dataSource, isGroupedAssets: self.collectionType == .grouped)
         }
         
         let initialViewController = pagingDataSource?.createViewController(at: currentIndex)
         self.setViewControllers([initialViewController!], direction: .forward, animated: false, completion: nil)
-        self.initialViewController = initialViewController as? PhassetPreviewPageProtocol
+        self.initialViewController = initialViewController as? PhassetPreviewPageProtocolOLD
         self.dataSource = pagingDataSource
     }
     
@@ -142,13 +142,13 @@ extension PhotoPreviewViewControllerOLDVers: Themeble {
     func updateColors() {}
 }
 
-extension PhotoPreviewViewControllerOLDVers: PhassetPreviewPageDelegate {
+extension PhotoPreviewViewControllerOLDVers: PhassetPreviewPageDelegateOLD {
 
-    func photoPreviewControllerDidAppear(_ controller: PhassetPreviewPageProtocol) {
+    func photoPreviewControllerDidAppear(_ controller: PhassetPreviewPageProtocolOLD) {
         debugPrint("photoPreviewControllerDidAppear")
     }
 
-    func photoPreviewControllerWillDisapper(_ controller: PhassetPreviewPageProtocol) {
+    func photoPreviewControllerWillDisapper(_ controller: PhassetPreviewPageProtocolOLD) {
         debugPrint("photoPreviewControllerWillDisapper")
     }
 

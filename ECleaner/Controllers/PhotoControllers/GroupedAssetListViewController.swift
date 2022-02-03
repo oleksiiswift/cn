@@ -366,6 +366,7 @@ extension GroupedAssetListViewController: UICollectionViewDelegate, UICollection
 	func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
 			//        #warning("TODO: hide temporary")
 			//        self.changeFlowLayoutAndFocus(at: indexPath)
+		self.showFullScreenAssetPreview(focus: indexPath)
 		return false
 	}
 	
@@ -892,11 +893,12 @@ extension GroupedAssetListViewController {
 		let deleteActionImage =            I.systemItems.defaultItems.trashBin.withTintColor(theme.actionTintColor).withRenderingMode(.alwaysTemplate)
 		
 		let fullScreenPreviewAction = UIAction(title: "full screen preview", image: fullScreenPreviewActionImage) { _ in
-			if asset.mediaType == .video {
-				self.showVideoPreviewController(asset)
-			} else {
-//                self.showFullScreenAssetPreviewAndFocus(at: indexPath)
-			}
+			self.showFullScreenAssetPreview(focus: indexPath)
+//			if asset.mediaType == .video {
+//				self.showVideoPreviewController(asset)
+//			} else {
+////                self.showFullScreenAssetPreviewAndFocus(at: indexPath)
+//			}
 		}
 		
 		let setAsBestAction = UIAction(title: "set as best", image: setAsBestActionImage) { _ in
@@ -945,6 +947,17 @@ extension GroupedAssetListViewController {
 	
 	private func showFullScreenAssetPreviewAndFocus(at indexPath: IndexPath) {
 		self.changeFlowLayoutAndFocus(at: indexPath)
+	}
+	
+	
+	private func showFullScreenAssetPreview(focus indexPath: IndexPath ) {
+		
+		let storyboard = UIStoryboard(name: C.identifiers.storyboards.preview, bundle: nil)
+		let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.media) as! MediaViewController
+		viewController.collectionType = .grouped
+		viewController.focusedIndexPath = indexPath
+		viewController.assetGroups = self.assetGroups
+		self.navigationController?.pushViewController(viewController, animated: false)
 	}
 	
 	private func changeFlowLayoutAndFocus(at indexPath: IndexPath) {
@@ -1208,7 +1221,7 @@ extension GroupedAssetListViewController: UIPopoverPresentationControllerDelegat
     }
 }
 
-extension GroupedAssetListViewController: PhotoPreviewDataSource {
+extension GroupedAssetListViewController: PhotoPreviewDataSourceOLD {
 
     
     func item(at index: Int, isGroupedAssets: Bool) -> (PHAsset, UIImageView) {

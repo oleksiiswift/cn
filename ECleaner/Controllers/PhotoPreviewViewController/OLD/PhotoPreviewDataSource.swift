@@ -1,5 +1,5 @@
 //
-//  PhotoPreviewDataSource.swift
+//  PhotoPreviewDataSourceOLD.swift
 //  ECleaner
 //
 //  Created by alekseii sorochan on 20.07.2021.
@@ -8,29 +8,29 @@
 import UIKit
 import Photos
 
-protocol PhassetPreviewPageProtocol {
+protocol PhassetPreviewPageProtocolOLD {
     var index: Int { get set }
-    var delegate: PhassetPreviewPageDelegate? { get set }
+    var delegate: PhassetPreviewPageDelegateOLD? { get set }
     var mainView: UIView { get }
     var image: UIImage? { get}
 }
 
-protocol PhassetPreviewPageDelegate: AnyObject {
-    func photoPreviewControllerDidAppear(_ controller: PhassetPreviewPageProtocol)
-    func photoPreviewControllerWillDisapper(_ controller: PhassetPreviewPageProtocol)
+protocol PhassetPreviewPageDelegateOLD: AnyObject {
+    func photoPreviewControllerDidAppear(_ controller: PhassetPreviewPageProtocolOLD)
+    func photoPreviewControllerWillDisapper(_ controller: PhassetPreviewPageProtocolOLD)
     func photoPrevireDidPanned(_ recognizer: UIPanGestureRecognizer, view: UIView)
 }
 
-protocol PhotoPreviewDataSource {
+protocol PhotoPreviewDataSourceOLD {
     func item(at index: Int, isGroupedAssets: Bool) -> (PHAsset, UIImageView)
     func itemsCount() -> Int
 }
 
-class PhotoPreviewPagingDataSource: NSObject, UIPageViewControllerDataSource {
+class PhotoPreviewPagingDataSourceOLD: NSObject, UIPageViewControllerDataSource {
     
-    public weak var pageContollerDelegate: PhassetPreviewPageDelegate?
+    public weak var pageContollerDelegate: PhassetPreviewPageDelegateOLD?
      
-    private var itemsDataSource: PhotoPreviewDataSource?
+    private var itemsDataSource: PhotoPreviewDataSourceOLD?
     
     private let fetchingPhassetQueue = OperationServiceQueue()
     
@@ -40,7 +40,7 @@ class PhotoPreviewPagingDataSource: NSObject, UIPageViewControllerDataSource {
         return itemsDataSource?.itemsCount() ?? 0
     }
     
-    init(dataSource: PhotoPreviewDataSource, isGroupedAssets: Bool) {
+    init(dataSource: PhotoPreviewDataSourceOLD, isGroupedAssets: Bool) {
         
         self.itemsDataSource = dataSource
         self.isGroupedAssets = isGroupedAssets
@@ -48,7 +48,7 @@ class PhotoPreviewPagingDataSource: NSObject, UIPageViewControllerDataSource {
     
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
         
-        guard let currentController = viewController as? PhassetPreviewPageProtocol, itemsCount > 1 else { return nil }
+        guard let currentController = viewController as? PhassetPreviewPageProtocolOLD, itemsCount > 1 else { return nil }
         
         let previousIndex = (currentController.index == 0) ? itemsCount - 1 : currentController.index - 1
         return self.createViewController(at: previousIndex)
@@ -56,7 +56,7 @@ class PhotoPreviewPagingDataSource: NSObject, UIPageViewControllerDataSource {
     
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
         
-        guard  let currentController = viewController as? PhassetPreviewPageProtocol, itemsCount > 1 else { return nil }
+        guard  let currentController = viewController as? PhassetPreviewPageProtocolOLD, itemsCount > 1 else { return nil }
         
         let nextIndex = (currentController.index == itemsCount - 1) ? 0 : currentController.index + 1
         return self.createViewController(at: nextIndex)
@@ -74,12 +74,12 @@ class PhotoPreviewPagingDataSource: NSObject, UIPageViewControllerDataSource {
         
         if asset.mediaType == .image {
             
-            viewController = PhotoViewController(index: index, itemCount: dataSource.itemsCount(), asset: asset, fetchingQueue: fetchingPhassetQueue)
+            viewController = PhotoViewControllerOLD(index: index, itemCount: dataSource.itemsCount(), asset: asset, fetchingQueue: fetchingPhassetQueue)
         } else if asset.mediaType == .video {
 //            TODO: add logic for video content
         }
         
-        if var controller = viewController as? PhassetPreviewPageProtocol {
+        if var controller = viewController as? PhassetPreviewPageProtocolOLD {
             controller.delegate = pageContollerDelegate
         }
         

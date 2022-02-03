@@ -1,5 +1,5 @@
 //
-//  PhotoViewController.swift
+//  PhotoViewControllerOLD.swift
 //  ECleaner
 //
 //  Created by alekseii sorochan on 20.07.2021.
@@ -8,10 +8,10 @@
 import UIKit
 import Photos
 
-class PhotoViewController: UIViewController, PhassetPreviewPageProtocol {
+class PhotoViewControllerOLD: UIViewController, PhassetPreviewPageProtocolOLD {
     
     /// delegates
-    public var delegate: PhassetPreviewPageDelegate?
+    public var delegate: PhassetPreviewPageDelegateOLD?
     
     /// managers
     public var fetchingAssetsQueue: OperationServiceQueue?
@@ -79,7 +79,7 @@ class PhotoViewController: UIViewController, PhassetPreviewPageProtocol {
     }
 }
 
-extension PhotoViewController {
+extension PhotoViewControllerOLD {
     
     public func configureImagesWithPreview() {
         U.UI {
