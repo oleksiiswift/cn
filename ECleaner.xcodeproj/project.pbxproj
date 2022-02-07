@@ -235,6 +235,8 @@
 		97DC39B0273C08ED00D487BE /* PrimaryShadowImageWithTextButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97DC39AF273C08ED00D487BE /* PrimaryShadowImageWithTextButton.swift */; };
 		97E54A86268BB16A00C7FD54 /* SNCollectionViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97E54A85268BB16A00C7FD54 /* SNCollectionViewLayout.swift */; };
 		97E678462750F68A004E340B /* UsageDataNotificationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97E678452750F68A004E340B /* UsageDataNotificationType.swift */; };
+		97EB665127B1A4AE00B21EF5 /* CGSize+pixel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97EB665027B1A4AE00B21EF5 /* CGSize+pixel.swift */; };
+		97EB665327B1BC1F00B21EF5 /* UICollectionView+NextItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97EB665227B1BC1F00B21EF5 /* UICollectionView+NextItem.swift */; };
 		97FC789226888120000D7F26 /* Date+CurrentDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97FC789126888120000D7F26 /* Date+CurrentDate.swift */; };
 		97FC7894268882C9000D7F26 /* Date+DateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97FC7893268882C9000D7F26 /* Date+DateFormatter.swift */; };
 		97FC789626889541000D7F26 /* TimeIInterval.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97FC789526889541000D7F26 /* TimeIInterval.swift */; };
@@ -477,6 +479,8 @@
 		97DC39AF273C08ED00D487BE /* PrimaryShadowImageWithTextButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimaryShadowImageWithTextButton.swift; sourceTree = "<group>"; };
 		97E54A85268BB16A00C7FD54 /* SNCollectionViewLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SNCollectionViewLayout.swift; sourceTree = "<group>"; };
 		97E678452750F68A004E340B /* UsageDataNotificationType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsageDataNotificationType.swift; sourceTree = "<group>"; };
+		97EB665027B1A4AE00B21EF5 /* CGSize+pixel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGSize+pixel.swift"; sourceTree = "<group>"; };
+		97EB665227B1BC1F00B21EF5 /* UICollectionView+NextItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UICollectionView+NextItem.swift"; sourceTree = "<group>"; };
 		97FC789126888120000D7F26 /* Date+CurrentDate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+CurrentDate.swift"; sourceTree = "<group>"; };
 		97FC7893268882C9000D7F26 /* Date+DateFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+DateFormatter.swift"; sourceTree = "<group>"; };
 		97FC789526889541000D7F26 /* TimeIInterval.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeIInterval.swift; sourceTree = "<group>"; };
@@ -872,6 +876,7 @@
 				97AC5DBB276790A600C20F73 /* UILabel */,
 				97C70B4F277633AC0033F466 /* UIImage+Gradient.swift */,
 				97DA18F02797502B00427587 /* Thread+Extension.swift */,
+				97EB665027B1A4AE00B21EF5 /* CGSize+pixel.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -1462,6 +1467,7 @@
 			children = (
 				04649B3D268DDDE600336FE4 /* UICollectionView+SelectAll.swift */,
 				97DC110E27A172A800D10FE4 /* UICollectionView+IndexPath.swift */,
+				97EB665227B1BC1F00B21EF5 /* UICollectionView+NextItem.swift */,
 			);
 			path = UICollectionView;
 			sourceTree = "<group>";
@@ -1723,6 +1729,7 @@
 				044281FC2692F95A00B6B47C /* DropDownMenuViewController.swift in Sources */,
 				975AF4352728210A00744E3B /* DynamicListener.swift in Sources */,
 				97D2BECA275A2D1D002082EB /* ContactsManager.swift in Sources */,
+				97EB665327B1BC1F00B21EF5 /* UICollectionView+NextItem.swift in Sources */,
 				0459DF9226A56DB20085EEDF /* PhotoPreviewViewControllerOLD.swift in Sources */,
 				4F56074027205AF300CA19E9 /* ArcView.swift in Sources */,
 				97238A0F2689EE2700C523DC /* CustomDoneHud.swift in Sources */,
@@ -1763,6 +1770,7 @@
 				4F56074527205AF300CA19E9 /* GreenLightStyle.swift in Sources */,
 				97DC111427A2BA6C00D10FE4 /* MediaViewController.swift in Sources */,
 				97CC2F3C26873A7D0072EF8C /* DateSelectorViewController.swift in Sources */,
+				97EB665127B1A4AE00B21EF5 /* CGSize+pixel.swift in Sources */,
 				04E09470267A06B500A69956 /* AppDelegate.swift in Sources */,
 				04B20F02269C4F6A00C6BC14 /* AssetContextPreviewViewController.swift in Sources */,
 				9770C808274D34A90046EF84 /* FileFormats.swift in Sources */,

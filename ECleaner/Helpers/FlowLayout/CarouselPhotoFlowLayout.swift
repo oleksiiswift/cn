@@ -57,8 +57,9 @@ open class CarouselFlowLayout: UICollectionViewFlowLayout {
 		
 		let yInset = (collectionSize.height - self.itemSize.height) / 2
 		let xInset = (collectionSize.width - self.itemSize.width) / 2
-//		self.sectionInset = UIEdgeInsets.init(top: yInset, left: xInset, bottom: yInset, right: xInset)
-		self.sectionInset = UIEdgeInsets.init(top: yInset, left: 50, bottom: yInset, right: 50)
+		self.sectionInset = UIEdgeInsets.init(top: yInset, left: xInset, bottom: yInset, right: xInset)
+		
+//		self.sectionInset = UIEdgeInsets.init(top: 0, left: 50, bottom: 0, right: 50)
 		
 		let side = isHorizontal ? self.itemSize.width : self.itemSize.height
 		let scaledItemOffset =  (side - side*self.sideItemScale) / 2
@@ -82,6 +83,9 @@ open class CarouselFlowLayout: UICollectionViewFlowLayout {
 			else { return nil }
 		return attributes.map({ self.transformLayoutAttributes($0) })
 	}
+	
+	
+
 	
 	fileprivate func transformLayoutAttributes(_ attributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
 		guard let collectionView = self.collectionView else { return attributes }

@@ -44,7 +44,6 @@ class GroupedAssetListViewController: UIViewController, UIPageViewControllerDele
 	private var selectedAssets: [PHAsset] = []
 	private var selectedSection: Set<Int> = []
 	private var previouslySelectedIndexPaths: [IndexPath] = []
-	
 	private var thumbnailSize: CGSize!
 	
 	
@@ -251,8 +250,7 @@ extension GroupedAssetListViewController {
 		collectionViewFlowLayout.delegate = self
 		self.collectionView.dataSource = self
 		self.collectionView.delegate = self
-		self.collectionView.prefetchDataSource = self
-		
+	
 			/// `register xib`
 		self.collectionView.register(UINib(nibName: C.identifiers.xibs.photoSimpleCell,
 										   bundle: nil),
@@ -284,9 +282,11 @@ extension GroupedAssetListViewController {
 		
 		cell.delegate = self
 		cell.indexPath = indexPath
+		cell.tag = indexPath.section * 1000 + indexPath.row
 		cell.cellMediaType = self.mediaType
 		cell.cellContentType = self.contentType
-		cell.loadCellThumbnail(asset, imageManager: self.prefetchCacheImageManager)
+		let thumbnailSize = self.collectionView.collectionViewLayout.layoutAttributesForItem(at: indexPath)!.size.toPixel()
+		cell.loadCellThumbnail(asset, imageManager: self.prefetchCacheImageManager, size: thumbnailSize)
 		cell.setupUI()
 		cell.updateColors()
 		cell.selectButtonSetup(by: self.mediaType)
@@ -1102,7 +1102,7 @@ extension GroupedAssetListViewController {
 		let addedAssets = addedRects
 			.flatMap { rect in collectionView!.indexPathsForElements(in: rect) }
 			.compactMap { indexPath in self.assetGroups[indexPath.section].assets[indexPath.item] }
-		let removedAssets = removedRects
+		let _ = removedRects
 			.flatMap { rect in collectionView!.indexPathsForElements(in: rect) }
 			.compactMap { indexPath in self.assetGroups[indexPath.section].assets[indexPath.item] }
 		
@@ -1111,7 +1111,7 @@ extension GroupedAssetListViewController {
 		let size = CGSize(width: 300, height: 300)
 		
 		prefetchCacheImageManager.startCachingImages(for: addedAssets, targetSize: size, contentMode: .aspectFill, options: options)
-		prefetchCacheImageManager.stopCachingImages(for: removedAssets, targetSize: size, contentMode: .aspectFill, options: options)
+//		prefetchCacheImageManager.stopCachingImages(for: [removedAssets], targetSize: size, contentMode: .aspectFill, options: options)
 		previousPreheatRect = preheatRect
 	}
 	
@@ -1160,36 +1160,8 @@ extension GroupedAssetListViewController {
 
 
 
-// MARK: -> refacotor after this line
-#warning("check after line->")
 
 
-//      MARK: - prefetching data source -
-extension GroupedAssetListViewController: UICollectionViewDataSourcePrefetching {
-		
-    private func requestPhassets(for indexPaths: [IndexPath]) -> [PHAsset] {
-        return indexPaths.compactMap({ self.assetGroups[$0.section].assets[$0.item]})
-    }
-
-    func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
-		
-//        U.UI { [weak self] in
-//
-//            guard let `self` = self, let _ = self.collectionView else { return }
-//            guard self.splitAssetsNumberOfItems > 0 else { return }
-//
-//            if indexPaths.count <= self.splitAssetsNumberOfItems {
-//
-//                let scale = max(UIScreen.main.scale,2)
-//                let targetSize = CGSize(width: U.screenWidth * scale, height: U.screenHeight * scale)
-//
-//                self.cacheImageManager.startCachingImages(for: self.splitAssets, targetSize: targetSize, contentMode: .aspectFill, options: nil)
-//            }
-//        }
-    }
-	
-	func collectionView(_ collectionView: UICollectionView, cancelPrefetchingForItemsAt indexPaths: [IndexPath]) {}
-}
 
 extension GroupedAssetListViewController: SelectDropDownMenuDelegate {
     

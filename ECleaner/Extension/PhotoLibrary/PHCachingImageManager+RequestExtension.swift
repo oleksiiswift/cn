@@ -49,4 +49,24 @@ extension PHCachingImageManager {
         }
         return [:]
     }
+	
+	
+	func fetch(photo asset: PHAsset, callback: @escaping (UIImage, Bool, String) -> Void) {
+		let options = PHImageRequestOptions()
+		// Enables gettings iCloud photos over the network, this means PHImageResultIsInCloudKey will never be true.
+		options.isNetworkAccessAllowed = true
+		// Get 2 results, one low res quickly and the high res one later.
+		options.deliveryMode = .opportunistic
+		requestImage(for: asset, targetSize: PHImageManagerMaximumSize,
+					 contentMode: .aspectFill, options: options) { result, info in
+			guard let image = result else {
+				print("No Result 🛑")
+				return
+			}
+			DispatchQueue.main.async {
+				let isLowRes = (info?[PHImageResultIsDegradedKey] as? Bool) ?? false
+				callback(image, isLowRes, asset.localIdentifier)
+			}
+		}
+	}
 }

@@ -23,6 +23,7 @@ class SimpleAssetsListViewController: UIViewController {
 	public var mediaType: PhotoMediaType = .none
 	public var contentType: MediaContentType = .none
 	
+	private var thumbnailSize: CGSize = .zero
 	private var previousPreheatRect: CGRect = CGRect()
 	private var bottomMenuHeight: CGFloat = 80
 	private let flowLayout = SimpleColumnFlowLayout(cellsPerRow: 3,
@@ -65,7 +66,7 @@ class SimpleAssetsListViewController: UIViewController {
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
 		
-//		updateCachedAssets()
+		updateCachedAssets()
 		previouslySelectedIndexPaths.isEmpty ? didSelectAll() : ()
 	}
 }
@@ -84,7 +85,6 @@ extension SimpleAssetsListViewController: UICollectionViewDelegate, UICollection
         
         self.collectionView.dataSource = self
         self.collectionView.delegate = self
-		self.collectionView.prefetchDataSource = self
         self.collectionView.register(UINib(nibName: C.identifiers.xibs.photoSimpleCell, bundle: nil), forCellWithReuseIdentifier: C.identifiers.cells.photoSimpleCell)
         self.collectionView.collectionViewLayout = flowLayout
         self.collectionView.allowsMultipleSelection = true
@@ -96,11 +96,17 @@ extension SimpleAssetsListViewController: UICollectionViewDelegate, UICollection
 
         cell.delegate = self
         cell.indexPath = indexPath
+		cell.tag = indexPath.section * 1000 + indexPath.row
 		cell.cellMediaType = self.mediaType
 		cell.cellContentType = self.contentType
 			/// config thumbnail according screen type
 		let asset = assetCollection[indexPath.row]
-		cell.loadCellThumbnail(asset, imageManager: self.prefetchCacheImageManager)
+		
+		if self.thumbnailSize.equalTo(CGSize.zero) {
+			self.thumbnailSize = self.collectionView.collectionViewLayout.layoutAttributesForItem(at: indexPath)!.size.toPixel()
+		}
+
+		cell.loadCellThumbnail(asset, imageManager: self.prefetchCacheImageManager, size: thumbnailSize)
 		cell.setBestView(availible: false)
 		cell.setupUI()
 		cell.updateColors()
@@ -125,10 +131,11 @@ extension SimpleAssetsListViewController: UICollectionViewDelegate, UICollection
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: C.identifiers.cells.photoSimpleCell, for: indexPath) as! PhotoCollectionViewCell
+		cell.photoThumbnailImageView.image = nil
         configure(cell, at: indexPath)
         return cell
     }
-    
+	
     func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
         /// use delegate select cell
         /// on tap on cell opened full screen photo preivew
@@ -173,17 +180,6 @@ extension SimpleAssetsListViewController: UICollectionViewDelegate, UICollection
 	}
 }
 
-extension SimpleAssetsListViewController: UICollectionViewDataSourcePrefetching {
-
-	private func requestPHAssets(for indexPaths: [IndexPath]) -> [PHAsset] {
-		return indexPaths.compactMap({self.assetCollection[$0.row]})
-	}
-	
-	func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {}
-	
-	func collectionView(_ collectionView: UICollectionView, cancelPrefetchingForItemsAt indexPaths: [IndexPath]) {}
-}
-
 extension SimpleAssetsListViewController {
 	
 	private func updateCachedAssets() {
@@ -200,16 +196,12 @@ extension SimpleAssetsListViewController {
 		let addedAssets = addedRects
 			.flatMap { rect in collectionView!.indexPathsForElements(in: rect) }
 			.compactMap { indexPath in self.assetCollection[indexPath.row] }
-		let removedAssets = removedRects
+		let _ = removedRects
 			.flatMap { rect in collectionView!.indexPathsForElements(in: rect) }
 			.compactMap { indexPath in self.assetCollection[indexPath.row] }
 		
-		let options = PHImageRequestOptions()
-		options.isNetworkAccessAllowed = true
-		let size = CGSize(width: 300, height: 300)
-		
-		prefetchCacheImageManager.startCachingImages(for: addedAssets, targetSize: size, contentMode: .aspectFill, options: options)
-		prefetchCacheImageManager.stopCachingImages(for: removedAssets, targetSize: size, contentMode: .aspectFill, options: options)
+		prefetchCacheImageManager.startCachingImages(for: addedAssets, targetSize: self.thumbnailSize, contentMode: .aspectFill, options: nil)
+//		prefetchCacheImageManager.stopCachingImages(for: removedAssets, targetSize: self.thumbnailSize, contentMode: .aspectFill, options: nil)
 		previousPreheatRect = preheatRect
 	}
 	
@@ -575,7 +567,6 @@ extension SimpleAssetsListViewController: NavigationBarDelegate {
 		isDeepCleaningSelectableFlow ? self.deepCleanFlowBackActionButton() : self.singleCleanFlowBackActionButton()
 	}
 
-	
 	func didTapRightBarButton(_ sender: UIButton) {
 		self.setCollection(selected: !isSelectedAllPhassets)
 	}
@@ -626,4 +617,7 @@ extension SimpleAssetsListViewController: UpdatingChangesInOpenedScreensListener
     
     /// updating selfies
 }
+
+
+
 

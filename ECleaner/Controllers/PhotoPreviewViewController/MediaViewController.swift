@@ -17,13 +17,10 @@ enum CollectionType {
 class MediaViewController: UIViewController {
 	
 	@IBOutlet weak var navigationBar: NavigationBar!
-	@IBOutlet weak var previewContainerView: UIView!
 	@IBOutlet weak var collectionView: UICollectionView!
-	
-	private var previewPageViewController = PreviewPageViewController()
-	
 	@IBOutlet weak var previewCollectionView: UICollectionView!
 	var scrollView = UIScrollView()
+	
 	private let carouselCollectionFlowLayout = CarouselFlowLayout()
 	private let previewColletionFlowLayput = PreviewCarouselFlowLayout()
 	
@@ -34,7 +31,6 @@ class MediaViewController: UIViewController {
 	private var prefetchCacheImageManager = PhotoManager.shared.prefetchManager
 	
 	public var focusedIndexPath: IndexPath?
-	public var focusedPageIndex: Int?
 	
 	public var collectionType: CollectionType = .none
 	public var assetCollection: [PHAsset] = []
@@ -47,7 +43,6 @@ class MediaViewController: UIViewController {
 		
 		setupUI()
 		setupCollectionView()
-//		setupPreviewController()
 		updateColors()
 		setupNavigationBar()
 		setupDelegate()
@@ -108,29 +103,15 @@ extension MediaViewController  {
 		self.previewCollectionView.showsHorizontalScrollIndicator = false
 		self.previewCollectionView.contentInset = .zero
 		
-//		let layout = UICollectionViewFlowLayout()
-//		   layout.minimumInteritemSpacing = 0.0
-//		   layout.minimumLineSpacing = 20.0
-//		layout.itemSize = CGSize(width: UIScreen.main.bounds.width - 40, height: UIScreen.main.bounds.height / 2)
-//
-//		layout.scrollDirection = .horizontal
-//		previewCollectionView.contentOffset = CGPoint(x: 20, y: 20)
 
 		self.previewColletionFlowLayput.itemSize = CGSize(width: U.screenWidth - 20, height: U.screenHeight / 2)
 		self.previewColletionFlowLayput.scrollDirection = .horizontal
-//		self.previewColletionFlowLayput.sectionInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
 		self.previewColletionFlowLayput.minimumInteritemSpacing = 20
 		self.previewColletionFlowLayput.minimumLineSpacing = 200
 		self.previewColletionFlowLayput.headerReferenceSize = .zero
 		
-		
-		
-		
-
 		previewCollectionView.collectionViewLayout = previewColletionFlowLayput
 
-		
-		
 		self.collectionView.dataSource = self
 		self.collectionView.delegate = self
 		self.collectionView.prefetchDataSource = self
@@ -138,7 +119,7 @@ extension MediaViewController  {
 		self.collectionView.showsHorizontalScrollIndicator = false
 		self.collectionView.contentInset = .zero
 		
-		self.carouselCollectionFlowLayout.itemSize = CGSize(width: 150, height: 150)
+		self.carouselCollectionFlowLayout.itemSize = CGSize(width: 100, height: 100)
 		self.carouselCollectionFlowLayout.scrollDirection = .horizontal
 		self.carouselCollectionFlowLayout.sectionInset = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
 		self.carouselCollectionFlowLayout.minimumInteritemSpacing = 10
@@ -164,9 +145,11 @@ extension MediaViewController  {
 		
 		cell.delegate = self
 		cell.indexPath = indexPath
+		cell.tag = indexPath.section * 1000 + indexPath.row
 		cell.cellMediaType = self.mediaType
 		cell.cellContentType = self.contentType
-		cell.loadCellThumbnail(asset, imageManager: self.prefetchCacheImageManager)
+		let thumbnailSize = self.collectionView.collectionViewLayout.layoutAttributesForItem(at: indexPath)!.size.toPixel()
+		cell.loadCellThumbnail(asset, imageManager: self.prefetchCacheImageManager, size: thumbnailSize)
 		cell.setupUI()
 		cell.updateColors()
 		cell.selectButtonSetup(by: self.mediaType)
@@ -227,20 +210,19 @@ extension MediaViewController: UICollectionViewDelegate, UICollectionViewDataSou
 extension MediaViewController: UICollectionViewDataSourcePrefetching {
 	
 	func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
-		debugPrint(indexPaths)
 		let phassets = requestPhassets(for: indexPaths)
-		let size = CGSize(width: 300, height: 300)
+		let thumbnailSize = self.collectionView.collectionViewLayout.layoutAttributesForItem(at: indexPaths.first!)!.size.toPixel()
 		let options = PHImageRequestOptions()
 		options.isNetworkAccessAllowed = true
-		prefetchCacheImageManager.startCachingImages(for: phassets, targetSize: size, contentMode: .aspectFill, options: options)
+		prefetchCacheImageManager.startCachingImages(for: phassets, targetSize: thumbnailSize, contentMode: .aspectFit, options: options)
 	}
 	
 	func collectionView(_ collectionView: UICollectionView, cancelPrefetchingForItemsAt indexPaths: [IndexPath]) {
 		let phassets = requestPhassets(for: indexPaths)
-		let size = CGSize(width: 300, height: 300)
+		let thumbnailSize = self.collectionView.collectionViewLayout.layoutAttributesForItem(at: indexPaths.first!)!.size.toPixel()
 		let options = PHImageRequestOptions()
 		options.isNetworkAccessAllowed = true
-		prefetchCacheImageManager.stopCachingImages(for: phassets, targetSize: size, contentMode: .aspectFill, options: options)
+		prefetchCacheImageManager.stopCachingImages(for: phassets, targetSize: thumbnailSize, contentMode: .aspectFit, options: options)
 	}
 	
 	private func requestPhassets(for indexPaths: [IndexPath]) -> [PHAsset] {
@@ -268,38 +250,6 @@ extension MediaViewController: Themeble {
 									  rightButtonTitle: nil)
 	}
 	
-	private func setupPreviewController() {
-		
-		previewPageViewController.delegate = self
-		if let indexPath = self.focusedIndexPath {
-			let index = getCurrentIndex(of: indexPath)
-			previewPageViewController.currentIndex = index
-		}
-		previewPageViewController.groupAssetsCollection = self.assetGroups
-		previewPageViewController.assetCollection = self.assetCollection
-		previewPageViewController.collectionType = self.collectionType
-		previewPageViewController.assetsCount = splitPhassetsForPreview().count
-		previewPageViewController.previewDataSoruce = self
-		
-		
-		self.addChild(previewPageViewController)
-		previewPageViewController.view.frame = previewContainerView.bounds
-		previewContainerView.addSubview(previewPageViewController.view)
-		previewPageViewController.didMove(toParent: self)
-	}
-	
-	private func splitPhassetsForPreview() -> [PHAsset] {
-		
-		switch collectionType {
-			case .single:
-				return assetCollection
-			case .grouped:
-				let assets = assetGroups.flatMap({$0.assets})
-				return assets
-			case .none:
-				return []
-		}
-	}
 	
 	private func setupDelegate() {
 		
@@ -310,121 +260,125 @@ extension MediaViewController: Themeble {
 	func updateColors() {
 		
 		self.view.backgroundColor = theme.backgroundColor
-		self.previewContainerView.backgroundColor = theme.backgroundColor
 		self.collectionView.backgroundColor = theme.backgroundColor
+		self.previewCollectionView.backgroundColor = theme.backgroundColor
 	}
 }
 
 extension MediaViewController: UIScrollViewDelegate {
 	
 	func scrollViewDidScroll(_ scrollView: UIScrollView) {
-//		updateCachedAssets()
-//		debugPrint(" ->  \(getCurrentPage())")
+		
 		if scrollView == self.collectionView {
-			debugPrint("collection view")
+			handleScrollItem(with: self.collectionView)
+//			self.scrollCell()
 		} else if scrollView == self.previewCollectionView {
-			debugPrint("previerw collection view")
+			
+			let x = scrollView.panGestureRecognizer.translation(in: collectionView).x / 2
+				
+			debugPrint(x)
+		   debugPrint(self.view.frame.origin.x - x)
+			let z = collectionView.contentOffset.x + x
+			let r = CGRect(x: z, y: 0, width: 100, height: 100)
+			//			collectionView.scrollRectToVisible(r, animated: true);
+//			collectionView.scrollRectToVisible(r, animated: true)
+//				self.handleScrollItem(with: self.previewCollectionView)
+//			if x > 90 {
+//				collectionView.scrollToNextItem()
+//			} else {
+//				collectionView.scrollToPreviousItem()
+//			}
+			
 		}
+		debugPrint("scrollViewDidScroll")
 	}
-	
-	
-	
-	
-	
-	
-	
-	func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
-		debugPrint("scrollViewDidEndScrollingAnimation")
-	}
-	
+
 	func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-//		scrollToNearestVisibleCollectionViewCell()
-		debugPrint("end decelarating")
+		if scrollView == self.collectionView {
+//			handleScrollItem(with: self.collectionView)
+		} else if scrollView == self.previewCollectionView {
+			handleScrollItem(with: self.previewCollectionView)
+		}
+		
+		debugPrint("scrollViewDidEndDecelerating")
 	}
 
 	func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-		if !decelerate {
-//			scrollToNearestVisibleCollectionViewCell()
-			
-			debugPrint("scroll to item")
-		}
+//		if !decelerate {
+//			debugPrint("scroll to item")
+//		}
+		debugPrint("scrollViewDidEndDragging")
+	}
+	
+
+	
+	func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+		
+//		debugPrint(scrollView.contentOffset.x)
+		debugPrint("scrollViewWillBeginDragging")
 		
 		
 	}
 	
-	func getCurrentPage() -> Int {
-		let visibleRect = CGRect(origin: self.collectionView.contentOffset, size: self.collectionView.bounds.size)
+	func scrollCell() {
+
+		let cellSize = CGSize(width: U.screenWidth - 20, height: U.screenHeight / 2)
+		let contentOffset = previewCollectionView.contentOffset
+		
+//		debugPrint(previewCollectionView.contentSize.width)
+//		debugPrint(previewCollectionView.contentOffset.x)
+		
+		
+		
+		
+
+//		if previewCollectionView.contentSize.width <= previewCollectionView.contentOffset.x + cellSize.width
+//		{
+//			let r = CGRect(x: 0, y: contentOffset.y, width: 150, height: 150)
+//			collectionView.scrollRectToVisible(r, animated: true)
+//
+//		} else {
+//			let r = CGRect(x: contentOffset.x + cellSize.width, y: contentOffset.y, width: 150, height: 150)
+//			collectionView.scrollRectToVisible(r, animated: true);
+//		}
+		
+
+
+	}
+}
+
+extension MediaViewController {
+	
+	func handleScrollItem(with collectionView: UICollectionView) {
+		let newIndexPath = calculateCurrentIndexPath(for: collectionView)
+		
+		if collectionView == previewCollectionView {
+			automaticScroll(collectionView: self.collectionView, to: newIndexPath, with: true)
+		} else if collectionView == self.collectionView {
+			automaticScroll(collectionView: previewCollectionView, to: newIndexPath, with: false)
+		}
+	}
+	
+	func calculateCurrentIndexPath(for collectionView: UICollectionView) -> IndexPath? {
+		
+		let visibleRect = CGRect(origin: collectionView.contentOffset, size: collectionView.bounds.size)
 		let visiblePoint = CGPoint(x: visibleRect.midX, y: visibleRect.midY)
 		if let visibleIndexPath = collectionView.indexPathForItem(at: visiblePoint) {
-			return visibleIndexPath.row
+			return visibleIndexPath
 		}
-		
-		return 0
-	}
-	
-
-
-}
-
-extension MediaViewController: UIPageViewControllerDelegate {
-	
-
-
-	
-}
-
-
-extension MediaViewController: PreviewDataSource {
-	
-	func item(at index: Int, collectionType: CollectionType) -> (PHAsset, UIImageView) {
-		
-		let assetFromCollection = splitPhassetsForPreview()[index]
-		
-		if let section = assetGroups.firstIndex(where: {$0.assets.contains(assetFromCollection)}) {
-			let group = assetGroups[section]
-			
-			if let index = group.assets.firstIndex(where: {$0 == assetFromCollection}) {
-				var imageView = UIImageView()
-				let asset = group.assets[index]
-				
-				let indexPath = IndexPath(item: index, section: section)
-				
-				if let cell = collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell {
-					imageView = cell.photoThumbnailImageView
-				}
-				
-				return (asset, imageView)
-			}
-		}
-
-		return (PHAsset(), UIImageView())
-	}
-	
-	func itemsCount() -> Int {
-		return splitPhassetsForPreview().count
+		return nil
 	}
 
-	func getCurrentIndex(of indexPath: IndexPath) -> Int {
-	
-		switch collectionType {
-			case .single:
-				return indexPath.row
-			case .grouped:
-				let assetFromCollection = assetGroups[indexPath.section].assets[indexPath.row]
-				let assets = splitPhassetsForPreview()
-				let index = assets.firstIndex(where: {$0.localIdentifier == assetFromCollection.localIdentifier})
-				if let index = index {
-					
-					return index
-				}
-			case .none:
-				return 0
-				
-		}
+	func automaticScroll(collectionView: UICollectionView, to indexPath: IndexPath?, with animated: Bool) {
 		
-		return 0
-	}
+		guard let newIndexPath = indexPath  else { return }
 
-}
+			collectionView.scrollToItem(at: newIndexPath, at: [.centeredHorizontally, .centeredVertically], animated: animated)
+	}
+	
+	func automaticMoveScroll() {
+		
+	}
+ }
 
 
