@@ -158,25 +158,6 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="T18-Zm-Mxt">
                                 <rect key="frame" x="0.0" y="114" width="414" height="782"/>
                                 <subviews>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kwX-8u-SCV">
-                                        <rect key="frame" x="0.0" y="0.0" width="414" height="0.0"/>
-                                        <subviews>
-                                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gYZ-ro-UiV">
-                                                <rect key="frame" x="0.0" y="0.0" width="414" height="0.0"/>
-                                                <connections>
-                                                    <segue destination="s4c-JU-iXE" kind="embed" id="n9h-wM-JSa"/>
-                                                </connections>
-                                            </containerView>
-                                        </subviews>
-                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" id="UIj-ot-DdT"/>
-                                            <constraint firstItem="gYZ-ro-UiV" firstAttribute="leading" secondItem="kwX-8u-SCV" secondAttribute="leading" id="WtO-IB-Gmd"/>
-                                            <constraint firstAttribute="trailing" secondItem="gYZ-ro-UiV" secondAttribute="trailing" id="aWG-YX-4f1"/>
-                                            <constraint firstAttribute="bottom" secondItem="gYZ-ro-UiV" secondAttribute="bottom" id="chP-rX-1IM"/>
-                                            <constraint firstItem="gYZ-ro-UiV" firstAttribute="top" secondItem="kwX-8u-SCV" secondAttribute="top" id="iQF-wx-I08"/>
-                                        </constraints>
-                                    </view>
                                     <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="sWN-49-wwQ">
                                         <rect key="frame" x="0.0" y="0.0" width="414" height="782"/>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -201,12 +182,9 @@
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="trailing" secondItem="sWN-49-wwQ" secondAttribute="trailing" id="2et-7B-sbf"/>
-                                    <constraint firstItem="kwX-8u-SCV" firstAttribute="top" secondItem="T18-Zm-Mxt" secondAttribute="top" id="EuI-fj-gYV"/>
-                                    <constraint firstItem="kwX-8u-SCV" firstAttribute="leading" secondItem="T18-Zm-Mxt" secondAttribute="leading" id="LpI-cH-5Wy"/>
+                                    <constraint firstItem="sWN-49-wwQ" firstAttribute="top" secondItem="T18-Zm-Mxt" secondAttribute="top" id="Jvj-tB-1Az"/>
                                     <constraint firstAttribute="bottom" secondItem="sWN-49-wwQ" secondAttribute="bottom" id="Y7T-My-Kch"/>
                                     <constraint firstItem="sWN-49-wwQ" firstAttribute="leading" secondItem="T18-Zm-Mxt" secondAttribute="leading" id="a34-G7-oMz"/>
-                                    <constraint firstItem="sWN-49-wwQ" firstAttribute="top" secondItem="kwX-8u-SCV" secondAttribute="bottom" id="dKn-ph-5xG"/>
-                                    <constraint firstAttribute="trailing" secondItem="kwX-8u-SCV" secondAttribute="trailing" id="yd7-hD-Dcs"/>
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0Ye-p0-IJP" customClass="NavigationBar" customModule="ECleaner" customModuleProvider="target">
@@ -244,9 +222,7 @@
                         <outlet property="bottomMenuHeightConstraint" destination="zyu-XX-Vdc" id="bX9-bS-oVc"/>
                         <outlet property="collectionView" destination="sWN-49-wwQ" id="q5J-n0-Lri"/>
                         <outlet property="navigationBar" destination="0Ye-p0-IJP" id="FSj-GA-m61"/>
-                        <outlet property="optionalViewerHeightConstraint" destination="UIj-ot-DdT" id="jMd-fk-4J6"/>
                         <outlet property="photoContentContainerView" destination="T18-Zm-Mxt" id="93R-oS-ZNB"/>
-                        <outlet property="photoPreviewContainerView" destination="gYZ-ro-UiV" id="Fil-ZA-H0S"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="w3y-Ft-b1X" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -286,7 +262,7 @@
             <objects>
                 <viewController id="s4c-JU-iXE" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="NBj-aB-qyU">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="0.0"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <viewLayoutGuide key="safeArea" id="mxv-XT-7nl"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>

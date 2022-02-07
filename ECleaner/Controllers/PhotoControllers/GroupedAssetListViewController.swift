@@ -13,13 +13,14 @@ protocol ContentGroupedDataProviderDelegate: AnyObject {
     func scrollToPreviewPage(at index: Int)
 }
 
-class GroupedAssetListViewController: UIViewController, UIPageViewControllerDelegate {
+class GroupedAssetListViewController: UIViewController {
 
 		/// `outlets`
 	@IBOutlet weak var navigationBar: NavigationBar!
 	@IBOutlet weak var bottomButtonBarView: BottomButtonBarView!
 	@IBOutlet weak var collectionView: UICollectionView!
 	@IBOutlet weak var bottomMenuHeightConstraint: NSLayoutConstraint!
+	@IBOutlet weak var photoContentContainerView: UIView!
 	
 	var scrollView = UIScrollView()
 	let collectionViewFlowLayout = SNCollectionViewLayout()
@@ -45,39 +46,12 @@ class GroupedAssetListViewController: UIViewController, UIPageViewControllerDele
 	private var selectedSection: Set<Int> = []
 	private var previouslySelectedIndexPaths: [IndexPath] = []
 	private var thumbnailSize: CGSize!
-	
-	
-	
-	
-	
-	
-	
-	
-	
-    /// - controllers -
-    #warning("hide photopreviewLogic for TODO later")
-	@IBOutlet weak var photoPreviewContainerView: UIView!
-	@IBOutlet weak var photoContentContainerView: UIView!
-	@IBOutlet weak var optionalViewerHeightConstraint: NSLayoutConstraint!
-//    private var photoPreviewController = PhotoPreviewViewControllerOLDVers(
-//    private weak var delegate: ContentDataProviderDelegate?
 
-    private var splitAssetsNumberOfItems: Int = 0
-    private var splitAssets: [PHAsset] = []
-    
-
-
-    let carouselCollectionFlowLayout = ZoomAndSnapFlowLayout()
-	
-    private var isSliderFlowLayout: Bool = false
-    private var isCarouselViewMode: Bool = false
-    private var focusedIndexPath: IndexPath?
     private var previousPreheatRect: CGRect = CGRect()
 
     private var bottomMenuHeight: CGFloat = 80
     private var defaultContainerHeight: CGFloat = 0
-    private var carouselPreviewCollectionHeight: CGFloat = 150 + U.bottomSafeAreaHeight
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -88,9 +62,6 @@ class GroupedAssetListViewController: UIViewController, UIPageViewControllerDele
 		setupObservers()
 		updateColors()
 		handleDeleteAssetsButton()
-		
-//        splitAllAssetsForPreview() /// hide temporary for future
-//        setupPhotoPreviewController() /// hide
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -247,7 +218,7 @@ extension GroupedAssetListViewController {
 	private func setupCollectionView() {
 		
 			/// `delegates` subscribe
-		collectionViewFlowLayout.delegate = self
+		self.collectionViewFlowLayout.delegate = self
 		self.collectionView.dataSource = self
 		self.collectionView.delegate = self
 	
@@ -263,14 +234,8 @@ extension GroupedAssetListViewController {
 		
 			/// collection view `setup`
 		self.collectionView.contentInset = UIEdgeInsets(top: 15, left: 10, bottom: 5, right: 10)
-		collectionViewFlowLayout.fixedDivisionCount = 4
-		collectionViewFlowLayout.itemSpacing = 0
-
-		carouselCollectionFlowLayout.itemSize = CGSize(width: 80, height: 80)
-		carouselCollectionFlowLayout.minimumLineSpacing = 0
-		carouselCollectionFlowLayout.minimumInteritemSpacing = 0
-		carouselCollectionFlowLayout.headerReferenceSize = CGSize.zero
-		
+		self.collectionViewFlowLayout.fixedDivisionCount = 4
+		self.collectionViewFlowLayout.itemSpacing = 0
 		self.collectionView.collectionViewLayout = collectionViewFlowLayout
 		self.collectionView.allowsMultipleSelection = true
 		self.collectionView.reloadData()
@@ -296,7 +261,6 @@ extension GroupedAssetListViewController {
 		} else {
 			cell.isSelected = false
 		}
-		
 		cell.checkIsSelected()
 	}
 	
@@ -327,10 +291,6 @@ extension GroupedAssetListViewController: UICollectionViewDelegate, UICollection
 	}
 	
 	func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-		
-		guard !isCarouselViewMode else {
-			return UICollectionReusableView()
-		}
 		
 		switch kind {
 				
@@ -775,13 +735,6 @@ extension GroupedAssetListViewController {
 			
 			let calculatedBottomMenuHeight: CGFloat = bottomMenuHeight + U.bottomSafeAreaHeight - 5
 			
-				/// `collection`
-			if isCarouselViewMode {
-				optionalViewerHeightConstraint.constant = defaultContainerHeight - (carouselPreviewCollectionHeight + (!selectedAssets.isEmpty ?  calculatedBottomMenuHeight : 0))
-			} else {
-				optionalViewerHeightConstraint.constant = 0
-			}
-			
 				/// `bottom menu`
 			bottomMenuHeightConstraint.constant = !selectedAssets.isEmpty ? (calculatedBottomMenuHeight) : 0
 			
@@ -946,7 +899,7 @@ extension GroupedAssetListViewController {
 	}
 	
 	private func showFullScreenAssetPreviewAndFocus(at indexPath: IndexPath) {
-		self.changeFlowLayoutAndFocus(at: indexPath)
+		
 	}
 	
 	
@@ -958,75 +911,6 @@ extension GroupedAssetListViewController {
 		viewController.focusedIndexPath = indexPath
 		viewController.assetGroups = self.assetGroups
 		self.navigationController?.pushViewController(viewController, animated: false)
-	}
-	
-	private func changeFlowLayoutAndFocus(at indexPath: IndexPath) {
-		
-		isCarouselViewMode = !isCarouselViewMode
-		optionalViewerHeightConstraint.constant = isCarouselViewMode ? defaultContainerHeight - carouselPreviewCollectionHeight : 0
-		photoPreviewContainerView.isHidden = !isCarouselViewMode
-		
-		self.collectionView.collectionViewLayout = isCarouselViewMode ? carouselCollectionFlowLayout : collectionViewFlowLayout
-		
-		let carouselEdgeInsets: UIEdgeInsets = UIEdgeInsets(top: 0, left: self.collectionView.frame.width / 2 - 30, bottom: 0, right: self.collectionView.frame.width / 2 - 30)
-		let collectionEdgeInsets: UIEdgeInsets = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
-		
-		collectionView.contentInset = isCarouselViewMode ? carouselEdgeInsets : collectionEdgeInsets
-		self.collectionView.reloadData()
-		self.collectionView.collectionViewLayout.invalidateLayout()
-		
-		if isCarouselViewMode {
-			self.collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: false)
-//            let index = getSplitIndex(from: indexPath)
-//            TODO: hide temporary preview
-//            photoPreviewController.slideToPage(index: index) {
-//                debugPrint("done")
-//            }
-
-		} else {
-			self.collectionView.scrollToItem(at: IndexPath(row: 0, section: indexPath.section == 0 ? 0 : indexPath.section - 1), at: [.centeredVertically, .centeredHorizontally], animated: false)
-		}
-		
-		if isCarouselViewMode {
-//            if let image = assetGroups[indexPath.section].assets[indexPath.row].getImage {
-//                #warning("TODO")
-////                self.imageView.image = image
-//            } else {
-//                self.changeFlowLayoutAndFocus(at: indexPath)
-//            }
-			
-		}
-	}
-	
-	@objc func didBackActionChangeLayout() {
-		
-		if isCarouselViewMode {
-			if let indexPath = focusedIndexPath {
-				changeFlowLayoutAndFocus(at: indexPath)
-			} else {
-				changeFlowLayoutAndFocus(at: IndexPath(item: 0, section: 8))
-			}
-		} else {
-			self.navigationController?.popViewController(animated: true)
-		}
-	}
-	
-	private func splitAllAssetsForPreview() {
-		
-		for group in assetGroups {
-			splitAssetsNumberOfItems += group.assets.count
-			splitAssets.append(contentsOf: group.assets)
-		}
-	}
-	
-	private func getSplitIndex(from indexPath: IndexPath) -> Int {
-		
-		let asset = assetGroups[indexPath.section].assets[indexPath.row]
-		if let index = splitAssets.firstIndex(where: {$0 == asset}) {
-			return index
-		}
-		
-		return 0
 	}
  }
 
@@ -1148,28 +1032,13 @@ extension GroupedAssetListViewController {
 	}
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 extension GroupedAssetListViewController: SelectDropDownMenuDelegate {
     
     func selectedItemListViewController(_ controller: DropDownMenuViewController, didSelectItem: DropDownMenuItems) {
         
         switch didSelectItem {
             case .changeLayout:
-                self.changeFlowLayoutAndFocus(at: IndexPath(row: 0, section: 0))
+                debugPrint("changle layout")
             case .deselectAll:
                 self.shouldSelectAllAssetsInSections(true)
 			case .selectAll:
@@ -1193,38 +1062,6 @@ extension GroupedAssetListViewController: UIPopoverPresentationControllerDelegat
     }
 }
 
-extension GroupedAssetListViewController: PhotoPreviewDataSourceOLD {
-
-    
-    func item(at index: Int, isGroupedAssets: Bool) -> (PHAsset, UIImageView) {
-        /// in grouped view controller isGrouped always true
-    
-        let assetFromSplitCollection = splitAssets[index]
-        
-        if let section = assetGroups.firstIndex(where: {$0.assets.contains(assetFromSplitCollection)}) {
-            let group = assetGroups[section]
-            
-            if let index = group.assets.firstIndex(where: {$0 == assetFromSplitCollection}) {
-                var imageView = UIImageView()
-                let asset = group.assets[index]
-                
-                let indexPath = IndexPath(item: index, section: section)
-                
-                if let cell = collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell {
-                    imageView = cell.photoThumbnailImageView
-                }
-                
-                return (asset, imageView)
-            }
-        }
-        return (PHAsset(), UIImageView())
-    }
-
-    func itemsCount() -> Int {
-        return splitAssetsNumberOfItems
-    }
-}
-
 extension GroupedAssetListViewController: UIScrollViewDelegate {
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -1240,103 +1077,6 @@ extension GroupedAssetListViewController: UIScrollViewDelegate {
     func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
 		debugPrint("scrollViewDidEndScrollingAnimation")
 	}
-    
-    func loadPreviewImageThumb(isScrolling: Bool) {
-        
-        guard isCarouselViewMode else { return }
-//        let point = view.convert(self.collectionView.center, to: collectionView)
-        
-//        guard let indexPath = self.collectionView.indexPathForItem(at: point) else {return }
-        
-//        let asset = self.assetGroups[indexPath.section].assets[indexPath.row]
-    
-        if !isScrolling {
-//            let index = self.getSplitIndex(from: indexPath)
-//            TODO: hide temporary
-//            photoPreviewController.slideToPage(index: index, completion: nil)
-            
-//            _ = photoPreviewController.pagingDataSource?.createViewController(at: index)
-//            photoPreviewController.scrollToPage(at: index)
-//            self.imageView.image = asset.getImage
-//            photoPreviewController.collectionView.scrollToItem(at: indexPath, at: [.centeredVertically, .centeredHorizontally], animated: true)
-//            photoPreviewController.scrollToImageView(at: indexPath)
-        } else {
-//            let index = self.getSplitIndex(from: indexPath)
-//            photoPreviewController.slideToPage(index: index, completion: nil)
-//            photoPreviewController.pageForward()
-            
-            //            self.imageView.image = asset.getImage
-//            photoPreviewController.scrollToImageView(at: indexPath)
-//            photoPreviewController.collectionView.scrollToItem(at: indexPath, at: [.centeredVertically, .centeredHorizontally], animated: true)
-//            self.imageView.image = asset.getImage
-//            self.imageManager?.requestImage(for: asset, targetSize: CGSize(width: U.screenWidth, height: U.screenHeight), contentMode: .aspectFill, options: nil) {result, info in
-//                
-//                debugPrint(result?.accessibilityIdentifier)
-//                self.imageView.image = result
-//                
-//            }
-        }
-    }
-    
-    
-//    private func updateCachedAssets() {
-//
-//        // The preheat window is twice the height of the visible rect.
-//        var preheatRect = self.collectionView!.bounds
-//        preheatRect = preheatRect.insetBy(dx: 0.0, dy: -0.5 * preheatRect.height)
-//
-//        /*
-//         Check if the collection view is showing an area that is significantly
-//         different to the last preheated area.
-//         */
-////        let delta = abs(preheatRect.midY - self.previousPreheatRect.midY)
-////        if delta > self.collectionView!.bounds.height / 3.0 {
-////
-////            // Compute the assets to start caching and to stop caching.
-////            var addedIndexPaths: [IndexPath] = []
-////            var removedIndexPaths: [IndexPath] = []
-////
-////            self.computeDifferenceBetweenRect(oldRect: self.previousPreheatRect, andRect: preheatRect, removedHandler: {removedRect in
-////                //                let indexPaths = self.collectionView.aapl_indexPathsForElementsInRect(removedRect)
-////                let indexPath = self.collectionView.indexPathsForVisibleItems
-////
-////                removedIndexPaths += indexPaths
-////            }, addedHandler: {addedRect in
-////                let indexPaths = self.collectionView.aapl_indexPathsForElementsInRect(addedRect)
-////                addedIndexPaths += indexPaths
-////            })
-////
-//
-//
-////        for group in assetGroups {
-////            all.append(contentsOf: group.assets)
-////
-////        }
-//
-//        self.imageManager?.allowsCachingHighQualityImages = true
-//
-//
-////            let assetsToStartCaching = self.assetsAtIndexPaths(indexPaths: addedIndexPaths)
-////            let assetsToStopCaching = self.assetsAtIndexPaths(indexPaths: removedIndexPaths)
-//
-//            // Update the assets the PHCachingImageManager is caching.
-//        self.imageManager?.startCachingImages(for: all, targetSize: CGSize(width: U.screenWidth, height: U.screenHeight), contentMode: .aspectFill, options: nil)
-//
-//
-//
-//
-////        self.imageManager?.stopCachingImages(for: all,
-////                                                          targetSize: CGSize(width: U.screenWidth, height: U.screenHeight),
-////                                                          contentMode: .aspectFill,
-////                                                          options: nil)
-//
-////        }
-//    }
-    
-    private func assetsAtIndexPaths(indexPaths: [NSIndexPath]) -> [PHAsset] {
-        let  assets = indexPaths.map{self.assetGroups[$0.item].assets[$0.row]}
-        return assets
-    }
     
     private func computeDifferenceBetweenRect(oldRect: CGRect, andRect newRect: CGRect, removedHandler: (CGRect)->Void, addedHandler: (CGRect)->Void) {
         if newRect.intersects(oldRect) {
@@ -1374,9 +1114,7 @@ extension GroupedAssetListViewController: UIScrollViewDelegate {
 //      MARK: - setup UI -
 
 extension GroupedAssetListViewController: Themeble {
-
-
-    
+	
     private func setupPhotoPreviewController() {
         
 //        photoPreviewController.loadAssetsCollection(self.splitAssets)
@@ -1395,37 +1133,3 @@ extension GroupedAssetListViewController: Themeble {
     }
 }
 
-
-
-
-extension UIPageViewController {
-
-    func pageForward(animated: Bool = true, comletionHandler: ((Bool) -> Void)? = nil) {
-        if let currentPageViewController = viewControllers?[0] {
-            debugPrint("slide")
-            
-            if let nextPage = dataSource?.pageViewController(self, viewControllerAfter: currentPageViewController) {
-                debugPrint("sliding")
-                setViewControllers([nextPage], direction: .forward, animated: animated, completion: comletionHandler)
-            }
-        }
-    }
-    
-    func pageBackward(animated: Bool = true, completionHandler: ((Bool) -> Void)? = nil) {
-        
-        if let currentPageViewController = viewControllers?[0] {
-            debugPrint("slide")
-            if let previousePage = dataSource?.pageViewController(self, viewControllerBefore: currentPageViewController) {
-                debugPrint("sliding")
-                setViewControllers([previousePage], direction: .reverse, animated: animated, completion: completionHandler)
-            }
-        }
-    }
-    
-//    func scrollToPage(at index: Int, animated: Bool = true, completionHandler: ((Bool) -> Void)? = nil) {
-//        if let viewController = viewControllers?[index] {
-//            setViewControllers([viewController], direction: .reverse, animated: true, completion: completionHandler)
-//
-//        }
-//    }
-}
