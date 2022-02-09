@@ -39,9 +39,9 @@ class DeepCleanManager {
 	private var fetchManager = PHAssetFetchManager.shared
 	private var progressNotificationManager = ProgressSearchNotificationManager.instance
     
-	let wholeCleanOperationQueuer = OperationProcessingQueuer(name: C.key.operation.queue.deepClean, maxConcurrentOperationCount: 1, qualityOfService: .background)
+	let wholeCleanOperationQueuer = OperationProcessingQueuer(name: C.key.operation.queue.deepClean, maxConcurrentOperationCount: 3, qualityOfService: .background)
 	
-	let deepCleanOperationQue = OperationProcessingQueuer(name: C.key.operation.queue.deepClean, maxConcurrentOperationCount: 3, qualityOfService: .default)
+	let deepCleanOperationQue = OperationProcessingQueuer(name: C.key.operation.queue.deepClean, maxConcurrentOperationCount: 3, qualityOfService: .background)
         
     public func startDeepCleaningFetch(_ optionMediaType: [PhotoMediaType], startingFetchingDate: Date, endingFetchingDate: Date,
                                        handler: @escaping ([PhotoMediaType]) -> Void,
@@ -162,7 +162,6 @@ class DeepCleanManager {
 		deepCleanOperationQue.addOperation(getSimilarVideoAssetsOperation)
 		deepCleanOperationQue.addOperation(getScreenRecordsVideosOperation)
 		
-
 //        MARK: - mark fetch contacts -
 		contactManager.getDeepCleanContactsProcessing {
 			

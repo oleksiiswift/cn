@@ -850,8 +850,8 @@ extension PhotoManager {
 																						   totalProgressItems: photoGallery.count,
 																						   currentProgressItem: 1)
 					}
-				
-					let rowTuples: [OSTuple<NSString, NSData>] = assets.enumerated().map({ (index, asset) -> OSTuple<NSString, NSData> in
+										
+					let rawTuples: [OSTuple<NSString, NSData>] = assets.enumerated().map { (index, asset) -> OSTuple<NSString, NSData> in
 						let imageData = asset.thumbnailSync?.pngData()
 						if enableSingleProcessingNotification {
 							self.progressSearchNotificationManager.sendSingleSearchProgressNotification(notificationtype: .duplicatedPhoto,
@@ -863,11 +863,16 @@ extension PhotoManager {
 																							   currentProgressItem: index)
 						}
 						return OSTuple<NSString, NSData>.init(first: "\(index)" as NSString, andSecond: imageData as NSData?)
-					})
+					}
 					
-				
-					let photoTuples = rowTuples.filter({$0.second != nil})
-					let duplicatedTuplesOperation = self.getTuplesOperation(for: photoTuples, photosInGallery: assets, deepCleanType: .duplicatePhoto, sinlgeCleanType: .duplicatedPhoto, enableDeepCleanProcessingNotification: enableDeepCleanProcessingNotification, enableSingleProcessingNotification: enableSingleProcessingNotification, strictness: strictness) { duplicatedPhotoAssetsGroups in
+					let photoTuples = rawTuples.filter({ $0.second != nil })
+					let duplicatedTuplesOperation = self.getTuplesOperation(for: photoTuples,
+																			   photosInGallery: assets,
+																			   deepCleanType: .duplicatePhoto,
+																			   sinlgeCleanType: .duplicatedPhoto,
+																			   enableDeepCleanProcessingNotification: enableDeepCleanProcessingNotification,
+																			   enableSingleProcessingNotification: enableSingleProcessingNotification,
+																			   strictness: strictness) { duplicatedPhotoAssetsGroups in
 						completionHandler(duplicatedPhotoAssetsGroups)
 					}
 					duplicatedTuplesOperation.name = CommonOperationSearchType.utitlityDuplicatedPhotoTuplesOperation.rawValue
@@ -888,11 +893,18 @@ extension PhotoManager {
 //		MARK: - HELPER DUPLICATEDS TYPE SEARCH -
 extension PhotoManager {
 	
-	private func getTuplesOperation(for photoTuples: [OSTuple<NSString, NSData>], photosInGallery: [PHAsset], deepCleanType: DeepCleanNotificationType, sinlgeCleanType: SingleContentSearchNotificationType, enableDeepCleanProcessingNotification: Bool = false, enableSingleProcessingNotification: Bool = false, strictness: Strictness, completionHandler: @escaping ([PhassetGroup]) -> Void) -> ConcurrentProcessOperation {
+	private func getTuplesOperation(for photoTuples: [OSTuple<NSString, NSData>],
+									photosInGallery: [PHAsset],
+									deepCleanType: DeepCleanNotificationType,
+									sinlgeCleanType: SingleContentSearchNotificationType,
+									enableDeepCleanProcessingNotification: Bool = false,
+									enableSingleProcessingNotification: Bool = false,
+									strictness: Strictness,
+									completionHandler: @escaping ([PhassetGroup]) -> Void) -> ConcurrentProcessOperation {
 		
 		let serviceUtilityDuplicatedTuplesOperation = ConcurrentProcessOperation { operation in
 			
-			let providerID = OSImageHashingProviderIdForHashingQuality(.high)
+			let providerID = OSImageHashingProviderIdForHashingQuality(.medium)
 			let provider = OSImageHashingProviderFromImageHashingProviderId(providerID)
 			let defaultHashDistanceTreshHold = provider.hashDistanceSimilarityThreshold()
 			var hashDistanseTrashold: Int64 {
@@ -907,7 +919,10 @@ extension PhotoManager {
 			var dupliatedGroups: [PhassetGroup] = []
 			var duplicateGroups = [[PHAsset]]()
 			var groupIndexesPhassets: [PHAsset: Int] = [:]
-			let duplicatedPhotosIDsAsTuples = OSImageHashing.sharedInstance().similarImages(withProvider: providerID, withHashDistanceThreshold: hashDistanseTrashold, forImages: photoTuples)
+			
+			let duplicatedPhotosIDsAsTuples = OSImageHashing.sharedInstance().similarImages(withProvider: providerID,
+																							withHashDistanceThreshold: hashDistanseTrashold,
+																							forImages: photoTuples)
 			
 			if operation.isCancelled {
 				completionHandler([])
@@ -922,7 +937,10 @@ extension PhotoManager {
 				return
 			}
 			
-			for (index, pair) in duplicatedPhotosIDsAsTuples.enumerated() {
+			var index = 0
+			
+			for pair in duplicatedPhotosIDsAsTuples {
+				debugPrint(index)
 				if operation.isCancelled {
 					completionHandler([])
 					return
@@ -943,19 +961,23 @@ extension PhotoManager {
 																					   totalProgressItems: duplicatedPhotosIDsAsTuples.count,
 																					   currentProgressItem: index)
 				}
-				
+			
+				index += 1
 				if groupIndex1 == nil && groupIndex2 == nil {
 						// new group
+					debugPrint("new group")
 					duplicateGroups.append([asset1, asset2])
 					let groupIndex = duplicateGroups.count - 1
 					groupIndexesPhassets[asset1] = groupIndex
 					groupIndexesPhassets[asset2] = groupIndex
 				} else if groupIndex1 == nil && groupIndex2 != nil {
 						// add 1 to 2's group
+					debugPrint("add 1 to 2's group")
 					duplicateGroups[groupIndex2!].append(asset1)
 					groupIndexesPhassets[asset1] = groupIndex2!
 				} else if groupIndex1 != nil && groupIndex2 == nil {
 						// add 2 to 1's group
+					debugPrint("add 2 to 1's group")
 					duplicateGroups[groupIndex1!].append(asset2)
 					groupIndexesPhassets[asset2] = groupIndex1!
 				}

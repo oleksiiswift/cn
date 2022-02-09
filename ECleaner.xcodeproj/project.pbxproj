@@ -587,6 +587,9 @@
 			isa = PBXGroup;
 			children = (
 				0459DF9826A6C5E50085EEDF /* celBlock51area.swift */,
+				9781AE9027A6C5570030555F /* PreviewPageViewController.swift */,
+				9781AE9427A6C7690030555F /* PreviewDataSource.swift */,
+				9781AE9227A6C5B80030555F /* PreviewViewController.swift */,
 				9720EBEA27326F8C0078CD40 /* CellBlock 52.swift */,
 			);
 			path = Temp;
@@ -1173,9 +1176,6 @@
 			isa = PBXGroup;
 			children = (
 				97DC111327A2BA6C00D10FE4 /* MediaViewController.swift */,
-				9781AE9027A6C5570030555F /* PreviewPageViewController.swift */,
-				9781AE9427A6C7690030555F /* PreviewDataSource.swift */,
-				9781AE9227A6C5B80030555F /* PreviewViewController.swift */,
 			);
 			path = PhotoPreviewViewController;
 			sourceTree = "<group>";

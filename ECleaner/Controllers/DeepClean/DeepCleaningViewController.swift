@@ -304,10 +304,6 @@ extension DeepCleaningViewController {
      }
      
      private func updateAssetsProcessingOfType(group: [PhassetGroup], mediaType: MediaContentType, contentType: PhotoMediaType, phassetsCount: Int) {
-		  U.BG {
-			   let prefetchPhasset = group.flatMap({$0.assets})
-			   self.photoManager.prefetchsForPHAssets(prefetchPhasset)
-		  }
 		  U.UI {
 			   self.doneProcessingDeepCleanForMedia[contentType] = true
 			   self.currentProgressForRawMediatype[contentType] = 100.0
@@ -942,16 +938,20 @@ extension DeepCleaningViewController {
 		  U.UI {
 			   switch state {
 					case .redyForStartingCleaning:
+						 self.bottomButtonView.stopAnimatingButton()
 						 self.bottomButtonView.setButtonProcess(false)
 						 self.bottomButtonView.setImage(I.systemItems.defaultItems.deepClean, with: CGSize(width: 24, height: 22))
 						 self.bottomButtonView.title("start analyzing".uppercased())
 					case .willStartCleaning:
+						 self.bottomButtonView.stopAnimatingButton()
 						 self.bottomButtonView.setButtonProcess(true)
 					case .didCleaning:
 						 self.bottomButtonView.setImage(I.systemItems.defaultItems.refreshFull, with: CGSize(width: 24, height: 22))
+						 self.bottomButtonView.startAnimatingButton()
 						 self.bottomButtonView.title("stop analyzing".uppercased())
 						 self.bottomButtonView.setButtonProcess(false)
 					case .willAvailibleDelete:
+						 self.bottomButtonView.stopAnimatingButton()
 						 self.bottomButtonView.title("start cleaning".uppercased())
 						 self.bottomButtonView.setButtonProcess(false)
 						 self.bottomButtonView.setImage(I.systemItems.defaultItems.delete, with: CGSize(width: 18, height: 24))
