@@ -90,6 +90,37 @@ enum DeepCleanNotificationType {
 		}
 	}
 	
+	var dictionaryProcessingState: String {
+		switch self {
+			case .similarPhoto:
+				return C.key.notificationDictionary.state.similarPhotoState
+			case .duplicatePhoto:
+				return C.key.notificationDictionary.state.duplicatePhotoState
+			case .screenshots:
+				return C.key.notificationDictionary.state.screenShotsState
+			case .similarSelfiePhotos:
+				return C.key.notificationDictionary.state.similarSelfieState
+			case .similarLivePhoto:
+				return C.key.notificationDictionary.state.livePhotosState
+			case .largeVideo:
+				return C.key.notificationDictionary.state.largeVideoState
+			case .duplicateVideo:
+				return C.key.notificationDictionary.state.duplicateVideoState
+			case .similarVideo:
+				return C.key.notificationDictionary.state.similarVideoState
+			case .screenRecordings:
+				return C.key.notificationDictionary.state.screenRecordingsState
+			case .emptyContacts:
+				return C.key.notificationDictionary.state.emptyContactsState
+			case .duplicateContacts:
+				return C.key.notificationDictionary.state.duplicateNamesContactsState
+			case .duplicatedPhoneNumbers:
+				return C.key.notificationDictionary.state.duplicateNumbersContactsState
+			case .duplicatedEmails:
+				return C.key.notificationDictionary.state.duplicateEmailContactsState
+		}
+	}
+	
 	var notificationName: NSNotification.Name {
 		switch self {
 			case .similarPhoto:

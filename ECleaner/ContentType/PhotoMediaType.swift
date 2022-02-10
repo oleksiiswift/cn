@@ -88,7 +88,7 @@ enum PhotoMediaType: String {
             case .duplicatedEmails:
                 return "duplicated emails"
             case .none:
-                return ""
+                return "none"
             case .compress:
                 return "compress video"
         }

@@ -173,22 +173,22 @@ class Constants {
                     /// photo part
                 static let similarPhotoIndex = "deepCleanPhotoPrecessIndex"
                 static let duplicatePhotoIndex = "deepCleanDuplicatePhotoProcessingIndex"
-                static let screenShotsIndex = "deepCleanscreenShotsIndex"
-                static let livePhotosIndex = "deepCleanlivePhotosIndex"
-				static let similarSelfiePhotoIndex = "similarSelfiePhotoIndex"
-				static let recentlyDeletedPhotoIndex = "recentlyDeletedPhotoIndex"
+                static let screenShotsIndex = "deepCleanscreenShotsProcessingIndex"
+                static let livePhotosIndex = "deepCleanlivePhotosProcessingIndex"
+				static let similarSelfiePhotoIndex = "similarSelfiePhotoProcessingIndex"
+				static let recentlyDeletedPhotoIndex = "recentlyDeletedPhotoProcessingIndex"
                     /// video part
-                static let largeVideoIndex = "deepCleanlargeVideoIndex"
-                static let duplicateVideoIndex = "deepCleanduplicateVideoIndex"
-                static let similarVideoIndex = "deepCleansimilarVideoIndex"
-                static let screenRecordingsIndex = "deepCleanscreenRecordingsIndex"
-				static let recentrlyDeletedVideoIndex = "recentrlyDeletedVideoIndex"
+                static let largeVideoIndex = "deepCleanlargeVideoProcessingIndex"
+                static let duplicateVideoIndex = "deepCleanduplicateVideoProcessingIndex"
+                static let similarVideoIndex = "deepCleansimilarVideoProcessingIndex"
+                static let screenRecordingsIndex = "deepCleanscreenRecordingsProcessingIndex"
+				static let recentrlyDeletedVideoIndex = "recentrlyDeletedVideoProcessingIndex"
                     /// contacts part
-                static let allContactsIndex = "deepCleanallContactsIndex"
-                static let emptyContactsIndex = "deepCleanemptyContactsIndex"
-                static let duplicateNamesContactsIndex = "duplicateNamesContactsIndex"
-                static let duplicateNumbersContactsIndex = "duplicateNumbersContactsIndex"
-                static let duplicateEmailContactsIndex = "duplicateEmailContactsIndex"
+                static let allContactsIndex = "deepCleanallContactsProcessingIndex"
+                static let emptyContactsIndex = "deepCleanemptyContactsProcessingIndex"
+                static let duplicateNamesContactsIndex = "duplicateNamesContactsProcessingIndex"
+                static let duplicateNumbersContactsIndex = "duplicateNumbersContactsProcessingIndex"
+                static let duplicateEmailContactsIndex = "duplicateEmailContactsProcessingIndex"
             }
             
                 /// `TOTAL COUNT`
@@ -213,9 +213,30 @@ class Constants {
                 static let duplicateNumbersContactsCount = "duplicateNumbersContactsCount"
                 static let duplicateEmailsContactsCount = "duplicateEmailsContactsCount"
             }
+				/// `STATE`
+			struct state {
+				static let similarPhotoState = "deepCleanPhotoPrecessState"
+				static let duplicatePhotoState = "deepCleanDuplicatePhotoProcessingState"
+				static let screenShotsState = "deepCleanscreenShotsProcessingState"
+				static let livePhotosState = "deepCleanlivePhotosProcessingState"
+				static let similarSelfieState = "similarSelfiePhotoProcessingState"
+				static let recentlyDeletedPhotoState = "recentlyDeletedPhotoProcessingState"
+					/// video part
+				static let largeVideoState = "deepCleanlargeVideoProcessingState"
+				static let duplicateVideoState = "deepCleanduplicateVideoProcessingState"
+				static let similarVideoState = "deepCleansimilarVideoProcessingState"
+				static let screenRecordingsState = "deepCleanscreenRecordingsProcessingState"
+				static let recentrlyDeletedVideoState = "recentrlyDeletedVideoProcessingState"
+					/// contacts part
+				static let allContactsState = "deepCleanallContactsProcessingState"
+				static let emptyContactsState = "deepCleanemptyContactsProcessingState"
+				static let duplicateNamesContactsState = "duplicateNamesContactsProcessingState"
+				static let duplicateNumbersContactsState = "duplicateNumbersContactsProcessingState"
+				static let duplicateEmailContactsState = "duplicateEmailContactsProcessingState"
+			}
+			
             
             struct scroll {
-                
                     /// contact scroll delegate scriklkub
                 static let scrollViewInset = "scrollViewInset"
                 static let scrollViewOffset = "scrollViewOffset"

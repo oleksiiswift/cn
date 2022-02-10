@@ -904,7 +904,7 @@ extension PhotoManager {
 		
 		let serviceUtilityDuplicatedTuplesOperation = ConcurrentProcessOperation { operation in
 			
-			let providerID = OSImageHashingProviderIdForHashingQuality(.medium)
+			let providerID = OSImageHashingProviderIdForHashingQuality(.high)
 			let provider = OSImageHashingProviderFromImageHashingProviderId(providerID)
 			let defaultHashDistanceTreshHold = provider.hashDistanceSimilarityThreshold()
 			var hashDistanseTrashold: Int64 {
@@ -923,7 +923,6 @@ extension PhotoManager {
 			let duplicatedPhotosIDsAsTuples = OSImageHashing.sharedInstance().similarImages(withProvider: providerID,
 																							withHashDistanceThreshold: hashDistanseTrashold,
 																							forImages: photoTuples)
-			
 			if operation.isCancelled {
 				completionHandler([])
 				return

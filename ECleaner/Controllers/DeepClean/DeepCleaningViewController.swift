@@ -72,7 +72,7 @@ class DeepCleaningViewController: UIViewController {
      
      /// files
      /// `selected groups of all assets to delete`
-     private var selectedAssetsCollectionID: [PhotoMediaType : [String]] = [:]
+//     private var selectedAssetsCollectionID: [PhotoMediaType : [String]] = [:] /// `depricated`
      
      /// `file processing check count`
      private var totalFilesOnDevice: Int = 0
@@ -81,20 +81,25 @@ class DeepCleaningViewController: UIViewController {
      private var totalPartitinAssetsCount: [AssetsGroupType: Int] = [:]
 	 private var futuredCleaningSpaceUsage: Int64?
      
-     private var totalDeepCleanProgress: [CGFloat] = [0,0,0,0,0,0,0,0,0,0,0,0,0]
-     private var totalDeepCleanFilesCountIn: [Int] = [0,0,0,0,0,0,0,0,0,0,0,0,0]
+//     private var totalDeepCleanProgress: [CGFloat] = [0,0,0,0,0,0,0,0,0,0,0,0,0] /// `depricated`
+//     private var totalDeepCleanFilesCountIn: [Int] = [0,0,0,0,0,0,0,0,0,0,0,0,0] /// `depricated`
      
-     private var handleSelectedAssetsForRowMediatype: [PhotoMediaType: Bool] = [:]
-     private var doneProcessingDeepCleanForMedia: [PhotoMediaType : Bool] = [:]
-     private var currentProgressForRawMediatype: [PhotoMediaType: CGFloat] = [:]
+//     private var handleSelectedAssetsForRowMediatype: [PhotoMediaType: Bool] = [:] /// `depricated`
+//     private var doneProcessingDeepCleanForMedia: [PhotoMediaType : Bool] = [:] /// `depricated`
+//     private var currentProgressForRawMediatype: [PhotoMediaType: CGFloat] = [:] /// `depricated`
           
           /// `finding duplicates and assets`
-     private var photoVideoFlowGroup: [PhotoMediaType : [PhassetGroup]] = [:]
-     private var contactsFlowGroups: [PhotoMediaType : [ContactsGroup]] = [:]
+//     private var photoVideoFlowGroup: [PhotoMediaType : [PhassetGroup]] = [:] /// `depricated`
+//     private var contactsFlowGroups: [PhotoMediaType : [ContactsGroup]] = [:] /// `depricated`
+	 
+//	 private var cleaningMediaTypesGroup: [PhotoMediaType : DeepCleanStateModel] = [:]
+	 
+	 private var deepCleanModel: DeepCleanModel!
 
      override func viewDidLoad() {
           super.viewDidLoad()
           
+		  initializeDeepCleanModel()
 		  deepCleanManager.cancelAllOperation()
           setupUI()
           setupNavigation()
@@ -116,6 +121,27 @@ class DeepCleaningViewController: UIViewController {
                     break
           }
      }
+	 
+	 private func initializeDeepCleanModel() {
+		  
+		  var objects: [PhotoMediaType : DeepCleanStateModel] = [:]
+		  
+		  objects[.similarPhotos] = 			DeepCleanStateModel(type: .similarPhotos)
+		  objects[.duplicatedPhotos] = 			DeepCleanStateModel(type: .duplicatedPhotos)
+		  objects[.singleScreenShots] = 		DeepCleanStateModel(type: .singleScreenShots)
+		  objects[.similarSelfies] = 			DeepCleanStateModel(type: .similarSelfies)
+		  objects[.similarLivePhotos] = 		DeepCleanStateModel(type: .similarLivePhotos)
+		  objects[.singleLargeVideos] = 		DeepCleanStateModel(type: .singleLargeVideos)
+		  objects[.duplicatedVideos] = 			DeepCleanStateModel(type: .duplicatedVideos)
+		  objects[.similarVideos] = 			DeepCleanStateModel(type: .similarVideos)
+		  objects[.singleScreenRecordings] =  	DeepCleanStateModel(type: .singleScreenRecordings)
+		  objects[.emptyContacts] = 			DeepCleanStateModel(type: .emptyContacts)
+		  objects[.duplicatedContacts] = 		DeepCleanStateModel(type: .duplicatedContacts)
+		  objects[.duplicatedPhoneNumbers] =    DeepCleanStateModel(type: .duplicatedPhoneNumbers)
+		  objects[.duplicatedEmails] = 			DeepCleanStateModel(type: .duplicatedEmails)
+		  
+		  self.deepCleanModel = DeepCleanModel(objects: objects)
+	 }
 }
 
 //      MARK: deep cleaning algorithm
@@ -217,81 +243,58 @@ extension DeepCleaningViewController {
           } screenShots: { assets in
                     /// `processing single screenshots`
                let photoMediaType: PhotoMediaType = .singleScreenShots
-               debugPrint(assets.count, photoMediaType.rawValue)
 			   let screenShotGroup = PhassetGroup(name: photoMediaType.rawValue, assets: assets, creationDate: assets.first?.creationDate)
-               self.updateAssetsProcessingOfType(group: [screenShotGroup], mediaType: .userPhoto, contentType: photoMediaType, phassetsCount: assets.count)
+               self.updateAssetsProcessingOfType(group: [screenShotGroup], mediaType: .userPhoto, contentType: photoMediaType)
           } similarPhoto: { assetsGroup in
                     /// `processing similar assets group`
-               let assetsCount = self.getAssetsCount(for: assetsGroup)
                let photoMediaType: PhotoMediaType = .similarPhotos
-               debugPrint(assetsGroup.count, photoMediaType.rawValue)
-               self.updateAssetsProcessingOfType(group: assetsGroup, mediaType: .userPhoto, contentType: photoMediaType, phassetsCount: assetsCount)
+               self.updateAssetsProcessingOfType(group: assetsGroup, mediaType: .userPhoto, contentType: photoMediaType)
           } duplicatedPhoto: { assetsGroup in
                     /// `processing duplicated assets group`
-               let assetsCount = self.getAssetsCount(for: assetsGroup)
                let photoMediaType: PhotoMediaType = .duplicatedPhotos
-               debugPrint(assetsGroup.count, photoMediaType.rawValue)
-               self.updateAssetsProcessingOfType(group: assetsGroup, mediaType: .userPhoto, contentType: photoMediaType, phassetsCount: assetsCount)
+               self.updateAssetsProcessingOfType(group: assetsGroup, mediaType: .userPhoto, contentType: photoMediaType)
 		  } similarSelfiesPhoto: { assetsGroup in
 					/// `processing similar selfies assets group`
-			   let assetsCount = self.getAssetsCount(for: assetsGroup)
 			   let photoMediaType: PhotoMediaType = .similarSelfies
-			   debugPrint(assetsGroup.count, photoMediaType.rawValue)
-			   self.updateAssetsProcessingOfType(group: assetsGroup, mediaType: .userPhoto, contentType: photoMediaType, phassetsCount: assetsCount)
+			   self.updateAssetsProcessingOfType(group: assetsGroup, mediaType: .userPhoto, contentType: photoMediaType)
 		  } similarLivePhotos: { assetsGroup in
 					/// `processing similar live video group`
-			   let assetsCount = self.getAssetsCount(for: assetsGroup)
 			   let photoMediaType: PhotoMediaType = .similarLivePhotos
-			   debugPrint(assetsGroup.count, photoMediaType.rawValue)
-			   self.updateAssetsProcessingOfType(group: assetsGroup, mediaType: .userPhoto, contentType: photoMediaType, phassetsCount: assetsCount)
+			   self.updateAssetsProcessingOfType(group: assetsGroup, mediaType: .userPhoto, contentType: photoMediaType)
 		  } largeVideo: { assets in
                     /// `processing large video group`
                let photoMediaType: PhotoMediaType = .singleLargeVideos
-               debugPrint(assets.count, photoMediaType.rawValue)
 			   let largeVideoGroup = PhassetGroup(name: photoMediaType.rawValue, assets: assets, creationDate: assets.first?.creationDate)
-               self.updateAssetsProcessingOfType(group: [largeVideoGroup], mediaType: .userVideo  , contentType: photoMediaType, phassetsCount: assets.count)
+               self.updateAssetsProcessingOfType(group: [largeVideoGroup], mediaType: .userVideo  , contentType: photoMediaType)
           } similarVideo: { assetsGroup in
                     /// `processing similar videos`
-               let assetsCount = self.getAssetsCount(for: assetsGroup)
                let photoMediaType: PhotoMediaType = .similarVideos
-               debugPrint(assetsGroup.count, photoMediaType.rawValue)
-               self.updateAssetsProcessingOfType(group: assetsGroup, mediaType: .userVideo, contentType: photoMediaType, phassetsCount: assetsCount)
+               self.updateAssetsProcessingOfType(group: assetsGroup, mediaType: .userVideo, contentType: photoMediaType)
           } duplicatedVideo: { assetsGroup in
                     /// `duplicated video`
-               let assetsCount = self.getAssetsCount(for: assetsGroup)
                let photoMediaType: PhotoMediaType = .duplicatedVideos
-               debugPrint(assetsGroup.count, photoMediaType.rawValue)
-               self.updateAssetsProcessingOfType(group: assetsGroup, mediaType: .userVideo, contentType: photoMediaType, phassetsCount: assetsCount)
+               self.updateAssetsProcessingOfType(group: assetsGroup, mediaType: .userVideo, contentType: photoMediaType)
           } screenRecordings: { assets in
                     /// `screen recording`
                let photoMediaType: PhotoMediaType = .singleScreenRecordings
-               debugPrint(assets.count, photoMediaType.rawValue)
 			   let screenRecordings = PhassetGroup(name: photoMediaType.rawValue, assets: assets, creationDate: assets.first?.creationDate)
-               self.updateAssetsProcessingOfType(group: [screenRecordings], mediaType: .userVideo  , contentType: photoMediaType, phassetsCount: assets.count)
+               self.updateAssetsProcessingOfType(group: [screenRecordings], mediaType: .userVideo  , contentType: photoMediaType)
           } emptyContacts: { contactsGroup in
                     /// `empty contacts`
-               let contactsCount = self.getContactsCount(for: contactsGroup)
                let contentType: PhotoMediaType = .emptyContacts
-               debugPrint(contactsGroup.count, contentType.rawValue)
-               self.updateContactsProcessing(group: contactsGroup, contentType: contentType, contactsCount: contactsCount)
+               self.updateContactsProcessing(group: contactsGroup, contentType: contentType)
           } duplicatedContats: { contactsGroup in
                     /// `duplicated contacts`
-               let contactsCount = self.getContactsCount(for: contactsGroup)
                let contentType:  PhotoMediaType = .duplicatedContacts
-               debugPrint(contactsGroup.count, contentType.rawValue)
-               self.updateContactsProcessing(group: contactsGroup, contentType: contentType, contactsCount: contactsCount)
+               self.updateContactsProcessing(group: contactsGroup, contentType: contentType)
           } duplicatedPhoneNumbers: { contactsGroup in
                     /// `duplicated phone numbers contacts`
-               let contactsCount = self.getContactsCount(for: contactsGroup)
                let contentType:  PhotoMediaType = .duplicatedPhoneNumbers
-               debugPrint(contactsGroup.count, contentType.rawValue)
-               self.updateContactsProcessing(group: contactsGroup, contentType: contentType, contactsCount: contactsCount)
+               self.updateContactsProcessing(group: contactsGroup, contentType: contentType)
           } duplicatedEmails: { contactsGroup in
                     /// `dublicated email contacts`
-               let contactsCount = self.getContactsCount(for: contactsGroup)
                let contentType:  PhotoMediaType = .duplicatedEmails
-               debugPrint(contactsGroup.count, contentType.rawValue)
-               self.updateContactsProcessing(group: contactsGroup, contentType: contentType, contactsCount: contactsCount)
+               self.updateContactsProcessing(group: contactsGroup, contentType: contentType)
           } completionHandler: {
 			   self.isDeepCleanSearchingProcessRunning = !self.isDeepCleanSearchingProcessRunning
                U.UI {
@@ -303,27 +306,28 @@ extension DeepCleaningViewController {
           }
      }
      
-     private func updateAssetsProcessingOfType(group: [PhassetGroup], mediaType: MediaContentType, contentType: PhotoMediaType, phassetsCount: Int) {
+	 /// `for photos and video`
+     private func updateAssetsProcessingOfType(group: [PhassetGroup], mediaType: MediaContentType, contentType: PhotoMediaType) {
 		  U.UI {
-			   self.doneProcessingDeepCleanForMedia[contentType] = true
-			   self.currentProgressForRawMediatype[contentType] = 100.0
-			   self.photoVideoFlowGroup[contentType] = group
-			   self.updateCellInfoCount(by: mediaType, contentType: contentType, assetsCount: phassetsCount)
+			   self.deepCleanModel.objects[contentType]!.cleanState = .complete
+			   self.deepCleanModel.objects[contentType]!.deepCleanProgress = 100.0
+			   self.deepCleanModel.objects[contentType]!.mediaFlowGroup = group
+			   self.updateCellInfoCount(by: mediaType, contentType: contentType)
 			   self.updateTotalFilesTitleChecked()
 		  }
      }
      
-	 private func updateContactsProcessing(group: [ContactsGroup], contentType: PhotoMediaType, contactsCount: Int) {
+	 private func updateContactsProcessing(group: [ContactsGroup], contentType: PhotoMediaType) {
 		  U.UI {
-			   self.doneProcessingDeepCleanForMedia[contentType] = true
-			   self.currentProgressForRawMediatype[contentType] = 100.0
-			   self.contactsFlowGroups[contentType] = group
-			   self.updateCellInfoCount(by: .userContacts, contentType: contentType, assetsCount: contactsCount)
+			   self.deepCleanModel.objects[contentType]!.cleanState = .complete
+			   self.deepCleanModel.objects[contentType]!.deepCleanProgress = 100.0
+			   self.deepCleanModel.objects[contentType]!.contactsFlowGroup = group
+			   self.updateCellInfoCount(by: .userContacts, contentType: contentType)
 			   self.updateTotalFilesTitleChecked()
 		  }
 	 }
      
-     private func updateAssetsFieldCount(at indexPath: IndexPath, assetsCount: Int) {
+	 private func updateAssetsFieldCount(at indexPath: IndexPath) {
           
           guard !indexPath.isEmpty, let cell = self.tableView.cellForRow(at: indexPath) as? ContentTypeTableViewCell else { return }
 		  U.UI {
@@ -331,52 +335,15 @@ extension DeepCleaningViewController {
 		  }
      }
      
-     private func updateCellInfoCount(by type: MediaContentType, contentType: PhotoMediaType, assetsCount: Int) {
+	 private func updateCellInfoCount(by type: MediaContentType, contentType: PhotoMediaType) {
           
           if Thread.isMainThread {
-               self.updateAssetsFieldCount(at: contentType.deepCleanIndexPath, assetsCount: assetsCount)
+               self.updateAssetsFieldCount(at: contentType.deepCleanIndexPath)
           } else {
-               U.UI {
-                    self.updateAssetsFieldCount(at: contentType.deepCleanIndexPath, assetsCount: assetsCount)
+			   DispatchQueue.main.async {
+                    self.updateAssetsFieldCount(at: contentType.deepCleanIndexPath)
                }
           }
-     }
-     
-     private func getAssetsCount(for groups: [PhassetGroup]) -> Int {
-		  return groups.flatMap({$0.assets}).count
-     }
-     
-     private func getContactsCount(for groups: [ContactsGroup]) -> Int {
-		  return groups.flatMap({$0.contacts}).count
-     }
-     
-     private func getPhassetTotalCount(for contentType: PhotoMediaType) -> Int {
-
-          switch contentType {
-               case .singleScreenShots, .singleLargeVideos, .singleScreenRecordings:
-                    if let firstGroup = photoVideoFlowGroup[contentType] {
-                         if let assets = firstGroup.first {
-                              return assets.assets.count
-                         }
-                    } else {
-                         return 0
-                    }
-			   case .similarPhotos, .duplicatedPhotos, .similarLivePhotos, .similarVideos, .duplicatedVideos, .similarSelfies:
-                    if let phassetGroup = photoVideoFlowGroup[contentType] {
-                         return getAssetsCount(for: phassetGroup)
-                    } else {
-                         return 0
-                    }
-               case .emptyContacts, .duplicatedContacts, .duplicatedPhoneNumbers, .duplicatedEmails:
-                    if let contactsGroup = contactsFlowGroups[contentType] {
-                         return getContactsCount(for: contactsGroup)
-                    } else {
-                         return 0
-                    }
-               default:
-                    return 0
-          }
-          return 0
      }
 }
 
@@ -708,72 +675,24 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
           tableView.contentInset.bottom = 40
      }
      
-     private func configure(_ cell: ContentTypeTableViewCell, at indexPath: IndexPath, currentProgress: CGFloat? = nil) {
-		  var selectedPhassetsCount: Int = 0
+	 private func configure(_ cell: ContentTypeTableViewCell, at indexPath: IndexPath, currentProgress: CGFloat? = nil) {
+		  
           let photoMediaType: PhotoMediaType = .getDeepCleanMediaContentType(from: indexPath)
-          let contentType: MediaContentType = .getDeepCleanSectionType(indexPath: indexPath)
-          
-          let isSelected = self.handleSelectedAssetsForRowMediatype[photoMediaType] ?? false
-          cell.setupCellSelected(at: indexPath, isSelected: isSelected)
-          
-          var phassetMediaTupeCount: Int {
-               return getPhassetTotalCount(for: photoMediaType)
-          }
-          
+		  let deepModel = self.deepCleanModel.objects[photoMediaType]!
+		  	 
           var progress: CGFloat {
                if let currentProgress = currentProgress {
                     return currentProgress
-               } else if let currentProgress = self.currentProgressForRawMediatype[photoMediaType] {
-                    return currentProgress
-               } else {
-                    return 0
+			   } else {
+					return deepModel.deepCleanProgress
                }
           }
-		  
+
 		  var isReadyForCleanding: Bool {
-			   if let ids = selectedAssetsCollectionID[photoMediaType] {
-					return ids.count != 0
-			   } else {
-					return false
-			   }
+			   return deepModel.selectedAssetsCollectionID.count != 0
 		  }
 		  
-		  switch photoMediaType {
-			   case .similarPhotos, .duplicatedPhotos, .similarLivePhotos, .duplicatedVideos, .similarVideos, .similarSelfies:
-					if let selectedPhassetsIDS = selectedAssetsCollectionID[photoMediaType] {
-						 selectedPhassetsCount = selectedPhassetsIDS.count
-					}
-			   case .singleScreenShots, .singleLargeVideos, .singleScreenRecordings:
-					if let selectedPhassetsIDS = selectedAssetsCollectionID[photoMediaType] {
-						 selectedPhassetsCount = selectedPhassetsIDS.count
-					}
-			   case .emptyContacts:
-					if let selectedContactsIDS = selectedAssetsCollectionID[photoMediaType] {
-						 selectedPhassetsCount = selectedContactsIDS.count
-					}
-			   case .duplicatedContacts, .duplicatedPhoneNumbers, .duplicatedEmails:
-					if let groups = contactsFlowGroups[photoMediaType] {
-						 if let ids = selectedAssetsCollectionID[photoMediaType] {
-							  for id in ids {
-								   if let group = groups.first(where: {$0.groupIdentifier == id}) {
-										selectedPhassetsCount += group.contacts.count
-								   }
-							  }
-						 }
-					}
-			   default:
-					selectedPhassetsCount = 0
-		  }
-		  
-          cell.cellConfig(contentType: contentType,
-                          photoMediaType: photoMediaType,
-                          indexPath: indexPath,
-						  phasetCount: phassetMediaTupeCount,
-						  selectedCount: selectedPhassetsCount,
-                          presentingType: .deepCleen,
-                          progress: progress,
-						  isProcessingComplete: self.doneProcessingDeepCleanForMedia[photoMediaType] ?? false,
-						  isReadyForCleaning: isReadyForCleanding)
+		  cell.deepCleanCellConfigure(with: deepModel, mediaType: photoMediaType, indexPath: indexPath)
      }
      
      private func configureInfoCell(_ cell: DeepCleanInfoTableViewCell, at indexPath: IndexPath) {
@@ -1057,7 +976,7 @@ extension DeepCleaningViewController {
 	 
 	 private func handleButtonStateActive() {
 		  
-		  let selectedAssetsCount = selectedAssetsCollectionID.values.compactMap({$0}).flatMap({$0}).count
+		  let selectedAssetsCount = deepCleanModel.objects.values.flatMap({$0.selectedAssetsCollectionID}).count
 		  bottomContainerHeightConstraint.constant = selectedAssetsCount > 0 ? (bottomMenuHeight + U.bottomSafeAreaHeight - 5) : 0
 		  self.tableView.contentInset.bottom = selectedAssetsCount > 0 ? 25 : 5
 		  
@@ -1090,7 +1009,7 @@ extension DeepCleaningViewController: BottomActionButtonDelegate {
      }
 	 
 	 private func startDeepCleanProcessing() {
-		  
+
 		  deepCleanManager.startingDeepCleanProcessing(with: selectedAssetsCollectionID, photoVideoGroups: photoVideoFlowGroup, contactsFlowGroups: contactsFlowGroups) { errorsCount in
 			   U.UI {
 					self.progressAlert.closeForceController()

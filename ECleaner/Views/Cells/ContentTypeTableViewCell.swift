@@ -13,6 +13,8 @@ enum ProcessingPresentType {
     case singleSearch
 }
 
+
+
 class ContentTypeTableViewCell: UITableViewCell {
     
     @IBOutlet weak var baseView: UIView!
@@ -73,9 +75,74 @@ class ContentTypeTableViewCell: UITableViewCell {
 extension ContentTypeTableViewCell {
     
     /**
-     - `cellConfig`use for default cell config
+     - `deepCleanCellConfigure`use for default cell config
      - `setupCellSelected` use in deep cleaning part for show selected checkmark for clean
     */
+	
+	public func deepCleanCellConfigure(with model: DeepCleanStateModel, mediaType: PhotoMediaType = .none, indexPath: IndexPath) {
+		
+		let currentState = model.cleanState
+		let contentType = model.mediaType
+		let currentProgress = model.deepCleanProgress
+		let flowContentCount = model.flowContentCount()
+		
+		let mainTitle = contentType.contenType.getDeepCellTitle(index: indexPath.row)
+		self.contentTypeTextLabel.text = mainTitle
+		
+		let subTitle = currentState.getTitle(by: contentType, files: flowContentCount, selected: flowContentCount, progress: currentProgress)
+		contentSubtitleTextLabel.text = subTitle
+		
+		let selectedImage = contentType.contenType.selectableAssetsCheckMark
+		let disabledImage = contentType.contenType.unAbleImageOfRows
+		let activeImage = contentType.contenType.imageOfRows
+		let processingImage = contentType.contenType.processingImageOfRows
+		
+		switch currentState {
+			case .sleeping:
+				self.handleRightArrowState(false)
+				self.reuseShadowRoundedView.setImage(disabledImage)
+				self.reuseShadowRoundedView.hideIndicator()
+				self.resetProgress()
+			case .prepare:
+				self.handleRightArrowState(false)
+				self.reuseShadowRoundedView.setImage(processingImage)
+				self.reuseShadowRoundedView.showIndicator()
+				self.resetProgress()
+			case .analyzing:
+				self.handleRightArrowState(false)
+				self.reuseShadowRoundedView.setImage(processingImage)
+				self.reuseShadowRoundedView.showIndicator()
+				self.resetProgress()
+			case .compare:
+				self.handleRightArrowState(false)
+				self.reuseShadowRoundedView.setImage(processingImage)
+				self.reuseShadowRoundedView.showIndicator()
+				self.resetProgress()
+			case .progress:
+				self.handleRightArrowState(false)
+				self.reuseShadowRoundedView.setImage(processingImage)
+				self.reuseShadowRoundedView.showIndicator()
+				self.setProgress(currentProgress)
+			case .complete:
+				self.reuseShadowRoundedView.setImage(activeImage)
+				self.reuseShadowRoundedView.hideIndicator()
+				self.setProgress(100)
+			case .result:
+				self.handleRightArrowState(true)
+				self.reuseShadowRoundedView.setImage(activeImage)
+				self.reuseShadowRoundedView.hideIndicator()
+			case .empty:
+				self.handleRightArrowState(false)
+				self.reuseShadowRoundedView.setImage(disabledImage)
+				self.reuseShadowRoundedView.hideIndicator()
+				self.resetProgress()
+			case .selected:
+				self.handleRightArrowState(true)
+				self.reuseShadowRoundedView.setImage(selectedImage)
+				self.reuseShadowRoundedView.hideIndicator()
+				self.resetProgress()
+		}
+	}
 
     public func cellConfig(contentType: MediaContentType,
                            photoMediaType: PhotoMediaType = .none,
@@ -86,12 +153,14 @@ extension ContentTypeTableViewCell {
                            progress: CGFloat,
                            isProcessingComplete: Bool = false,
 						   isReadyForCleaning: Bool) {
-        
+		
+
 		switch presentingType {
-			case .deepCleen:
-				contentTypeTextLabel.text = contentType.getDeepCellTitle(index: indexPath.row)
 				
-				self.handleSelectedDeletedPHassets(content: contentType, isCompleted: isProcessingComplete, isSelected: isReadyForCleaning)
+			case .deepCleen:
+//				contentTypeTextLabel.text = contentType.getDeepCellTitle(index: indexPath.row)
+				
+//				self.handleSelectedDeletedPHassets(content: contentType, isCompleted: isProcessingComplete, isSelected: isReadyForCleaning)
 				
 				let handledProgressSubtitle = progress == 0.0 ? "-" : String("progress - \(progress.rounded().cleanValue) %")
 				let progressStringText = isProcessingComplete ? "processing wait" : handledProgressSubtitle
@@ -159,10 +228,7 @@ extension ContentTypeTableViewCell {
 			rightArrowImageView.isHidden = false
 		}
     }
-	
-	public func resetProgress() {
-		self.horizontalProgressView.resetProgressLayer()
-	}
+
 	
 	public func handleSelectedDeletedPHassets(content type: MediaContentType, isCompleted: Bool, isSelected: Bool) {
 		
@@ -197,4 +263,30 @@ extension ContentTypeTableViewCell: Themeble {
         contentSubtitleTextLabel.textColor = theme.subTitleTextColor
         horizontalProgressView.progressColor = theme.progressBackgroundColor
     }
+}
+
+	///  `handle progress`
+extension ContentTypeTableViewCell {
+	
+	public func resetProgress() {
+		self.horizontalProgressView.resetProgressLayer()
+	}
+	
+	private func setProgress(_ progress: CGFloat) {
+		self.horizontalProgressView.progress = progress / 100
+		self.horizontalProgressView.layoutIfNeeded()
+	}
+	
+	private func completedProgress() {
+		self.horizontalProgressView.progress = 0
+		self.horizontalProgressView.layoutIfNeeded()
+		self.resetProgress()
+	}
+}
+
+extension ContentTypeTableViewCell {
+	
+	private func handleRightArrowState(_ show: Bool) {
+		self.rightArrowImageView.isHidden = !show
+	}
 }
