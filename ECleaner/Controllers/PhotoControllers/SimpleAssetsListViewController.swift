@@ -596,13 +596,12 @@ extension SimpleAssetsListViewController: UpdatingChangesInOpenedScreensListener
 	
 	func getUpdatingSelfies() {}
 	
-    
     /// updating screenshots
     func getUpdatingScreenShots() {
         
         if mediaType == .singleScreenShots {
 			
-			let screenShotsOperation = photoManager.getScreenShotsOperation(from: S.lowerBoundSavedDate, to: S.upperBoundSavedDate) { screenShots in
+			let screenShotsOperation = photoManager.getScreenShotsOperation(from: S.lowerBoundSavedDate, to: S.upperBoundSavedDate, cleanProcessingType: .singleSearch) { screenShots in
 				if self.assetCollection.count != screenShots.count {
 					U.UI {
 						self.assetCollection = screenShots
@@ -614,10 +613,4 @@ extension SimpleAssetsListViewController: UpdatingChangesInOpenedScreensListener
 			photoManager.phassetProcessingOperationQueuer.addOperation(screenShotsOperation)
         }
     }
-    
-    /// updating selfies
 }
-
-
-
-

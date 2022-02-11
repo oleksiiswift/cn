@@ -170,6 +170,9 @@
 		978FEF12274BB73700ADE1D9 /* AlertType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978FEF11274BB73700ADE1D9 /* AlertType.swift */; };
 		978FEF14274BC21A00ADE1D9 /* ProgressAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978FEF13274BC21A00ADE1D9 /* ProgressAlertController.swift */; };
 		978FEF1A274C1C5400ADE1D9 /* UIAlertController+Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978FEF19274C1C5400ADE1D9 /* UIAlertController+Colors.swift */; };
+		979487BD27B6A9D800135D47 /* CleanProcessingType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 979487BC27B6A9D800135D47 /* CleanProcessingType.swift */; };
+		979487BF27B6AA4200135D47 /* DeepCleaningType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 979487BE27B6AA4200135D47 /* DeepCleaningType.swift */; };
+		979487C127B7065E00135D47 /* DeepCleanStateModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 979487C027B7065E00135D47 /* DeepCleanStateModel.swift */; };
 		97A05B742743D4B600968459 /* SearchBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A05B732743D4B600968459 /* SearchBarView.swift */; };
 		97A05B762743D4C200968459 /* SearchBarView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 97A05B752743D4C200968459 /* SearchBarView.xib */; };
 		97A39FDC27649DF4007CB482 /* SegmentDatePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A39FDB27649DF4007CB482 /* SegmentDatePicker.swift */; };
@@ -412,6 +415,9 @@
 		978FEF11274BB73700ADE1D9 /* AlertType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertType.swift; sourceTree = "<group>"; };
 		978FEF13274BC21A00ADE1D9 /* ProgressAlertController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressAlertController.swift; sourceTree = "<group>"; };
 		978FEF19274C1C5400ADE1D9 /* UIAlertController+Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIAlertController+Colors.swift"; sourceTree = "<group>"; };
+		979487BC27B6A9D800135D47 /* CleanProcessingType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CleanProcessingType.swift; sourceTree = "<group>"; };
+		979487BE27B6AA4200135D47 /* DeepCleaningType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepCleaningType.swift; sourceTree = "<group>"; };
+		979487C027B7065E00135D47 /* DeepCleanStateModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepCleanStateModel.swift; sourceTree = "<group>"; };
 		97A05B732743D4B600968459 /* SearchBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBarView.swift; sourceTree = "<group>"; };
 		97A05B752743D4C200968459 /* SearchBarView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SearchBarView.xib; sourceTree = "<group>"; };
 		97A39FDB27649DF4007CB482 /* SegmentDatePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentDatePicker.swift; sourceTree = "<group>"; };
@@ -1431,6 +1437,7 @@
 				97C44FBA274EF93B001B61AB /* ContactasCleaningType.swift */,
 				97D2BED1275A4227002082EB /* ContactsGroupModel.swift */,
 				970D7781275A9C400048F41D /* PHAssetGroupModel.swift */,
+				979487C027B7065E00135D47 /* DeepCleanStateModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1509,6 +1516,8 @@
 				97238A062689BD8000C523DC /* PhotoMediaType.swift */,
 				04428203269313AD00B6B47C /* DropDownMenuItems.swift */,
 				9712C05B27B43B220013A7C9 /* ProcessingProgressOperationState.swift */,
+				979487BC27B6A9D800135D47 /* CleanProcessingType.swift */,
+				979487BE27B6AA4200135D47 /* DeepCleaningType.swift */,
 			);
 			path = ContentType;
 			sourceTree = "<group>";
@@ -1692,6 +1701,7 @@
 				0405AA59269D77A5004AC07A /* CMtime+StringDuration.swift in Sources */,
 				97A39FE72764A2CF007CB482 /* SegmentDatePickerDelegate.swift in Sources */,
 				9776F5842735953A009D806A /* ShadowView.swift in Sources */,
+				979487BD27B6A9D800135D47 /* CleanProcessingType.swift in Sources */,
 				97FC78A12688E5E8000D7F26 /* PhotoCollectionViewCell.swift in Sources */,
 				975AF4392728300E00744E3B /* Arrray+Rearranged.swift in Sources */,
 				97D2BED2275A4227002082EB /* ContactsGroupModel.swift in Sources */,
@@ -1788,6 +1798,7 @@
 				9776F5802735944E009D806A /* CALAyer+Extension+SL.swift in Sources */,
 				9781AE9127A6C5570030555F /* PreviewPageViewController.swift in Sources */,
 				97C909CC2748FA5300BC2E47 /* ShareManager.swift in Sources */,
+				979487BF27B6AA4200135D47 /* DeepCleaningType.swift in Sources */,
 				97238A092689D01E00C523DC /* GroupedAssetListViewController.swift in Sources */,
 				049CC22426831B800002F988 /* UIColor+Hex.swift in Sources */,
 				975AF4372728279900744E3B /* String+Numeric.swift in Sources */,
@@ -1807,6 +1818,7 @@
 				97CA423F273EBBFA001FEA15 /* BottomButtonBarView.swift in Sources */,
 				97238A0D2689EDFF00C523DC /* CustomActivityIndicator.swift in Sources */,
 				04649B24268B2F3900336FE4 /* UpdatingChangesInOpenedScreensListeners.swift in Sources */,
+				979487C127B7065E00135D47 /* DeepCleanStateModel.swift in Sources */,
 				04E58377267B323E00EDC3A3 /* Constants.swift in Sources */,
 				04CFFFE726846A23000CA850 /* Device.swift in Sources */,
 				4F56074427205AF300CA19E9 /* ProgressViewController.swift in Sources */,

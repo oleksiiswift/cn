@@ -276,11 +276,10 @@ extension MediaContentViewController {
 		self.scanningProcessIsRunning = !self.scanningProcessIsRunning
 		self.currentlyScanningProcess = .similarPhotoAssetsOperaton
 		
-		let getSimilarPhotosAssetsOperation = photoManager.getSimilarPhotosAssetsOperation(from: lowerBoundDate, to: upperBoundDate, enableSingleProcessingNotification: true) { similarGroup in
+		let getSimilarPhotosAssetsOperation = photoManager.getSimilarPhotosAssetsOperation(from: lowerBoundDate, to: upperBoundDate, cleanProcessingType: .singleSearch) { similarGroup in
 			self.similarPhoto = similarGroup
-//			self.prefetchPHAssets(similarGroup.flatMap({$0.assets}))
 			U.delay(0.5) {
-				ProgressSearchNotificationManager.instance.sendSingleSearchProgressNotification(notificationtype: .similarPhoto, totalProgressItems: 1, currentProgressItem: 1)
+				ProgressSearchNotificationManager.instance.sendSingleSearchProgressNotification(notificationtype: .similarPhoto, status: .complete, totalProgressItems: 1, currentProgressItem: 1)
 				U.delay(1) {
 					self.scanningProcessIsRunning = !self.scanningProcessIsRunning
 					self.currentlyScanningProcess = .none
@@ -300,11 +299,10 @@ extension MediaContentViewController {
 		self.scanningProcessIsRunning = !self.scanningProcessIsRunning
 		self.currentlyScanningProcess = .duplicatedPhotoAssetsOperation
 		
-		let duplicatedPhotoAssetOperation = photoManager.getDuplicatedPhotosAsset(from: lowerBoundDate, to: upperBoundDate, enableSingleProcessingNotification: true) { duplicateGroup in
+		let duplicatedPhotoAssetOperation = photoManager.getDuplicatedPhotosAsset(from: lowerBoundDate, to: upperBoundDate, cleanProcessingType: .singleSearch) { duplicateGroup in
 			self.duplicatedPhoto = duplicateGroup
-//			self.prefetchPHAssets(duplicateGroup.flatMap({$0.assets}))
 			U.delay(0.5) {
-				ProgressSearchNotificationManager.instance.sendSingleSearchProgressNotification(notificationtype: .duplicatedPhoto, totalProgressItems: 1, currentProgressItem: 1)
+				ProgressSearchNotificationManager.instance.sendSingleSearchProgressNotification(notificationtype: .duplicatedPhoto, status: .complete, totalProgressItems: 1, currentProgressItem: 1)
 				U.delay(1) {
 					self.scanningProcessIsRunning = !self.scanningProcessIsRunning
 					self.currentlyScanningProcess = .none
@@ -323,11 +321,10 @@ extension MediaContentViewController {
 		self.scanningProcessIsRunning = !self.scanningProcessIsRunning
 		self.currentlyScanningProcess = .screenShotsAssetsOperation
 		
-		let getScreenShotsAssetsOperation = photoManager.getScreenShotsOperation(from: lowerBoundDate, to: upperBoundDate, enableSingleProcessingNotification: true) { screenshots in
+		let getScreenShotsAssetsOperation = photoManager.getScreenShotsOperation(from: lowerBoundDate, to: upperBoundDate, cleanProcessingType: .singleSearch) { screenshots in
 			self.allScreenShots = screenshots
-//			self.prefetchPHAssets(screenshots)
 			U.delay(0.5) {
-				ProgressSearchNotificationManager.instance.sendSingleSearchProgressNotification(notificationtype: .screenShots, totalProgressItems: 1, currentProgressItem: 1)
+				ProgressSearchNotificationManager.instance.sendSingleSearchProgressNotification(notificationtype: .screenShots, status: .complete, totalProgressItems: 1, currentProgressItem: 1)
 				U.delay(1) {
 					self.scanningProcessIsRunning = !self.scanningProcessIsRunning
 					self.currentlyScanningProcess = .none
@@ -346,11 +343,10 @@ extension MediaContentViewController {
 		self.scanningProcessIsRunning = !self.scanningProcessIsRunning
 		self.currentlyScanningProcess = .similarSelfiesAssetsOperation
 		
-		let getSimilarSelfiesPhotoPhassetsOperation = photoManager.getSimilarSelfiePhotosOperation(from: lowerBoundDate, to: upperBoundDate, enableSingleProcessingNotification: true) { similartSelfiesGroup in
+		let getSimilarSelfiesPhotoPhassetsOperation = photoManager.getSimilarSelfiePhotosOperation(from: lowerBoundDate, to: upperBoundDate, cleanProcessingType: .singleSearch) { similartSelfiesGroup in
 			self.allSimilarSelfies = similartSelfiesGroup
-//			self.prefetchPHAssets(similartSelfiesGroup.flatMap({$0.assets}))
 			U.delay(0.5) {
-				ProgressSearchNotificationManager.instance.sendSingleSearchProgressNotification(notificationtype: .similarSelfiesPhoto, totalProgressItems: 1, currentProgressItem: 1)
+				ProgressSearchNotificationManager.instance.sendSingleSearchProgressNotification(notificationtype: .similarSelfiesPhoto, status: .complete, totalProgressItems: 1, currentProgressItem: 1)
 				U.delay(1) {
 					self.scanningProcessIsRunning = !self.scanningProcessIsRunning
 					self.currentlyScanningProcess = .none
@@ -368,11 +364,10 @@ extension MediaContentViewController {
     private func showLivePhotos() {
 		self.scanningProcessIsRunning = !self.scanningProcessIsRunning
 		self.currentlyScanningProcess = .livePhotoAssetsOperation
-		let getLivePhotoAssetsOperation = photoManager.getLivePhotosOperation(from: lowerBoundDate, to: upperBoundDate, enableSingleProcessingNotification: true) { livePhoto in
+		let getLivePhotoAssetsOperation = photoManager.getLivePhotosOperation(from: lowerBoundDate, to: upperBoundDate, cleanProcessingType: .singleSearch) { livePhoto in
 			self.allLiveFotos = livePhoto
-//			self.prefetchPHAssets(livePhoto)
 			U.delay(0.5) {
-				ProgressSearchNotificationManager.instance.sendSingleSearchProgressNotification(notificationtype: .livePhoto, totalProgressItems: 1, currentProgressItem: 1)
+				ProgressSearchNotificationManager.instance.sendSingleSearchProgressNotification(notificationtype: .livePhoto, status: .complete, totalProgressItems: 1, currentProgressItem: 1)
 				U.delay(1) {
 					self.scanningProcessIsRunning = !self.scanningProcessIsRunning
 					self.currentlyScanningProcess = .none
@@ -393,7 +388,7 @@ extension MediaContentViewController {
 		let getSortedRecentlyDeletedAssetsOperation = PHAssetFetchManager.shared.recentlyDeletdSortedAlbumsFetchOperation { photosAssets, videoAssets in
 			self.allRecentlyDeletedPhotos = photosAssets
 			U.delay(0.5) {
-				ProgressSearchNotificationManager.instance.sendSingleSearchProgressNotification(notificationtype: .recentlyDeletedPhoto, totalProgressItems: 1, currentProgressItem: 1)
+				ProgressSearchNotificationManager.instance.sendSingleSearchProgressNotification(notificationtype: .recentlyDeletedPhoto, status: .complete, totalProgressItems: 1, currentProgressItem: 1)
 				U.delay(1) {
 					self.scanningProcessIsRunning = !self.scanningProcessIsRunning
 					self.currentlyScanningProcess = .none
@@ -415,11 +410,11 @@ extension MediaContentViewController {
 	private func showLargeVideoFiles() {
 		self.scanningProcessIsRunning = !self.scanningProcessIsRunning
 		self.currentlyScanningProcess = .largeVideoContentOperation
-		let getLargevideoContentOperation = photoManager.getLargevideoContentOperation(from: lowerBoundDate, to: upperBoundDate, enableSingleProcessingNotification: true) { largeVodeoAsset in
+		let getLargevideoContentOperation = photoManager.getLargevideoContentOperation(from: lowerBoundDate, to: upperBoundDate, cleanProcessingType: .singleSearch) { largeVodeoAsset in
 			self.allLargeVideos = largeVodeoAsset
 //			self.prefetchPHAssets(largeVodeoAsset)
 			U.delay(0.5) {
-				ProgressSearchNotificationManager.instance.sendSingleSearchProgressNotification(notificationtype: .largeVideo, totalProgressItems: 1, currentProgressItem: 1)
+				ProgressSearchNotificationManager.instance.sendSingleSearchProgressNotification(notificationtype: .largeVideo, status: .complete, totalProgressItems: 1, currentProgressItem: 1)
 				U.delay(1) {
 					self.scanningProcessIsRunning = !self.scanningProcessIsRunning
 					self.currentlyScanningProcess = .none
@@ -438,11 +433,11 @@ extension MediaContentViewController {
 		
 		self.scanningProcessIsRunning = !self.scanningProcessIsRunning
 		self.currentlyScanningProcess = .duplicatedVideoAssetOperation
-		let getDuplicatedVideoAssetOperatioon = photoManager.getDuplicatedVideoAssetOperation(from: lowerBoundDate, to: upperBoundDate, enableSingleProcessingNotification: true) { duplicatedVideoAsset in
+		let getDuplicatedVideoAssetOperatioon = photoManager.getDuplicatedVideoAssetOperation(from: lowerBoundDate, to: upperBoundDate, cleanProcessingType: .singleSearch) { duplicatedVideoAsset in
 			self.allDuplicatesVideos = duplicatedVideoAsset
 //			self.prefetchPHAssets(duplicatedVideoAsset.flatMap({$0.assets}))
 			U.delay(0.5) {
-				ProgressSearchNotificationManager.instance.sendSingleSearchProgressNotification(notificationtype: .duplicatedVideo, totalProgressItems: 1, currentProgressItem: 1)
+				ProgressSearchNotificationManager.instance.sendSingleSearchProgressNotification(notificationtype: .duplicatedVideo, status: .complete, totalProgressItems: 1, currentProgressItem: 1)
 				U.delay(1) {
 					self.scanningProcessIsRunning = !self.scanningProcessIsRunning
 					self.currentlyScanningProcess = .none
@@ -460,11 +455,11 @@ extension MediaContentViewController {
 	private func showSimilarVideoFiles() {
 		self.scanningProcessIsRunning = !self.scanningProcessIsRunning
 		self.currentlyScanningProcess = .similarVideoAssetsOperation
-		let getSimilarVideoAssetsOperation = photoManager.getSimilarVideoAssetsOperation(from: lowerBoundDate, to: upperBoundDate, enableSingleProcessingNotification: true) { similiarVideoAsset in
+		let getSimilarVideoAssetsOperation = photoManager.getSimilarVideoAssetsOperation(from: lowerBoundDate, to: upperBoundDate, cleanProcessingType: .singleSearch) { similiarVideoAsset in
 			self.allSimmilarVideos = similiarVideoAsset
 //			self.prefetchPHAssets(similiarVideoAsset.flatMap({$0.assets}))
 			U.delay(0.5) {
-				ProgressSearchNotificationManager.instance.sendSingleSearchProgressNotification(notificationtype: .similarVideo, totalProgressItems: 1, currentProgressItem: 1)
+				ProgressSearchNotificationManager.instance.sendSingleSearchProgressNotification(notificationtype: .similarVideo, status: .complete, totalProgressItems: 1, currentProgressItem: 1)
 				U.delay(1) {
 					self.scanningProcessIsRunning = !self.scanningProcessIsRunning
 					self.currentlyScanningProcess = .none
@@ -482,11 +477,11 @@ extension MediaContentViewController {
     private func showScreenRecordsVideoFiles() {
 		self.scanningProcessIsRunning = !self.scanningProcessIsRunning
 		self.currentlyScanningProcess = .screenRecordingsVideoOperation
-		let getScreenRecordsVideosOperation = photoManager.getScreenRecordsVideosOperation(from: lowerBoundDate, to: upperBoundDate, enableSingleProcessingNotification: true) { screenRecordsAssets in
+		let getScreenRecordsVideosOperation = photoManager.getScreenRecordsVideosOperation(from: lowerBoundDate, to: upperBoundDate, cleanProcessingType: .singleSearch) { screenRecordsAssets in
 			self.allScreenRecords = screenRecordsAssets
 			self.prefetchPHAssets(screenRecordsAssets)
 			U.delay(0.5) {
-				ProgressSearchNotificationManager.instance.sendSingleSearchProgressNotification(notificationtype: .screenRecordings, totalProgressItems: 1, currentProgressItem: 1)
+				ProgressSearchNotificationManager.instance.sendSingleSearchProgressNotification(notificationtype: .screenRecordings, status: .complete, totalProgressItems: 1, currentProgressItem: 1)
 				U.delay(1) {
 					self.scanningProcessIsRunning = !self.scanningProcessIsRunning
 					self.currentlyScanningProcess = .none
@@ -507,7 +502,7 @@ extension MediaContentViewController {
 		let getSortedRecentlyDeletedAssetsOperation = PHAssetFetchManager.shared.recentlyDeletdSortedAlbumsFetchOperation { photosAssets, videoAssets in
 			self.allRecentlyDeletedVideos = videoAssets
 			U.delay(0.5) {
-				ProgressSearchNotificationManager.instance.sendSingleSearchProgressNotification(notificationtype: .recentlyDeletedVideo, totalProgressItems: 1, currentProgressItem: 1)
+				ProgressSearchNotificationManager.instance.sendSingleSearchProgressNotification(notificationtype: .recentlyDeletedVideo, status: .complete, totalProgressItems: 1, currentProgressItem: 1)
 				U.delay(1) {
 					self.scanningProcessIsRunning = !self.scanningProcessIsRunning
 					self.currentlyScanningProcess = .none
@@ -524,7 +519,7 @@ extension MediaContentViewController {
     
     private func showSimmilarVideoFilesByTimeStamp() {
 		self.scanningProcessIsRunning = !self.scanningProcessIsRunning
-		let getSimilarVideosByTimeStamp = photoManager.getSimilarVideosByTimeStampOperation(from: lowerBoundDate, to: upperBoundDate, enableSingleProcessingNotification: true) { similarVideos in
+		let getSimilarVideosByTimeStamp = photoManager.getSimilarVideosByTimeStampOperation(from: lowerBoundDate, to: upperBoundDate, cleanProcessingType: .singleSearch) { similarVideos in
 			self.scanningProcessIsRunning = !self.scanningProcessIsRunning
 			if similarVideos.count != 0 {
 				self.showGropedContoller(assets: "similar by time stam", grouped: similarVideos, photoContent: .similarVideos, media: .userVideo)
@@ -547,7 +542,7 @@ extension MediaContentViewController {
 	private func checkForAssetsCount() {
 		
 		if self.allScreenRecords.isEmpty {
-			let screenRecordsVideosOperation = photoManager.getScreenRecordsVideosOperation(from: lowerBoundDate, to: upperBoundDate) { screenRecordsAssets in
+			let screenRecordsVideosOperation = photoManager.getScreenRecordsVideosOperation(from: lowerBoundDate, to: upperBoundDate, cleanProcessingType: .singleSearch) { screenRecordsAssets in
 				if screenRecordsAssets.count != 0 {
 					self.allScreenRecords = screenRecordsAssets
 				}
@@ -557,7 +552,7 @@ extension MediaContentViewController {
 		
 		if self.allLargeVideos.isEmpty {
 			
-			let largeVideosOperation = photoManager.getLargevideoContentOperation(from: lowerBoundDate, to: upperBoundDate) { videoAssets in
+			let largeVideosOperation = photoManager.getLargevideoContentOperation(from: lowerBoundDate, to: upperBoundDate, cleanProcessingType: .singleSearch) { videoAssets in
 				if videoAssets.count != 0 {
 					self.allLargeVideos = videoAssets
 				}
@@ -593,7 +588,7 @@ extension MediaContentViewController {
 		
 		self.contactsManager.getSingleDuplicatedCleaningContacts(of: .emptyContacts) { contactsGroup in
 			U.delay(0.5) {
-				ProgressSearchNotificationManager.instance.sendSingleSearchProgressNotification(notificationtype: .emptyContacts, totalProgressItems: 1, currentProgressItem: 1)
+				ProgressSearchNotificationManager.instance.sendSingleSearchProgressNotification(notificationtype: .emptyContacts, status: .complete, totalProgressItems: 1, currentProgressItem: 1)
 				U.delay(0.5) {
 					self.scanningProcessIsRunning = !self.scanningProcessIsRunning
 					self.currentlyScanningProcess = .none
@@ -629,7 +624,7 @@ extension MediaContentViewController {
 		self.contactsManager.getSingleDuplicatedCleaningContacts(of: cleanType) { contactsGroup in
             self.updateContactsCleanSearchCount(groupType: cleanType, contactsGroup: contactsGroup)
             U.delay(0.5) {
-				ProgressSearchNotificationManager.instance.sendSingleSearchProgressNotification(notificationtype: cleanType.notificationType, totalProgressItems: 1, currentProgressItem: 1)
+				ProgressSearchNotificationManager.instance.sendSingleSearchProgressNotification(notificationtype: cleanType.notificationType, status: .complete, totalProgressItems: 1, currentProgressItem: 1)
                 U.delay(0.5) {
                     self.scanningProcessIsRunning = !self.scanningProcessIsRunning
 					self.currentlyScanningProcess = .none

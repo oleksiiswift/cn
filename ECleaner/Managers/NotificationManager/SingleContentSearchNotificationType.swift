@@ -123,6 +123,47 @@ enum SingleContentSearchNotificationType {
 		}
 	}
 	
+	var dictionaryProcessingState: String {
+		switch self {
+			case .similarPhoto:
+				return C.key.notificationDictionary.state.similarPhotoState
+			case .duplicatedPhoto:
+				return C.key.notificationDictionary.state.duplicatePhotoState
+			case .similarLivePhoto:
+				return C.key.notificationDictionary.state.similarLivePhototState
+			case .screenShots:
+				return C.key.notificationDictionary.state.screenShotsState
+			case .similarSelfiesPhoto:
+				return C.key.notificationDictionary.state.similarSelfieState
+			case .livePhoto:
+				return C.key.notificationDictionary.state.livePhotosState
+			case .recentlyDeletedPhoto:
+				return C.key.notificationDictionary.state.recentlyDeletedPhotoState
+			case .largeVideo:
+				return C.key.notificationDictionary.state.largeVideoState
+			case .duplicatedVideo:
+				return C.key.notificationDictionary.state.duplicateVideoState
+			case .similarVideo:
+				return C.key.notificationDictionary.state.similarVideoState
+			case .screenRecordings:
+				return C.key.notificationDictionary.state.screenRecordingsState
+			case .recentlyDeletedVideo:
+				return C.key.notificationDictionary.state.recentrlyDeletedVideoState
+			case .allContacts:
+				return C.key.notificationDictionary.state.allContactsState
+			case .emptyContacts:
+				return C.key.notificationDictionary.state.emptyContactsState
+			case .duplicatesNames:
+				return C.key.notificationDictionary.state.duplicateNamesContactsState
+			case .duplicatesNumbers:
+				return C.key.notificationDictionary.state.duplicateNumbersContactsState
+			case .duplicatesEmails:
+				return C.key.notificationDictionary.state.duplicateEmailContactsState
+			case .none:
+				return ""
+		}
+	}
+		
 	var notificationName: Notification.Name {
 		
 		switch self {

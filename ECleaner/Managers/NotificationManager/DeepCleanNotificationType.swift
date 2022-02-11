@@ -25,6 +25,8 @@ enum DeepCleanNotificationType {
 	case duplicatedPhoneNumbers
 	case duplicatedEmails
 	
+	case none
+	
 	var dictionaryCountName: String {
 		switch self {
 	 
@@ -54,6 +56,8 @@ enum DeepCleanNotificationType {
 				return C.key.notificationDictionary.count.duplicateNumbersContactsCount
 			case .duplicatedEmails:
 				return C.key.notificationDictionary.count.duplicateEmailsContactsCount
+			case .none:
+				return ""
 		}
 	}
 	
@@ -87,6 +91,8 @@ enum DeepCleanNotificationType {
 				return C.key.notificationDictionary.index.duplicateNumbersContactsIndex
 			case .duplicatedEmails:
 				return C.key.notificationDictionary.index.duplicateEmailContactsIndex
+			case .none:
+				return ""
 		}
 	}
 	
@@ -118,6 +124,8 @@ enum DeepCleanNotificationType {
 				return C.key.notificationDictionary.state.duplicateNumbersContactsState
 			case .duplicatedEmails:
 				return C.key.notificationDictionary.state.duplicateEmailContactsState
+			case .none:
+				return ""
 		}
 	}
 	
@@ -149,6 +157,8 @@ enum DeepCleanNotificationType {
 				return .deepCleanDuplicatedPhoneNumbersScan
 			case .duplicatedEmails:
 				return .deepCleanDupLicatedMailsScan
+			case .none:
+				return NSNotification.Name("")
 		}
 	}
 	
@@ -180,6 +190,8 @@ enum DeepCleanNotificationType {
 				return .duplicatedPhoneNumbers
 			case .duplicatedEmails:
 				return .duplicatedEmails
+			case .none:
+				return .none
 		}
 	}
 	
@@ -211,6 +223,8 @@ enum DeepCleanNotificationType {
 				return 11
 			case .duplicatedEmails:
 				return 12
+			case .none:
+				return 0
 		}
 	}
 }

@@ -8,13 +8,6 @@
 import UIKit
 import Photos
 
-enum ProcessingPresentType {
-    case deepCleen
-    case singleSearch
-}
-
-
-
 class ContentTypeTableViewCell: UITableViewCell {
     
     @IBOutlet weak var baseView: UIView!
@@ -144,12 +137,19 @@ extension ContentTypeTableViewCell {
 		}
 	}
 
+	/// future label nees progress
+		///
+		/// let percentLabelFormat: String = "%.f %%"
+//	let totalPercent = CGFloat(Double(current) / Double(total)) * 100
+//		  let stingFormat = String(format: percentLabelFormat, totalPercent)
+	
+	
     public func cellConfig(contentType: MediaContentType,
                            photoMediaType: PhotoMediaType = .none,
                            indexPath: IndexPath,
                            phasetCount: Int,
 						   selectedCount: Int?,
-                           presentingType: ProcessingPresentType,
+                           presentingType: CleanProcessingPresentType,
                            progress: CGFloat,
                            isProcessingComplete: Bool = false,
 						   isReadyForCleaning: Bool) {
@@ -222,6 +222,8 @@ extension ContentTypeTableViewCell {
 					default:
 						return
 				}
+			case .background:
+					return
 		}
 		
 		if isProcessingComplete && phasetCount != 0 {

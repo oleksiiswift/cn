@@ -219,6 +219,7 @@ class Constants {
 				static let duplicatePhotoState = "deepCleanDuplicatePhotoProcessingState"
 				static let screenShotsState = "deepCleanscreenShotsProcessingState"
 				static let livePhotosState = "deepCleanlivePhotosProcessingState"
+				static let similarLivePhototState = "deepCleanSimiliarLivePhotoState"
 				static let similarSelfieState = "similarSelfiePhotoProcessingState"
 				static let recentlyDeletedPhotoState = "recentlyDeletedPhotoProcessingState"
 					/// video part
