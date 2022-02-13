@@ -202,40 +202,28 @@ extension DeepCleanManager {
 	
 	public func startingDeepCleaningProcessing(with model: DeepCleanModel, completionHandler: @escaping (Int) -> Void, concelCompletionHandler: @escaping () -> Void) {
 		
-	}
-	
-	#warning("Depricated logic")
-	public func startingDeepCleanProcessing(with selectedCollectionsIDs: [PhotoMediaType : [String]], photoVideoGroups: [PhotoMediaType : [PhassetGroup]], contactsFlowGroups: [PhotoMediaType : [ContactsGroup]], completionHandler: @escaping (Int) -> Void, canceledConpletionHandler: @escaping () -> Void) {
+		U.notificationCenter.post(name: .removeContactsStoreObserver, object: nil)
 		
 		var photoVideoDeleteProcessingIDS: [String] = []
-		var mergeContactsGroupsProcessingIDS:  [String] = []
 		var deleteContactsProcessingODS: [String] = []
 		var mergeContactsGroups: [ContactsGroup] = []
 		var errorsCount: Int = 0
 		
-		U.notificationCenter.post(name: .removeContactsStoreObserver, object: nil)
 		self.handleProgressNotification(of: .prepareCleaning, with: 0, and: 0)
 		
-		for (key, value) in selectedCollectionsIDs {
+		for (key, value) in model.objects {
 			switch key {
-				case .similarPhotos, .duplicatedPhotos, .singleScreenShots, .singleLivePhotos, .similarLivePhotos, .similarSelfies, .singleRecentlyDeletedPhotos, .singleLargeVideos, .duplicatedVideos, .similarVideos:
-					photoVideoDeleteProcessingIDS.append(contentsOf: value)
+				case .similarPhotos, .duplicatedPhotos, .singleScreenShots, .similarSelfies, .similarLivePhotos, .singleLargeVideos, .duplicatedVideos, .similarVideos, .singleScreenRecordings:
+					photoVideoDeleteProcessingIDS.append(contentsOf: value.selectedAssetsCollectionID)
 				case .emptyContacts:
-					deleteContactsProcessingODS.append(contentsOf: value)
+					deleteContactsProcessingODS.append(contentsOf: value.selectedAssetsCollectionID)
 				case .duplicatedContacts, .duplicatedPhoneNumbers, .duplicatedEmails:
-						mergeContactsGroupsProcessingIDS.append(contentsOf: value)
-					if let duplicatedContacts = contactsFlowGroups[key] {
-						for id in value {
-							if let group = duplicatedContacts.first(where: {$0.groupIdentifier == id}) {
-								mergeContactsGroups.append(group)
-							}
-						}
-					}
+					mergeContactsGroups.append(contentsOf: value.getContactsMergeGroups())
 				default:
-					debugPrint("no key")
+					debugPrint("")
 			}
 		}
-		
+	
 		let deepCleanProcessingCleaningOperation = ConcurrentProcessOperation { operation in
 			
 			photoVideoDeleteProcessingIDS = Array(Set(photoVideoDeleteProcessingIDS))
@@ -247,7 +235,7 @@ extension DeepCleanManager {
 					let deletedAssets = PHAsset.fetchAssets(withLocalIdentifiers: assetsSelectedIdentifiers, options: nil)
 					PHPhotoLibrary.shared().performChanges {
 						if operation.isCancelled {
-							canceledConpletionHandler()
+							concelCompletionHandler()
 							return
 						}
 						PHAssetChangeRequest.deleteAssets(deletedAssets)
@@ -271,7 +259,7 @@ extension DeepCleanManager {
 					
 					for contact in contacts {
 						if operation.isCancelled {
-							canceledConpletionHandler()
+							concelCompletionHandler()
 							return
 						}
 						
@@ -300,7 +288,7 @@ extension DeepCleanManager {
 			for group in mergeContactsGroups {
 				
 				if operation.isCancelled {
-					canceledConpletionHandler()
+					concelCompletionHandler()
 					return
 				}
 				
@@ -328,7 +316,7 @@ extension DeepCleanManager {
 					for deletingContact in deletingContacts {
 						
 						if operation.isCancelled {
-							canceledConpletionHandler()
+							concelCompletionHandler()
 							return
 						}
 						
@@ -365,5 +353,6 @@ extension DeepCleanManager {
 	
 	public func stopDeepCleanOperation() {
 		self.wholeCleanOperationQueuer.cancelAll()
+		self.deepCleanOperationQue.cancelAll()
 	}
 }

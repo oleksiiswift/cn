@@ -13,8 +13,8 @@ enum ProcessingProgressOperationState {
 	case analyzing
 	case compare
 	case progress
-	case complete
 	case result
+	case complete
 	case empty
 	case selected
 		
@@ -29,11 +29,11 @@ enum ProcessingProgressOperationState {
 			case .compare:
 				return "compare results"
 			case .progress:
-				return "\(progress.rounded().cleanValue)% - completed"
+				return "\(progress.rounded().cleanValue)% - analyzing"
 			case .complete:
-				return "analyzing complete"
-			case .result:
 				return ProcessingResultComplete.instance.resultProcessingComplete(mediaType, files: files)
+			case .result:
+				return "searching complete"
 			case .empty:
 				return ProcessingResultComplete.instance.emptyResultProcessingComplete(mediaType)
 			case .selected:

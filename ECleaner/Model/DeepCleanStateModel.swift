@@ -19,27 +19,34 @@ class DeepCleanStateModel {
 	var mediaType: PhotoMediaType
 	var cleanState: ProcessingProgressOperationState = .sleeping
 	var deepCleanProgress: CGFloat = 0
-	var handleSelectedPhassetsForMediatype: Bool = false
-	var selectedAssetsCollectionID: [String] = []
 	
+	var selectedAssetsCollectionID: [String] = []
 	var mediaFlowGroup: [PhassetGroup] = []
 	var contactsFlowGroup: [ContactsGroup] = []
 
+	var resultsCount: Int {
+		return self.flowContentCount()
+	}
+	var isEmpty: Bool {
+		return self.resultIsEmpty()
+	}
+	var handleSelected: Bool {
+		return !selectedAssetsCollectionID.isEmpty
+	}
+	
 	init(type: PhotoMediaType ) {
 		self.mediaType = type
 	}
 	
-	public func flowContentCount() -> Int {
+	private func flowContentCount() -> Int {
 		switch self.mediaType {
 			case .singleScreenShots, .singleLargeVideos, .singleScreenRecordings:
-				if let assets = self.mediaFlowGroup.first {
-					return assets.assets.count
-				} else {
-					return 0
-				}
+				return self.mediaFlowGroup.flatMap({$0.assets}).count
 			case .similarPhotos, .duplicatedPhotos, .similarLivePhotos, .similarVideos, .duplicatedVideos, .similarSelfies:
 				return self.mediaFlowGroup.count
-			case .emptyContacts, .duplicatedContacts, .duplicatedPhoneNumbers, .duplicatedEmails:
+			case .emptyContacts:
+				return self.contactsFlowGroup.flatMap({$0.contacts}).count
+			case .duplicatedContacts, .duplicatedPhoneNumbers, .duplicatedEmails:
 				return self.contactsFlowGroup.count
 			default:
 				return 0
@@ -55,17 +62,50 @@ class DeepCleanStateModel {
 			case .emptyContacts:
 				return self.selectedAssetsCollectionID.count
 			case .duplicatedContacts, .duplicatedPhoneNumbers, .duplicatedEmails:
-				let selectedIDS = self.selectedAssetsCollectionID
-				let groups = self.contactsFlowGroup
-				var selectedContactsCount = 0
-				for id in selectedIDS {
-					if let group = groups.first(where: {$0.groupIdentifier == id}) {
-						selectedContactsCount += group.contacts.count
-					}
-				}
+				return self.selectedAssetsCollectionID.count
 			default:
 				return 0
 		}
-		return 0
+	}
+	
+	public func deepCleanIndexPath() -> IndexPath {
+		return self.mediaType.deepCleanIndexPath
+	}
+	
+	private func resultIsEmpty() -> Bool {
+		switch self.mediaType {
+			case .singleScreenShots, .singleLargeVideos, .singleScreenRecordings:
+				if let assets = self.mediaFlowGroup.first {
+					return assets.assets.isEmpty
+				} else {
+					return true
+				}
+			case .similarPhotos, .duplicatedPhotos, .similarLivePhotos, .similarVideos, .duplicatedVideos, .similarSelfies:
+				return self.mediaFlowGroup.isEmpty
+			case .emptyContacts:
+				let contacts = self.contactsFlowGroup.flatMap({$0.contacts})
+				return contacts.isEmpty
+			case .duplicatedContacts, .duplicatedPhoneNumbers, .duplicatedEmails:
+				return self.contactsFlowGroup.isEmpty
+			default:
+				return true
+		}
+	}
+	
+	public func getContactsMergeGroups() -> [ContactsGroup] {
+		return contactsFlowGroup.filter({selectedAssetsCollectionID.contains($0.groupIdentifier)})
+	}
+}
+
+class DeepCleanTotalProgress {
+	
+	var totalProgress: CGFloat {
+		return self.calculateTotalProgrss()
+	}
+	
+	var progressForMediaType: [PhotoMediaType : CGFloat] = [:]
+	
+	private func calculateTotalProgrss() -> CGFloat {
+		return progressForMediaType.map({$0.value}).sum() / 13
 	}
 }

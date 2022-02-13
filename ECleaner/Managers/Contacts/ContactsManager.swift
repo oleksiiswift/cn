@@ -519,8 +519,11 @@ extension ContactsManager {
 		
 		let emptyContactsOperation = ConcurrentProcessOperation { operation in
 			
+			let deleyInterval: Double = cleanProcessingType == .background ? 0 : 1
+			let sleepInterval: UInt32 = cleanProcessingType == .background ? 0 : 1
+			
 			self.sendNotification(processing: cleanProcessingType, deepCleanType: .emptyContacts, singleCleanType: .emptyContacts, status: .prepare, totalItems: 0, currentIndex: 0)
-			sleep(1)
+			sleep(sleepInterval)
 			
 			var contactsGroup: [ContactsGroup] = []
 			let emptyIdentifier = ContactsCountryIdentifier(region: "", countryCode: "")
@@ -568,13 +571,13 @@ extension ContactsManager {
 				return
 			}
 			
-			sleep(1)
+			sleep(sleepInterval)
 			for i in 0...contacts.count - 1 {
 				self.sendNotification(processing: cleanProcessingType, deepCleanType: .emptyContacts, singleCleanType: .emptyContacts, status: .progress, totalItems: contacts.count, currentIndex: i)
 			}
 			
-			U.delay(1) {
-				self.sendNotification(processing: cleanProcessingType, deepCleanType: .emptyContacts, singleCleanType: .emptyContacts, status: .result, totalItems: contacts.count, currentIndex: contacts.count)
+			self.sendNotification(processing: cleanProcessingType, deepCleanType: .emptyContacts, singleCleanType: .emptyContacts, status: .result, totalItems: contacts.count, currentIndex: contacts.count)
+			U.delay(deleyInterval) {
 				completionHandler(contactsGroup)
 			}
 		}
@@ -587,6 +590,8 @@ extension ContactsManager {
 	private func getDuplicatedContactsNamesOperation(contacts: [CNContact], cleanProcessingType: CleanProcessingPresentType, _ completionHandler: @escaping ([ContactsGroup]) -> Void) -> ConcurrentProcessOperation {
 	
 		let duplicatedContactsOperation = ConcurrentProcessOperation { operation in
+			
+			let deleyInterval: Double = cleanProcessingType == .background ? 0 : 1
 			
 			var group: [ContactsGroup] = []
 			var currentProcessingIndex: Int = 0
@@ -602,6 +607,7 @@ extension ContactsManager {
 				for (contactName, similarContacts) in filterDictionary {
 										
 					if operation.isCancelled {
+						self.sendEmptyNotification(processing: cleanProcessingType, deepCleanType: .duplicateContacts, singleCleanType: .duplicatesNames)
 						completionHandler([])
 						return
 					}
@@ -622,7 +628,9 @@ extension ContactsManager {
 				self.sendEmptyNotification(processing: cleanProcessingType, deepCleanType: .duplicateContacts, singleCleanType: .duplicatesNames)
 			}
 			self.sendNotification(processing: cleanProcessingType, deepCleanType: .duplicateContacts, singleCleanType: .duplicatesNames, status: .result, totalItems: filterDictionary.count, currentIndex: filterDictionary.count)
-			completionHandler(group)
+			U.delay(deleyInterval) {
+				completionHandler(group)
+			}
 		}
 		duplicatedContactsOperation.name = COT.duplicatedNameOperation.rawValue
 		return duplicatedContactsOperation
@@ -632,6 +640,8 @@ extension ContactsManager {
 	private func getPhoneDuplicatedOperation(contacts: [CNContact], cleanProcessingType: CleanProcessingPresentType, completionHandler: @escaping ([ContactsGroup]) -> Void) -> ConcurrentProcessOperation {
 		
 		let phoneDuplicatedOperation = ConcurrentProcessOperation { operation in
+			
+			let deleyInterval: Double = cleanProcessingType == .background ? 0 : 1
 			
 			let contactsStore = CNContactStore()
 			let phoneNumbers = Array(Set(contacts.map({$0.phoneNumbers.map({$0.value})}).reduce([], +)))
@@ -645,6 +655,7 @@ extension ContactsManager {
 				for i in 0...phoneNumbers.count - 1 {
 					
 					if operation.isCancelled {
+						self.sendEmptyNotification(processing: cleanProcessingType, deepCleanType: .duplicatedPhoneNumbers, singleCleanType: .duplicatesNumbers)
 						completionHandler([])
 						return
 					}
@@ -668,7 +679,9 @@ extension ContactsManager {
 				self.sendEmptyNotification(processing: cleanProcessingType, deepCleanType: .duplicatedPhoneNumbers, singleCleanType: .duplicatesNumbers)
 			}
 			self.sendNotification(processing: cleanProcessingType, deepCleanType: .duplicatedPhoneNumbers, singleCleanType: .duplicatesNumbers, status: .result, totalItems: phoneNumbers.count, currentIndex: phoneNumbers.count)
-			completionHandler(duplicatedContacts)
+			U.delay(deleyInterval) {
+				completionHandler(duplicatedContacts)
+			}
 		}
 		phoneDuplicatedOperation.name = COT.duplicatedPhoneNumbersOperation.rawValue
 		return phoneDuplicatedOperation
@@ -678,6 +691,8 @@ extension ContactsManager {
 	private func getEmailDuplicatesOperation(contacts: [CNContact], cleanProcessingType: CleanProcessingPresentType, completionHandler: @escaping ([ContactsGroup]) -> Void) -> ConcurrentProcessOperation {
 		
 		let emailDuplicatedOperation = ConcurrentProcessOperation { operation in
+			
+			let deleyInterval: Double = cleanProcessingType == .background ? 0 : 1
 			
 			let contactsStore = CNContactStore()
 			let emailsList = Array(Set(contacts.map({$0.emailAddresses.map({$0.value as String})}).reduce([], +)))
@@ -690,6 +705,7 @@ extension ContactsManager {
 				for i in 0...emailsList.count - 1 {
 				
 					if operation.isCancelled {
+						self.sendEmptyNotification(processing: cleanProcessingType, deepCleanType: .duplicatedEmails, singleCleanType: .duplicatesEmails)
 						completionHandler([])
 						return
 					}
@@ -712,8 +728,10 @@ extension ContactsManager {
 			} else {
 				self.sendEmptyNotification(processing: cleanProcessingType, deepCleanType: .duplicatedEmails, singleCleanType: .duplicatesEmails)
 			}
-			self.sendNotification(processing: cleanProcessingType, deepCleanType: .duplicatedEmails, singleCleanType: .duplicatesEmails, status: .result, totalItems: 0, currentIndex: 0)
-			completionHandler(duplicatedContacts)
+			self.sendNotification(processing: cleanProcessingType, deepCleanType: .duplicatedEmails, singleCleanType: .duplicatesEmails, status: .result, totalItems: emailsList.count, currentIndex: emailsList.count)
+			U.delay(deleyInterval) {
+				completionHandler(duplicatedContacts)
+			}
 		}
 		emailDuplicatedOperation.name = COT.duplicatedEmailsOperation.rawValue
 		return emailDuplicatedOperation

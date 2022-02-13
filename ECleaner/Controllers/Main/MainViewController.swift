@@ -24,30 +24,15 @@ class MainViewController: UIViewController {
     private let baseCarouselLayout = BaseCarouselFlowLayout()
         
 	private var photoMenager = PhotoManager.shared
+	private var singleCleanModel: SingleCleanModel!
     
     private var contentCount: [MediaContentType : Int] = [:]
     private var diskSpaceForStartingScreen: [MediaContentType : Int64] = [:]
-
-    private var allScreenShots: [PHAsset] = []
-    private var allLiveFotos: [PHAsset] = []
-    
-    private var allLargeVidoes: [PHAsset] = []
-    private var allScreenRecordsVideos: [PHAsset] = []
-    private var allSimilarRecordingsVideos: [PhassetGroup] = []
-    
-    private var allRecentlyDeletedPhotos: [PHAsset] = []
-    private var allRecentlyDeletedVideos: [PHAsset] = []
-    
-        /// `contacts values`
-    private var allContacts: [CNContact] = []
-    private var allEmptyContacts: [ContactsGroup] = []
-    private var allDuplicatedContacts: [ContactsGroup] = []
-    private var allDuplicatedPhoneNumbers: [ContactsGroup] = []
-    private var allDuplicatedEmailAdresses: [ContactsGroup] = []
-    
+	
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+		
+		initializeSingleCleanModel()
         setupObserversAndDelegates()
         setupNavigation()
         setupUI()
@@ -68,6 +53,28 @@ class MainViewController: UIViewController {
         super.viewDidAppear(animated)
         
     }
+	
+	private func initializeSingleCleanModel() {
+		 
+		var objects: [PhotoMediaType : SingleCleanStateModel] = [:]
+		objects[.similarPhotos] = SingleCleanStateModel(type: .similarPhotos)
+		objects[.duplicatedPhotos] = SingleCleanStateModel(type: .duplicatedPhotos)
+		objects[.singleScreenShots] = SingleCleanStateModel(type: .singleScreenShots)
+		objects[.similarSelfies] = SingleCleanStateModel(type: .similarSelfies)
+		objects[.singleLivePhotos] = SingleCleanStateModel(type: .singleLivePhotos)
+		
+		objects[.singleLargeVideos] = SingleCleanStateModel(type: .singleLargeVideos)
+		objects[.duplicatedVideos] = SingleCleanStateModel(type: .duplicatedVideos)
+		objects[.similarVideos] = SingleCleanStateModel(type: .similarVideos)
+		objects[.singleScreenRecordings] = SingleCleanStateModel(type: .singleScreenRecordings)
+		
+		objects[.allContacts] = SingleCleanStateModel(type: .allContacts)
+		objects[.emptyContacts] = SingleCleanStateModel(type: .emptyContacts)
+		objects[.duplicatedContacts] = SingleCleanStateModel(type: .duplicatedContacts)
+		objects[.duplicatedPhoneNumbers] = SingleCleanStateModel(type: .duplicatedPhoneNumbers)
+		objects[.duplicatedEmails] = SingleCleanStateModel(type: .duplicatedEmails)
+		self.singleCleanModel = SingleCleanModel(objects: objects)
+	}
 }
 
 extension MainViewController {
@@ -117,61 +124,60 @@ extension MainViewController: UpdateContentDataBaseListener {
 		}
     }
 
-    #warning("REFACORORING!!!!!! TODO ->")
     func getScreenAssets(_ assets: [PHAsset]) {
-        self.allScreenShots = assets
+		self.singleCleanModel.objects[.singleScreenShots]?.phassets = assets
     }
     
     func getLivePhotosAssets(_ assets: [PHAsset]) {
-        self.allLiveFotos = assets
+		self.singleCleanModel.objects[.singleLivePhotos]?.phassets = assets
     }
     
     func getLargeVideosAssets(_ assets: [PHAsset]) {
-        self.allLargeVidoes = assets
+		self.singleCleanModel.objects[.singleLargeVideos]?.phassets = assets
     }
     
     func getSimmilarVideosAssets(_ assets: [PhassetGroup]) {
-        self.allSimilarRecordingsVideos = assets
+		self.singleCleanModel.objects[.similarVideos]?.phassetGroup = assets
     }
     
     func getDuplicateVideosAssets(_ assets: [PhassetGroup]) {
-        debugPrint(assets.count)
+		self.singleCleanModel.objects[.duplicatedVideos]?.phassetGroup = assets
     }
     
     func getScreenRecordsVideosAssets(_ assets: [PHAsset]) {
-        self.allScreenRecordsVideos = assets
+		self.singleCleanModel.objects[.singleScreenRecordings]?.phassets = assets
     }
     
     func getRecentlyDeletedPhotoAsssets(_ assets: [PHAsset]) {
-        self.allRecentlyDeletedPhotos = assets
+		self.singleCleanModel.objects[.singleRecentlyDeletedPhotos]?.phassets = assets
     }
     
     func getRecentlyDeletedVideoAssets(_ assts: [PHAsset]) {
-        self.allRecentlyDeletedVideos = assts
+		self.singleCleanModel.objects[.singleRecentlyDeletedVideos]?.phassets = assts
     }
     
     func getAllCNContacts(_ contacts: [CNContact]) {
-        self.allContacts = contacts
+		self.singleCleanModel.objects[.allContacts]?.contacts = contacts
     }
     
     func getAllDuplicatedContacts(_ contacts: [ContactsGroup]) {
-        self.allDuplicatedContacts = contacts
+		self.singleCleanModel.objects[.duplicatedContacts]?.contactsGroup = contacts
     }
     
     func getAllEmptyContacts(_ contacts: [ContactsGroup]) {
-        self.allEmptyContacts = contacts
+		self.singleCleanModel.objects[.emptyContacts]?.contactsGroup = contacts
     }
     
     func getAllDuplicatedContactsGroup(_ contctsGroup: [ContactsGroup]) {
-        self.allDuplicatedContacts = contctsGroup
+		self.singleCleanModel.objects[.duplicatedContacts]?.contactsGroup = contctsGroup
     }
     
     func getAllDuplicatedNumbersContactsGroup(_ contctsGroup: [ContactsGroup]) {
-        self.allDuplicatedPhoneNumbers = contctsGroup
+		self.singleCleanModel.objects[.duplicatedPhoneNumbers]?.contactsGroup = contctsGroup
     }
     
     func getAllDuplicatedEmailsContactsGroup(_ contctsGroup: [ContactsGroup]) {
-        self.allDuplicatedEmailAdresses = contctsGroup
+		self.singleCleanModel.objects[.duplicatedEmails]?.contactsGroup = contctsGroup
     }
 }
 
@@ -180,27 +186,8 @@ extension MainViewController {
     private func openMediaController(type: MediaContentType) {
         let storyboard = UIStoryboard(name: C.identifiers.storyboards.media, bundle: nil)
         let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.content) as! MediaContentViewController
-  
-        switch type {
-            case .userPhoto:
-                viewController.allScreenShots = self.allScreenShots
-                viewController.allLiveFotos = self.allLiveFotos
-                viewController.allRecentlyDeletedPhotos = self.allRecentlyDeletedPhotos
-            case .userVideo:
-                viewController.allLargeVideos = self.allLargeVidoes
-                viewController.allScreenRecords = self.allScreenRecordsVideos
-                viewController.allRecentlyDeletedVideos = self.allRecentlyDeletedVideos
-            case .userContacts:
-				ContactsManager.shared.contactsProcessingOperationQueuer.cancelAll()
-                viewController.allContacts = self.allContacts
-                viewController.allEmptyContacts = self.allEmptyContacts
-                viewController.allDuplicatedContacts = self.allDuplicatedContacts
-                viewController.allDuplicatedPhoneNumbers = self.allDuplicatedPhoneNumbers
-                viewController.allDuplicatedEmailAdresses = self.allDuplicatedEmailAdresses
-            default:
-                return
-        }
-        
+		viewController.singleCleanModel = self.singleCleanModel
+		ContactsManager.shared.contactsProcessingOperationQueuer.cancelAll()
         viewController.mediaContentType = type
         self.navigationController?.pushViewController(viewController, animated: true)
     }
