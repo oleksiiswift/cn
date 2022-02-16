@@ -270,16 +270,45 @@ extension MediaViewController: UIScrollViewDelegate {
 	func scrollViewDidScroll(_ scrollView: UIScrollView) {
 		
 		if scrollView == self.collectionView {
-			handleScrollItem(with: self.collectionView)
+//			handleScrollItem(with: self.collectionView)
 //			self.scrollCell()
+			let visibleRect = CGRect(origin: self.collectionView.contentOffset, size: self.collectionView.bounds.size)
+			let visiblePoint = CGPoint(x: visibleRect.midX, y: visibleRect.maxY)
+	
+			if let visibleIndexPath = self.collectionView.indexPathForItem(at: visiblePoint) {
+				
+				debugPrint(visibleIndexPath)
+				self.previewCollectionView.scrollToItem(at: visibleIndexPath, at: [.centeredVertically, .centeredHorizontally], animated: true)
+			}
 		} else if scrollView == self.previewCollectionView {
 			
-			let x = scrollView.panGestureRecognizer.translation(in: collectionView).x / 2
-				
-			debugPrint(x)
-		   debugPrint(self.view.frame.origin.x - x)
-			let z = collectionView.contentOffset.x + x
-			let r = CGRect(x: z, y: 0, width: 100, height: 100)
+			
+//			let offSet = scrollView.contentOffset.x
+//			  let width = scrollView.frame.width
+//			  let horizontalCenter = width / 2
+//
+//			debugPrint(Int(offSet + horizontalCenter) / Int(width))
+//				.currentPage =
+			let visibleRect = CGRect(origin: self.previewCollectionView.contentOffset, size: self.previewCollectionView.bounds.size)
+			let visiblePoint = CGPoint(x: visibleRect.midX, y: visibleRect.midY)
+			if let visibleIndexPath = self.previewCollectionView.indexPathForItem(at: visiblePoint) {
+				self.collectionView.scrollToItem(at: visibleIndexPath, at: [.centeredVertically, .centeredHorizontally], animated: true)
+			}
+			
+//			let visibleRect = CGRect(origin: self.cvImageListing.contentOffset, size: self.cvImageListing.bounds.size)
+//				let visiblePoint = CGPoint(x: visibleRect.midX, y: visibleRect.midY)
+//				if let visibleIndexPath = self.cvImageListing.indexPathForItem(at: visiblePoint) {
+//					self.pageControl.currentPage = visibleIndexPath.row
+//				}
+
+//
+			
+//			let x = scrollView.panGestureRecognizer.translation(in: collectionView).x / 2
+//
+//			debugPrint(x)
+//		   debugPrint(self.view.frame.origin.x - x)
+//			let z = collectionView.contentOffset.x + x
+//			let r = CGRect(x: z, y: 0, width: 100, height: 100)
 			//			collectionView.scrollRectToVisible(r, animated: true);
 //			collectionView.scrollRectToVisible(r, animated: true)
 //				self.handleScrollItem(with: self.previewCollectionView)
@@ -290,24 +319,24 @@ extension MediaViewController: UIScrollViewDelegate {
 //			}
 			
 		}
-		debugPrint("scrollViewDidScroll")
+//		debugPrint("scrollViewDidScroll")
 	}
 
 	func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
 		if scrollView == self.collectionView {
-//			handleScrollItem(with: self.collectionView)
+			handleScrollItem(with: self.collectionView)
 		} else if scrollView == self.previewCollectionView {
 			handleScrollItem(with: self.previewCollectionView)
 		}
-		
-		debugPrint("scrollViewDidEndDecelerating")
+
+		debugPrint("decel")
 	}
 
 	func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
 //		if !decelerate {
 //			debugPrint("scroll to item")
 //		}
-		debugPrint("scrollViewDidEndDragging")
+		debugPrint("end")
 	}
 	
 
@@ -315,7 +344,34 @@ extension MediaViewController: UIScrollViewDelegate {
 	func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
 		
 //		debugPrint(scrollView.contentOffset.x)
-		debugPrint("scrollViewWillBeginDragging")
+		debugPrint("begin")
+		
+		if scrollView == self.collectionView {
+//			handleScrollItem(with: self.collectionView)
+//			self.scrollCell()
+//			let visibleRect = CGRect(origin: self.collectionView.contentOffset, size: self.collectionView.bounds.size)
+//			let visiblePoint = CGPoint(x: visibleRect.midX, y: visibleRect.maxY)
+//
+//			if let visibleIndexPath = self.collectionView.indexPathForItem(at: visiblePoint) {
+			self.handleScrollItem(with: self.collectionView)
+//				debugPrint(visibleIndexPath)
+//				self.previewCollectionView.scrollToItem(at: visibleIndexPath, at: [.centeredVertically, .centeredHorizontally], animated: true)
+//			}
+		} else if scrollView == self.previewCollectionView {
+			self.handleScrollItem(with: self.previewCollectionView)
+			
+//			let offSet = scrollView.contentOffset.x
+//			  let width = scrollView.frame.width
+//			  let horizontalCenter = width / 2
+//
+//			debugPrint(Int(offSet + horizontalCenter) / Int(width))
+////				.currentPage =
+//			let visibleRect = CGRect(origin: self.previewCollectionView.contentOffset, size: self.previewCollectionView.bounds.size)
+//			let visiblePoint = CGPoint(x: visibleRect.midX, y: visibleRect.midY)
+//			if let visibleIndexPath = self.previewCollectionView.indexPathForItem(at: visiblePoint) {
+//				self.collectionView.scrollToItem(at: visibleIndexPath, at: [.centeredVertically, .centeredHorizontally], animated: true)
+//			}
+		}
 		
 		
 	}

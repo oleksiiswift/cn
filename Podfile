@@ -21,4 +21,6 @@ target 'ECleaner' do
 #  pod 'SwiftyContacts'
   
 #  pod 'Google-Mobile-Ads-SDK'
+
+	pod 'SnapKit', '~> 5.0.0'
 end

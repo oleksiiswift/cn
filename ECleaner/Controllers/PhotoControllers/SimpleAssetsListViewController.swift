@@ -500,6 +500,20 @@ extension SimpleAssetsListViewController {
 		viewController.assetCollection = self.assetCollection
 		self.navigationController?.pushViewController(viewController, animated: false)
 	}
+	
+//	let storyboard = UIStoryboard(name: C.identifiers.storyboards.preview, bundle: nil)
+//	let viewController = storyboard.instantiateViewController(withIdentifier: "PhotosViewController") as! PhotosViewController
+//	viewController.collectionType = .single
+//	viewController.assetCollection = self.assetCollection
+//	
+//	
+////		viewController.collectionType = .single
+////		viewController.focusedIndexPath = indexPath
+////		viewController.assetCollection = self.assetCollection
+//	self.navigationController?.pushViewController(viewController, animated: false)
+	
+	
+	
 }
 
 //      MARK: - setup UI -
