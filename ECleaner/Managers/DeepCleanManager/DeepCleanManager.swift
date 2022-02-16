@@ -9,29 +9,6 @@ import Foundation
 import Photos
 import Contacts
 
-enum DeepCleaningType {
-	case prepareCleaning
-	case photoCleaning
-	case contactsEmptyCleaning
-	case contactsMergeCleaning
-	case contactsDeleteCleaning
-	
-	var progressTitle: String {
-		switch self {
-			case .photoCleaning:
-				return "deleting photo (video):"
-			case .contactsEmptyCleaning:
-				return "removing empty contacts:"
-			case .contactsMergeCleaning:
-				return "merge selecting contacts:"
-			case .contactsDeleteCleaning:
-				return "deleting selected contacts:"
-			case .prepareCleaning:
-				return "prepare cleaning"
-		}
-	}
-}
-
 class DeepCleanManager {
     
 	private var photoManager = PhotoManager.shared
@@ -39,9 +16,8 @@ class DeepCleanManager {
 	private var fetchManager = PHAssetFetchManager.shared
 	private var progressNotificationManager = ProgressSearchNotificationManager.instance
     
-	let wholeCleanOperationQueuer = OperationProcessingQueuer(name: C.key.operation.queue.deepClean, maxConcurrentOperationCount: 1, qualityOfService: .background)
-	
-	let deepCleanOperationQue = OperationProcessingQueuer(name: C.key.operation.queue.deepClean, maxConcurrentOperationCount: 3, qualityOfService: .default)
+	let wholeCleanOperationQueuer = OperationProcessingQueuer(name: C.key.operation.queue.deepClean, maxConcurrentOperationCount: 3, qualityOfService: .background)
+	let deepCleanOperationQue = OperationProcessingQueuer(name: C.key.operation.queue.deepClean, maxConcurrentOperationCount: 3, qualityOfService: .background)
         
     public func startDeepCleaningFetch(_ optionMediaType: [PhotoMediaType], startingFetchingDate: Date, endingFetchingDate: Date,
                                        handler: @escaping ([PhotoMediaType]) -> Void,
@@ -66,7 +42,7 @@ class DeepCleanManager {
 		
 		
 //        MARK: - similar photoassets -
-		let getSimilarPhotosAssetsOperation = photoManager.getSimilarPhotosAssetsOperation(from: startingFetchingDate, to: endingFetchingDate, enableDeepCleanProcessingNotification: true) { similarGroup in
+		let getSimilarPhotosAssetsOperation = photoManager.getSimilarPhotosAssetsOperation(from: startingFetchingDate, to: endingFetchingDate, cleanProcessingType: .deepCleen) { similarGroup in
 			similarPhoto(similarGroup)
 			totalResultCount += 1
 			if totalResultCount == 13 {
@@ -76,7 +52,7 @@ class DeepCleanManager {
 		
 		
 //        MARK: - duplicated photo assets -
-		let duplicatedPhotoAssetOperation = photoManager.getDuplicatedPhotosAsset(from: startingFetchingDate, to: endingFetchingDate, enableDeepCleanProcessingNotification: true) { duplicateGroup in
+		let duplicatedPhotoAssetOperation = photoManager.getDuplicatedPhotosAsset(from: startingFetchingDate, to: endingFetchingDate, cleanProcessingType: .deepCleen) { duplicateGroup in
 			duplicatedPhoto(duplicateGroup)
 			totalResultCount += 1
 			if totalResultCount == 13 {
@@ -85,7 +61,7 @@ class DeepCleanManager {
 		}
 		
 //        MARK: - screenshots -
-		let getScreenShotsAssetsOperation = photoManager.getScreenShotsOperation(from: startingFetchingDate, to: endingFetchingDate, enableDeepCleanProcessingNotification: true) { screenshots in
+		let getScreenShotsAssetsOperation = photoManager.getScreenShotsOperation(from: startingFetchingDate, to: endingFetchingDate, cleanProcessingType: .deepCleen) { screenshots in
 			screenShots(screenshots)
 			totalResultCount += 1
 			if totalResultCount == 13 {
@@ -95,7 +71,7 @@ class DeepCleanManager {
 		
 //		MARK: - similar selfies photo -
 		
-		let getSimilarSelfiesPhotoPhassetOperation = photoManager.getSimilarSelfiePhotosOperation(from: startingFetchingDate, to: endingFetchingDate, enableDeepCleanProcessingNotification: true) { similartSelfiesGroup in
+		let getSimilarSelfiesPhotoPhassetOperation = photoManager.getSimilarSelfiePhotosOperation(from: startingFetchingDate, to: endingFetchingDate, cleanProcessingType: .deepCleen) { similartSelfiesGroup in
 			similarSelfiesPhoto(similartSelfiesGroup)
 			totalResultCount += 1
 			if totalResultCount == 13 {
@@ -104,7 +80,7 @@ class DeepCleanManager {
 		}
 		
 //        MARK: - similar live photo -
-		let getLivePhotoAssetsOperation = photoManager.getSimilarLivePhotosOperation(from: startingFetchingDate, to: endingFetchingDate, enableDeepCleanProcessingNotification: true) { similarAssets in
+		let getLivePhotoAssetsOperation = photoManager.getSimilarLivePhotosOperation(from: startingFetchingDate, to: endingFetchingDate, cleanProcessingType: .deepCleen) { similarAssets in
 			similarLivePhotos(similarAssets)
 			totalResultCount += 1
 			if totalResultCount == 13 {
@@ -113,7 +89,7 @@ class DeepCleanManager {
 		}
 		
 //        MARK: - large video -
-		let getLargevideoContentOperation = photoManager.getLargevideoContentOperation(from: startingFetchingDate, to: endingFetchingDate, enableDeepCleanProcessingNotification: true) { largeVodepAsset in
+		let getLargevideoContentOperation = photoManager.getLargevideoContentOperation(from: startingFetchingDate, to: endingFetchingDate, cleanProcessingType: .deepCleen) { largeVodepAsset in
 			largeVideo(largeVodepAsset)
 			
 			totalResultCount += 1
@@ -123,7 +99,7 @@ class DeepCleanManager {
 		}
 		
 //        MARK: - duplicated video assets -
-		let getDuplicatedVideoAssetOperatioon = photoManager.getDuplicatedVideoAssetOperation(from: startingFetchingDate, to: endingFetchingDate, enableDeepCleanProcessingNotification: true) { duplicatedVideoAsset in
+		let getDuplicatedVideoAssetOperatioon = photoManager.getDuplicatedVideoAssetOperation(from: startingFetchingDate, to: endingFetchingDate, cleanProcessingType: .deepCleen) { duplicatedVideoAsset in
 			duplicatedVideo(duplicatedVideoAsset)
 
 			totalResultCount += 1
@@ -133,7 +109,7 @@ class DeepCleanManager {
 		}
 
 //        MARK: - similar videos assets -
-		let getSimilarVideoAssetsOperation = photoManager.getSimilarVideoAssetsOperation(from: startingFetchingDate, to: endingFetchingDate, enableDeepCleanProcessingNotification: true) { similiarVideoAsset in
+		let getSimilarVideoAssetsOperation = photoManager.getSimilarVideoAssetsOperation(from: startingFetchingDate, to: endingFetchingDate, cleanProcessingType: .deepCleen) { similiarVideoAsset in
 			similarVideo(similiarVideoAsset)
 
 			totalResultCount += 1
@@ -143,7 +119,7 @@ class DeepCleanManager {
 		}
 		
 //        MARK: - screen recordings assets -
-		let getScreenRecordsVideosOperation = photoManager.getScreenRecordsVideosOperation(from: startingFetchingDate, to: endingFetchingDate, enableDeepCleanProcessingNotification: true) { screenRecordsAssets in
+		let getScreenRecordsVideosOperation = photoManager.getScreenRecordsVideosOperation(from: startingFetchingDate, to: endingFetchingDate, cleanProcessingType: .deepCleen) { screenRecordsAssets in
 			screenRecordings(screenRecordsAssets)
 
 			totalResultCount += 1
@@ -162,7 +138,6 @@ class DeepCleanManager {
 		deepCleanOperationQue.addOperation(getSimilarVideoAssetsOperation)
 		deepCleanOperationQue.addOperation(getScreenRecordsVideosOperation)
 		
-
 //        MARK: - mark fetch contacts -
 		contactManager.getDeepCleanContactsProcessing {
 			
@@ -206,56 +181,49 @@ class DeepCleanManager {
 	
 	public func resetProcessingProgressBars() {
 		
-		self.progressNotificationManager.sendDeepProgressNotificatin(notificationType: .emptyContacts, totalProgressItems: 0, currentProgressItem: 0)
-		self.progressNotificationManager.sendDeepProgressNotificatin(notificationType: .duplicateContacts, totalProgressItems: 0, currentProgressItem: 0)
-		self.progressNotificationManager.sendDeepProgressNotificatin(notificationType: .duplicatedPhoneNumbers, totalProgressItems: 0, currentProgressItem: 0)
-		self.progressNotificationManager.sendDeepProgressNotificatin(notificationType: .duplicatedEmails, totalProgressItems: 0, currentProgressItem: 0)
+		self.progressNotificationManager.sendDeepProgressNotification(notificationType: .emptyContacts, status: .sleeping, totalProgressItems: 0, currentProgressItem: 0)
+		self.progressNotificationManager.sendDeepProgressNotification(notificationType: .duplicateContacts, status: .sleeping, totalProgressItems: 0, currentProgressItem: 0)
+		self.progressNotificationManager.sendDeepProgressNotification(notificationType: .duplicatedPhoneNumbers, status: .sleeping, totalProgressItems: 0, currentProgressItem: 0)
+		self.progressNotificationManager.sendDeepProgressNotification(notificationType: .duplicatedEmails, status: .sleeping, totalProgressItems: 0, currentProgressItem: 0)
 		
-		self.progressNotificationManager.sendDeepProgressNotificatin(notificationType: .largeVideo, totalProgressItems: 0, currentProgressItem: 0)
-		self.progressNotificationManager.sendDeepProgressNotificatin(notificationType: .duplicateVideo, totalProgressItems: 0, currentProgressItem: 0)
-		self.progressNotificationManager.sendDeepProgressNotificatin(notificationType: .similarVideo, totalProgressItems: 0, currentProgressItem: 0)
-		self.progressNotificationManager.sendDeepProgressNotificatin(notificationType: .screenRecordings, totalProgressItems: 0, currentProgressItem: 0)
+		self.progressNotificationManager.sendDeepProgressNotification(notificationType: .largeVideo, status: .sleeping, totalProgressItems: 0, currentProgressItem: 0)
+		self.progressNotificationManager.sendDeepProgressNotification(notificationType: .duplicateVideo, status: .sleeping, totalProgressItems: 0, currentProgressItem: 0)
+		self.progressNotificationManager.sendDeepProgressNotification(notificationType: .similarVideo, status: .sleeping, totalProgressItems: 0, currentProgressItem: 0)
+		self.progressNotificationManager.sendDeepProgressNotification(notificationType: .screenRecordings, status: .sleeping, totalProgressItems: 0, currentProgressItem: 0)
 		
-		self.progressNotificationManager.sendDeepProgressNotificatin(notificationType: .similarPhoto, totalProgressItems: 0, currentProgressItem: 0)
-		self.progressNotificationManager.sendDeepProgressNotificatin(notificationType: .duplicatePhoto, totalProgressItems: 0, currentProgressItem: 0)
-		self.progressNotificationManager.sendDeepProgressNotificatin(notificationType: .screenshots, totalProgressItems: 0, currentProgressItem: 0)
-		self.progressNotificationManager.sendDeepProgressNotificatin(notificationType: .similarLivePhoto, totalProgressItems: 0, currentProgressItem: 0)
+		self.progressNotificationManager.sendDeepProgressNotification(notificationType: .similarPhoto, status: .sleeping, totalProgressItems: 0, currentProgressItem: 0)
+		self.progressNotificationManager.sendDeepProgressNotification(notificationType: .duplicatePhoto, status: .sleeping, totalProgressItems: 0, currentProgressItem: 0)
+		self.progressNotificationManager.sendDeepProgressNotification(notificationType: .screenshots, status: .sleeping, totalProgressItems: 0, currentProgressItem: 0)
+		self.progressNotificationManager.sendDeepProgressNotification(notificationType: .similarLivePhoto, status: .sleeping, totalProgressItems: 0, currentProgressItem: 0)
 	}
 }
 
 extension DeepCleanManager {
+	
+	public func startingDeepCleaningProcessing(with model: DeepCleanModel, completionHandler: @escaping (Int) -> Void, concelCompletionHandler: @escaping () -> Void) {
 		
-	public func startingDeepCleanProcessing(with selectedCollectionsIDs: [PhotoMediaType : [String]], photoVideoGroups: [PhotoMediaType : [PhassetGroup]], contactsFlowGroups: [PhotoMediaType : [ContactsGroup]], completionHandler: @escaping (Int) -> Void, canceledConpletionHandler: @escaping () -> Void) {
+		U.notificationCenter.post(name: .removeContactsStoreObserver, object: nil)
 		
 		var photoVideoDeleteProcessingIDS: [String] = []
-		var mergeContactsGroupsProcessingIDS:  [String] = []
 		var deleteContactsProcessingODS: [String] = []
 		var mergeContactsGroups: [ContactsGroup] = []
 		var errorsCount: Int = 0
 		
-		U.notificationCenter.post(name: .removeContactsStoreObserver, object: nil)
 		self.handleProgressNotification(of: .prepareCleaning, with: 0, and: 0)
 		
-		for (key, value) in selectedCollectionsIDs {
+		for (key, value) in model.objects {
 			switch key {
-				case .similarPhotos, .duplicatedPhotos, .singleScreenShots, .singleLivePhotos, .similarLivePhotos, .similarSelfies, .singleRecentlyDeletedPhotos, .singleLargeVideos, .duplicatedVideos, .similarVideos:
-					photoVideoDeleteProcessingIDS.append(contentsOf: value)
+				case .similarPhotos, .duplicatedPhotos, .singleScreenShots, .similarSelfies, .similarLivePhotos, .singleLargeVideos, .duplicatedVideos, .similarVideos, .singleScreenRecordings:
+					photoVideoDeleteProcessingIDS.append(contentsOf: value.selectedAssetsCollectionID)
 				case .emptyContacts:
-					deleteContactsProcessingODS.append(contentsOf: value)
+					deleteContactsProcessingODS.append(contentsOf: value.selectedAssetsCollectionID)
 				case .duplicatedContacts, .duplicatedPhoneNumbers, .duplicatedEmails:
-						mergeContactsGroupsProcessingIDS.append(contentsOf: value)
-					if let duplicatedContacts = contactsFlowGroups[key] {
-						for id in value {
-							if let group = duplicatedContacts.first(where: {$0.groupIdentifier == id}) {
-								mergeContactsGroups.append(group)
-							}
-						}
-					}
+					mergeContactsGroups.append(contentsOf: value.getContactsMergeGroups())
 				default:
-					debugPrint("no key")
+					debugPrint("")
 			}
 		}
-		
+	
 		let deepCleanProcessingCleaningOperation = ConcurrentProcessOperation { operation in
 			
 			photoVideoDeleteProcessingIDS = Array(Set(photoVideoDeleteProcessingIDS))
@@ -267,7 +235,7 @@ extension DeepCleanManager {
 					let deletedAssets = PHAsset.fetchAssets(withLocalIdentifiers: assetsSelectedIdentifiers, options: nil)
 					PHPhotoLibrary.shared().performChanges {
 						if operation.isCancelled {
-							canceledConpletionHandler()
+							concelCompletionHandler()
 							return
 						}
 						PHAssetChangeRequest.deleteAssets(deletedAssets)
@@ -291,7 +259,7 @@ extension DeepCleanManager {
 					
 					for contact in contacts {
 						if operation.isCancelled {
-							canceledConpletionHandler()
+							concelCompletionHandler()
 							return
 						}
 						
@@ -320,7 +288,7 @@ extension DeepCleanManager {
 			for group in mergeContactsGroups {
 				
 				if operation.isCancelled {
-					canceledConpletionHandler()
+					concelCompletionHandler()
 					return
 				}
 				
@@ -348,7 +316,7 @@ extension DeepCleanManager {
 					for deletingContact in deletingContacts {
 						
 						if operation.isCancelled {
-							canceledConpletionHandler()
+							concelCompletionHandler()
 							return
 						}
 						
@@ -385,5 +353,6 @@ extension DeepCleanManager {
 	
 	public func stopDeepCleanOperation() {
 		self.wholeCleanOperationQueuer.cancelAll()
+		self.deepCleanOperationQue.cancelAll()
 	}
 }

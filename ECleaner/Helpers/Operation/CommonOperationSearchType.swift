@@ -66,6 +66,43 @@ enum CommonOperationSearchType: CaseIterable {
 		}
 	}
 	
+	var mediaType: PhotoMediaType {
+		switch self {
+			case .similarPhotoAssetsOperaton:
+				return .similarPhotos
+			case .utitlityDuplicatedPhotoTuplesOperation:
+				return .duplicatedPhotos
+			case .duplicatedPhotoAssetsOperation:
+				return .duplicatedPhotos
+			case .screenShotsAssetsOperation:
+				return .singleScreenShots
+			case .similarSelfiesAssetsOperation:
+				return .similarSelfies
+			case .livePhotoAssetsOperation:
+				return .singleLivePhotos
+			case .recentlyDeletedOperation:
+				return .none
+			case .largeVideoContentOperation:
+				return .singleLargeVideos
+			case .duplicatedVideoAssetOperation:
+				return .duplicatedVideos
+			case .similarVideoAssetsOperation:
+				return .similarVideos
+			case .screenRecordingsVideoOperation:
+				return .singleScreenRecordings
+			case .emptyContactOperation:
+				return .emptyContacts
+			case .duplicatedNameOperation:
+				return .duplicatedContacts
+			case .duplicatedPhoneNumbersOperation:
+				return .duplicatedPhoneNumbers
+			case .duplicatedEmailsOperation:
+				return .duplicatedEmails
+			case .none:
+				return .none
+		}
+	}
+	
 	static func getOperationType(from rawValue: String) -> CommonOperationSearchType? {
 		for type in CommonOperationSearchType.allCases {
 			if type.rawValue == rawValue {

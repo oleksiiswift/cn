@@ -447,8 +447,7 @@ extension ContactsViewController {
                 }
             }
         } else if contentType == .emptyContacts {
-			self.contactManager.getSingleDuplicatedCleaningContacts(of: .emptyContacts, allowNotification: false) { contactsGroups in
-
+			self.contactManager.getSingleDuplicatedCleaningContacts(of: .emptyContacts, cleanProcessingType: .singleSearch) { contactsGroups in
                 U.UI {
                     
                     self.setCancelAndDeselectAllItems()

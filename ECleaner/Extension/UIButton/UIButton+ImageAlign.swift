@@ -41,7 +41,7 @@ extension UIButton {
     func addCenterImage(image: UIImage, imageWidth: CGFloat, imageHeight: CGFloat, spacing: CGFloat = 0) {
         
         let imageView = UIImageView(image: image)
-        
+		imageView.tag = 100500
         imageView.translatesAutoresizingMaskIntoConstraints = false
         
         self.addSubview(imageView)

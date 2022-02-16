@@ -45,6 +45,7 @@ class PhotoCollectionViewCell: UICollectionViewCell {
 	private var imageRequestID: PHImageRequestID?
     
     var delegate: PhotoCollectionViewCellDelegate?
+	var requestedAssetIdentifier: NSNumber?
         
     override func prepareForReuse() {
         super.prepareForReuse()
@@ -141,26 +142,21 @@ extension PhotoCollectionViewCell: Themeble {
 		bulbview.backgroundColor = cellContentType.screenAcentTintColor
     }
 	
-	public func loadThumnailImage(_ image: UIImage) {
-		self.photoThumbnailImageView.image = image
-	}
-    
-	public func loadCellThumbnail(_ asset: PHAsset, imageManager: PHCachingImageManager) {
+	public func loadCellThumbnail(_ asset: PHAsset, imageManager: PHCachingImageManager, size: CGSize) {
 		self.unload()
 		
 		self.imageManager = imageManager
 		
 		let options = PhotoManager.shared.requestOptions
-		let scale = U.mainScreen.scale
-		let thumbnailSize = CGSize(width: 300 * scale, height: 300 * scale)
-		
-		let requestedAssetIdentifier = asset.localIdentifier
-		
-		imageRequestID = imageManager.requestImage(for: asset, targetSize: thumbnailSize, contentMode: .aspectFill, options: options, resultHandler: { image, _ in
-			if requestedAssetIdentifier == asset.localIdentifier {
-				if let image = image {
-					self.photoThumbnailImageView.image = image
+				
+		imageRequestID = imageManager.requestImage(for: asset, targetSize: size, contentMode: .aspectFill, options: options, resultHandler: { image, info in
+			
+			if let index = self.indexPath, self.tag == index.section * 1000 + index.row {
+				if let loadedImage = image {
+					self.photoThumbnailImageView.image = loadedImage
 				}
+			} else {
+				self.photoThumbnailImageView.image = nil
 			}
 		})
 				
@@ -188,14 +184,15 @@ extension PhotoCollectionViewCell: Themeble {
         }
     }
 	
-	private func unload() {
+	public func unload() {
+		photoThumbnailImageView.image = nil
+		
 		if imageRequestID != nil && imageManager != nil {
 			imageManager!.cancelImageRequest(imageRequestID!)
 		}
+
 		imageRequestID = nil
 		imageManager = nil
-		photoThumbnailImageView.image = nil
-		
 	}
 
     public func checkIsSelected() {
