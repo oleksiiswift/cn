@@ -83,6 +83,19 @@ class Images {
 			static let checkmark = UIImage(named: "videoSectionSelect")!
         }
     }
+	
+	struct setting {
+		static let premiumBanner = UIImage(named: "settingsPremiumBanner")!
+		static let largeVideo = UIImage(named: "photoProcessingEmptyItem")!
+		static let storage = UIImage(named: "photoProcessingEmptyItem")!
+		static let permission = UIImage(named: "photoProcessingEmptyItem")!
+		static let restore = UIImage(named: "photoProcessingEmptyItem")!
+		static let support = UIImage(named: "photoProcessingEmptyItem")!
+		static let share = UIImage(named: "photoProcessingEmptyItem")!
+		static let rate = UIImage(named: "photoProcessingEmptyItem")!
+		static let privacy = UIImage(named: "photoProcessingEmptyItem")!
+		static let terms = UIImage(named: "photoProcessingEmptyItem")!
+	}
 
     
 //  TODO: Check all images!!!!

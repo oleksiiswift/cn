@@ -269,6 +269,7 @@ class Constants {
             static let contacts = "Contacts"
             static let contactsGroup = "ContactsGroup"
             static let exportContacts = "ExportContact"
+			static let settings = "Settings"
         }
         
         struct viewControllers {
@@ -284,6 +285,8 @@ class Constants {
             static let deepClean = "DeepCleaningViewController"
             static let contactsGroup = "ContactsGroupViewController"
             static let expordContacts = "ExportContactsViewController"
+			static let settings = "SettingsViewController"
+			
         }
         
         struct cells {
@@ -295,6 +298,7 @@ class Constants {
             static let cleanInfoCell = "DeepCleanInfoTableViewCell"
             static let contactCell = "ContactTableViewCell"
             static let groupContactCell = "GroupContactTableViewCell"
+			static let helperBannerCell = "HelperBannerTableViewCell"
         }
         
         struct views {
@@ -315,6 +319,7 @@ class Constants {
             static let cleanInfoCell = "DeepCleanInfoTableViewCell"
             static let contactCell = "ContactTableViewCell"
             static let groupContactCell = "GroupContactTableViewCell"
+			static let bannerCell = "HelperBannerTableViewCell"
             /// `views`
             static let groupHeader = "GroupedAssetsReusableHeaderView"
             static let groupFooter = "GroupedAssetsReusableFooterView"

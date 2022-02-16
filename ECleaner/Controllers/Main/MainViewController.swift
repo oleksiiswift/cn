@@ -213,7 +213,12 @@ extension MainViewController {
         self.navigationController?.pushViewController(viewController, animated: true)
     }
     
-    private func openSettingsController() {}
+    private func openSettingsController() {
+		
+		let storyboard = UIStoryboard(name: C.identifiers.storyboards.settings, bundle: nil)
+		let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.settings) as! SettingsViewController
+		self.navigationController?.pushViewController(viewController, animated: true)
+	}
     
     private func openSubscriptionController() {}
 }

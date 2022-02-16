@@ -118,6 +118,7 @@
                 <outlet property="contentTypeTextLabel" destination="tma-fH-2HY" id="CaB-SW-CFp"/>
                 <outlet property="horizontalProgressView" destination="gCn-qZ-Nih" id="2qu-9X-In9"/>
                 <outlet property="reuseShadowRoundedView" destination="a7D-8P-t7B" id="ib0-82-C2C"/>
+                <outlet property="reuseShadowView" destination="kmy-RS-29w" id="slY-M3-cY3"/>
                 <outlet property="rightArrowImageView" destination="Hxb-wJ-Nlm" id="Bka-ZC-xzX"/>
             </connections>
             <point key="canvasLocation" x="89.130434782608702" y="20.424107142857142"/>
