@@ -50,6 +50,11 @@ class Images {
             static let star = UIImage(named: "starItem")!
             static let arrowUP = UIImage(named: "arrowUpDown")!
         }
+		
+		struct helpersItems {
+			static let filledSegmentDotSlider = UIImage(named: "filledSegmentSlider")
+			static let segmentDotSlider = UIImage(named: "sigmentSlider")
+		}
         
         struct backroundStaticItems {
             static let spreadBackground = UIImage(named: "dateViewBackground")!

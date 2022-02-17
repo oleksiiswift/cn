@@ -23,6 +23,10 @@
                                     <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="E2E-he-Gnh">
                                         <rect key="frame" x="0.0" y="0.0" width="414" height="772"/>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                        <connections>
+                                            <outlet property="dataSource" destination="Y6W-OH-hqX" id="qDW-Im-7i8"/>
+                                            <outlet property="delegate" destination="Y6W-OH-hqX" id="FxA-fg-2Ot"/>
+                                        </connections>
                                     </tableView>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -57,11 +61,22 @@
                     <connections>
                         <outlet property="navigationBar" destination="agV-Qi-8Eb" id="4tH-PM-KgS"/>
                         <outlet property="tableView" destination="E2E-he-Gnh" id="bQa-eq-n7r"/>
+                        <segue destination="1Ga-p1-W0d" kind="show" identifier="ShowVideoSizeSelectorSegue" customClass="ShowVideoSizeSelectorViewControllerSegue" customModule="ECleaner" customModuleProvider="target" id="ibr-mT-Ofx"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ief-a0-LHa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="963.76811594202911" y="116.51785714285714"/>
+        </scene>
+        <!--SizeSelector-->
+        <scene sceneID="CoI-9W-HmV">
+            <objects>
+                <viewControllerPlaceholder storyboardName="SizeSelector" id="1Ga-p1-W0d" sceneMemberID="viewController">
+                    <navigationItem key="navigationItem" id="VfL-Mc-y3d"/>
+                </viewControllerPlaceholder>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="cMg-ut-QpI" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2199" y="117"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="eTH-fa-MLM">

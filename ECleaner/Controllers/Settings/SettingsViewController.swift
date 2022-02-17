@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SwiftMessages
 
 class SettingsViewController: UIViewController {
 	
@@ -24,6 +25,15 @@ class SettingsViewController: UIViewController {
 		setupDelegate()
 		updateColors()
     }
+		
+	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+		 switch segue.identifier {
+			 case C.identifiers.segue.showSizeSelector:
+				 self.setupShowVideoSizeSelectorController(segue: segue)
+			  default:
+				   break
+		 }
+	}
 }
 
 extension SettingsViewController {
@@ -83,6 +93,7 @@ extension SettingsViewController {
 	private func setupDelegate() {
 		
 		navigationBar.delegate = self
+		settingsDataSource.delegate = self
 	}
 }
 
@@ -103,4 +114,106 @@ extension SettingsViewController: NavigationBarDelegate {
 	}
 	
 	func didTapRightBarButton(_ sender: UIButton) {}
+}
+
+
+extension SettingsViewController {
+	
+	
+	private func setupShowVideoSizeSelectorController(segue: UIStoryboardSegue) {
+		
+		guard let segue = segue as? SwiftMessagesSegue else { return }
+		
+		segue.configure(layout: .bottomMessage)
+		segue.dimMode = .gray(interactive: false)
+		segue.interactiveHide = false
+		segue.messageView.configureNoDropShadow()
+		segue.messageView.backgroundHeight = Device.isSafeAreaiPhone ? 358 : 338
+		
+		if let destinationViewController = segue.destination as? VideoSpaceSelectorViewController {
+			
+		}
+	}
+}
+
+
+extension SettingsViewController: SettingActionsDelegate {
+	
+	public func setAction(at cell: SettingsModel) {
+		switch cell {
+			case .premium:
+				self.showPremiumController()
+			case .largeVideos:
+				self.showLargeVideoSettings()
+			case .dataStorage:
+				self.showDataStorageInfo()
+			case .permissions:
+				self.showPermissionController()
+			case .restore:
+				self.showRestorePurchaseAction()
+			case .support:
+				self.showSupportAction()
+			case .share:
+				self.showShareAppAction()
+			case .rate:
+				self.showRateUSAction()
+			case .privacypolicy:
+				self.showPrivacyPolicyAction()
+			case .termsOfUse:
+				self.showTermsOfUseAction()
+		}
+	}
+	
+	private func showPremiumController() {
+		debugPrint("showPremiumController")
+	}
+	
+	private func showLargeVideoSettings() {
+		
+		performSegue(withIdentifier: C.identifiers.segue.showSizeSelector, sender: self)
+	}
+	
+	private func showDataStorageInfo() {
+		debugPrint("showDataStorageInfo")
+	}
+	
+	private func showPermissionController() {
+		debugPrint("showPermissionController")
+	}
+	
+	private func showRestorePurchaseAction() {
+		debugPrint("showRestorePurchaseAction")
+	}
+	
+	private func showSupportAction() {
+		debugPrint("showSupportAction")
+	}
+	
+	private func showShareAppAction() {
+		debugPrint("showShareAppAction")
+	}
+	
+	private func showRateUSAction() {
+		debugPrint("showRateUSAction")
+	}
+	
+	private func showPrivacyPolicyAction() {
+		debugPrint("showPrivacyPolicyAction")
+	}
+	
+	private func showTermsOfUseAction() {
+		debugPrint("showTermsOfUseAction")
+	}
+}
+
+extension SettingsViewController {
+	
+	private func showWebView(with url: URL) {
+		
+	}
+}
+
+
+protocol SettingActionsDelegate {
+	func setAction(at cell: SettingsModel)
 }

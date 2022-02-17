@@ -342,6 +342,7 @@ class Constants {
         struct segue {
             static let showDatePicker = "ShowDatePickerSelectorViewControllerSegue"
             static let showExportContacts = "ShowExportContactsViewControllerSegue"
+			static let showSizeSelector = "ShowVideoSizeSelectorSegue"
         }
     }
     

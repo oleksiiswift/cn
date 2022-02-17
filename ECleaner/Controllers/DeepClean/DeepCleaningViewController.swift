@@ -285,6 +285,7 @@ extension DeepCleaningViewController {
 		  U.delay(0.5) {
 			   self.updateCellInfoCount(by: mediaType, contentType: contentType)
 			   self.updateTotalFilesTitleChecked()
+			   Vibration.success.vibrate()
 		  }
 	 }
      
@@ -299,6 +300,7 @@ extension DeepCleaningViewController {
 		  U.delay(0.5) {
 			   self.updateCellInfoCount(by: .userContacts, contentType: contentType)
 			   self.updateTotalFilesTitleChecked()
+			   Vibration.success.vibrate()
 		  }
 	 }
      

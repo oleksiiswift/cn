@@ -9,8 +9,6 @@ import UIKit
 
 class SettingsViewModel {
 	
-	public var settingsController = SettingsController()
-	
 	private var sections: [SettingsSection]
 	public var controllerTitle = "Settings"
 	

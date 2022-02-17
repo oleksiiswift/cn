@@ -7,12 +7,12 @@
 
 import UIKit
 
-
 class SettingsDataSource: NSObject {
-	
-	private var settingsController = SettingsController()
+
 	public var settingsViewModel: SettingsViewModel
 	public var didSelectedSettings: ((SettingsModel) -> Void) = {_ in }
+	
+	public var delegate: SettingActionsDelegate?
 	
 	init(settingsViewModel: SettingsViewModel) {
 		self.settingsViewModel = settingsViewModel
@@ -66,7 +66,7 @@ extension SettingsDataSource: UITableViewDelegate, UITableViewDataSource {
 	
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		let model = settingsViewModel.getSettingsModel(at: indexPath)
-		self.settingsController.setAction(at: model)
+		self.delegate?.setAction(at: model)
 	}
 	
 	func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
