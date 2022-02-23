@@ -33,6 +33,7 @@ class Constants {
             static let lowerBoundSavedDate = "lowerBoundSavedDate"
             static let upperBoundSavedDate = "upperBoundSavedDate"
             static let lastSmartClean = "lastSmartClean"
+			static let largeVideoLowerSize = "largeVideoLowerSize"
             
             static let photoSpace = "photoDiskSpace"
             static let videoSpace = "videoDiskSpace"

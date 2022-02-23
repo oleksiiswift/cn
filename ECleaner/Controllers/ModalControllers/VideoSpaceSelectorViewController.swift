@@ -15,7 +15,7 @@ enum LargeVideoSize {
 	case hight
 	case superHight
 	
-	var rawValue: Int {
+	var rawValue: Int64 {
 		switch self {
 			case .superLow:
 				return 33000000
@@ -42,6 +42,7 @@ class VideoSpaceSelectorViewController: UIViewController {
 	@IBOutlet weak var sliderContainerView: UIView!
 	
 	lazy var sizeControll = StepSlider()
+	private var largeVideoSize: LargeVideoSize?
 	
 	override func viewDidLoad() {
         super.viewDidLoad()
@@ -49,9 +50,15 @@ class VideoSpaceSelectorViewController: UIViewController {
         setupNavigation()
 		setupUI()
 		stepSliderSetup()
+		setSliderIndex()
 		delegateSetup()
 		updateColors()
     }
+	
+	override func viewDidAppear(_ animated: Bool) {
+		super.viewDidAppear(animated)
+		
+	}
 	
 	override func viewDidLayoutSubviews() {
 		super.viewDidLayoutSubviews()
@@ -80,20 +87,49 @@ extension VideoSpaceSelectorViewController {
 	}
 	
 	private func setSliderValue(_ size: LargeVideoSize) {
+		self.largeVideoSize = size
+	}
+	
+	private func setSliderIndex() {
 		
+		let size = SettingsManager.largeVideoLowerSize
+		let index = self.getSliderIndex(rawValue: size)
+		self.sizeControll.index = index
+		changeSliderValue()
+	}
+	
+	private func getSliderIndex(rawValue: Int64) -> UInt {
+		switch rawValue {
+			case LargeVideoSize.superLow.rawValue:
+				return 0
+			case LargeVideoSize.low.rawValue:
+				return 1
+			case LargeVideoSize.medium.rawValue:
+				return 2
+			case LargeVideoSize.midleHight.rawValue:
+				return 3
+			case LargeVideoSize.hight.rawValue:
+				return 4
+			case LargeVideoSize.superHight.rawValue:
+				return 5
+			default:
+				return 2
+		}
 	}
 }
 
 extension VideoSpaceSelectorViewController: BottomActionButtonDelegate {
 	
 	func didTapActionButton() {
-		self.closeDatePicker()
+		
+		if let size = self.largeVideoSize {
+			SettingsManager.largeVideoLowerSize = size.rawValue
+		}
+		self.closeSizePicker()
 	}
 	
-	private func closeDatePicker() {
-		self.dismiss(animated: true) {
-			debugPrint("set value")
-		}
+	private func closeSizePicker() {
+		self.dismiss(animated: true) {}
 	}
 }
 
@@ -126,7 +162,7 @@ extension VideoSpaceSelectorViewController {
 	
 	private func stepSliderSetup() {
 		
-		sizeControll.maxCount = 5
+		sizeControll.maxCount = 6
 		sizeControll.enableHapticFeedback = true
 		
 		sizeControll.setTrackCircleImage(I.systemItems.helpersItems.filledSegmentDotSlider, for: .selected)
@@ -134,7 +170,7 @@ extension VideoSpaceSelectorViewController {
 		
 		sizeControll.trackCircleRadius = 12
 		sizeControll.trackHeight = 4
-		
+	
 		sliderContainerView.addSubview(sizeControll)
 		sizeControll.translatesAutoresizingMaskIntoConstraints = false
 		

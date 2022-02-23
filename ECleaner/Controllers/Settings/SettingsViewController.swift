@@ -99,7 +99,12 @@ extension SettingsViewController {
 
 extension SettingsViewController: Themeble {
 	
-	func setupUI() {}
+	func setupUI() {
+		
+		if !U.hasTopNotch {
+			self.tableView.contentInset.bottom = 20
+		}
+	}
 	
 	func updateColors() {
 		self.view.backgroundColor = theme.backgroundColor
