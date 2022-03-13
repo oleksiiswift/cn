@@ -592,6 +592,11 @@ extension MediaContentViewController {
 		viewController.navigationTitle = content.mediaTypeName
 		viewController.contentType = content
 		viewController.mediaType = .userContacts
+		
+		viewController.updatableContactsAfterProcessing = { contactsGroup, mediaType in
+			self.updateGroupedContacts(contacts: contactsGroup, media: mediaType)
+		}
+		
 		self.navigationController?.pushViewController(viewController, animated: true)
 	}
 }

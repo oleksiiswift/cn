@@ -130,7 +130,7 @@ extension AlertManager {
     
         let alertType: AlertType = contacts == .one ? .deleteContact : .deleteContacts
         
-        let allowDeleteAction = UIAlertAction(title: "ok", style: .default) { _ in
+        let allowDeleteAction = UIAlertAction(title: "delete", style: .default) { _ in
             completion()
         }
         
@@ -149,7 +149,7 @@ extension AlertManager {
         
         let alertType: AlertType = sections == .one ? .mergeContact : .mergeContacts
         
-        let allowMergeContacts = UIAlertAction(title: "ok", style: .default) { _ in
+        let allowMergeContacts = UIAlertAction(title: "merge", style: .default) { _ in
             comletion()
         }
         

@@ -179,6 +179,7 @@
 		9781AE9327A6C5B80030555F /* PreviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9781AE9227A6C5B80030555F /* PreviewViewController.swift */; };
 		9781AE9527A6C7690030555F /* PreviewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9781AE9427A6C7690030555F /* PreviewDataSource.swift */; };
 		9784D3A82742CDDB00340D97 /* ReuseShadowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9784D3A72742CDDB00340D97 /* ReuseShadowView.swift */; };
+		9785E54727DD6E61000B360C /* UINavigationController+Completion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9785E54627DD6E61000B360C /* UINavigationController+Completion.swift */; };
 		978FEF12274BB73700ADE1D9 /* AlertType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978FEF11274BB73700ADE1D9 /* AlertType.swift */; };
 		978FEF14274BC21A00ADE1D9 /* ProgressAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978FEF13274BC21A00ADE1D9 /* ProgressAlertController.swift */; };
 		978FEF1A274C1C5400ADE1D9 /* UIAlertController+Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978FEF19274C1C5400ADE1D9 /* UIAlertController+Colors.swift */; };
@@ -463,6 +464,7 @@
 		9781AE9227A6C5B80030555F /* PreviewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewViewController.swift; sourceTree = "<group>"; };
 		9781AE9427A6C7690030555F /* PreviewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewDataSource.swift; sourceTree = "<group>"; };
 		9784D3A72742CDDB00340D97 /* ReuseShadowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReuseShadowView.swift; sourceTree = "<group>"; };
+		9785E54627DD6E61000B360C /* UINavigationController+Completion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UINavigationController+Completion.swift"; sourceTree = "<group>"; };
 		978FEF11274BB73700ADE1D9 /* AlertType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertType.swift; sourceTree = "<group>"; };
 		978FEF13274BC21A00ADE1D9 /* ProgressAlertController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressAlertController.swift; sourceTree = "<group>"; };
 		978FEF19274C1C5400ADE1D9 /* UIAlertController+Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIAlertController+Colors.swift"; sourceTree = "<group>"; };
@@ -962,6 +964,7 @@
 				97C70B4F277633AC0033F466 /* UIImage+Gradient.swift */,
 				97DA18F02797502B00427587 /* Thread+Extension.swift */,
 				97EB665027B1A4AE00B21EF5 /* CGSize+pixel.swift */,
+				9785E54827DD6E66000B360C /* UINavigationController */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -1418,6 +1421,14 @@
 				97D2BECB275A3D06002082EB /* CNContactVCard+ImageData.swift */,
 			);
 			path = CNContacts;
+			sourceTree = "<group>";
+		};
+		9785E54827DD6E66000B360C /* UINavigationController */ = {
+			isa = PBXGroup;
+			children = (
+				9785E54627DD6E61000B360C /* UINavigationController+Completion.swift */,
+			);
+			path = UINavigationController;
 			sourceTree = "<group>";
 		};
 		979278672771241F0090F368 /* FileFormats */ = {
@@ -2027,6 +2038,7 @@
 				97238A132689EF6E00C523DC /* Presenter.swift in Sources */,
 				97FC7894268882C9000D7F26 /* Date+DateFormatter.swift in Sources */,
 				04649B3C268C98A900336FE4 /* UIButton+RemoveAnimation.swift in Sources */,
+				9785E54727DD6E61000B360C /* UINavigationController+Completion.swift in Sources */,
 				977FE23527302F57004DE4C3 /* ContactGroupListViewModel.swift in Sources */,
 				04649B31268C507F00336FE4 /* GroupedAssetsReusableHeaderView.swift in Sources */,
 				97238A112689EECE00C523DC /* UIView+BlurView.swift in Sources */,

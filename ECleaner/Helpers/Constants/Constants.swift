@@ -99,6 +99,11 @@ class Constants {
             static let selectedContactsDidChange = "selectedContactsDidChange"
         }
 		
+		struct dispatch {
+			static let mergeContacts = "merge contacts label"
+			static let deleteContacts = "deleting contacts label"
+		}
+		
 		struct operation {
 			
 			struct queue {
@@ -346,6 +351,12 @@ class Constants {
 			static let showSizeSelector = "ShowVideoSizeSelectorSegue"
         }
     }
+	
+	struct uiElementsNames {
+		struct layers {
+			static let progressLayer = "progress"
+		}
+	}
     
     struct dateFormat {
         static let dmy = "dd-MM-yyy"

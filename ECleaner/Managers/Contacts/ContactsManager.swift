@@ -758,57 +758,65 @@ extension ContactsManager {
 //		MARK: - MERGE CONTACTS -
 extension ContactsManager {
 	
-	public func mergeContacts(in group: [ContactsGroup], merged indexes: [Int], completionHandler: @escaping (Bool, [Int]) -> Void) {
+	public func mergeContacts(in groups: [ContactsGroup], merged indexes: [Int], currentCompletionIndex: @escaping(_ progressType: ProgressContactsAlertType,_ currentIndex: Int,_ totalIndexes: Int) -> Void, completionHandler: @escaping(_ suxxes: Bool,_ mergedIndexes: [Int]) -> Void) {
 		
 		let mergeContactsOperation = ConcurrentProcessOperation { operation in
 			
-			var errorsCount: Int = 0
-			var deleteSelectionIndexCount: Int = 0
+			var deletingContacts: [CNContact] = []
 			var indexesForUpdate: [Int] = []
-			var fullCircleIndexesCount = 0
 			
-			for index in indexes {
-	
-				if operation.isCancelled {
-					completionHandler(true, indexesForUpdate)
-					return
-				}
-				
-				
-				self.contactsMerge(in: group[index]) { _, deleteContacts in
-					self.deleteContacts(deleteContacts) { suxxess, deleteCount in
-						if suxxess {
-							deleteSelectionIndexCount += 1
+			let dispatchGroup = DispatchGroup()
+			let dispatchQuoue = DispatchQueue(label: C.key.dispatch.mergeContacts)
+			let dispatchSemaphore = DispatchSemaphore(value: 0)
+			
+			var currentMergeProcessingIndex = 0
+			
+			dispatchQuoue.async {
+				for index in indexes {
+					autoreleasepool {
+						dispatchGroup.enter()
+						self.contactsMerge(in: groups[index]) { mutableContactID, removebleContacts in
+						
+							if operation.isCancelled {
+								completionHandler(false, indexesForUpdate)
+								return
+							}
+							
+							currentMergeProcessingIndex += 1
+							deletingContacts.append(contentsOf: removebleContacts)
 							indexesForUpdate.append(index)
-						} else {
-							let errors = deleteContacts.count - deleteCount
-							errorsCount += errors
+							currentCompletionIndex(.mergeContacts, currentMergeProcessingIndex, indexes.count)
+							dispatchSemaphore.signal()
+							dispatchGroup.leave()
+							debugPrint("leave -> currentMergeIndex: \(currentMergeProcessingIndex)")
 						}
-						
-						fullCircleIndexesCount += 1
-						
-						let calculetedProgress: CGFloat = CGFloat(100 * deleteSelectionIndexCount / indexes.count) / 100
-						let totalProcessing: String = "\(deleteSelectionIndexCount) / \(indexes.count)"
-						
-						let userInfo: [String : Any] = [C.key.notificationDictionary.progressAlert.progrssAlertValue: calculetedProgress,
-														C.key.notificationDictionary.progressAlert.progressAlertFilesCount: totalProcessing]
-						
-						U.notificationCenter.post(name: .progressMergeContactsAlertDidChangeProgress, object: nil, userInfo: userInfo)
-						sleep(UInt32(0.1))
-						
-						if indexes.count == deleteSelectionIndexCount {
-							completionHandler(true, indexesForUpdate)
-						} else if indexes.count == fullCircleIndexesCount {
-							completionHandler(false, indexesForUpdate)
+						debugPrint("wait")
+						dispatchSemaphore.wait()
+						debugPrint("leave wait")
+					}
+				}
+			}
+			
+			dispatchGroup.notify(queue: dispatchQuoue) {
+				U.delay(0.3) {
+					let contacts = Array(Set(deletingContacts))
+					currentCompletionIndex(.deleteContacts, 0, contacts.count)
+					U.delay(0.3) {
+						self.deleteAsyncContacts(contacts) { currentDeletingContactIndex in
+							currentCompletionIndex(.deleteContacts, currentDeletingContactIndex, contacts.count)
+						} completionHandler: { errorsCount in
+							completionHandler(errorsCount == 0, indexesForUpdate)
 						}
 					}
 				}
 			}
 		}
+		
 		mergeContactsOperation.name = C.key.operation.name.mergeContacts
 		contactsProcessingOperationQueuer.addOperation(mergeContactsOperation)
 	}
 	
+
 	public func contactsMerge(in group: ContactsGroup, deletingContactsCompletion: @escaping (String, [CNContact]) -> Void) {
 		
 		let contactsIDS: [String] = group.contacts.map({$0.identifier})
@@ -842,7 +850,7 @@ extension ContactsManager {
 			
 				/// `grouping contacts`
 			for contact in contactsDuplicates {
-				
+				debugPrint("->>> merged process")
 				if contact.fieldStatus() > bestGroupValue {
 					bestGroupValue = contact.fieldStatus()
 					futureBestContact = contact.mutableCopy() as! CNMutableContact
@@ -863,8 +871,9 @@ extension ContactsManager {
 				contact.contactRelations.forEach { contactRelations.append($0)}
 				contact.socialProfiles.forEach { socialProfiles.append($0)}
 				contact.instantMessageAddresses.forEach {instantMessageAddresses.append($0) }
-				
+				debugPrint("perform")
 				if contact.imageDataAvailable {
+					debugPrint("get data image")
 					if let data = contact.thumbnailImageData {
 						thumbnailsImageData.append(data)
 					}
@@ -892,16 +901,18 @@ extension ContactsManager {
 				contactRelations.forEach { mutableContact.contactRelations.append($0) }
 				socialProfiles.forEach { mutableContact.socialProfiles.append($0) }
 				instantMessageAddresses.forEach { mutableContact.instantMessageAddresses.append($0) }
-				
+				debugPrint("createmutable")
 				if !imagesData.isEmpty {
 					if let imageData = self.checkImages(from: imagesData) {
 						mutableContact.imageData = imageData
 					}
 				}
-				
-				self.update(contact: mutableContact) { result in
-					let removableContacts = contactsDuplicates.filter({ $0.identifier != mutableContact.identifier })
-					deletingContactsCompletion(mutableContact.identifier, removableContacts)
+				U.BG {
+					self.update(contact: mutableContact) { result in
+						debugPrint("update \(mutableContact.identifier)")
+						let removableContacts = contactsDuplicates.filter({ $0.identifier != mutableContact.identifier })
+						deletingContactsCompletion(mutableContact.identifier, removableContacts)
+					}
 				}
 			}
 		}
@@ -1045,6 +1056,51 @@ extension ContactsManager {
 //      MARK: - DELETE, CREATE, UPDATE CONTACTS METHODS -
 
 extension ContactsManager {
+	
+	private func deleteAsyncContacts(_ contacts: [CNContact], _ indexingHandler: @escaping(_ currentDeletingContactIndex: Int) -> Void, completionHandler: @escaping(_ errorsCount: Int) -> Void) {
+		
+		let deleteContactsOperation = ConcurrentProcessOperation { operation in
+			
+			var errorsCount = 0
+			let dispatchGroup = DispatchGroup()
+			let dispatchQueue = DispatchQueue(label: C.key.dispatch.deleteContacts)
+			let dispatchSemaphore = DispatchSemaphore(value: 0)
+			var currentDeletingContatsIndex = 0
+			
+			dispatchQueue.async {
+				for contact in contacts {
+					autoreleasepool {
+						dispatchGroup.enter()
+						self.deleteContact(contact) { success in
+							
+							if operation.isCancelled {
+								completionHandler(errorsCount)
+								return
+							}
+							
+							currentDeletingContatsIndex += 1
+							if !success {
+								errorsCount += 1
+							}
+							indexingHandler(currentDeletingContatsIndex)
+							dispatchSemaphore.signal()
+							dispatchGroup.leave()
+						}
+						dispatchSemaphore.wait()
+					}
+				}
+			}
+			
+			dispatchGroup.notify(queue: dispatchQueue) {
+				completionHandler(errorsCount)
+			}
+		}
+		
+		deleteContactsOperation.name = C.key.operation.name.deleteContacts
+		contactsProcessingOperationQueuer.addOperation(deleteContactsOperation)
+	}
+	
+	
 	
 	public func deleteContacts(_ contacts: [CNContact],_ completionHandler: @escaping ((Bool, Int) -> Void)) {
 		

@@ -26,16 +26,14 @@ class ContactsGroupViewController: UIViewController {
     public var contactGroupListDataSource: ContactsGroupDataSource!
     public var mediaType: MediaContentType = .none
     public var contentType: PhotoMediaType = .none
-    
+	
+	public var updatableContactsAfterProcessing: ((_ contactsGroups: [ContactsGroup],_ type: PhotoMediaType) -> Void)?
     private var isSelectedAllItems: Bool {
         return contactGroup.count == contactGroupListDataSource.selectedSections.count
     }
 	public var isDeepCleaningSelectableFlow: Bool = false
-	
+	private var isMergeContactsProcessing: Bool = true
 	private var previouslySelectedIndexPaths: [IndexPath] = []
-    
-    private var isMergeContactsProcessing: Bool = true
-    
     public var navigationTitle: String?
     private var bottomButtonHeight: CGFloat = 70
     
@@ -55,13 +53,13 @@ class ContactsGroupViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 		
-		!previouslySelectedIndexPaths.isEmpty ? didSelectPreviouslyIndexPath() : ()
+		!previouslySelectedIndexPaths.isEmpty ? didSelectPreviouslyIndexPath() : handleStartingSelectableAssets()
     }
 	
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
 		
-		previouslySelectedIndexPaths.isEmpty ? showSelectStartingAllContactsAlert() : ()
+//		previouslySelectedIndexPaths.isEmpty ? showSelectStartingAllContactsAlert() : ()
 	}
 	
     override func viewDidDisappear(_ animated: Bool) {
@@ -110,43 +108,58 @@ extension ContactsGroupViewController {
         guard !contactGroupListDataSource.selectedSections.isEmpty else { return }
         
         let totalIndexesCount = contactGroupListDataSource.selectedSections.count
-        let indexesForMerged = contactGroupListDataSource.selectedSections
+        let selectedSectionsIndexes = contactGroupListDataSource.selectedSections
 
         self.forceDeselectAllItems()
+		
         P.hideIndicator()
-        indexesForMerged.count > 1 ?  self.showMergeProgressAlert() : ()
+		
+		selectedSectionsIndexes.count > 1 ?  self.showMergeProgressAlert() : ()
     
         self.updateProgressMergeAlert(with: 0, total: "0 / \(totalIndexesCount)")
-        
-        self.contactsManager.mergeContacts(in: self.contactGroup, merged: indexesForMerged) { suxxess, mergedIndexes  in
-            let errorsCount = indexesForMerged.count - mergedIndexes.count
-            
-            mergedIndexes.count != 0 ? self.updateRemovedIndexes(mergedIndexes, errorsCount: errorsCount) : ()
-            
-            U.delay(1) {
-                if suxxess {
-                    if self.contactGroup.count == mergedIndexes.count {
-                        A.showSuxxessFullMerged(for: .many) {
-                            U.delay(1) {
-                                self.closeController()
-                            }
-                        }
-                    } else {
-                        
-                        if errorsCount == 0 {
-                            A.showSuxxessFullMerged(for: .many) {}
-                        } else {
-                            A.showSuxxessFullMerged(for: .many) {}
-                        }
-                    }
-                } else {
-                    ErrorHandler.shared.showMergeAlertError(.errorMergeContacts) {}
-                }
-                U.delay(0.5) {
-                    self.contactsManager.setProcess(.merge, state: .availible)
-                }
-            }
-        }
+		
+		U.delay(1) {
+			self.contactsManager.mergeContacts(in: self.contactGroup, merged: selectedSectionsIndexes) { progressType, currentIndex, totalIndexes in
+				switch progressType {
+					case .mergeContacts:
+						self.updateProgressAlert(of: progressType, currentPosition: currentIndex, totalProcessing: totalIndexes)
+					case .deleteContacts:
+						if !self.progressAlert.controllerPresented {
+							self.showDeleteProgressAlert()
+							self.updateProgressAlert(of: progressType, currentPosition: 0, totalProcessing: totalIndexes)
+							sleep(UInt32(0.3))
+						}
+						self.updateProgressAlert(of: progressType, currentPosition: currentIndex, totalProcessing: totalIndexes)
+				}
+			} completionHandler: { suxxess, indexes in
+				let errorsCount = selectedSectionsIndexes.count - indexes.count
+				
+				U.delay(1) {
+					if suxxess {
+						if self.contactGroup.count == indexes.count {
+							A.showSuxxessFullMerged(for: .many) {
+								U.delay(1) {
+									self.updateRemovedIndexes(indexes, errorsCount: errorsCount)
+									self.closeController()
+								}
+							}
+						} else {
+							indexes.count != 0 ? self.updateRemovedIndexes(indexes, errorsCount: errorsCount) : ()
+							if errorsCount == 0 {
+								A.showSuxxessFullMerged(for: .many) {}
+							} else {
+								A.showSuxxessFullMerged(for: .many) {}
+							}
+						}
+					} else {
+						ErrorHandler.shared.showMergeAlertError(.errorMergeContacts) {}
+					}
+					U.delay(0.5) {
+						self.contactsManager.setProcess(.merge, state: .availible)
+					}
+				}
+			}
+		}
     }
 	
 	private func didSelectPreviouslyIndexPath() {
@@ -318,12 +331,16 @@ extension ContactsGroupViewController: ProgressAlertControllerDelegate {
     
     private func showDeleteProgressAlert() {
         self.isMergeContactsProcessing = false
-        progressAlert.showDeleteContactsProgressAlert()
+		U.UI {
+			self.progressAlert.showDeleteContactsProgressAlert()
+		}
     }
     
     private func showMergeProgressAlert() {
         self.isMergeContactsProcessing = true
-        progressAlert.showMergeContactsProgressAlert()
+		U.UI {
+			self.progressAlert.showMergeContactsProgressAlert()
+		}
     }
     
     private func updateProgressMergeAlert(with progress: CGFloat, total filesProcessing: String) {
@@ -331,6 +348,16 @@ extension ContactsGroupViewController: ProgressAlertControllerDelegate {
             self.progressAlert.setProgress(progress, totalFilesProcessong: filesProcessing)
         }
     }
+	
+	private func updateProgressAlert(of type: ProgressContactsAlertType, currentPosition: Int, totalProcessing: Int) {
+		
+		let progress: CGFloat = CGFloat(100 * currentPosition / totalProcessing) / 100
+		let totalProcessingString: String = "\(currentPosition) / \(totalProcessing)"
+		
+		U.UI {
+			self.progressAlert.setProgress(progress, totalFilesProcessong: totalProcessingString)
+		}
+	}
     
     func didTapCancelOperation() {
         contactsManager.setProcess(self.isMergeContactsProcessing ? .merge : .delete, state: .disable)
@@ -457,7 +484,9 @@ extension ContactsGroupViewController: NavigationBarDelegate {
     }
     
     func closeController() {
-        self.navigationController?.popViewController(animated: true)
+		self.navigationController?.popViewController(animated: true, completion: {
+			self.updatableContactsAfterProcessing?(self.contactGroup, self.contentType)
+		})
     }
 	
 	func didTapCloseDeepCleanController() {

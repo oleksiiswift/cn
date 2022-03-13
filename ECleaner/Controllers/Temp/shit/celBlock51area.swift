@@ -1427,3 +1427,53 @@
 //	}
 //	
 //}
+
+
+import Foundation
+
+//class hello {
+//	
+//	
+//	func z() {
+//		
+//		let dispatchGroup = DispatchGroup()
+//		let dispatchQueue = DispatchQueue(label: "any-label-name")
+//		let dispatchSemaphore = DispatchSemaphore(value: 0)
+//
+//		dispatchQueue.async {
+//
+//			// use array categories as an example.
+//			for c in self.categories {
+//
+//				if let id = c.categoryId {
+//
+//					dispatchGroup.enter()
+//
+//					self.downloadProductsByCategory(categoryId: id) { success, data in
+//
+//						if success, let products = data {
+//
+//							self.products.append(products)
+//						}
+//
+//						dispatchSemaphore.signal()
+//						dispatchGroup.leave()
+//					}
+//
+//					dispatchSemaphore.wait()
+//				}
+//			}
+//		}
+//
+//		dispatchGroup.notify(queue: dispatchQueue) {
+//
+//			DispatchQueue.main.async {
+//
+//				self.refreshOrderTable { _ in
+//
+//					self.productCollectionView.reloadData()
+//				}
+//			}
+//		}
+//	}
+//}
