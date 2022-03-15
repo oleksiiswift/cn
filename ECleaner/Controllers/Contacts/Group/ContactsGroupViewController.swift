@@ -56,17 +56,6 @@ class ContactsGroupViewController: UIViewController {
 		!previouslySelectedIndexPaths.isEmpty ? didSelectPreviouslyIndexPath() : handleStartingSelectableAssets()
     }
 	
-	override func viewDidAppear(_ animated: Bool) {
-		super.viewDidAppear(animated)
-		
-//		previouslySelectedIndexPaths.isEmpty ? showSelectStartingAllContactsAlert() : ()
-	}
-	
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-
-    }
-	
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
 		switch segue.identifier {
 			case C.identifiers.segue.showExportContacts:

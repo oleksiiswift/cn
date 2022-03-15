@@ -1057,7 +1057,7 @@ extension ContactsManager {
 
 extension ContactsManager {
 	
-	private func deleteAsyncContacts(_ contacts: [CNContact], _ indexingHandler: @escaping(_ currentDeletingContactIndex: Int) -> Void, completionHandler: @escaping(_ errorsCount: Int) -> Void) {
+	public func deleteAsyncContacts(_ contacts: [CNContact], _ indexingHandler: @escaping(_ currentDeletingContactIndex: Int) -> Void, completionHandler: @escaping(_ errorsCount: Int) -> Void) {
 		
 		let deleteContactsOperation = ConcurrentProcessOperation { operation in
 			

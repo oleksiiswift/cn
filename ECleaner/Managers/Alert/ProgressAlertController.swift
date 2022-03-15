@@ -127,7 +127,7 @@ class ProgressAlertController: Themeble {
 extension ProgressAlertController {
     
     public func showDeleteContactsProgressAlert() {
-        setProgress(controllerType: .userContacts, title: "delete merged contacts")
+        setProgress(controllerType: .userContacts, title: "delete contacts")
     }
     
     public func showMergeContactsProgressAlert() {

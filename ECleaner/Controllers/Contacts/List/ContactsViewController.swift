@@ -96,12 +96,6 @@ class ContactsViewController: UIViewController {
 		previouslySelectedIndexPaths.isEmpty ? handleStartingSelectableContacts() : ()
 	}
 	
-	override func viewDidAppear(_ animated: Bool) {
-		super.viewDidAppear(animated)
-		
-	}
-	
-    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         switch segue.identifier {
             case C.identifiers.segue.showExportContacts:
@@ -399,29 +393,65 @@ extension ContactsViewController {
         } else if contentType == .emptyContacts {
             removableContacts = emptyContactGroupListViewModel.getContacts(at: indexPaths)
         }
-        
-        self.deleteContacts(removableContacts) {
+		
+		self.deleteContacts(removableContacts, updatebleIndexPath: indexPaths) {
             U.delay(0.5) {
                 self.reloadContactsAfterRefactor()
             }
         }
     }
-    
-    private func deleteContacts(_ contacts: [CNContact], completion: @escaping() -> Void) {
+	#warning("T##message##")
+	private func deleteContacts(_ contacts: [CNContact], updatebleIndexPath: [IndexPath], completion: @escaping() -> Void) {
         P.hideIndicator()
         self.showDeleteProgressAlert()
-        
-        contactManager.deleteContacts(contacts) { suxxessful, deletedCount in
-            U.delay(0.5) {
-                if deletedCount == contacts.count {
-                    A.showSuxxessfullDeleted(for: deletedCount > 1 ? .many : .one)
-                } else {
-                    ErrorHandler.shared.showDeleteAlertError(contacts.count - deletedCount > 1 ? .errorDeleteContacts : .errorDeleteContact)
-                }
-                completion()
-            }
-        }
+		self.contactManager.deleteAsyncContacts(contacts) { currentDeletingContactIndex in
+			self.updateProgressAlert(of: .deleteContacts, currentPosition: currentDeletingContactIndex, totalProcessing: contacts.count)
+		} completionHandler: { errorsCount in
+			U.delay(0.5) {
+				if errorsCount != contacts.count {
+					self.updateSelectableDelete(of: contacts, from: updatebleIndexPath)
+					A.showSuxxessfullDeleted(for: contacts.count > 1 ? .many : .one)
+				} else {
+					completion()
+					ErrorHandler.shared.showDeleteAlertError(contacts.count - errorsCount > 1 ? .errorDeleteContacts : .errorDeleteContact)
+				}
+			}
+		}
     }
+	
+	#warning("re edit !!!!")
+	private func updateSelectableDelete(of contacts: [CNContact], from indexPath: [IndexPath]) {
+		let group = self.contactGroup.filter {
+			
+		}
+		
+	}
+	
+	#warning("tototo")
+	private func findUpdatableIndexPath(of contact: CNContact, from indexPaths: [IndexPath]) {
+		for indexPath in indexPaths {
+			if contact == emptyContactGroupListViewModel.getContactOnRow(at: indexPath) {
+				U.UI {
+					let group = self.contactGroup.filter {
+						!$0.contacts.contains(contact)
+					}
+					self.setupGroupViemodel(contacts: group)
+//					self.tableView.deleteRows(at: [indexPath], with: .automatic)
+					
+				}
+			}
+		}
+	}
+	
+	private func updateProgressAlert(of type: ProgressContactsAlertType, currentPosition: Int, totalProcessing: Int) {
+		
+		let progress: CGFloat = CGFloat(100 * currentPosition / totalProcessing) / 100
+		let totalProcessingString: String = "\(currentPosition) / \(totalProcessing)"
+		
+		U.UI {
+			self.progressAlert.setProgress(progress, totalFilesProcessong: totalProcessingString)
+		}
+	}
                     
     private func reloadContactsAfterRefactor() {
         P.showIndicator()
@@ -449,7 +479,6 @@ extension ContactsViewController {
         } else if contentType == .emptyContacts {
 			self.contactManager.getSingleDuplicatedCleaningContacts(of: .emptyContacts, cleanProcessingType: .singleSearch) { contactsGroups in
                 U.UI {
-                    
                     self.setCancelAndDeselectAllItems()
                     self.handleEdit()
                     self.handleSearchBarState()
