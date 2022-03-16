@@ -352,9 +352,7 @@ extension ContactsGroupViewController: ProgressAlertControllerDelegate {
         contactsManager.setProcess(self.isMergeContactsProcessing ? .merge : .delete, state: .disable)
     }
     
-    func didAutoCloseController() {
-        
-    }
+    func didAutoCloseController() {}
     
     @objc func progressDeleteAlertNotification(_ notification: Notification) {
         guard !isMergeContactsProcessing else { return }

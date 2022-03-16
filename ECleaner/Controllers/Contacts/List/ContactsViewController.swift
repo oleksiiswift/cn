@@ -68,22 +68,11 @@ class ContactsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-		if !isDeepCleaningSelectableFlow {
-			setupNavigation()
-			setNavigationEditMode(isEditing: false)
-		} else {
-			setupForDeepCleanNavigation()
-		}
-        
-        if contentType == .allContacts {
-            setupViewModel(contacts: self.contacts)
-        } else if contentType == .emptyContacts {
-            setupGroupViemodel(contacts: self.contactGroup)
-        }
-        
+
+        setupDataSource()
         setupUI()
-        setupObserversAndDelegate()
+		setupDelegate()
+		setupObservers()
         setupTableView()
         updateColors()
         handleBottomButtonChangeAppearence(disableAnimation: true)
@@ -107,6 +96,22 @@ class ContactsViewController: UIViewController {
 }
 
 extension ContactsViewController {
+	
+	private func setupDataSource() {
+		
+		if !isDeepCleaningSelectableFlow {
+			setupNavigation()
+			setNavigationEditMode(isEditing: false)
+		} else {
+			setupForDeepCleanNavigation()
+		}
+		
+		if contentType == .allContacts {
+			setupViewModel(contacts: self.contacts)
+		} else if contentType == .emptyContacts {
+			setupGroupViemodel(contacts: self.contactGroup)
+		}
+	}
     
     private func setContactsEditingMode(enabled: Bool) {
             
@@ -291,13 +296,11 @@ extension ContactsViewController {
 	
 	private func didTapCancelEditingButton() {
 		P.showIndicator()
-		setCancelAndDeselectAllItems()
+		resetContreollerState()
 		P.hideIndicator()
-		handleEdit()
 	}
 	
 	private func didTapSelectEditingMode() {
-		
 		handleEdit()
 	}
 	
@@ -396,11 +399,11 @@ extension ContactsViewController {
 		
 		self.deleteContacts(removableContacts, updatebleIndexPath: indexPaths) {
             U.delay(0.5) {
-                self.reloadContactsAfterRefactor()
+				self.reloadContactsAfterRefactor(of: removableContacts, from: indexPaths)
             }
         }
     }
-	#warning("T##message##")
+	
 	private func deleteContacts(_ contacts: [CNContact], updatebleIndexPath: [IndexPath], completion: @escaping() -> Void) {
         P.hideIndicator()
         self.showDeleteProgressAlert()
@@ -409,40 +412,15 @@ extension ContactsViewController {
 		} completionHandler: { errorsCount in
 			U.delay(0.5) {
 				if errorsCount != contacts.count {
-					self.updateSelectableDelete(of: contacts, from: updatebleIndexPath)
 					A.showSuxxessfullDeleted(for: contacts.count > 1 ? .many : .one)
 				} else {
-					completion()
 					ErrorHandler.shared.showDeleteAlertError(contacts.count - errorsCount > 1 ? .errorDeleteContacts : .errorDeleteContact)
 				}
+				completion()
 			}
 		}
     }
-	
-	#warning("re edit !!!!")
-	private func updateSelectableDelete(of contacts: [CNContact], from indexPath: [IndexPath]) {
-		let group = self.contactGroup.filter {
-			
-		}
 		
-	}
-	
-	#warning("tototo")
-	private func findUpdatableIndexPath(of contact: CNContact, from indexPaths: [IndexPath]) {
-		for indexPath in indexPaths {
-			if contact == emptyContactGroupListViewModel.getContactOnRow(at: indexPath) {
-				U.UI {
-					let group = self.contactGroup.filter {
-						!$0.contacts.contains(contact)
-					}
-					self.setupGroupViemodel(contacts: group)
-//					self.tableView.deleteRows(at: [indexPath], with: .automatic)
-					
-				}
-			}
-		}
-	}
-	
 	private func updateProgressAlert(of type: ProgressContactsAlertType, currentPosition: Int, totalProcessing: Int) {
 		
 		let progress: CGFloat = CGFloat(100 * currentPosition / totalProcessing) / 100
@@ -453,16 +431,12 @@ extension ContactsViewController {
 		}
 	}
                     
-    private func reloadContactsAfterRefactor() {
+	private func reloadContactsAfterRefactor(of deletedContacts: [CNContact], from updatableIndexPath: [IndexPath]) {
         P.showIndicator()
         if contentType == .allContacts {
             self.contactManager.getAllContacts { allContacts in
                 U.UI {
-                    
-                    self.setCancelAndDeselectAllItems()
-                    self.handleEdit()
-                    self.handleSearchBarState()
-                    
+					self.resetContreollerState(true)
                     if allContacts.count != 0 {
                         P.hideIndicator()
                         self.setupViewModel(contacts: allContacts)
@@ -477,28 +451,25 @@ extension ContactsViewController {
                 }
             }
         } else if contentType == .emptyContacts {
-			self.contactManager.getSingleDuplicatedCleaningContacts(of: .emptyContacts, cleanProcessingType: .singleSearch) { contactsGroups in
-                U.UI {
-                    self.setCancelAndDeselectAllItems()
-                    self.handleEdit()
-                    self.handleSearchBarState()
-                    
-                    if contactsGroups.map({$0.contacts}).count != 0 {
-                        let group = contactsGroups.filter({!$0.contacts.isEmpty})
-                        P.hideIndicator()
-                        self.setupGroupViemodel(contacts: group)
-                        self.tableView.delegate = self.emptyContactGroupListDataSource
-                        self.tableView.dataSource = self.emptyContactGroupListDataSource
-                        self.tableView.reloadData()
-                    } else {
-                        P.hideIndicator()
-                        self.closeController()
-                    }
-                }
-            }
+			self.contactGroup =  self.contactGroup.filter {
+				!$0.contacts.contains(deletedContacts)
+			}
+			U.UI {
+				self.resetContreollerState(true)
+				if self.contactGroup.map({$0.contacts}).count != 0 {
+					self.contactGroup = self.contactGroup.filter({!$0.contacts.isEmpty})
+					self.setupGroupViemodel(contacts: self.contactGroup)
+					self.tableView.delegate = self.emptyContactGroupListDataSource
+					self.tableView.dataSource = self.emptyContactGroupListDataSource
+					self.tableView.reloadData()
+				} else {
+					P.hideIndicator()
+					self.closeController()
+				}
+			}
         }
     }
-        
+	
     private func didTapOpenBurgerMenu() {
         
         presentDropDonwMenu(with: [setEditingModeOptionItem, exportAllContactOptionItem], from: navigationBar.rightBarButtonItem)
@@ -538,8 +509,7 @@ extension ContactsViewController {
         
         if isSelectedAllItems {
             exportAllContacts(with: format)
-            self.setCancelAndDeselectAllItems()
-            self.handleEdit()
+			self.resetContreollerState()
         } else {
             if let indexPaths = self.tableView.indexPathsForSelectedRows {
                 var contacts: [CNContact] = []
@@ -548,9 +518,8 @@ extension ContactsViewController {
                     contacts = contactListViewModel.getContacts(at: indexPaths)
                 }
                 
-                self.setCancelAndDeselectAllItems()
-                self.handleEdit()
-                
+				self.resetContreollerState()
+	
                 if !contacts.isEmpty {
                     P.showIndicator()
                     shareManager.shareContacts(contacts, of: format) { fileCreated in
@@ -611,15 +580,21 @@ extension ContactsViewController {
             self.view.layoutIfNeeded()
         }
     }
-
-    @objc func handleSearchBarState() {
-        U.UI {
-            self.contactListViewModel.searchContact.value = ""
-            self.searchBarView.searchBar.text = ""
-            self.contactListViewModel.updateSearchState()
-            self.setActiveSearchBar(setActive: false)
-        }
-    }
+	
+	private func resetContreollerState(_ withCancelSearch: Bool = false) {
+		self.setCancelAndDeselectAllItems()
+		self.handleEdit()
+		withCancelSearch ? self.resetSearchBarState() : ()
+	}
+	
+	@objc func resetSearchBarState() {
+		U.UI {
+			self.contactListViewModel.searchContact.value = ""
+			self.searchBarView.searchBar.text = ""
+			self.contactListViewModel.updateSearchState()
+			self.setActiveSearchBar(setActive: false)
+		}
+	}
     
     @objc func contentDidBeginDraging() {
         
@@ -882,23 +857,26 @@ extension ContactsViewController: Themeble {
             debugPrint("data source reloaded")
         }
     }
-    
-    private func setupObserversAndDelegate() {
-        
-        navigationBar.delegate = self
-        searchBarView.searchBar.delegate = self
-        bottomDoubleButtonView.delegate = self
-        bottomButtonView.delegate = self
-        progressAlert.delegate = self
-        
-        U.notificationCenter.addObserver(self, selector: #selector(progressNotification(_:)), name: .progressDeleteContactsAlertDidChangeProgress, object: nil)
-        U.notificationCenter.addObserver(self, selector: #selector(handleSearchBarState), name: .searchBarDidCancel, object: nil)
-        U.notificationCenter.addObserver(self, selector: #selector(searchBarDidMove(_:)), name: .scrollViewDidScroll, object: nil)
-        U.notificationCenter.addObserver(self, selector: #selector(contentDidBeginDraging), name: .scrollViewDidBegingDragging, object: nil)
-        U.notificationCenter.addObserver(self, selector: #selector(didSelectDeselectContact), name: .selectedContactsCountDidChange, object: nil)
-        U.notificationCenter.addObserver(self, selector: #selector(searchBarResignFirstResponder), name: .searchBarShouldResign, object: nil)
-    }
-    
+	
+	private func setupDelegate() {
+		
+		navigationBar.delegate = self
+		searchBarView.searchBar.delegate = self
+		bottomDoubleButtonView.delegate = self
+		bottomButtonView.delegate = self
+		progressAlert.delegate = self
+	}
+	
+	private func setupObservers() {
+		
+		U.notificationCenter.addObserver(self, selector: #selector(progressNotification(_:)), name: .progressDeleteContactsAlertDidChangeProgress, object: nil)
+		U.notificationCenter.addObserver(self, selector: #selector(resetSearchBarState), name: .searchBarDidCancel, object: nil)
+		U.notificationCenter.addObserver(self, selector: #selector(searchBarDidMove(_:)), name: .scrollViewDidScroll, object: nil)
+		U.notificationCenter.addObserver(self, selector: #selector(contentDidBeginDraging), name: .scrollViewDidBegingDragging, object: nil)
+		U.notificationCenter.addObserver(self, selector: #selector(didSelectDeselectContact), name: .selectedContactsCountDidChange, object: nil)
+		U.notificationCenter.addObserver(self, selector: #selector(searchBarResignFirstResponder), name: .searchBarShouldResign, object: nil)
+	}
+
     private func setupShowExportContactController(segue: UIStoryboardSegue) {
         
         guard let segue = segue as? SwiftMessagesSegue else { return }
