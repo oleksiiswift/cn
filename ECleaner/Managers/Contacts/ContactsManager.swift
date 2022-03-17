@@ -25,7 +25,7 @@ class ContactsManager {
 	private var phoneNumberKit = PhoneNumberKit()
 	private var progressSearchNotificationManager = ProgressSearchNotificationManager.instance
 	
-	public let contactsProcessingOperationQueuer = OperationProcessingQueuer(name: Constants.key.operation.queue.contacts, maxConcurrentOperationCount: 10, qualityOfService: .background)
+	public let contactsProcessingOperationQueuer = OperationProcessingQueuer(name: Constants.key.operation.queue.contacts, maxConcurrentOperationCount: 10, qualityOfService: .userInteractive)
 
 		/// `fetching keys`
 	private let fetchingKeys: [CNKeyDescriptor] = [
@@ -1100,8 +1100,6 @@ extension ContactsManager {
 		contactsProcessingOperationQueuer.addOperation(deleteContactsOperation)
 	}
 	
-	
-	
 	public func deleteContacts(_ contacts: [CNContact],_ completionHandler: @escaping ((Bool, Int) -> Void)) {
 		
 		let deleteContactsOperation = ConcurrentProcessOperation { operation in
@@ -1109,7 +1107,6 @@ extension ContactsManager {
 			var deletedOperationCount = 0
 			var deletedContactsCount = 0
 			var errorsCount = 0
-			
 			
 			for contact in contacts {
 	
@@ -1143,8 +1140,6 @@ extension ContactsManager {
 					}
 				}
 			}
-			
-		
 		}
 		deleteContactsOperation.name = C.key.operation.name.deleteContacts
 		contactsProcessingOperationQueuer.addOperation(deleteContactsOperation)
@@ -1180,9 +1175,13 @@ extension ContactsManager {
 	
 	public func deleteAllContatsFromStore() {
 		self.getAllContacts { contacts in
-			self.deleteContacts(contacts) { suxxess, deletedCount in
-				debugPrint("deleting is \(suxxess)")
-				debugPrint("deleted \(deletedCount) contacts")
+			var cont = 0
+			for contact in contacts {
+				self.deleteContact(contact) { success in
+					cont += 1
+					debugPrint("deleting is \(success)")
+					debugPrint("deleted \(cont) contacts")
+				}
 			}
 		}
 	}

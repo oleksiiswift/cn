@@ -160,7 +160,7 @@ extension ContactsViewController {
         for section in 0..<tableView.numberOfSections {
             for row in 0..<tableView.numberOfRows(inSection: section) {
                 let indexPath = IndexPath(row: row, section: section)
-                
+                debugPrint(indexPath)
                 if allSelected {
                     _ = tableView.delegate?.tableView?(tableView, willSelectRowAt: indexPath)
                     tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
@@ -382,6 +382,7 @@ extension ContactsViewController {
         P.hideIndicator()
         U.delay(0.33) {
             A.showDeleteContactsAlerts(for: indexPaths.count > 1 ? .many : .one) {
+				self.contactManager.contactsProcessingOperationQueuer.cancelAll()
                 self.deleteSelectedContacts(at: indexPaths)
             }
         }
@@ -389,14 +390,14 @@ extension ContactsViewController {
     
     private func deleteSelectedContacts(at indexPaths: [IndexPath]) {
         
+		P.showIndicator()
         var removableContacts: [CNContact] = []
-        
         if contentType == .allContacts {
             removableContacts = contactListViewModel.getContacts(at: indexPaths)
         } else if contentType == .emptyContacts {
             removableContacts = emptyContactGroupListViewModel.getContacts(at: indexPaths)
         }
-		
+		P.hideIndicator()
 		self.deleteContacts(removableContacts, updatebleIndexPath: indexPaths) {
             U.delay(0.5) {
 				self.reloadContactsAfterRefactor(of: removableContacts, from: indexPaths)
@@ -451,9 +452,42 @@ extension ContactsViewController {
                 }
             }
         } else if contentType == .emptyContacts {
-			self.contactGroup =  self.contactGroup.filter {
-				!$0.contacts.contains(deletedContacts)
+			debugPrint(self.contactGroup.map({$0.contacts.count}))
+			
+			
+			self.contactGroup.forEach { group in
+				let removableIndicates = group.contacts.map({deletedContacts.firstIndex(of: $0)}).compactMap { $0 }
+				_ = group.contacts.remove(elementsAtIndices: removableIndicates)
 			}
+//			t(items.enumerated().filter({ $0.element == "A" }).map({ $0.offset }))
+		
+//			self.contactGroup = self.contactGroup.filter({ group in
+//				return !group.contacts.contains(deletedContacts)
+//			})
+			
+			debugPrint(self.contactGroup.map({$0.contacts.count}))
+			
+			
+//			let filteredVideos = videos.filter { (video) -> Bool in
+//				if let submittingUser = video["submittingUser"] as? String,
+//				   submittingUser == userIdentification {
+//					return true
+//				} else {
+//					return false
+//				}
+//			}
+			
+			
+//			let filteredArr = meetingRoomSuggestions.filter { meeting in
+//				return !bookingArray.contains(where: { booking in
+//					return booking.dStart == meeting.dStart
+//				})
+//			}
+			
+//			self.contactGroup =  self.contactGroup.filter {
+//				$0.contacts.contains(deletedContacts)
+////				receivedList.filter { $0[0].contains(searchText) }
+//			}
 			U.UI {
 				self.resetContreollerState(true)
 				if self.contactGroup.map({$0.contacts}).count != 0 {
