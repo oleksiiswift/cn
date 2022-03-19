@@ -72,7 +72,7 @@ class ProgressAlertController: Themeble {
         alertController = UIAlertController(title: title, message: " ", preferredStyle: .alert)
         
         let cancelAction = UIAlertAction(title: "cancel", style: .cancel) { _ in
-            
+			self.controllerPresented = false
             self.delegate?.didTapCancelOperation()
         }
     

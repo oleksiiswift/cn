@@ -227,8 +227,10 @@ extension MainViewController {
     
     @objc func contactsStoreDidChange() {
 		U.delay(5) {
+				/// do not use this observer it call every time when delete or change contacts
+				/// when tit calls content calls every time and create new and new threat
+				/// danger memerry leaks
 //			self.updateContactsCount()
-			debugPrint("contacts store did change")
 		}
     }
     
@@ -327,7 +329,7 @@ extension MainViewController: UpdateColorsDelegate {
         U.notificationCenter.addObserver(self, selector: #selector(updatingContentDisplayInformation(_:)), name: .videoSpaceDidChange, object: nil)
         U.notificationCenter.addObserver(self, selector: #selector(updatingContentDisplayInformation(_:)), name: .mediaSpaceDidChange, object: nil)
         U.notificationCenter.addObserver(self, selector: #selector(updatingContentDisplayInformation(_:)), name: .contactsCountDidChange, object: nil)
-//        U.notificationCenter.addObserver(self, selector: #selector(contactsStoreDidChange), name: .CNContactStoreDidChange, object: nil)
+        U.notificationCenter.addObserver(self, selector: #selector(contactsStoreDidChange), name: .CNContactStoreDidChange, object: nil)
 		U.notificationCenter.addObserver(self, selector: #selector(removeStoreObserver), name: .removeContactsStoreObserver, object: nil)
 		U.notificationCenter.addObserver(self, selector: #selector(addStoreObserver), name: .addContactsStoreObserver, object: nil)
     }

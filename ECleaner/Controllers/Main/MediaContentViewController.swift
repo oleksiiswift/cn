@@ -542,8 +542,18 @@ extension MediaContentViewController {
 	}
 		
 	@objc func handleChangeContactsContainers(_ notification: Notification) {
-		
-		self.updateContent(type: .userContacts)
+			/// do not use this observer it call every time when delete or change contacts
+			/// when tit calls content calls every time and create new and new threat
+			/// danger memerry leaks
+//		self.updateContent(type: .userContacts)
+	}
+	
+	@objc func removeStoreObserver() {
+		U.notificationCenter.removeObserver(self, name: .CNContactStoreDidChange, object: nil)
+	}
+
+	@objc func addStoreObserver() {
+		U.notificationCenter.addObserver(self, selector: #selector(handleChangeContactsContainers), name: .CNContactStoreDidChange, object: nil)
 	}
 }
 
@@ -582,6 +592,22 @@ extension MediaContentViewController {
 		viewController.contactGroup = contactGroup
 		viewController.mediaType = .userContacts
 		viewController.contentType = contentType
+		
+		viewController.updateContentAfterProcessing = {changedContacts, changedContactsGroups, currentChangedMediaType, storeDidChange in
+			
+			guard storeDidChange else { return }
+			
+			switch currentChangedMediaType {
+					
+				case .allContacts:
+					self.updateContactsSingleChanged(contacts: changedContacts, content: currentChangedMediaType)
+					self.updateContacts()
+				default:
+					self.updateGroupedContacts(contacts: changedContactsGroups, media: currentChangedMediaType)
+					self.updateContacts()
+			}
+		}
+	
 		self.navigationController?.pushViewController(viewController, animated: true)
 	}
 		
@@ -593,10 +619,14 @@ extension MediaContentViewController {
 		viewController.contentType = content
 		viewController.mediaType = .userContacts
 		
-		viewController.updatableContactsAfterProcessing = { contactsGroup, mediaType in
-			self.updateGroupedContacts(contacts: contactsGroup, media: mediaType)
+		viewController.updatableContactsAfterProcessing = { changedContactsGroup, currentChangedMediaType, storeDidChange in
+	
+			guard storeDidChange else { return}
+			
+			self.updateGroupedContacts(contacts: changedContactsGroup, media: currentChangedMediaType)
+			self.updateContacts()
 		}
-		
+
 		self.navigationController?.pushViewController(viewController, animated: true)
 	}
 }
@@ -950,7 +980,10 @@ extension MediaContentViewController: Themeble {
                 U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchDuplicatesNumbersContactsScan, object: nil)
                 U.notificationCenter.addObserver(self, selector: #selector(handleContentProgressUpdateNotification(_:)), name: .singleSearchDupliatesEmailsContactsScan, object: nil)
 				
-//                U.notificationCenter.addObserver(self, selector: #selector(handleChangeContactsContainers(_:)), name: .CNContactStoreDidChange, object: nil)
+                U.notificationCenter.addObserver(self, selector: #selector(handleChangeContactsContainers(_:)), name: .CNContactStoreDidChange, object: nil)
+				
+				U.notificationCenter.addObserver(self, selector: #selector(removeStoreObserver), name: .removeContactsStoreObserver, object: nil)
+				U.notificationCenter.addObserver(self, selector: #selector(addStoreObserver), name: .addContactsStoreObserver, object: nil)
             case .none:
                 return
         }

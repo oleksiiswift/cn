@@ -15,9 +15,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         configureApplication(with: launchOptions)
         setDefaults()
-//		ContactsManager.shared.contactsProcessingOperationQueuer.cancelAll()
-//		ContactsManager.shared.deleteAllContatsFromStore()
-    
+		
         return true
     }
 

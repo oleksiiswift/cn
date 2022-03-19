@@ -65,7 +65,9 @@ class ContactsViewController: UIViewController {
     private var contactManager = ContactsManager.shared
     private var shareManager = ShareManager.shared
     private var progressAlert = ProgressAlertController.shared
-    
+	private var contactStoreDidChange: Bool = false
+	public var updateContentAfterProcessing: ((_ contacts: [CNContact],_ contactsGroup: [ContactsGroup],_ type: PhotoMediaType,_ contactStoreDidChangeCompletion: Bool) -> Void)?
+	
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -112,16 +114,22 @@ extension ContactsViewController {
 			setupGroupViemodel(contacts: self.contactGroup)
 		}
 	}
-    
-    private func setContactsEditingMode(enabled: Bool) {
-            
-        tableView.allowsMultipleSelection = enabled
-        tableView.allowsSelection = enabled
-        
-        if let indexPaths = tableView.indexPathsForVisibleRows {
-            self.tableView.reloadRows(at: indexPaths, with: .fade)
-        }
-    }
+}
+
+extension ContactsViewController {
+
+	@objc func didSelectDeselectContact() {
+		handleBottomButtonChangeAppearence()
+		handleSelectAssetsNavigationCount()
+	}
+	
+	private func selectedItems() -> Int {
+		if let selectedCount = tableView.indexPathsForSelectedRows?.count {
+			return selectedCount
+		} else {
+			return 0
+		}
+	}
     
     private func didTapSelectDeselectNavigationButton() {
         
@@ -145,22 +153,35 @@ extension ContactsViewController {
         }
     }
     
-    private func setCancelAndDeselectAllItems() {
-        if let indexPaths = self.tableView.indexPathsForSelectedRows {
-            indexPaths.forEach { indexPath in
-                _ = tableView.delegate?.tableView?(tableView, willDeselectRowAt: indexPath)
-                tableView.deselectRow(at: indexPath, animated: false)
-                tableView.delegate?.tableView?(tableView, didDeselectRowAt: indexPath)
-            }
-        }
-    }
-    
+	private func handleSelectAssetsNavigationCount() {
+		
+		guard isDeepCleaningSelectableFlow else { return }
+		
+		if selectedItems() != 0 {
+			self.navigationBar.changeHotLeftTitleWithImage(newTitle: String(" (\(selectedItems()))"), image: I.systemItems.navigationBarItems.back)
+		} else {
+			self.navigationBar.changeHotLeftTitleWithImage(newTitle: "", image: I.systemItems.navigationBarItems.back)
+		}
+		
+		let rightNavigationTitle: String = isSelectedAllItems ? "deselect all" : "select all"
+		self.navigationBar.changeHotRightTitle(newTitle: rightNavigationTitle)
+	}
+	
+	private func setCancelAndDeselectAllItems() {
+		if let indexPaths = self.tableView.indexPathsForSelectedRows {
+			indexPaths.forEach { indexPath in
+				_ = tableView.delegate?.tableView?(tableView, willDeselectRowAt: indexPath)
+				tableView.deselectRow(at: indexPath, animated: false)
+				tableView.delegate?.tableView?(tableView, didDeselectRowAt: indexPath)
+			}
+		}
+	}
+
     private func setContactsSelect(_ allSelected: Bool, completionHandler: @escaping () -> Void) {
 		
         for section in 0..<tableView.numberOfSections {
             for row in 0..<tableView.numberOfRows(inSection: section) {
                 let indexPath = IndexPath(row: row, section: section)
-                debugPrint(indexPath)
                 if allSelected {
                     _ = tableView.delegate?.tableView?(tableView, willSelectRowAt: indexPath)
                     tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
@@ -187,123 +208,6 @@ extension ContactsViewController {
 		}
 	}
 	
-	private func didSelectPreviousIndexPath() {
-		
-		guard isDeepCleaningSelectableFlow, !previouslySelectedIndexPaths.isEmpty else { return }
-		self.handleEdit()
-		for indexPath in previouslySelectedIndexPaths {
-			_ = tableView.delegate?.tableView?(tableView, willSelectRowAt: indexPath)
-			tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
-			tableView.delegate?.tableView?(tableView, didSelectRowAt: indexPath)
-		}
-	}
-    
-    @objc func didSelectDeselectContact() {
-        handleBottomButtonChangeAppearence()
-		handleSelectAssetsNavigationCount()
-    }
-    
-    private func selectedItems() -> Int {
-        if let selectedCount = tableView.indexPathsForSelectedRows?.count {
-            return selectedCount
-        } else {
-            return 0
-        }
-    }
-	
-	private func handleSelectAssetsNavigationCount() {
-		
-		guard isDeepCleaningSelectableFlow else { return }
-		
-		if selectedItems() != 0 {
-			self.navigationBar.changeHotLeftTitleWithImage(newTitle: String(" (\(selectedItems()))"), image: I.systemItems.navigationBarItems.back)
-		} else {
-			self.navigationBar.changeHotLeftTitleWithImage(newTitle: "", image: I.systemItems.navigationBarItems.back)
-		}
-		
-		let rightNavigationTitle: String = isSelectedAllItems ? "deselect all" : "select all"
-		self.navigationBar.changeHotRightTitle(newTitle: rightNavigationTitle)
-	}
-    
-    private func handleBottomButtonChangeAppearence(disableAnimation: Bool = false) {
-		
-        let calculatedBottomButtonHeight: CGFloat = bottomButtonHeight + U.bottomSafeAreaHeight
-        
-        switch contentType {
-            case .allContacts:
-                handleAllContactsBottomButton(disableAnimation: disableAnimation, with: calculatedBottomButtonHeight)
-            case .emptyContacts:
-                handleEmptyContactsBottomButton(disableAnimation: disableAnimation, with: calculatedBottomButtonHeight)
-            default:
-                return
-        }
-    }
-    
-    private func handleAllContactsBottomButton(disableAnimation: Bool, with height: CGFloat) {
-		
-		guard !isDeepCleaningSelectableFlow else {
-			bottomDoubleButtonHeightConstraint.constant = 0
-			return
-		}
-
-        bottomDoubleButtonHeightConstraint.constant = selectedItems() != 0 ? height : 0
-        bottomButtonHeightConstraint.constant = 0
-        
-        let rightButtonTitle: String = "delete" + " (\(selectedItems()))"
-        bottomDoubleButtonView.setRightButtonTitle(rightButtonTitle)
-        
-        if disableAnimation {
-            self.bottomDoubleButtonView.layoutIfNeeded()
-            self.tableView.contentInset.bottom = self.selectedItems() != 0 ? height :  34
-        } else {
-            U.animate(0.5) {
-                self.view.layoutIfNeeded()
-                self.bottomDoubleButtonView.layoutIfNeeded()
-                self.tableView.contentInset.bottom = self.selectedItems() != 0 ? height :  34
-            }
-        }
-    }
-    
-    private func handleEmptyContactsBottomButton(disableAnimation: Bool, with heigt: CGFloat) {
-		
-		guard !isDeepCleaningSelectableFlow else {
-			bottomButtonHeightConstraint.constant = 0
-			bottomDoubleButtonHeightConstraint.constant = 0
-			return
-		}
-        
-        bottomButtonHeightConstraint.constant = selectedItems() != 0 ? heigt : 0
-        bottomDoubleButtonHeightConstraint.constant = 0
-        
-        let buttonTitle: String = "delete" + " (\(selectedItems()))"
-        bottomButtonView.title(buttonTitle)
-        
-        if disableAnimation {
-            self.bottomButtonView.layoutIfNeeded()
-            self.tableView.contentInset.bottom = self.selectedItems() != 0 ? heigt : 34
-        } else {
-            U.animate(0.5) {
-                self.view.layoutIfNeeded()
-                self.bottomButtonView.layoutIfNeeded()
-                self.tableView.contentInset.bottom = self.selectedItems() != 0 ? heigt : 34
-            }
-        }
-    }
-}
-
-//      MARK: - handle actions buttons -
-extension ContactsViewController {
-	
-	private func didTapCancelEditingButton() {
-		P.showIndicator()
-		resetContreollerState()
-		P.hideIndicator()
-	}
-	
-	private func didTapSelectEditingMode() {
-		handleEdit()
-	}
-	
 	public func handleContactsPreviousSelected(selectedContactsIDs: [String], contactsCollection: [CNContact], contactsGroupCollection: [ContactsGroup]) {
 		
 		if !contactsCollection.isEmpty {
@@ -325,6 +229,17 @@ extension ContactsViewController {
 			if let existingIndexPath = indexPath {
 				self.previouslySelectedIndexPaths.append(existingIndexPath)
 			}
+		}
+	}
+	
+	private func didSelectPreviousIndexPath() {
+		
+		guard isDeepCleaningSelectableFlow, !previouslySelectedIndexPaths.isEmpty else { return }
+		self.handleEdit()
+		for indexPath in previouslySelectedIndexPaths {
+			_ = tableView.delegate?.tableView?(tableView, willSelectRowAt: indexPath)
+			tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
+			tableView.delegate?.tableView?(tableView, didSelectRowAt: indexPath)
 		}
 	}
 	
@@ -352,19 +267,116 @@ extension ContactsViewController {
 			}
 		}
 	}
+}
 
-    private func handleEdit() {
-        contactContentIsEditing = !contactContentIsEditing
-        if contentType == .allContacts {
-            self.contactListDataSource.contactContentIsEditing = contactContentIsEditing
-        } else if contentType == .emptyContacts {
-            self.emptyContactGroupListDataSource.contactContentIsEditing = contactContentIsEditing
-        }
-        self.setContactsEditingMode(enabled: contactContentIsEditing)
+//		MARK: - handle bottom buttins appearance -
+extension ContactsViewController {
+	
+	private func handleBottomButtonChangeAppearence(disableAnimation: Bool = false) {
+		
+		let calculatedBottomButtonHeight: CGFloat = bottomButtonHeight + U.bottomSafeAreaHeight
+		
+		switch contentType {
+			case .allContacts:
+				handleAllContactsBottomButton(disableAnimation: disableAnimation, with: calculatedBottomButtonHeight)
+			case .emptyContacts:
+				handleEmptyContactsBottomButton(disableAnimation: disableAnimation, with: calculatedBottomButtonHeight)
+			default:
+				return
+		}
+	}
+	
+	private func handleAllContactsBottomButton(disableAnimation: Bool, with height: CGFloat) {
+		
+		guard !isDeepCleaningSelectableFlow else {
+			bottomDoubleButtonHeightConstraint.constant = 0
+			return
+		}
+
+		bottomDoubleButtonHeightConstraint.constant = selectedItems() != 0 ? height : 0
+		bottomButtonHeightConstraint.constant = 0
+		
+		let rightButtonTitle: String = "delete" + " (\(selectedItems()))"
+		bottomDoubleButtonView.setRightButtonTitle(rightButtonTitle)
+		
+		if disableAnimation {
+			self.bottomDoubleButtonView.layoutIfNeeded()
+			self.tableView.contentInset.bottom = self.selectedItems() != 0 ? height :  34
+		} else {
+			U.animate(0.5) {
+				self.view.layoutIfNeeded()
+				self.bottomDoubleButtonView.layoutIfNeeded()
+				self.tableView.contentInset.bottom = self.selectedItems() != 0 ? height :  34
+			}
+		}
+	}
+	
+	private func handleEmptyContactsBottomButton(disableAnimation: Bool, with heigt: CGFloat) {
+		
+		guard !isDeepCleaningSelectableFlow else {
+			bottomButtonHeightConstraint.constant = 0
+			bottomDoubleButtonHeightConstraint.constant = 0
+			return
+		}
+		
+		bottomButtonHeightConstraint.constant = selectedItems() != 0 ? heigt : 0
+		bottomDoubleButtonHeightConstraint.constant = 0
+		
+		let buttonTitle: String = "delete" + " (\(selectedItems()))"
+		bottomButtonView.title(buttonTitle)
+		
+		if disableAnimation {
+			self.bottomButtonView.layoutIfNeeded()
+			self.tableView.contentInset.bottom = self.selectedItems() != 0 ? heigt : 34
+		} else {
+			U.animate(0.5) {
+				self.view.layoutIfNeeded()
+				self.bottomButtonView.layoutIfNeeded()
+				self.tableView.contentInset.bottom = self.selectedItems() != 0 ? heigt : 34
+			}
+		}
+	}
+}
+
+//		MARK: - handle editing mode-
+extension ContactsViewController {
+	
+	private func setContactsEditingMode(enabled: Bool) {
+			
+		tableView.allowsMultipleSelection = enabled
+		tableView.allowsSelection = enabled
+		
+		if let indexPaths = tableView.indexPathsForVisibleRows {
+			self.tableView.reloadRows(at: indexPaths, with: .fade)
+		}
+	}
+	
+	private func handleEdit() {
+		contactContentIsEditing = !contactContentIsEditing
+		if contentType == .allContacts {
+			self.contactListDataSource.contactContentIsEditing = contactContentIsEditing
+		} else if contentType == .emptyContacts {
+			self.emptyContactGroupListDataSource.contactContentIsEditing = contactContentIsEditing
+		}
+		self.setContactsEditingMode(enabled: contactContentIsEditing)
 		
 		isDeepCleaningSelectableFlow ? self.setupForDeepCleanNavigation() : self.setNavigationEditMode(isEditing: contactContentIsEditing)
-    }
-    
+	}
+}
+
+//      MARK: - handle actions buttons -
+extension ContactsViewController {
+	
+	private func didTapCancelEditingButton() {
+		P.showIndicator()
+		resetContreollerState()
+		P.hideIndicator()
+	}
+	
+	private func didTapSelectEditingMode() {
+		handleEdit()
+	}
+	
     private func didTapExportAllContacts() {
         self.performSegue(withIdentifier: C.identifiers.segue.showExportContacts, sender: self)
     }
@@ -372,138 +384,7 @@ extension ContactsViewController {
     private func didTapExportSelectedContacts() {
         self.performSegue(withIdentifier: C.identifiers.segue.showExportContacts, sender: self)
     }
-    
-    private func showDeleteContactsAlert() {
-        P.showIndicator()
-        guard let indexPaths = self.tableView.indexPathsForSelectedRows else {
-            P.hideIndicator()
-            return
-        }
-        P.hideIndicator()
-        U.delay(0.33) {
-            A.showDeleteContactsAlerts(for: indexPaths.count > 1 ? .many : .one) {
-				self.contactManager.contactsProcessingOperationQueuer.cancelAll()
-                self.deleteSelectedContacts(at: indexPaths)
-            }
-        }
-    }
-    
-    private func deleteSelectedContacts(at indexPaths: [IndexPath]) {
-        
-		P.showIndicator()
-        var removableContacts: [CNContact] = []
-        if contentType == .allContacts {
-            removableContacts = contactListViewModel.getContacts(at: indexPaths)
-        } else if contentType == .emptyContacts {
-            removableContacts = emptyContactGroupListViewModel.getContacts(at: indexPaths)
-        }
-		P.hideIndicator()
-		self.deleteContacts(removableContacts, updatebleIndexPath: indexPaths) {
-            U.delay(0.5) {
-				self.reloadContactsAfterRefactor(of: removableContacts, from: indexPaths)
-            }
-        }
-    }
-	
-	private func deleteContacts(_ contacts: [CNContact], updatebleIndexPath: [IndexPath], completion: @escaping() -> Void) {
-        P.hideIndicator()
-        self.showDeleteProgressAlert()
-		self.contactManager.deleteAsyncContacts(contacts) { currentDeletingContactIndex in
-			self.updateProgressAlert(of: .deleteContacts, currentPosition: currentDeletingContactIndex, totalProcessing: contacts.count)
-		} completionHandler: { errorsCount in
-			U.delay(0.5) {
-				if errorsCount != contacts.count {
-					A.showSuxxessfullDeleted(for: contacts.count > 1 ? .many : .one)
-				} else {
-					ErrorHandler.shared.showDeleteAlertError(contacts.count - errorsCount > 1 ? .errorDeleteContacts : .errorDeleteContact)
-				}
-				completion()
-			}
-		}
-    }
-		
-	private func updateProgressAlert(of type: ProgressContactsAlertType, currentPosition: Int, totalProcessing: Int) {
-		
-		let progress: CGFloat = CGFloat(100 * currentPosition / totalProcessing) / 100
-		let totalProcessingString: String = "\(currentPosition) / \(totalProcessing)"
-		
-		U.UI {
-			self.progressAlert.setProgress(progress, totalFilesProcessong: totalProcessingString)
-		}
-	}
-                    
-	private func reloadContactsAfterRefactor(of deletedContacts: [CNContact], from updatableIndexPath: [IndexPath]) {
-        P.showIndicator()
-        if contentType == .allContacts {
-            self.contactManager.getAllContacts { allContacts in
-                U.UI {
-					self.resetContreollerState(true)
-                    if allContacts.count != 0 {
-                        P.hideIndicator()
-                        self.setupViewModel(contacts: allContacts)
-                        self.tableView.delegate = self.contactListDataSource
-                        self.tableView.dataSource = self.contactListDataSource
-                        self.tableView.reloadData()
-                        
-                    } else {
-                        P.hideIndicator()
-                        self.closeController()
-                    }
-                }
-            }
-        } else if contentType == .emptyContacts {
-			debugPrint(self.contactGroup.map({$0.contacts.count}))
-			
-			
-			self.contactGroup.forEach { group in
-				let removableIndicates = group.contacts.map({deletedContacts.firstIndex(of: $0)}).compactMap { $0 }
-				_ = group.contacts.remove(elementsAtIndices: removableIndicates)
-			}
-//			t(items.enumerated().filter({ $0.element == "A" }).map({ $0.offset }))
-		
-//			self.contactGroup = self.contactGroup.filter({ group in
-//				return !group.contacts.contains(deletedContacts)
-//			})
-			
-			debugPrint(self.contactGroup.map({$0.contacts.count}))
-			
-			
-//			let filteredVideos = videos.filter { (video) -> Bool in
-//				if let submittingUser = video["submittingUser"] as? String,
-//				   submittingUser == userIdentification {
-//					return true
-//				} else {
-//					return false
-//				}
-//			}
-			
-			
-//			let filteredArr = meetingRoomSuggestions.filter { meeting in
-//				return !bookingArray.contains(where: { booking in
-//					return booking.dStart == meeting.dStart
-//				})
-//			}
-			
-//			self.contactGroup =  self.contactGroup.filter {
-//				$0.contacts.contains(deletedContacts)
-////				receivedList.filter { $0[0].contains(searchText) }
-//			}
-			U.UI {
-				self.resetContreollerState(true)
-				if self.contactGroup.map({$0.contacts}).count != 0 {
-					self.contactGroup = self.contactGroup.filter({!$0.contacts.isEmpty})
-					self.setupGroupViemodel(contacts: self.contactGroup)
-					self.tableView.delegate = self.emptyContactGroupListDataSource
-					self.tableView.dataSource = self.emptyContactGroupListDataSource
-					self.tableView.reloadData()
-				} else {
-					P.hideIndicator()
-					self.closeController()
-				}
-			}
-        }
-    }
-	
+
     private func didTapOpenBurgerMenu() {
         
         presentDropDonwMenu(with: [setEditingModeOptionItem, exportAllContactOptionItem], from: navigationBar.rightBarButtonItem)
@@ -524,10 +405,112 @@ extension ContactsViewController {
     }
 
     private func closeController() {
-        self.navigationController?.popViewController(animated: true)
+		self.navigationController?.popViewController(animated: true, completion: {
+			self.updateContentAfterProcessing?(self.contacts, self.contactGroup, self.contentType, self.contactStoreDidChange)
+		})
     }
 }
 
+//	MARK: - delete contacts module -
+extension ContactsViewController {
+	
+	private func showDeleteContactsAlert() {
+		P.showIndicator()
+		guard let indexPaths = self.tableView.indexPathsForSelectedRows else {
+			P.hideIndicator()
+			return
+		}
+		U.delay(0.33) {
+			P.hideIndicator()
+			A.showDeleteContactsAlerts(for: indexPaths.count > 1 ? .many : .one) {
+				P.showIndicator()
+				U.delay(0.33) {
+					self.contactManager.contactsProcessingOperationQueuer.cancelAll()
+					self.deleteSelectedContacts(at: indexPaths)
+				}
+			}
+		}
+	}
+	
+	private func deleteSelectedContacts(at indexPaths: [IndexPath]) {
+	
+		var removableContacts: [CNContact] = []
+		if contentType == .allContacts {
+			removableContacts = contactListViewModel.getContacts(at: indexPaths)
+		} else if contentType == .emptyContacts {
+			removableContacts = emptyContactGroupListViewModel.getContacts(at: indexPaths)
+		}
+		self.deleteContacts(removableContacts, updatebleIndexPath: indexPaths) {
+			U.delay(0.5) {
+				self.reloadContactsAfterRefactor(of: removableContacts, from: indexPaths)
+			}
+		}
+	}
+	
+	private func deleteContacts(_ contacts: [CNContact], updatebleIndexPath: [IndexPath], completion: @escaping() -> Void) {
+		P.hideIndicator()
+		self.showDeleteProgressAlert()
+		self.contactManager.deleteAsyncContacts(contacts) { currentDeletingContactIndex in
+			self.updateProgressAlert(of: .deleteContacts, currentPosition: currentDeletingContactIndex, totalProcessing: contacts.count)
+		} completionHandler: { errorsCount in
+			U.delay(0.5) {
+				if errorsCount != contacts.count {
+					A.showSuxxessfullDeleted(for: contacts.count > 1 ? .many : .one)
+				} else {
+					ErrorHandler.shared.showDeleteAlertError(contacts.count - errorsCount > 1 ? .errorDeleteContacts : .errorDeleteContact)
+				}
+				completion()
+			}
+		}
+	}
+	
+	private func reloadContactsAfterRefactor(of deletedContacts: [CNContact], from updatableIndexPath: [IndexPath]) {
+		
+		P.showIndicator()
+		self.handleEdit()
+		
+		self.contactStoreDidChange = true
+		
+		if contentType == .allContacts {
+			self.contactManager.getAllContacts { allContacts in
+				U.UI {
+					if allContacts.count != 0 {
+						self.setupViewModel(contacts: allContacts)
+						self.tableView.delegate = self.contactListDataSource
+						self.tableView.dataSource = self.contactListDataSource
+						self.tableView.reloadData()
+						P.hideIndicator()
+						self.handleBottomButtonChangeAppearence()
+					} else {
+						P.hideIndicator()
+						self.closeController()
+					}
+				}
+			}
+		} else if contentType == .emptyContacts {
+				self.contactGroup.forEach { group in
+				let removableIndicates = group.contacts.map({deletedContacts.firstIndex(of: $0)}).compactMap { $0 }
+				_ = group.contacts.remove(elementsAtIndices: removableIndicates)
+			}
+			U.UI {
+				if self.contactGroup.flatMap({$0.contacts}).count != 0 {
+					self.contactGroup = self.contactGroup.filter({!$0.contacts.isEmpty})
+					self.setupGroupViemodel(contacts: self.contactGroup)
+					self.tableView.delegate = self.emptyContactGroupListDataSource
+					self.tableView.dataSource = self.emptyContactGroupListDataSource
+					self.tableView.reloadData()
+					P.hideIndicator()
+					self.handleBottomButtonChangeAppearence()
+				} else {
+					P.hideIndicator()
+					self.closeController()
+				}
+			}
+		}
+	}
+}
+
+//		MARK: - export contacts module -
 extension ContactsViewController {
     
     private func exportAllContacts(with format: ExportContactsAvailibleFormat) {
@@ -567,6 +550,8 @@ extension ContactsViewController {
     }
 }
 
+
+	//		MARK: - bottom action button/buttons -
 extension ContactsViewController: BottomDoubleActionButtonDelegate {
     
     func didTapLeftActionButton() {
@@ -582,21 +567,6 @@ extension ContactsViewController: BottomActionButtonDelegate {
     
     func didTapActionButton() {
         self.showDeleteContactsAlert()
-    }
-}
-
-extension ContactsViewController: SelectDropDownMenuDelegate {
-    
-    func selectedItemListViewController(_ controller: DropDownMenuViewController, didSelectItem: DropDownMenuItems) {
-        
-        switch didSelectItem {
-            case .share:
-                self.didTapExportAllContacts()
-            case .edit:
-                self.didTapSelectEditingMode()
-            default:
-                return
-        }
     }
 }
 
@@ -733,7 +703,18 @@ extension ContactsViewController: UIPopoverPresentationControllerDelegate {
     }
 }
 
+// 		MARK: - handle progress alert controller -
 extension ContactsViewController: ProgressAlertControllerDelegate {
+	
+	private func updateProgressAlert(of type: ProgressContactsAlertType, currentPosition: Int, totalProcessing: Int) {
+		
+		let progress: CGFloat = CGFloat(100 * currentPosition / totalProcessing) / 100
+		let totalProcessingString: String = "\(currentPosition) / \(totalProcessing)"
+		
+		U.UI {
+			self.progressAlert.setProgress(progress, totalFilesProcessong: totalProcessingString)
+		}
+	}
     
     private func showDeleteProgressAlert() {
         progressAlert.showDeleteContactsProgressAlert()
@@ -755,6 +736,21 @@ extension ContactsViewController: ProgressAlertControllerDelegate {
             }
         }
     }
+}
+
+extension ContactsViewController: SelectDropDownMenuDelegate {
+	
+	func selectedItemListViewController(_ controller: DropDownMenuViewController, didSelectItem: DropDownMenuItems) {
+		
+		switch didSelectItem {
+			case .share:
+				self.didTapExportAllContacts()
+			case .edit:
+				self.didTapSelectEditingMode()
+			default:
+				return
+		}
+	}
 }
 
 extension ContactsViewController: Themeble {
