@@ -345,10 +345,7 @@ extension ContactsViewController {
 			
 		tableView.allowsMultipleSelection = enabled
 		tableView.allowsSelection = enabled
-		
-		if let indexPaths = tableView.indexPathsForVisibleRows {
-			self.tableView.reloadRows(at: indexPaths, with: .fade)
-		}
+		self.tableView.reloadData()
 	}
 	
 	private func handleEdit() {
