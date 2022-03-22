@@ -47,9 +47,9 @@ extension MediaTypeCollectionViewCell: Themeble {
         loadingActivityIndicatorView.tag = 666
         
         mainView.setCorner(12)
-        mediaContentTitleTextLabel.font = UIFont(font: FontManager.robotoBold, size: 18.0)
-        mediaContentSubTitleTextLabel.font = UIFont(font: FontManager.robotoMedium, size: 14.0)
-        mediaSpaceTitleTextLabel.font = UIFont(font: FontManager.robotoMedium, size: 14.0)
+		mediaContentTitleTextLabel.font = .systemFont(ofSize: 18, weight: .bold)
+		mediaContentSubTitleTextLabel.font = .systemFont(ofSize: 14, weight: .medium)
+		mediaSpaceTitleTextLabel.font = .systemFont(ofSize: 14, weight: .medium)
     }
     
     public func configureCell(mediaType: MediaContentType, contentCount: Int?, diskSpace: Int64?) {

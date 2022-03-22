@@ -402,22 +402,22 @@ extension MainViewController: UpdateColorsDelegate {
         case .plus:
           debugPrint("")
           collectionViewHeightConstraint.constant = 260
-          
-          circleTotlaSpaceView.font = UIFont(font: FontManager.robotoBlack, size: 20.0)!
-          circleTotlaSpaceView.percentLabel.font = UIFont(font: FontManager.robotoBlack, size: 20.0)
+		
+		 circleTotlaSpaceView.font = .systemFont(ofSize: 20, weight: .black)
+          circleTotlaSpaceView.percentLabel.font = .systemFont(ofSize: 20, weight: .black)
         case .large:
           debugPrint("")
           collectionViewHeightConstraint.constant = 260
           
-          circleTotlaSpaceView.font = UIFont(font: FontManager.robotoBlack, size: 45.0)!
-          circleTotlaSpaceView.percentLabel.font = UIFont(font: FontManager.robotoBlack, size: 45.0)
+          circleTotlaSpaceView.font = .systemFont(ofSize: 45, weight: .black)
+          circleTotlaSpaceView.percentLabel.font = .systemFont(ofSize: 45, weight: .black)
         case .modern:
           debugPrint("")
           
           collectionViewHeightConstraint.constant = 260
           
-          circleTotlaSpaceView.font = UIFont(font: FontManager.robotoBlack, size: 50.0)!
-          circleTotlaSpaceView.percentLabel.font = UIFont(font: FontManager.robotoBlack, size: 50.0)
+          circleTotlaSpaceView.font = .systemFont(ofSize: 50, weight: .black)
+          circleTotlaSpaceView.percentLabel.font = .systemFont(ofSize: 50, weight: .black)
         case .max:
           debugPrint("")
         case .madMax:

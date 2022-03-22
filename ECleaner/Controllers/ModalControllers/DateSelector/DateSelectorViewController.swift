@@ -255,7 +255,7 @@ extension DateSelectorViewController: Themeble {
 		spaceStackEmptyView.isHidden = self.dateSelectedType == .lowerDateSelectable
 	
         autoDatePickTextLabel.text = "SINCE_THE_LAST_CLEANING".localized()
-        autoDatePickTextLabel.font = UIFont(font: FontManager.robotoBold, size: 14.0)
+		autoDatePickTextLabel.font = .systemFont(ofSize: 14, weight: .bold)
         autoDatePickImageView.image = I.systemElementsItems.checkBox
         
         autoDatePickBackgroundImageView.layer.applySketchShadow(color: UIColor().colorFromHexString("D8DFEB"), alpha: 1.0, x: 6, y: 6, blur: 10, spread: 0)

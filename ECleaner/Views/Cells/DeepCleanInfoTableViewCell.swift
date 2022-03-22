@@ -31,7 +31,7 @@ extension DeepCleanInfoTableViewCell {
     
     func setProgress(files count: Int) {
         
-        let totalCheckedFilesFont: UIFont = UIFont(font: FontManager.robotoBold, size: 18.0)!
+		let totalCheckedFilesFont: UIFont = .systemFont(ofSize: 18, weight: .bold)
         let totalCheckedFilesColor: UIColor = theme.titleTextColor
         
         let totalFilesAttributes = [NSAttributedString.Key.font: totalCheckedFilesFont, NSAttributedString.Key.foregroundColor: totalCheckedFilesColor]
@@ -79,9 +79,9 @@ extension DeepCleanInfoTableViewCell: Themeble {
         
         progressContainerView.layer.addSublayer(progressRing)
         
-        infoTotalFilesTitleLabel.font = UIFont(font: FontManager.robotoMedium, size: 14.0)!
-        totalSpaceTextLabel.font = UIFont(font: FontManager.robotoBold, size: 18.0)!
-        totalSpaceTitleLabel.font = UIFont(font: FontManager.robotoMedium, size: 14.0)!
+		infoTotalFilesTitleLabel.font = .systemFont(ofSize: 14, weight: .medium)
+		totalSpaceTextLabel.font = .systemFont(ofSize: 18, weight: .bold)
+		totalSpaceTitleLabel.font = .systemFont(ofSize: 14, weight: .medium)
     }
     
     func updateColors() {
