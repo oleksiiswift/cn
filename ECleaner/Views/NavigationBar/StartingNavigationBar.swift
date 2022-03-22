@@ -53,6 +53,8 @@ class StartingNavigationBar: UIView {
         
         rightBarButton.clipsToBounds = true
         rightBarButton.layer.cornerRadius = 10
+		
+		titleLabel.textColor = theme.titleTextColor
     }
     
     public func setUpNavigation(title: String?, leftImage: UIImage?, rightImage: UIImage?) {

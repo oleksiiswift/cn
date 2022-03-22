@@ -7,6 +7,34 @@
 
 import UIKit
 
+enum PickerDateSelectType {
+	case lowerDateSelectable
+	case upperDateSelectable
+	case lastDeepCleanDateSelectable
+	case currentDateSelectable
+	case none
+	
+	var rawValue: Date {
+		switch self {
+			case .lowerDateSelectable:
+				return S.lowerBoundSavedDate
+			case .upperDateSelectable:
+				return S.upperBoundSavedDate
+			case .lastDeepCleanDateSelectable:
+				if let date = S.lastSmartCleanDate {
+					return date
+				} else {
+					return S.lowerBoundSavedDate
+				}
+			case .currentDateSelectable:
+				return Date().endOfDay
+			case .none:
+				return Date()
+		}
+	}
+}
+
+
 class DateSelectorViewController: UIViewController {
     
     @IBOutlet weak var mainContainerView: UIView!
@@ -25,19 +53,10 @@ class DateSelectorViewController: UIViewController {
     @IBOutlet weak var mainContainerViewHeightConstraint: NSLayoutConstraint!
 	
 	private var defaultCalendar = Calendar(identifier: .gregorian)
-	public var isStartingDateSelected: Bool = false
+	public var dateSelectedType: PickerDateSelectType = .none
+	
 	private var autoPickCheckIsOn: Bool = false
 	private var currentPickUpDate: Date?
-    private var selectedDate: Date {
-        get {
-			if isStartingDateSelected {
-				return S.lowerBoundSavedDate
-			} else {
-				return S.upperBoundSavedDate
-			}
-		}
-    }
-
     public var selectedDateCompletion: ((_ selectedDate: Date) -> Void)?
     
     override func viewDidLoad() {
@@ -45,7 +64,7 @@ class DateSelectorViewController: UIViewController {
 
         setupNavigation()
         setupObserversAndDelegate()
-		setupDatePickers(with: self.selectedDate)
+		setupDatePickers(with: self.dateSelectedType.rawValue)
         setupUI()
 		setupPickerSpacerView()
         updateColors()
@@ -58,12 +77,11 @@ class DateSelectorViewController: UIViewController {
     }
     
 	@IBAction func didTapSetPickerAutoSettingsActionButton(_ sender: Any) {
-		
-		autoPickCheckIsOn = !autoPickCheckIsOn
-		autoDatePickImageView.isHidden = !autoPickCheckIsOn
-		
-		if let savedDate = S.lastSmartCleanDate {
-			self.setPicker(savedDate)
+
+		self.checkForEnableAutoPicker()
+		self.dateSelectedType = autoPickCheckIsOn ? .lastDeepCleanDateSelectable : .lowerDateSelectable
+		U.delay(0.5) {
+			self.checkLastDeepCleanDate()
 		}
 	}
 }
@@ -77,38 +95,74 @@ extension DateSelectorViewController {
 		}
 	}
 	
-	private func setTheDate(month: Int, year: Int) {
+	private func setTheDate(month: Int, year: Int, dateType: PickerDateSelectType) {
 		
-		if isStartingDateSelected {
-			self.currentPickUpDate = U.getDateFromComponents(day: 1, month: month, year: year)
-		} else {
-			let endOfTheMonth = U.numbersOfDays(at: month, in: year)
-			let date = U.getDateFromComponents(day: endOfTheMonth, month: month, year: year)
-			self.currentPickUpDate = date
+		switch dateType{
+			case .lowerDateSelectable:
+				self.currentPickUpDate = U.getDateFromComponents(day: 1, month: month, year: year)
+			case .upperDateSelectable:
+				let endOfTheMonth = U.numbersOfDays(at: month, in: year)
+				let date = U.getDateFromComponents(day: endOfTheMonth, month: month, year: year)
+				self.currentPickUpDate = date
+			case .lastDeepCleanDateSelectable:
+				self.currentPickUpDate = dateType.rawValue
+			case .currentDateSelectable:
+				self.currentPickUpDate = dateType.rawValue
+			default:
+				return
 		}
 	}
-	public func checkTheDate(completion: @escaping () -> Void) {
-		
-		if isStartingDateSelected {
-			if let date = currentPickUpDate {
-				if date > S.upperBoundSavedDate {
-					self.downgradeLower()
-				} else if date.getYear() == S.upperBoundSavedDate.getYear(), date.getMonth() == S.upperBoundSavedDate.getMonth() {
-					self.downgradeLower()
-				} else {
-					completion()
-				}
-			}
+	
+	private func checkLastDeepCleanDate() {
+		if self.dateSelectedType.rawValue != S.lowerBoundSavedDate {
+			setTheDate(month: 0, year: 0, dateType: .lastDeepCleanDateSelectable)
+			self.setPicker(self.dateSelectedType.rawValue)
 		} else {
-			if let date = currentPickUpDate {
-				if date < S.lowerBoundSavedDate {
-					self.downgradeUpper()
-				} else if date.getYear() == S.lowerBoundSavedDate.getYear(), date.getMonth() == S.lowerBoundSavedDate.getMonth() {
-					self.downgradeUpper()
-				} else {
-					completion()
+			self.dateSelectedType = .lowerDateSelectable
+			self.setPicker(self.dateSelectedType.rawValue)
+			self.setDisableDateAutoPicker()
+		}
+	}
+	
+	private func checkForEnableAutoPicker() {
+		autoPickCheckIsOn = !autoPickCheckIsOn
+		autoDatePickImageView.isHidden = !autoPickCheckIsOn
+	}
+	
+	private func setDisableDateAutoPicker() {
+		autoPickCheckIsOn = false
+		autoDatePickImageView.isHidden = true
+	}
+	
+	
+	public func checkTheDate(with dateSelectType: PickerDateSelectType, completion: @escaping () -> Void) {
+		
+		switch dateSelectType {
+			case .lowerDateSelectable:
+				if let date = currentPickUpDate {
+					if date > S.upperBoundSavedDate {
+						self.downgradeLower()
+					} else if date.getYear() == S.upperBoundSavedDate.getYear(), date.getMonth() == S.upperBoundSavedDate.getMonth() {
+						self.downgradeLower()
+					} else {
+						completion()
+					}
 				}
-			}
+			case .upperDateSelectable:
+				if let date = currentPickUpDate {
+					if date < S.lowerBoundSavedDate {
+						self.downgradeUpper()
+					} else if date.getYear() == S.lowerBoundSavedDate.getYear(), date.getMonth() == S.lowerBoundSavedDate.getMonth() {
+						self.downgradeUpper()
+					} else {
+						completion()
+					}
+				}
+			case .lastDeepCleanDateSelectable:
+				self.checkLastDeepCleanDate()
+				completion()
+			default:
+				return
 		}
 	}
 	
@@ -167,9 +221,11 @@ extension DateSelectorViewController: SegmentDatePickerDelegate {
 	
 		let month = monthDatePicker.currentDate.getMonth()
 		let year = yearDatePicker.currentDate.getYear()
-		self.setTheDate(month: month, year: year)
+		self.setTheDate(month: month, year: year, dateType: self.dateSelectedType)
 		U.delay(1) {
-			self.checkTheDate {}
+			self.checkTheDate(with: self.dateSelectedType) {
+				
+			}
 		}
 	}
 }
@@ -177,7 +233,7 @@ extension DateSelectorViewController: SegmentDatePickerDelegate {
 extension DateSelectorViewController: BottomActionButtonDelegate {
 	
 	func didTapActionButton() {
-		checkTheDate {
+		self.checkTheDate(with: self.dateSelectedType) {
 			self.closeDatePicker()
 		}
 	}
@@ -194,9 +250,9 @@ extension DateSelectorViewController: Themeble {
         mainContainerViewHeightConstraint.constant = containerHeight
         
 		bottomButtonView.title("SUBMIT".localized())
-        
-		autoDatePickView.isHidden = !isStartingDateSelected
-		spaceStackEmptyView.isHidden = isStartingDateSelected
+		
+		autoDatePickView.isHidden = self.dateSelectedType != .lowerDateSelectable
+		spaceStackEmptyView.isHidden = self.dateSelectedType == .lowerDateSelectable
 	
         autoDatePickTextLabel.text = "SINCE_THE_LAST_CLEANING".localized()
         autoDatePickTextLabel.font = UIFont(font: FontManager.robotoBold, size: 14.0)
@@ -204,7 +260,7 @@ extension DateSelectorViewController: Themeble {
         
         autoDatePickBackgroundImageView.layer.applySketchShadow(color: UIColor().colorFromHexString("D8DFEB"), alpha: 1.0, x: 6, y: 6, blur: 10, spread: 0)
         
-        autoDatePickImageView.isHidden = !autoPickCheckIsOn
+        autoDatePickImageView.isHidden = true
     }
 	
 	private func setupDatePickers(with date: Date) {
@@ -217,7 +273,7 @@ extension DateSelectorViewController: Themeble {
 		self.yearDatePicker.datePickerType = .year
 		self.yearDatePicker.reloadAllComponents()
 		self.yearDatePicker.maximumDate = Date()
-		self.yearDatePicker.selectebleLowerPeriodBound = isStartingDateSelected
+		self.yearDatePicker.selectebleLowerPeriodBound = self.dateSelectedType == .lowerDateSelectable
 		self.yearDatePicker.setCurrentDate(date, animated: false)
 		
 		self.monthDatePicker.delegate = self
@@ -227,7 +283,7 @@ extension DateSelectorViewController: Themeble {
 		self.monthDatePicker.pickerLocale = Locale(identifier: "en_US")
 		self.monthDatePicker.datePickerType = .month
 		self.monthDatePicker.maximumDate = Date()
-		self.monthDatePicker.selectebleLowerPeriodBound = isStartingDateSelected
+		self.monthDatePicker.selectebleLowerPeriodBound = self.dateSelectedType == .lowerDateSelectable
 		self.monthDatePicker.reloadAllComponents()
 		self.monthDatePicker.setCurrentDate(date, animated: false)
 	}
@@ -287,8 +343,17 @@ extension DateSelectorViewController: Themeble {
 	}
 	
 	func setupNavigation() {
-		
-		let navigationText: String = isStartingDateSelected ? "select lower date" : "select upper date"
+	
+		var navigationText: String {
+			switch self.dateSelectedType {
+				case .lowerDateSelectable:
+					return "select lower date"
+				case .upperDateSelectable:
+					return "select upper date"
+				default:
+					return ""
+			}
+		}
 		
 		customNavBar.setUpNavigation(title: navigationText, leftImage: nil, rightImage: I.systemItems.navigationBarItems.dissmiss)
 	}

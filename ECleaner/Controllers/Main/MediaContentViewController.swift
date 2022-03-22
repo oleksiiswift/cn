@@ -44,7 +44,6 @@ class MediaContentViewController: UIViewController {
 	
 	private var currentlyScanningProcess: CommonOperationSearchType = .none
     private var scanningProcessIsRunning: Bool = false
-    private var isStartingDateSelected: Bool = false
 	
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -73,12 +72,14 @@ class MediaContentViewController: UIViewController {
 	}
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        switch segue.identifier {
-            case C.identifiers.segue.showDatePicker:
-                self.setupShowDatePickerSelectorController(segue: segue)
-            default:
-                break
-        }
+		switch segue.identifier {
+			case C.identifiers.segue.showLowerDatePicker:
+				self.setupShowDatePickerSelectorController(segue: segue, selectedType: .lowerDateSelectable)
+			case C.identifiers.segue.showUpperDatePicker:
+				self.setupShowDatePickerSelectorController(segue: segue, selectedType: .upperDateSelectable)
+			default:
+				break
+		}
     }
 }
 
@@ -840,15 +841,11 @@ extension MediaContentViewController {
 extension MediaContentViewController: DateSelectebleViewDelegate {
     
     func didSelectStartingDate() {
-        
-        self.isStartingDateSelected = true
-        performSegue(withIdentifier: C.identifiers.segue.showDatePicker, sender: self)
+		performSegue(withIdentifier: C.identifiers.segue.showLowerDatePicker, sender: self)
     }
     
     func didSelectEndingDate() {
-        
-        self.isStartingDateSelected = false
-        performSegue(withIdentifier: C.identifiers.segue.showDatePicker, sender: self)
+		performSegue(withIdentifier: C.identifiers.segue.showUpperDatePicker, sender: self)
     }
 }
 
@@ -998,25 +995,31 @@ extension MediaContentViewController: Themeble {
         
         self.view.backgroundColor = theme.backgroundColor
     }
-    
-    private func setupShowDatePickerSelectorController(segue: UIStoryboardSegue) {
-        
-        guard let segue = segue as? SwiftMessagesSegue else { return }
-        
-        segue.configure(layout: .bottomMessage)
-        segue.dimMode = .gray(interactive: false)
-        segue.interactiveHide = false
-        segue.messageView.configureNoDropShadow()
-        segue.messageView.backgroundHeight = Device.isSafeAreaiPhone ? 458 : 438
-        
-        if let dateSelectorController = segue.destination as? DateSelectorViewController {
-            dateSelectorController.isStartingDateSelected = self.isStartingDateSelected
-            dateSelectorController.setPicker(self.isStartingDateSelected ? self.lowerBoundDate : self.upperBoundDate)
-            
-            dateSelectorController.selectedDateCompletion = { selectedDate in
-                self.isStartingDateSelected ? (self.lowerBoundDate = selectedDate) : (self.upperBoundDate = selectedDate)
-				self.dateSelectPickerView.setupDisplaysDate(lowerDate: self.lowerBoundDate, upperdDate: self.upperBoundDate)
-            }
-        }
-    }
+    	
+	private func setupShowDatePickerSelectorController(segue: UIStoryboardSegue, selectedType: PickerDateSelectType) {
+		 
+		 guard let segue = segue as? SwiftMessagesSegue else { return }
+		 
+		 segue.configure(layout: .bottomMessage)
+		 segue.dimMode = .gray(interactive: false)
+		 segue.interactiveHide = false
+		 segue.messageView.configureNoDropShadow()
+		 segue.messageView.backgroundHeight = Device.isSafeAreaiPhone ? 458 : 438
+		 
+		 if let dateSelectedController = segue.destination as? DateSelectorViewController {
+			  dateSelectedController.dateSelectedType = selectedType
+			  dateSelectedController.setPicker(selectedType.rawValue)
+			  dateSelectedController.selectedDateCompletion = { selectedDate in
+				   switch selectedType {
+						case .lowerDateSelectable:
+							 self.lowerBoundDate = selectedDate
+						case .upperDateSelectable:
+							 self.upperBoundDate = selectedDate
+						default:
+							 return
+				   }
+				   self.dateSelectPickerView.setupDisplaysDate(lowerDate: self.lowerBoundDate, upperdDate: self.upperBoundDate)
+			  }
+		 }
+	}
 }

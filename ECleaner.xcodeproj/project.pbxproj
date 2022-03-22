@@ -853,10 +853,10 @@
 			isa = PBXGroup;
 			children = (
 				97B01A802747CB9100DDE03C /* Export */,
-				97CC2F3B26873A7D0072EF8C /* DateSelectorViewController.swift */,
-				044281FB2692F95A00B6B47C /* DropDownMenuViewController.swift */,
+				97A867A927E7927B00891297 /* DateSelector */,
+				97A867AA27E9273400891297 /* DropDownMenu */,
 				979998D82747F4CC00175DE5 /* Preview */,
-				9701D27327BE50CC0078E39F /* VideoSpaceSelectorViewController.swift */,
+				97A867A827E761E500891297 /* LargeVideoInspector */,
 			);
 			path = ModalControllers;
 			sourceTree = "<group>";
@@ -1469,6 +1469,30 @@
 				97D2BECF275A3F88002082EB /* ContactsExportManager.swift */,
 			);
 			path = Contacts;
+			sourceTree = "<group>";
+		};
+		97A867A827E761E500891297 /* LargeVideoInspector */ = {
+			isa = PBXGroup;
+			children = (
+				9701D27327BE50CC0078E39F /* VideoSpaceSelectorViewController.swift */,
+			);
+			path = LargeVideoInspector;
+			sourceTree = "<group>";
+		};
+		97A867A927E7927B00891297 /* DateSelector */ = {
+			isa = PBXGroup;
+			children = (
+				97CC2F3B26873A7D0072EF8C /* DateSelectorViewController.swift */,
+			);
+			path = DateSelector;
+			sourceTree = "<group>";
+		};
+		97A867AA27E9273400891297 /* DropDownMenu */ = {
+			isa = PBXGroup;
+			children = (
+				044281FB2692F95A00B6B47C /* DropDownMenuViewController.swift */,
+			);
+			path = DropDownMenu;
 			sourceTree = "<group>";
 		};
 		97AC5DBB276790A600C20F73 /* UILabel */ = {
