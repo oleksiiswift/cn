@@ -692,7 +692,7 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
           let view = UIView(frame: CGRect(x: 0, y: 0, width: U.screenWidth, height: 30))
           let sectionTitleTextLabel = UILabel()
           
-          sectionTitleTextLabel.font = UIFont(font: FontManager.robotoBlack, size: 16.0)
+		  sectionTitleTextLabel.font = .systemFont(ofSize: 16, weight: .black)
           sectionTitleTextLabel.textColor = theme.titleTextColor
           
           view.addSubview(sectionTitleTextLabel)
