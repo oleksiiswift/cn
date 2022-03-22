@@ -233,7 +233,7 @@ extension PhotoManager {
 							return
 						}
 						
-						if videoContent[videosPosition - 1].imageSize > 55000000 {
+						if videoContent[videosPosition - 1].imageSize > SettingsManager.largeVideoLowerSize {
 							videos.append(videoContent[videosPosition - 1])
 						}
 						self.sendNotification(processing: cleanProcessingType, deepCleanType: .largeVideo, singleCleanType: .largeVideo, status: .progress, totalItems: videoContent.count, currentIndex: videosPosition)

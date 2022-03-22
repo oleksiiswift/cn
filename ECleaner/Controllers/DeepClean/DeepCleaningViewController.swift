@@ -37,7 +37,6 @@ class DeepCleaningViewController: UIViewController {
      
      /// properties
      private var bottomMenuHeight: CGFloat = 80
-     private var isStartingDateSelected: Bool = false
 	 private var isDeepCleanSearchingProcessRunning: Bool = false
 	 
 	 public var scansOptions: [PhotoMediaType]?
@@ -90,12 +89,14 @@ class DeepCleaningViewController: UIViewController {
      }
      
      override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-          switch segue.identifier {
-               case C.identifiers.segue.showDatePicker:
-                    self.setupShowDatePickerSelectorController(segue: segue)
-               default:
-                    break
-          }
+		  switch segue.identifier {
+			   case C.identifiers.segue.showLowerDatePicker:
+					self.setupShowDatePickerSelectorController(segue: segue, selectedType: .lowerDateSelectable)
+			   case C.identifiers.segue.showUpperDatePicker:
+					self.setupShowDatePickerSelectorController(segue: segue, selectedType: .upperDateSelectable)
+			   default:
+					break
+		  }
      }
 	 
 	 private func initializeDeepCleanModel() {
@@ -285,6 +286,7 @@ extension DeepCleaningViewController {
 		  U.delay(0.5) {
 			   self.updateCellInfoCount(by: mediaType, contentType: contentType)
 			   self.updateTotalFilesTitleChecked()
+			   Vibration.success.vibrate()
 		  }
 	 }
      
@@ -299,6 +301,7 @@ extension DeepCleaningViewController {
 		  U.delay(0.5) {
 			   self.updateCellInfoCount(by: .userContacts, contentType: contentType)
 			   self.updateTotalFilesTitleChecked()
+			   Vibration.success.vibrate()
 		  }
 	 }
      
@@ -323,24 +326,22 @@ extension DeepCleaningViewController {
 }
 
 extension DeepCleaningViewController: DateSelectebleViewDelegate {
-     
-     func didSelectStartingDate() {
+	 
+	 func didSelectStartingDate() {
 		  if isDeepCleanSearchingProcessRunning {
 			   showStopDeepCleanScanAlert()
 		  } else {
-			   self.isStartingDateSelected = true
-			   performSegue(withIdentifier: C.identifiers.segue.showDatePicker, sender: self)
+			   performSegue(withIdentifier: C.identifiers.segue.showLowerDatePicker, sender: self)
 		  }
-     }
-     
-     func didSelectEndingDate() {
+	 }
+	 
+	 func didSelectEndingDate() {
 		  if isDeepCleanSearchingProcessRunning {
 			   showStopDeepCleanScanAlert()
 		  } else {
-          self.isStartingDateSelected = false
-          performSegue(withIdentifier: C.identifiers.segue.showDatePicker, sender: self)
+			   performSegue(withIdentifier: C.identifiers.segue.showUpperDatePicker, sender: self)
 		  }
-     }
+	 }
 }
 
 extension DeepCleaningViewController: DeepCleanSelectableAssetsDelegate {
@@ -691,7 +692,7 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
           let view = UIView(frame: CGRect(x: 0, y: 0, width: U.screenWidth, height: 30))
           let sectionTitleTextLabel = UILabel()
           
-          sectionTitleTextLabel.font = UIFont(font: FontManager.robotoBlack, size: 16.0)
+		  sectionTitleTextLabel.font = .systemFont(ofSize: 16, weight: .black)
           sectionTitleTextLabel.textColor = theme.titleTextColor
           
           view.addSubview(sectionTitleTextLabel)
@@ -792,7 +793,7 @@ extension DeepCleaningViewController {
                                         rightButtonTitle: nil)
      }
      
-     private func setupShowDatePickerSelectorController(segue: UIStoryboardSegue) {
+	 private func setupShowDatePickerSelectorController(segue: UIStoryboardSegue, selectedType: PickerDateSelectType) {
           
           guard let segue = segue as? SwiftMessagesSegue else { return }
           
@@ -801,16 +802,22 @@ extension DeepCleaningViewController {
           segue.interactiveHide = false
           segue.messageView.configureNoDropShadow()
           segue.messageView.backgroundHeight = Device.isSafeAreaiPhone ? 458 : 438
-          
-          if let dateSelectorController = segue.destination as? DateSelectorViewController {
-               dateSelectorController.isStartingDateSelected = self.isStartingDateSelected
-               dateSelectorController.setPicker(self.isStartingDateSelected ? self.lowerBoundDate : self.upperBoundDate)
-               
-               dateSelectorController.selectedDateCompletion = { selectedDate in
-                    self.isStartingDateSelected ? (self.lowerBoundDate = selectedDate) : (self.upperBoundDate = selectedDate)
+		  
+		  if let dateSelectedController = segue.destination as? DateSelectorViewController {
+			   dateSelectedController.dateSelectedType = selectedType
+			   dateSelectedController.setPicker(selectedType.rawValue)
+			   dateSelectedController.selectedDateCompletion = { selectedDate in
+					switch selectedType {
+						 case .lowerDateSelectable:
+							  self.lowerBoundDate = selectedDate
+						 case .upperDateSelectable:
+							  self.upperBoundDate = selectedDate
+						 default:
+							  return
+					}
 					self.dateSelectPickerView.setupDisplaysDate(lowerDate: self.lowerBoundDate, upperdDate: self.upperBoundDate)
-               }
-          }
+			   }
+		  }
      }
      
      private func setProcessingActionButton(_ state: DeepCleaningState) {
@@ -1014,6 +1021,12 @@ extension DeepCleaningViewController: BottomActionButtonDelegate {
 			   }
 		  }
 		  U.notificationCenter.post(name: .addContactsStoreObserver, object: nil)
+	 }
+	 
+	 private func setupLastCleanDate() {
+		  
+		  let date = Date()
+		  S.lastSmartCleanDate = date
 	 }
 }
 

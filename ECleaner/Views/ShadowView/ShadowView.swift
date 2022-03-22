@@ -19,35 +19,16 @@ class ShadowView: UIView {
         
         self.topShadowView.clipsToBounds = true
         self.topShadowView.layer.cornerRadius = 14
-        
-        #warning("TODO: re edit view for background cell and refactor elmnt")
-        
-        self.backgroundColor = UIColor().colorFromHexString("E9EFF2")
-        topShadowView.backgroundColor = UIColor().colorFromHexString("E9EFF2")
+		
+        self.backgroundColor = theme.primaryButtonBackgroundColor
+        topShadowView.backgroundColor = theme.primaryButtonBackgroundColor
         topShadowView.frame = self.bounds
         
-//        self.backgroundColor = UIColor().colorFromHexString("E9EFF2")
-//        topShadowView.backgroundColor = UIColor().colorFromHexString("E9EFF2")
-//        topShadowView.frame = self.bounds
-        
-    
         self.insertSubview(topShadowView, at: 0)
         
-        layer.applySketchShadow(
-            color: UIColor().colorFromHexString("D1DAE8"),
-            alpha: 1.0,
-            x: 6,
-            y: 6,
-            blur: 10,
-            spread: 0)
+		layer.applySketchShadow(color: theme.primaryButtonBottomShadowColor, alpha: 1.0, x: 6, y: 6, blur: 10, spread: 0)
         
-        topShadowView.layer.applySketchShadow(
-            color: UIColor().colorFromHexString("FFFFFF"),
-            alpha: 1.0,
-            x: -2,
-            y: -3,
-            blur: 19,
-            spread: 0)
+		topShadowView.layer.applySketchShadow(color: theme.primaryButtonTopShadowColor, alpha: 1.0, x: -2, y: -3, blur: 19, spread: 0)
     }
 }
 

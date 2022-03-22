@@ -79,11 +79,13 @@ class NavigationBar: UIView {
             leftBarButtonItem.setTitle(nil, for: .normal)
             leftBarButtonItem.setImage(leftBarButtonImage, for: .normal)
             leftBarButtonItem.isHidden = false
+			leftBarButtonItem.contentHorizontalAlignment = .center
         } else if let leftTitle = leftButtonTitle {
             leftButtonLeadingConstraint.constant = 20
             leftBarButtonItem.setImage(nil, for: .normal)
             leftBarButtonItem.setTitleWithoutAnimation(title: leftTitle)
             leftBarButtonItem.isHidden = false
+			leftBarButtonItem.contentHorizontalAlignment = .left
         } else {
             leftBarButtonItem.isHidden = true
         }
@@ -94,12 +96,14 @@ class NavigationBar: UIView {
             rightBarButtonItem.setTitle(nil, for: .normal)
             rightBarButtonItem.setImage(rightBarButtonImage, for: .normal)
             rightBarButtonItem.isHidden = false
+			rightBarButtonItem.contentHorizontalAlignment = .center
         } else if let rightTitle = rightButtonTitle {
             rightButtonWidthConstraint.constant = 100
-            rightButtonTrailingConstraint.constant = 10
+            rightButtonTrailingConstraint.constant = 20
             rightBarButtonItem.setImage(nil, for: .normal)
             rightBarButtonItem.setTitleWithoutAnimation(title: rightTitle)
             rightBarButtonItem.isHidden = false
+			rightBarButtonItem.contentHorizontalAlignment = .right
         } else {
             rightBarButtonItem.isHidden = true
         }

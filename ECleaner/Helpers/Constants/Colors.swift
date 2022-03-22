@@ -212,6 +212,15 @@ enum Theme: Int {
                 return UIColor().colorFromHexString("D1DAE8")
         }
     }
+	
+	var secondaryMasterBackgroundShadowColor: UIColor {
+		switch self {
+			case .light:
+				return UIColor().colorFromHexString("E7EDF4")
+			case .dark :
+				return UIColor().colorFromHexString("E7EDF4")
+		}
+	}
 
 //      MARK: - accent tint colors -
         
@@ -325,6 +334,24 @@ enum Theme: Int {
                 return UIColor().colorFromHexString("374058")
         }
     }
+	
+	var subTitleTextColor: UIColor {
+		switch self {
+			case .light:
+				return UIColor().colorFromHexString("374058").withAlphaComponent(0.5)
+			case .dark:
+				return UIColor().colorFromHexString("374058").withAlphaComponent(0.5)
+		}
+	}
+	
+	var navigationBarTextColor: UIColor {
+		switch self {
+			case .light:
+				return UIColor().colorFromHexString("4F4F4F")
+			case .dark:
+				return UIColor().colorFromHexString("4F4F4F")
+		}
+	}
     
     var sectionTitleTextColor: UIColor {
         switch self {
@@ -334,6 +361,15 @@ enum Theme: Int {
                 return UIColor().colorFromHexString("8F97A7")
         }
     }
+	
+	var tintColor: UIColor {
+		switch self {
+			case .light:
+				return UIColor().colorFromHexString("4F4F4F")
+			case .dark:
+				return UIColor().colorFromHexString("4F4F4F")
+		}
+	}
     
     var secondaryTintColor: UIColor {
         switch self {
@@ -362,27 +398,25 @@ enum Theme: Int {
 		}
 	}
     
+	var sliderUntrackBackgroundColor: UIColor {
+		switch self {
+			case .light:
+				return UIColor().colorFromHexString("D7DDE5")
+			case .dark:
+				return UIColor().colorFromHexString("D7DDE5")
+		}
+	}
     
+	var sliderCircleBackroundColor: UIColor {
+		switch self {
+			case .light:
+				return UIColor().colorFromHexString("ECF0F6")
+			case .dark:
+				return UIColor().colorFromHexString("ECF0F6")
+		}
+	}
 	
-	
-	
-    
-    
-    
-    
-    
-    #warning("check colors") 
-// MARK: - `neeed! Check colors for new aftet this linge!!!!!
-    
-    var subTitleTextColor: UIColor {
-        switch self {
-            case .light:
-                return UIColor().colorFromHexString("374058").withAlphaComponent(0.5)
-            case .dark:
-                return UIColor().colorFromHexString("374058").withAlphaComponent(0.5)
-        }
-    }
-    
+
     var customRedColor: UIColor {
         switch self {
             case .light:
@@ -392,17 +426,6 @@ enum Theme: Int {
         }
     }
     
-
-    
-//    var progressBackgroundColor: UIColor {
-//        switch self {
-//            case .light:
-//                return UIColor().colorFromHexString("EAF0F6")
-//            case .dark:
-//                return UIColor().colorFromHexString("EAF0F6")
-//        }
-//    }
-
     var contentBackgroundColor: UIColor {
         switch self {
             case .light:
@@ -420,39 +443,4 @@ enum Theme: Int {
                 return UIColor().colorFromHexString("4F4F4F")
         }
     }
-    
-//    MARK: - Tint colors -
-    
-    var tintColor: UIColor {
-        switch self {
-            case .light:
-                return UIColor().colorFromHexString("4F4F4F")
-            case .dark:
-                return UIColor().colorFromHexString("4F4F4F")
-        }
-    }
-    
-//    MARK: - Title text colors -
-    
-    var navigationBarTextColor: UIColor {
-        switch self {
-            case .light:
-                return UIColor().colorFromHexString("4F4F4F")
-            case .dark:
-                return UIColor().colorFromHexString("4F4F4F")
-        }
-    }
-    
-
 }
-
-
-
-//var templateColor: UIColor {
-//    switch self {
-//        case .light:
-//            return UIColor().colorFromHexString("C4C4C4")
-//        case .dark :
-//            return UIColor().colorFromHexString("C4C4C4")
-//    }
-//}

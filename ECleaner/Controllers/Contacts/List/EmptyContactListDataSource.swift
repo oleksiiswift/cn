@@ -30,6 +30,13 @@ extension EmptyContactListDataSource {
         cell.contactEditingMode = self.contactContentIsEditing
         cell.updateContactCell(contact, contentType: self.contentType)
     }
+	
+	private func checkForEditingMode(cell: ContactTableViewCell, at indexPath: IndexPath) {
+		
+		guard let contact = emptyContactGroupListViewModel.getContactOnRow(at: indexPath) else { return }
+		cell.contactEditingMode = self.contactContentIsEditing
+		cell.checkForContactsImageDataAndSelectableMode(for: contact)
+	}
     
     private func didSelectDeselectContact() {
         U.notificationCenter.post(name: .selectedContactsCountDidChange, object: nil)
@@ -49,10 +56,14 @@ extension EmptyContactListDataSource: UITableViewDelegate, UITableViewDataSource
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: C.identifiers.cells.contactCell, for: indexPath) as! ContactTableViewCell
-        
         self.cellConfigure(cell: cell, at: indexPath)
         return cell
     }
+	
+	func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+		guard let cell = tableView.cellForRow(at: indexPath) as? ContactTableViewCell else { return }
+		self.checkForEditingMode(cell: cell, at: indexPath)
+	}
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return emptyContactGroupListViewModel.setSectionTitle(for: section)

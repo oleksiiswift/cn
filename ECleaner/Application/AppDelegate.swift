@@ -15,7 +15,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         configureApplication(with: launchOptions)
         setDefaults()
-    
+		
         return true
     }
 

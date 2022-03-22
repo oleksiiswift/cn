@@ -70,9 +70,11 @@ public class OperationProcessingQueuer {
 	}
 	
 	public func cancelAll() {
-		operationQueue.cancelAllOperations()
+		operations.forEach { operation in
+			operation.cancel()
+		}
 	}
-		
+	
 	public func waitUntilAllOperationsAreFinished() {
 		operationQueue.waitUntilAllOperationsAreFinished()
 	}
