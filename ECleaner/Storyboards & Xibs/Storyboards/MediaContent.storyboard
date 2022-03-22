@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19455" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19454"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19519"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="collection view cell content view" minToolsVersion="11.0"/>
@@ -71,7 +71,8 @@
                         <outlet property="dateSelectPickerView" destination="4y9-cB-Zgb" id="n6G-Dm-SRK"/>
                         <outlet property="navigationBar" destination="FVD-oU-MMA" id="0Dn-wm-JpG"/>
                         <outlet property="tableView" destination="ST8-VF-aFu" id="EA4-bM-OEe"/>
-                        <segue destination="q5b-d0-8pq" kind="custom" identifier="ShowDatePickerSelectorViewControllerSegue" customClass="ShowDatePickerSelectorViewControllerSegue" customModule="ECleaner" customModuleProvider="target" id="maI-If-5Eg"/>
+                        <segue destination="q5b-d0-8pq" kind="custom" identifier="ShowDatePickerLowerDateSelectorViewController" customClass="ShowDatePickerLowerDateSelectorViewController" customModule="ECleaner" customModuleProvider="target" id="maI-If-5Eg"/>
+                        <segue destination="q5b-d0-8pq" kind="custom" identifier="ShowDatePickerUpperDateSelectorViewController" customClass="ShowDatePickerUpperDateSelectorViewController" customModule="ECleaner" customModuleProvider="target" id="2Bp-9Y-z3t"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ief-a0-LHa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -273,6 +274,9 @@
             <point key="canvasLocation" x="3003" y="-65"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="2Bp-9Y-z3t"/>
+    </inferredMetricsTieBreakers>
     <resources>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

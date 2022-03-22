@@ -362,7 +362,23 @@ enum Theme: Int {
 		}
 	}
     
+	var sliderUntrackBackgroundColor: UIColor {
+		switch self {
+			case .light:
+				return UIColor().colorFromHexString("D7DDE5")
+			case .dark:
+				return UIColor().colorFromHexString("D7DDE5")
+		}
+	}
     
+	var sliderCircleBackroundColor: UIColor {
+		switch self {
+			case .light:
+				return UIColor().colorFromHexString("ECF0F6")
+			case .dark:
+				return UIColor().colorFromHexString("ECF0F6")
+		}
+	}
 	
 	
 	
