@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19162" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19455" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19144"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19454"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -57,7 +57,7 @@
                         <outlet property="bottomButtonHeightConstraint" destination="CR9-dB-vZl" id="5K1-2a-ums"/>
                         <outlet property="navigationBar" destination="oOR-XK-bvK" id="gJe-83-qSo"/>
                         <outlet property="tableView" destination="pV1-1m-SKW" id="590-N6-Vs0"/>
-                        <segue destination="SVP-7e-iUi" kind="show" identifier="ShowDatePickerSelectorViewControllerSegue" customClass="ShowDatePickerSelectorViewControllerSegue" customModule="ECleaner" customModuleProvider="target" id="X0K-ah-Ozz"/>
+                        <segue destination="SVP-7e-iUi" kind="show" identifier="ShowExportContactsViewControllerSegue" customClass="ShowExportContactsViewControllerSegue" customModule="ECleaner" customModuleProvider="target" id="X0K-ah-Ozz"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="pZR-QF-9TC" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

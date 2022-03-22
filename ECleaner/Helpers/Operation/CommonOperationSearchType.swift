@@ -13,7 +13,7 @@ enum CommonOperationSearchType: CaseIterable {
 	case utitlityDuplicatedPhotoTuplesOperation
 	case duplicatedPhotoAssetsOperation
 	case screenShotsAssetsOperation
-	case singleSelfieAssetsOperation
+	case similarSelfiesAssetsOperation
 	case livePhotoAssetsOperation
 	case recentlyDeletedOperation
 	
@@ -34,13 +34,13 @@ enum CommonOperationSearchType: CaseIterable {
 			case .similarPhotoAssetsOperaton:
 				return C.key.operation.name.similarPhotoProcessingOperation
 			case .utitlityDuplicatedPhotoTuplesOperation:
-				return C.key.operation.name.similarTuplesOperation
+				return C.key.operation.name.duplicatedTuplesOperation
 			case .duplicatedPhotoAssetsOperation:
 				return C.key.operation.name.duplicatePhotoProcessingOperation
 			case .screenShotsAssetsOperation:
 				return C.key.operation.name.screenShotsOperation
-			case .singleSelfieAssetsOperation:
-				return C.key.operation.name.photoSelfiesOperation
+			case .similarSelfiesAssetsOperation:
+				return C.key.operation.name.similarSelfiesOperation
 			case .livePhotoAssetsOperation:
 				return C.key.operation.name.livePhotoOperation
 			case .recentlyDeletedOperation:
@@ -63,6 +63,43 @@ enum CommonOperationSearchType: CaseIterable {
 				return C.key.operation.name.emailDuplicated
 			case .none:
 				return ""
+		}
+	}
+	
+	var mediaType: PhotoMediaType {
+		switch self {
+			case .similarPhotoAssetsOperaton:
+				return .similarPhotos
+			case .utitlityDuplicatedPhotoTuplesOperation:
+				return .duplicatedPhotos
+			case .duplicatedPhotoAssetsOperation:
+				return .duplicatedPhotos
+			case .screenShotsAssetsOperation:
+				return .singleScreenShots
+			case .similarSelfiesAssetsOperation:
+				return .similarSelfies
+			case .livePhotoAssetsOperation:
+				return .singleLivePhotos
+			case .recentlyDeletedOperation:
+				return .none
+			case .largeVideoContentOperation:
+				return .singleLargeVideos
+			case .duplicatedVideoAssetOperation:
+				return .duplicatedVideos
+			case .similarVideoAssetsOperation:
+				return .similarVideos
+			case .screenRecordingsVideoOperation:
+				return .singleScreenRecordings
+			case .emptyContactOperation:
+				return .emptyContacts
+			case .duplicatedNameOperation:
+				return .duplicatedContacts
+			case .duplicatedPhoneNumbersOperation:
+				return .duplicatedPhoneNumbers
+			case .duplicatedEmailsOperation:
+				return .duplicatedEmails
+			case .none:
+				return .none
 		}
 	}
 	

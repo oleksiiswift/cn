@@ -13,10 +13,14 @@ enum AlertType {
 	case contactsRestricted
 	case photoLibraryRestricted
 	
+	case allowNotification
+	case allowConstacStore
+	case allowPhotoLibrary
+		///  `empty search`
 	case similarPhotoIsEmpty
 	case duplicatedPhotoIsEmpty
 	case screenShotsIsEmpty
-	case selfiesIsEmpty
+	case similarSelfiesIsEmpty
 	case livePhotoIsEmpty
 	case similarLivePhotoIsEmpty
 	case recentlyDeletedPhotosIsEmpty
@@ -33,15 +37,16 @@ enum AlertType {
 	case duplicatedNumbersIsEmpty
 	case duplicatedEmailsIsEmpty
 	
-    case allowNotification
-    case allowConstacStore
-    case allowPhotoLibrary
+
+		/// `permite delete`
     case allowDeleteSelectedPhotos
     case withCancel
-    
-
+		
+		/// `set break alerts`
 	case setBreakDeepCleanSearch
 	case setBreakSingleCleanSearch
+	case setBreakDeepCleanDelete
+	case resetDeepCleanResults
     
     /// `contacts module`
         /// ask
@@ -67,12 +72,20 @@ enum AlertType {
 				
 			case .photoLibraryRestricted:
 				return ErrorHandler.AccessRestrictedError.photoLibraryRestrictedError.title
+				
+					//				MARK: permition alert
+			case .allowNotification:
+				return AlertHandler.AllowAccessHandler.notification.title
+			case .allowConstacStore:
+				return AlertHandler.AllowAccessHandler.contactStore.title
+			case .allowPhotoLibrary:
+				return AlertHandler.AllowAccessHandler.photoLibrary.title
 
 //				MARK: no searching data
 			case .similarPhotoIsEmpty,
 					.duplicatedPhotoIsEmpty,
 					.screenShotsIsEmpty,
-					.selfiesIsEmpty,
+					.similarSelfiesIsEmpty,
 					.livePhotoIsEmpty,
 					.similarLivePhotoIsEmpty,
 					.recentlyDeletedPhotosIsEmpty,
@@ -90,19 +103,15 @@ enum AlertType {
 				
 			case .setBreakDeepCleanSearch, .setBreakSingleCleanSearch:
 				return "stop search process?"
+			case .setBreakDeepCleanDelete:
+				return "stop cleaningProcess?"
+			case .resetDeepCleanResults:
+				return "Atension!"
 
-            case .allowNotification:
-                return "locomark set title for allow notification"
-            case .allowConstacStore:
-                return "locomark set title for contacts"
-            case .allowPhotoLibrary:
-                return "locomark set title for photo library"
             case .withCancel:
                 return ""
             case .allowDeleteSelectedPhotos:
                 return "locomark delete assets?"
-				
-           
             case .deleteContacts:
                 return "delete contacts"
             case .deleteContact:
@@ -115,8 +124,6 @@ enum AlertType {
                 return "good need locale"
             case .suxxessMergedContact, .suxxessMergedContacts:
                 return "good merged locale"
-		
-
 			case .none:
 				return ""
 		}
@@ -131,6 +138,14 @@ enum AlertType {
 				return ErrorHandler.AccessRestrictedError.contactsRestrictedError.errorRawValue
 			case .photoLibraryRestricted:
 				return ErrorHandler.AccessRestrictedError.photoLibraryRestrictedError.errorRawValue
+
+//				MARK: allow access for content
+			case .allowNotification:
+				return AlertHandler.AllowAccessHandler.notification.message
+			case .allowConstacStore:
+				return AlertHandler.AllowAccessHandler.contactStore.message
+			case .allowPhotoLibrary:
+				return AlertHandler.AllowAccessHandler.photoLibrary.message
 				
 //				MARK: no searching data
 			case .similarPhotoIsEmpty:
@@ -139,8 +154,8 @@ enum AlertType {
 				return ErrorHandler.shared.emptyResultsForKey(.duplicatedPhotoIsEmpty)
 			case .screenShotsIsEmpty:
 				return ErrorHandler.shared.emptyResultsForKey(.screenShotsIsEmpty)
-			case .selfiesIsEmpty:
-				return ErrorHandler.shared.emptyResultsForKey(.selfiesIsEmpty)
+			case .similarSelfiesIsEmpty:
+				return ErrorHandler.shared.emptyResultsForKey(.similarSelfiesIsEmpty)
 			case .livePhotoIsEmpty:
 				return ErrorHandler.shared.emptyResultsForKey(.livePhotoIsEmpty)
 			case .similarLivePhotoIsEmpty:
@@ -172,38 +187,36 @@ enum AlertType {
 				return "this will reset all search progress"
 			case .setBreakSingleCleanSearch:
 				return "stop executing search process"
+			case .setBreakDeepCleanDelete:
+				return "this will stop cleaning process"
+			case .resetDeepCleanResults:
+				return "by quitting all search results will be loose"
 				
+//				MARK: delete merge sections
+			case .allowDeleteSelectedPhotos:
+				return "delete selecteds assets are you shure????"
+			case .deleteContacts:
+				return "shure delete contacts"
+			case .deleteContact:
+				return "shure delete contact"
+			case .mergeContacts:
+				return "merge selected contacts"
+			case .mergeContact:
+				return "merge contacts"
+			case .suxxessDeleteContact:
+				return "contact deleted"
+			case .suxxessDeleteContacts:
+				return "contacts deleted"
+			case .suxxessMergedContact:
+				return "cintact suxx merged"
+			case .suxxessMergedContacts:
+				return "contacts suxx merged"
 				
-            case .allowNotification:
-                return "locomark notification message"
-            case .allowConstacStore:
-                return "locomark contacts message"
-            case .allowPhotoLibrary:
-                return "locomark library photo"
+//				MARK: cancel none
             case .withCancel:
                 return "cancel"
             case .none:
                 return "none"
-            case .allowDeleteSelectedPhotos:
-                return "delete selecteds assets are you shure????"
-        
-	
-            case .deleteContacts:
-                return "shure delete contacts"
-            case .deleteContact:
-                return "shure delete contact"
-            case .mergeContacts:
-                return "merge selected contacts"
-            case .mergeContact:
-                return "merge contacts"
-            case .suxxessDeleteContact:
-                return "contact deleted"
-            case .suxxessDeleteContacts:
-                return "contacts deleted"
-            case .suxxessMergedContact:
-                return "cintact suxx merged"
-            case .suxxessMergedContacts:
-                return "contacts suxx merged"
 		}
     }
     
@@ -225,7 +238,7 @@ enum AlertType {
 			case .similarPhotoIsEmpty,
 					.duplicatedPhotoIsEmpty,
 					.screenShotsIsEmpty,
-					.selfiesIsEmpty,
+					.similarSelfiesIsEmpty,
 					.livePhotoIsEmpty,
 					.similarLivePhotoIsEmpty,
 					.recentlyDeletedPhotosIsEmpty,
@@ -243,7 +256,7 @@ enum AlertType {
 				
             case .allowNotification, .allowConstacStore, .allowPhotoLibrary, .allowDeleteSelectedPhotos, .withCancel:
                 return true
-			case .setBreakDeepCleanSearch, .setBreakSingleCleanSearch:
+			case .setBreakDeepCleanSearch, .setBreakSingleCleanSearch, .setBreakDeepCleanDelete, .resetDeepCleanResults:
 				return true
             case .deleteContacts, .mergeContacts, .deleteContact, .mergeContact:
                 return true

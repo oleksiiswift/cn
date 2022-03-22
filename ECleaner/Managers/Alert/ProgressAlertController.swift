@@ -13,9 +13,23 @@ protocol ProgressAlertControllerDelegate: AnyObject {
     func didAutoCloseController()
 }
 
-class AlertProgressAlertController: Themeble {
+enum ProgressContactsAlertType {
+	case mergeContacts
+	case deleteContacts
+	
+	var progressTitle: String {
+		switch self {
+			case .mergeContacts:
+				return "merged contacts"
+			case .deleteContacts:
+				return "delete contacts"
+		}
+	}
+}
 
-    static var shared = AlertProgressAlertController()
+class ProgressAlertController: Themeble {
+
+    static var shared = ProgressAlertController()
     
     var alertController = UIAlertController()
     let progressBar = ProgressAlertBar()
@@ -23,19 +37,21 @@ class AlertProgressAlertController: Themeble {
     var delegate: ProgressAlertControllerDelegate?
     
     var contentProgressType: MediaContentType = .none
-    
+	
+	public var controllerPresented: Bool = false
+	
     private var theme = ThemeManager.theme
     
     var progressBarTintColor: UIColor {
         switch contentProgressType {
             case .userPhoto:
-                return theme.phoneTintColor
+                return theme.photoTintColor
             case .userVideo:
                 return theme.videosTintColor
             case .userContacts:
                 return theme.contactsTintColor
             case .none:
-                return .black
+				return theme.photoTintColor
         }
     }
     
@@ -49,11 +65,14 @@ class AlertProgressAlertController: Themeble {
     }
     
     private func setProgress(controllerType: MediaContentType, title: String) {
+		
+		guard !controllerPresented else { return}
+		
         contentProgressType = .userContacts
         alertController = UIAlertController(title: title, message: " ", preferredStyle: .alert)
         
         let cancelAction = UIAlertAction(title: "cancel", style: .cancel) { _ in
-            
+			self.controllerPresented = false
             self.delegate?.didTapCancelOperation()
         }
     
@@ -74,27 +93,38 @@ class AlertProgressAlertController: Themeble {
         progressBar.heightAnchor.constraint(equalToConstant: 10).isActive = true
     
         if let topController = topController() {
-            topController.present(alertController, animated: true, completion: nil)
+			topController.present(alertController, animated: true) {
+				self.controllerPresented = true
+			}
         }
     }
     
-    public func setProgress(_ progress: CGFloat, totalFilesProcessong: String) {
-        debugPrint("set Progress: \(progress)")
+	public func setProgress(_ progress: CGFloat, totalFilesProcessong: String) {
         alertController.message = totalFilesProcessong
         progressBar.progress = CGFloat(progress)
         if progress == 1 {
             self.closeAlertController()
         }
     }
+	
+	public func updateChangedProgress(_ progress: CGFloat, processingTitle: String) {
+		alertController.message = processingTitle
+		progressBar.progress = CGFloat(progress)
+	}
     
     private func closeAlertController() {
         alertController.dismiss(animated: true) {
+			self.controllerPresented = false
             self.delegate?.didAutoCloseController()
         }
     }
+	
+	public func closeForceController() {
+		alertController.dismiss(animated: true, completion: nil)
+	}
 }
 
-extension AlertProgressAlertController {
+extension ProgressAlertController {
     
     public func showDeleteContactsProgressAlert() {
         setProgress(controllerType: .userContacts, title: "delete contacts")
@@ -103,8 +133,15 @@ extension AlertProgressAlertController {
     public func showMergeContactsProgressAlert() {
         setProgress(controllerType: .userContacts, title: "merged contacts")
     }
+	
+	public func showDeepCleanProgressAlert() {
+		setProgress(controllerType: .none, title: "deep clean processing")
+	}
+	
+	public func showContactsProgressAlert(of type: ProgressContactsAlertType) {
+		setProgress(controllerType: .userContacts, title: type.progressTitle)
+	}
 }
-
 
 class ProgressAlertBar: UIView {
     

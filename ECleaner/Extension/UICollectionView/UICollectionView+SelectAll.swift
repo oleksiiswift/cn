@@ -25,3 +25,11 @@ extension UICollectionView {
         }
     }
 }
+
+extension UICollectionView {
+	
+	func getAllIndexPathsInSection(section : Int) -> [IndexPath] {
+		let count = self.numberOfItems(inSection: section)
+		return (0..<count).map({IndexPath(item: $0, section: section)})
+	}
+}

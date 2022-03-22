@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Contacts
 
 class ContactListDataSource: NSObject {
     
@@ -35,6 +36,13 @@ extension ContactListDataSource {
         cell.contactEditingMode = self.contactContentIsEditing
         cell.updateContactCell(contact, contentType: self.contentType)
     }
+	
+	private func checkForEditingMode(cell: ContactTableViewCell, at indexPath: IndexPath) {
+		
+		guard let contact = contactListViewModel.getContactOnRow(at: indexPath) else { return }
+		cell.contactEditingMode = self.contactContentIsEditing
+		cell.checkForContactsImageDataAndSelectableMode(for: contact)
+	}
     
     private func didSelectDeselectContact() {
         U.notificationCenter.post(name: .selectedContactsCountDidChange, object: nil)
@@ -56,6 +64,12 @@ extension ContactListDataSource: UITableViewDelegate, UITableViewDataSource {
         self.cellConfigure(cell: cell, at: indexPath)
         return cell
     }
+	
+	func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+		
+		guard let cell = tableView.cellForRow(at: indexPath) as? ContactTableViewCell else { return }
+		self.checkForEditingMode(cell: cell, at: indexPath)
+	}
     
     func sectionIndexTitles(for tableView: UITableView) -> [String]? {
         return contactListViewModel.contactsSections
@@ -91,6 +105,14 @@ extension ContactListDataSource: UITableViewDelegate, UITableViewDataSource {
         tableView.deselectRow(at: indexPath, animated: false)
         self.didSelectDeselectContact()
     }
+	
+	func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+		if contactContentIsEditing {
+			return indexPath
+		} else {
+			return nil
+		}
+	}
 }
 
 extension ContactListDataSource: UIScrollViewDelegate {

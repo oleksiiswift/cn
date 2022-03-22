@@ -8,10 +8,12 @@
 import UIKit
 
 enum DropDownMenuItems {
-    case unselectAll
+	case selectAll
+    case deselectAll
     case changeLayout
     case share
     case edit
+	case delete
 }
 
 struct DropDownOptionsMenuItem {

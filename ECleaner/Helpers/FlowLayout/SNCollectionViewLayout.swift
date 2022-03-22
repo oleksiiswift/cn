@@ -34,7 +34,7 @@ open class SNCollectionViewLayout: UICollectionViewLayout, SNCollectionViewLayou
     override open var collectionViewContentSize: CGSize {
         return CGSize(width: contentWidth, height: contentHeight)
     }
-    
+	
     // User-configurable 'knobs'
     public var scrollDirection: UICollectionView.ScrollDirection = .vertical
     

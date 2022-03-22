@@ -50,7 +50,7 @@ extension ContactTableViewCell {
     public func updateContactCell(_ contact: CNContact, contentType: PhotoMediaType) {
         
         self.contact = contact
-        
+		self.checkForContactsImageDataAndSelectableMode(for: contact)
         switch contentType {
             case .allContacts:
                 setupAllContactCell(contact)
@@ -59,17 +59,16 @@ extension ContactTableViewCell {
             default:
                 return
         }
-        
-        if contactEditingMode {
-            self.handleSelectedContact()
-        } else {
-            if let imageData = contact.thumbnailImageData, let image = UIImage(data: imageData) {
-                shadowRoundedReuseView.setImage(image)
-            } else {
-                shadowRoundedReuseView.setImage(I.personalisation.contacts.contactPhoto)
-            }
-        }
     }
+	
+	public func checkForContactsImageDataAndSelectableMode(for contact: CNContact) {
+		
+		if contactEditingMode {
+			self.handleSelectedContact()
+		} else {
+			self.handleContactImageData(contact)
+		}
+	}
     
     private func setupAllContactCell(_ contact: CNContact) {
         
@@ -173,6 +172,15 @@ extension ContactTableViewCell {
             shadowRoundedReuseView.setImage(I.personalisation.contacts.deselectContact)
         }
     }
+	
+	private func handleContactImageData(_ contact: CNContact) {
+		
+		if let imageData = contact.thumbnailImageData, let image = UIImage(data: imageData) {
+			shadowRoundedReuseView.setImage(image)
+		} else {
+			shadowRoundedReuseView.setImage(I.personalisation.contacts.contactPhoto)
+		}
+	}
 }
 
 extension ContactTableViewCell: Themeble {

@@ -27,7 +27,6 @@ class NavigationBar: UIView {
         
         self.configure()
         self.actionButtonsSetup()
-        
     }
     
     override init(frame: CGRect) {
@@ -63,9 +62,9 @@ class NavigationBar: UIView {
         leftBarButtonItem.titleLabel?.font = .systemFont(ofSize: 17, weight: .medium)
     }
     
-    public func setupNavigation(title: String?, leftBarButtonImage: UIImage?, rightBarButtonImage: UIImage?, mediaType: MediaContentType, leftButtonTitle: String? = nil, rightButtonTitle: String? = nil) {
+    public func setupNavigation(title: String?, leftBarButtonImage: UIImage?, rightBarButtonImage: UIImage?, contentType: MediaContentType, leftButtonTitle: String? = nil, rightButtonTitle: String? = nil) {
         
-        self.setAccentColorFor(buttonsTintColor: mediaType.screenAcentTintColor, title: theme.tintColor)
+        self.setAccentColorFor(buttonsTintColor: contentType.screenAcentTintColor, title: theme.tintColor)
         setDropShadow(visible: setIsDropShadow)
         
         if let title = title {
@@ -80,11 +79,13 @@ class NavigationBar: UIView {
             leftBarButtonItem.setTitle(nil, for: .normal)
             leftBarButtonItem.setImage(leftBarButtonImage, for: .normal)
             leftBarButtonItem.isHidden = false
+			leftBarButtonItem.contentHorizontalAlignment = .center
         } else if let leftTitle = leftButtonTitle {
             leftButtonLeadingConstraint.constant = 20
             leftBarButtonItem.setImage(nil, for: .normal)
             leftBarButtonItem.setTitleWithoutAnimation(title: leftTitle)
             leftBarButtonItem.isHidden = false
+			leftBarButtonItem.contentHorizontalAlignment = .left
         } else {
             leftBarButtonItem.isHidden = true
         }
@@ -95,12 +96,14 @@ class NavigationBar: UIView {
             rightBarButtonItem.setTitle(nil, for: .normal)
             rightBarButtonItem.setImage(rightBarButtonImage, for: .normal)
             rightBarButtonItem.isHidden = false
+			rightBarButtonItem.contentHorizontalAlignment = .center
         } else if let rightTitle = rightButtonTitle {
             rightButtonWidthConstraint.constant = 100
-            rightButtonTrailingConstraint.constant = 10
+            rightButtonTrailingConstraint.constant = 20
             rightBarButtonItem.setImage(nil, for: .normal)
             rightBarButtonItem.setTitleWithoutAnimation(title: rightTitle)
             rightBarButtonItem.isHidden = false
+			rightBarButtonItem.contentHorizontalAlignment = .right
         } else {
             rightBarButtonItem.isHidden = true
         }
@@ -125,6 +128,20 @@ class NavigationBar: UIView {
 //        rightBarButtonItem.sizeToFit()
         rightBarButtonItem.setTitleWithoutAnimation(title: newTitle)
     }
+	
+	public func changeHotLeftTitleWithImage(newTitle: String, image: UIImage) {
+		
+		if newTitle.isEmpty {
+			leftButtonLeadingConstraint.constant = 5
+			leftBarButtonItem.setImage(image, for: .normal)
+			leftBarButtonItem.setTitle(nil, for: .normal)
+		} else {
+			leftBarButtonItem.setImage(image, for: .normal)
+			leftBarButtonItem.setTitle(newTitle, for: .normal)
+			leftButtonLeadingConstraint.constant = 15
+		}
+		leftBarButtonItem.layoutIfNeeded()
+	}
 
     private func setAccentColorFor(buttonsTintColor: UIColor, title: UIColor) {
         

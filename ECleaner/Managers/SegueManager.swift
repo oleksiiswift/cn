@@ -8,7 +8,7 @@
 import UIKit
 import SwiftMessages
 
-class ShowDatePickerSelectorViewControllerSegue: SwiftMessagesSegue {
+class ShowDatePickerLowerDateSelectorViewController: SwiftMessagesSegue {
     
     override public init(identifier: String?, source: UIViewController, destination: UIViewController) {
         super.init(identifier: identifier, source: source, destination: destination)
@@ -16,6 +16,16 @@ class ShowDatePickerSelectorViewControllerSegue: SwiftMessagesSegue {
         dimMode = .gray(interactive: false)
         messageView.configureNoDropShadow()
     }
+}
+
+class ShowDatePickerUpperDateSelectorViewController: SwiftMessagesSegue {
+	
+	override public init(identifier: String?, source: UIViewController, destination: UIViewController) {
+		super.init(identifier: identifier, source: source, destination: destination)
+		configure(layout: .bottomMessage)
+		dimMode = .gray(interactive: false)
+		messageView.configureNoDropShadow()
+	}
 }
 
 class ShowExportContactsViewControllerSegue: SwiftMessagesSegue {
@@ -27,4 +37,15 @@ class ShowExportContactsViewControllerSegue: SwiftMessagesSegue {
         messageView.configureNoDropShadow()
         messageView.configureDropShadow()
     }
+}
+
+class ShowVideoSizeSelectorViewControllerSegue: SwiftMessagesSegue {
+	
+	override public init(identifier: String?, source: UIViewController, destination: UIViewController) {
+		super.init(identifier: identifier, source: source, destination: destination)
+		configure(layout: .bottomMessage)
+		dimMode = .gray(interactive: false)
+		messageView.configureNoDropShadow()
+		messageView.configureDropShadow()
+	}
 }

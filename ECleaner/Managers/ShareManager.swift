@@ -72,7 +72,7 @@ class ShareManager {
                     P.hideIndicator()
                     if let url = fileURL {
                         completionHandler(true)
-                        self.shareVCFContacts(from: url)
+						self.shareCSVContacts(from: url)
                     } else {
                         completionHandler(false)
                     }

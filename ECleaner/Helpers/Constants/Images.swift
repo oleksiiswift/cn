@@ -41,10 +41,20 @@ class Images {
             static let buttonShare = UIImage(named: "defaultButtonShare")!
             static let merge = UIImage(named: "mergeArrowTop")!
             static let delete = UIImage(named: "deleteItem")!
+			static let recover = UIImage(named: "recoverTrashBin")!
             static let refresh = UIImage(named: "circleArrow")!
             static let deepClean = UIImage(named: "deepClean")!
             static let refreshFull = UIImage(named: "circleRoundedArrows")!
+			static let onViewPlayButton = UIImage(named: "playTransparentItem")!
+			static let trashBin = UIImage(named: "defaultTrashBin")!
+            static let star = UIImage(named: "starItem")!
+            static let arrowUP = UIImage(named: "arrowUpDown")!
         }
+		
+		struct helpersItems {
+			static let filledSegmentDotSlider = UIImage(named: "filledSegmentSlider")
+			static let segmentDotSlider = UIImage(named: "sigmentSlider")
+		}
         
         struct backroundStaticItems {
             static let spreadBackground = UIImage(named: "dateViewBackground")!
@@ -68,14 +78,29 @@ class Images {
             
             static let processingThumb = UIImage(named: "photoProcessingEmptyItem")!
             static let unavailibleThumb = UIImage(named: "photoThumbUnselect")!
+			static let checkmark = UIImage(named: "photoSectionSelect")!
         }
         
         struct video {
             
             static let processingThumb = UIImage(named: "videoProcessingEmptyItem")!
             static let unavailibleThumb = UIImage(named: "videoThumbUnselect")!
+			static let checkmark = UIImage(named: "videoSectionSelect")!
         }
     }
+	
+	struct setting {
+		static let premiumBanner = UIImage(named: "settingsPremiumBanner")!
+		static let largeVideo = UIImage(named: "photoProcessingEmptyItem")!
+		static let storage = UIImage(named: "photoProcessingEmptyItem")!
+		static let permission = UIImage(named: "photoProcessingEmptyItem")!
+		static let restore = UIImage(named: "photoProcessingEmptyItem")!
+		static let support = UIImage(named: "photoProcessingEmptyItem")!
+		static let share = UIImage(named: "photoProcessingEmptyItem")!
+		static let rate = UIImage(named: "photoProcessingEmptyItem")!
+		static let privacy = UIImage(named: "photoProcessingEmptyItem")!
+		static let terms = UIImage(named: "photoProcessingEmptyItem")!
+	}
 
     
 //  TODO: Check all images!!!!
@@ -94,10 +119,5 @@ class Images {
         static let circleCheckBox = UIImage(systemName: "checkmark.circle.fill")
         static let tileView = UIImage(systemName: "square.grid.2x2.fill")
         static let sliderView = UIImage(named: "sliderItem")
-    }
-    
-    struct cellElementsItems {
-        static let fullScreen = UIImage(systemName: "arrow.up.backward.and.arrow.down.forward")
-        static let trashBin = UIImage(systemName: "trash")
     }
 }

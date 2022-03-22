@@ -17,21 +17,24 @@ class ProgressSearchNotificationManager {
 	}
 	
 		/// handle notification update according to progress calculate total percentage count in single browse clean controller
-	public func sendSingleSearchProgressNotification(notificationtype: SingleContentSearchNotificationType, totalProgressItems: Int, currentProgressItem: Int) {
+	public func sendSingleSearchProgressNotification(notificationtype: SingleContentSearchNotificationType, status: ProcessingProgressOperationState, totalProgressItems: Int, currentProgressItem: Int) {
 		
-		let userInfo = [notificationtype.dictioanartyIndexName: currentProgressItem,
-						notificationtype.dictionaryCountName: totalProgressItems]
+		let userInfo = [notificationtype.dictionaryProcessingState: status,
+						notificationtype.dictioanartyIndexName: currentProgressItem,
+						notificationtype.dictionaryCountName: totalProgressItems] as [String: Any]
 		
-		sleep(UInt32(0.1))
+//		sleep(UInt32(0.1))
 		NotificationCenter.default.post(name: notificationtype.notificationName, object: nil, userInfo: userInfo)
 	}
 	
 		/// handle notification update according to progress calculate total percentage count in deep clean controller
-	public func sendDeepProgressNotificatin(notificationType: DeepCleanNotificationType, totalProgressItems: Int, currentProgressItem: Int) {
+	public func sendDeepProgressNotification(notificationType: DeepCleanNotificationType, status: ProcessingProgressOperationState, totalProgressItems: Int, currentProgressItem: Int) {
 		
-		let infoDictionary = [notificationType.dictionaryIndexName: currentProgressItem,
-							  notificationType.dictionaryCountName: totalProgressItems]
-		sleep(UInt32(0.1))
+		let infoDictionary = [notificationType.dictionaryProcessingState: status,
+							  notificationType.dictionaryIndexName: currentProgressItem,
+							  notificationType.dictionaryCountName: totalProgressItems] as [String : Any]
+		
+//		sleep(UInt32(0.1))
 		NotificationCenter.default.post(name: notificationType.notificationName, object: nil, userInfo: infoDictionary)
 	}
 }

@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import cisua
 
 enum ElementhCount {
     case one
@@ -47,8 +46,9 @@ class AlertManager: NSObject {
         if withCancel {
             alert.addAction(cancelAction)
         }
-        
-        topController()?.present(alert, animated: true, completion: nil)
+		U.UI {
+			topController()?.present(alert, animated: true, completion: nil)			
+		}
     }
     
     private static func showPermissionAlert(alerttype: AlertType, actions: [UIAlertAction], cancelAction: @escaping (_ isDennyAccess: Bool) -> Void) {
@@ -130,7 +130,7 @@ extension AlertManager {
     
         let alertType: AlertType = contacts == .one ? .deleteContact : .deleteContacts
         
-        let allowDeleteAction = UIAlertAction(title: "ok", style: .default) { _ in
+        let allowDeleteAction = UIAlertAction(title: "delete", style: .default) { _ in
             completion()
         }
         
@@ -149,7 +149,7 @@ extension AlertManager {
         
         let alertType: AlertType = sections == .one ? .mergeContact : .mergeContacts
         
-        let allowMergeContacts = UIAlertAction(title: "ok", style: .default) { _ in
+        let allowMergeContacts = UIAlertAction(title: "merge", style: .default) { _ in
             comletion()
         }
         
@@ -182,5 +182,38 @@ extension AlertManager {
 			completion()
 		}
 		showAlert(type: .setBreakSingleCleanSearch, actions: [stopSingleCleanAlertAction], withCancel: true, cancelCompletion: nil)
+	}
+	
+	static func showStopDeepCleanProcessing(_ completion: @escaping () -> Void) {
+		
+		let stopDeepCleanAlertAction = UIAlertAction(title: "stop", style: .default) { _ in
+			completion()
+		}
+		showAlert(type: .setBreakDeepCleanDelete, actions: [stopDeepCleanAlertAction], withCancel: true, cancelCompletion: nil)
+	}
+	
+	static func showQuiteDeepCleanResults(_ completion: @escaping () -> Void) {
+	
+		let quiteDeepCleanAlertAction = UIAlertAction(title: "exit", style: .default) { _ in
+			completion()
+		}
+		
+		showAlert(type: .resetDeepCleanResults, actions: [quiteDeepCleanAlertAction], withCancel: true, cancelCompletion: nil)
+	}
+}
+
+
+extension AlertManager {
+	
+	public static func showSelectAllStarterAlert(for type: PhotoMediaType, completionHandler: @escaping () -> Void) {
+		
+		let alertAction = UIAlertAction(title: "Select all", style: .default) { _ in
+			completionHandler()
+		}
+		
+		let alertMessage = AlertHandler.getSelectableAutimaticAletMessage(for: type)
+		
+		
+		showAlert("Select Items?", message: alertMessage, actions: [alertAction], withCancel: true, completion: nil)
 	}
 }

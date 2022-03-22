@@ -7,6 +7,7 @@
 
 import Photos
 import UIKit
+import PhotosUI
 
 typealias SDKey = SortingDesriptionKey
 enum SortingDesriptionKey {
@@ -161,6 +162,36 @@ extension PHAssetFetchManager {
             return PHAsset.fetchAssets(with: fetchOption)
         }
     }
+	
+	public func fetchImagesDiskUsageFromGallery(with identifiers: [String], completionHandler: @escaping (Int64) -> Void) {
+		
+		let fetchOptions = PHFetchOptions()
+		let results = PHAsset.fetchAssets(withLocalIdentifiers: identifiers, options: fetchOptions)
+		var analyzingPhassets: Int = 0
+		var resultsDiskUssage: Int64 = 0
+		results.enumerateObjects { phasset, index, stopped in
+			let resource = PHAssetResource.assetResources(for: phasset)
+			let fileSize = resource.first?.value(forKey: "fileSize") as! Int64
+			
+			resultsDiskUssage += fileSize
+			analyzingPhassets += 1
+			
+			if analyzingPhassets == results.count {
+				completionHandler(resultsDiskUssage)
+			}
+		}
+	}
+	
+	public func fetchPhassetFromGallery(with identifiers: [String], completionHandler: @escaping ([PHAsset]) -> Void) {
+		
+		let fetchOptions = PHFetchOptions()
+		let results = PHAsset.fetchAssets(withLocalIdentifiers: identifiers, options: fetchOptions)
+		var fetchedPhassets: [PHAsset] = []
+		results.enumerateObjects { phasset, index, stopped in
+			fetchedPhassets.append(phasset)
+		}
+		completionHandler(fetchedPhassets)
+	}
     
 //     MARK: get thumnail from asset
     public func getThumbnail(from asset: PHAsset, size: CGSize) -> UIImage {
@@ -168,9 +199,9 @@ extension PHAssetFetchManager {
         var thumbnail = UIImage()
         let manager = PHImageManager.default()
         let option = PHImageRequestOptions()
-        
+		option.isNetworkAccessAllowed = true
+		option.deliveryMode = .opportunistic
         option.isSynchronous = true
-        
         manager.requestImage(for: asset, targetSize: size, contentMode: .aspectFit, options: option, resultHandler: {(result, info) -> Void in
             if let image = result {
             thumbnail = image
@@ -248,7 +279,6 @@ extension PHAssetFetchManager {
     }
 }
             
-
 //		MARK: - files count check, space calculated operation -
 extension PHAssetFetchManager {
 	
@@ -273,6 +303,42 @@ extension PHAssetFetchManager {
 			completionHandler(phassetCalculetedSize)
 		}
 		return calculatedAllPHAssetOperation
+	}
+	
+	public func getLowerUppedDateFromPhasset() -> ConcurrentProcessOperation {
+		let dateCalculatedOperation = ConcurrentProcessOperation { _ in
+			
+			U.GLB(qos: .background, {
+
+				var lowerDateValue: Date {
+					return S.lowerBoundSavedDate
+				}
+				
+				var upperDateValue: Date {
+					return S.upperBoundSavedDate
+				}
+				
+				let fetchOption = PHFetchOptions()
+				fetchOption.sortDescriptors = [NSSortDescriptor(key: SortingDesriptionKey.creationDate.value, ascending: false)]
+				fetchOption.predicate = NSPredicate(format: SDKey.allMediaType.value, PHAssetMediaType.image.rawValue, PHAssetMediaType.video.rawValue)
+				let assets = PHAsset.fetchAssets(with: fetchOption)
+
+				assets.enumerateObjects { object, index, stopped in
+					
+					if let date = object.creationDate {
+						if date.isLessThanDate(dateToCompare: lowerDateValue) {
+							S.lowerBoundSavedDate = date
+						}
+						
+						if date.isGreaterThanDate(dateToCompare: upperDateValue) {
+							S.upperBoundSavedDate = date
+						}
+					}
+				}
+			})
+			
+		}
+		return dateCalculatedOperation
 	}
 	
 		/// `all assets file size, and in one loop get photo video`
@@ -410,7 +476,7 @@ extension PHAssetFetchManager {
 		return recentlyDeletedAlbumsSortFetch
 	}
 	
-	private func fetchRecentlyDeletedCollection(completionHandler: @escaping ((PHAssetCollection?) -> Void)) {
+	public func fetchRecentlyDeletedCollection(completionHandler: @escaping ((PHAssetCollection?) -> Void)) {
 		
 		let result = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .albumRegular, options: nil)
 		

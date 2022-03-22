@@ -31,7 +31,7 @@ extension DeepCleanInfoTableViewCell {
     
     func setProgress(files count: Int) {
         
-        let totalCheckedFilesFont: UIFont = UIFont(font: FontManager.robotoBold, size: 18.0)!
+		let totalCheckedFilesFont: UIFont = .systemFont(ofSize: 18, weight: .bold)
         let totalCheckedFilesColor: UIColor = theme.titleTextColor
         
         let totalFilesAttributes = [NSAttributedString.Key.font: totalCheckedFilesFont, NSAttributedString.Key.foregroundColor: totalCheckedFilesColor]
@@ -39,13 +39,20 @@ extension DeepCleanInfoTableViewCell {
         let textTitle = NSMutableAttributedString(string: String(count), attributes: totalFilesAttributes)
         
         infoTotalFilesTextLabel.attributedText = textTitle
-        totalSpaceTextLabel.text = "100 Gb"
-        totalSpaceTitleLabel.text = "MEMORY".localized()
+		totalSpaceTitleLabel.text = "after clean".localized().uppercased()
         infoTotalFilesTitleLabel.text = "FILES".localized()
     }
     
-    func setRoundedProgress(value: CGFloat) {
+	func setRoundedProgress(value: CGFloat, futuredCleaningSpace: Int64?) {
         progressRing.progress = value
+		debugPrint("--- \(value)")
+		
+		if let futuredCleaningSpace = futuredCleaningSpace {
+			let stringSpace = U.getSpaceFromInt(futuredCleaningSpace)
+			totalSpaceTextLabel.text = stringSpace
+		} else {
+			totalSpaceTextLabel.text = "0"
+		}
     }
 }
 
@@ -64,7 +71,7 @@ extension DeepCleanInfoTableViewCell: Themeble {
                                            lineWidth: 13)
         
         progressRing.progressLabel.textColor = UIColor().colorFromHexString("FF845A")//theme.titleTextColor
-        progressRing.progressLabel.font = UIFont(font: FontManager.robotoBold, size: 22.0)
+		progressRing.progressLabel.font = .systemFont(ofSize: 16, weight: .bold)
         progressRing.progressLabel.translatesAutoresizingMaskIntoConstraints = false
         progressRing.progressLabel.frame = CGRect(origin: .zero, size: CGSize(width: 50, height: 30))
         progressRing.progressLabel.center = position
@@ -72,9 +79,9 @@ extension DeepCleanInfoTableViewCell: Themeble {
         
         progressContainerView.layer.addSublayer(progressRing)
         
-        infoTotalFilesTitleLabel.font = UIFont(font: FontManager.robotoMedium, size: 14.0)!
-        totalSpaceTextLabel.font = UIFont(font: FontManager.robotoBold, size: 18.0)!
-        totalSpaceTitleLabel.font = UIFont(font: FontManager.robotoMedium, size: 14.0)!
+		infoTotalFilesTitleLabel.font = .systemFont(ofSize: 14, weight: .medium)
+		totalSpaceTextLabel.font = .systemFont(ofSize: 18, weight: .bold)
+		totalSpaceTitleLabel.font = .systemFont(ofSize: 14, weight: .medium)
     }
     
     func updateColors() {

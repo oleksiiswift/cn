@@ -14,7 +14,7 @@ enum SingleContentSearchNotificationType {
 	case duplicatedPhoto
 	case similarLivePhoto
 	case screenShots
-	case selfies
+	case similarSelfiesPhoto
 	case livePhoto
 	case recentlyDeletedPhoto
 	
@@ -46,8 +46,8 @@ enum SingleContentSearchNotificationType {
 				return C.key.notificationDictionary.count.livePhotosSimilarCount
 			case .screenShots:
 				return C.key.notificationDictionary.count.screenShotsCount
-			case .selfies:
-				return C.key.notificationDictionary.count.selfiePhotosCount
+			case .similarSelfiesPhoto:
+				return C.key.notificationDictionary.count.similarSelfiePhotosCount
 			case .livePhoto:
 				return C.key.notificationDictionary.count.livePhotosSimilarCount
 			case .recentlyDeletedPhoto:
@@ -90,8 +90,8 @@ enum SingleContentSearchNotificationType {
 				return C.key.notificationDictionary.index.livePhotosIndex
 			case .screenShots:
 				return C.key.notificationDictionary.index.screenShotsIndex
-			case .selfies:
-				return C.key.notificationDictionary.index.selfiePhotosIndex
+			case .similarSelfiesPhoto:
+				return C.key.notificationDictionary.index.similarSelfiePhotoIndex
 			case .livePhoto:
 				return C.key.notificationDictionary.index.livePhotosIndex
 			case .recentlyDeletedPhoto:
@@ -123,6 +123,47 @@ enum SingleContentSearchNotificationType {
 		}
 	}
 	
+	var dictionaryProcessingState: String {
+		switch self {
+			case .similarPhoto:
+				return C.key.notificationDictionary.state.similarPhotoState
+			case .duplicatedPhoto:
+				return C.key.notificationDictionary.state.duplicatePhotoState
+			case .similarLivePhoto:
+				return C.key.notificationDictionary.state.similarLivePhototState
+			case .screenShots:
+				return C.key.notificationDictionary.state.screenShotsState
+			case .similarSelfiesPhoto:
+				return C.key.notificationDictionary.state.similarSelfieState
+			case .livePhoto:
+				return C.key.notificationDictionary.state.livePhotosState
+			case .recentlyDeletedPhoto:
+				return C.key.notificationDictionary.state.recentlyDeletedPhotoState
+			case .largeVideo:
+				return C.key.notificationDictionary.state.largeVideoState
+			case .duplicatedVideo:
+				return C.key.notificationDictionary.state.duplicateVideoState
+			case .similarVideo:
+				return C.key.notificationDictionary.state.similarVideoState
+			case .screenRecordings:
+				return C.key.notificationDictionary.state.screenRecordingsState
+			case .recentlyDeletedVideo:
+				return C.key.notificationDictionary.state.recentrlyDeletedVideoState
+			case .allContacts:
+				return C.key.notificationDictionary.state.allContactsState
+			case .emptyContacts:
+				return C.key.notificationDictionary.state.emptyContactsState
+			case .duplicatesNames:
+				return C.key.notificationDictionary.state.duplicateNamesContactsState
+			case .duplicatesNumbers:
+				return C.key.notificationDictionary.state.duplicateNumbersContactsState
+			case .duplicatesEmails:
+				return C.key.notificationDictionary.state.duplicateEmailContactsState
+			case .none:
+				return ""
+		}
+	}
+		
 	var notificationName: Notification.Name {
 		
 		switch self {
@@ -135,8 +176,8 @@ enum SingleContentSearchNotificationType {
 				return .singleSearchSimilarLivePhotoScan
 			case .screenShots:
 				return .singleSearchScreenShotsPhotoScan
-			case .selfies:
-				return .singleSearchSelfiePhotoScan
+			case .similarSelfiesPhoto:
+				return .singleSearchSimilarSelfiePhotoScan
 			case .livePhoto:
 				return .singleSearchLivePhotoScan
 			case .recentlyDeletedPhoto:
@@ -165,7 +206,6 @@ enum SingleContentSearchNotificationType {
 				return .singleSearchDupliatesEmailsContactsScan
 			case .none:
 				return Notification.Name("")
-
 		}
 	}
 	
@@ -180,8 +220,8 @@ enum SingleContentSearchNotificationType {
 				return .similarLivePhotos
 			case .screenShots:
 				return .singleScreenShots
-			case .selfies:
-				return .singleSelfies
+			case .similarSelfiesPhoto:
+				return .similarSelfies
 			case .livePhoto:
 				return .singleLivePhotos
 			case .recentlyDeletedPhoto:
@@ -208,7 +248,6 @@ enum SingleContentSearchNotificationType {
 				return .duplicatedEmails
 			case .none:
 				return .none
-
 		}
 	}
 }

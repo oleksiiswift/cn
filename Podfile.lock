@@ -1,60 +1,35 @@
 PODS:
-  - AppsFlyerFramework (6.4.2):
-    - AppsFlyerFramework/Main (= 6.4.2)
-  - AppsFlyerFramework/Main (6.4.2)
-  - cisua (0.9.7):
-    - cisua/Core (= 0.9.7)
-  - cisua/Core (0.9.7):
-    - AppsFlyerFramework (~> 6.3)
   - CocoaImageHashing (1.7.0)
-  - PhoneNumberKit (3.3.3):
-    - PhoneNumberKit/PhoneNumberKitCore (= 3.3.3)
-    - PhoneNumberKit/UIKit (= 3.3.3)
-  - PhoneNumberKit/PhoneNumberKitCore (3.3.3)
-  - PhoneNumberKit/UIKit (3.3.3):
+  - PhoneNumberKit (3.3.4):
+    - PhoneNumberKit/PhoneNumberKitCore (= 3.3.4)
+    - PhoneNumberKit/UIKit (= 3.3.4)
+  - PhoneNumberKit/PhoneNumberKitCore (3.3.4)
+  - PhoneNumberKit/UIKit (3.3.4):
     - PhoneNumberKit/PhoneNumberKitCore
-  - SwiftDate (6.3.1)
+  - SnapKit (5.0.1)
   - SwiftMessages (9.0.5):
     - SwiftMessages/App (= 9.0.5)
   - SwiftMessages/App (9.0.5)
-  - SwiftyContacts (3.0.16)
-  - SwiftyStoreKit (0.16.1)
-  - SwiftyUserDefaults (5.3.0)
 
 DEPENDENCIES:
-  - cisua
   - CocoaImageHashing
   - PhoneNumberKit
-  - SwiftDate
+  - SnapKit (~> 5.0.0)
   - SwiftMessages
-  - SwiftyContacts
-  - SwiftyStoreKit
-  - SwiftyUserDefaults
 
 SPEC REPOS:
-  "git@bitbucket.org:cisua/specs.git":
-    - cisua
   https://github.com/CocoaPods/Specs.git:
-    - AppsFlyerFramework
     - CocoaImageHashing
     - PhoneNumberKit
-    - SwiftDate
+    - SnapKit
     - SwiftMessages
-    - SwiftyContacts
-    - SwiftyStoreKit
-    - SwiftyUserDefaults
 
 SPEC CHECKSUMS:
-  AppsFlyerFramework: 2303994c0bda3afa48eba93680ab5fe48f46cd94
-  cisua: f49df6137e782f944275e7b2bbcfa683d9e91e00
   CocoaImageHashing: 2c8efd6dd60f9030cd54086b34ffc48e927821c3
-  PhoneNumberKit: 4ce83273551c4d2ae10b7361162f4283dd02835f
-  SwiftDate: 72d28954e8e1c6c1c0f917ccc8005e4f83c7d4b2
+  PhoneNumberKit: 441e8b26ec88d598e3591de9061eff18f5dd12e8
+  SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
   SwiftMessages: 9cca50659fa22bb523b4dd2a958d4442e843a354
-  SwiftyContacts: c02b7908cfd18505c004a43162fd7b63218d2ba0
-  SwiftyStoreKit: 6b9c08810269f030586dac1fae8e75871a82e84a
-  SwiftyUserDefaults: 63f80248cf5bfb3458825d9a78f2eb7e1293a040
 
-PODFILE CHECKSUM: 0d3e9260eb7c39a9be1c022280b27fc487cc54be
+PODFILE CHECKSUM: 5f95de946423e8c27e99ec07a3a177e4eb39537c
 
-COCOAPODS: 1.10.1
+COCOAPODS: 1.11.2

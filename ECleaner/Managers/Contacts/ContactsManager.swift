@@ -25,7 +25,7 @@ class ContactsManager {
 	private var phoneNumberKit = PhoneNumberKit()
 	private var progressSearchNotificationManager = ProgressSearchNotificationManager.instance
 	
-	public let contactsProcessingOperationQueuer = OperationProcessingQueuer(name: Constants.key.operation.queue.contacts, maxConcurrentOperationCount: 10, qualityOfService: .background)
+	public let contactsProcessingOperationQueuer = OperationProcessingQueuer(name: Constants.key.operation.queue.contacts, maxConcurrentOperationCount: 10, qualityOfService: .userInteractive)
 
 		/// `fetching keys`
 	private let fetchingKeys: [CNKeyDescriptor] = [
@@ -66,7 +66,7 @@ class ContactsManager {
 		}
 	}
 	
-	private func isStoreOpen() -> Bool {
+	private var isStoreOpen: Bool {
 		
 		switch CNContactStore.authorizationStatus(for: .contacts) {
 				
@@ -175,7 +175,7 @@ extension ContactsManager {
 		/// fetch all contacts
 	public func getAllContacts(_ completionHandler: @escaping ([CNContact]) -> Void) {
 		
-		guard isStoreOpen() else { return }
+		guard isStoreOpen else { return }
 		
 		U.BG {
 			self.fetchContacts(keys: self.fetchingKeys) { result in
@@ -187,6 +187,25 @@ extension ContactsManager {
 						completionHandler([])
 						break
 				}
+			}
+		}
+	}
+	
+	public func getPredicateContacts(with identifiers: [String], complationHandler: @escaping ([CNContact]) -> Void) {
+		
+		let predicate = CNContact.predicateForContacts(withIdentifiers: identifiers)
+		var contacts: [CNContact] = []
+		
+		if isStoreOpen {
+			let contactStore: CNContactStore = CNContactStore()
+			
+			do {
+				contacts = try contactStore.unifiedContacts(matching: predicate, keysToFetch: self.fetchingKeys)
+				if !contacts.isEmpty {
+					complationHandler(contacts)
+				}
+			} catch {
+				complationHandler([])
 			}
 		}
 	}
@@ -234,7 +253,7 @@ extension ContactsManager {
 		/// - Parameter contacts: recieved all contacts and statint processing
 		
 	private func getEmptyContacts(_ contacts: [CNContact], completion: @escaping ([ContactsGroup]) -> Void) {
-		let operation = self.getEmptyContactsOperation(contacts: contacts) { contactsGroup in
+		let operation = self.getEmptyContactsOperation(contacts: contacts, cleanProcessingType: .background) { contactsGroup in
 			completion(contactsGroup)
 		}
 		
@@ -249,7 +268,7 @@ extension ContactsManager {
 	}
 	
 	private func getDuplicatedNames(_ contacts: [CNContact], completion: @escaping ([ContactsGroup]) -> Void) {
-		let operation = self.getDuplicatedContactsNamesOperation(contacts: contacts) { contactsGroup in
+		let operation = self.getDuplicatedContactsNamesOperation(contacts: contacts, cleanProcessingType: .background) { contactsGroup in
 			completion(contactsGroup)
 		}
 		if let operationInQueue = self.contactsProcessingOperationQueuer.operations.first(where: {$0.name == operation.name}) {
@@ -263,7 +282,7 @@ extension ContactsManager {
 	}
 	
 	private func getDuplicatedPhones(_ contacts: [CNContact], completion: @escaping ([ContactsGroup]) -> Void) {
-		let operation = self.getPhoneDuplicatedOperation(contacts: contacts) { contactsGroup in
+		let operation = self.getPhoneDuplicatedOperation(contacts: contacts, cleanProcessingType: .background) { contactsGroup in
 			completion(contactsGroup)
 		}
 		if let operationInQueue = self.contactsProcessingOperationQueuer.operations.first(where: {$0.name == operation.name}) {
@@ -277,7 +296,7 @@ extension ContactsManager {
 	}
 	
 	private func getDuplicatedEmails(_ contacts: [CNContact], completion: @escaping ([ContactsGroup]) -> Void) {
-		let operation = self.getEmailDuplicatesOperation(contacts: contacts) { contactsGroup in
+		let operation = self.getEmailDuplicatesOperation(contacts: contacts, cleanProcessingType: .background) { contactsGroup in
 			completion(contactsGroup)
 		}
 		if let operationInQueue = self.contactsProcessingOperationQueuer.operations.first(where: {$0.name == operation.name}) {
@@ -295,16 +314,14 @@ extension ContactsManager {
 	
 		///  `` - updating contacts with completions
 		/// - Parameters:
-		///   - `withSingleNotification:` optional notification for single screens ui update
-		///   - `withDeepCleanNotification:` optional
+		///   - `cleanProcessingType:` optional notification for single screens ui update or deepclean
 		///   - `completionHandler:` completion for complete all operation
 		///   - `allContacts:` fetching all contacts
 		///   - `emptyContacts:` empty contacts
 		///   - `duplicatedNames:` duplicated names numbers group
 		///   - `duplicatedPhoneNumbers:` duplicated phone numbers group
 		///   - `duplicatedEmailGrops:` - duplicated emails groups
-	public func getUpdatingContactsAfterContainerDidChange(withSingleNotification: Bool = false,
-														   withDeepCleanNotification: Bool = false,
+	public func getUpdatingContactsAfterContainerDidChange(cleanProcessingType: CleanProcessingPresentType = .background,
 														   completionHandler: @escaping () -> Void,
 														   allContacts: @escaping ([CNContact]) -> Void,
 														   emptyContacts: @escaping ([ContactsGroup]) -> Void,
@@ -317,7 +334,7 @@ extension ContactsManager {
 				/// returned contacts all containers
 			allContacts(contacts)
 			
-			let emptyContactsOperation = self.getEmptyContactsOperation(contacts: contacts, enableDeepCleanNotification: withDeepCleanNotification, enableSingleNotification: withSingleNotification) { contactsGroup in
+			let emptyContactsOperation = self.getEmptyContactsOperation(contacts: contacts, cleanProcessingType: cleanProcessingType) { contactsGroup in
 				emptyContacts(contactsGroup)
 				numbersOfOperations += 1
 				if numbersOfOperations == 4 {
@@ -325,7 +342,7 @@ extension ContactsManager {
 				}
 			}
 			
-			let duplicatedContactNameOperation = self.getDuplicatedContactsNamesOperation(contacts: contacts, enableDeepCleanNotification: withDeepCleanNotification, enableSingleNotification: withSingleNotification) { contactsGroup in
+			let duplicatedContactNameOperation = self.getDuplicatedContactsNamesOperation(contacts: contacts, cleanProcessingType: cleanProcessingType) { contactsGroup in
 				duplicatedNames(contactsGroup)
 				numbersOfOperations += 1
 				if numbersOfOperations == 4 {
@@ -333,7 +350,7 @@ extension ContactsManager {
 				}
 			}
 			
-			let duplicatedPhoneNumnberOperation = self.getPhoneDuplicatedOperation(contacts: contacts, enableSingleNotification: withSingleNotification, enableDeepCleanNotification: withDeepCleanNotification) { contactsGroup in
+			let duplicatedPhoneNumnberOperation = self.getPhoneDuplicatedOperation(contacts: contacts, cleanProcessingType: cleanProcessingType) { contactsGroup in
 				duplicatedPhoneNumbers(contactsGroup)
 				numbersOfOperations += 1
 				if numbersOfOperations == 4 {
@@ -341,7 +358,7 @@ extension ContactsManager {
 				}
 			}
 			
-			let duplicatedEmailOperation = self.getEmailDuplicatesOperation(contacts: contacts, enableSingleNotification: withSingleNotification, enableDeepCleanNotification: withDeepCleanNotification) { contactsGroup in
+			let duplicatedEmailOperation = self.getEmailDuplicatesOperation(contacts: contacts, cleanProcessingType: cleanProcessingType) { contactsGroup in
 				duplicatedEmailGrops(contactsGroup)
 				numbersOfOperations += 1
 				if numbersOfOperations == 4 {
@@ -370,14 +387,14 @@ extension ContactsManager {
 
 extension ContactsManager {
 	
-	public func getSingleDuplicatedCleaningContacts(of type: ContactasCleaningType, allowNotification: Bool = true, completionHandler: @escaping ([ContactsGroup]) -> Void) {
+	public func getSingleDuplicatedCleaningContacts(of type: ContactasCleaningType, cleanProcessingType: CleanProcessingPresentType = .singleSearch, completionHandler: @escaping ([ContactsGroup]) -> Void) {
 		
 		self.getAllContacts { contacts in
 			guard !contacts.isEmpty else { completionHandler([]); return }
 			
 			switch type {
 				case .emptyContacts:
-					let operation = self.getEmptyContactsOperation(contacts: contacts, enableSingleNotification: allowNotification) { contactsGroup in
+					let operation = self.getEmptyContactsOperation(contacts: contacts, cleanProcessingType: cleanProcessingType) { contactsGroup in
 						completionHandler(contactsGroup)
 					}
 					if !self.contactsProcessingOperationQueuer.operations.contains(where: {$0.name == operation.name}) {
@@ -386,7 +403,7 @@ extension ContactsManager {
 						self.checkActiveOperation(operation)
 					}
 				case .duplicatedContactName:
-					let operation = self.getDuplicatedContactsNamesOperation(contacts: contacts, enableSingleNotification: allowNotification) { contactsGroup in
+					let operation = self.getDuplicatedContactsNamesOperation(contacts: contacts, cleanProcessingType: cleanProcessingType) { contactsGroup in
 						completionHandler(contactsGroup)
 					}
 					if !self.contactsProcessingOperationQueuer.operations.contains(where: {$0.name == operation.name}) {
@@ -395,7 +412,7 @@ extension ContactsManager {
 						self.checkActiveOperation(operation)
 					}
 				case .duplicatedPhoneNumnber:
-					let operation = self.getPhoneDuplicatedOperation(contacts: contacts, enableSingleNotification: allowNotification) { contactsGroup in
+					let operation = self.getPhoneDuplicatedOperation(contacts: contacts, cleanProcessingType: cleanProcessingType) { contactsGroup in
 						completionHandler(contactsGroup)
 					}
 					if !self.contactsProcessingOperationQueuer.operations.contains(where: {$0.name == operation.name}) {
@@ -404,7 +421,7 @@ extension ContactsManager {
 						self.checkActiveOperation(operation)
 					}
 				case .duplicatedEmail:
-					let operation = self.getEmailDuplicatesOperation(contacts: contacts, enableSingleNotification: allowNotification) { contactsGroup in
+					let operation = self.getEmailDuplicatesOperation(contacts: contacts, cleanProcessingType: cleanProcessingType) { contactsGroup in
 						completionHandler(contactsGroup)
 					}
 					if !self.contactsProcessingOperationQueuer.operations.contains(where: {$0.name == operation.name}) {
@@ -445,7 +462,7 @@ extension ContactsManager {
 			
 			guard !contacts.isEmpty else { completionHandler(); return }
 			
-			let emptyContactsOperation = self.getEmptyContactsOperation(contacts: contacts, enableDeepCleanNotification: true) { contactsGroup in
+			let emptyContactsOperation = self.getEmptyContactsOperation(contacts: contacts, cleanProcessingType: .deepCleen) { contactsGroup in
 				emptyContactsCompletion(contactsGroup)
 				
 				totalProcessingCompleteTasks += 1
@@ -454,7 +471,7 @@ extension ContactsManager {
 				}
 			}
 			
-			let duplicatedNamesOperation = self.getDuplicatedContactsNamesOperation(contacts: contacts, enableDeepCleanNotification: true) { contactsGroup in
+			let duplicatedNamesOperation = self.getDuplicatedContactsNamesOperation(contacts: contacts, cleanProcessingType: .deepCleen) { contactsGroup in
 				duplicatedContactsCompletion(contactsGroup)
 				
 				totalProcessingCompleteTasks += 1
@@ -463,7 +480,7 @@ extension ContactsManager {
 				}
 			}
 			
-			let duplicatedPhoneNumbersOperation = self.getPhoneDuplicatedOperation(contacts: contacts, enableDeepCleanNotification: true) { contactsGroup in
+			let duplicatedPhoneNumbersOperation = self.getPhoneDuplicatedOperation(contacts: contacts, cleanProcessingType: .deepCleen) { contactsGroup in
 				duplicatedPhoneNumbersCompletion(contactsGroup)
 				
 				totalProcessingCompleteTasks += 1
@@ -472,7 +489,7 @@ extension ContactsManager {
 				}
 			}
 			
-			let duplicatedEmailsOperation = self.getEmailDuplicatesOperation(contacts: contacts, enableDeepCleanNotification: true) { contactsGroup in
+			let duplicatedEmailsOperation = self.getEmailDuplicatesOperation(contacts: contacts, cleanProcessingType: .deepCleen) { contactsGroup in
 				duplicatedEmailsContactsCompletion(contactsGroup)
 				totalProcessingCompleteTasks += 1
 				if totalProcessingCompleteTasks == 4 {
@@ -498,9 +515,20 @@ extension ContactsManager {
 		/// ``getEmailDuplicatesOperation`` - check for empty fields
 	
 		/// `check empty filds` - check if some fileds is emty
-	private func getEmptyContactsOperation(contacts: [CNContact], enableDeepCleanNotification: Bool = false, enableSingleNotification: Bool = false, _ completionHandler: @escaping ([ContactsGroup]) -> Void) -> ConcurrentProcessOperation {
+	private func getEmptyContactsOperation(contacts: [CNContact], cleanProcessingType: CleanProcessingPresentType, _ completionHandler: @escaping ([ContactsGroup]) -> Void) -> ConcurrentProcessOperation {
 		
 		let emptyContactsOperation = ConcurrentProcessOperation { operation in
+			
+			guard contacts.count != 0 else {
+				completionHandler([])
+				return
+			}
+			
+			let deleyInterval: Double = cleanProcessingType == .background ? 0 : 1
+			let sleepInterval: UInt32 = cleanProcessingType == .background ? 0 : 1
+			
+			self.sendNotification(processing: cleanProcessingType, deepCleanType: .emptyContacts, singleCleanType: .emptyContacts, status: .prepare, totalItems: 0, currentIndex: 0)
+			sleep(sleepInterval)
 			
 			var contactsGroup: [ContactsGroup] = []
 			let emptyIdentifier = ContactsCountryIdentifier(region: "", countryCode: "")
@@ -543,20 +571,20 @@ extension ContactsManager {
 			wholeEmptyContacts.count != 0 ? contactsGroup.append(wholeEmptyGroup) : ()
 			
 			if operation.isCancelled {
+				self.sendEmptyNotification(processing: cleanProcessingType, deepCleanType: .emptyContacts, singleCleanType: .emptyContacts)
 				completionHandler([])
 				return
 			}
 			
-			if enableDeepCleanNotification {
-				for i in 0...contacts.count - 1 {
-					self.progressSearchNotificationManager.sendDeepProgressNotificatin(notificationType: .emptyContacts, totalProgressItems: contacts.count, currentProgressItem: i)
-				}
-			} else if enableSingleNotification {
-				for i in 0...contacts.count - 1 {
-					self.progressSearchNotificationManager.sendSingleSearchProgressNotification(notificationtype: .emptyContacts, totalProgressItems: contacts.count, currentProgressItem: i)
-				}
+			sleep(sleepInterval)
+			for i in 0...contacts.count - 1 {
+				self.sendNotification(processing: cleanProcessingType, deepCleanType: .emptyContacts, singleCleanType: .emptyContacts, status: .progress, totalItems: contacts.count, currentIndex: i)
 			}
-			completionHandler(contactsGroup)
+			
+			self.sendNotification(processing: cleanProcessingType, deepCleanType: .emptyContacts, singleCleanType: .emptyContacts, status: .result, totalItems: contacts.count, currentIndex: contacts.count)
+			U.delay(deleyInterval) {
+				completionHandler(contactsGroup)
+			}
 		}
 		emptyContactsOperation.name = COT.emptyContactOperation.rawValue
 		return emptyContactsOperation
@@ -564,19 +592,16 @@ extension ContactsManager {
 	
 	
 		/// `names duplicated contacts group`
-	private func getDuplicatedContactsNamesOperation(contacts: [CNContact], enableDeepCleanNotification: Bool = false, enableSingleNotification: Bool = false, _ completionHandler: @escaping ([ContactsGroup]) -> Void) -> ConcurrentProcessOperation {
+	private func getDuplicatedContactsNamesOperation(contacts: [CNContact], cleanProcessingType: CleanProcessingPresentType, _ completionHandler: @escaping ([ContactsGroup]) -> Void) -> ConcurrentProcessOperation {
 	
 		let duplicatedContactsOperation = ConcurrentProcessOperation { operation in
+			
+			let deleyInterval: Double = cleanProcessingType == .background ? 0 : 1
 			
 			var group: [ContactsGroup] = []
 			var currentProcessingIndex: Int = 0
 			
-			
-			if enableSingleNotification {
-				self.progressSearchNotificationManager.sendSingleSearchProgressNotification(notificationtype: .duplicatesNames, totalProgressItems: Int(0.01), currentProgressItem: contacts.count)
-			} else if enableDeepCleanNotification {
-				self.progressSearchNotificationManager.sendDeepProgressNotificatin(notificationType: .duplicateContacts, totalProgressItems: 1, currentProgressItem: 0)
-			}
+			self.sendNotification(processing: cleanProcessingType, deepCleanType: .duplicateContacts, singleCleanType: .duplicatesNames, status: .prepare, totalItems: 0, currentIndex: 0)
 			
 			var contactsDictionary = Dictionary(grouping: contacts, by: {String($0.familyName.removeWhitespace() + $0.givenName.removeWhitespace())})
 			contactsDictionary.removeValue(forKey: "")
@@ -587,17 +612,14 @@ extension ContactsManager {
 				for (contactName, similarContacts) in filterDictionary {
 										
 					if operation.isCancelled {
+						self.sendEmptyNotification(processing: cleanProcessingType, deepCleanType: .duplicateContacts, singleCleanType: .duplicatesNames)
 						completionHandler([])
 						return
 					}
 					
 					currentProcessingIndex += 1
 					
-					if enableSingleNotification {
-						self.progressSearchNotificationManager.sendSingleSearchProgressNotification(notificationtype: .duplicatesNames, totalProgressItems: filterDictionary.count, currentProgressItem: currentProcessingIndex)
-					} else if enableDeepCleanNotification {
-						self.progressSearchNotificationManager.sendDeepProgressNotificatin(notificationType: .duplicateContacts, totalProgressItems: filterDictionary.count, currentProgressItem: currentProcessingIndex)
-					}
+					self.sendNotification(processing: cleanProcessingType, deepCleanType: .duplicateContacts, singleCleanType: .duplicatesNames, status: .progress, totalItems: filterDictionary.count, currentIndex: currentProcessingIndex)
 					
 					sleep(UInt32(0.1))
 					let phoneNumbers = similarContacts.map({$0.phoneNumbers}).reduce([], +)
@@ -608,31 +630,37 @@ extension ContactsManager {
 				}
 				group.forEach({ $0.contacts = self.esctimateBestContactIn($0.contacts )})
 			} else {
-				enableDeepCleanNotification ? self.progressSearchNotificationManager.sendDeepProgressNotificatin(notificationType: .duplicateContacts, totalProgressItems: 1, currentProgressItem: 1) : ()
+				self.sendEmptyNotification(processing: cleanProcessingType, deepCleanType: .duplicateContacts, singleCleanType: .duplicatesNames)
 			}
-			completionHandler(group)
+			self.sendNotification(processing: cleanProcessingType, deepCleanType: .duplicateContacts, singleCleanType: .duplicatesNames, status: .result, totalItems: filterDictionary.count, currentIndex: filterDictionary.count)
+			U.delay(deleyInterval) {
+				completionHandler(group)
+			}
 		}
 		duplicatedContactsOperation.name = COT.duplicatedNameOperation.rawValue
 		return duplicatedContactsOperation
 	}
 	
 		/// `phone numbers duplicated group`
-	private func getPhoneDuplicatedOperation(contacts: [CNContact], enableSingleNotification: Bool = false, enableDeepCleanNotification: Bool = false, completionHandler: @escaping ([ContactsGroup]) -> Void) -> ConcurrentProcessOperation {
+	private func getPhoneDuplicatedOperation(contacts: [CNContact], cleanProcessingType: CleanProcessingPresentType, completionHandler: @escaping ([ContactsGroup]) -> Void) -> ConcurrentProcessOperation {
 		
 		let phoneDuplicatedOperation = ConcurrentProcessOperation { operation in
+			
+			let deleyInterval: Double = cleanProcessingType == .background ? 0 : 1
 			
 			let contactsStore = CNContactStore()
 			let phoneNumbers = Array(Set(contacts.map({$0.phoneNumbers.map({$0.value})}).reduce([], +)))
 			
 			var duplicatedContacts: [ContactsGroup] = []
 			
-			enableDeepCleanNotification ? self.progressSearchNotificationManager.sendDeepProgressNotificatin(notificationType: .duplicatedPhoneNumbers, totalProgressItems: contacts.count, currentProgressItem: 0) : ()
+			self.sendNotification(processing: cleanProcessingType, deepCleanType: .duplicatedPhoneNumbers, singleCleanType: .duplicatesNumbers, status: .prepare, totalItems: 0, currentIndex: 0)
 			
 			if !phoneNumbers.isEmpty {
 				
 				for i in 0...phoneNumbers.count - 1 {
 					
 					if operation.isCancelled {
+						self.sendEmptyNotification(processing: cleanProcessingType, deepCleanType: .duplicatedPhoneNumbers, singleCleanType: .duplicatesNumbers)
 						completionHandler([])
 						return
 					}
@@ -642,11 +670,7 @@ extension ContactsManager {
 					do {
 						let containerResults = try contactsStore.unifiedContacts(matching: fetchPredicate, keysToFetch: self.fetchingKeys)
 						
-						if enableSingleNotification {
-							self.progressSearchNotificationManager.sendSingleSearchProgressNotification(notificationtype: .duplicatesNumbers, totalProgressItems: phoneNumbers.count, currentProgressItem: i)
-						} else if enableDeepCleanNotification {
-							self.progressSearchNotificationManager.sendDeepProgressNotificatin(notificationType: .duplicatedPhoneNumbers, totalProgressItems: phoneNumbers.count, currentProgressItem: i)
-						}
+						self.sendNotification(processing: cleanProcessingType, deepCleanType: .duplicatedPhoneNumbers, singleCleanType: .duplicatesNumbers, status: .progress, totalItems: phoneNumbers.count, currentIndex: i)
 						
 						if containerResults.count > 1 {
 							let identifier = ContactsCountryIdentifier(region: "", countryCode: "")
@@ -657,30 +681,36 @@ extension ContactsManager {
 					}
 				}
 			} else {
-				enableDeepCleanNotification ? self.progressSearchNotificationManager.sendDeepProgressNotificatin(notificationType: .duplicatedPhoneNumbers, totalProgressItems: 1, currentProgressItem: 1) : ()
+				self.sendEmptyNotification(processing: cleanProcessingType, deepCleanType: .duplicatedPhoneNumbers, singleCleanType: .duplicatesNumbers)
 			}
-			completionHandler(duplicatedContacts)
+			self.sendNotification(processing: cleanProcessingType, deepCleanType: .duplicatedPhoneNumbers, singleCleanType: .duplicatesNumbers, status: .result, totalItems: phoneNumbers.count, currentIndex: phoneNumbers.count)
+			U.delay(deleyInterval) {
+				completionHandler(duplicatedContacts)
+			}
 		}
 		phoneDuplicatedOperation.name = COT.duplicatedPhoneNumbersOperation.rawValue
 		return phoneDuplicatedOperation
 	}
 	
 		/// `duplicated email list group`
-	private func getEmailDuplicatesOperation(contacts: [CNContact], enableSingleNotification: Bool = true, enableDeepCleanNotification: Bool = false, completionHandler: @escaping ([ContactsGroup]) -> Void) -> ConcurrentProcessOperation {
+	private func getEmailDuplicatesOperation(contacts: [CNContact], cleanProcessingType: CleanProcessingPresentType, completionHandler: @escaping ([ContactsGroup]) -> Void) -> ConcurrentProcessOperation {
 		
 		let emailDuplicatedOperation = ConcurrentProcessOperation { operation in
+			
+			let deleyInterval: Double = cleanProcessingType == .background ? 0 : 1
 			
 			let contactsStore = CNContactStore()
 			let emailsList = Array(Set(contacts.map({$0.emailAddresses.map({$0.value as String})}).reduce([], +)))
 			var duplicatedContacts: [ContactsGroup] = []
 			
-			enableDeepCleanNotification ? self.progressSearchNotificationManager.sendDeepProgressNotificatin(notificationType: .duplicatedEmails, totalProgressItems: contacts.count, currentProgressItem: 0) : ()
+			self.sendNotification(processing: cleanProcessingType, deepCleanType: .duplicatedEmails, singleCleanType: .duplicatesEmails, status: .prepare, totalItems: 0, currentIndex: 0)
 			
 			if !emailsList.isEmpty {
 				
 				for i in 0...emailsList.count - 1 {
 				
 					if operation.isCancelled {
+						self.sendEmptyNotification(processing: cleanProcessingType, deepCleanType: .duplicatedEmails, singleCleanType: .duplicatesEmails)
 						completionHandler([])
 						return
 					}
@@ -689,12 +719,8 @@ extension ContactsManager {
 					do {
 						let fetchPredicate = CNContact.predicateForContacts(matchingEmailAddress: email)
 						
-						if enableSingleNotification {
-							self.progressSearchNotificationManager.sendSingleSearchProgressNotification(notificationtype: .duplicatesEmails, totalProgressItems: emailsList.count, currentProgressItem: i)
-						} else if enableDeepCleanNotification {
-							self.progressSearchNotificationManager.sendDeepProgressNotificatin(notificationType: .duplicatedEmails, totalProgressItems: emailsList.count, currentProgressItem: i)
-						}
-						
+						self.sendNotification(processing: cleanProcessingType, deepCleanType: .duplicatedEmails, singleCleanType: .duplicatesEmails, status: .progress, totalItems: emailsList.count, currentIndex: i)
+			
 						let containerResult = try contactsStore.unifiedContacts(matching: fetchPredicate, keysToFetch: self.fetchingKeys)
 						if containerResult.count > 1 {
 							let identifier = ContactsCountryIdentifier(region: "", countryCode: "")
@@ -704,157 +730,230 @@ extension ContactsManager {
 						debugPrint(error.localizedDescription)
 					}
 				}
-				enableDeepCleanNotification ? self.progressSearchNotificationManager.sendDeepProgressNotificatin(notificationType: .duplicatedEmails, totalProgressItems: emailsList.count, currentProgressItem: emailsList.count) : ()
 			} else {
-				enableDeepCleanNotification ? self.progressSearchNotificationManager.sendDeepProgressNotificatin(notificationType: .duplicatedEmails, totalProgressItems: 1, currentProgressItem: 1) : ()
+				self.sendEmptyNotification(processing: cleanProcessingType, deepCleanType: .duplicatedEmails, singleCleanType: .duplicatesEmails)
 			}
-			completionHandler(duplicatedContacts)
+			self.sendNotification(processing: cleanProcessingType, deepCleanType: .duplicatedEmails, singleCleanType: .duplicatesEmails, status: .result, totalItems: emailsList.count, currentIndex: emailsList.count)
+			U.delay(deleyInterval) {
+				completionHandler(duplicatedContacts)
+			}
 		}
 		emailDuplicatedOperation.name = COT.duplicatedEmailsOperation.rawValue
 		return emailDuplicatedOperation
+	}
+
+	private func smartMergeGroups(_ groups: [ContactsGroup], completionHandler: @escaping ([String], [CNContact]) -> Void) {
+		
+		var deletingContacts: [CNContact] = []
+		var leftContacts: [String] = []
+		var index = 0
+		for group in groups {
+			self.contactsMerge(in: group) { mutableID, contacts in
+				deletingContacts.append(contentsOf: contacts)
+				leftContacts.append(mutableID)
+				index += 1
+				if index == groups.count {
+					completionHandler(leftContacts, deletingContacts)
+				}
+			}
+		}
 	}
 }
 
 //		MARK: - MERGE CONTACTS -
 extension ContactsManager {
 	
-	public func mergeContacts(in group: [ContactsGroup], merged indexes: [Int], completionHandler: @escaping (Bool, [Int]) -> Void) {
+	public func mergeAsyncContacts(in groups: [ContactsGroup], merged indexes: [Int],_ currentProgressConpletionHandler: @escaping(_ progressType: ProgressContactsAlertType,_ currentIndex: Int,_ totalIndexes: Int) -> Void, completionHandler: @escaping(_ suxees: Bool,_ mergedContactsIndexes: [Int]) -> Void) {
 		
-		let mergeContactsOperation = ConcurrentProcessOperation { operation in
+		let mergrgeContactsOperation = ConcurrentProcessOperation { operation in
 			
-			var errorsCount: Int = 0
-			var deleteSelectionIndexCount: Int = 0
-			var indexesForUpdate: [Int] = []
+			let dispatchGroup = DispatchGroup()
+			let dispatchQueue = DispatchQueue(label: C.key.dispatch.mergeContacts)
+			let dispatchSemaphore = DispatchSemaphore(value: 0)
 			
+			var finalProcessingIndexeForUpdating: [Int] = []
+			var currentMergeProcessingIndex = 0
+			var totalErrorsCount = 0
 			
 			for index in indexes {
-	
+				dispatchGroup.enter()
+				let mergedGroup = groups[index]
+				
 				if operation.isCancelled {
-					completionHandler(true, indexesForUpdate)
+					completionHandler(false, finalProcessingIndexeForUpdating)
 					return
 				}
 				
-				self.contactsMerge(in: group[index]) { deleteContacts in
-					self.deleteContacts(deleteContacts) { suxxess, deleteCount in
-						if suxxess {
-							deleteSelectionIndexCount += 1
-							indexesForUpdate.append(index)
+				self.contactsMerge(in: mergedGroup) { mutableContactID, removableContacts in
+					self.deleteAsyncContacts(removableContacts) { currentDeletingContactIndex in
+						debugPrint(currentDeletingContactIndex)
+					} completionHandler: { errorsCount in
+						if errorsCount != 0 {
+							totalErrorsCount += errorsCount
 						} else {
-							let errors = deleteContacts.count - deleteCount
-							errorsCount += errors
+							finalProcessingIndexeForUpdating.append(index)
+							currentMergeProcessingIndex += 1
+							currentProgressConpletionHandler(.mergeContacts, currentMergeProcessingIndex, indexes.count)
+						}
+					}
+					dispatchSemaphore.signal()
+					dispatchGroup.leave()
+				}
+				dispatchGroup.wait()
+			}
+			
+			dispatchGroup.notify(queue: dispatchQueue) {
+				completionHandler(true, finalProcessingIndexeForUpdating)
+			}
+		}
+		mergrgeContactsOperation.name = C.key.operation.name.mergeContacts
+		contactsProcessingOperationQueuer.addOperation(mergrgeContactsOperation)
+	}
+	
+	public func mergeContactsDoNotInUSe(in groups: [ContactsGroup], merged indexes: [Int], currentCompletionIndex: @escaping(_ progressType: ProgressContactsAlertType,_ currentIndex: Int,_ totalIndexes: Int) -> Void, completionHandler: @escaping(_ suxxes: Bool,_ mergedIndexes: [Int]) -> Void) {
+		
+		let mergeContactsOperation = ConcurrentProcessOperation { operation in
+			
+			var deletingContacts: [CNContact] = []
+			var indexesForUpdate: [Int] = []
+			
+			let dispatchGroup = DispatchGroup()
+			let dispatchQuoue = DispatchQueue(label: C.key.dispatch.mergeContacts)
+			let dispatchSemaphore = DispatchSemaphore(value: 0)
+			
+			var currentMergeProcessingIndex = 0
+			
+			dispatchQuoue.async {
+				for index in indexes {
+					dispatchGroup.enter()
+					self.contactsMerge(in: groups[index]) { mutableContactID, removebleContacts in
+						if operation.isCancelled {
+							completionHandler(false, indexesForUpdate)
+							return
 						}
 						
-						let calculetedProgress: CGFloat = CGFloat(100 * deleteSelectionIndexCount / indexes.count) / 100
-						let totalProcessing: String = "\(deleteSelectionIndexCount) / \(indexes.count)"
-						
-						let userInfo: [String : Any] = [C.key.notificationDictionary.progressAlert.progrssAlertValue: calculetedProgress,
-														C.key.notificationDictionary.progressAlert.progressAlertFilesCount: totalProcessing]
-						
-						U.notificationCenter.post(name: .progressMergeContactsAlertDidChangeProgress, object: nil, userInfo: userInfo)
-						sleep(UInt32(0.1))
-						
-						if indexes.count == deleteSelectionIndexCount {
-							completionHandler(true, indexesForUpdate)
+						currentMergeProcessingIndex += 1
+						deletingContacts.append(contentsOf: removebleContacts)
+						indexesForUpdate.append(index)
+						currentCompletionIndex(.mergeContacts, currentMergeProcessingIndex, indexes.count)
+						dispatchSemaphore.signal()
+						dispatchGroup.leave()
+					}
+					dispatchSemaphore.wait()
+				}
+			}
+			
+			dispatchGroup.notify(queue: dispatchQuoue) {
+				U.delay(0.3) {
+					let contacts = Array(Set(deletingContacts))
+					currentCompletionIndex(.deleteContacts, 0, contacts.count)
+					U.delay(0.3) {
+						self.deleteAsyncContacts(contacts) { currentDeletingContactIndex in
+							currentCompletionIndex(.deleteContacts, currentDeletingContactIndex, contacts.count)
+						} completionHandler: { errorsCount in
+							completionHandler(errorsCount == 0, indexesForUpdate)
 						}
 					}
 				}
 			}
 		}
+		
 		mergeContactsOperation.name = C.key.operation.name.mergeContacts
 		contactsProcessingOperationQueuer.addOperation(mergeContactsOperation)
 	}
 	
-	public func contactsMerge(in group: ContactsGroup, deletingContactsCompletion: @escaping ([CNContact]) -> Void) {
+	public func contactsMerge(in group: ContactsGroup, deletingContactsCompletion: @escaping (String, [CNContact]) -> Void) {
 		
-		var contactsDuplicates: [CNContact] = group.contacts
+		let contactsIDS: [String] = group.contacts.map({$0.identifier})
 		
-		var futureBestContact = CNMutableContact()
-		var bestGroupValue: Int = 0
-		
-			/// `main user names data`
-		var givenName: [String] = []
-		var familyName: [String] = []
-		var middleName: [String] = []
-		var organizationName: [String] = []
-			/// `optional user data`
-		var jobTitle: [String] = []
-		var departmentName: [String] = []
-		
-			/// `ìmage data`
-		var thumbnailsImageData: [Data] = []
-		var imagesData: [Data] = []
-		
-			/// `user phone numbers and social`
-		var phoneNumbers: [CNLabeledValue<CNPhoneNumber>] = []
-		var emailAddresses: [CNLabeledValue<NSString>] = []
-		var postalAddresses: [CNLabeledValue<CNPostalAddress>] = []
-		var urlAddresses: [CNLabeledValue<NSString>] = []
-		var contactRelations: [CNLabeledValue<CNContactRelation>] = []
-		var socialProfiles: [CNLabeledValue<CNSocialProfile>] = []
-		var instantMessageAddresses: [CNLabeledValue<CNInstantMessageAddress>] = []
-		
-			/// `grouping contacts`
-		for contact in contactsDuplicates {
+		self.getPredicateContacts(with: contactsIDS) { contactsDuplicates in
 			
-			if contact.fieldStatus() > bestGroupValue {
-				bestGroupValue = contact.fieldStatus()
-				futureBestContact = contact.mutableCopy() as! CNMutableContact
-			}
+			var futureBestContact = CNMutableContact()
+			var bestGroupValue: Int = 0
 			
-			givenName.append(contact.givenName)
-			familyName.append(contact.familyName)
-			middleName.append(contact.middleName)
+				/// `main user names data`
+			var givenName: [String] = []
+			var familyName: [String] = []
+			var middleName: [String] = []
+			var organizationName: [String] = []
+				/// `optional user data`
+			var jobTitle: [String] = []
+			var departmentName: [String] = []
 			
-			jobTitle.append(contact.jobTitle)
-			departmentName.append(contact.departmentName)
+				/// `ìmage data`
+			var thumbnailsImageData: [Data] = []
+			var imagesData: [Data] = []
 			
-			organizationName.append(contact.organizationName)
-			contact.phoneNumbers.forEach { phoneNumbers.append($0) }
-			contact.emailAddresses.forEach { emailAddresses.append($0) }
-			contact.postalAddresses.forEach { postalAddresses.append($0) }
-			contact.urlAddresses.forEach { urlAddresses.append($0) }
-			contact.contactRelations.forEach { contactRelations.append($0)}
-			contact.socialProfiles.forEach { socialProfiles.append($0)}
-			contact.instantMessageAddresses.forEach {instantMessageAddresses.append($0) }
+				/// `user phone numbers and social`
+			var phoneNumbers: [CNLabeledValue<CNPhoneNumber>] = []
+			var emailAddresses: [CNLabeledValue<NSString>] = []
+			var postalAddresses: [CNLabeledValue<CNPostalAddress>] = []
+			var urlAddresses: [CNLabeledValue<NSString>] = []
+			var contactRelations: [CNLabeledValue<CNContactRelation>] = []
+			var socialProfiles: [CNLabeledValue<CNSocialProfile>] = []
+			var instantMessageAddresses: [CNLabeledValue<CNInstantMessageAddress>] = []
 			
-			if contact.imageDataAvailable {
-				if let data = contact.thumbnailImageData {
-					thumbnailsImageData.append(data)
+				/// `grouping contacts`
+			for contact in contactsDuplicates {
+				if contact.fieldStatus() > bestGroupValue {
+					bestGroupValue = contact.fieldStatus()
+					futureBestContact = contact.mutableCopy() as! CNMutableContact
 				}
 				
-				if let imageData = contact.imageData {
-					imagesData.append(imageData)
-				}
-			}
-		}
-		
-		if let mutableContact = futureBestContact.mutableCopy() as? CNMutableContact {
-			
-			mutableContact.givenName = givenName.bestElement ?? ""
-			mutableContact.familyName = familyName.bestElement ?? ""
-			mutableContact.middleName = middleName.bestElement ?? ""
-			mutableContact.organizationName = organizationName.bestElement ?? ""
-			
-			mutableContact.jobTitle = jobTitle.bestElement ?? ""
-			mutableContact.departmentName = departmentName.bestElement ?? ""
-			
-			phoneNumbers.forEach { mutableContact.phoneNumbers.append($0) }
-			emailAddresses.forEach { mutableContact.emailAddresses.append($0) }
-			postalAddresses.forEach { mutableContact.postalAddresses.append($0) }
-			urlAddresses.forEach { mutableContact.urlAddresses.append($0) }
-			contactRelations.forEach { mutableContact.contactRelations.append($0) }
-			socialProfiles.forEach { mutableContact.socialProfiles.append($0) }
-			instantMessageAddresses.forEach { mutableContact.instantMessageAddresses.append($0) }
-			
-			if !imagesData.isEmpty {
-				if let imageData = self.checkImages(from: imagesData) {
-					mutableContact.imageData = imageData
+				givenName.append(contact.givenName)
+				familyName.append(contact.familyName)
+				middleName.append(contact.middleName)
+				
+				jobTitle.append(contact.jobTitle)
+				departmentName.append(contact.departmentName)
+				
+				organizationName.append(contact.organizationName)
+				contact.phoneNumbers.forEach { phoneNumbers.append($0) }
+				contact.emailAddresses.forEach { emailAddresses.append($0) }
+				contact.postalAddresses.forEach { postalAddresses.append($0) }
+				contact.urlAddresses.forEach { urlAddresses.append($0) }
+				contact.contactRelations.forEach { contactRelations.append($0)}
+				contact.socialProfiles.forEach { socialProfiles.append($0)}
+				contact.instantMessageAddresses.forEach {instantMessageAddresses.append($0) }
+				if contact.imageDataAvailable {
+					if let data = contact.thumbnailImageData {
+						thumbnailsImageData.append(data)
+					}
+					
+					if let imageData = contact.imageData {
+						imagesData.append(imageData)
+					}
 				}
 			}
 			
-			self.update(contact: mutableContact) { result in
-				contactsDuplicates = contactsDuplicates.filter({ $0.identifier != mutableContact.identifier })
-				deletingContactsCompletion(contactsDuplicates)
+			if let mutableContact = futureBestContact.mutableCopy() as? CNMutableContact {
+				
+				mutableContact.givenName = givenName.bestElement ?? ""
+				mutableContact.familyName = familyName.bestElement ?? ""
+				mutableContact.middleName = middleName.bestElement ?? ""
+				mutableContact.organizationName = organizationName.bestElement ?? ""
+				
+				mutableContact.jobTitle = jobTitle.bestElement ?? ""
+				mutableContact.departmentName = departmentName.bestElement ?? ""
+				
+				phoneNumbers.forEach { mutableContact.phoneNumbers.append($0) }
+				emailAddresses.forEach { mutableContact.emailAddresses.append($0) }
+				postalAddresses.forEach { mutableContact.postalAddresses.append($0) }
+				urlAddresses.forEach { mutableContact.urlAddresses.append($0) }
+				contactRelations.forEach { mutableContact.contactRelations.append($0) }
+				socialProfiles.forEach { mutableContact.socialProfiles.append($0) }
+				instantMessageAddresses.forEach { mutableContact.instantMessageAddresses.append($0) }
+				if !imagesData.isEmpty {
+					if let imageData = self.checkImages(from: imagesData) {
+						mutableContact.imageData = imageData
+					}
+				}
+				U.BG {
+					self.update(contact: mutableContact) { result in
+						let removableContacts = contactsDuplicates.filter({ $0.identifier != mutableContact.identifier })
+						deletingContactsCompletion(mutableContact.identifier, removableContacts)
+					}
+				}
 			}
 		}
 	}
@@ -913,7 +1012,12 @@ extension ContactsManager {
 		}
 		
 		let deletedContacts = contacts.filter({ $0 != bestContact! })
-		self.deleteContacts(deletedContacts) { _, _ in }
+		self.deleteAsyncContacts(deletedContacts) { currentDeletingContactIndex in
+			debugPrint(currentDeletingContactIndex)
+		} completionHandler: { errorsCount in
+			debugPrint(errorsCount)
+		}
+
 		
 		DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
 			handler(true)
@@ -926,7 +1030,6 @@ extension ContactsManager {
 		var bestValue: Int = 0
 		
 		for contact in refablishContacts {
-			debugPrint("refactor contact group")
 			if contact.fieldStatus() > bestValue {
 				bestValue = contact.fieldStatus()
 				refablishContacts.bringToFront(item: contact)
@@ -994,48 +1097,51 @@ extension ContactsManager {
 	}
 }
 
-//      MARK: - DELETE, CREATE, UPDATE CONTACTS METHODS -
+//      MARK: - DELETE CONTACTS METHODS -
 
 extension ContactsManager {
 	
-	public func deleteContacts(_ contacts: [CNContact],_ completionHandler: @escaping ((Bool, Int) -> Void)) {
+	public func deleteAsyncContacts(_ contacts: [CNContact], _ indexingHandler: @escaping(_ currentDeletingContactIndex: Int) -> Void, completionHandler: @escaping(_ errorsCount: Int) -> Void) {
 		
-		let deleteContactsOperation = ConcurrentProcessOperation { operation in
+		let deleteContactsOperation = BlockOperation()
+		
+		deleteContactsOperation.addExecutionBlock {
 			
-			var deletedContactsCount = 0
+			var errorsCount = 0
+			let dispatchGroup = DispatchGroup()
+			let dispatchQueue = DispatchQueue(label: C.key.dispatch.deleteContacts)
+			let dispatchSemaphore = DispatchSemaphore(value: 0)
+			var currentDeletingContatsIndex = 0
 			
 			for contact in contacts {
-	
-				if operation.isCancelled {
-					completionHandler(false, deletedContactsCount)
-					return
-				}
-				
+				dispatchGroup.enter()
 				self.deleteContact(contact) { success in
-					if success {
-						deletedContactsCount += 1
-						
-						let calculateprogress: CGFloat = CGFloat(100 * deletedContactsCount / contacts.count) / 100
-						
-						let userInfo: [String: Any] = [C.key.notificationDictionary.progressAlert.progrssAlertValue: calculateprogress,
-													   C.key.notificationDictionary.progressAlert.progressAlertFilesCount: "\(deletedContactsCount) / \(contacts.count)"]
-						
-						U.notificationCenter.post(name: .progressDeleteContactsAlertDidChangeProgress, object: nil, userInfo: userInfo)
-						debugPrint(deletedContactsCount)
+					
+					if deleteContactsOperation.isCancelled {
+						completionHandler(errorsCount)
+						return
 					}
+					
+					currentDeletingContatsIndex += 1
+					if !success {
+						errorsCount += 1
+					}
+					indexingHandler(currentDeletingContatsIndex)
+					dispatchSemaphore.signal()
+					dispatchGroup.leave()
 				}
+				dispatchSemaphore.wait()
 			}
 			
-			if contacts.count == deletedContactsCount {
-				completionHandler(true, deletedContactsCount)
-			} else {
-				completionHandler(false,deletedContactsCount)
+			dispatchGroup.notify(queue: dispatchQueue) {
+				completionHandler(errorsCount)
 			}
 		}
+		
 		deleteContactsOperation.name = C.key.operation.name.deleteContacts
 		contactsProcessingOperationQueuer.addOperation(deleteContactsOperation)
 	}
-
+	
 	public func deleteContact(_ contact: CNContact, _ handler: @escaping ((_ success: Bool) -> Void)) {
 		
 		delete(contact: contact.mutableCopy() as! CNMutableContact, completionHandler: { (result) in
@@ -1066,12 +1172,20 @@ extension ContactsManager {
 	
 	public func deleteAllContatsFromStore() {
 		self.getAllContacts { contacts in
-			self.deleteContacts(contacts) { suxxess, deletedCount in
-				debugPrint("deleting is \(suxxess)")
-				debugPrint("deleted \(deletedCount) contacts")
+			var cont = 0
+			for contact in contacts {
+				self.deleteContact(contact) { success in
+					cont += 1
+					debugPrint("deleting is \(success)")
+					debugPrint("deleted \(cont) contacts")
+				}
 			}
 		}
 	}
+}
+
+//		MARK: - CREATE - UPDATE -
+extension ContactsManager {
 	
 	private func update(contact mutContact: CNMutableContact, completionHandler: @escaping (_ result: Result<Bool, Error>) -> Void) {
 		let store = CNContactStore()
@@ -1147,11 +1261,11 @@ extension ContactsManager {
 	}
 	
 	private func setStopDeleteProcessing() {
-		contactsProcessingOperationQueuer.cancelAll()
+		contactsProcessingOperationQueuer.cancelOperation(with: C.key.operation.name.deleteContacts)
 	}
 	
 	private func setStopMergeProcessing() {
-		contactsProcessingOperationQueuer.cancelAll()
+		contactsProcessingOperationQueuer.cancelOperation(with: C.key.operation.name.mergeContacts)
 	}
 	
 	private func setStopSearchProcessing() {
@@ -1208,4 +1322,48 @@ extension ContactsManager {
 	}
 }
 
-
+extension ContactsManager {
+	
+	private func sendNotification(processing: CleanProcessingPresentType, deepCleanType: DeepCleanNotificationType = .none, singleCleanType: SingleContentSearchNotificationType = .none, status: ProcessingProgressOperationState, totalItems: Int, currentIndex: Int) {
+		
+		switch processing {
+			case .deepCleen:
+				self.progressSearchNotificationManager.sendDeepProgressNotification(notificationType: deepCleanType, status: status, totalProgressItems: totalItems, currentProgressItem: currentIndex)
+			case .singleSearch:
+				self.progressSearchNotificationManager.sendSingleSearchProgressNotification(notificationtype: singleCleanType, status: status, totalProgressItems: totalItems, currentProgressItem: currentIndex)
+			case .background:
+				return
+		}
+	}
+	
+	private func sendEmptyNotification(processing: CleanProcessingPresentType, deepCleanType: DeepCleanNotificationType = .none, singleCleanType: SingleContentSearchNotificationType = .none) {
+		switch processing {
+			case .deepCleen:
+				self.sendEmptyDeepCleanNotification(of: deepCleanType)
+			case .singleSearch:
+				self.sendEmptySingleCleanNotification(of: singleCleanType)
+			case .background:
+				return
+		}
+	}
+	
+	private func sendEmptyDeepCleanNotification(of type: DeepCleanNotificationType) {
+		U.delay(1) {
+			self.progressSearchNotificationManager.sendDeepProgressNotification(notificationType: type, status: .empty, totalProgressItems: 0, currentProgressItem: 0)
+		}
+	}
+	
+	private func sendEmptySingleCleanNotification(of type: SingleContentSearchNotificationType) {
+		U.delay(1) {
+			self.progressSearchNotificationManager.sendSingleSearchProgressNotification(notificationtype: type, status: .empty, totalProgressItems: 0, currentProgressItem: 0)
+		}
+	}
+	
+	private func sendUtilityDeepCleanNotification(of type: DeepCleanNotificationType, state: ProcessingProgressOperationState) {
+		self.progressSearchNotificationManager.sendDeepProgressNotification(notificationType: type, status: state, totalProgressItems: 0, currentProgressItem: 0)
+	}
+	
+	private func sendUtilitySingleCleanNotification(of type: SingleContentSearchNotificationType, state: ProcessingProgressOperationState) {
+		self.progressSearchNotificationManager.sendSingleSearchProgressNotification(notificationtype: type, status: state, totalProgressItems: 0, currentProgressItem: 0)
+	}
+}

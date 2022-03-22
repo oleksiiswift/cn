@@ -49,6 +49,7 @@ extension ContactGroupListViewModel {
         
         indexPaths.forEach { indexPath in
             if let contact = self.getContact(at: indexPath) {
+				debugPrint(contact.identifier)
                 cont.append(contact)
             }
         }

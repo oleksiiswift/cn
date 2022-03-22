@@ -19,9 +19,28 @@
 	<key>CFBundleShortVersionString</key>
 	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSContactsUsageDescription</key>
+	<string>$(PRODUCT_NAME) application requests access to Contacts. Please grant access to Contacts in order to import contacts</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Please grant access to your Photo Library in order to access its contents in the app</string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Roboto-Black.ttf</string>
+		<string>Roboto-BlackItalic.ttf</string>
+		<string>Roboto-Bold.ttf</string>
+		<string>Roboto-BoldItalic.ttf</string>
+		<string>Roboto-Italic.ttf</string>
+		<string>Roboto-Light.ttf</string>
+		<string>Roboto-LightItalic.ttf</string>
+		<string>Roboto-Medium.ttf</string>
+		<string>Roboto-MediumItalic.ttf</string>
+		<string>Roboto-Regular.ttf</string>
+		<string>Roboto-Thin.ttf</string>
+		<string>Roboto-ThinItalic.ttf</string>
+	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
@@ -59,25 +78,6 @@
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
-	<key>UIAppFonts</key>
-	<array>
-		<string>Roboto-Black.ttf</string>
-		<string>Roboto-BlackItalic.ttf</string>
-		<string>Roboto-Bold.ttf</string>
-		<string>Roboto-BoldItalic.ttf</string>
-		<string>Roboto-Italic.ttf</string>
-		<string>Roboto-Light.ttf</string>
-		<string>Roboto-LightItalic.ttf</string>
-		<string>Roboto-Medium.ttf</string>
-		<string>Roboto-MediumItalic.ttf</string>
-		<string>Roboto-Regular.ttf</string>
-		<string>Roboto-Thin.ttf</string>
-		<string>Roboto-ThinItalic.ttf</string>
-	</array>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Please grant access to your Photo Library in order to access its contents in the app</string>
-	<key>NSContactsUsageDescription</key>
-	<string>$(PRODUCT_NAME) application requests access to Contacts. Please grant access to Contacts in order to import contacts</string>
 	<key>UIUserInterfaceStyle</key>
 	<string>Light</string>
 </dict>

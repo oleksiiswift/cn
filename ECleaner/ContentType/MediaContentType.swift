@@ -33,7 +33,7 @@ enum MediaContentType {
         
         switch self {
             case .userPhoto:
-                return theme.phoneTintColor
+                return theme.photoTintColor
             case .userVideo:
                 return theme.videosTintColor
             case .userContacts:
@@ -42,8 +42,50 @@ enum MediaContentType {
                 return theme.defaulTintColor
         }
     }
-    
-    
+	
+	var screeAcentGradientColorSet: [CGColor] {
+		let theme = ThemeManager.theme
+		
+		switch self {
+			case .userPhoto:
+				return [theme.photoTopGradientColor.cgColor, theme.photoBottomGradientColor.cgColor]
+			case .userVideo:
+				return [theme.videoTopGradientColor.cgColor, theme.videoBottomGradientColor.cgColor]
+			case .userContacts:
+				return [theme.contactTopGradientColor.cgColor, theme.contactBottomGradientColor.cgColor]
+			case .none:
+				return [UIColor.clear.cgColor, UIColor.clear.cgColor]
+		}
+	}
+	
+	var screeAcentGradientUICoror: [UIColor] {
+		let theme = ThemeManager.theme
+		
+		switch self {
+			case .userPhoto:
+				return [theme.photoTopGradientColor, theme.photoBottomGradientColor]
+			case .userVideo:
+				return [theme.videoTopGradientColor, theme.videoBottomGradientColor]
+			case .userContacts:
+				return [theme.contactTopGradientColor, theme.contactBottomGradientColor]
+			case .none:
+				return [UIColor.clear, UIColor.clear]
+		}
+	}
+	
+	var selectableAssetsCheckMark: UIImage {
+		switch self {
+			case .userPhoto:
+				return I.personalisation.photo.checkmark
+			case .userVideo:
+				return I.personalisation.video.checkmark
+			case .userContacts:
+				return I.personalisation.contacts.sectionSelect
+			case .none:
+				return UIImage()
+		}
+	}
+	
         /// ``MAIN SCREEN CONTENT TYPE PROPERTIES``
     
     var mainScreenIndexPath: IndexPath {
@@ -109,9 +151,9 @@ enum MediaContentType {
     var numberOfRows: Int {
         switch self {
             case .userPhoto:
-                return 6
-            case .userVideo:
                 return 5
+            case .userVideo:
+                return 4
             case .userContacts:
                 return 5
             case .none:
@@ -144,6 +186,19 @@ enum MediaContentType {
                 return UIImage()
         }
     }
+	
+	var checkedImageOfRows: UIImage {
+		switch self {
+			case .userPhoto:
+				return I.personalisation.photo.checkmark
+			case .userVideo:
+				return I.personalisation.video.checkmark
+			case .userContacts:
+				return I.personalisation.contacts.sectionSelect
+			case .none:
+				return UIImage()
+		}
+	}
     
     public func getCellTitle(index: Int) -> String {
         switch self {
@@ -156,7 +211,7 @@ enum MediaContentType {
                     case 2:
                         return "SCREENSHOTS".localized()
                     case 3:
-                        return "SELFIE".localized()
+                        return "similar selfie"
                     case 4:
                         return "LIVE_PHOTO".localized()
                     case 5:
@@ -209,7 +264,7 @@ enum MediaContentType {
     var deepCleanNumbersOfRows: Int {
         switch self {
             case .userPhoto:
-                return 4
+                return 5
             case .userVideo:
                 return 4
             case .userContacts:
@@ -229,7 +284,9 @@ enum MediaContentType {
                         return "DUBLICATES_PHOTO".localized()
                     case 2:
                         return "SCREENSHOTS".localized()
-                    case 3:
+					case 3:
+						return "similar selfies"
+                    case 4:
                         return "SIMILAR_ALLIVE_PHOTOS".localized()
                     default:
                         return ""

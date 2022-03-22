@@ -19,35 +19,20 @@ class MainViewController: UIViewController {
     @IBOutlet weak var circleProgressView: MMTGradientArcView!
     @IBOutlet weak var mediaCollectionView: UICollectionView!
     @IBOutlet weak var collectionViewHeightConstraint: NSLayoutConstraint!
-    
+	@IBOutlet weak var sectionHeaderTextLabel: UILabel!
+	
     private let baseCarouselLayout = BaseCarouselFlowLayout()
         
 	private var photoMenager = PhotoManager.shared
+	private var singleCleanModel: SingleCleanModel!
     
     private var contentCount: [MediaContentType : Int] = [:]
     private var diskSpaceForStartingScreen: [MediaContentType : Int64] = [:]
-
-    private var allScreenShots: [PHAsset] = []
-    private var allSelfies: [PHAsset] = []
-    private var allLiveFotos: [PHAsset] = []
-    
-    private var allLargeVidoes: [PHAsset] = []
-    private var allScreenRecordsVideos: [PHAsset] = []
-    private var allSimilarRecordingsVideos: [PhassetGroup] = []
-    
-    private var allRecentlyDeletedPhotos: [PHAsset] = []
-    private var allRecentlyDeletedVideos: [PHAsset] = []
-    
-        /// `contacts values`
-    private var allContacts: [CNContact] = []
-    private var allEmptyContacts: [ContactsGroup] = []
-    private var allDuplicatedContacts: [ContactsGroup] = []
-    private var allDuplicatedPhoneNumbers: [ContactsGroup] = []
-    private var allDuplicatedEmailAdresses: [ContactsGroup] = []
-    
+	
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+		
+		initializeSingleCleanModel()
         setupObserversAndDelegates()
         setupNavigation()
         setupUI()
@@ -68,6 +53,28 @@ class MainViewController: UIViewController {
         super.viewDidAppear(animated)
         
     }
+	
+	private func initializeSingleCleanModel() {
+		 
+		var objects: [PhotoMediaType : SingleCleanStateModel] = [:]
+		objects[.similarPhotos] = SingleCleanStateModel(type: .similarPhotos)
+		objects[.duplicatedPhotos] = SingleCleanStateModel(type: .duplicatedPhotos)
+		objects[.singleScreenShots] = SingleCleanStateModel(type: .singleScreenShots)
+		objects[.similarSelfies] = SingleCleanStateModel(type: .similarSelfies)
+		objects[.singleLivePhotos] = SingleCleanStateModel(type: .singleLivePhotos)
+		
+		objects[.singleLargeVideos] = SingleCleanStateModel(type: .singleLargeVideos)
+		objects[.duplicatedVideos] = SingleCleanStateModel(type: .duplicatedVideos)
+		objects[.similarVideos] = SingleCleanStateModel(type: .similarVideos)
+		objects[.singleScreenRecordings] = SingleCleanStateModel(type: .singleScreenRecordings)
+		
+		objects[.allContacts] = SingleCleanStateModel(type: .allContacts)
+		objects[.emptyContacts] = SingleCleanStateModel(type: .emptyContacts)
+		objects[.duplicatedContacts] = SingleCleanStateModel(type: .duplicatedContacts)
+		objects[.duplicatedPhoneNumbers] = SingleCleanStateModel(type: .duplicatedPhoneNumbers)
+		objects[.duplicatedEmails] = SingleCleanStateModel(type: .duplicatedEmails)
+		self.singleCleanModel = SingleCleanModel(objects: objects)
+	}
 }
 
 extension MainViewController {
@@ -89,15 +96,14 @@ extension MainViewController {
     }
     
     private func updateInformation(_ contentType: MediaContentType) {
-        
-        let contentCount = contentCount[contentType]
-        let diskUsage = SettingsManager.getDiskSpaceFiles(of: contentType)
-        diskSpaceForStartingScreen[contentType] = diskUsage
-        U.UI {
-            if let cell = self.mediaCollectionView.cellForItem(at: contentType.mainScreenIndexPath) as? MediaTypeCollectionViewCell {
-                cell.configureCell(mediaType: contentType, contentCount: contentCount, diskSpace: diskUsage)
-            }
-        }
+		U.UI {
+			let contentCount = self.contentCount[contentType]
+			let diskUsage = SettingsManager.getDiskSpaceFiles(of: contentType)
+			self.diskSpaceForStartingScreen[contentType] = diskUsage
+			if let cell = self.mediaCollectionView.cellForItem(at: contentType.mainScreenIndexPath) as? MediaTypeCollectionViewCell {
+				cell.configureCell(mediaType: contentType, contentCount: contentCount, diskSpace: diskUsage)
+			}
+		}
     }
     
     private func updateCircleProgress() {}
@@ -107,76 +113,72 @@ extension MainViewController {
 extension MainViewController: UpdateContentDataBaseListener {
     
     func updateContentStoreCount(mediaType: MediaContentType, itemsCount: Int, calculatedSpace: Int64?) {
-        self.contentCount[mediaType] = itemsCount
-        diskSpaceForStartingScreen[mediaType] = calculatedSpace
-        U.UI {
-            if let cell = self.mediaCollectionView.cellForItem(at: mediaType.mainScreenIndexPath) as? MediaTypeCollectionViewCell {
-                cell.configureCell(mediaType: mediaType, contentCount: itemsCount, diskSpace: calculatedSpace)
-            }
-        }
+		U.delay(1) {
+			self.contentCount[mediaType] = itemsCount
+			if let calculatedSpace = calculatedSpace {
+				self.diskSpaceForStartingScreen[mediaType] = calculatedSpace
+			}
+			if let cell = self.mediaCollectionView.cellForItem(at: mediaType.mainScreenIndexPath) as? MediaTypeCollectionViewCell {
+				cell.configureCell(mediaType: mediaType, contentCount: itemsCount, diskSpace: calculatedSpace)
+			}
+		}
     }
 
-    #warning("REFACORORING!!!!!! TODO ->")
     func getScreenAssets(_ assets: [PHAsset]) {
-        self.allScreenShots = assets
+		self.singleCleanModel.objects[.singleScreenShots]?.phassets = assets
     }
     
     func getLivePhotosAssets(_ assets: [PHAsset]) {
-        self.allLiveFotos = assets
+		self.singleCleanModel.objects[.singleLivePhotos]?.phassets = assets
     }
     
-    func getFrontCameraAssets(_ assets: [PHAsset]) {
-        self.allSelfies = assets
-    }
-            
     func getLargeVideosAssets(_ assets: [PHAsset]) {
-        self.allLargeVidoes = assets
+		self.singleCleanModel.objects[.singleLargeVideos]?.phassets = assets
     }
     
     func getSimmilarVideosAssets(_ assets: [PhassetGroup]) {
-        self.allSimilarRecordingsVideos = assets
+		self.singleCleanModel.objects[.similarVideos]?.phassetGroup = assets
     }
     
     func getDuplicateVideosAssets(_ assets: [PhassetGroup]) {
-        debugPrint(assets.count)
+		self.singleCleanModel.objects[.duplicatedVideos]?.phassetGroup = assets
     }
     
     func getScreenRecordsVideosAssets(_ assets: [PHAsset]) {
-        self.allScreenRecordsVideos = assets
+		self.singleCleanModel.objects[.singleScreenRecordings]?.phassets = assets
     }
     
     func getRecentlyDeletedPhotoAsssets(_ assets: [PHAsset]) {
-        self.allRecentlyDeletedPhotos = assets
+		self.singleCleanModel.objects[.singleRecentlyDeletedPhotos]?.phassets = assets
     }
     
     func getRecentlyDeletedVideoAssets(_ assts: [PHAsset]) {
-        self.allRecentlyDeletedVideos = assts
+		self.singleCleanModel.objects[.singleRecentlyDeletedVideos]?.phassets = assts
     }
     
     func getAllCNContacts(_ contacts: [CNContact]) {
-        self.allContacts = contacts
+		self.singleCleanModel.objects[.allContacts]?.contacts = contacts
     }
     
     func getAllDuplicatedContacts(_ contacts: [ContactsGroup]) {
-        self.allDuplicatedContacts = contacts
+		self.singleCleanModel.objects[.duplicatedContacts]?.contactsGroup = contacts
     }
     
     func getAllEmptyContacts(_ contacts: [ContactsGroup]) {
-        self.allEmptyContacts = contacts
+		self.singleCleanModel.objects[.emptyContacts]?.contactsGroup = contacts
     }
     
     func getAllDuplicatedContactsGroup(_ contctsGroup: [ContactsGroup]) {
-        self.allDuplicatedContacts = contctsGroup
+		self.singleCleanModel.objects[.duplicatedContacts]?.contactsGroup = contctsGroup
     }
     
     func getAllDuplicatedNumbersContactsGroup(_ contctsGroup: [ContactsGroup]) {
-        self.allDuplicatedPhoneNumbers = contctsGroup
+		self.singleCleanModel.objects[.duplicatedPhoneNumbers]?.contactsGroup = contctsGroup
     }
     
     func getAllDuplicatedEmailsContactsGroup(_ contctsGroup: [ContactsGroup]) {
-        self.allDuplicatedEmailAdresses = contctsGroup
+		self.singleCleanModel.objects[.duplicatedEmails]?.contactsGroup = contctsGroup
     }
-    
 }
 
 extension MainViewController {
@@ -184,28 +186,8 @@ extension MainViewController {
     private func openMediaController(type: MediaContentType) {
         let storyboard = UIStoryboard(name: C.identifiers.storyboards.media, bundle: nil)
         let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.content) as! MediaContentViewController
-  
-        switch type {
-            case .userPhoto:
-                viewController.allScreenShots = self.allScreenShots
-                viewController.allSelfies = self.allSelfies
-                viewController.allLiveFotos = self.allLiveFotos
-                viewController.allRecentlyDeletedPhotos = self.allRecentlyDeletedPhotos
-            case .userVideo:
-                viewController.allLargeVideos = self.allLargeVidoes
-                viewController.allScreenRecords = self.allScreenRecordsVideos
-                viewController.allRecentlyDeletedVideos = self.allRecentlyDeletedVideos
-            case .userContacts:
-				ContactsManager.shared.contactsProcessingOperationQueuer.cancelAll()
-                viewController.allContacts = self.allContacts
-                viewController.allEmptyContacts = self.allEmptyContacts
-                viewController.allDuplicatedContacts = self.allDuplicatedContacts
-                viewController.allDuplicatedPhoneNumbers = self.allDuplicatedPhoneNumbers
-                viewController.allDuplicatedEmailAdresses = self.allDuplicatedEmailAdresses
-            default:
-                return
-        }
-        
+		viewController.singleCleanModel = self.singleCleanModel
+		ContactsManager.shared.contactsProcessingOperationQueuer.cancelAll()
         viewController.mediaContentType = type
         self.navigationController?.pushViewController(viewController, animated: true)
     }
@@ -215,16 +197,28 @@ extension MainViewController {
         let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.deepClean) as! DeepCleaningViewController
     
         viewController.scansOptions = [.similarPhotos,
-                                       .similarVideos,
-                                       .duplicatedPhotos,
-                                       .duplicatedVideos,
-                                       .similarLivePhotos,
-                                       .singleScreenShots,
-                                       .singleScreenRecordings]
+									   .duplicatedPhotos,
+									   .singleScreenShots,
+									   .similarSelfies,
+									   .similarLivePhotos,
+									   .singleLargeVideos,
+									   .duplicatedVideos,
+									   .similarVideos,
+									   .singleScreenRecordings,
+									   .emptyContacts,
+									   .duplicatedContacts,
+									   .duplicatedPhoneNumbers,
+									   .duplicatedEmails
+		]
         self.navigationController?.pushViewController(viewController, animated: true)
     }
     
-    private func openSettingsController() {}
+    private func openSettingsController() {
+		
+		let storyboard = UIStoryboard(name: C.identifiers.storyboards.settings, bundle: nil)
+		let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.settings) as! SettingsViewController
+		self.navigationController?.pushViewController(viewController, animated: true)
+	}
     
     private func openSubscriptionController() {}
 }
@@ -233,7 +227,10 @@ extension MainViewController {
     
     @objc func contactsStoreDidChange() {
 		U.delay(5) {
-			self.updateContactsCount()			
+				/// do not use this observer it call every time when delete or change contacts
+				/// when tit calls content calls every time and create new and new threat
+				/// danger memerry leaks
+//			self.updateContactsCount()
 		}
     }
     
@@ -333,7 +330,17 @@ extension MainViewController: UpdateColorsDelegate {
         U.notificationCenter.addObserver(self, selector: #selector(updatingContentDisplayInformation(_:)), name: .mediaSpaceDidChange, object: nil)
         U.notificationCenter.addObserver(self, selector: #selector(updatingContentDisplayInformation(_:)), name: .contactsCountDidChange, object: nil)
         U.notificationCenter.addObserver(self, selector: #selector(contactsStoreDidChange), name: .CNContactStoreDidChange, object: nil)
+		U.notificationCenter.addObserver(self, selector: #selector(removeStoreObserver), name: .removeContactsStoreObserver, object: nil)
+		U.notificationCenter.addObserver(self, selector: #selector(addStoreObserver), name: .addContactsStoreObserver, object: nil)
     }
+	
+	@objc func removeStoreObserver() {
+		U.notificationCenter.removeObserver(self, name: .CNContactStoreDidChange, object: nil)
+	}
+	
+	@objc func addStoreObserver() {
+		U.notificationCenter.addObserver(self, selector: #selector(contactsStoreDidChange), name: .CNContactStoreDidChange, object: nil)
+	}
     
     private func setupNavigation() {
             
@@ -344,15 +351,18 @@ extension MainViewController: UpdateColorsDelegate {
     private func setupUI() {
                 
         scrollView.alwaysBounceVertical = true
-        bottomButtonBarView.title("DEEP_CLEANING_BUTTON_TITLE".localized())
+        bottomButtonBarView.title("START DEEP CLEAN")
         bottomButtonBarView.actionButton.imageSize = CGSize(width: 25, height: 25)
         bottomButtonBarView.setImage(I.mainStaticItems.clean)
+		
+		sectionHeaderTextLabel.text = "Select Category"
+		sectionHeaderTextLabel.font = .systemFont(ofSize: 14, weight: .heavy)
     }
     
     func updateColors() {
         
         self.view.backgroundColor = theme.backgroundColor
-        
+		sectionHeaderTextLabel.textColor = theme.subTitleTextColor
         bottomButtonBarView.buttonColor = theme.cellBackGroundColor
         bottomButtonBarView.buttonTintColor = theme.secondaryTintColor
         bottomButtonBarView.buttonTitleColor = theme.activeLinkTitleTextColor
@@ -363,8 +373,8 @@ extension MainViewController: UpdateColorsDelegate {
     
     private func setupProgressAndCollectionSize() {
         
-      circleTotlaSpaceView.font = UIFont(font: FontManager.robotoBlack, size: 61.0)!
-      circleTotlaSpaceView.percentLabel.font = UIFont(font: FontManager.robotoBlack, size: 61.0)
+		circleTotlaSpaceView.font = .systemFont(ofSize: 50, weight: .black)
+		circleTotlaSpaceView.percentLabel.font = .systemFont(ofSize: 50, weight: .black)
       circleTotlaSpaceView.percentLabelCenterInset = 45
       
       switch Screen.size {
@@ -392,22 +402,22 @@ extension MainViewController: UpdateColorsDelegate {
         case .plus:
           debugPrint("")
           collectionViewHeightConstraint.constant = 260
-          
-          circleTotlaSpaceView.font = UIFont(font: FontManager.robotoBlack, size: 20.0)!
-          circleTotlaSpaceView.percentLabel.font = UIFont(font: FontManager.robotoBlack, size: 20.0)
+		
+		 circleTotlaSpaceView.font = .systemFont(ofSize: 20, weight: .black)
+          circleTotlaSpaceView.percentLabel.font = .systemFont(ofSize: 20, weight: .black)
         case .large:
           debugPrint("")
           collectionViewHeightConstraint.constant = 260
           
-          circleTotlaSpaceView.font = UIFont(font: FontManager.robotoBlack, size: 45.0)!
-          circleTotlaSpaceView.percentLabel.font = UIFont(font: FontManager.robotoBlack, size: 45.0)
+          circleTotlaSpaceView.font = .systemFont(ofSize: 45, weight: .black)
+          circleTotlaSpaceView.percentLabel.font = .systemFont(ofSize: 45, weight: .black)
         case .modern:
           debugPrint("")
           
           collectionViewHeightConstraint.constant = 260
           
-          circleTotlaSpaceView.font = UIFont(font: FontManager.robotoBlack, size: 50.0)!
-          circleTotlaSpaceView.percentLabel.font = UIFont(font: FontManager.robotoBlack, size: 50.0)
+          circleTotlaSpaceView.font = .systemFont(ofSize: 50, weight: .black)
+          circleTotlaSpaceView.percentLabel.font = .systemFont(ofSize: 50, weight: .black)
         case .max:
           debugPrint("")
         case .madMax:
