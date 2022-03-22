@@ -13,6 +13,20 @@ protocol ProgressAlertControllerDelegate: AnyObject {
     func didAutoCloseController()
 }
 
+enum ProgressContactsAlertType {
+	case mergeContacts
+	case deleteContacts
+	
+	var progressTitle: String {
+		switch self {
+			case .mergeContacts:
+				return "merged contacts"
+			case .deleteContacts:
+				return "delete contacts"
+		}
+	}
+}
+
 class ProgressAlertController: Themeble {
 
     static var shared = ProgressAlertController()
@@ -23,7 +37,9 @@ class ProgressAlertController: Themeble {
     var delegate: ProgressAlertControllerDelegate?
     
     var contentProgressType: MediaContentType = .none
-    
+	
+	public var controllerPresented: Bool = false
+	
     private var theme = ThemeManager.theme
     
     var progressBarTintColor: UIColor {
@@ -49,11 +65,14 @@ class ProgressAlertController: Themeble {
     }
     
     private func setProgress(controllerType: MediaContentType, title: String) {
+		
+		guard !controllerPresented else { return}
+		
         contentProgressType = .userContacts
         alertController = UIAlertController(title: title, message: " ", preferredStyle: .alert)
         
         let cancelAction = UIAlertAction(title: "cancel", style: .cancel) { _ in
-            
+			self.controllerPresented = false
             self.delegate?.didTapCancelOperation()
         }
     
@@ -74,7 +93,9 @@ class ProgressAlertController: Themeble {
         progressBar.heightAnchor.constraint(equalToConstant: 10).isActive = true
     
         if let topController = topController() {
-            topController.present(alertController, animated: true, completion: nil)
+			topController.present(alertController, animated: true) {
+				self.controllerPresented = true
+			}
         }
     }
     
@@ -93,6 +114,7 @@ class ProgressAlertController: Themeble {
     
     private func closeAlertController() {
         alertController.dismiss(animated: true) {
+			self.controllerPresented = false
             self.delegate?.didAutoCloseController()
         }
     }
@@ -114,6 +136,10 @@ extension ProgressAlertController {
 	
 	public func showDeepCleanProgressAlert() {
 		setProgress(controllerType: .none, title: "deep clean processing")
+	}
+	
+	public func showContactsProgressAlert(of type: ProgressContactsAlertType) {
+		setProgress(controllerType: .userContacts, title: type.progressTitle)
 	}
 }
 

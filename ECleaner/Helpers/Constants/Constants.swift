@@ -33,6 +33,7 @@ class Constants {
             static let lowerBoundSavedDate = "lowerBoundSavedDate"
             static let upperBoundSavedDate = "upperBoundSavedDate"
             static let lastSmartClean = "lastSmartClean"
+			static let largeVideoLowerSize = "largeVideoLowerSize"
             
             static let photoSpace = "photoDiskSpace"
             static let videoSpace = "videoDiskSpace"
@@ -97,6 +98,11 @@ class Constants {
             static let mergeContactsSelectionDidChange = "mergeContactsSelectionDidChange"
             static let selectedContactsDidChange = "selectedContactsDidChange"
         }
+		
+		struct dispatch {
+			static let mergeContacts = "merge contacts label"
+			static let deleteContacts = "deleting contacts label"
+		}
 		
 		struct operation {
 			
@@ -269,6 +275,7 @@ class Constants {
             static let contacts = "Contacts"
             static let contactsGroup = "ContactsGroup"
             static let exportContacts = "ExportContact"
+			static let settings = "Settings"
         }
         
         struct viewControllers {
@@ -284,6 +291,8 @@ class Constants {
             static let deepClean = "DeepCleaningViewController"
             static let contactsGroup = "ContactsGroupViewController"
             static let expordContacts = "ExportContactsViewController"
+			static let settings = "SettingsViewController"
+			
         }
         
         struct cells {
@@ -295,6 +304,7 @@ class Constants {
             static let cleanInfoCell = "DeepCleanInfoTableViewCell"
             static let contactCell = "ContactTableViewCell"
             static let groupContactCell = "GroupContactTableViewCell"
+			static let helperBannerCell = "HelperBannerTableViewCell"
         }
         
         struct views {
@@ -315,6 +325,7 @@ class Constants {
             static let cleanInfoCell = "DeepCleanInfoTableViewCell"
             static let contactCell = "ContactTableViewCell"
             static let groupContactCell = "GroupContactTableViewCell"
+			static let bannerCell = "HelperBannerTableViewCell"
             /// `views`
             static let groupHeader = "GroupedAssetsReusableHeaderView"
             static let groupFooter = "GroupedAssetsReusableFooterView"
@@ -335,10 +346,18 @@ class Constants {
         }
         
         struct segue {
-            static let showDatePicker = "ShowDatePickerSelectorViewControllerSegue"
+			static let showLowerDatePicker = "ShowDatePickerLowerDateSelectorViewController"
+			static let showUpperDatePicker = "ShowDatePickerUpperDateSelectorViewController"
             static let showExportContacts = "ShowExportContactsViewControllerSegue"
+			static let showSizeSelector = "ShowVideoSizeSelectorSegue"
         }
     }
+	
+	struct uiElementsNames {
+		struct layers {
+			static let progressLayer = "progress"
+		}
+	}
     
     struct dateFormat {
         static let dmy = "dd-MM-yyy"

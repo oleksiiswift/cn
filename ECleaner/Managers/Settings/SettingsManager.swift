@@ -70,7 +70,7 @@ class SettingsManager {
 			U.userDefaults.set(date: newValue, forKey: C.key.settings.upperBoundSavedDate)
 		}
 	}
-    
+	
     static var lastSmartCleanDate: Date? {
         get {
 			return U.userDefaults.getDate(forKey: C.key.settings.lastSmartClean)
@@ -78,6 +78,18 @@ class SettingsManager {
 			U.userDefaults.set(date: newValue, forKey: C.key.settings.lastSmartClean)
         }
     }
+	
+	static var largeVideoLowerSize: Int64 {
+		get {
+			if let fileSize = U.userDefaults.value(forKey: C.key.settings.largeVideoLowerSize) as? Int64 {
+				return fileSize
+			} else {
+				return LargeVideoSize.medium.rawValue
+			}
+		} set {
+			U.userDefaults.setValue(newValue, forKey: C.key.settings.largeVideoLowerSize)
+		}
+	}
 }
 
 //  MARK: file sizez String values

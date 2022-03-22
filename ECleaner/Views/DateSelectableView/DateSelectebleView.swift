@@ -123,10 +123,10 @@ class DateSelectebleView: UIView {
         startingDateTitileTextLabel.text = "FROM".localized()
         endingDateTitleTextLabel.text = "TO".localized()
         
-        startingDateTextLabel.font = UIFont(font: FontManager.robotoMedium, size: 16.0)
-        endingDateTextLabel.font = UIFont(font: FontManager.robotoMedium, size: 16.0)
-        startingDateTitileTextLabel.font = UIFont(font: FontManager.robotoBold, size: 14.0)
-        endingDateTitleTextLabel.font = UIFont(font: FontManager.robotoBold, size: 14.0)
+		startingDateTextLabel.font = .systemFont(ofSize: 16, weight: .medium)
+		endingDateTextLabel.font = .systemFont(ofSize: 16, weight: .medium)
+		startingDateTitileTextLabel.font = .systemFont(ofSize: 14, weight: .bold)
+		endingDateTitleTextLabel.font = .systemFont(ofSize: 14, weight: .bold)
     }
     
     private func updateColors() {

@@ -84,7 +84,7 @@
                         <outlet property="searchBarTopConstraint" destination="vhv-h3-lRS" id="bWw-Vq-W6A"/>
                         <outlet property="searchBarView" destination="wfo-kS-LRV" id="uT6-0L-hTr"/>
                         <outlet property="tableView" destination="hB7-Ph-8Z4" id="Ba2-fD-RRL"/>
-                        <segue destination="kKO-4T-gEg" kind="show" identifier="ShowExportContactsViewControllerSegue" customClass="ShowExportContactsViewControllerSegue" customModule="ECleaner" customModuleProvider="target" id="ps5-PK-2Uu"/>
+                        <segue destination="kKO-4T-gEg" kind="show" identifier="ShowExportContactsViewControllerSegue" customClass="ShowExportContactsViewControllerSegue" customModule="ECleaner" customModuleProvider="target" id="lUw-XI-P5m"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ief-a0-LHa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

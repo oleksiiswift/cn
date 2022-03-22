@@ -10,7 +10,8 @@ import Photos
 
 class ContentTypeTableViewCell: UITableViewCell {
     
-    @IBOutlet weak var baseView: UIView!
+	@IBOutlet weak var reuseShadowView: ReuseShadowView!
+	@IBOutlet weak var baseView: UIView!
     @IBOutlet weak var rightArrowImageView: UIImageView!
     @IBOutlet weak var reuseShadowRoundedView: ReuseShadowRoundedView!
     @IBOutlet weak var contentTypeTextLabel: UILabel!
@@ -43,10 +44,9 @@ class ContentTypeTableViewCell: UITableViewCell {
     
     override func layoutSubviews() {
           super.layoutSubviews()
-          //set the values for top,left,bottom,right margins
+		
           let margins = UIEdgeInsets(top: -20, left: 0, bottom: -20, right: 0)
           contentView.frame = contentView.frame.inset(by: margins)
-//          contentView.layer.cornerRadius = 8
     }
 }
 
@@ -221,8 +221,8 @@ extension ContentTypeTableViewCell: Themeble {
 		selectionStyle = .none
 		rightArrowImageView.isHidden = true
 		baseView.setCorner(14)
-		contentTypeTextLabel.font = UIFont(font: FontManager.robotoBold, size: 18.0)
-		contentSubtitleTextLabel.font = UIFont(font: FontManager.robotoMedium, size: 14.0)
+		contentTypeTextLabel.font = .systemFont(ofSize: 18, weight: .bold)
+		contentSubtitleTextLabel.font = .systemFont(ofSize: 14, weight: .medium)
 		rightArrowImageView.image = I.systemItems.navigationBarItems.forward
 	}
 	
@@ -240,6 +240,24 @@ extension ContentTypeTableViewCell {
 	public func handleSelectedDeletedPHassets(content type: MediaContentType, isCompleted: Bool, isSelected: Bool) {
 		
 		let processingCellImage = isSelected ? type.selectableAssetsCheckMark : isCompleted ? type.imageOfRows : type.unAbleImageOfRows
-		reuseShadowRoundedView.setImage(processingCellImage)
+		self.reuseShadowRoundedView.setImage(processingCellImage)
+	}
+}
+
+extension ContentTypeTableViewCell {
+	
+	public func settingsCellConfigure(with settings: SettingsModel) {
+		
+		reuseShadowView.topShadowOffsetOriginY = -2
+		reuseShadowView.topShadowOffsetOriginX = -2
+		reuseShadowView.viewShadowOffsetOriginX = 6
+		reuseShadowView.viewShadowOffsetOriginY = 6
+		reuseShadowView.topBlurValue = 15
+		reuseShadowView.shadowBlurValue = 5
+		
+		self.contentTypeTextLabel.text = settings.settingsTitle
+		self.reuseShadowRoundedView.setImage(settings.settingsImages)
+		
+		self.contentSubtitleTextLabel.isHidden = true
 	}
 }

@@ -55,11 +55,12 @@ extension ContactListViewModel {
         
         var cont: [CNContact] = []
         
-        indexPaths.forEach { indexPath in
-            if let contact = self.getContactOnRow(at: indexPath) {
-                cont.append(contact)
-            }
-        }
+		for indexPath in indexPaths {
+			if let contact = self.getContactOnRow(at: indexPath) {
+				debugPrint(contact.identifier)
+				cont.append(contact)
+			}
+		}
         return cont
     }
 }

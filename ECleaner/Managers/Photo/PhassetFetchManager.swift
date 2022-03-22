@@ -7,6 +7,7 @@
 
 import Photos
 import UIKit
+import PhotosUI
 
 typealias SDKey = SortingDesriptionKey
 enum SortingDesriptionKey {
@@ -278,7 +279,6 @@ extension PHAssetFetchManager {
     }
 }
             
-
 //		MARK: - files count check, space calculated operation -
 extension PHAssetFetchManager {
 	

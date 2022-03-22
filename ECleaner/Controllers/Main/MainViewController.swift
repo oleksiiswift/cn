@@ -213,7 +213,12 @@ extension MainViewController {
         self.navigationController?.pushViewController(viewController, animated: true)
     }
     
-    private func openSettingsController() {}
+    private func openSettingsController() {
+		
+		let storyboard = UIStoryboard(name: C.identifiers.storyboards.settings, bundle: nil)
+		let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.settings) as! SettingsViewController
+		self.navigationController?.pushViewController(viewController, animated: true)
+	}
     
     private func openSubscriptionController() {}
 }
@@ -222,7 +227,10 @@ extension MainViewController {
     
     @objc func contactsStoreDidChange() {
 		U.delay(5) {
-			self.updateContactsCount()			
+				/// do not use this observer it call every time when delete or change contacts
+				/// when tit calls content calls every time and create new and new threat
+				/// danger memerry leaks
+//			self.updateContactsCount()
 		}
     }
     
@@ -394,22 +402,22 @@ extension MainViewController: UpdateColorsDelegate {
         case .plus:
           debugPrint("")
           collectionViewHeightConstraint.constant = 260
-          
-          circleTotlaSpaceView.font = UIFont(font: FontManager.robotoBlack, size: 20.0)!
-          circleTotlaSpaceView.percentLabel.font = UIFont(font: FontManager.robotoBlack, size: 20.0)
+		
+		 circleTotlaSpaceView.font = .systemFont(ofSize: 20, weight: .black)
+          circleTotlaSpaceView.percentLabel.font = .systemFont(ofSize: 20, weight: .black)
         case .large:
           debugPrint("")
           collectionViewHeightConstraint.constant = 260
           
-          circleTotlaSpaceView.font = UIFont(font: FontManager.robotoBlack, size: 45.0)!
-          circleTotlaSpaceView.percentLabel.font = UIFont(font: FontManager.robotoBlack, size: 45.0)
+          circleTotlaSpaceView.font = .systemFont(ofSize: 45, weight: .black)
+          circleTotlaSpaceView.percentLabel.font = .systemFont(ofSize: 45, weight: .black)
         case .modern:
           debugPrint("")
           
           collectionViewHeightConstraint.constant = 260
           
-          circleTotlaSpaceView.font = UIFont(font: FontManager.robotoBlack, size: 50.0)!
-          circleTotlaSpaceView.percentLabel.font = UIFont(font: FontManager.robotoBlack, size: 50.0)
+          circleTotlaSpaceView.font = .systemFont(ofSize: 50, weight: .black)
+          circleTotlaSpaceView.percentLabel.font = .systemFont(ofSize: 50, weight: .black)
         case .max:
           debugPrint("")
         case .madMax:

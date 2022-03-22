@@ -63,7 +63,7 @@ class DeepCleanInfoView: UIView {
     
     func setProgress(files count: Int) {
         
-        let totalCheckedFilesFont: UIFont = UIFont(font: FontManager.robotoBold, size: 18.0)!
+		let totalCheckedFilesFont: UIFont = .systemFont(ofSize: 18, weight: .bold)
         let totalCheckedFilesColor: UIColor = theme.titleTextColor
         
         let totalFilesAttributes = [NSAttributedString.Key.font: totalCheckedFilesFont, NSAttributedString.Key.foregroundColor: totalCheckedFilesColor]
@@ -102,9 +102,9 @@ extension DeepCleanInfoView: Themeble {
         
         progressContainerView.layer.addSublayer(progressRing)
         
-        infoTotalFilesTitleLabel.font = UIFont(font: FontManager.robotoMedium, size: 14.0)!
-        freeSpaceTextLabel.font = UIFont(font: FontManager.robotoBold, size: 18.0)!
-        freeSpaceTitleLabel.font = UIFont(font: FontManager.robotoMedium, size: 14.0)!
+		infoTotalFilesTitleLabel.font = .systemFont(ofSize: 14, weight: .medium)
+		freeSpaceTextLabel.font = .systemFont(ofSize: 18, weight: .bold)
+		freeSpaceTitleLabel.font = .systemFont(ofSize: 14, weight: .medium)
         
         infoTotalFilesTitleLabel.text = "SCANNING_FILES".localized()
         freeSpaceTitleLabel.text = "FREE_SPACE".localized()
