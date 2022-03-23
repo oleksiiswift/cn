@@ -118,6 +118,7 @@
 		9701D27427BE50CC0078E39F /* VideoSpaceSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9701D27327BE50CC0078E39F /* VideoSpaceSelectorViewController.swift */; };
 		9701D27827BE56DD0078E39F /* StepSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 9701D27627BE56DB0078E39F /* StepSlider.m */; };
 		9701D27B27BE78B40078E39F /* SizeSelector.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9701D27A27BE78B40078E39F /* SizeSelector.storyboard */; };
+		9702443E27EA0F6900011743 /* PHAsset+URL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9702443D27EA0F6900011743 /* PHAsset+URL.swift */; };
 		970D7782275A9C400048F41D /* PHAssetGroupModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970D7781275A9C400048F41D /* PHAssetGroupModel.swift */; };
 		970D7784275B66CE0048F41D /* PhotoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970D7783275B66CE0048F41D /* PhotoManager.swift */; };
 		970D7786275B70420048F41D /* PHAsset+FileSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970D7785275B70420048F41D /* PHAsset+FileSize.swift */; };
@@ -126,6 +127,9 @@
 		970D778F275B9D170048F41D /* DeepCleanNotificationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970D778E275B9D170048F41D /* DeepCleanNotificationType.swift */; };
 		9712C05C27B43B220013A7C9 /* ProcessingProgressOperationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9712C05B27B43B220013A7C9 /* ProcessingProgressOperationState.swift */; };
 		9716241827653D7C0071FA17 /* CALayer+Position.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9716241727653D7C0071FA17 /* CALayer+Position.swift */; };
+		971AD5E927EAB72900811A3A /* ZoomTransitionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971AD5E827EAB72900811A3A /* ZoomTransitionController.swift */; };
+		971AD5EC27EAC10800811A3A /* ZoomDismissalInteractionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971AD5EB27EAC10800811A3A /* ZoomDismissalInteractionController.swift */; };
+		971AD5EE27EAC13C00811A3A /* ZoomAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971AD5ED27EAC13C00811A3A /* ZoomAnimator.swift */; };
 		97238A072689BD8000C523DC /* PhotoMediaType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97238A062689BD8000C523DC /* PhotoMediaType.swift */; };
 		97238A092689D01E00C523DC /* GroupedAssetListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97238A082689D01E00C523DC /* GroupedAssetListViewController.swift */; };
 		97238A0B2689EDD200C523DC /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97238A0A2689EDD200C523DC /* Toast.swift */; };
@@ -361,6 +365,7 @@
 		9701D27627BE56DB0078E39F /* StepSlider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StepSlider.m; sourceTree = "<group>"; };
 		9701D27727BE56DC0078E39F /* StepSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StepSlider.h; sourceTree = "<group>"; };
 		9701D27A27BE78B40078E39F /* SizeSelector.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SizeSelector.storyboard; sourceTree = "<group>"; };
+		9702443D27EA0F6900011743 /* PHAsset+URL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PHAsset+URL.swift"; sourceTree = "<group>"; };
 		970D7781275A9C400048F41D /* PHAssetGroupModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PHAssetGroupModel.swift; sourceTree = "<group>"; };
 		970D7783275B66CE0048F41D /* PhotoManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoManager.swift; sourceTree = "<group>"; };
 		970D7785275B70420048F41D /* PHAsset+FileSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PHAsset+FileSize.swift"; sourceTree = "<group>"; };
@@ -369,6 +374,9 @@
 		970D778E275B9D170048F41D /* DeepCleanNotificationType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepCleanNotificationType.swift; sourceTree = "<group>"; };
 		9712C05B27B43B220013A7C9 /* ProcessingProgressOperationState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcessingProgressOperationState.swift; sourceTree = "<group>"; };
 		9716241727653D7C0071FA17 /* CALayer+Position.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CALayer+Position.swift"; sourceTree = "<group>"; };
+		971AD5E827EAB72900811A3A /* ZoomTransitionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoomTransitionController.swift; sourceTree = "<group>"; };
+		971AD5EB27EAC10800811A3A /* ZoomDismissalInteractionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoomDismissalInteractionController.swift; sourceTree = "<group>"; };
+		971AD5ED27EAC13C00811A3A /* ZoomAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoomAnimator.swift; sourceTree = "<group>"; };
 		97238A062689BD8000C523DC /* PhotoMediaType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoMediaType.swift; sourceTree = "<group>"; };
 		97238A082689D01E00C523DC /* GroupedAssetListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupedAssetListViewController.swift; sourceTree = "<group>"; };
 		97238A0A2689EDD200C523DC /* Toast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
@@ -884,6 +892,7 @@
 				049CC2382683730E0002F988 /* FlowLayout */,
 				04CFFFEA26846A3E000CA850 /* Device */,
 				979278672771241F0090F368 /* FileFormats */,
+				971AD5EA27EAB72D00811A3A /* TransitionController */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -1147,6 +1156,7 @@
 			isa = PBXGroup;
 			children = (
 				970D7785275B70420048F41D /* PHAsset+FileSize.swift */,
+				9702443D27EA0F6900011743 /* PHAsset+URL.swift */,
 			);
 			path = PHAsset;
 			sourceTree = "<group>";
@@ -1165,6 +1175,16 @@
 				97B01A742746ED5D00DDE03C /* UIFont+Italic.swift */,
 			);
 			path = UIFont;
+			sourceTree = "<group>";
+		};
+		971AD5EA27EAB72D00811A3A /* TransitionController */ = {
+			isa = PBXGroup;
+			children = (
+				971AD5E827EAB72900811A3A /* ZoomTransitionController.swift */,
+				971AD5ED27EAC13C00811A3A /* ZoomAnimator.swift */,
+				971AD5EB27EAC10800811A3A /* ZoomDismissalInteractionController.swift */,
+			);
+			path = TransitionController;
 			sourceTree = "<group>";
 		};
 		97238A142689F30500C523DC /* Presenters */ = {
@@ -1728,6 +1748,7 @@
 				0459DF9526A579950085EEDF /* CarouselPhotoFlowLayout.swift in Sources */,
 				97FC789626889541000D7F26 /* TimeIInterval.swift in Sources */,
 				97DB8D0D2798874000F2BBA0 /* Date+Compare.swift in Sources */,
+				971AD5EE27EAC13C00811A3A /* ZoomAnimator.swift in Sources */,
 				97FC789226888120000D7F26 /* Date+CurrentDate.swift in Sources */,
 				0405AA59269D77A5004AC07A /* CMtime+StringDuration.swift in Sources */,
 				97A39FE72764A2CF007CB482 /* SegmentDatePickerDelegate.swift in Sources */,
@@ -1832,6 +1853,7 @@
 				97C909CA2748F68B00BC2E47 /* ECFileManager.swift in Sources */,
 				97D2BEC6275A292E002082EB /* OperationProcessingQueuer.swift in Sources */,
 				04CFFFE926846A38000CA850 /* Screen.swift in Sources */,
+				971AD5EC27EAC10800811A3A /* ZoomDismissalInteractionController.swift in Sources */,
 				9776F5802735944E009D806A /* CALAyer+Extension+SL.swift in Sources */,
 				97C909CC2748FA5300BC2E47 /* ShareManager.swift in Sources */,
 				979487BF27B6AA4200135D47 /* DeepCleaningType.swift in Sources */,
@@ -1853,6 +1875,7 @@
 				97238A0D2689EDFF00C523DC /* CustomActivityIndicator.swift in Sources */,
 				04649B24268B2F3900336FE4 /* UpdatingChangesInOpenedScreensListeners.swift in Sources */,
 				979487C127B7065E00135D47 /* DeepCleanStateModel.swift in Sources */,
+				9702443E27EA0F6900011743 /* PHAsset+URL.swift in Sources */,
 				04E58377267B323E00EDC3A3 /* Constants.swift in Sources */,
 				04CFFFE726846A23000CA850 /* Device.swift in Sources */,
 				4F56074427205AF300CA19E9 /* ProgressViewController.swift in Sources */,
@@ -1895,6 +1918,7 @@
 				049CC23A2683761B0002F988 /* String+ConvertInteger.swift in Sources */,
 				04649B3E268DDDE700336FE4 /* UICollectionView+SelectAll.swift in Sources */,
 				04E5836F267A47FB00EDC3A3 /* Utils.swift in Sources */,
+				971AD5E927EAB72900811A3A /* ZoomTransitionController.swift in Sources */,
 				4F56073F27205AF300CA19E9 /* GradientArcView.swift in Sources */,
 				047DE61926AAA53100733CD5 /* DeepCleanInfoTableViewCell.swift in Sources */,
 				04E58371267A4A0A00EDC3A3 /* UIDevice+Model.swift in Sources */,

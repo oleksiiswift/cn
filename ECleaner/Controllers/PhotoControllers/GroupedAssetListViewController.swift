@@ -21,9 +21,18 @@ class GroupedAssetListViewController: UIViewController {
 	@IBOutlet weak var collectionView: UICollectionView!
 	@IBOutlet weak var bottomMenuHeightConstraint: NSLayoutConstraint!
 	@IBOutlet weak var photoContentContainerView: UIView!
-	
+		
 	var scrollView = UIScrollView()
 	let collectionViewFlowLayout = SNCollectionViewLayout()
+	
+	private var currentCell: PhotoCollectionViewCell? {
+		view.layoutIfNeeded()
+		collectionView.layoutIfNeeded()
+		return collectionView.cellForItem(at: self.currentIndex) as? PhotoCollectionViewCell
+	}
+	
+	private var currentIndex = (IndexPath(row: 0, section: 0))
+		
 		/// - delegates -
 	private weak var delegate: ContentGroupedDataProviderDelegate?
 	var selectedAssetsDelegate: DeepCleanSelectableAssetsDelegate?
@@ -51,7 +60,7 @@ class GroupedAssetListViewController: UIViewController {
 
     private var bottomMenuHeight: CGFloat = 80
     private var defaultContainerHeight: CGFloat = 0
-    
+	    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -68,7 +77,6 @@ class GroupedAssetListViewController: UIViewController {
         super.viewWillAppear(animated)
         
 		!previouslySelectedIndexPaths.isEmpty ? didSelectPreviouslyIndexPath() : ()
-//        setupPhotoPreviewController()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -79,6 +87,7 @@ class GroupedAssetListViewController: UIViewController {
         self.defaultContainerHeight = self.photoContentContainerView.frame.height
     }
 }
+
 
 extension GroupedAssetListViewController {
 	
@@ -103,15 +112,11 @@ extension GroupedAssetListViewController {
 extension GroupedAssetListViewController {
 	
 	func openBurgerMenu() {
-		
-//		let sliderMenuOptionItem = DropDownOptionsMenuItem(titleMenu: "slider", itemThumbnail: I.systemElementsItems.sliderView, isSelected: false, menuItem: .changeLayout)
-//		let tileMenuOptionItem = DropDownOptionsMenuItem(titleMenu: "tile", itemThumbnail: I.systemElementsItems.tileView, isSelected: false, menuItem: .changeLayout)
+	
 		let selectAllOptionItem = DropDownOptionsMenuItem(titleMenu: "select all", itemThumbnail: I.systemElementsItems.circleCheckBox!, isSelected: true, menuItem: .selectAll)
 		let deselectAllOptionItem = DropDownOptionsMenuItem(titleMenu: "deselect all", itemThumbnail: I.systemElementsItems.circleBox!, isSelected: true, menuItem: .deselectAll)
 		let deleteOptionItem = DropDownOptionsMenuItem(titleMenu: "delete", itemThumbnail: I.systemItems.defaultItems.trashBin, isSelected: true, menuItem: .delete)
-//
 		let firstRowMenuItem = isSelectAllAssetsMode ? deselectAllOptionItem : selectAllOptionItem
-//		let secondRowMenuItem = isSliderFlowLayout ? tileMenuOptionItem : sliderMenuOptionItem
 		presentDropDonwMenu(with: [firstRowMenuItem, deleteOptionItem], from:  navigationBar.rightBarButtonItem)
 	}
 	
@@ -324,9 +329,7 @@ extension GroupedAssetListViewController: UICollectionViewDelegate, UICollection
 		/// if need select cell from custom cell-button and tap on cell need - return `false`
 	
 	func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
-			//        #warning("TODO: hide temporary")
-			//        self.changeFlowLayoutAndFocus(at: indexPath)
-		self.showFullScreenAssetPreview(focus: indexPath)
+		self.showFullScreenAssetPreviewAndFocus(at: indexPath)
 		return false
 	}
 	
@@ -846,12 +849,7 @@ extension GroupedAssetListViewController {
 		let deleteActionImage =            I.systemItems.defaultItems.trashBin.withTintColor(theme.actionTintColor).withRenderingMode(.alwaysTemplate)
 		
 		let fullScreenPreviewAction = UIAction(title: "full screen preview", image: fullScreenPreviewActionImage) { _ in
-			self.showFullScreenAssetPreview(focus: indexPath)
-//			if asset.mediaType == .video {
-//				self.showVideoPreviewController(asset)
-//			} else {
-////                self.showFullScreenAssetPreviewAndFocus(at: indexPath)
-//			}
+			self.showFullScreenAssetPreviewAndFocus(at: indexPath)
 		}
 		
 		let setAsBestAction = UIAction(title: "set as best", image: setAsBestActionImage) { _ in
@@ -899,18 +897,21 @@ extension GroupedAssetListViewController {
 	}
 	
 	private func showFullScreenAssetPreviewAndFocus(at indexPath: IndexPath) {
-		
-	}
-	
-	
-	private func showFullScreenAssetPreview(focus indexPath: IndexPath ) {
-		
+		self.currentIndex = indexPath
 		let storyboard = UIStoryboard(name: C.identifiers.storyboards.preview, bundle: nil)
 		let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.media) as! MediaViewController
 		viewController.collectionType = .grouped
 		viewController.focusedIndexPath = indexPath
 		viewController.assetGroups = self.assetGroups
-		self.navigationController?.pushViewController(viewController, animated: false)
+		viewController.contentType = self.contentType
+		viewController.mediaType = self.mediaType
+		
+		viewController.setupTransitionConfiguration(from: self) { [unowned self] in
+			return self.currentCell!.photoThumbnailImageView
+		} referenceImageViewFrameInTransitioningView: { [unowned self] in
+			return self.collectionView.convert(self.currentCell?.frame ?? self.view.frame, to: self.view)
+		}
+		self.navigationController?.pushViewController(viewController, animated: true)
 	}
  }
 
@@ -1037,8 +1038,6 @@ extension GroupedAssetListViewController: SelectDropDownMenuDelegate {
     func selectedItemListViewController(_ controller: DropDownMenuViewController, didSelectItem: DropDownMenuItems) {
         
         switch didSelectItem {
-            case .changeLayout:
-                debugPrint("changle layout")
             case .deselectAll:
                 self.shouldSelectAllAssetsInSections(true)
 			case .selectAll:
@@ -1065,12 +1064,10 @@ extension GroupedAssetListViewController: UIPopoverPresentationControllerDelegat
 extension GroupedAssetListViewController: UIScrollViewDelegate {
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-//        loadPreviewImageThumb(isScrolling: true)
 		updateCachedAssets()
     }
     
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-//        loadPreviewImageThumb(isScrolling: false)
 		debugPrint("scrollViewDidEndDecelerating")
     }
     
@@ -1115,21 +1112,7 @@ extension GroupedAssetListViewController: UIScrollViewDelegate {
 
 extension GroupedAssetListViewController: Themeble {
 	
-    private func setupPhotoPreviewController() {
-        
-//        photoPreviewController.loadAssetsCollection(self.splitAssets)
-//        photoPreviewController.currentIndex = 0
-//        photoPreviewController.photoCount = splitAssetsNumberOfItems
-//        photoPreviewController.photosDataSource = self
-//        photoPreviewController.delegate = self
-//        photoPreviewController.groupAssetsCollection = self.assetGroups
-//        photoPreviewController.photoMediaContentType = self.mediaType
-//        photoPreviewController.mediaContentTypeSetup()
-//
-//        self.addChild(photoPreviewController)
-//        photoPreviewController.view.frame = photoPreviewContainerView.bounds
-//        photoPreviewContainerView.addSubview(photoPreviewController.view)
-//        photoPreviewController.didMove(toParent: self)
-    }
+
 }
+
 

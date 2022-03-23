@@ -19,12 +19,27 @@ class MediaViewController: UIViewController {
 	@IBOutlet weak var navigationBar: NavigationBar!
 	@IBOutlet weak var collectionView: UICollectionView!
 	@IBOutlet weak var previewCollectionView: UICollectionView!
-	var scrollView = UIScrollView()
 	
 	private let carouselCollectionFlowLayout = CarouselFlowLayout()
 	private let previewColletionFlowLayput = PreviewCarouselFlowLayout()
 	
+		/// `transition`
+	private lazy var transitionController = ZoomTransitionController()
+	private var currentImage = UIImageView()
 
+	var scrollView = UIScrollView()
+	private var shouldTrackScrolling = true
+	
+	private var visibleCell: PhotoCollectionViewCell? {
+		return previewCollectionView.visibleCells.first as? PhotoCollectionViewCell
+	}
+	private var visibleCellIndex: IndexPath? {
+		guard let visibleCell = visibleCell else {
+			return nil
+		}
+		return previewCollectionView.indexPath(for: visibleCell)
+	}
+	
 	private var previousPreheatRect: CGRect = CGRect()
 	
 	private var photoManager = PhotoManager.shared
@@ -58,14 +73,6 @@ class MediaViewController: UIViewController {
 }
 
 extension MediaViewController {
-	
-	private func animatePresentViewController() {
-		
-		self.view.transform = CGAffineTransform(scaleX: 0.00001, y: 0.00001)
-		U.animate(0.5) {
-			self.view.transform = CGAffineTransform.identity
-		}
-	}
 	
 	private func startedScroll(indexPath: IndexPath) {
 		U.UI {
@@ -107,7 +114,7 @@ extension MediaViewController  {
 		self.previewColletionFlowLayput.itemSize = CGSize(width: U.screenWidth - 20, height: U.screenHeight / 2)
 		self.previewColletionFlowLayput.scrollDirection = .horizontal
 		self.previewColletionFlowLayput.minimumInteritemSpacing = 20
-		self.previewColletionFlowLayput.minimumLineSpacing = 200
+		self.previewColletionFlowLayput.minimumLineSpacing = 150
 		self.previewColletionFlowLayput.headerReferenceSize = .zero
 		
 		previewCollectionView.collectionViewLayout = previewColletionFlowLayput
@@ -153,6 +160,7 @@ extension MediaViewController  {
 		cell.setupUI()
 		cell.updateColors()
 		cell.selectButtonSetup(by: self.mediaType)
+		self.currentImage = cell.photoThumbnailImageView
 		
 		if let path = self.collectionView.indexPathsForSelectedItems, path.contains(indexPath) {
 			cell.isSelected = true
@@ -263,178 +271,79 @@ extension MediaViewController: Themeble {
 		self.collectionView.backgroundColor = theme.backgroundColor
 		self.previewCollectionView.backgroundColor = theme.backgroundColor
 	}
+	
+	public func setupTransitionConfiguration(from controller: UIViewController, referenceImageView: @escaping ReferenceImageView, referenceImageViewFrameInTransitioningView: @escaping ReferenceImageViewFrame) {
+		
+		controller.navigationController?.delegate = transitionController
+		let destinationController = ZoomAnimatorRreferences(referenceImageView: { [weak self] () -> UIImageView in
+			return self!.currentImage
+		}) { [weak self] () -> CGRect in
+			guard let self = self, let imageView = self.visibleCell?.photoThumbnailImageView else {
+				return CGRect(x: 0, y: 0, width: 350, height: 350)
+			}
+			return self.collectionView.convert(imageView.frame, to: self.collectionView)
+		}
+		transitionController.to = destinationController
+		
+		let fromDestinationController = ZoomAnimatorRreferences(referenceImageView: referenceImageView, referenceImageViewFrameInTransitioningView: referenceImageViewFrameInTransitioningView)
+		transitionController.to = destinationController
+		transitionController.from = fromDestinationController
+	}
 }
+
+
 
 extension MediaViewController: UIScrollViewDelegate {
+
+	public func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+		if let indexPath = visibleCellIndex, !decelerate {
+			collectionView.reloadItems(at: [indexPath])
+		}
+	}
+
+	public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+
+	}
+
+	public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+		if scrollView === previewCollectionView {
+			handleTrackCollection(from: previewCollectionView, to: collectionView)
+		}
+
+		if scrollView === collectionView {
+			handleTrackCollection(from: collectionView, to: previewCollectionView)
+		}
+	}
 	
-	func scrollViewDidScroll(_ scrollView: UIScrollView) {
+	private func handleTrackCollection(from: UICollectionView, to: UICollectionView) {
+		let centerPoint = CGPoint(x: from.contentOffset.x + (from.frame.width / 2), y: from.frame.height / 2)
 		
-		if scrollView == self.collectionView {
-//			handleScrollItem(with: self.collectionView)
-//			self.scrollCell()
-			let visibleRect = CGRect(origin: self.collectionView.contentOffset, size: self.collectionView.bounds.size)
-			let visiblePoint = CGPoint(x: visibleRect.midX, y: visibleRect.maxY)
-	
-			if let visibleIndexPath = self.collectionView.indexPathForItem(at: visiblePoint) {
-				
-				debugPrint(visibleIndexPath)
-				self.previewCollectionView.scrollToItem(at: visibleIndexPath, at: [.centeredVertically, .centeredHorizontally], animated: true)
+		if shouldTrackScrolling {
+			if let indexPath = from.indexPathForItem(at: centerPoint) {
+				shouldTrackScrolling = false
+				UIView.animate(withDuration: 0.0) {
+					U.UI {
+						to.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: false)
+					}
+				} completion: { finished in
+					self.shouldTrackScrolling = finished
+				}
 			}
-		} else if scrollView == self.previewCollectionView {
-			
-			
-//			let offSet = scrollView.contentOffset.x
-//			  let width = scrollView.frame.width
-//			  let horizontalCenter = width / 2
-//
-//			debugPrint(Int(offSet + horizontalCenter) / Int(width))
-//				.currentPage =
-			let visibleRect = CGRect(origin: self.previewCollectionView.contentOffset, size: self.previewCollectionView.bounds.size)
-			let visiblePoint = CGPoint(x: visibleRect.midX, y: visibleRect.midY)
-			if let visibleIndexPath = self.previewCollectionView.indexPathForItem(at: visiblePoint) {
-				self.collectionView.scrollToItem(at: visibleIndexPath, at: [.centeredVertically, .centeredHorizontally], animated: true)
-			}
-			
-//			let visibleRect = CGRect(origin: self.cvImageListing.contentOffset, size: self.cvImageListing.bounds.size)
-//				let visiblePoint = CGPoint(x: visibleRect.midX, y: visibleRect.midY)
-//				if let visibleIndexPath = self.cvImageListing.indexPathForItem(at: visiblePoint) {
-//					self.pageControl.currentPage = visibleIndexPath.row
-//				}
-
-//
-			
-//			let x = scrollView.panGestureRecognizer.translation(in: collectionView).x / 2
-//
-//			debugPrint(x)
-//		   debugPrint(self.view.frame.origin.x - x)
-//			let z = collectionView.contentOffset.x + x
-//			let r = CGRect(x: z, y: 0, width: 100, height: 100)
-			//			collectionView.scrollRectToVisible(r, animated: true);
-//			collectionView.scrollRectToVisible(r, animated: true)
-//				self.handleScrollItem(with: self.previewCollectionView)
-//			if x > 90 {
-//				collectionView.scrollToNextItem()
-//			} else {
-//				collectionView.scrollToPreviousItem()
-//			}
-			
 		}
-//		debugPrint("scrollViewDidScroll")
 	}
 
-	func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-		if scrollView == self.collectionView {
-			handleScrollItem(with: self.collectionView)
-		} else if scrollView == self.previewCollectionView {
-			handleScrollItem(with: self.previewCollectionView)
+	public func scrollViewWillBeginDecelerating(_ scrollView: UIScrollView) {
+
+	}
+
+	public func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+		shouldTrackScrolling = true
+	}
+
+	public func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+
+		if let indexPath = visibleCellIndex {
+			collectionView.reloadItems(at: [indexPath])
 		}
-
-		debugPrint("decel")
-	}
-
-	func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-//		if !decelerate {
-//			debugPrint("scroll to item")
-//		}
-		debugPrint("end")
-	}
-	
-
-	
-	func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-		
-//		debugPrint(scrollView.contentOffset.x)
-		debugPrint("begin")
-		
-		if scrollView == self.collectionView {
-//			handleScrollItem(with: self.collectionView)
-//			self.scrollCell()
-//			let visibleRect = CGRect(origin: self.collectionView.contentOffset, size: self.collectionView.bounds.size)
-//			let visiblePoint = CGPoint(x: visibleRect.midX, y: visibleRect.maxY)
-//
-//			if let visibleIndexPath = self.collectionView.indexPathForItem(at: visiblePoint) {
-			self.handleScrollItem(with: self.collectionView)
-//				debugPrint(visibleIndexPath)
-//				self.previewCollectionView.scrollToItem(at: visibleIndexPath, at: [.centeredVertically, .centeredHorizontally], animated: true)
-//			}
-		} else if scrollView == self.previewCollectionView {
-			self.handleScrollItem(with: self.previewCollectionView)
-			
-//			let offSet = scrollView.contentOffset.x
-//			  let width = scrollView.frame.width
-//			  let horizontalCenter = width / 2
-//
-//			debugPrint(Int(offSet + horizontalCenter) / Int(width))
-////				.currentPage =
-//			let visibleRect = CGRect(origin: self.previewCollectionView.contentOffset, size: self.previewCollectionView.bounds.size)
-//			let visiblePoint = CGPoint(x: visibleRect.midX, y: visibleRect.midY)
-//			if let visibleIndexPath = self.previewCollectionView.indexPathForItem(at: visiblePoint) {
-//				self.collectionView.scrollToItem(at: visibleIndexPath, at: [.centeredVertically, .centeredHorizontally], animated: true)
-//			}
-		}
-		
-		
-	}
-	
-	func scrollCell() {
-
-		let cellSize = CGSize(width: U.screenWidth - 20, height: U.screenHeight / 2)
-		let contentOffset = previewCollectionView.contentOffset
-		
-//		debugPrint(previewCollectionView.contentSize.width)
-//		debugPrint(previewCollectionView.contentOffset.x)
-		
-		
-		
-		
-
-//		if previewCollectionView.contentSize.width <= previewCollectionView.contentOffset.x + cellSize.width
-//		{
-//			let r = CGRect(x: 0, y: contentOffset.y, width: 150, height: 150)
-//			collectionView.scrollRectToVisible(r, animated: true)
-//
-//		} else {
-//			let r = CGRect(x: contentOffset.x + cellSize.width, y: contentOffset.y, width: 150, height: 150)
-//			collectionView.scrollRectToVisible(r, animated: true);
-//		}
-		
-
-
 	}
 }
-
-extension MediaViewController {
-	
-	func handleScrollItem(with collectionView: UICollectionView) {
-		let newIndexPath = calculateCurrentIndexPath(for: collectionView)
-		
-		if collectionView == previewCollectionView {
-			automaticScroll(collectionView: self.collectionView, to: newIndexPath, with: true)
-		} else if collectionView == self.collectionView {
-			automaticScroll(collectionView: previewCollectionView, to: newIndexPath, with: false)
-		}
-	}
-	
-	func calculateCurrentIndexPath(for collectionView: UICollectionView) -> IndexPath? {
-		
-		let visibleRect = CGRect(origin: collectionView.contentOffset, size: collectionView.bounds.size)
-		let visiblePoint = CGPoint(x: visibleRect.midX, y: visibleRect.midY)
-		if let visibleIndexPath = collectionView.indexPathForItem(at: visiblePoint) {
-			return visibleIndexPath
-		}
-		return nil
-	}
-
-	func automaticScroll(collectionView: UICollectionView, to indexPath: IndexPath?, with animated: Bool) {
-		
-		guard let newIndexPath = indexPath  else { return }
-
-			collectionView.scrollToItem(at: newIndexPath, at: [.centeredHorizontally, .centeredVertically], animated: animated)
-	}
-	
-	func automaticMoveScroll() {
-		
-	}
- }
-
-
