@@ -76,7 +76,7 @@ class GroupedAssetListViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-		!previouslySelectedIndexPaths.isEmpty ? didSelectPreviouslyIndexPath() : ()
+//		!previouslySelectedIndexPaths.isEmpty ? didSelectPreviouslyIndexPath() : ()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -136,8 +136,12 @@ extension GroupedAssetListViewController {
 	
 	public func handlePreviousSelected(selectedAssetsIDs: [String], assetGroupCollection: [PhassetGroup]) {
 		
+		let dispatchGroup = DispatchGroup()
+		let dispatchQueue = DispatchQueue(label: C.key.dispatch.selectedPhassetsQueue)
+		let dispatchSemaphore = DispatchSemaphore(value: 0)
+		
 		for selectedAssetsID in selectedAssetsIDs {
-			
+			dispatchGroup.enter()
 			let sectionIndex = assetGroupCollection.firstIndex(where: {
 				$0.assets.contains(where: {$0.localIdentifier == selectedAssetsID})
 			}).flatMap({
@@ -156,6 +160,50 @@ extension GroupedAssetListViewController {
 					self.previouslySelectedIndexPaths.append(existingIndexPath)
 				}
 			}
+			dispatchSemaphore.signal()
+			dispatchGroup.leave()
+		}
+		
+		dispatchGroup.notify(queue: dispatchQueue) {
+			self.handleSelected(for: self.previouslySelectedIndexPaths)
+		}
+	}
+	
+	private func handleSelectIndexPath(from ids: [String]) {
+		
+		let dispatchGroup = DispatchGroup()
+		let dispatchQueue = DispatchQueue(label: C.key.dispatch.selectedPhassetsQueue)
+		let dispatchSemaphore = DispatchSemaphore(value: 0)
+		
+		self.previouslySelectedIndexPaths = []
+		
+		for id in ids {
+			dispatchGroup.enter()
+			
+			let sectionIndex = assetGroups.firstIndex(where: {
+				$0.assets.contains(where: {
+					$0.localIdentifier == id
+				})
+			}).flatMap({
+				$0
+			})
+			
+			if let section = sectionIndex {
+				let indexPath = assetGroups[section].assets.firstIndex(where: {
+					$0.localIdentifier == id
+				}).flatMap({
+					IndexPath(row: $0, section: section)
+				})
+				
+				if let existingIndexPath = indexPath {
+					self.previouslySelectedIndexPaths.append(existingIndexPath)
+				}
+			}
+			dispatchSemaphore.signal()
+			dispatchGroup.leave()
+		}
+		dispatchGroup.notify(queue: dispatchQueue) {
+			self.didSelectPreviouslyIndexPath()
 		}
 	}
 	
@@ -163,7 +211,12 @@ extension GroupedAssetListViewController {
 		
 		guard isDeepCleaningSelectableFlow, !previouslySelectedIndexPaths.isEmpty else { return }
 		
-		for indexPath in previouslySelectedIndexPaths {
+		self.handleSelected(for: previouslySelectedIndexPaths)
+	}
+	
+	private func handleSelected(for indexPaths: [IndexPath]) {
+		
+		for indexPath in indexPaths {
 			self.collectionView.selectItem(at: indexPath, animated: false, scrollPosition: [])
 			self.collectionView.delegate?.collectionView?(self.collectionView, didSelectItemAt: indexPath)
 			
@@ -171,7 +224,6 @@ extension GroupedAssetListViewController {
 				cell.isSelected = true
 				cell.checkIsSelected()
 			}
-			self.selectedAssets.append(self.assetGroups[indexPath.section].assets[indexPath.item])
 		}
 		checkForCelectedSection()
 		handleSelectAssetsNavigationCount()
@@ -905,7 +957,7 @@ extension GroupedAssetListViewController {
 		viewController.assetGroups = self.assetGroups
 		viewController.contentType = self.contentType
 		viewController.mediaType = self.mediaType
-		
+		viewController.groupSelectionDelegate = self
 		viewController.setupTransitionConfiguration(from: self) { [unowned self] in
 			return self.currentCell!.photoThumbnailImageView
 		} referenceImageViewFrameInTransitioningView: { [unowned self] in
@@ -914,51 +966,6 @@ extension GroupedAssetListViewController {
 		self.navigationController?.pushViewController(viewController, animated: true)
 	}
  }
-
-extension GroupedAssetListViewController {
-		
-	private func setupUI() {
-		
-		let bottomButtonImageSize = CGSize(width: 18, height: 24)
-		switch mediaType {
-			case .singleRecentlyDeletedPhotos, .singleRecentlyDeletedVideos:
-				self.bottomButtonBarView.setImage(I.systemItems.defaultItems.recover, with: bottomButtonImageSize)
-			default:
-				self.bottomButtonBarView.setImage(I.systemItems.defaultItems.delete, with: bottomButtonImageSize)
-		}
-	}
-	
-	private func setupNavigation() {
-		
-		navigationBar.setupNavigation(title: self.mediaType.mediaTypeName,
-									  leftBarButtonImage: I.systemItems.navigationBarItems.back,
-									  rightBarButtonImage: I.systemItems.navigationBarItems.burgerDots,
-									  contentType: self.contentType,
-									  leftButtonTitle: nil,
-									  rightButtonTitle: nil)
-	}
-	
-	private func setupObservers() {}
-	
-	private func setupDelegate() {
-		
-		scrollView.delegate = self
-		navigationBar.delegate = self
-		bottomButtonBarView.delegate = self
-	}
-	
-	func updateColors() {
-		
-		self.view.backgroundColor = theme.backgroundColor
-		self.collectionView.backgroundColor = theme.backgroundColor
-		
-		bottomButtonBarView.buttonColor = contentType.screenAcentTintColor
-		bottomButtonBarView.buttonTintColor = theme.activeTitleTextColor
-		bottomButtonBarView.buttonTitleColor = theme.activeTitleTextColor
-		bottomButtonBarView.activityIndicatorColor = theme.backgroundColor
-		bottomButtonBarView.updateColorsSettings()
-	}
-}
 
 extension GroupedAssetListViewController: SNCollectionViewLayoutDelegate {
 //    MARK: TODO: set if 3 asset
@@ -969,6 +976,18 @@ extension GroupedAssetListViewController: SNCollectionViewLayoutDelegate {
     func headerFlexibleDimension(inCollectionView collectionView: UICollectionView, withLayout layout: UICollectionViewLayout, fixedDimension: CGFloat) -> CGFloat {
         return 55
     }
+}
+
+extension GroupedAssetListViewController: GroupSelectableAssetsDelegate {
+	
+	func didSelect(assetListsIDs: [String]) {
+		if assetListsIDs.isEmpty {
+			self.shouldSelectAllAssetsInSections(false)
+		} else {
+			self.shouldSelectAllAssetsInSections(false)
+			self.handleSelectIndexPath(from: assetListsIDs)
+		}
+	}
 }
 
 extension GroupedAssetListViewController {
@@ -1110,9 +1129,53 @@ extension GroupedAssetListViewController: UIScrollViewDelegate {
 
 //      MARK: - setup UI -
 
+extension GroupedAssetListViewController {
+		
+	private func setupUI() {
+		
+		let bottomButtonImageSize = CGSize(width: 18, height: 24)
+		switch mediaType {
+			case .singleRecentlyDeletedPhotos, .singleRecentlyDeletedVideos:
+				self.bottomButtonBarView.setImage(I.systemItems.defaultItems.recover, with: bottomButtonImageSize)
+			default:
+				self.bottomButtonBarView.setImage(I.systemItems.defaultItems.delete, with: bottomButtonImageSize)
+		}
+	}
+	
+	private func setupNavigation() {
+		
+		navigationBar.setupNavigation(title: self.mediaType.mediaTypeName,
+									  leftBarButtonImage: I.systemItems.navigationBarItems.back,
+									  rightBarButtonImage: I.systemItems.navigationBarItems.burgerDots,
+									  contentType: self.contentType,
+									  leftButtonTitle: nil,
+									  rightButtonTitle: nil)
+	}
+	
+	private func setupObservers() {}
+	
+	private func setupDelegate() {
+		
+		scrollView.delegate = self
+		navigationBar.delegate = self
+		bottomButtonBarView.delegate = self
+	}
+}
+
 extension GroupedAssetListViewController: Themeble {
 	
-
+	func updateColors() {
+		
+		self.view.backgroundColor = theme.backgroundColor
+		self.collectionView.backgroundColor = theme.backgroundColor
+		
+		bottomButtonBarView.buttonColor = contentType.screenAcentTintColor
+		bottomButtonBarView.buttonTintColor = theme.activeTitleTextColor
+		bottomButtonBarView.buttonTitleColor = theme.activeTitleTextColor
+		bottomButtonBarView.activityIndicatorColor = theme.backgroundColor
+		bottomButtonBarView.updateColorsSettings()
+	}
 }
+
 
 

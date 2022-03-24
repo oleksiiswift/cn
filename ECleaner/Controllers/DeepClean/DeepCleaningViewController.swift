@@ -11,11 +11,6 @@ import PhotosUI
 import SwiftMessages
 import Contacts
 
-protocol DeepCleanSelectableAssetsDelegate: AnyObject {
-     
-	 func didSelect(assetsListIds: [String], contentType: PhotoMediaType, updatableGroup: [PhassetGroup], updatableAssets: [PHAsset], updatableContactsGroup: [ContactsGroup])
-}
-
 class DeepCleaningViewController: UIViewController {
      
      @IBOutlet weak var navigationBar: NavigationBar!

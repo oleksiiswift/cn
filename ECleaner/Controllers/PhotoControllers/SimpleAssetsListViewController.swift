@@ -16,7 +16,20 @@ class SimpleAssetsListViewController: UIViewController {
 	@IBOutlet weak var bottomButtonView: BottomButtonBarView!
 	@IBOutlet weak var bottomMenuHeightConstraint: NSLayoutConstraint!
 	
+	private let flowLayout = SimpleColumnFlowLayout(cellsPerRow: 3,
+													minimumInterSpacing: 0,
+													minimumLineSpacing: 0,
+													inset: UIEdgeInsets(top: 10, left: 4, bottom: 0, right: 4))
 	var scrollView = UIScrollView()
+	
+	private var currentCell: PhotoCollectionViewCell? {
+		view.layoutIfNeeded()
+		collectionView.layoutIfNeeded()
+		return collectionView.cellForItem(at: self.currentIndex) as? PhotoCollectionViewCell
+	}
+	
+	private var currentIndex = (IndexPath(row: 0, section: 0))
+	
 	var selectedAssetsDelegate: DeepCleanSelectableAssetsDelegate?
 	private var photoManager = PhotoManager.shared
 	private var prefetchCacheImageManager = PhotoManager.shared.prefetchManager
@@ -26,10 +39,6 @@ class SimpleAssetsListViewController: UIViewController {
 	private var thumbnailSize: CGSize = .zero
 	private var previousPreheatRect: CGRect = CGRect()
 	private var bottomMenuHeight: CGFloat = 80
-	private let flowLayout = SimpleColumnFlowLayout(cellsPerRow: 3,
-													minimumInterSpacing: 0,
-													minimumLineSpacing: 0,
-													inset: UIEdgeInsets(top: 10, left: 4, bottom: 0, right: 4))
 	
 	private var isSelectedAllPhassets: Bool {
 		if let indexPaths = self.collectionView.indexPathsForSelectedItems {
@@ -139,7 +148,7 @@ extension SimpleAssetsListViewController: UICollectionViewDelegate, UICollection
     func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
         /// use delegate select cell
         /// on tap on cell opened full screen photo preivew
-		self.showFullScreenAssetPreview(focus: indexPath)
+		self.showFullScreenAssetPreviewAndFocus(at: indexPath)
         return false
     }
         
@@ -259,12 +268,23 @@ extension SimpleAssetsListViewController: PhotoCollectionViewCellDelegate {
         handleBottomButtonMenu()
 		handleSelectAssetsNavigationCount()
     }
+	
+	private func didSelectPreviouslyIndexPath() {
+		
+		guard isDeepCleaningSelectableFlow else { return }
+		
+		self.handleSelected(for: self.previouslySelectedIndexPaths)
+	}
     
     /// handle previously selected indexPath if back from deep clean screen
     public func handleAssetsPreviousSelected(selectedAssetsIDs: [String], assetCollection: [PHAsset]) {
+		
+		let dispatchGroup = DispatchGroup()
+		let dispatchQueue = DispatchQueue(label: C.key.dispatch.selectedPhassetsQueue)
+		let dispatchSemaphore = DispatchSemaphore(value: 0)
         
         for selectedAssetsID in selectedAssetsIDs {
-        
+			dispatchGroup.enter()
             let indexPath = assetCollection.firstIndex(where: {
                 $0.localIdentifier == selectedAssetsID
             }).flatMap({
@@ -274,23 +294,53 @@ extension SimpleAssetsListViewController: PhotoCollectionViewCellDelegate {
             if let existingIndexPath = indexPath {
                 self.previouslySelectedIndexPaths.append(existingIndexPath)
             }
+			dispatchSemaphore.signal()
+			dispatchGroup.leave()
         }
+		dispatchGroup.notify(queue: dispatchQueue) {
+			self.didSelectPreviouslyIndexPath()
+		}
     }
     
-    private func didSelectPreviouslyIndexPath() {
-        
-        guard isDeepCleaningSelectableFlow else { return }
-        
-        for indexPath in previouslySelectedIndexPaths {
-            self.collectionView.selectItem(at: indexPath, animated: false, scrollPosition: [])
-            self.collectionView.delegate?.collectionView?(self.collectionView, didSelectItemAt: indexPath)
-            
-            if let cell = self.collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell {
-                cell.checkIsSelected()
-            }
-        }
-        handleSelectAllButtonState()
-    }
+	public func handleSelectedAssets(for ids: [String]) {
+		
+		let dispatchGroup = DispatchGroup()
+		let dispatchQueue = DispatchQueue(label: C.key.dispatch.selectedPhassetsQueue)
+		let dispatchSemaphore = DispatchSemaphore(value: 0)
+		
+		self.previouslySelectedIndexPaths = []
+		
+		for id in ids {
+			dispatchGroup.enter()
+			let indexPath = assetCollection.firstIndex(where: {
+				$0.localIdentifier == id
+			}).flatMap({
+				IndexPath(row: $0, section: 0)
+			})
+			
+			if let existingIndexPath = indexPath {
+				self.previouslySelectedIndexPaths.append(existingIndexPath)
+			}
+			dispatchSemaphore.signal()
+			dispatchGroup.leave()
+		}
+		dispatchGroup.notify(queue: dispatchQueue) {
+			self.handleSelected(for: self.previouslySelectedIndexPaths)
+		}
+	}
+  
+	private func handleSelected(for indexPaths: [IndexPath]) {
+		
+		for indexPath in indexPaths {
+			self.collectionView.selectItem(at: indexPath, animated: false, scrollPosition: [])
+			self.collectionView.delegate?.collectionView?(self.collectionView, didSelectItemAt: indexPath)
+			
+			if let cell = self.collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell {
+				cell.checkIsSelected()
+			}
+		}
+		handleSelectAllButtonState()
+	}
 	
 	private func didSelectAll() {
 		
@@ -462,7 +512,7 @@ extension SimpleAssetsListViewController {
     private func createCellContextMenu(for asset: PHAsset, at indexPath: IndexPath) -> UIMenu {
         
         let fullScreenPreviewAction = UIAction(title: "full screen preview", image: I.systemItems.defaultItems.arrowUP) { _ in
-			self.showFullScreenAssetPreview(focus: indexPath)
+			self.showFullScreenAssetPreviewAndFocus(at: indexPath)
         }
         
 		let deleteAssetAction = UIAction(title: "delete", image: I.systemItems.defaultItems.trashBin, attributes: .destructive) { _ in
@@ -490,30 +540,35 @@ extension SimpleAssetsListViewController {
             }
         }
     }
-    
-	private func showFullScreenAssetPreview(focus indexPath: IndexPath ) {
-		
+	
+	private func showFullScreenAssetPreviewAndFocus(at indexPath: IndexPath) {
+		self.currentIndex = indexPath
 		let storyboard = UIStoryboard(name: C.identifiers.storyboards.preview, bundle: nil)
 		let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.media) as! MediaViewController
 		viewController.collectionType = .single
+		viewController.contentType = self.contentType
+		viewController.mediaType = self.mediaType
 		viewController.focusedIndexPath = indexPath
 		viewController.assetCollection = self.assetCollection
-		self.navigationController?.pushViewController(viewController, animated: false)
+		viewController.singleSelectionDelegate = self
+		viewController.setupTransitionConfiguration(from: self) { [unowned self] in
+			return self.currentCell!.photoThumbnailImageView
+		} referenceImageViewFrameInTransitioningView: {
+			return self.collectionView.convert(self.currentCell?.frame ?? self.view.frame, to: self.view)
+		}
+		self.navigationController?.pushViewController(viewController, animated: true)
 	}
+}
+
+extension SimpleAssetsListViewController: SimpleSelectableAssetsDelegate {
 	
-//	let storyboard = UIStoryboard(name: C.identifiers.storyboards.preview, bundle: nil)
-//	let viewController = storyboard.instantiateViewController(withIdentifier: "PhotosViewController") as! PhotosViewController
-//	viewController.collectionType = .single
-//	viewController.assetCollection = self.assetCollection
-//	
-//	
-////		viewController.collectionType = .single
-////		viewController.focusedIndexPath = indexPath
-////		viewController.assetCollection = self.assetCollection
-//	self.navigationController?.pushViewController(viewController, animated: false)
-	
-	
-	
+	func didSelect(assetListsIDs: [String]) {
+		if assetListsIDs.isEmpty {
+			self.setCollection(selected: false)
+		} else {
+			
+		}
+	}
 }
 
 //      MARK: - setup UI -

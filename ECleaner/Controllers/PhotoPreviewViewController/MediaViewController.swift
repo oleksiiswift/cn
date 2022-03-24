@@ -23,6 +23,9 @@ class MediaViewController: UIViewController {
 	private let carouselCollectionFlowLayout = CarouselFlowLayout()
 	private let previewColletionFlowLayput = PreviewCarouselFlowLayout()
 	
+	weak var singleSelectionDelegate: SimpleSelectableAssetsDelegate?
+	weak var groupSelectionDelegate: GroupSelectableAssetsDelegate?
+	
 		/// `transition`
 	private lazy var transitionController = ZoomTransitionController()
 	private var currentImage = UIImageView()
@@ -39,20 +42,20 @@ class MediaViewController: UIViewController {
 		}
 		return previewCollectionView.indexPath(for: visibleCell)
 	}
+	public var focusedIndexPath: IndexPath?
 	
 	private var previousPreheatRect: CGRect = CGRect()
 	
 	private var photoManager = PhotoManager.shared
 	private var prefetchCacheImageManager = PhotoManager.shared.prefetchManager
 	
-	public var focusedIndexPath: IndexPath?
-	
 	public var collectionType: CollectionType = .none
 	public var assetCollection: [PHAsset] = []
 	public var assetGroups: [PhassetGroup] = []
 	public var mediaType: PhotoMediaType = .none
 	public var contentType: MediaContentType = .none
-
+	private var selectedAssets: [PHAsset] = []
+	
     override func viewDidLoad() {
         super.viewDidLoad()
 		
@@ -85,7 +88,7 @@ extension MediaViewController {
 extension MediaViewController: NavigationBarDelegate {
 	
 	func didTapLeftBarButton(_ sender: UIButton) {
-		self.navigationController?.popViewController(animated: false)
+		self.didTapBackActionButtonWithSelectablePhaassets()
 	}
 	
 	func didTapRightBarButton(_ sender: UIButton) {}
@@ -291,7 +294,106 @@ extension MediaViewController: Themeble {
 	}
 }
 
+extension MediaViewController {
+	
+	public func handlePreviouslySelectedPHAssets(from previouslySelectedIDS: [String], assetsCollection: [PHAsset]) {
+		var previouslySelectedIndexPaths: [IndexPath] = []
+		let dispatchGroup = DispatchGroup()
+		let dispatchQueue = DispatchQueue(label: C.key.dispatch.selectedPhassetsQueue)
+		let dispatchSemaphore = DispatchSemaphore(value: 0)
+		
+		for selectedPHAssetID in previouslySelectedIDS {
+			dispatchGroup.enter()
+			let indexPath = assetsCollection.firstIndex(where: {
+				$0.localIdentifier == selectedPHAssetID
+			}).flatMap({
+				IndexPath(row: $0, section: 0)
+			})
+			
+			if let existingIndexPath = indexPath {
+				previouslySelectedIndexPaths.append(existingIndexPath)
+			}
+			dispatchSemaphore.signal()
+			dispatchGroup.leave()
+		}
+		
+		dispatchGroup.notify(queue: dispatchQueue) {
+			self.handleSelectedItems(previouslySelectedIndexPaths: previouslySelectedIndexPaths)
+		}
+	}
 
+	public func handlePReviouslySelectedPhassetsGroup(from previouslySelectedIDS: [String], assetsCollectionGroups: [PhassetGroup]) {
+		var previouslySelectedIndexPaths: [IndexPath] = []
+		let dispatchGroup = DispatchGroup()
+		let dispatchQueue = DispatchQueue(label: C.key.dispatch.selectedPhassetsQueue)
+		let dispatchSemaphore = DispatchSemaphore(value: 0)
+	
+		for seletedPHAssetID in previouslySelectedIDS {
+			dispatchGroup.enter()
+			
+			let sectionIndex = assetsCollectionGroups.firstIndex(where: {
+				$0.assets.contains(where: {$0.localIdentifier == seletedPHAssetID})
+			}).flatMap({
+				$0
+			})
+			
+			if let section = sectionIndex {
+				let index = Int(section)
+				let indexPath = assetsCollectionGroups[index].assets.firstIndex(where: {
+					$0.localIdentifier == seletedPHAssetID
+				}).flatMap({
+					IndexPath(row: $0, section: index)
+				})
+				
+				if let existingIndexPath = indexPath {
+					previouslySelectedIndexPaths.append(existingIndexPath)
+				}
+			}
+			
+			dispatchSemaphore.signal()
+			dispatchGroup.leave()
+		}
+		
+		dispatchGroup.notify(queue: dispatchQueue) {
+			self.handleSelectedItems(previouslySelectedIndexPaths: previouslySelectedIndexPaths)
+		}
+	}
+		
+	private func handleSelectedItems(previouslySelectedIndexPaths: [IndexPath]) {
+		
+		for previouslySelectedIndexPath in previouslySelectedIndexPaths {
+			self.collectionView.selectItem(at: previouslySelectedIndexPath, animated: false, scrollPosition: [])
+			self.collectionView.delegate?.collectionView?(self.collectionView, didSelectItemAt: previouslySelectedIndexPath)
+			
+			if let cell = self.collectionView.cellForItem(at: previouslySelectedIndexPath) as? PhotoCollectionViewCell {
+				cell.checkIsSelected()
+			}
+			
+			switch collectionType {
+				case .single:
+					self.selectedAssets.append(assetCollection[previouslySelectedIndexPath.row])
+				case .grouped:
+					self.selectedAssets.append(assetGroups[previouslySelectedIndexPath.section].assets[previouslySelectedIndexPath.row])
+				case .none:
+					return
+			}
+		}
+	}
+	
+	private func didTapBackActionButtonWithSelectablePhaassets() {
+		
+		let selectedAssetsIDs: [String] = selectedAssets.compactMap({$0.localIdentifier})
+		
+		switch collectionType {
+			case .single:
+				self.singleSelectionDelegate?.didSelect(assetListsIDs: selectedAssetsIDs)
+			case .grouped:
+				self.groupSelectionDelegate?.didSelect(assetListsIDs: selectedAssetsIDs)
+			case .none:
+				self.navigationController?.popViewController(animated: true)
+		}
+	}
+}
 
 extension MediaViewController: UIScrollViewDelegate {
 

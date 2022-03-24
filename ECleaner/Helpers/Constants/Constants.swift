@@ -100,8 +100,9 @@ class Constants {
         }
 		
 		struct dispatch {
-			static let mergeContacts = "merge contacts label"
-			static let deleteContacts = "deleting contacts label"
+			static let mergeContacts = "mergeContactsLabel"
+			static let deleteContacts = "deletingContactsLabel"
+			static let selectedPhassetsQueue = "selectedPhassetsQueue"
 		}
 		
 		struct operation {
