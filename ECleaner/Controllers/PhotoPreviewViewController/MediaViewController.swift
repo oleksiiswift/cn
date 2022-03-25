@@ -54,7 +54,6 @@ class MediaViewController: UIViewController {
 	public var assetGroups: [PhassetGroup] = []
 	public var mediaType: PhotoMediaType = .none
 	public var contentType: MediaContentType = .none
-	private var selectedAssets: [PHAsset] = []
 	
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -75,6 +74,163 @@ class MediaViewController: UIViewController {
 	}
 }
 
+//		MARK: - previously select phassets and handle select
+extension MediaViewController {
+	
+	private func getSelectedPhassetsIDs(_ completionHandler: @escaping (_ ids: [String]) -> Void) {
+		
+		guard let selectedIndexPath = self.collectionView.indexPathsForSelectedItems else {
+			completionHandler([])
+			return
+		}
+		
+		var selectedPHAssetsIDs: [String] = []
+		let dispatchGroup = DispatchGroup()
+		let dispatchQueue = DispatchQueue(label: C.key.dispatch.selectedPhassetsQueue)
+		let dispatchSemaphore = DispatchSemaphore(value: 0)
+		
+		for indexPath in selectedIndexPath {
+			dispatchGroup.enter()
+			
+			switch collectionType {
+				case .single:
+					let phassetInCollection = self.assetCollection[indexPath.row]
+					selectedPHAssetsIDs.append(phassetInCollection.localIdentifier)
+				case .grouped:
+					let phassetInCollection = self.assetGroups[indexPath.section].assets[indexPath.row]
+					selectedPHAssetsIDs.append(phassetInCollection.localIdentifier)
+				default:
+					return
+			}
+			
+			dispatchSemaphore.signal()
+			dispatchGroup.leave()
+		}
+		
+		dispatchGroup.notify(queue: dispatchQueue) {
+			U.UI {
+				completionHandler(selectedPHAssetsIDs)				
+			}
+		}
+	}
+	
+	public func handlePreviouslySelectedPHAssets(from previouslySelectedIDS: [String], assetsCollection: [PHAsset]) {
+		
+		var previouslySelectedIndexPaths: [IndexPath] = []
+		let dispatchGroup = DispatchGroup()
+		let dispatchQueue = DispatchQueue(label: C.key.dispatch.selectedPhassetsQueue)
+		let dispatchSemaphore = DispatchSemaphore(value: 0)
+		
+		for selectedPHAssetID in previouslySelectedIDS {
+			dispatchGroup.enter()
+			let indexPath = assetsCollection.firstIndex(where: {
+				$0.localIdentifier == selectedPHAssetID
+			}).flatMap({
+				IndexPath(row: $0, section: 0)
+			})
+			
+			if let existingIndexPath = indexPath {
+				previouslySelectedIndexPaths.append(existingIndexPath)
+			}
+			dispatchSemaphore.signal()
+			dispatchGroup.leave()
+		}
+		
+		dispatchGroup.notify(queue: dispatchQueue) {
+			U.UI {
+				self.handleSelectedItems(previouslySelectedIndexPaths: previouslySelectedIndexPaths)
+			}
+		}
+	}
+
+	public func handlePReviouslySelectedPhassetsGroup(from previouslySelectedIDS: [String], assetsCollectionGroups: [PhassetGroup]) {
+		var previouslySelectedIndexPaths: [IndexPath] = []
+		let dispatchGroup = DispatchGroup()
+		let dispatchQueue = DispatchQueue(label: C.key.dispatch.selectedPhassetsQueue)
+		let dispatchSemaphore = DispatchSemaphore(value: 0)
+	
+		for seletedPHAssetID in previouslySelectedIDS {
+			dispatchGroup.enter()
+			
+			let sectionIndex = assetsCollectionGroups.firstIndex(where: {
+				$0.assets.contains(where: {$0.localIdentifier == seletedPHAssetID})
+			}).flatMap({
+				$0
+			})
+			
+			if let section = sectionIndex {
+				let index = Int(section)
+				let indexPath = assetsCollectionGroups[index].assets.firstIndex(where: {
+					$0.localIdentifier == seletedPHAssetID
+				}).flatMap({
+					IndexPath(row: $0, section: index)
+				})
+				
+				if let existingIndexPath = indexPath {
+					previouslySelectedIndexPaths.append(existingIndexPath)
+				}
+			}
+			
+			dispatchSemaphore.signal()
+			dispatchGroup.leave()
+		}
+		
+		dispatchGroup.notify(queue: dispatchQueue) {
+			self.handleSelectedItems(previouslySelectedIndexPaths: previouslySelectedIndexPaths)
+		}
+	}
+}
+
+//		MARK: - select delegate -
+extension MediaViewController: PhotoCollectionViewCellDelegate {
+	
+	func didSelectCell(at indexPath: IndexPath) {
+		if let cell = self.collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell {
+			if cell.isSelected {
+				self.collectionView.deselectItem(at: indexPath, animated: true)
+				self.collectionView.delegate?.collectionView?(self.collectionView, didSelectItemAt: indexPath)
+			} else {
+				self.collectionView.selectItem(at: indexPath, animated: true, scrollPosition: [])
+				self.collectionView.delegate?.collectionView?(self.collectionView, didDeselectItemAt: indexPath)
+			}
+			cell.checkIsSelected()
+		}
+	}
+}
+
+extension MediaViewController {
+	
+	private func handleSelectedItems(previouslySelectedIndexPaths: [IndexPath]) {
+		
+		for previouslySelectedIndexPath in previouslySelectedIndexPaths {
+			self.collectionView.selectItem(at: previouslySelectedIndexPath, animated: false, scrollPosition: [])
+			self.collectionView.delegate?.collectionView?(self.collectionView, didSelectItemAt: previouslySelectedIndexPath)
+			
+			if let cell = self.collectionView.cellForItem(at: previouslySelectedIndexPath) as? PhotoCollectionViewCell {
+				U.delay(1) {
+					cell.checkIsSelected()
+					
+				}
+			}
+		}
+	}
+	
+	private func didTapBackActionButtonWithSelectablePhaassets() {
+		
+		self.getSelectedPhassetsIDs { ids in
+			switch self.collectionType {
+				case .grouped:
+					self.groupSelectionDelegate?.didSelect(assetListsIDs: ids)
+				case .single:
+					self.singleSelectionDelegate?.didSelect(assetListsIDs: ids)
+				default:
+					return
+			}
+			self.navigationController?.popViewController(animated: true)
+		}
+	}
+}
+
 extension MediaViewController {
 	
 	private func startedScroll(indexPath: IndexPath) {
@@ -85,15 +241,7 @@ extension MediaViewController {
 	}
 }
 
-extension MediaViewController: NavigationBarDelegate {
-	
-	func didTapLeftBarButton(_ sender: UIButton) {
-		self.didTapBackActionButtonWithSelectablePhaassets()
-	}
-	
-	func didTapRightBarButton(_ sender: UIButton) {}
-}
-
+//		MARK: - collection view setup - and configure -
 extension MediaViewController  {
 	
 	private func setupCollectionView() {
@@ -175,11 +323,7 @@ extension MediaViewController  {
 	}
 }
 
-extension MediaViewController: PhotoCollectionViewCellDelegate {
-	
-	func didSelectCell(at indexPath: IndexPath) {}
-}
-
+//		MARK: - collection view delegate -
 extension MediaViewController: UICollectionViewDelegate, UICollectionViewDataSource {
 
 	func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -218,6 +362,7 @@ extension MediaViewController: UICollectionViewDelegate, UICollectionViewDataSou
 	}
 }
 
+//		MARK: - prefetch collection view -
 extension MediaViewController: UICollectionViewDataSourcePrefetching {
 	
 	func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
@@ -246,161 +391,26 @@ extension MediaViewController: UICollectionViewDataSourcePrefetching {
 	}
 }
 
-
-extension MediaViewController: Themeble {
-
-	private func setupUI() {}
+//		MARK: - navigation delegate -
+extension MediaViewController: NavigationBarDelegate {
 	
-	private func setupNavigationBar() {
-		
-		navigationBar.setupNavigation(title: mediaType.mediaTypeName,
-									  leftBarButtonImage: I.systemItems.navigationBarItems.back,
-									  rightBarButtonImage: nil,
-									  contentType: contentType,
-									  leftButtonTitle: nil,
-									  rightButtonTitle: nil)
+	func didTapLeftBarButton(_ sender: UIButton) {
+		self.didTapBackActionButtonWithSelectablePhaassets()
 	}
 	
-	
-	private func setupDelegate() {
-		
-		navigationBar.delegate = self
-		scrollView.delegate = self
-	}
-	
-	func updateColors() {
-		
-		self.view.backgroundColor = theme.backgroundColor
-		self.collectionView.backgroundColor = theme.backgroundColor
-		self.previewCollectionView.backgroundColor = theme.backgroundColor
-	}
-	
-	public func setupTransitionConfiguration(from controller: UIViewController, referenceImageView: @escaping ReferenceImageView, referenceImageViewFrameInTransitioningView: @escaping ReferenceImageViewFrame) {
-		
-		controller.navigationController?.delegate = transitionController
-		let destinationController = ZoomAnimatorRreferences(referenceImageView: { [weak self] () -> UIImageView in
-			return self!.currentImage
-		}) { [weak self] () -> CGRect in
-			guard let self = self, let imageView = self.visibleCell?.photoThumbnailImageView else {
-				return CGRect(x: 0, y: 0, width: 350, height: 350)
-			}
-			return self.collectionView.convert(imageView.frame, to: self.collectionView)
-		}
-		transitionController.to = destinationController
-		
-		let fromDestinationController = ZoomAnimatorRreferences(referenceImageView: referenceImageView, referenceImageViewFrameInTransitioningView: referenceImageViewFrameInTransitioningView)
-		transitionController.to = destinationController
-		transitionController.from = fromDestinationController
-	}
+	func didTapRightBarButton(_ sender: UIButton) {}
 }
 
-extension MediaViewController {
-	
-	public func handlePreviouslySelectedPHAssets(from previouslySelectedIDS: [String], assetsCollection: [PHAsset]) {
-		var previouslySelectedIndexPaths: [IndexPath] = []
-		let dispatchGroup = DispatchGroup()
-		let dispatchQueue = DispatchQueue(label: C.key.dispatch.selectedPhassetsQueue)
-		let dispatchSemaphore = DispatchSemaphore(value: 0)
-		
-		for selectedPHAssetID in previouslySelectedIDS {
-			dispatchGroup.enter()
-			let indexPath = assetsCollection.firstIndex(where: {
-				$0.localIdentifier == selectedPHAssetID
-			}).flatMap({
-				IndexPath(row: $0, section: 0)
-			})
-			
-			if let existingIndexPath = indexPath {
-				previouslySelectedIndexPaths.append(existingIndexPath)
-			}
-			dispatchSemaphore.signal()
-			dispatchGroup.leave()
-		}
-		
-		dispatchGroup.notify(queue: dispatchQueue) {
-			self.handleSelectedItems(previouslySelectedIndexPaths: previouslySelectedIndexPaths)
-		}
-	}
-
-	public func handlePReviouslySelectedPhassetsGroup(from previouslySelectedIDS: [String], assetsCollectionGroups: [PhassetGroup]) {
-		var previouslySelectedIndexPaths: [IndexPath] = []
-		let dispatchGroup = DispatchGroup()
-		let dispatchQueue = DispatchQueue(label: C.key.dispatch.selectedPhassetsQueue)
-		let dispatchSemaphore = DispatchSemaphore(value: 0)
-	
-		for seletedPHAssetID in previouslySelectedIDS {
-			dispatchGroup.enter()
-			
-			let sectionIndex = assetsCollectionGroups.firstIndex(where: {
-				$0.assets.contains(where: {$0.localIdentifier == seletedPHAssetID})
-			}).flatMap({
-				$0
-			})
-			
-			if let section = sectionIndex {
-				let index = Int(section)
-				let indexPath = assetsCollectionGroups[index].assets.firstIndex(where: {
-					$0.localIdentifier == seletedPHAssetID
-				}).flatMap({
-					IndexPath(row: $0, section: index)
-				})
-				
-				if let existingIndexPath = indexPath {
-					previouslySelectedIndexPaths.append(existingIndexPath)
-				}
-			}
-			
-			dispatchSemaphore.signal()
-			dispatchGroup.leave()
-		}
-		
-		dispatchGroup.notify(queue: dispatchQueue) {
-			self.handleSelectedItems(previouslySelectedIndexPaths: previouslySelectedIndexPaths)
-		}
-	}
-		
-	private func handleSelectedItems(previouslySelectedIndexPaths: [IndexPath]) {
-		
-		for previouslySelectedIndexPath in previouslySelectedIndexPaths {
-			self.collectionView.selectItem(at: previouslySelectedIndexPath, animated: false, scrollPosition: [])
-			self.collectionView.delegate?.collectionView?(self.collectionView, didSelectItemAt: previouslySelectedIndexPath)
-			
-			if let cell = self.collectionView.cellForItem(at: previouslySelectedIndexPath) as? PhotoCollectionViewCell {
-				cell.checkIsSelected()
-			}
-			
-			switch collectionType {
-				case .single:
-					self.selectedAssets.append(assetCollection[previouslySelectedIndexPath.row])
-				case .grouped:
-					self.selectedAssets.append(assetGroups[previouslySelectedIndexPath.section].assets[previouslySelectedIndexPath.row])
-				case .none:
-					return
-			}
-		}
-	}
-	
-	private func didTapBackActionButtonWithSelectablePhaassets() {
-		
-		let selectedAssetsIDs: [String] = selectedAssets.compactMap({$0.localIdentifier})
-		
-		switch collectionType {
-			case .single:
-				self.singleSelectionDelegate?.didSelect(assetListsIDs: selectedAssetsIDs)
-			case .grouped:
-				self.groupSelectionDelegate?.didSelect(assetListsIDs: selectedAssetsIDs)
-			case .none:
-				self.navigationController?.popViewController(animated: true)
-		}
-	}
-}
-
+//		MARK: - scroll view carousel delegate -
 extension MediaViewController: UIScrollViewDelegate {
 
 	public func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-		if let indexPath = visibleCellIndex, !decelerate {
-			collectionView.reloadItems(at: [indexPath])
-		}
+//		if let indexPath = visibleCellIndex, !decelerate {
+//			collectionView.reloadSelectedItems(at: [indexPath])
+//			if let cell = self.collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell{
+//				cell.checkIsSelected()
+//			}
+//		}
 	}
 
 	public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
@@ -444,8 +454,80 @@ extension MediaViewController: UIScrollViewDelegate {
 
 	public func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
 
-		if let indexPath = visibleCellIndex {
-			collectionView.reloadItems(at: [indexPath])
+//		if let indexPath = visibleCellIndex {
+//			collectionView.reloadSelectedItems(at: [indexPath])
+//			if let cell = self.collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell {
+//				cell.checkIsSelected()
+//			}
+//		}
+	}
+}
+
+//		MARK: - setup ui -
+extension MediaViewController {
+	
+	private func setupUI() {}
+	
+	private func setupNavigationBar() {
+		
+		navigationBar.setupNavigation(title: mediaType.mediaTypeName,
+									  leftBarButtonImage: I.systemItems.navigationBarItems.back,
+									  rightBarButtonImage: nil,
+									  contentType: contentType,
+									  leftButtonTitle: nil,
+									  rightButtonTitle: nil)
+	}
+	
+	private func setupDelegate() {
+		
+		navigationBar.delegate = self
+		scrollView.delegate = self
+	}
+
+	/// hide transition setup 
+	public func setupTransitionConfiguration(from controller: UIViewController, referenceImageView: @escaping ReferenceImageView, referenceImageViewFrameInTransitioningView: @escaping ReferenceImageViewFrame) {
+		
+		controller.navigationController?.delegate = transitionController
+		let destinationController = ZoomAnimatorRreferences(referenceImageView: { [weak self] () -> UIImageView in
+			return self!.currentImage
+		}) { [weak self] () -> CGRect in
+			guard let self = self, let imageView = self.visibleCell?.photoThumbnailImageView else {
+				return CGRect(x: 0, y: 0, width: 350, height: 350)
+			}
+			return self.collectionView.convert(imageView.frame, to: self.collectionView)
+		}
+		transitionController.to = destinationController
+		
+		let fromDestinationController = ZoomAnimatorRreferences(referenceImageView: referenceImageView, referenceImageViewFrameInTransitioningView: referenceImageViewFrameInTransitioningView)
+		transitionController.to = destinationController
+		transitionController.from = fromDestinationController
+	}
+}
+
+extension MediaViewController: Themeble {
+	
+	func updateColors() {
+		
+		self.view.backgroundColor = theme.backgroundColor
+		self.collectionView.backgroundColor = theme.backgroundColor
+		self.previewCollectionView.backgroundColor = theme.backgroundColor
+	}
+}
+
+
+extension UICollectionView {
+		
+	func reloadSelectedItems(at indexPaths: [IndexPath]) {
+		
+		let selectedItems = indexPathsForSelectedItems
+		reloadItems(at: indexPaths)
+		if let selectedItems = selectedItems {
+			for selectedItem in selectedItems {
+				if indexPaths.contains(selectedItem) {
+					selectItem(at: selectedItem, animated: false, scrollPosition: [])
+				}
+			}
 		}
 	}
 }
+

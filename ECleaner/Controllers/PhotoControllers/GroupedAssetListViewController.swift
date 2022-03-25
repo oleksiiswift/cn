@@ -251,6 +251,7 @@ extension GroupedAssetListViewController {
 	}
 }
 
+
 extension GroupedAssetListViewController: NavigationBarDelegate {
 	
 	func didTapLeftBarButton(_ sender: UIButton) {
@@ -958,11 +959,6 @@ extension GroupedAssetListViewController {
 		viewController.contentType = self.contentType
 		viewController.mediaType = self.mediaType
 		viewController.groupSelectionDelegate = self
-		viewController.setupTransitionConfiguration(from: self) { [unowned self] in
-			return self.currentCell!.photoThumbnailImageView
-		} referenceImageViewFrameInTransitioningView: { [unowned self] in
-			return self.collectionView.convert(self.currentCell?.frame ?? self.view.frame, to: self.view)
-		}
 		self.navigationController?.pushViewController(viewController, animated: true)
 	}
  }
@@ -981,10 +977,8 @@ extension GroupedAssetListViewController: SNCollectionViewLayoutDelegate {
 extension GroupedAssetListViewController: GroupSelectableAssetsDelegate {
 	
 	func didSelect(assetListsIDs: [String]) {
-		if assetListsIDs.isEmpty {
-			self.shouldSelectAllAssetsInSections(false)
-		} else {
-			self.shouldSelectAllAssetsInSections(false)
+		self.shouldSelectAllAssetsInSections(false)
+		if !assetListsIDs.isEmpty {
 			self.handleSelectIndexPath(from: assetListsIDs)
 		}
 	}
@@ -1071,8 +1065,7 @@ extension GroupedAssetListViewController: SelectDropDownMenuDelegate {
 
 
 
-//      MARK: - delegates flow - 
-
+//      MARK: - delegates flow -
 extension GroupedAssetListViewController: UIPopoverPresentationControllerDelegate {
     
     func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
@@ -1128,7 +1121,6 @@ extension GroupedAssetListViewController: UIScrollViewDelegate {
 }
 
 //      MARK: - setup UI -
-
 extension GroupedAssetListViewController {
 		
 	private func setupUI() {
