@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19455" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19454"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19519"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -55,14 +55,25 @@
                                     <constraint firstAttribute="width" constant="36" id="m9b-Mw-ImL"/>
                                 </constraints>
                             </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="foM-CQ-sAx">
+                                <rect key="frame" x="0.0" y="0.0" width="242" height="231"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <connections>
+                                    <action selector="didTapShowPHassetActionButton:" destination="gTV-IL-0wX" eventType="touchUpInside" id="OJO-Av-3EQ"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
+                            <constraint firstItem="foM-CQ-sAx" firstAttribute="leading" secondItem="s5I-X3-emN" secondAttribute="leading" id="10G-tY-F35"/>
+                            <constraint firstAttribute="trailing" secondItem="foM-CQ-sAx" secondAttribute="trailing" id="1yh-oS-6Ax"/>
+                            <constraint firstItem="foM-CQ-sAx" firstAttribute="top" secondItem="s5I-X3-emN" secondAttribute="top" id="7mC-6S-r9n"/>
                             <constraint firstItem="t63-kq-mOP" firstAttribute="leading" secondItem="ZPH-1G-hQC" secondAttribute="leading" constant="5" id="OuC-82-ofQ"/>
                             <constraint firstAttribute="trailing" secondItem="ZPH-1G-hQC" secondAttribute="trailing" constant="7" id="XHf-Ld-F8r"/>
                             <constraint firstItem="ZPH-1G-hQC" firstAttribute="top" secondItem="s5I-X3-emN" secondAttribute="top" constant="7" id="aoq-It-rVb"/>
                             <constraint firstItem="BYc-LT-Vun" firstAttribute="centerY" secondItem="s5I-X3-emN" secondAttribute="centerY" id="bBB-mT-PPB"/>
                             <constraint firstItem="t63-kq-mOP" firstAttribute="bottom" secondItem="ZPH-1G-hQC" secondAttribute="bottom" constant="-5" id="cGf-A5-9O4"/>
+                            <constraint firstAttribute="bottom" secondItem="foM-CQ-sAx" secondAttribute="bottom" id="dGh-Eb-7EY"/>
                             <constraint firstItem="ZPH-1G-hQC" firstAttribute="leading" secondItem="s5I-X3-emN" secondAttribute="leading" constant="7" id="iJs-M1-6oA"/>
                             <constraint firstItem="BYc-LT-Vun" firstAttribute="centerX" secondItem="s5I-X3-emN" secondAttribute="centerX" id="wMZ-Bz-9HA"/>
                             <constraint firstAttribute="bottom" secondItem="ZPH-1G-hQC" secondAttribute="bottom" constant="7" id="wcp-6W-D1M"/>

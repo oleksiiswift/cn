@@ -6,7 +6,8 @@
 //
 
 import Foundation
+import Photos
 
 protocol SimpleSelectableAssetsDelegate: AnyObject {
-	func didSelect(assetListsIDs: [String])
+	func didSelect(selectedIndexPath: [IndexPath], phasstsColledtion: [PHAsset])
 }

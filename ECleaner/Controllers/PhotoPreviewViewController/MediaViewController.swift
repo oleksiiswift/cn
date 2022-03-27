@@ -43,7 +43,7 @@ class MediaViewController: UIViewController {
 		return previewCollectionView.indexPath(for: visibleCell)
 	}
 	public var focusedIndexPath: IndexPath?
-	
+	public var previuousSelectedIndexPaths: [IndexPath]?
 	private var previousPreheatRect: CGRect = CGRect()
 	
 	private var photoManager = PhotoManager.shared
@@ -68,121 +68,28 @@ class MediaViewController: UIViewController {
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 		
-		if let indexPath = focusedIndexPath {
-			self.startedScroll(indexPath: indexPath)
-		}
+		handleFocusAndSelect()
 	}
 }
 
-//		MARK: - previously select phassets and handle select
 extension MediaViewController {
 	
-	private func getSelectedPhassetsIDs(_ completionHandler: @escaping (_ ids: [String]) -> Void) {
+	private func handleFocusAndSelect() {
 		
-		guard let selectedIndexPath = self.collectionView.indexPathsForSelectedItems else {
-			completionHandler([])
-			return
+		if let indexPath = focusedIndexPath {
+			self.startedScroll(indexPath: indexPath)
 		}
 		
-		var selectedPHAssetsIDs: [String] = []
-		let dispatchGroup = DispatchGroup()
-		let dispatchQueue = DispatchQueue(label: C.key.dispatch.selectedPhassetsQueue)
-		let dispatchSemaphore = DispatchSemaphore(value: 0)
-		
-		for indexPath in selectedIndexPath {
-			dispatchGroup.enter()
-			
-			switch collectionType {
-				case .single:
-					let phassetInCollection = self.assetCollection[indexPath.row]
-					selectedPHAssetsIDs.append(phassetInCollection.localIdentifier)
-				case .grouped:
-					let phassetInCollection = self.assetGroups[indexPath.section].assets[indexPath.row]
-					selectedPHAssetsIDs.append(phassetInCollection.localIdentifier)
-				default:
-					return
-			}
-			
-			dispatchSemaphore.signal()
-			dispatchGroup.leave()
-		}
-		
-		dispatchGroup.notify(queue: dispatchQueue) {
-			U.UI {
-				completionHandler(selectedPHAssetsIDs)				
-			}
-		}
-	}
-	
-	public func handlePreviouslySelectedPHAssets(from previouslySelectedIDS: [String], assetsCollection: [PHAsset]) {
-		
-		var previouslySelectedIndexPaths: [IndexPath] = []
-		let dispatchGroup = DispatchGroup()
-		let dispatchQueue = DispatchQueue(label: C.key.dispatch.selectedPhassetsQueue)
-		let dispatchSemaphore = DispatchSemaphore(value: 0)
-		
-		for selectedPHAssetID in previouslySelectedIDS {
-			dispatchGroup.enter()
-			let indexPath = assetsCollection.firstIndex(where: {
-				$0.localIdentifier == selectedPHAssetID
-			}).flatMap({
-				IndexPath(row: $0, section: 0)
-			})
-			
-			if let existingIndexPath = indexPath {
-				previouslySelectedIndexPaths.append(existingIndexPath)
-			}
-			dispatchSemaphore.signal()
-			dispatchGroup.leave()
-		}
-		
-		dispatchGroup.notify(queue: dispatchQueue) {
-			U.UI {
-				self.handleSelectedItems(previouslySelectedIndexPaths: previouslySelectedIndexPaths)
-			}
-		}
-	}
-
-	public func handlePReviouslySelectedPhassetsGroup(from previouslySelectedIDS: [String], assetsCollectionGroups: [PhassetGroup]) {
-		var previouslySelectedIndexPaths: [IndexPath] = []
-		let dispatchGroup = DispatchGroup()
-		let dispatchQueue = DispatchQueue(label: C.key.dispatch.selectedPhassetsQueue)
-		let dispatchSemaphore = DispatchSemaphore(value: 0)
-	
-		for seletedPHAssetID in previouslySelectedIDS {
-			dispatchGroup.enter()
-			
-			let sectionIndex = assetsCollectionGroups.firstIndex(where: {
-				$0.assets.contains(where: {$0.localIdentifier == seletedPHAssetID})
-			}).flatMap({
-				$0
-			})
-			
-			if let section = sectionIndex {
-				let index = Int(section)
-				let indexPath = assetsCollectionGroups[index].assets.firstIndex(where: {
-					$0.localIdentifier == seletedPHAssetID
-				}).flatMap({
-					IndexPath(row: $0, section: index)
-				})
-				
-				if let existingIndexPath = indexPath {
-					previouslySelectedIndexPaths.append(existingIndexPath)
-				}
-			}
-			
-			dispatchSemaphore.signal()
-			dispatchGroup.leave()
-		}
-		
-		dispatchGroup.notify(queue: dispatchQueue) {
-			self.handleSelectedItems(previouslySelectedIndexPaths: previouslySelectedIndexPaths)
+		if let selectedIndexPaths = self.previuousSelectedIndexPaths {
+			self.handleSelectedItems(previouslySelectedIndexPaths: selectedIndexPaths)
 		}
 	}
 }
 
 //		MARK: - select delegate -
 extension MediaViewController: PhotoCollectionViewCellDelegate {
+	
+	func didShowFullScreenPHAsset(at indexPath: IndexPath) {}
 	
 	func didSelectCell(at indexPath: IndexPath) {
 		if let cell = self.collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell {
@@ -202,32 +109,30 @@ extension MediaViewController {
 	
 	private func handleSelectedItems(previouslySelectedIndexPaths: [IndexPath]) {
 		
+		guard !previouslySelectedIndexPaths.isEmpty else { return }
+		
 		for previouslySelectedIndexPath in previouslySelectedIndexPaths {
 			self.collectionView.selectItem(at: previouslySelectedIndexPath, animated: false, scrollPosition: [])
 			self.collectionView.delegate?.collectionView?(self.collectionView, didSelectItemAt: previouslySelectedIndexPath)
-			
 			if let cell = self.collectionView.cellForItem(at: previouslySelectedIndexPath) as? PhotoCollectionViewCell {
-				U.delay(1) {
-					cell.checkIsSelected()
-					
-				}
+				cell.checkIsSelected()
 			}
 		}
 	}
 	
 	private func didTapBackActionButtonWithSelectablePhaassets() {
 		
-		self.getSelectedPhassetsIDs { ids in
-			switch self.collectionType {
-				case .grouped:
-					self.groupSelectionDelegate?.didSelect(assetListsIDs: ids)
-				case .single:
-					self.singleSelectionDelegate?.didSelect(assetListsIDs: ids)
-				default:
-					return
-			}
-			self.navigationController?.popViewController(animated: true)
+		guard let selectedIndexPath = self.collectionView.indexPathsForSelectedItems else { return }
+		
+		switch self.collectionType {
+			case .grouped:
+				self.groupSelectionDelegate?.didSelect(slectedIndexPath: selectedIndexPath, phassetsGroups: self.assetGroups)
+			case .single:
+				self.singleSelectionDelegate?.didSelect(selectedIndexPath: selectedIndexPath, phasstsColledtion: self.assetCollection)
+			default:
+				return
 		}
+		self.navigationController?.popViewController(animated: true)
 	}
 }
 

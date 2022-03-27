@@ -54,6 +54,7 @@ class GroupedAssetListViewController: UIViewController {
 	private var selectedAssets: [PHAsset] = []
 	private var selectedSection: Set<Int> = []
 	private var previouslySelectedIndexPaths: [IndexPath] = []
+	public var previousSelectedIDs: [String] = []
 	private var thumbnailSize: CGSize!
 
     private var previousPreheatRect: CGRect = CGRect()
@@ -76,14 +77,12 @@ class GroupedAssetListViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-//		!previouslySelectedIndexPaths.isEmpty ? didSelectPreviouslyIndexPath() : ()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
 		updateCachedAssets()
-		previouslySelectedIndexPaths.isEmpty ? handleStartingSelectableAssets() : ()
         self.defaultContainerHeight = self.photoContentContainerView.frame.height
     }
 }
@@ -100,11 +99,6 @@ extension GroupedAssetListViewController {
 		let selectedAssetsIDs: [String] = selectedAssets.compactMap({ $0.localIdentifier})
 		self.selectedAssetsDelegate?.didSelect(assetsListIds: selectedAssetsIDs, contentType: self.mediaType, updatableGroup: assetGroups, updatableAssets: [], updatableContactsGroup: [])
 		self.navigationController?.popViewController(animated: true)
-	}
-	
-	private func preSelectCleaningPhassetAccordingControllerType() {
-		
-		guard isDeepCleaningSelectableFlow else { return }
 	}
 }
 
@@ -134,8 +128,9 @@ extension GroupedAssetListViewController {
 		self.present(dropDownViewController, animated: true, completion: nil)
 	}
 	
-	public func handlePreviousSelected(selectedAssetsIDs: [String], assetGroupCollection: [PhassetGroup]) {
+	public func handlePreviousSelected(selectedAssetsIDs: [String], assetGroupCollection: [PhassetGroup],_ completionHandler: @escaping (_ indexPaths: [IndexPath]) -> Void) {
 		
+		var previousSelected: [IndexPath] = []
 		let dispatchGroup = DispatchGroup()
 		let dispatchQueue = DispatchQueue(label: C.key.dispatch.selectedPhassetsQueue)
 		let dispatchSemaphore = DispatchSemaphore(value: 0)
@@ -157,7 +152,7 @@ extension GroupedAssetListViewController {
 				})
 				
 				if let existingIndexPath = indexPath {
-					self.previouslySelectedIndexPaths.append(existingIndexPath)
+					previousSelected.append(existingIndexPath)
 				}
 			}
 			dispatchSemaphore.signal()
@@ -165,53 +160,10 @@ extension GroupedAssetListViewController {
 		}
 		
 		dispatchGroup.notify(queue: dispatchQueue) {
-			self.handleSelected(for: self.previouslySelectedIndexPaths)
-		}
-	}
-	
-	private func handleSelectIndexPath(from ids: [String]) {
-		
-		let dispatchGroup = DispatchGroup()
-		let dispatchQueue = DispatchQueue(label: C.key.dispatch.selectedPhassetsQueue)
-		let dispatchSemaphore = DispatchSemaphore(value: 0)
-		
-		self.previouslySelectedIndexPaths = []
-		
-		for id in ids {
-			dispatchGroup.enter()
-			
-			let sectionIndex = assetGroups.firstIndex(where: {
-				$0.assets.contains(where: {
-					$0.localIdentifier == id
-				})
-			}).flatMap({
-				$0
-			})
-			
-			if let section = sectionIndex {
-				let indexPath = assetGroups[section].assets.firstIndex(where: {
-					$0.localIdentifier == id
-				}).flatMap({
-					IndexPath(row: $0, section: section)
-				})
-				
-				if let existingIndexPath = indexPath {
-					self.previouslySelectedIndexPaths.append(existingIndexPath)
-				}
+			U.UI {
+				completionHandler(previousSelected)
 			}
-			dispatchSemaphore.signal()
-			dispatchGroup.leave()
 		}
-		dispatchGroup.notify(queue: dispatchQueue) {
-			self.didSelectPreviouslyIndexPath()
-		}
-	}
-	
-	private func didSelectPreviouslyIndexPath() {
-		
-		guard isDeepCleaningSelectableFlow, !previouslySelectedIndexPaths.isEmpty else { return }
-		
-		self.handleSelected(for: previouslySelectedIndexPaths)
 	}
 	
 	private func handleSelected(for indexPaths: [IndexPath]) {
@@ -227,6 +179,7 @@ extension GroupedAssetListViewController {
 		}
 		checkForCelectedSection()
 		handleSelectAssetsNavigationCount()
+		handleDeleteAssetsButton()
 	}
 	
 	private func checkForCelectedSection() {
@@ -378,14 +331,7 @@ extension GroupedAssetListViewController: UICollectionViewDelegate, UICollection
 		}
 		return UICollectionReusableView()
 	}
-	
-		/// if need select cell from custom cell-button and tap on cell need - return `false`
-	
-	func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
-		self.showFullScreenAssetPreviewAndFocus(at: indexPath)
-		return false
-	}
-	
+		
 	func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
 			//        self.lazyHardcoreCheckForSelectedItemsAndAssets()
 	}
@@ -440,6 +386,10 @@ extension GroupedAssetListViewController: UICollectionViewDelegate, UICollection
 
 	//  MARK: - flow with select deselect cell
 extension GroupedAssetListViewController: PhotoCollectionViewCellDelegate {
+	
+	func didShowFullScreenPHAsset(at indexPath: IndexPath) {
+		self.showFullScreenAssetPreviewAndFocus(at: indexPath)
+	}
 	
 	func didSelectCell(at indexPath: IndexPath) {
 		if let cell = self.collectionView.cellForItem(at: indexPath) {
@@ -769,12 +719,17 @@ extension GroupedAssetListViewController {
 		self.handleSelectAssetsNavigationCount()
 	}
 	
-	private func handleStartingSelectableAssets() {
+	private func handleDeepCleanStarSelectablePHAssetsGroup() {
+		
 		guard isDeepCleaningSelectableFlow else { return }
 		
-		A.showSelectAllStarterAlert(for: mediaType) {
+		if !previousSelectedIDs.isEmpty {
+			handlePreviousSelected(selectedAssetsIDs: self.previousSelectedIDs, assetGroupCollection: self.assetGroups) { indexPaths in
+				self.handleSelected(for: indexPaths)
+			}
+		} else {
 			self.shouldSelectAllAssetsInSections(false)
-			self.bottomMenuHeightConstraint.constant = 0
+			self.handleDeleteAssetsButton()
 		}
 	}
 }
@@ -976,10 +931,12 @@ extension GroupedAssetListViewController: SNCollectionViewLayoutDelegate {
 
 extension GroupedAssetListViewController: GroupSelectableAssetsDelegate {
 	
-	func didSelect(assetListsIDs: [String]) {
+	#warning("reorder phassets groups")
+	func didSelect(slectedIndexPath: [IndexPath], phassetsGroups: [PhassetGroup]) {
 		self.shouldSelectAllAssetsInSections(false)
-		if !assetListsIDs.isEmpty {
-			self.handleSelectIndexPath(from: assetListsIDs)
+		
+		if !slectedIndexPath.isEmpty {
+			self.handleSelected(for: slectedIndexPath)
 		}
 	}
 }

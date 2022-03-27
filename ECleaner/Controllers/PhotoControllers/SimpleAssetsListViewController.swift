@@ -52,7 +52,8 @@ class SimpleAssetsListViewController: UIViewController {
 	public var changedPhassetCompletionHandler: ((_ changedPhasset: [PHAsset]) -> Void)?
 	public var selectedPhassetCompletionHandler: ((_ selectedPhassets: [PHAsset]) -> Void)?
 	
-	private var previouslySelectedIndexPaths: [IndexPath] = []
+	public var previouslySelectedIndexPaths: [IndexPath] = []
+	public var previousSelectedIDs: [String] = []
 	public var isDeepCleaningSelectableFlow: Bool = false
 	
     override func viewDidLoad() {
@@ -64,19 +65,18 @@ class SimpleAssetsListViewController: UIViewController {
 		setupObservers()
         updateColors()
         setupCollectionView()
+		handleDeepCleanStarSelectablePHAssets()
     }
 	
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-		!previouslySelectedIndexPaths.isEmpty ? didSelectPreviouslyIndexPath() : ()
     }
 	
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
 		
 		updateCachedAssets()
-		previouslySelectedIndexPaths.isEmpty ? didSelectAll() : ()
 	}
 }
 
@@ -120,7 +120,6 @@ extension SimpleAssetsListViewController {
 	}
 }
 
-
 extension SimpleAssetsListViewController {
 	
 	private func smoothReloadData() {
@@ -132,7 +131,6 @@ extension SimpleAssetsListViewController {
 			self.handleBottomButtonMenu()
 		}
 	}
-
 	
     private func createCellContextMenu(for asset: PHAsset, at indexPath: IndexPath) -> UIMenu {
         
@@ -155,6 +153,18 @@ extension SimpleAssetsListViewController {
 		/// did select item need for preview photo
 		/// need handle select button state and check cell.isSelected for checkmark image
 		/// for selected cell use cell delegate and indexPath
+		
+	private func handleDeepCleanStarSelectablePHAssets() {
+		
+		guard isDeepCleaningSelectableFlow else { return }
+		
+		if !previousSelectedIDs.isEmpty {
+			self.handleAssetsPreviousSelected(selectedAssetsIDs: self.previousSelectedIDs, assetCollection: self.assetCollection) { indexPaths in
+				self.handleSelected(for: indexPaths)
+			}
+		}
+	}
+		
 	
 	private func getSelectedPhassetsIDs(_ completionHandler: @escaping (_ ids: [String]) -> Void) {
 		
@@ -185,8 +195,9 @@ extension SimpleAssetsListViewController {
 	}
 	
 		/// handle previously selected indexPath if back from deep clean screen
-	public func handleAssetsPreviousSelected(selectedAssetsIDs: [String], assetCollection: [PHAsset]) {
+	private func handleAssetsPreviousSelected(selectedAssetsIDs: [String], assetCollection: [PHAsset],_ completionHandler: @escaping (_ indexPaths: [IndexPath]) -> Void) {
 		
+		var selectedIndexPath: [IndexPath] = []
 		let dispatchGroup = DispatchGroup()
 		let dispatchQueue = DispatchQueue(label: C.key.dispatch.selectedPhassetsQueue)
 		let dispatchSemaphore = DispatchSemaphore(value: 0)
@@ -200,54 +211,18 @@ extension SimpleAssetsListViewController {
 			})
 			
 			if let existingIndexPath = indexPath {
-				self.previouslySelectedIndexPaths.append(existingIndexPath)
+				selectedIndexPath.append(existingIndexPath)
 			}
 			dispatchSemaphore.signal()
 			dispatchGroup.leave()
 		}
 		dispatchGroup.notify(queue: dispatchQueue) {
 			U.UI {
-				self.didSelectPreviouslyIndexPath()				
+				completionHandler(selectedIndexPath)
 			}
 		}
 	}
-		
-	public func handleSelectedAssets(for ids: [String]) {
-		
-		let dispatchGroup = DispatchGroup()
-		let dispatchQueue = DispatchQueue(label: C.key.dispatch.selectedPhassetsQueue)
-		let dispatchSemaphore = DispatchSemaphore(value: 0)
-		
-		self.previouslySelectedIndexPaths = []
-		
-		for id in ids {
-			dispatchGroup.enter()
-			let indexPath = assetCollection.firstIndex(where: {
-				$0.localIdentifier == id
-			}).flatMap({
-				IndexPath(row: $0, section: 0)
-			})
 			
-			if let existingIndexPath = indexPath {
-				self.previouslySelectedIndexPaths.append(existingIndexPath)
-			}
-			dispatchSemaphore.signal()
-			dispatchGroup.leave()
-		}
-		dispatchGroup.notify(queue: dispatchQueue) {
-			U.UI {
-				self.handleSelected(for: self.previouslySelectedIndexPaths)
-			}
-		}
-	}
-	
-	private func didSelectPreviouslyIndexPath() {
-		
-		guard isDeepCleaningSelectableFlow else { return }
-		
-		self.handleSelected(for: self.previouslySelectedIndexPaths)
-	}
-	
 	private func handleSelected(for indexPaths: [IndexPath]) {
 		
 		for indexPath in indexPaths {
@@ -259,6 +234,7 @@ extension SimpleAssetsListViewController {
 			}
 		}
 		handleSelectAllButtonState()
+		handleBottomButtonMenu()
 	}
 	
 	private func setCollection(selected: Bool) {
@@ -340,15 +316,19 @@ extension SimpleAssetsListViewController {
 }
 
 extension SimpleAssetsListViewController: PhotoCollectionViewCellDelegate {
-
+	
+	func didShowFullScreenPHAsset(at indexPath: IndexPath) {
+		self.showFullScreenAssetPreviewAndFocus(at: indexPath)
+	}
+	
 	func didSelectCell(at indexPath: IndexPath) {
 		if let cell = self.collectionView.cellForItem(at: indexPath) {
 			if cell.isSelected {
 				self.collectionView.deselectItem(at: indexPath, animated: true)
-				cell.isSelected = false
+				self.collectionView.delegate?.collectionView?(self.collectionView, didDeselectItemAt: indexPath)
 			} else {
 				self.collectionView.selectItem(at: indexPath, animated: true, scrollPosition: [])
-				cell.isSelected = true
+				self.collectionView.delegate?.collectionView?(self.collectionView, didSelectItemAt: indexPath)
 			}
 		}
 		handleSelectAllButtonState()
@@ -361,11 +341,12 @@ extension SimpleAssetsListViewController: PhotoCollectionViewCellDelegate {
 //		MARK: - selectable delegate -
 extension SimpleAssetsListViewController: SimpleSelectableAssetsDelegate {
 	
-	func didSelect(assetListsIDs: [String]) {
+	
+	func didSelect(selectedIndexPath: [IndexPath], phasstsColledtion: [PHAsset]) {
 		self.setCollection(selected: false)
 		
-		if !assetListsIDs.isEmpty {
-			self.handleSelectedAssets(for: assetListsIDs)
+		if !selectedIndexPath.isEmpty {
+			self.handleSelected(for: selectedIndexPath)
 		}
 	}
 }
@@ -375,29 +356,17 @@ extension SimpleAssetsListViewController {
 	
 	private func showFullScreenAssetPreviewAndFocus(at indexPath: IndexPath) {
 		
-		P.showIndicator()
-		
-		self.currentIndex = indexPath
-		
-		self.getSelectedPhassetsIDs { ids in
-			P.hideIndicator()
-			U.UI {
-				self.showFullScreenController(focused: indexPath, with: ids)
-			}
-		}
-	}
-	
-	private func showFullScreenController(focused indexPath: IndexPath, with selectedIDs: [String]) {
+		guard let selectedIndexPath = self.collectionView.indexPathsForSelectedItems else { return }
 		
 		let storyboard = UIStoryboard(name: C.identifiers.storyboards.preview, bundle: nil)
 		let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.media) as! MediaViewController
-		viewController.handlePreviouslySelectedPHAssets(from: selectedIDs, assetsCollection: self.assetCollection)
 		viewController.collectionType = .single
 		viewController.contentType = self.contentType
 		viewController.mediaType = self.mediaType
 		viewController.focusedIndexPath = indexPath
 		viewController.assetCollection = self.assetCollection
 		viewController.singleSelectionDelegate = self
+		viewController.previuousSelectedIndexPaths = selectedIndexPath
 		self.navigationController?.pushViewController(viewController, animated: true)
 	}
 	
@@ -519,13 +488,6 @@ extension SimpleAssetsListViewController: UICollectionViewDelegate, UICollection
 		return cell
 	}
 	
-	func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
-		/// use delegate select cell
-		/// on tap on cell opened full screen photo preivew
-		self.showFullScreenAssetPreviewAndFocus(at: indexPath)
-		return false
-	}
-		
 	func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
 		let asset = self.assetCollection[indexPath.row]
 		let identifier = IndexPath(item: indexPath.item, section: indexPath.section) as NSCopying
