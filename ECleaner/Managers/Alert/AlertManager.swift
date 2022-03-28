@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Photos
 
 enum ElementhCount {
     case one
@@ -103,15 +104,43 @@ extension AlertManager {
 
 //    MARK: - PHASSET ALERTS -
 extension AlertManager {
-    
-    static func showDeletePhotoAssetsAlert(completion: @escaping () -> Void) {
-      
-        let allowDeleteAction = UIAlertAction(title: "loco delete?", style: .default) { _ in
-            completion()
-        }
-        
-        showAlert(type: .allowDeleteSelectedPhotos, actions: [allowDeleteAction], withCancel: true) {}
-    }
+	
+	static func deletePHAssets(of type: MediaContentType, of elementsCount: ElementhCount, completionHandler: @escaping () -> Void) {
+		
+		switch type {
+			case .userPhoto:
+				if elementsCount == .many {
+					self.showDeletePHAssetAlert(of: .allowDeleteSelectedPhotos) {
+						completionHandler()
+					}
+				} else {
+					self.showDeletePHAssetAlert(of: .allowDeleteSelectedPhoto) {
+						completionHandler()
+					}
+				}
+			case .userVideo:
+				if elementsCount == .many {
+					self.showDeletePHAssetAlert(of: .allowDeleteSelectedVideos) {
+						completionHandler()
+					}
+				} else {
+					self.showDeletePHAssetAlert(of: .allowDeleteSelectedVideo) {
+						completionHandler()
+					}
+				}
+			default:
+				return
+		}
+	}
+	
+	private static func showDeletePHAssetAlert(of alertType: AlertType, completionHandler: @escaping () -> Void) {
+		
+		let confirmDeleteAction = UIAlertAction(title: alertType.alertConfrimButtonTitle, style: .default) { _ in
+			completionHandler()
+		}
+		
+		showAlert(type: alertType, actions: [confirmDeleteAction], withCancel: true)
+	}
 }
 
 //      MARK: - CONTACTS ALERT -

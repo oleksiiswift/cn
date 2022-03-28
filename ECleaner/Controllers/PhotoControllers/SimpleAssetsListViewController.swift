@@ -84,10 +84,12 @@ class SimpleAssetsListViewController: UIViewController {
 extension SimpleAssetsListViewController {
 
     private func showDeleteSelectedAssetsAlert() {
-        
-        AlertManager.showDeletePhotoAssetsAlert {
-            self.deleteSelectedAssets()
-        }
+		
+		guard let selectedPHAssets = self.collectionView.indexPathsForSelectedItems else { return }
+		
+		A.deletePHAssets(of: self.contentType, of: selectedPHAssets.count > 1 ? .many : .one) {
+			self.deleteSelectedAssets()
+		}
     }
     
     private func deleteSelectedAssets() {
@@ -165,7 +167,6 @@ extension SimpleAssetsListViewController {
 		}
 	}
 		
-	
 	private func getSelectedPhassetsIDs(_ completionHandler: @escaping (_ ids: [String]) -> Void) {
 		
 		guard let selectedIndexPath = self.collectionView.indexPathsForSelectedItems else {
@@ -337,13 +338,12 @@ extension SimpleAssetsListViewController: PhotoCollectionViewCellDelegate {
 	}
 }
 
-
 //		MARK: - selectable delegate -
 extension SimpleAssetsListViewController: SimpleSelectableAssetsDelegate {
 	
-	
 	func didSelect(selectedIndexPath: [IndexPath], phasstsColledtion: [PHAsset]) {
-		self.setCollection(selected: false)
+		self.assetCollection = phasstsColledtion
+		self.collectionView.reloadDataWitoutAnimation()
 		
 		if !selectedIndexPath.isEmpty {
 			self.handleSelected(for: selectedIndexPath)
@@ -488,6 +488,16 @@ extension SimpleAssetsListViewController: UICollectionViewDelegate, UICollection
 		return cell
 	}
 	
+	func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
+		self.showFullScreenAssetPreviewAndFocus(at: indexPath)
+		return false
+	}
+	
+	func collectionView(_ collectionView: UICollectionView, shouldDeselectItemAt indexPath: IndexPath) -> Bool {
+		self.showFullScreenAssetPreviewAndFocus(at: indexPath)
+		return false
+	}
+	
 	func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
 		let asset = self.assetCollection[indexPath.row]
 		let identifier = IndexPath(item: indexPath.item, section: indexPath.section) as NSCopying
@@ -524,7 +534,6 @@ extension SimpleAssetsListViewController: UICollectionViewDelegate, UICollection
 		return targetPreview
 	}
 }
-
 
 extension SimpleAssetsListViewController {
 	

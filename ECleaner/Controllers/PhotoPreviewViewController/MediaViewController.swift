@@ -144,7 +144,103 @@ extension MediaViewController {
 			self.previewCollectionView.scrollToItem(at: indexPath, at: [.centeredVertically, .centeredHorizontally], animated: false)
 		}
 	}
+	
+	private func createContextualMenu(for phasset: PHAsset, at indexPath: IndexPath) -> UIMenu {
+		
+		let setAsBestActionImage = I.systemItems.defaultItems.star.withTintColor(theme.titleTextColor).withRenderingMode(.alwaysTemplate)
+		let deleteActionImage =    I.systemItems.defaultItems.trashBin.withTintColor(theme.actionTintColor).withRenderingMode(.alwaysTemplate)
+		
+		let setAsBestAction = UIAction(title: "set as best", image: setAsBestActionImage) { _ in
+			self.setAsBest(phasset: phasset, at: indexPath)
+		}
+		
+		let deletePHAssetAction = UIAction(title: "delete", image: deleteActionImage) { _ in
+			self.showConfirmDeletePHAsset(at: indexPath)
+		}
+		
+		if indexPath.row == 0 {
+			return UIMenu(title: "", children: [deletePHAssetAction])
+		} else {
+			if collectionType == .grouped {
+				return UIMenu(title: "", children: [setAsBestAction, deletePHAssetAction])
+			} else {
+				return UIMenu(title: "", children: [deletePHAssetAction])
+			}
+		}
+	}
 }
+
+extension MediaViewController {
+	
+	private func setAsBest(phasset: PHAsset, at indexPath: IndexPath) {
+		
+	}
+}
+
+
+extension MediaViewController {
+	
+	private func showConfirmDeletePHAsset(at indexPath: IndexPath) {
+		
+		A.deletePHAssets(of: self.contentType, of: .one) {
+			self.deletePHAsset(at: indexPath)
+		}
+	}
+	
+	private func deletePHAsset(at indexPath: IndexPath) {
+		
+		var selectedPHAsset = PHAsset()
+		
+		switch collectionType {
+			case .grouped:
+				selectedPHAsset = self.assetGroups[indexPath.section].assets[indexPath.row]
+			case .single:
+				selectedPHAsset = self.assetCollection[indexPath.row]
+			default:
+				return
+		}
+		
+		#warning("TODO NEED TO COntiniue")
+		let deletePHAssetOperation = self.photoManager.deleteSelectedOperation(assets: [selectedPHAsset], completion: { deleted in
+			if deleted {
+				switch self.collectionType {
+					case .single:
+						self.assetCollection = self.assetCollection.filter({
+							$0.localIdentifier != selectedPHAsset.localIdentifier
+						})
+						U.UI {
+							self.collectionView.performBatchUpdates {
+								self.collectionView.deleteItems(at: [indexPath])
+							} completion: { _ in
+								self.collectionView.smoothReloadData {}
+							}
+						}
+					case .grouped:
+						
+						self.assetGroups[indexPath.section].assets.remove(at: indexPath.item)
+						
+						if self.assetGroups[indexPath.section].assets.count == 1 {
+							self.collectionView.deleteSections(IndexSet(integer: indexPath.section))
+							self.assetGroups.remove(at: indexPath.section)
+						}
+						U.UI {
+							self.collectionView.performBatchUpdates {
+								self.collectionView.deleteItems(at: [indexPath])
+							} completion: { _ in
+								self.collectionView.smoothReloadData {}
+							}
+						}
+					case .none:
+						return
+				}
+			} else {
+				ErrorHandler.shared.showDeleteAlertError(selectedPHAsset.mediaType == .video ? .errorDeleteVideo : .errorDeletePhoto)
+			}
+		})
+		self.photoManager.serviceUtilsCalculatedOperationsQueuer.addOperation(deletePHAssetOperation)
+	}
+}
+
 
 //		MARK: - collection view setup - and configure -
 extension MediaViewController  {
@@ -264,6 +360,43 @@ extension MediaViewController: UICollectionViewDelegate, UICollectionViewDataSou
 		} else {
 			return 20
 		}
+	}
+	
+	func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+		
+		guard collectionView == self.collectionView else {
+			return nil
+		}
+		
+		let phasset = collectionType == .single ? self.assetCollection[indexPath.row] : self.assetGroups[indexPath.section].assets[indexPath.row]
+		let identifier = IndexPath(item: indexPath.item, section: indexPath.section) as NSCopying
+		
+		switch phasset.mediaType {
+			case .video:
+				return UIContextMenuConfiguration(identifier: identifier) {
+					return PreviewAVController(asset: phasset)
+				} actionProvider: { _ in
+					self.createContextualMenu(for: phasset, at: indexPath)
+				}
+			case .image:
+				return UIContextMenuConfiguration(identifier: identifier) {
+					return AssetContextPreviewViewController(asset: phasset)
+				} actionProvider: { _ in
+					self.createContextualMenu(for: phasset, at: indexPath)
+				}
+			default:
+				return nil
+		}
+	}
+	
+	func collectionView(_ collectionView: UICollectionView, previewForHighlightingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview? {
+		
+		guard let indexPath = configuration.identifier as? IndexPath, let cell = self.collectionView.cellForItem(at: indexPath) else { return nil}
+		
+		let targetPreview = UITargetedPreview(view: cell)
+		targetPreview.parameters.backgroundColor = theme.backgroundColor
+		targetPreview.view.backgroundColor = theme.backgroundColor
+		return targetPreview
 	}
 }
 

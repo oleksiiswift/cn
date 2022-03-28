@@ -37,9 +37,12 @@ enum AlertType {
 	case duplicatedNumbersIsEmpty
 	case duplicatedEmailsIsEmpty
 	
-
 		/// `permite delete`
     case allowDeleteSelectedPhotos
+	case allowDeleteSelectedPhoto
+	case allowDeleteSelectedVideos
+	case allowDeleteSelectedVideo
+	
     case withCancel
 		
 		/// `set break alerts`
@@ -112,6 +115,12 @@ enum AlertType {
                 return ""
             case .allowDeleteSelectedPhotos:
                 return "locomark delete assets?"
+			case .allowDeleteSelectedPhoto:
+				return "locomark delete photo?"
+			case .allowDeleteSelectedVideos:
+				return "locomark delete videos"
+			case .allowDeleteSelectedVideo:
+				return "locomark delete video"
             case .deleteContacts:
                 return "delete contacts"
             case .deleteContact:
@@ -195,6 +204,12 @@ enum AlertType {
 //				MARK: delete merge sections
 			case .allowDeleteSelectedPhotos:
 				return "delete selecteds assets are you shure????"
+			case .allowDeleteSelectedPhoto:
+				return "delete selected photo?"
+			case .allowDeleteSelectedVideos:
+				return "delete selected videos?"
+			case .allowDeleteSelectedVideo:
+				return "allow delete video"
 			case .deleteContacts:
 				return "shure delete contacts"
 			case .deleteContact:
@@ -211,7 +226,6 @@ enum AlertType {
 				return "cintact suxx merged"
 			case .suxxessMergedContacts:
 				return "contacts suxx merged"
-				
 //				MARK: cancel none
             case .withCancel:
                 return "cancel"
@@ -219,6 +233,23 @@ enum AlertType {
                 return "none"
 		}
     }
+	
+	var alertConfrimButtonTitle: String {
+		
+		switch self {
+				
+			case .allowDeleteSelectedVideo:
+				return "delete video"
+			case .allowDeleteSelectedVideos:
+				return "delete videos"
+			case .allowDeleteSelectedPhotos:
+				return "delete photos"
+			case .allowDeleteSelectedPhoto:
+				return "delete photo"
+			default:
+				return "none"	
+		}
+	}
     
 //    /// alert or action sheet
     var alertStyle: UIAlertController.Style {
@@ -254,8 +285,10 @@ enum AlertType {
 					.duplicatedEmailsIsEmpty:
 				return false
 				
-            case .allowNotification, .allowConstacStore, .allowPhotoLibrary, .allowDeleteSelectedPhotos, .withCancel:
+            case .allowNotification, .allowConstacStore, .allowPhotoLibrary, .withCancel:
                 return true
+			case .allowDeleteSelectedPhotos, .allowDeleteSelectedPhoto, .allowDeleteSelectedVideos, .allowDeleteSelectedVideo:
+				return true
 			case .setBreakDeepCleanSearch, .setBreakSingleCleanSearch, .setBreakDeepCleanDelete, .resetDeepCleanResults:
 				return true
             case .deleteContacts, .mergeContacts, .deleteContact, .mergeContact:

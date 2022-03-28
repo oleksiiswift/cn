@@ -196,6 +196,7 @@
 		97B01A7F2747CB8C00DDE03C /* ExportContactsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B01A7E2747CB8C00DDE03C /* ExportContactsViewController.swift */; };
 		97C44FBB274EF93B001B61AB /* ContactasCleaningType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97C44FBA274EF93B001B61AB /* ContactasCleaningType.swift */; };
 		97C44FBD274EF959001B61AB /* ContactsContainerType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97C44FBC274EF959001B61AB /* ContactsContainerType.swift */; };
+		97C4D71727F1B74D00C476FE /* UICollectionView+ReloadData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97C4D71627F1B74D00C476FE /* UICollectionView+ReloadData.swift */; };
 		97C656B32773CABE00E88BBF /* ShadowMultiplyerButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97C656B22773CABE00E88BBF /* ShadowMultiplyerButton.swift */; };
 		97C70B50277633AC0033F466 /* UIImage+Gradient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97C70B4F277633AC0033F466 /* UIImage+Gradient.swift */; };
 		97C70B52277634280033F466 /* ShadowButtonWithImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97C70B51277634280033F466 /* ShadowButtonWithImage.swift */; };
@@ -446,6 +447,7 @@
 		97B01A7E2747CB8C00DDE03C /* ExportContactsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportContactsViewController.swift; sourceTree = "<group>"; };
 		97C44FBA274EF93B001B61AB /* ContactasCleaningType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactasCleaningType.swift; sourceTree = "<group>"; };
 		97C44FBC274EF959001B61AB /* ContactsContainerType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsContainerType.swift; sourceTree = "<group>"; };
+		97C4D71627F1B74D00C476FE /* UICollectionView+ReloadData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UICollectionView+ReloadData.swift"; sourceTree = "<group>"; };
 		97C656B22773CABE00E88BBF /* ShadowMultiplyerButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowMultiplyerButton.swift; sourceTree = "<group>"; };
 		97C70B4F277633AC0033F466 /* UIImage+Gradient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Gradient.swift"; sourceTree = "<group>"; };
 		97C70B51277634280033F466 /* ShadowButtonWithImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowButtonWithImage.swift; sourceTree = "<group>"; };
@@ -1544,6 +1546,7 @@
 				04649B3D268DDDE600336FE4 /* UICollectionView+SelectAll.swift */,
 				97DC110E27A172A800D10FE4 /* UICollectionView+IndexPath.swift */,
 				97EB665227B1BC1F00B21EF5 /* UICollectionView+NextItem.swift */,
+				97C4D71627F1B74D00C476FE /* UICollectionView+ReloadData.swift */,
 			);
 			path = UICollectionView;
 			sourceTree = "<group>";
@@ -1798,6 +1801,7 @@
 				97D2BECC275A3D06002082EB /* CNContactVCard+ImageData.swift in Sources */,
 				975617D8273BC32A00E07A62 /* ReuseShadowRoundedView.swift in Sources */,
 				975AF43127281DF700744E3B /* ContactListViewModel.swift in Sources */,
+				97C4D71727F1B74D00C476FE /* UICollectionView+ReloadData.swift in Sources */,
 				4F56074927205AF300CA19E9 /* Style.swift in Sources */,
 				044281FC2692F95A00B6B47C /* DropDownMenuViewController.swift in Sources */,
 				975AF4352728210A00744E3B /* DynamicListener.swift in Sources */,
