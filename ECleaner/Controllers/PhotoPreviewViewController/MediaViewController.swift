@@ -42,6 +42,7 @@ class MediaViewController: UIViewController {
 		}
 		return previewCollectionView.indexPath(for: visibleCell)
 	}
+	public var isDeepCleaningSelectableFlow: Bool = false
 	public var focusedIndexPath: IndexPath?
 	public var previuousSelectedIndexPaths: [IndexPath]?
 	private var previousPreheatRect: CGRect = CGRect()
@@ -154,19 +155,35 @@ extension MediaViewController {
 			self.setAsBest(phasset: phasset, at: indexPath)
 		}
 		
-		let deletePHAssetAction = UIAction(title: "delete", image: deleteActionImage) { _ in
+		let deletePHAssetAction = UIAction(title: "delete", image: deleteActionImage, attributes: .destructive) { _ in
 			self.showConfirmDeletePHAsset(at: indexPath)
 		}
 		
-		if indexPath.row == 0 {
-			return UIMenu(title: "", children: [deletePHAssetAction])
-		} else {
-			if collectionType == .grouped {
-				return UIMenu(title: "", children: [setAsBestAction, deletePHAssetAction])
-			} else {
-				return UIMenu(title: "", children: [deletePHAssetAction])
-			}
+		let deleteMenuCollection = UIMenu(title: "", children: [deletePHAssetAction])
+		let setAsBestMenuCollection = UIMenu(title: "", children: [setAsBestAction])
+		let deleteAndSetAsBestCollection = UIMenu(title: "", children: [setAsBestAction, deletePHAssetAction])
+		
+		switch collectionType {
+			case .grouped:
+				if !isDeepCleaningSelectableFlow {
+					if indexPath.row == 0 {
+						return deleteMenuCollection
+					} else {
+						return deleteAndSetAsBestCollection
+					}
+				} else {
+					if indexPath.row != 0 {
+						return setAsBestMenuCollection
+					}
+				}
+			case .single:
+				if !isDeepCleaningSelectableFlow {
+					return deleteMenuCollection
+				}
+			case .none:
+				return UIMenu()
 		}
+		return UIMenu()
 	}
 }
 
@@ -174,9 +191,18 @@ extension MediaViewController {
 	
 	private func setAsBest(phasset: PHAsset, at indexPath: IndexPath) {
 		
+		self.assetGroups[indexPath.section].assets.move(at: indexPath.row, to: 0)
+		let zeroUpdatableIndexPath = IndexPath(row: 0, section: indexPath.section)
+		
+		self.collectionView.performBatchUpdates {
+			self.collectionView.moveItem(at: indexPath, to: zeroUpdatableIndexPath)
+			self.collectionView.reloadSections(IndexSet(integer: indexPath.section))
+		} completion: { _ in }
+		self.previewCollectionView.performBatchUpdates {
+			self.previewCollectionView.moveItem(at: indexPath, to: zeroUpdatableIndexPath)
+		} completion: { _ in }
 	}
 }
-
 
 extension MediaViewController {
 	
@@ -199,39 +225,11 @@ extension MediaViewController {
 			default:
 				return
 		}
-		
-		#warning("TODO NEED TO COntiniue")
+	
 		let deletePHAssetOperation = self.photoManager.deleteSelectedOperation(assets: [selectedPHAsset], completion: { deleted in
 			if deleted {
-				switch self.collectionType {
-					case .single:
-						self.assetCollection = self.assetCollection.filter({
-							$0.localIdentifier != selectedPHAsset.localIdentifier
-						})
-						U.UI {
-							self.collectionView.performBatchUpdates {
-								self.collectionView.deleteItems(at: [indexPath])
-							} completion: { _ in
-								self.collectionView.smoothReloadData {}
-							}
-						}
-					case .grouped:
-						
-						self.assetGroups[indexPath.section].assets.remove(at: indexPath.item)
-						
-						if self.assetGroups[indexPath.section].assets.count == 1 {
-							self.collectionView.deleteSections(IndexSet(integer: indexPath.section))
-							self.assetGroups.remove(at: indexPath.section)
-						}
-						U.UI {
-							self.collectionView.performBatchUpdates {
-								self.collectionView.deleteItems(at: [indexPath])
-							} completion: { _ in
-								self.collectionView.smoothReloadData {}
-							}
-						}
-					case .none:
-						return
+				U.UI {
+					self.updateCollection(with: selectedPHAsset, at: indexPath)
 				}
 			} else {
 				ErrorHandler.shared.showDeleteAlertError(selectedPHAsset.mediaType == .video ? .errorDeleteVideo : .errorDeletePhoto)
@@ -239,8 +237,65 @@ extension MediaViewController {
 		})
 		self.photoManager.serviceUtilsCalculatedOperationsQueuer.addOperation(deletePHAssetOperation)
 	}
+	
+	private func updateCollection(with removablePHAsset: PHAsset, at indexPath: IndexPath) {
+	
+		switch collectionType {
+			case .single:
+				self.assetCollection.remove(at: indexPath.row)
+				self.collectionView.performBatchUpdates {
+					self.collectionView.deleteItems(at: [indexPath])
+				} completion: { _ in }
+				self.previewCollectionView.performBatchUpdates {
+					self.previewCollectionView.deleteItems(at: [indexPath])
+				} completion: { _ in
+					self.checkForEmptyCollection()
+				}
+			case .grouped:
+				if self.assetGroups[indexPath.section].assets.count == 2 {
+					self.assetGroups.remove(at: indexPath.section)
+					self.collectionView.performBatchUpdates {
+						self.collectionView.deleteSections(IndexSet(integer: indexPath.section))
+					} completion: { _ in }
+					self.previewCollectionView.performBatchUpdates {
+						self.previewCollectionView.deleteSections(IndexSet(integer: indexPath.section))
+					} completion: { _ in
+						self.checkForEmptyCollection()
+					}
+				} else {
+					self.assetGroups[indexPath.section].assets.remove(at: indexPath.item)
+					self.collectionView.performBatchUpdates {
+						self.collectionView.deleteItems(at: [indexPath])
+					} completion: { _ in }
+					self.previewCollectionView.performBatchUpdates {
+						self.previewCollectionView.deleteItems(at: [indexPath])
+					} completion: { _ in
+						self.checkForEmptyCollection()
+					}
+				}
+			default:
+				return
+		}
+	}
+	
+	private func checkForEmptyCollection() {
+		
+		switch collectionType {
+			case .single:
+				if self.assetCollection.isEmpty {
+					singleSelectionDelegate?.didSelect(selectedIndexPath: [], phasstsColledtion: [])
+					self.navigationController?.popViewController(animated: true)
+				}
+			case .grouped:
+				if self.assetGroups.isEmpty {
+					groupSelectionDelegate?.didSelect(slectedIndexPath: [], phassetsGroups: [])
+					self.navigationController?.popViewController(animated: true)
+				}
+			case .none:
+				return
+		}
+	}
 }
-
 
 //		MARK: - collection view setup - and configure -
 extension MediaViewController  {
@@ -363,9 +418,20 @@ extension MediaViewController: UICollectionViewDelegate, UICollectionViewDataSou
 	}
 	
 	func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
-		
-		guard collectionView == self.collectionView else {
-			return nil
+	
+		guard collectionView == self.collectionView else { return nil }
+				
+		if isDeepCleaningSelectableFlow {
+			switch collectionType {
+				case .single:
+					return nil
+				case .grouped:
+					if indexPath.row == 0 {
+						return nil
+					}
+				case .none:
+					return nil
+			}
 		}
 		
 		let phasset = collectionType == .single ? self.assetCollection[indexPath.row] : self.assetGroups[indexPath.section].assets[indexPath.row]
@@ -439,31 +505,8 @@ extension MediaViewController: NavigationBarDelegate {
 	func didTapRightBarButton(_ sender: UIButton) {}
 }
 
-//		MARK: - scroll view carousel delegate -
-extension MediaViewController: UIScrollViewDelegate {
-
-	public func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-//		if let indexPath = visibleCellIndex, !decelerate {
-//			collectionView.reloadSelectedItems(at: [indexPath])
-//			if let cell = self.collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell{
-//				cell.checkIsSelected()
-//			}
-//		}
-	}
-
-	public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-
-	}
-
-	public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-		if scrollView === previewCollectionView {
-			handleTrackCollection(from: previewCollectionView, to: collectionView)
-		}
-
-		if scrollView === collectionView {
-			handleTrackCollection(from: collectionView, to: previewCollectionView)
-		}
-	}
+//		MARK: - handle track carousel -
+extension MediaViewController {
 	
 	private func handleTrackCollection(from: UICollectionView, to: UICollectionView) {
 		let centerPoint = CGPoint(x: from.contentOffset.x + (from.frame.width / 2), y: from.frame.height / 2)
@@ -481,6 +524,37 @@ extension MediaViewController: UIScrollViewDelegate {
 			}
 		}
 	}
+	
+	private func handleDecelerateScrollCollection(at indexPath: IndexPath) {
+		collectionView.reloadSelectedItems(at: [indexPath])
+		if let cell = self.collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell{
+			cell.checkIsSelected()
+		}
+	}
+}
+
+//		MARK: - scroll view carousel delegate -
+extension MediaViewController: UIScrollViewDelegate {
+
+	public func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+//		if let indexPath = visibleCellIndex, !decelerate {
+//			handleDecelerateScrollCollection(at: indexPath)
+//		}
+	}
+
+	public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+
+	}
+
+	public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+		if scrollView === previewCollectionView {
+			handleTrackCollection(from: previewCollectionView, to: collectionView)
+		}
+
+		if scrollView === collectionView {
+			handleTrackCollection(from: collectionView, to: previewCollectionView)
+		}
+	}
 
 	public func scrollViewWillBeginDecelerating(_ scrollView: UIScrollView) {
 
@@ -491,12 +565,8 @@ extension MediaViewController: UIScrollViewDelegate {
 	}
 
 	public func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-
 //		if let indexPath = visibleCellIndex {
-//			collectionView.reloadSelectedItems(at: [indexPath])
-//			if let cell = self.collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell {
-//				cell.checkIsSelected()
-//			}
+//			handleDecelerateScrollCollection(at: indexPath)
 //		}
 	}
 }
@@ -551,21 +621,3 @@ extension MediaViewController: Themeble {
 		self.previewCollectionView.backgroundColor = theme.backgroundColor
 	}
 }
-
-
-extension UICollectionView {
-		
-	func reloadSelectedItems(at indexPaths: [IndexPath]) {
-		
-		let selectedItems = indexPathsForSelectedItems
-		reloadItems(at: indexPaths)
-		if let selectedItems = selectedItems {
-			for selectedItem in selectedItems {
-				if indexPaths.contains(selectedItem) {
-					selectItem(at: selectedItem, animated: false, scrollPosition: [])
-				}
-			}
-		}
-	}
-}
-

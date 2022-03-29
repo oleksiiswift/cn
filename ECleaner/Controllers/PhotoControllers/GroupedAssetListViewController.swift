@@ -138,6 +138,7 @@ extension GroupedAssetListViewController {
 		self.currentIndex = indexPath
 		let storyboard = UIStoryboard(name: C.identifiers.storyboards.preview, bundle: nil)
 		let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.media) as! MediaViewController
+		viewController.isDeepCleaningSelectableFlow = self.isDeepCleaningSelectableFlow
 		viewController.previuousSelectedIndexPaths = selectedIndexPath
 		viewController.collectionType = .grouped
 		viewController.focusedIndexPath = indexPath
@@ -339,10 +340,14 @@ extension GroupedAssetListViewController: GroupSelectableAssetsDelegate {
 	func didSelect(slectedIndexPath: [IndexPath], phassetsGroups: [PhassetGroup]) {
 		
 		self.assetGroups = phassetsGroups
-		self.collectionView.reloadDataWitoutAnimation()
 		
-		if !slectedIndexPath.isEmpty {
-			self.handleSelected(for: slectedIndexPath)
+		if self.assetGroups.isEmpty {
+			didTapBackSingleCleanActionButton()
+		} else {
+			self.collectionView.reloadDataWitoutAnimation()
+			if !slectedIndexPath.isEmpty {
+				self.handleSelected(for: slectedIndexPath)
+			}
 		}
 	}
 }

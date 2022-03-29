@@ -32,3 +32,19 @@ extension UICollectionView {
 		}
 	}
 }
+
+extension UICollectionView {
+		
+	func reloadSelectedItems(at indexPaths: [IndexPath]) {
+		
+		let selectedItems = indexPathsForSelectedItems
+		reloadItems(at: indexPaths)
+		if let selectedItems = selectedItems {
+			for selectedItem in selectedItems {
+				if indexPaths.contains(selectedItem) {
+					selectItem(at: selectedItem, animated: false, scrollPosition: [])
+				}
+			}
+		}
+	}
+}

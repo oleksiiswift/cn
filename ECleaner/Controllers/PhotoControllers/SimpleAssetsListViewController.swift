@@ -342,11 +342,16 @@ extension SimpleAssetsListViewController: PhotoCollectionViewCellDelegate {
 extension SimpleAssetsListViewController: SimpleSelectableAssetsDelegate {
 	
 	func didSelect(selectedIndexPath: [IndexPath], phasstsColledtion: [PHAsset]) {
-		self.assetCollection = phasstsColledtion
-		self.collectionView.reloadDataWitoutAnimation()
 		
-		if !selectedIndexPath.isEmpty {
-			self.handleSelected(for: selectedIndexPath)
+		self.assetCollection = phasstsColledtion
+		
+		if assetCollection.isEmpty {
+			self.singleCleanFlowBackActionButton()
+		} else {
+			self.collectionView.reloadDataWitoutAnimation()
+			if !selectedIndexPath.isEmpty {
+				self.handleSelected(for: selectedIndexPath)
+			}
 		}
 	}
 }
@@ -360,6 +365,7 @@ extension SimpleAssetsListViewController {
 		
 		let storyboard = UIStoryboard(name: C.identifiers.storyboards.preview, bundle: nil)
 		let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.media) as! MediaViewController
+		viewController.isDeepCleaningSelectableFlow = self.isDeepCleaningSelectableFlow
 		viewController.collectionType = .single
 		viewController.contentType = self.contentType
 		viewController.mediaType = self.mediaType
