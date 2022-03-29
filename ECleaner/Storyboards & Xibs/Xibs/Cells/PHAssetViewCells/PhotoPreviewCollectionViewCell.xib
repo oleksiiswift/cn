@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19519"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="gTV-IL-0wX" customClass="PhotoPreviewCollectionViewCell" customModule="ECleaner" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="399" height="555"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="399" height="555"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iBx-YV-9IQ" customClass="CollectionShadowView" customModule="ECleaner" customModuleProvider="target">
+                        <rect key="frame" x="0.0" y="0.0" width="399" height="555"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    </view>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="H6B-xm-3i9">
+                        <rect key="frame" x="20" y="20" width="359" height="515"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    </view>
+                </subviews>
+            </view>
+            <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
+            <constraints>
+                <constraint firstAttribute="bottom" secondItem="iBx-YV-9IQ" secondAttribute="bottom" id="2D7-P2-gxs"/>
+                <constraint firstItem="iBx-YV-9IQ" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="Avt-I5-jvc"/>
+                <constraint firstItem="iBx-YV-9IQ" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="PoW-6W-vyK"/>
+                <constraint firstItem="H6B-xm-3i9" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" constant="20" id="bD9-21-B0S"/>
+                <constraint firstAttribute="trailing" secondItem="iBx-YV-9IQ" secondAttribute="trailing" id="dLU-85-Zfj"/>
+                <constraint firstAttribute="bottom" secondItem="H6B-xm-3i9" secondAttribute="bottom" constant="20" id="peW-tE-Pmd"/>
+                <constraint firstItem="H6B-xm-3i9" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="20" id="q2s-5H-wCh"/>
+                <constraint firstAttribute="trailing" secondItem="H6B-xm-3i9" secondAttribute="trailing" constant="20" id="vXd-Vh-bLv"/>
+            </constraints>
+            <size key="customSize" width="399" height="555"/>
+            <connections>
+                <outlet property="baseView" destination="H6B-xm-3i9" id="Lg1-xV-ySY"/>
+                <outlet property="reuseShadowView" destination="iBx-YV-9IQ" id="T6g-TQ-ptC"/>
+            </connections>
+            <point key="canvasLocation" x="234.05797101449278" y="122.87946428571428"/>
+        </collectionViewCell>
+    </objects>
+</document>

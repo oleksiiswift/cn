@@ -305,10 +305,9 @@ extension MediaViewController  {
 		self.collectionView.register(UINib(nibName: C.identifiers.xibs.photoSimpleCell,
 										   bundle: nil),
 									 forCellWithReuseIdentifier: C.identifiers.cells.photoSimpleCell)
-		
-		self.previewCollectionView.register(UINib(nibName: C.identifiers.xibs.photoSimpleCell,
-										   bundle: nil),
-									 forCellWithReuseIdentifier: C.identifiers.cells.photoSimpleCell)
+	
+		self.previewCollectionView.register(UINib(nibName: C.identifiers.xibs.photoPreviewCell, bundle: nil),
+											forCellWithReuseIdentifier: C.identifiers.cells.photoPreviewCell)
 		
 		self.previewCollectionView.dataSource = self
 		self.previewCollectionView.delegate = self
@@ -324,7 +323,7 @@ extension MediaViewController  {
 		self.previewColletionFlowLayput.minimumLineSpacing = 150
 		self.previewColletionFlowLayput.headerReferenceSize = .zero
 		
-		previewCollectionView.collectionViewLayout = previewColletionFlowLayput
+		self.previewCollectionView.collectionViewLayout = previewColletionFlowLayput
 
 		self.collectionView.dataSource = self
 		self.collectionView.delegate = self
@@ -377,6 +376,12 @@ extension MediaViewController  {
 		
 		cell.checkIsSelected()
 	}
+	
+	private func configurePreview(_ cell: PhotoPreviewCollectionViewCell, at indexPath: IndexPath) {
+		
+		
+		
+	}
 }
 
 //		MARK: - collection view delegate -
@@ -403,11 +408,17 @@ extension MediaViewController: UICollectionViewDelegate, UICollectionViewDataSou
 	}
 	
 	func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: C.identifiers.cells.photoSimpleCell, for: indexPath) as! PhotoCollectionViewCell
-		configure(cell, at: indexPath)
-		return cell
+		
+		if collectionView == self.collectionView {
+			let cell = collectionView.dequeueReusableCell(withReuseIdentifier: C.identifiers.cells.photoSimpleCell, for: indexPath) as! PhotoCollectionViewCell
+			configure(cell, at: indexPath)
+			return cell
+		} else {
+			let cell = collectionView.dequeueReusableCell(withReuseIdentifier: C.identifiers.cells.photoPreviewCell, for: indexPath) as! PhotoPreviewCollectionViewCell
+			configurePreview(cell, at: indexPath)
+			return cell
+		}
 	}
-	
 	
 	func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionat section: Int) -> CGFloat {
 		if collectionView == self.previewCollectionView {
@@ -440,13 +451,13 @@ extension MediaViewController: UICollectionViewDelegate, UICollectionViewDataSou
 		switch phasset.mediaType {
 			case .video:
 				return UIContextMenuConfiguration(identifier: identifier) {
-					return PreviewAVController(asset: phasset)
+					return nil
 				} actionProvider: { _ in
 					self.createContextualMenu(for: phasset, at: indexPath)
 				}
 			case .image:
 				return UIContextMenuConfiguration(identifier: identifier) {
-					return AssetContextPreviewViewController(asset: phasset)
+					return nil
 				} actionProvider: { _ in
 					self.createContextualMenu(for: phasset, at: indexPath)
 				}

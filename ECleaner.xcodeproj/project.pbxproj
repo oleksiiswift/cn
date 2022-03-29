@@ -197,6 +197,8 @@
 		97C44FBB274EF93B001B61AB /* ContactasCleaningType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97C44FBA274EF93B001B61AB /* ContactasCleaningType.swift */; };
 		97C44FBD274EF959001B61AB /* ContactsContainerType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97C44FBC274EF959001B61AB /* ContactsContainerType.swift */; };
 		97C4D71727F1B74D00C476FE /* UICollectionView+ReloadData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97C4D71627F1B74D00C476FE /* UICollectionView+ReloadData.swift */; };
+		97C4D71F27F37ABC00C476FE /* PhotoPreviewCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97C4D71D27F37ABC00C476FE /* PhotoPreviewCollectionViewCell.swift */; };
+		97C4D72627F3825000C476FE /* PhotoPreviewCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 97C4D72427F3825000C476FE /* PhotoPreviewCollectionViewCell.xib */; };
 		97C656B32773CABE00E88BBF /* ShadowMultiplyerButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97C656B22773CABE00E88BBF /* ShadowMultiplyerButton.swift */; };
 		97C70B50277633AC0033F466 /* UIImage+Gradient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97C70B4F277633AC0033F466 /* UIImage+Gradient.swift */; };
 		97C70B52277634280033F466 /* ShadowButtonWithImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97C70B51277634280033F466 /* ShadowButtonWithImage.swift */; };
@@ -448,6 +450,8 @@
 		97C44FBA274EF93B001B61AB /* ContactasCleaningType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactasCleaningType.swift; sourceTree = "<group>"; };
 		97C44FBC274EF959001B61AB /* ContactsContainerType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsContainerType.swift; sourceTree = "<group>"; };
 		97C4D71627F1B74D00C476FE /* UICollectionView+ReloadData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UICollectionView+ReloadData.swift"; sourceTree = "<group>"; };
+		97C4D71D27F37ABC00C476FE /* PhotoPreviewCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoPreviewCollectionViewCell.swift; sourceTree = "<group>"; };
+		97C4D72427F3825000C476FE /* PhotoPreviewCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PhotoPreviewCollectionViewCell.xib; sourceTree = "<group>"; };
 		97C656B22773CABE00E88BBF /* ShadowMultiplyerButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowMultiplyerButton.swift; sourceTree = "<group>"; };
 		97C70B4F277633AC0033F466 /* UIImage+Gradient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Gradient.swift"; sourceTree = "<group>"; };
 		97C70B51277634280033F466 /* ShadowButtonWithImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowButtonWithImage.swift; sourceTree = "<group>"; };
@@ -741,7 +745,7 @@
 				9701D26C27BD36250078E39F /* HelperBannerTableViewCell.xib */,
 				047DE61826AAA53100733CD5 /* DeepCleanInfoTableViewCell.xib */,
 				049CC22E268337310002F988 /* MediaTypeCollectionViewCell.xib */,
-				97FC78A02688E5E8000D7F26 /* PhotoCollectionViewCell.xib */,
+				97C4D71C27F3737900C476FE /* PHAssetViewCells */,
 				04CFFFFF2685F0C3000CA850 /* ContentTypeTableViewCell.xib */,
 				044282002693034600B6B47C /* DropDownMenuTableViewCell.xib */,
 			);
@@ -1129,6 +1133,7 @@
 			isa = PBXGroup;
 			children = (
 				97FC789F2688E5E8000D7F26 /* PhotoCollectionViewCell.swift */,
+				97C4D71D27F37ABC00C476FE /* PhotoPreviewCollectionViewCell.swift */,
 			);
 			path = PhotoCells;
 			sourceTree = "<group>";
@@ -1463,6 +1468,15 @@
 			path = Export;
 			sourceTree = "<group>";
 		};
+		97C4D71C27F3737900C476FE /* PHAssetViewCells */ = {
+			isa = PBXGroup;
+			children = (
+				97FC78A02688E5E8000D7F26 /* PhotoCollectionViewCell.xib */,
+				97C4D72427F3825000C476FE /* PhotoPreviewCollectionViewCell.xib */,
+			);
+			path = PHAssetViewCells;
+			sourceTree = "<group>";
+		};
 		97CA4242273ECB59001FEA15 /* BottomButtonBarView */ = {
 			isa = PBXGroup;
 			children = (
@@ -1709,6 +1723,7 @@
 				04467CE2270D9B1200DBBB39 /* DatePicker.storyboard in Resources */,
 				97FC78A22688E5E8000D7F26 /* PhotoCollectionViewCell.xib in Resources */,
 				975AF43E2728987500744E3B /* Contacts.storyboard in Resources */,
+				97C4D72627F3825000C476FE /* PhotoPreviewCollectionViewCell.xib in Resources */,
 				04E09477267A06B500A69956 /* Main.storyboard in Resources */,
 				04CFFFF72685BEAD000CA850 /* MediaContent.storyboard in Resources */,
 			);
@@ -1771,6 +1786,7 @@
 				977BA04527328C4A0018DF53 /* Array+BestValue.swift in Sources */,
 				97CC2F382683CF740072EF8C /* UpdateContentDataBaseMediator.swift in Sources */,
 				04E58379267B39AD00EDC3A3 /* PHPhotoLibrary+Auth.swift in Sources */,
+				97C4D71F27F37ABC00C476FE /* PhotoPreviewCollectionViewCell.swift in Sources */,
 				049CC219268225500002F988 /* Colors.swift in Sources */,
 				9716241827653D7C0071FA17 /* CALayer+Position.swift in Sources */,
 				0459DF9526A579950085EEDF /* CarouselPhotoFlowLayout.swift in Sources */,
