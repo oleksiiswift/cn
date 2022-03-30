@@ -293,7 +293,6 @@ class Constants {
             static let contactsGroup = "ContactsGroupViewController"
             static let expordContacts = "ExportContactsViewController"
 			static let settings = "SettingsViewController"
-			
         }
         
         struct cells {

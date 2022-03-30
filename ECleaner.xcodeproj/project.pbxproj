@@ -167,6 +167,8 @@
 		977FE23B273072A2004DE4C3 /* ContactsGroup.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 977FE23A273072A2004DE4C3 /* ContactsGroup.storyboard */; };
 		9784D3A82742CDDB00340D97 /* ReuseShadowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9784D3A72742CDDB00340D97 /* ReuseShadowView.swift */; };
 		9785E54727DD6E61000B360C /* UINavigationController+Completion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9785E54627DD6E61000B360C /* UINavigationController+Completion.swift */; };
+		9789D18827F48C400035539C /* PreviewCollectionShadowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9789D18727F48C400035539C /* PreviewCollectionShadowView.swift */; };
+		9789D18A27F48C660035539C /* CollectionShadowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9789D18927F48C660035539C /* CollectionShadowView.swift */; };
 		978FEF12274BB73700ADE1D9 /* AlertType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978FEF11274BB73700ADE1D9 /* AlertType.swift */; };
 		978FEF14274BC21A00ADE1D9 /* ProgressAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978FEF13274BC21A00ADE1D9 /* ProgressAlertController.swift */; };
 		978FEF1A274C1C5400ADE1D9 /* UIAlertController+Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978FEF19274C1C5400ADE1D9 /* UIAlertController+Colors.swift */; };
@@ -420,6 +422,8 @@
 		977FE23A273072A2004DE4C3 /* ContactsGroup.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ContactsGroup.storyboard; sourceTree = "<group>"; };
 		9784D3A72742CDDB00340D97 /* ReuseShadowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReuseShadowView.swift; sourceTree = "<group>"; };
 		9785E54627DD6E61000B360C /* UINavigationController+Completion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UINavigationController+Completion.swift"; sourceTree = "<group>"; };
+		9789D18727F48C400035539C /* PreviewCollectionShadowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewCollectionShadowView.swift; sourceTree = "<group>"; };
+		9789D18927F48C660035539C /* CollectionShadowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionShadowView.swift; sourceTree = "<group>"; };
 		978FEF11274BB73700ADE1D9 /* AlertType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertType.swift; sourceTree = "<group>"; };
 		978FEF13274BC21A00ADE1D9 /* ProgressAlertController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressAlertController.swift; sourceTree = "<group>"; };
 		978FEF19274C1C5400ADE1D9 /* UIAlertController+Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIAlertController+Colors.swift"; sourceTree = "<group>"; };
@@ -1307,6 +1311,8 @@
 				9776F57D27359406009D806A /* ShadowRoundedView.swift */,
 				9776F5832735953A009D806A /* ShadowView.swift */,
 				9784D3A72742CDDB00340D97 /* ReuseShadowView.swift */,
+				9789D18927F48C660035539C /* CollectionShadowView.swift */,
+				9789D18727F48C400035539C /* PreviewCollectionShadowView.swift */,
 				97CB351027395802005DA881 /* SectionShadowView.swift */,
 				975617D7273BC32A00E07A62 /* ReuseShadowRoundedView.swift */,
 			);
@@ -1884,6 +1890,7 @@
 				04E09472267A06B500A69956 /* SceneDelegate.swift in Sources */,
 				97CC2F3E268743A80072EF8C /* SegueManager.swift in Sources */,
 				978FEF1A274C1C5400ADE1D9 /* UIAlertController+Colors.swift in Sources */,
+				9789D18A27F48C660035539C /* CollectionShadowView.swift in Sources */,
 				9701D26027BD26750078E39F /* SettingsViewModel.swift in Sources */,
 				970D778F275B9D170048F41D /* DeepCleanNotificationType.swift in Sources */,
 				97C70B52277634280033F466 /* ShadowButtonWithImage.swift in Sources */,
@@ -1939,6 +1946,7 @@
 				4F56074327205AF300CA19E9 /* GradientArcWithClearColorView.swift in Sources */,
 				049CC215268221D40002F988 /* AdvertisementViewController.swift in Sources */,
 				97FC78982688CC06000D7F26 /* SimpleAssetsListViewController.swift in Sources */,
+				9789D18827F48C400035539C /* PreviewCollectionShadowView.swift in Sources */,
 				97A05B742743D4B600968459 /* SearchBarView.swift in Sources */,
 				97DAB62E272C164A00F05CEA /* GroupContactTableViewCell.swift in Sources */,
 				9701D25E27BD265C0078E39F /* SettingsSection.swift in Sources */,

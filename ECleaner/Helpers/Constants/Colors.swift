@@ -48,6 +48,15 @@ enum Theme: Int {
                 return UIColor().colorFromHexString("ECF0F6")
         }
     }
+	
+	var cellShadowBackgroundColor: UIColor {
+		switch self {
+			case .light:
+				return UIColor().colorFromHexString("ADB9CA")
+			case .dark :
+				return UIColor().colorFromHexString("ADB9CA")
+		}
+	}
     
     var innerBackgroundColor: UIColor {
         switch self {

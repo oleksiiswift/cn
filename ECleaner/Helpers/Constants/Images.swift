@@ -101,6 +101,11 @@ class Images {
 		static let privacy = UIImage(named: "photoProcessingEmptyItem")!
 		static let terms = UIImage(named: "photoProcessingEmptyItem")!
 	}
+	
+	struct player {
+		static let play = UIImage(named: "playButtonItem")
+		static let pause = UIImage(named: "")
+	}
 
     
 //  TODO: Check all images!!!!

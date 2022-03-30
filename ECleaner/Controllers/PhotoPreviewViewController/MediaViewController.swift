@@ -215,17 +215,17 @@ extension MediaViewController {
 	
 	private func deletePHAsset(at indexPath: IndexPath) {
 		
-		var selectedPHAsset = PHAsset()
-		
-		switch collectionType {
-			case .grouped:
-				selectedPHAsset = self.assetGroups[indexPath.section].assets[indexPath.row]
-			case .single:
-				selectedPHAsset = self.assetCollection[indexPath.row]
-			default:
-				return
+		var selectedPHAsset: PHAsset {
+			switch collectionType {
+				case .grouped:
+					return self.assetGroups[indexPath.section].assets[indexPath.row]
+				case .single:
+					return self.assetCollection[indexPath.row]
+				default:
+					return PHAsset()
+			}
 		}
-	
+			
 		let deletePHAssetOperation = self.photoManager.deleteSelectedOperation(assets: [selectedPHAsset], completion: { deleted in
 			if deleted {
 				U.UI {
@@ -316,10 +316,9 @@ extension MediaViewController  {
 		self.previewCollectionView.showsHorizontalScrollIndicator = false
 		self.previewCollectionView.contentInset = .zero
 		
-
-		self.previewColletionFlowLayput.itemSize = CGSize(width: U.screenWidth - 20, height: U.screenHeight / 2)
+		self.previewColletionFlowLayput.itemSize = CGSize(width: U.screenWidth, height: self.previewCollectionView.frame.height - 100)
 		self.previewColletionFlowLayput.scrollDirection = .horizontal
-		self.previewColletionFlowLayput.minimumInteritemSpacing = 20
+		self.previewColletionFlowLayput.minimumInteritemSpacing = 40
 		self.previewColletionFlowLayput.minimumLineSpacing = 150
 		self.previewColletionFlowLayput.headerReferenceSize = .zero
 		
@@ -379,8 +378,22 @@ extension MediaViewController  {
 	
 	private func configurePreview(_ cell: PhotoPreviewCollectionViewCell, at indexPath: IndexPath) {
 		
-		
-		
+		var asset: PHAsset {
+			switch collectionType {
+				case .grouped:
+					return assetGroups[indexPath.section].assets[indexPath.row]
+				case .single:
+					return assetCollection[indexPath.row]
+				default:
+					return PHAsset()
+			}
+		}
+		cell.indexPath = indexPath
+		cell.tag = indexPath.section * 1000 + indexPath.row
+		cell.cellMediaType = self.mediaType
+		cell.configureLayout(with: self.contentType)
+		let previewSize = self.previewCollectionView.collectionViewLayout.layoutAttributesForItem(at: indexPath)!.size.toPixel()
+		cell.configurePreview(from: asset, imageManager: self.prefetchCacheImageManager, size: previewSize, of: self.contentType)
 	}
 }
 
