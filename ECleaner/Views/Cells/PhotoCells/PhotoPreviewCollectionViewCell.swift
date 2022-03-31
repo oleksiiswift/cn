@@ -13,12 +13,16 @@ class PhotoPreviewCollectionViewCell: UICollectionViewCell {
 	@IBOutlet weak var baseView: UIView!
 	@IBOutlet weak var reuseShadowView: PreviewCollectionShadowView!
 	@IBOutlet weak var playCurrentItemButton: PrimaryButton!
+	@IBOutlet weak var durationTimeSlider: GradientSlider!
+	@IBOutlet weak var currentTimePositionTextLabel: UILabel!
+	@IBOutlet weak var videoDurationLeftTextLabel: UILabel!
 	
 	@IBOutlet weak var videoPreviewView: UIView!
 	@IBOutlet weak var photoImageView: UIImageView!
 	@IBOutlet weak var remoteControlContainerView: UIView!
 	@IBOutlet weak var remoteControllHeightConstraint: NSLayoutConstraint!
 	
+	private var currentPHAsset: PHAsset?
 	public var indexPath: IndexPath?
 	public var cellMediaType: PhotoMediaType = .none
 	public var cellContentType: MediaContentType = .none
@@ -37,11 +41,24 @@ class PhotoPreviewCollectionViewCell: UICollectionViewCell {
 		updateColors()
     }
 	
-	
+	@IBAction func sliderDurationDidChange(_ sender: Any, event: UIEvent? = nil) {
+		
+		if let touch = event?.allTouches?.first, let sender = sender as? UISlider {
+			self.durationSiderValueDidChant(with: touch, of: sender)
+		}
+	}
+
 	@IBAction func didTapPlayCurrentMediaItemActionButton(_ sender: Any) {
 		
-		
-		
+		self.didPlayCurrenMediaItem()
+	}
+	
+	override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+		if keyPath == C.key.observers.player.duration, let duration = self.phassetMediaPlayer.currentItem?.duration.seconds, duration > 0.0 {
+			if let currentItem = self.phassetMediaPlayer.currentItem {
+				self.videoDurationLeftTextLabel.text = currentItem.duration.durationText
+			}
+		}
 	}
 }
 
@@ -51,22 +68,30 @@ extension PhotoPreviewCollectionViewCell {
 		
 		self.unloadImagePreview(with: contentType)
 		self.imageManager = imageManager
+		self.currentPHAsset = phasset
 		let options = PhotoManager.shared.requestOptions
 		
+		currentTimePositionTextLabel.text = "00:00"
+		videoDurationLeftTextLabel.text = getVideoTimeDuration(from: phasset)
+		
+		setupSliderActualDuration(from: phasset)
+	
 		imageRequestID = imageManager.requestImage(for: phasset, targetSize: size, contentMode: .aspectFill, options: options, resultHandler: { image, info in
 			
 			if let index = self.indexPath, self.tag == index.section * 1000 + index.row {
 				if let loadedImage = image {
 					self.photoImageView.image = loadedImage
-					
-					U.delay(2) {
-						self.didStartLoadPlayerItem(for: phasset)
-					}
 				} else {
 					self.photoImageView.image = nil
 				}
 			}
 		})
+	}
+	
+	private func getVideoTimeDuration(from phasset: PHAsset) -> String {
+		
+		guard phasset.mediaType == .video else { return "00:00"}
+		return CMTime(seconds: phasset.duration, preferredTimescale: 1000000).durationText
 	}
 	
 	public func configureLayout(with contentType: MediaContentType) {
@@ -91,8 +116,9 @@ extension PhotoPreviewCollectionViewCell {
 	
 	private func didPlayCurrenMediaItem() {
 		
-		setPHAssetPlayerObserver(for: self.playerItem)
-		U.notificationCenter.addObserver(self, selector: #selector(playerDidEndPlay), name: .AVPlayerItemDidPlayToEndTime, object: self.playerItem)
+		if let phasset = currentPHAsset {
+			didStartLoadPlayerItem(for: phasset)
+		}
 	}
 	
 	private func unloadImagePreview(with contentType: MediaContentType) {
@@ -120,7 +146,7 @@ extension PhotoPreviewCollectionViewCell {
 		}
 	}
 	
-	private func didStartLoadPlayerItem(for phasset: PHAsset) {
+	private func didStartLoadPlayerItem(for phasset: PHAsset, and seekTime: CMTime? = nil) {
 		
 		self.imageManager?.requestAVAsset(forVideo: phasset, options: nil, resultHandler: { videoPHAsset, _, _ in
 			
@@ -135,6 +161,14 @@ extension PhotoPreviewCollectionViewCell {
 					self.videoPreviewView.layer.addSublayer(playerVideoLayer)
 					self.photoImageView.isHidden = true
 					self.setPHAssetPlayerObserver(for: self.playerItem)
+					self.timeObserver()
+					self.phassetMediaPlayer.currentItem?.addObserver(self, forKeyPath: C.key.observers.player.duration, options: [.new, .initial], context: nil)
+
+					U.notificationCenter.addObserver(self, selector: #selector(self.playerDidEndPlay), name: .AVPlayerItemDidPlayToEndTime, object: self.playerItem)
+					
+					if let seekTime = seekTime {
+						self.phassetMediaPlayer.seek(to: seekTime)
+					}
 				}
 			} else {
 				debugPrint("error play video from phasset")
@@ -151,6 +185,57 @@ extension PhotoPreviewCollectionViewCell {
 		}
 	}
 	
+	private func durationSiderValueDidChant(with touch: UITouch, of slider: UISlider) {
+		
+		guard let assset = self.currentPHAsset else { return }
+		
+		if touch.phase == .ended {
+			let currentTime = CMTime(seconds: Double(durationTimeSlider.value), preferredTimescale: 1)
+			
+			if let _ = self.phassetMediaPlayer {
+				self.phassetMediaPlayer.pause()
+				self.phassetMediaPlayer.seek(to: currentTime)
+				self.phassetMediaPlayer.play()
+			} else {
+				self.didStartLoadPlayerItem(for: assset, and: currentTime)
+			}
+		} else if touch.phase == .moved {
+			let duration = CMTime(seconds: assset.duration, preferredTimescale: 1000000)
+			let currentTime = CMTime(seconds: Double(slider.value), preferredTimescale: 1)
+			let timeLeft = duration - currentTime
+			currentTimePositionTextLabel.text = currentTime.durationText
+			videoDurationLeftTextLabel.text = timeLeft.durationText
+		}
+	}
+	
+	private func timeObserver() {
+	
+		let queue = DispatchQueue.main
+		let timeObserverFPS: Int = 30
+		let scaleObserveValue: Double = 1 / Double(timeObserverFPS)
+		
+		let timeIntervar = CMTime(seconds: scaleObserveValue, preferredTimescale: CMTimeScale(NSEC_PER_SEC))
+		_ = phassetMediaPlayer.addPeriodicTimeObserver(forInterval: timeIntervar, queue: queue, using: { CMTime in
+			
+			guard let currentItem = self.phassetMediaPlayer.currentItem,
+					currentItem.status.rawValue == AVPlayer.Status.readyToPlay.rawValue,
+					!self.durationTimeSlider.isTracking else { return }
+			
+			self.durationTimeSlider.value = Float(currentItem.currentTime().seconds)
+			
+			let timeLeft = currentItem.duration - currentItem.currentTime()
+			self.videoDurationLeftTextLabel.text = timeLeft.durationText
+			self.currentTimePositionTextLabel.text = currentItem.currentTime().durationText
+		})
+	}
+	
+	private func setupSliderActualDuration(from phasset: PHAsset) {
+		
+		let phassetDuration: Float = Float(CMTime(seconds: phasset.duration, preferredTimescale: 1).seconds)
+		self.durationTimeSlider.minimumValue = 0
+		self.durationTimeSlider.maximumValue = phassetDuration
+	}
+
 	@objc func playerDidEndPlay() {
 		
 		playerItem.seek(to: .zero) { finished in
@@ -160,7 +245,6 @@ extension PhotoPreviewCollectionViewCell {
 		}
 	}
 }
-
 
 extension PhotoPreviewCollectionViewCell: Themeble {
 	
@@ -173,98 +257,28 @@ extension PhotoPreviewCollectionViewCell: Themeble {
 		reuseShadowView.layoutSubviews()
 		
 		playCurrentItemButton.setImage(I.player.play, for: .normal)
+		
+		currentTimePositionTextLabel.font = .systemFont(ofSize: 11, weight: .medium)
+		currentTimePositionTextLabel.textAlignment = .left
+		videoDurationLeftTextLabel.font = .systemFont(ofSize: 11, weight: .medium)
+		videoDurationLeftTextLabel.textAlignment = .right
+		
+		durationTimeSlider.sliderHeight = 14
+		durationTimeSlider.thumbImage = I.player.sliderThumb
+		durationTimeSlider.isContinuous = true
+		durationTimeSlider.value = .zero
 	}
 	
 	func updateColors() {
 		
 		baseView.backgroundColor = theme.backgroundColor
 		videoPreviewView.backgroundColor = .black
+		
+		durationTimeSlider.minTrackStartColor = theme.minimumSliderColor
+		durationTimeSlider.minTrackEndColor = theme.maximumSliderTrackColor
+		durationTimeSlider.maxTrackColor = theme.msximumSliderkColor
+		
+		currentTimePositionTextLabel.textColor = theme.sectionTitleTextColor
+		videoDurationLeftTextLabel.textColor = theme.sectionTitleTextColor
 	}
 }
-
-
-class GradientSlider: UISlider {
-	
-	var height: CGFloat = 20
-	var thumbImage: UIImage?
-	
-	var minimumTrackerStartColor: UIColor = .yellow
-	var minimumTrackerEndColor: UIColor = .red
-	var maximumTrackerColor: UIColor = .orange
-	
-	private func setup() {
-		
-		
-		
-	}
-	
-	
-	private func setGradient(size: CGSize, colors: [CGColor]) throws -> UIImage? {
-		
-		let gradientLayer = CAGradientLayer()
-		gradientLayer.frame = CGRect.init(x: 0, y: 0, width: size.width, height: size.height)
-		gradientLayer.cornerRadius = gradientLayer.frame.height / 2
-		gradientLayer.masksToBounds = false
-		gradientLayer.colors = colors
-		gradientLayer.startPoint = CGPoint(x: 0.0, y: 0.0)
-		gradientLayer.endPoint = CGPoint(x: 1.0, y: 0.5)
-		
-		UIGraphicsBeginImageContextWithOptions(size, gradientLayer.isOpaque, 0.0);
-		guard let context = UIGraphicsGetCurrentContext() else { return nil }
-		gradientLayer.render(in: context)
-		
-		let image = UIGraphicsGetImageFromCurrentImageContext()?.resizableImage(withCapInsets:
-		UIEdgeInsets.init(top: 0, left: size.height, bottom: 0, right: size.height))
-		UIGraphicsEndImageContext()
-		return image!
-	}
-	
-
-	//
-}
-
-
-//
-//	func setup() {
-//		let minTrackStartColor = Palette.SelectiveYellow
-//		let minTrackEndColor = Palette.BitterLemon
-//		let maxTrackColor = Palette.Firefly
-//		do {
-//			self.setMinimumTrackImage(try self.gradientImage(
-//			size: self.trackRect(forBounds: self.bounds).size,
-//			colorSet: [minTrackStartColor.cgColor, minTrackEndColor.cgColor]),
-//								  for: .normal)
-//			self.setMaximumTrackImage(try self.gradientImage(
-//			size: self.trackRect(forBounds: self.bounds).size,
-//			colorSet: [maxTrackColor.cgColor, maxTrackColor.cgColor]),
-//								  for: .normal)
-//			self.setThumbImage(sliderThumbImage, for: .normal)
-//		} catch {
-//			self.minimumTrackTintColor = minTrackStartColor
-//			self.maximumTrackTintColor = maxTrackColor
-//		}
-//	}
-//
-//
-//	override func trackRect(forBounds bounds: CGRect) -> CGRect {
-//		return CGRect(
-//			x: bounds.origin.x,
-//			y: bounds.origin.y,
-//			width: bounds.width,
-//			height: thickness
-//		)
-//	}
-//
-//	override init(frame: CGRect) {
-//		super.init(frame: frame)
-//		setup()
-//	}
-//
-//	required init?(coder aDecoder: NSCoder) {
-//		super.init(coder: aDecoder)
-//		setup()
-//	}
-//
-//
-//}
-//

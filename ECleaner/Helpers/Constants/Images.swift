@@ -104,7 +104,8 @@ class Images {
 	
 	struct player {
 		static let play = UIImage(named: "playButtonItem")
-		static let pause = UIImage(named: "")
+		static let pause = UIImage(named: "pauseItem")
+		static let sliderThumb = UIImage(named: "sliderThumbItem")
 	}
 
     

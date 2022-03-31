@@ -99,6 +99,13 @@ class Constants {
             static let selectedContactsDidChange = "selectedContactsDidChange"
         }
 		
+		struct observers {
+			
+			struct player {
+				static let duration = "duration"
+			}
+		}
+		
 		struct dispatch {
 			static let mergeContacts = "mergeContactsLabel"
 			static let deleteContacts = "deletingContactsLabel"

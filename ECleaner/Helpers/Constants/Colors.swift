@@ -93,7 +93,7 @@ enum Theme: Int {
                 return UIColor().colorFromHexString("E9EFF2")
         }
     }
-
+	
     var dropDownMenuBackgroundColor: UIColor {
         switch self {
             case .light:
@@ -156,6 +156,34 @@ enum Theme: Int {
                 return UIColor().colorFromHexString("DFE6F1")
         }
     }
+	
+	var msximumSliderkColor: UIColor {
+		switch self {
+			case .light:
+				return UIColor().colorFromHexString("E9EFF2")
+			case .dark :
+				return UIColor().colorFromHexString("E9EFF2")
+		}
+	}
+	
+	var minimumSliderColor: UIColor {
+		switch self {
+			case .light:
+				return UIColor().colorFromHexString("3677FF").withAlphaComponent(0.3)
+			case .dark :
+				return UIColor().colorFromHexString("3677FF").withAlphaComponent(0.3)
+		}
+	}
+	
+	var maximumSliderTrackColor: UIColor {
+		switch self {
+			case .light:
+				return UIColor().colorFromHexString("4592FF").withAlphaComponent(0.3)
+			case .dark :
+				return UIColor().colorFromHexString("4592FF").withAlphaComponent(0.3)
+		}
+	}
+	
 	
 	var activeButtonBackgroundColor: UIColor {
 		switch self {

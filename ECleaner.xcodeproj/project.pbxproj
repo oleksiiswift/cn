@@ -122,6 +122,7 @@
 		9701D27827BE56DD0078E39F /* StepSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 9701D27627BE56DB0078E39F /* StepSlider.m */; };
 		9701D27B27BE78B40078E39F /* SizeSelector.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9701D27A27BE78B40078E39F /* SizeSelector.storyboard */; };
 		9702443E27EA0F6900011743 /* PHAsset+URL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9702443D27EA0F6900011743 /* PHAsset+URL.swift */; };
+		970B208D27F604D300B5AF7D /* String+Secionds.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970B208C27F604D300B5AF7D /* String+Secionds.swift */; };
 		970D7782275A9C400048F41D /* PHAssetGroupModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970D7781275A9C400048F41D /* PHAssetGroupModel.swift */; };
 		970D7784275B66CE0048F41D /* PhotoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970D7783275B66CE0048F41D /* PhotoManager.swift */; };
 		970D7786275B70420048F41D /* PHAsset+FileSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970D7785275B70420048F41D /* PHAsset+FileSize.swift */; };
@@ -196,6 +197,7 @@
 		97B01A752746ED5D00DDE03C /* UIFont+Italic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B01A742746ED5D00DDE03C /* UIFont+Italic.swift */; };
 		97B01A7C2747CB3A00DDE03C /* ExportContact.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97B01A7B2747CB3A00DDE03C /* ExportContact.storyboard */; };
 		97B01A7F2747CB8C00DDE03C /* ExportContactsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B01A7E2747CB8C00DDE03C /* ExportContactsViewController.swift */; };
+		97C1C71427F5A95800E262FA /* GradientSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97C1C71327F5A95800E262FA /* GradientSlider.swift */; };
 		97C44FBB274EF93B001B61AB /* ContactasCleaningType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97C44FBA274EF93B001B61AB /* ContactasCleaningType.swift */; };
 		97C44FBD274EF959001B61AB /* ContactsContainerType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97C44FBC274EF959001B61AB /* ContactsContainerType.swift */; };
 		97C4D71727F1B74D00C476FE /* UICollectionView+ReloadData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97C4D71627F1B74D00C476FE /* UICollectionView+ReloadData.swift */; };
@@ -377,6 +379,7 @@
 		9701D27727BE56DC0078E39F /* StepSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StepSlider.h; sourceTree = "<group>"; };
 		9701D27A27BE78B40078E39F /* SizeSelector.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SizeSelector.storyboard; sourceTree = "<group>"; };
 		9702443D27EA0F6900011743 /* PHAsset+URL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PHAsset+URL.swift"; sourceTree = "<group>"; };
+		970B208C27F604D300B5AF7D /* String+Secionds.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Secionds.swift"; sourceTree = "<group>"; };
 		970D7781275A9C400048F41D /* PHAssetGroupModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PHAssetGroupModel.swift; sourceTree = "<group>"; };
 		970D7783275B66CE0048F41D /* PhotoManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoManager.swift; sourceTree = "<group>"; };
 		970D7785275B70420048F41D /* PHAsset+FileSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PHAsset+FileSize.swift"; sourceTree = "<group>"; };
@@ -451,6 +454,7 @@
 		97B01A742746ED5D00DDE03C /* UIFont+Italic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+Italic.swift"; sourceTree = "<group>"; };
 		97B01A7B2747CB3A00DDE03C /* ExportContact.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ExportContact.storyboard; sourceTree = "<group>"; };
 		97B01A7E2747CB8C00DDE03C /* ExportContactsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportContactsViewController.swift; sourceTree = "<group>"; };
+		97C1C71327F5A95800E262FA /* GradientSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientSlider.swift; sourceTree = "<group>"; };
 		97C44FBA274EF93B001B61AB /* ContactasCleaningType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactasCleaningType.swift; sourceTree = "<group>"; };
 		97C44FBC274EF959001B61AB /* ContactsContainerType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsContainerType.swift; sourceTree = "<group>"; };
 		97C4D71627F1B74D00C476FE /* UICollectionView+ReloadData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UICollectionView+ReloadData.swift"; sourceTree = "<group>"; };
@@ -646,6 +650,7 @@
 				04CFFFF32684B23D000CA850 /* String+Whitespaces.swift */,
 				976465D32727055200F8CDA6 /* String+Alphabetical+Range.swift */,
 				975AF4362728279900744E3B /* String+Numeric.swift */,
+				970B208C27F604D300B5AF7D /* String+Secionds.swift */,
 			);
 			path = Strings;
 			sourceTree = "<group>";
@@ -973,6 +978,7 @@
 				9776F57A27359382009D806A /* Layer */,
 				97A39FDF27649F7C007CB482 /* DatePicker */,
 				97A867AF27E9546B00891297 /* CustomUIButtons */,
+				970B208B27F5BCB900B5AF7D /* GradientSlider */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1186,6 +1192,14 @@
 				9701D27627BE56DB0078E39F /* StepSlider.m */,
 			);
 			path = StepSlider;
+			sourceTree = "<group>";
+		};
+		970B208B27F5BCB900B5AF7D /* GradientSlider */ = {
+			isa = PBXGroup;
+			children = (
+				97C1C71327F5A95800E262FA /* GradientSlider.swift */,
+			);
+			path = GradientSlider;
 			sourceTree = "<group>";
 		};
 		970D7787275B70D70048F41D /* PHAsset */ = {
@@ -1809,6 +1823,7 @@
 				975AF4392728300E00744E3B /* Arrray+Rearranged.swift in Sources */,
 				97D2BED2275A4227002082EB /* ContactsGroupModel.swift in Sources */,
 				0405AA5B269D9BD6004AC07A /* PreviewAVController.swift in Sources */,
+				97C1C71427F5A95800E262FA /* GradientSlider.swift in Sources */,
 				97DC110F27A172A800D10FE4 /* UICollectionView+IndexPath.swift in Sources */,
 				97CB3513273965BD005DA881 /* CAlayer+selectedCorners.swift in Sources */,
 				049CC23426833D320002F988 /* UIView+Radius.swift in Sources */,
@@ -1913,6 +1928,7 @@
 				97238A092689D01E00C523DC /* GroupedAssetListViewController.swift in Sources */,
 				049CC22426831B800002F988 /* UIColor+Hex.swift in Sources */,
 				975AF4372728279900744E3B /* String+Numeric.swift in Sources */,
+				970B208D27F604D300B5AF7D /* String+Secionds.swift in Sources */,
 				976465D42727055200F8CDA6 /* String+Alphabetical+Range.swift in Sources */,
 				04CFFFF22684B1ED000CA850 /* String+Extension.swift in Sources */,
 				4F56074827205AF300CA19E9 /* OrangeClearStyle.swift in Sources */,
