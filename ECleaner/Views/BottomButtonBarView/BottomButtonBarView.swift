@@ -120,6 +120,7 @@ class BottomButtonBarView: UIView {
 	}
 	
 	@objc func didTapActionButton() {
+		self.animateButtonTransform()
 		delegate?.didTapActionButton()
 	}
 	
