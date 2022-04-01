@@ -30,9 +30,12 @@ class PhotoPreviewCollectionViewCell: UICollectionViewCell {
 	private var imageManager: PHCachingImageManager?
 	private var imageRequestID: PHImageRequestID?
 	
-	private var phassetMediaPlayer: AVPlayer!
-	private var playerItem: AVPlayerItem!
+	private var phassetMediaPlayer: AVPlayer = AVPlayer()
+	private var playerItem: AVPlayerItem?
 	private var playerObserver: NSKeyValueObservation!
+	
+	public var isPlaying: Bool = false
+	private var isSeekInProgress = false
 		
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -41,24 +44,24 @@ class PhotoPreviewCollectionViewCell: UICollectionViewCell {
 		updateColors()
     }
 	
-	@IBAction func sliderDurationDidChange(_ sender: Any, event: UIEvent? = nil) {
-		
-		if let touch = event?.allTouches?.first, let sender = sender as? UISlider {
-			self.durationSiderValueDidChant(with: touch, of: sender)
-		}
-	}
-
-	@IBAction func didTapPlayCurrentMediaItemActionButton(_ sender: Any) {
-		
-		self.didPlayCurrenMediaItem()
-	}
-	
 	override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
 		if keyPath == C.key.observers.player.duration, let duration = self.phassetMediaPlayer.currentItem?.duration.seconds, duration > 0.0 {
 			if let currentItem = self.phassetMediaPlayer.currentItem {
 				self.videoDurationLeftTextLabel.text = currentItem.duration.durationText
 			}
 		}
+	}
+	
+	@IBAction func sliderDurationDidChange(_ sender: Any, event: UIEvent? = nil) {
+		
+		if let touch = event?.allTouches?.first, let sender = sender as? UISlider {
+			self.durationSliderValueDidChange(with: touch, of: sender)
+		}
+	}
+
+	@IBAction func didTapPlayCurrentMediaItemActionButton(_ sender: Any) {
+		
+		self.didPlayCurrenMediaItem()
 	}
 }
 
@@ -72,10 +75,9 @@ extension PhotoPreviewCollectionViewCell {
 		let options = PhotoManager.shared.requestOptions
 		
 		currentTimePositionTextLabel.text = "00:00"
-		videoDurationLeftTextLabel.text = getVideoTimeDuration(from: phasset)
+		videoDurationLeftTextLabel.text = getStringVideoTimeDuration()
+		updateSliderDurationOriginValue()
 		
-		setupSliderActualDuration(from: phasset)
-	
 		imageRequestID = imageManager.requestImage(for: phasset, targetSize: size, contentMode: .aspectFill, options: options, resultHandler: { image, info in
 			
 			if let index = self.indexPath, self.tag == index.section * 1000 + index.row {
@@ -87,13 +89,7 @@ extension PhotoPreviewCollectionViewCell {
 			}
 		})
 	}
-	
-	private func getVideoTimeDuration(from phasset: PHAsset) -> String {
-		
-		guard phasset.mediaType == .video else { return "00:00"}
-		return CMTime(seconds: phasset.duration, preferredTimescale: 1000000).durationText
-	}
-	
+
 	public func configureLayout(with contentType: MediaContentType) {
 
 		switch contentType {
@@ -116,36 +112,29 @@ extension PhotoPreviewCollectionViewCell {
 	
 	private func didPlayCurrenMediaItem() {
 		
-		if let phasset = currentPHAsset {
-			didStartLoadPlayerItem(for: phasset)
+		if isPlaying {
+			self.phassetMediaPlayer.pause()
+			self.isPlaying = false
+			self.handlePlayerButton()
+		} else {
+			if let phasset = currentPHAsset {
+				if let _ = self.phassetMediaPlayer.currentItem {
+					self.phassetMediaPlayer.play()
+					self.isPlaying = true
+					self.handlePlayerButton()
+				} else {
+					self.didStartLoadPlayerItem(for: phasset)
+				}
+			}
 		}
 	}
 	
-	private func unloadImagePreview(with contentType: MediaContentType) {
+	private func handlePlayerButton() {
 		
-		switch contentType {
-			case .userPhoto:
-				photoImageView.image = nil
-				
-				if imageRequestID != nil && imageManager != nil {
-					imageManager!.cancelImageRequest(imageRequestID!)
-				}
-				
-				imageRequestID = nil
-				imageManager = nil
-			case .userVideo:
-				self.playerItem = nil
-				if let _ = self.phassetMediaPlayer {
-					if let _ = self.phassetMediaPlayer.currentItem {
-						self.phassetMediaPlayer.replaceCurrentItem(with: nil)
-					}
-				}
-				U.notificationCenter.removeObserver(self, name: .AVPlayerItemDidPlayToEndTime, object: nil)
-			default:
-				return
-		}
+		let playerCurrentImage = isPlaying ? I.player.pause : I.player.play
+		playCurrentItemButton.setImage(playerCurrentImage, for: .normal)
 	}
-	
+
 	private func didStartLoadPlayerItem(for phasset: PHAsset, and seekTime: CMTime? = nil) {
 		
 		self.imageManager?.requestAVAsset(forVideo: phasset, options: nil, resultHandler: { videoPHAsset, _, _ in
@@ -160,12 +149,13 @@ extension PhotoPreviewCollectionViewCell {
 					self.videoPreviewView.isHidden = false
 					self.videoPreviewView.layer.addSublayer(playerVideoLayer)
 					self.photoImageView.isHidden = true
+					self.updateSliderDurationOriginValue()
 					self.setPHAssetPlayerObserver(for: self.playerItem)
 					self.timeObserver()
 					self.phassetMediaPlayer.currentItem?.addObserver(self, forKeyPath: C.key.observers.player.duration, options: [.new, .initial], context: nil)
 
 					U.notificationCenter.addObserver(self, selector: #selector(self.playerDidEndPlay), name: .AVPlayerItemDidPlayToEndTime, object: self.playerItem)
-					
+										
 					if let seekTime = seekTime {
 						self.phassetMediaPlayer.seek(to: seekTime)
 					}
@@ -176,76 +166,158 @@ extension PhotoPreviewCollectionViewCell {
 		})
 	}
 
-	private func setPHAssetPlayerObserver(for playerItem: AVPlayerItem) {
+	private func durationSliderValueDidChange(with touch: UITouch, of slider: UISlider) {
 		
-		playerObserver = playerItem.observe(\AVPlayerItem.status) { [weak self] (playerItem, _) in
-			if playerItem.status == .readyToPlay {
-				self?.phassetMediaPlayer.play()
-			}
+		guard let phasset = self.currentPHAsset else { return }
+		
+		let currentDuration = getOriginDurationValue()
+		let currentTime = CMTime(seconds: Double(slider.value), preferredTimescale: 1)
+		
+		switch touch.phase {
+			case .began:
+				self.isSeekInProgress = true
+			case .moved:
+				self.updateLabelsTimesCodes(by: currentTime, with: currentDuration)
+			case .ended:
+				if self.isPlaying {
+					self.phassetMediaPlayer.seek(to: currentTime) { [weak self] _ in
+						guard let `self` = self else { return }
+						self.isSeekInProgress = false
+					}
+				} else {
+					self.didStartLoadPlayerItem(for: phasset, and: currentTime)
+					self.isSeekInProgress = false
+				}
+			default:
+				return
 		}
 	}
+}
+
+//		MARK: - remove observers, unload -
+extension PhotoPreviewCollectionViewCell {
+		
+	private func unloadImagePreview(with contentType: MediaContentType) {
+		
+		switch contentType {
+			case .userPhoto:
+				photoImageView.image = nil
+				
+				if imageRequestID != nil && imageManager != nil {
+					imageManager!.cancelImageRequest(imageRequestID!)
+				}
+				
+				imageRequestID = nil
+				imageManager = nil
+			case .userVideo:
+				self.playerItem = nil
+				self.currentPHAsset = nil
+				
+				self.currentTimePositionTextLabel.text = nil
+				self.videoDurationLeftTextLabel.text = nil
+				self.durationTimeSlider.value = 0
+				
+				self.photoImageView.isHidden = false
+				self.videoPreviewView.isHidden = true
+				
+				#warning("remove periodic time observer")
+					
+				if let _ = self.phassetMediaPlayer.currentItem {
+					self.phassetMediaPlayer.replaceCurrentItem(with: nil)
+				}
+				
+				U.notificationCenter.removeObserver(self, name: .AVPlayerItemDidPlayToEndTime, object: nil)
+				
+			default:
+				return
+		}
+	}
+}
+
+//		MARK: - player state observers -
+extension PhotoPreviewCollectionViewCell {
 	
-	private func durationSiderValueDidChant(with touch: UITouch, of slider: UISlider) {
+	private func setPHAssetPlayerObserver(for playerItem: AVPlayerItem?) {
 		
-		guard let assset = self.currentPHAsset else { return }
+		guard let _ = playerItem else { return }
 		
-		if touch.phase == .ended {
-			let currentTime = CMTime(seconds: Double(durationTimeSlider.value), preferredTimescale: 1)
-			
-			if let _ = self.phassetMediaPlayer {
-				self.phassetMediaPlayer.pause()
-				self.phassetMediaPlayer.seek(to: currentTime)
+		playerObserver = playerItem!.observe(\AVPlayerItem.status) { (playerItem, _) in
+			if playerItem.status == .readyToPlay {
+				self.isPlaying = true
 				self.phassetMediaPlayer.play()
-			} else {
-				self.didStartLoadPlayerItem(for: assset, and: currentTime)
+				self.handlePlayerButton()
 			}
-		} else if touch.phase == .moved {
-			let duration = CMTime(seconds: assset.duration, preferredTimescale: 1000000)
-			let currentTime = CMTime(seconds: Double(slider.value), preferredTimescale: 1)
-			let timeLeft = duration - currentTime
-			currentTimePositionTextLabel.text = currentTime.durationText
-			videoDurationLeftTextLabel.text = timeLeft.durationText
 		}
 	}
 	
 	private func timeObserver() {
-	
-		let queue = DispatchQueue.main
+		
 		let timeObserverFPS: Int = 30
 		let scaleObserveValue: Double = 1 / Double(timeObserverFPS)
-		
 		let timeIntervar = CMTime(seconds: scaleObserveValue, preferredTimescale: CMTimeScale(NSEC_PER_SEC))
-		_ = phassetMediaPlayer.addPeriodicTimeObserver(forInterval: timeIntervar, queue: queue, using: { CMTime in
+		
+		_ = self.phassetMediaPlayer.addPeriodicTimeObserver(forInterval: timeIntervar, queue: .main, using: { (CMTime) in
 			
 			guard let currentItem = self.phassetMediaPlayer.currentItem,
-					currentItem.status.rawValue == AVPlayer.Status.readyToPlay.rawValue,
-					!self.durationTimeSlider.isTracking else { return }
+				  currentItem.status.rawValue == AVPlayer.Status.readyToPlay.rawValue,
+				  !self.isSeekInProgress else { return }
 			
-			self.durationTimeSlider.value = Float(currentItem.currentTime().seconds)
-			
-			let timeLeft = currentItem.duration - currentItem.currentTime()
-			self.videoDurationLeftTextLabel.text = timeLeft.durationText
-			self.currentTimePositionTextLabel.text = currentItem.currentTime().durationText
+			let currentTime = currentItem.currentTime()
+			let duration = currentItem.duration
+			self.durationTimeSlider.value = Float(currentTime.seconds)
+			self.updateLabelsTimesCodes(by: currentTime, with: duration)
 		})
 	}
 	
-	private func setupSliderActualDuration(from phasset: PHAsset) {
-		
-		let phassetDuration: Float = Float(CMTime(seconds: phasset.duration, preferredTimescale: 1).seconds)
-		self.durationTimeSlider.minimumValue = 0
-		self.durationTimeSlider.maximumValue = phassetDuration
-	}
-
 	@objc func playerDidEndPlay() {
 		
-		playerItem.seek(to: .zero) { finished in
+		guard let _ = playerItem else { return }
+		
+		playerItem!.seek(to: .zero) { [weak self] finished in
+			guard let `self` = self else { return }
 			if finished {
-				debugPrint("seek slider to start")
+				self.isPlaying = false
+				self.handlePlayerButton()
 			}
 		}
 	}
 }
 
+//		MARK: - handle duration values -
+extension PhotoPreviewCollectionViewCell {
+	
+	private func getOriginDurationValue() -> CMTime {
+		
+		if let currentItem = self.phassetMediaPlayer.currentItem {
+			return currentItem.duration
+		} else if let phasset = self.currentPHAsset {
+			return CMTime(seconds: phasset.duration, preferredTimescale: 1000000)
+		} else {
+			return .zero
+		}
+	}
+	
+	private func getStringVideoTimeDuration() -> String {
+		let duration = getOriginDurationValue()
+		return duration != .zero ? duration.durationText : "00:00"
+	}
+
+	private func updateSliderDurationOriginValue() {
+		
+		let currentDurationValue = getOriginDurationValue()
+		self.durationTimeSlider.minimumValue = 0
+		self.durationTimeSlider.maximumValue =  Float(currentDurationValue.seconds)
+	}
+	
+	private func updateLabelsTimesCodes(by currentTime: CMTime, with duration: CMTime) {
+		
+		let timeLeftInterval = duration - currentTime
+		self.videoDurationLeftTextLabel.text = timeLeftInterval.durationText
+		self.currentTimePositionTextLabel.text = currentTime.durationText
+	}
+}
+
+//		MARK: - SETUP - UI -
 extension PhotoPreviewCollectionViewCell: Themeble {
 	
 	public func setupUI() {
@@ -268,7 +340,7 @@ extension PhotoPreviewCollectionViewCell: Themeble {
 		durationTimeSlider.isContinuous = true
 		durationTimeSlider.value = .zero
 	}
-	
+
 	func updateColors() {
 		
 		baseView.backgroundColor = theme.backgroundColor
