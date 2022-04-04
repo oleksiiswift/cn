@@ -69,6 +69,13 @@
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="65Y-gD-bR2">
                                                 <rect key="frame" x="0.0" y="0.0" width="258" height="23.5"/>
                                                 <subviews>
+                                                    <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="DC9-XS-VFt" customClass="SliderShadowView" customModule="ECleaner" customModuleProvider="target">
+                                                        <rect key="frame" x="0.0" y="5" width="258" height="14"/>
+                                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="height" constant="14" id="30d-iL-2e1"/>
+                                                        </constraints>
+                                                    </view>
                                                     <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="qru-gJ-GDB" customClass="GradientSlider" customModule="ECleaner" customModuleProvider="target">
                                                         <rect key="frame" x="-2" y="5" width="262" height="19.5"/>
                                                         <connections>
@@ -78,7 +85,10 @@
                                                 </subviews>
                                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                 <constraints>
+                                                    <constraint firstItem="DC9-XS-VFt" firstAttribute="leading" secondItem="65Y-gD-bR2" secondAttribute="leading" id="4kK-9a-jE6"/>
+                                                    <constraint firstAttribute="trailing" secondItem="DC9-XS-VFt" secondAttribute="trailing" id="H1y-Py-3UW"/>
                                                     <constraint firstAttribute="bottom" secondItem="qru-gJ-GDB" secondAttribute="bottom" id="acZ-Xg-vqn"/>
+                                                    <constraint firstItem="DC9-XS-VFt" firstAttribute="top" secondItem="65Y-gD-bR2" secondAttribute="top" constant="5" id="hdl-hb-AwC"/>
                                                     <constraint firstItem="qru-gJ-GDB" firstAttribute="leading" secondItem="65Y-gD-bR2" secondAttribute="leading" id="lni-kW-7Yx"/>
                                                     <constraint firstAttribute="trailing" secondItem="qru-gJ-GDB" secondAttribute="trailing" id="tC2-jf-fgY"/>
                                                     <constraint firstItem="qru-gJ-GDB" firstAttribute="top" secondItem="65Y-gD-bR2" secondAttribute="top" constant="5" id="y5a-y1-HbD"/>
@@ -166,6 +176,8 @@
                 <outlet property="remoteControlContainerView" destination="ypp-An-Nzx" id="wtu-i7-yw3"/>
                 <outlet property="remoteControllHeightConstraint" destination="90Y-Xb-D8k" id="84v-MK-RS7"/>
                 <outlet property="reuseShadowView" destination="MQL-5b-a8A" id="0KI-bb-Mfo"/>
+                <outlet property="sliderShadowBackroundView" destination="DC9-XS-VFt" id="JcG-HJ-RS7"/>
+                <outlet property="trackingSliderArea" destination="65Y-gD-bR2" id="Dae-qF-17l"/>
                 <outlet property="videoDurationLeftTextLabel" destination="alC-gn-BLK" id="Wt1-hc-t0q"/>
                 <outlet property="videoPreviewView" destination="MOk-82-Dc2" id="76l-uB-Pvc"/>
             </connections>

@@ -11,7 +11,10 @@ import Photos
 class PhotoPreviewCollectionViewCell: UICollectionViewCell {
 	
 	@IBOutlet weak var baseView: UIView!
+	
+	@IBOutlet weak var sliderShadowBackroundView: SliderShadowView!
 	@IBOutlet weak var reuseShadowView: PreviewCollectionShadowView!
+	@IBOutlet weak var trackingSliderArea: UIView!
 	@IBOutlet weak var playCurrentItemButton: PrimaryButton!
 	@IBOutlet weak var durationTimeSlider: GradientSlider!
 	@IBOutlet weak var currentTimePositionTextLabel: UILabel!
@@ -53,6 +56,24 @@ class PhotoPreviewCollectionViewCell: UICollectionViewCell {
 		}
 	}
 	
+	
+	#warning("TODO !!!! important")
+	override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+		let touchRect = self.bounds
+		
+		if touchRect.contains(point) {
+			let touchPoint = self.convert(point, to: durationTimeSlider)
+			
+			if durationTimeSlider.bounds.contains(touchPoint) {
+				return durationTimeSlider
+			}
+			return self
+					
+		}
+		return self
+	}
+	
+
 	@IBAction func sliderDurationDidChange(_ sender: Any, event: UIEvent? = nil) {
 		
 		if let touch = event?.allTouches?.first, let sender = sender as? UISlider {
@@ -380,5 +401,3 @@ extension PhotoPreviewCollectionViewCell: Themeble {
 		videoDurationLeftTextLabel.textColor = theme.sectionTitleTextColor
 	}
 }
-
-

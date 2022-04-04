@@ -8,6 +8,8 @@
 import UIKit
 
 class GradientSlider: UISlider {
+	
+	let shadowView = UIView()
 
 	public var minTrackStartColor: UIColor = .red {
 		didSet {
@@ -58,12 +60,6 @@ class GradientSlider: UISlider {
 		return CGRect(x: bounds.origin.x, y: bounds.origin.y, width: bounds.width, height: sliderHeight)
 	}
 	
-	override func layoutSubviews() {
-		super.layoutSubviews()
-		
-		shadowConfigure()
-	}
-	
 	private func setup() {
 		
 		let minimumColorsSet: [CGColor] = [minTrackStartColor.cgColor, minTrackEndColor.cgColor]
@@ -100,19 +96,5 @@ class GradientSlider: UISlider {
 		UIEdgeInsets.init(top: 0, left: size.height, bottom: 0, right: size.height))
 		UIGraphicsEndImageContext()
 		return image!
-	}
-	
-	private func shadowConfigure() {
-				
-		[bottomShadowLayer, topShadowLayer].forEach {
-			$0.cornerRadius = 10
-			$0.masksToBounds = false
-			$0.frame = CGRect(x: bounds.origin.x, y: bounds.origin.y, width: frame.width, height: sliderHeight)
-//			layer.insertSublayer($0, at: 0)
-			layer.addSublayer($0)
-		}
-		
-		bottomShadowLayer.applySketchShadow(color: .orange, alpha: 1.0, x: 6, y: 6, blur: 10, spread: 0)
-		topShadowLayer.applySketchShadow(color: .black, alpha: 1.0, x: -2, y: -5, blur: 19, spread: 0)
 	}
 }
