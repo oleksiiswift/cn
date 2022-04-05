@@ -14,7 +14,8 @@ class PhotoPreviewCollectionViewCell: UICollectionViewCell {
 	
 	@IBOutlet weak var sliderShadowBackroundView: SliderShadowView!
 	@IBOutlet weak var reuseShadowView: PreviewCollectionShadowView!
-	@IBOutlet weak var trackingSliderArea: UIView!
+	
+	@IBOutlet weak var sliderContainerView: UIView!
 	@IBOutlet weak var playCurrentItemButton: PrimaryButton!
 	@IBOutlet weak var durationTimeSlider: GradientSlider!
 	@IBOutlet weak var currentTimePositionTextLabel: UILabel!
@@ -40,37 +41,24 @@ class PhotoPreviewCollectionViewCell: UICollectionViewCell {
 	public var isPlaying: Bool = false
 	private var isSeekInProgress = false
 	private var timeObserver: Any?
-		
+	
+	let panContainerGestureRecognizer = UIPanGestureRecognizer()
+
     override func awakeFromNib() {
         super.awakeFromNib()
         
 		setupUI()
+		gestureReconizerSetup()
 		updateColors()
     }
 	
+
 	override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
 		if keyPath == C.key.observers.player.duration, let duration = self.phassetMediaPlayer.currentItem?.duration.seconds, duration > 0.0 {
 			if let currentItem = self.phassetMediaPlayer.currentItem {
 				self.videoDurationLeftTextLabel.text = currentItem.duration.durationText
 			}
 		}
-	}
-	
-	
-	#warning("TODO !!!! important")
-	override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-		let touchRect = self.bounds
-		
-		if touchRect.contains(point) {
-			let touchPoint = self.convert(point, to: durationTimeSlider)
-			
-			if durationTimeSlider.bounds.contains(touchPoint) {
-				return durationTimeSlider
-			}
-			return self
-					
-		}
-		return self
 	}
 	
 
@@ -387,6 +375,17 @@ extension PhotoPreviewCollectionViewCell: Themeble {
 		durationTimeSlider.isContinuous = true
 		durationTimeSlider.value = .zero
 	}
+	
+	private func gestureReconizerSetup() {
+		
+		panContainerGestureRecognizer.delegate = self
+		remoteControlContainerView.addGestureRecognizer(panContainerGestureRecognizer)
+		
+		let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(didTapDurationSlider(gestureRecognizer:)))
+		self.durationTimeSlider.addGestureRecognizer(tapGestureRecognizer)
+		
+		self.durationTimeSlider.addTarget(self, action: #selector(handleStartingTouchDurationSlider), for: .allTouchEvents)
+	}
 
 	func updateColors() {
 		
@@ -401,3 +400,73 @@ extension PhotoPreviewCollectionViewCell: Themeble {
 		videoDurationLeftTextLabel.textColor = theme.sectionTitleTextColor
 	}
 }
+
+extension PhotoPreviewCollectionViewCell {
+	
+	@objc func didTapDurationSlider(gestureRecognizer: UIGestureRecognizer) {
+		
+		guard let phasset = self.currentPHAsset else { return }
+		
+		self.isSeekInProgress = true
+		
+		let point = gestureRecognizer.location(in: self.durationTimeSlider)
+		let positionSlider: CGPoint = durationTimeSlider.frame.origin
+		let width = self.durationTimeSlider.frame.size.width
+		let newValue = ((point.x - positionSlider.x) * CGFloat(durationTimeSlider.maximumValue) / width)
+		
+		self.durationTimeSlider.setValue(Float(newValue), animated: false)
+		
+		let currentDuration = getOriginDurationValue()
+		
+		let currentTime = CMTime(seconds: Double(newValue), preferredTimescale: 1)
+		self.updateLabelsTimesCodes(by: currentTime, with: currentDuration)
+		
+		if self.isPlaying {
+			self.phassetMediaPlayer.seek(to: currentTime) { [weak self] _ in
+				guard let `self` = self else { return }
+				self.isSeekInProgress = false
+			}
+		} else {
+			self.didStartLoadPlayerItem(for: phasset , and: currentTime)
+			self.isSeekInProgress = false
+		}
+	}
+	
+	@objc func handleStartingTouchDurationSlider() {
+		debugPrint("touchDragOutside")
+		
+	}
+}
+
+extension PhotoPreviewCollectionViewCell: UIGestureRecognizerDelegate {
+	
+	func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldBeRequiredToFailBy otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+		return gestureRecognizer is UISwipeGestureRecognizer && otherGestureRecognizer is UIPanGestureRecognizer
+   }
+	
+   func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+	   if gestureRecognizer == panContainerGestureRecognizer {
+		   let point = gestureRecognizer.location(in: self.remoteControlContainerView)
+		   
+		   if self.remoteControlContainerView.bounds.contains(point) {
+			   return false
+		   }
+	   }
+	   return true
+   }
+	
+   func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+	   let point = touch.location(in: self.remoteControlContainerView)
+	   
+	   if self.remoteControlContainerView.frame.contains(point) {
+		   if gestureRecognizer == panContainerGestureRecognizer {
+			   return true
+		   }
+	   }
+	   return true
+   }
+	override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+	   return true
+   }
+}
+

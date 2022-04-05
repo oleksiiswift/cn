@@ -176,8 +176,8 @@
                 <outlet property="remoteControlContainerView" destination="ypp-An-Nzx" id="wtu-i7-yw3"/>
                 <outlet property="remoteControllHeightConstraint" destination="90Y-Xb-D8k" id="84v-MK-RS7"/>
                 <outlet property="reuseShadowView" destination="MQL-5b-a8A" id="0KI-bb-Mfo"/>
+                <outlet property="sliderContainerView" destination="dvp-Wx-hTL" id="fzJ-VA-rOc"/>
                 <outlet property="sliderShadowBackroundView" destination="DC9-XS-VFt" id="JcG-HJ-RS7"/>
-                <outlet property="trackingSliderArea" destination="65Y-gD-bR2" id="Dae-qF-17l"/>
                 <outlet property="videoDurationLeftTextLabel" destination="alC-gn-BLK" id="Wt1-hc-t0q"/>
                 <outlet property="videoPreviewView" destination="MOk-82-Dc2" id="76l-uB-Pvc"/>
             </connections>

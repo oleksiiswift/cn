@@ -31,28 +31,3 @@ class ShadowView: UIView {
 		topShadowView.layer.applySketchShadow(color: theme.primaryButtonTopShadowColor, alpha: 1.0, x: -2, y: -3, blur: 19, spread: 0)
     }
 }
-
-class SliderShadowViewOLD: UIView {
-	
-	let topShadowView = UIView()
-	
-	override func layoutSubviews() {
-		super.layoutSubviews()
-		
-		self.clipsToBounds = true
-		self.layer.cornerRadius = self.frame.height / 2
-				
-		self.topShadowView.clipsToBounds = true
-		self.topShadowView.layer.cornerRadius = self.frame.height / 2
-		
-		self.backgroundColor = theme.primaryButtonBackgroundColor
-		topShadowView.backgroundColor = theme.primaryButtonBackgroundColor
-		topShadowView.frame = self.bounds
-		
-		self.insertSubview(topShadowView, at: 0)
-		
-		layer.applySketchShadow(color: theme.primaryButtonBottomShadowColor, alpha: 1.0, x: 3, y: 3, blur: 10, spread: 0)
-		
-		topShadowView.layer.applySketchShadow(color: theme.topShadowColor, alpha: 1.0, x: -2, y: -3, blur: 19, spread: 0)
-	}
-}
