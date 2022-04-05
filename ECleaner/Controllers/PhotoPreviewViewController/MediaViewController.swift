@@ -433,6 +433,14 @@ extension MediaViewController: UICollectionViewDelegate, UICollectionViewDataSou
 		}
 	}
 	
+	func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
+		return false
+	}
+	
+	func collectionView(_ collectionView: UICollectionView, shouldDeselectItemAt indexPath: IndexPath) -> Bool {
+		return false
+	}
+	
 	func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionat section: Int) -> CGFloat {
 		if collectionView == self.previewCollectionView {
 			return 0

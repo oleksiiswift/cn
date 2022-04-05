@@ -739,14 +739,14 @@
 		049CC231268337360002F988 /* Cells */ = {
 			isa = PBXGroup;
 			children = (
+				97CB3519273A9166005DA881 /* Contacts */,
+				97011E1227ECAD8200663C8E /* PhotoCells */,
 				9701D26B27BD36250078E39F /* HelperBannerTableViewCell.swift */,
 				049CC22D268337310002F988 /* MediaTypeCollectionViewCell.swift */,
-				97011E1227ECAD8200663C8E /* PhotoCells */,
 				04CFFFFE2685F0C3000CA850 /* ContentTypeTableViewCell.swift */,
 				044281FF2693034600B6B47C /* DropDownMenuTableViewCell.swift */,
 				0459DF8A26A55F360085EEDF /* CarouselCollectionViewCell.swift */,
 				047DE61726AAA53100733CD5 /* DeepCleanInfoTableViewCell.swift */,
-				97CB3519273A9166005DA881 /* Contacts */,
 			);
 			path = Cells;
 			sourceTree = "<group>";

@@ -103,6 +103,7 @@ class Constants {
 			
 			struct player {
 				static let duration = "duration"
+				static let playerLayer = "playerLayer"
 			}
 		}
 		
