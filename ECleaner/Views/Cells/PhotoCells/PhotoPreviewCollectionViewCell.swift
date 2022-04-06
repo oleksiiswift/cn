@@ -39,6 +39,7 @@ class PhotoPreviewCollectionViewCell: UICollectionViewCell {
 	private var playerObserver: NSKeyValueObservation!
 	
 	public var isPlaying: Bool = false
+	private var isContunuesPlaying = false
 	private var isSeekInProgress = false
 	private var timeObserver: Any?
 	
@@ -119,12 +120,11 @@ extension PhotoPreviewCollectionViewCell {
 				U.UI {
 					self.playerItem = AVPlayerItem(asset: videoAVAsset)
 					self.phassetMediaPlayer = AVPlayer(playerItem: self.playerItem)
-					
 					let playerVideoLayer = AVPlayerLayer(player: self.phassetMediaPlayer)
-					playerVideoLayer.frame = self.videoPreviewView.frame
-					playerVideoLayer.videoGravity = .resizeAspect
+					playerVideoLayer.frame = CGRect(x: 0, y: 0, width: self.videoPreviewView.frame.width, height: self.videoPreviewView.frame.height)
 					playerVideoLayer.name = C.key.observers.player.playerLayer
-					
+					playerVideoLayer.videoGravity = .resizeAspect
+					playerVideoLayer.backgroundColor = UIColor.black.cgColor
 					self.videoPreviewView.layer.addSublayer(playerVideoLayer)
 					self.updateSliderDurationOriginValue()
 					self.timeObserverSetup()
@@ -182,40 +182,7 @@ extension PhotoPreviewCollectionViewCell {
 		let playerCurrentImage = isPlaying ? I.player.pause : I.player.play
 		playCurrentItemButton.setImage(playerCurrentImage, for: .normal)
 	}
-
-	private func didStartLoadPlayerItemOLD(for phasset: PHAsset, and seekTime: CMTime? = nil) {
-		
-		self.imageManager?.requestAVAsset(forVideo: phasset, options: nil, resultHandler: { videoPHAsset, _, _ in
-			
-			if let videoPHAsset = videoPHAsset {
-				DispatchQueue.main.async {
-					self.playerItem = AVPlayerItem(asset: videoPHAsset)
-					self.phassetMediaPlayer = AVPlayer(playerItem: self.playerItem)
-					
-					let playerVideoLayer = AVPlayerLayer(player: self.phassetMediaPlayer)
-					playerVideoLayer.frame = self.videoPreviewView.frame
-					playerVideoLayer.videoGravity = .resizeAspect
-					playerVideoLayer.name = ""
-					
-					self.videoPreviewView.isHidden = false
-					self.videoPreviewView.layer.addSublayer(playerVideoLayer)
-					self.photoImageView.isHidden = true
-					
-					self.updateSliderDurationOriginValue()
-					self.setPHAssetPlayerObserver(for: self.playerItem)
-					self.timeObserverSetup()
-					self.setupPlayerObservers()
-										
-					if let seekTime = seekTime {
-						self.phassetMediaPlayer.seek(to: seekTime)
-					}
-				}
-			} else {
-				debugPrint("error play video from phasset")
-			}
-		})
-	}
-
+	
 	private func durationSliderValueDidChange(with touch: UITouch, of slider: UISlider) {
 	
 		let currentDuration = getOriginDurationValue()
@@ -225,11 +192,22 @@ extension PhotoPreviewCollectionViewCell {
 			case .began:
 				self.isSeekInProgress = true
 			case .moved:
-				self.updateLabelsTimesCodes(by: currentTime, with: currentDuration)
+				if isPlaying {
+					self.phassetMediaPlayer.pause()
+				}
+				self.phassetMediaPlayer.seek(to: currentTime) { [weak self] _ in
+					guard let `self` = self else { return}
+					self.updateLabelsTimesCodes(by: currentTime, with: currentDuration)
+				}
 			case .ended:
 				self.phassetMediaPlayer.seek(to: currentTime) { [weak self] _ in
 					guard let `self` = self else { return }
+					
 					self.isSeekInProgress = false
+					
+					if self.isPlaying {
+						self.phassetMediaPlayer.play()
+					}
 				}
 			default:
 				return
@@ -351,7 +329,7 @@ extension PhotoPreviewCollectionViewCell {
 			self.phassetMediaPlayer.removeTimeObserver(self.timeObserver!)
 			self.timeObserver = nil
 		}
-		
+	
 		self.phassetMediaPlayer.currentItem?.removeObserver(self, forKeyPath: C.key.observers.player.duration)
 		U.notificationCenter.removeObserver(self, name: .AVPlayerItemDidPlayToEndTime, object: nil)
 	}
@@ -436,12 +414,9 @@ extension PhotoPreviewCollectionViewCell: Themeble {
 	func updateColors() {
 		
 		baseView.backgroundColor = theme.backgroundColor
-		videoPreviewView.backgroundColor = .black
-		
 		durationTimeSlider.minTrackStartColor = theme.minimumSliderColor
 		durationTimeSlider.minTrackEndColor = theme.maximumSliderTrackColor
 		durationTimeSlider.maxTrackColor = theme.msximumSliderkColor
-		
 		currentTimePositionTextLabel.textColor = theme.sectionTitleTextColor
 		videoDurationLeftTextLabel.textColor = theme.sectionTitleTextColor
 	}

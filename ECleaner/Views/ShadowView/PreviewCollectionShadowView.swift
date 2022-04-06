@@ -18,7 +18,7 @@ class PreviewCollectionShadowView: UIView {
 	public var topShadowOffsetOriginY: CGFloat = -2
 	public var topBlurValue: CGFloat = 8
 	public var topAlpha: Float = 0.9
-	public var shadowBlurValue: CGFloat = 8
+	public var shadowBlurValue: CGFloat = 10
 	
 	override func layoutSubviews() {
 		super.layoutSubviews()
@@ -26,7 +26,6 @@ class PreviewCollectionShadowView: UIView {
 		self.layer.removeCornersSublayers()
 		setupViews()
 	}
-	
 	
 	private func setupViews() {
 		

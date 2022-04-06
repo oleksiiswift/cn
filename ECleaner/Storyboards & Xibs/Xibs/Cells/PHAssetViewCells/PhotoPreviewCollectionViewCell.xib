@@ -29,7 +29,7 @@
                                 <rect key="frame" x="0.0" y="0.0" width="360" height="412"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MOk-82-Dc2">
-                                        <rect key="frame" x="0.0" y="0.0" width="360" height="412"/>
+                                        <rect key="frame" x="0.0" y="20" width="360" height="392"/>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                     </view>
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="XzU-pT-3tm">
@@ -39,7 +39,7 @@
                                 </subviews>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <constraints>
-                                    <constraint firstItem="MOk-82-Dc2" firstAttribute="top" secondItem="cwu-vt-DBj" secondAttribute="top" id="4qk-QA-21u"/>
+                                    <constraint firstItem="MOk-82-Dc2" firstAttribute="top" secondItem="cwu-vt-DBj" secondAttribute="top" constant="20" id="4qk-QA-21u"/>
                                     <constraint firstItem="XzU-pT-3tm" firstAttribute="top" secondItem="cwu-vt-DBj" secondAttribute="top" constant="20" id="9HA-vS-mVG"/>
                                     <constraint firstAttribute="bottom" secondItem="MOk-82-Dc2" secondAttribute="bottom" id="EMc-tE-vDc"/>
                                     <constraint firstItem="MOk-82-Dc2" firstAttribute="leading" secondItem="cwu-vt-DBj" secondAttribute="leading" id="Lvf-xA-Icu"/>

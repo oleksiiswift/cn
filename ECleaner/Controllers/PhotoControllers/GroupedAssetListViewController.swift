@@ -737,9 +737,6 @@ extension GroupedAssetListViewController {
 								self.collectionView.performBatchUpdates {
 									self.collectionView.deleteSections(IndexSet(integer: indexPath.section))
 								} completion: { _ in
-									UIView.performWithoutAnimation {
-										self.collectionView.reloadData()
-									}
 									self.handleDeleteAssetsButton()
 									self.handleSelectAssetsNavigationCount()
 								}
@@ -759,9 +756,6 @@ extension GroupedAssetListViewController {
 								self.collectionView.performBatchUpdates {
 									self.collectionView.deleteItems(at: indexPathsSelectedSections)
 								} completion: { _ in
-									UIView.performWithoutAnimation {
-										self.collectionView.reloadData()
-									}
 									self.handleDeleteAssetsButton()
 									self.handleSelectAssetsNavigationCount()
 								}
@@ -805,9 +799,6 @@ extension GroupedAssetListViewController {
 						self.collectionView.performBatchUpdates {
 							self.collectionView.deleteItems(at: [indexPath])
 						} completion: { _ in
-							UIView.performWithoutAnimation {
-								self.collectionView.reloadData()
-							}
 							self.handleDeleteAssetsButton()
 							self.handleSelectAssetsNavigationCount()
 						}

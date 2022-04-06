@@ -10,6 +10,12 @@ import Photos
 import SwiftMessages
 import Contacts
 
+enum SearchingProcessingType {
+	case singleSearchProcess
+	case smartGroupSearchProcess
+	case clearSearchingProcessingQueue
+}
+
 class MediaContentViewController: UIViewController {
   
     @IBOutlet weak var navigationBar: NavigationBar!
@@ -17,10 +23,12 @@ class MediaContentViewController: UIViewController {
 	@IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var dateSelectContainerHeigntConstraint: NSLayoutConstraint!
     
+	private var searchingProcessingType: SearchingProcessingType = .clearSearchingProcessingQueue
     public var mediaContentType: MediaContentType = .none
 	private var photoManager = PhotoManager.shared
     private var contactsManager = ContactsManager.shared
-	
+	private var smartCleanManager = SmartCleanManager()
+
 	public let phassetProcessingOperationQueuer = OperationProcessingQueuer(name: Constants.key.operation.queue.phassets, maxConcurrentOperationCount: 5, qualityOfService: .background)
 	public let contactsProcessingOperationQueuer = ContactsManager.shared.contactsProcessingOperationQueuer
     
@@ -44,6 +52,7 @@ class MediaContentViewController: UIViewController {
 	
 	private var currentlyScanningProcess: CommonOperationSearchType = .none
     private var scanningProcessIsRunning: Bool = false
+	private var smartCleaningDidFinishWithResults: Bool = false
 	
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -155,7 +164,8 @@ extension MediaContentViewController {
         
     private func showMediaContent(by selectedType: MediaContentType, selected index: Int) {
         
-        guard !scanningProcessIsRunning else { return }
+		guard searchingProcessingType == .clearSearchingProcessingQueue else { return}
+		
 		U.application.isIdleTimerDisabled = true
         
         switch selectedType {
@@ -208,6 +218,28 @@ extension MediaContentViewController {
                 return
         }
     }
+	
+	private func showPrescanMediaContent(by selectedType: MediaContentType, selected index: Int) {
+		
+		let photoMediaType: PhotoMediaType = selectedType.sections[index]
+		
+		switch photoMediaType.collectionType {
+			case .single:
+				if let collection = self.singleCleanModel.objects[photoMediaType]?.phassets, !collection.isEmpty {
+					self.showAssetViewController(collection: collection, photoContent: photoMediaType, media: selectedType)
+				} else {
+					ErrorHandler.shared.showEmptySearchResultsFor(photoMediaType.emptyContentAlertType, completion: nil)
+				}
+			case .grouped:
+				if let phassetGroups = self.singleCleanModel.objects[photoMediaType]?.phassetGroup, !phassetGroups.isEmpty {
+					self.showGropedContoller(grouped: phassetGroups, photoContent: photoMediaType, media: selectedType)
+				} else {
+					ErrorHandler.shared.showEmptySearchResultsFor(photoMediaType.emptyContentAlertType, completion: nil)
+				}
+			default:
+				return
+		}
+	}
 }
 
 //      MARK: - photo content -
@@ -802,6 +834,10 @@ extension MediaContentViewController {
 		}
 	}
 	
+	private func setCancelSmartSearchOperationQueue() {
+		
+	}
+	
 	private func updateProcessingCancel(for operationName: String) {
 		
 		if let operation = CommonOperationSearchType.getOperationType(from: operationName) {
@@ -835,6 +871,41 @@ extension MediaContentViewController {
 	}
 }
 
+extension MediaContentViewController {
+	
+	private func startSmartCleanProcessing() {
+		
+		self.searchingProcessingType = .smartGroupSearchProcess
+	
+		smartCleanManager.startSmartCleanFetch(self.mediaContentType.sections,
+											   lowerBoundDate: self.lowerBoundDate,
+											   upperBoundDate: self.upperBoundDate) { _ in
+			
+		} similarPhoto: { phassetGroups in
+			self.updateGroupedChanged(phasset: phassetGroups, media: .similarPhotos)
+		} duplicatedPhoto: { phassetGroups in
+			self.updateGroupedChanged(phasset: phassetGroups, media: .duplicatedPhotos)
+		} screenShots: { phassets in
+			self.updateSingleChanged(phasset: phassets, content: .singleScreenShots)
+		} similarSelfie: { phassetGroups in
+			self.updateGroupedChanged(phasset: phassetGroups, media: .similarSelfies)
+		} livePhotos: { phassets in
+			self.updateSingleChanged(phasset: phassets, content: .singleLivePhotos)
+		} largeVideo: { phassets in
+			self.updateSingleChanged(phasset: phassets, content: .singleLargeVideos)
+		} duplicatedVideo: { phassetGroups in
+			self.updateGroupedChanged(phasset: phassetGroups, media: .duplicatedVideos)
+		} similarVideo: { phassetGroups in
+			self.updateGroupedChanged(phasset: phassetGroups, media: .similarVideos)
+		} screenRecordings: { phassets in
+			self.updateSingleChanged(phasset: phassets, content: .singleScreenRecordings)
+		} completionHandler: {
+			self.searchingProcessingType = .clearSearchingProcessingQueue
+			self.smartCleaningDidFinishWithResults = true
+		}
+	}
+}
+
 
 extension MediaContentViewController: DateSelectebleViewDelegate {
     
@@ -850,16 +921,27 @@ extension MediaContentViewController: DateSelectebleViewDelegate {
 extension MediaContentViewController: NavigationBarDelegate {
     
     func didTapLeftBarButton(_ sender: UIButton) {
-		if scanningProcessIsRunning {
-			A.showStopSingleSearchProcess {
-				self.setCanselActiveOperation()
-			}
-		} else {
-			self.navigationController?.popViewController(animated: true)
+		
+		switch self.searchingProcessingType {
+			case .smartGroupSearchProcess:
+				A.showStopSmartSingleSearchProcess {
+					self.setCancelSmartSearchOperationQueue()
+				}
+			case .singleSearchProcess:
+				A.showStopSingleSearchProcess {
+					self.setCanselActiveOperation()
+				}
+			case .clearSearchingProcessingQueue:
+				self.navigationController?.popViewController(animated: true)
 		}
     }
     
-    func didTapRightBarButton(_ sender: UIButton) {}
+    func didTapRightBarButton(_ sender: UIButton) {
+		
+		guard self.searchingProcessingType == .clearSearchingProcessingQueue else { return }
+	
+		startSmartCleanProcessing()
+	}
 }
 
 extension MediaContentViewController: UITableViewDelegate, UITableViewDataSource {
@@ -904,7 +986,11 @@ extension MediaContentViewController: UITableViewDelegate, UITableViewDataSource
 	}
 	
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-		self.showMediaContent(by: mediaContentType, selected: indexPath.row)
+		if self.smartCleaningDidFinishWithResults {
+			self.showPrescanMediaContent(by: mediaContentType, selected: indexPath.row)
+		} else {
+			self.showMediaContent(by: mediaContentType, selected: indexPath.row)
+		}
 	}
 }
 

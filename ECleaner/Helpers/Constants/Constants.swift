@@ -119,6 +119,7 @@ class Constants {
 				static let contacts = "contactsCleanSearchOperationQueuer"
 				static let phassets = "phassetsCleanSearchOperationQueuer"
 				static let deepClean = "deepCleanSearchOperationQueuer"
+				static let smartClean = "smartCleanSearchOperationQueuer"
 				static let cleaningProcess = "cleaningProcessOprationQueuer"
 				static let utils = "utilsBackgroudSpaceCalculated"
                 static let preetchPHasssetQueue = "prefetchPhassetsImagesOperationQueuer"

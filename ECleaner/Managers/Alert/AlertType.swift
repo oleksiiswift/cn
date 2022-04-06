@@ -48,6 +48,7 @@ enum AlertType {
 		/// `set break alerts`
 	case setBreakDeepCleanSearch
 	case setBreakSingleCleanSearch
+	case setBreakSmartSingleCleanSearch
 	case setBreakDeepCleanDelete
 	case resetDeepCleanResults
     
@@ -104,13 +105,12 @@ enum AlertType {
 					.duplicatedEmailsIsEmpty:
 				return ErrorHandler.shared.emptyResultsErrorTitle()
 				
-			case .setBreakDeepCleanSearch, .setBreakSingleCleanSearch:
+			case .setBreakDeepCleanSearch, .setBreakSingleCleanSearch, .setBreakSmartSingleCleanSearch:
 				return "stop search process?"
 			case .setBreakDeepCleanDelete:
 				return "stop cleaningProcess?"
 			case .resetDeepCleanResults:
 				return "Atension!"
-
             case .withCancel:
                 return ""
             case .allowDeleteSelectedPhotos:
@@ -194,7 +194,7 @@ enum AlertType {
 				
 			case .setBreakDeepCleanSearch:
 				return "this will reset all search progress"
-			case .setBreakSingleCleanSearch:
+			case .setBreakSingleCleanSearch, .setBreakSmartSingleCleanSearch:
 				return "stop executing search process"
 			case .setBreakDeepCleanDelete:
 				return "this will stop cleaning process"
@@ -289,7 +289,7 @@ enum AlertType {
                 return true
 			case .allowDeleteSelectedPhotos, .allowDeleteSelectedPhoto, .allowDeleteSelectedVideos, .allowDeleteSelectedVideo:
 				return true
-			case .setBreakDeepCleanSearch, .setBreakSingleCleanSearch, .setBreakDeepCleanDelete, .resetDeepCleanResults:
+			case .setBreakDeepCleanSearch, .setBreakSingleCleanSearch, .setBreakDeepCleanDelete, .resetDeepCleanResults, .setBreakSmartSingleCleanSearch:
 				return true
             case .deleteContacts, .mergeContacts, .deleteContact, .mergeContact:
                 return true

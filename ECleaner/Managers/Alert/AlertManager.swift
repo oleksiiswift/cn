@@ -213,6 +213,14 @@ extension AlertManager {
 		showAlert(type: .setBreakSingleCleanSearch, actions: [stopSingleCleanAlertAction], withCancel: true, cancelCompletion: nil)
 	}
 	
+	static func showStopSmartSingleSearchProcess(_ completion: @escaping () -> Void) {
+		let stopSmartSingleCleanAlertAction = UIAlertAction(title: "Stop", style: .default) { _ in
+			completion()
+		}
+		
+		showAlert(type: .setBreakSmartSingleCleanSearch, actions: [stopSmartSingleCleanAlertAction], withCancel: true, cancelCompletion: nil)
+	}
+	
 	static func showStopDeepCleanProcessing(_ completion: @escaping () -> Void) {
 		
 		let stopDeepCleanAlertAction = UIAlertAction(title: "stop", style: .default) { _ in

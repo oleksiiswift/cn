@@ -24,7 +24,6 @@ class SliderShadowView: UIView {
 		}
 		
 		primaryLayer.applySketchShadow(color: theme.primaryButtonBottomShadowColor, alpha: 1.0, x: 3, y: 3, blur: 10, spread: 0)
-		
 		secondaryLayer.applySketchShadow(color: theme.primaryButtonTopShadowColor, alpha: 1.0, x: -2, y: -5, blur: 19, spread: -1)
 	}
 }
