@@ -31,5 +31,3 @@ class ShadowView: UIView {
 		topShadowView.layer.applySketchShadow(color: theme.primaryButtonTopShadowColor, alpha: 1.0, x: -2, y: -3, blur: 19, spread: 0)
     }
 }
-
-

@@ -375,7 +375,7 @@ extension MainViewController: UpdateColorsDelegate {
         
 		circleTotlaSpaceView.font = .systemFont(ofSize: 50, weight: .black)
 		circleTotlaSpaceView.percentLabel.font = .systemFont(ofSize: 50, weight: .black)
-      circleTotlaSpaceView.percentLabelCenterInset = 45
+		circleTotlaSpaceView.percentLabelCenterInset = 45
       
       switch Screen.size {
         case .small:

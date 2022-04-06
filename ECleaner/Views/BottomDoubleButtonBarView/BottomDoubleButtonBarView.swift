@@ -92,10 +92,12 @@ class BottomDoubleButtonBarView: UIView {
     }
     
     @objc func didTapLeftButton() {
+		leftActionBottomButton.animateButtonTransform()
         delegate?.didTapLeftActionButton()
     }
     
     @objc func didTapRightButton() {
+		rightActionBottomButton.animateButtonTransform()
         delegate?.didTapRightActionButton()
     }
 }

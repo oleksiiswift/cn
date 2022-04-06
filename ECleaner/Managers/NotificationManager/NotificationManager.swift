@@ -68,4 +68,8 @@ extension Notification.Name {
     static let progressDeleteContactsAlertDidChangeProgress =   Notification.Name("progressDeleteContactsAlertDidChangeProgress")
     static let progressMergeContactsAlertDidChangeProgress =    Notification.Name("progressMergeContactsAlertDidChangeProgress")
 	static let progressDeepCleanDidChangeProgress = 			Notification.Name("progressDeepCleanDidChangeProgress")
+	
+	static let avPlayerDidPlayEndTime = NSNotification.Name.AVPlayerItemDidPlayToEndTime
+//	Notification.Name.AVPlayerItemDidPlayToEndTime
 }
+

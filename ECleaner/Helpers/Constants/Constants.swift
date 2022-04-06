@@ -99,9 +99,18 @@ class Constants {
             static let selectedContactsDidChange = "selectedContactsDidChange"
         }
 		
+		struct observers {
+			
+			struct player {
+				static let duration = "duration"
+				static let playerLayer = "playerLayer"
+			}
+		}
+		
 		struct dispatch {
-			static let mergeContacts = "merge contacts label"
-			static let deleteContacts = "deleting contacts label"
+			static let mergeContacts = "mergeContactsLabel"
+			static let deleteContacts = "deletingContactsLabel"
+			static let selectedPhassetsQueue = "selectedPhassetsQueue"
 		}
 		
 		struct operation {
@@ -110,6 +119,7 @@ class Constants {
 				static let contacts = "contactsCleanSearchOperationQueuer"
 				static let phassets = "phassetsCleanSearchOperationQueuer"
 				static let deepClean = "deepCleanSearchOperationQueuer"
+				static let smartClean = "smartCleanSearchOperationQueuer"
 				static let cleaningProcess = "cleaningProcessOprationQueuer"
 				static let utils = "utilsBackgroudSpaceCalculated"
                 static let preetchPHasssetQueue = "prefetchPhassetsImagesOperationQueuer"
@@ -292,13 +302,13 @@ class Constants {
             static let contactsGroup = "ContactsGroupViewController"
             static let expordContacts = "ExportContactsViewController"
 			static let settings = "SettingsViewController"
-			
         }
         
         struct cells {
             static let mediaTypeCell = "MediaTypeCollectionViewCell"
             static let contentTypeCell = "ContentTypeTableViewCell"
             static let photoSimpleCell = "PhotoCollectionViewCell"
+			static let photoPreviewCell = "PhotoPreviewCollectionViewCell"
             static let dropDownCell = "DropDownMenuTableViewCell"
             static let carouselCell = "CarouselCollectionViewCell"
             static let cleanInfoCell = "DeepCleanInfoTableViewCell"
@@ -321,6 +331,7 @@ class Constants {
             static let mediaTypeCell = "MediaTypeCollectionViewCell"
             static let contentTypeCell = "ContentTypeTableViewCell"
             static let photoSimpleCell = "PhotoCollectionViewCell"
+			static let photoPreviewCell = "PhotoPreviewCollectionViewCell"
             static let dropDownCell = "DropDownMenuTableViewCell"
             static let cleanInfoCell = "DeepCleanInfoTableViewCell"
             static let contactCell = "ContactTableViewCell"

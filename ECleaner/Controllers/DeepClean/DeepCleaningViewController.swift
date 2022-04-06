@@ -11,11 +11,6 @@ import PhotosUI
 import SwiftMessages
 import Contacts
 
-protocol DeepCleanSelectableAssetsDelegate: AnyObject {
-     
-	 func didSelect(assetsListIds: [String], contentType: PhotoMediaType, updatableGroup: [PhassetGroup], updatableAssets: [PHAsset], updatableContactsGroup: [ContactsGroup])
-}
-
 class DeepCleaningViewController: UIViewController {
      
      @IBOutlet weak var navigationBar: NavigationBar!
@@ -548,7 +543,7 @@ extension DeepCleaningViewController {
 	 private func showGropedContoller(assets title: String, object model: DeepCleanStateModel, grouped collection: [PhassetGroup], photoContent type: PhotoMediaType, media content: MediaContentType) {
           let storyboard = UIStoryboard(name: C.identifiers.storyboards.media, bundle: nil)
           let viewController  = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.groupedList) as! GroupedAssetListViewController
-		  viewController.handlePreviousSelected(selectedAssetsIDs: model.selectedAssetsCollectionID, assetGroupCollection: collection)
+		  viewController.previousSelectedIDs = model.selectedAssetsCollectionID
           viewController.title = title
           viewController.isDeepCleaningSelectableFlow = true
           viewController.assetGroups = collection
@@ -561,7 +556,7 @@ extension DeepCleaningViewController {
 	 private func showAssetViewController(assets title: String, object model: DeepCleanStateModel, collection: [PHAsset], photoContent type: PhotoMediaType, media content: MediaContentType) {
           let storyboard = UIStoryboard(name: C.identifiers.storyboards.media, bundle: nil)
           let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.assetsList) as! SimpleAssetsListViewController
-		  viewController.handleAssetsPreviousSelected(selectedAssetsIDs:  model.selectedAssetsCollectionID, assetCollection: collection)
+		  viewController.previousSelectedIDs = model.selectedAssetsCollectionID
           viewController.title = title
           viewController.isDeepCleaningSelectableFlow = true
           viewController.assetCollection = collection
