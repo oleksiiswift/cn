@@ -114,6 +114,30 @@ enum MediaContentType {
                 return UIImage()
         }
     }
+	
+	var sections: [PhotoMediaType] {
+		switch self {
+			case .userPhoto:
+				return [.similarPhotos,
+						.duplicatedPhotos,
+						.singleScreenShots,
+						.similarSelfies,
+						.singleLivePhotos]
+			case .userVideo:
+				return [.singleLargeVideos,
+						.duplicatedVideos,
+						.similarVideos,
+						.singleScreenRecordings]
+			case .userContacts:
+				return [.allContacts,
+						.emptyContacts,
+						.duplicatedContacts,
+						.duplicatedPhoneNumbers,
+						.duplicatedEmails]
+			case .none:
+				return [.none] 
+		}
+	}
         
         /// `SECTION PROPERTIES`
     var cellTitle: [Int: [Int : String]] {

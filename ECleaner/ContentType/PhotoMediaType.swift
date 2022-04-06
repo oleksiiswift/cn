@@ -48,6 +48,21 @@ enum PhotoMediaType: String {
 				return .none
 		}
 	}
+	
+	var collectionType: CollectionType {
+		switch self {
+			case .similarPhotos, .duplicatedPhotos, .similarLivePhotos, .similarSelfies:
+				return .grouped
+			case .singleScreenShots, .singleLivePhotos:
+				return .single
+			case .singleLargeVideos, .singleScreenRecordings:
+				return .single
+			case .duplicatedVideos, .similarVideos:
+				return .grouped
+			default:
+				return .none
+		}
+	}
     
         /// `name`
     var mediaTypeName: String {
@@ -93,7 +108,75 @@ enum PhotoMediaType: String {
                 return "compress video"
         }
     }
-    
+	
+	var cleanOperationName: String {
+		switch self {
+			case .similarPhotos:
+				return C.key.operation.name.similarPhotoProcessingOperation
+			case .duplicatedPhotos:
+				return C.key.operation.name.duplicatePhotoProcessingOperation
+			case .singleScreenShots:
+				return C.key.operation.name.screenShotsOperation
+			case .singleLivePhotos:
+				return C.key.operation.name.livePhotoOperation
+			case .similarLivePhotos:
+				return C.key.operation.name.similarLivePhotoProcessingOperation
+			case .similarSelfies:
+				return C.key.operation.name.similarSelfiesOperation
+			case .singleLargeVideos:
+				return C.key.operation.name.largeVideo
+			case .duplicatedVideos:
+				return C.key.operation.name.duplicateVideoProcessingOperation
+			case .similarVideos:
+				return C.key.operation.name.similarVideoProcessingOperation
+			case .singleScreenRecordings:
+				return C.key.operation.name.screenRecordingOperation
+			default:
+				return ""
+		}
+	}
+	
+	var emptyContentAlertType: AlertType {
+		switch self {
+			case .similarPhotos:
+				return .similarPhotoIsEmpty
+			case .duplicatedPhotos:
+				return .duplicatedPhotoIsEmpty
+			case .singleScreenShots:
+				return .screenShotsIsEmpty
+			case .singleLivePhotos:
+				return .livePhotoIsEmpty
+			case .similarLivePhotos:
+				return .similarLivePhotoIsEmpty
+			case .similarSelfies:
+				return .similarSelfiesIsEmpty
+			case .singleRecentlyDeletedPhotos:
+				return .recentlyDeletedPhotosIsEmpty
+			case .singleLargeVideos:
+				return .largeVideoIsEmpty
+			case .duplicatedVideos:
+				return .duplicatedVideoIsEmpty
+			case .similarVideos:
+				return .similarVideoIsEmpty
+			case .singleScreenRecordings:
+				return .screenRecordingIsEmpty
+			case .singleRecentlyDeletedVideos:
+				return .recentlyDeletedVideosIsEmpty
+			case .allContacts:
+				return .contactsIsEmpty
+			case .emptyContacts:
+				return .emptyContactsIsEmpty
+			case .duplicatedContacts:
+				return .duplicatedNamesIsEmpty
+			case .duplicatedPhoneNumbers:
+				return .duplicatedNumbersIsEmpty
+			case .duplicatedEmails:
+				return .duplicatedEmailsIsEmpty
+			default:
+				return .none
+		}
+	}
+
         /// `use this only for deep clean screen section:
     var deepCleanIndexPath: IndexPath {
      

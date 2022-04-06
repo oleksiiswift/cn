@@ -32,10 +32,12 @@ class GroupedAssetsReusableHeaderView: UICollectionReusableView {
     }
 	
 	@IBAction func didTapDeleteSelectedAssetsActionButton(_ sender: ShadowButtonWithImage) {
+		deleteSelectedButton.animateButtonTransform()
 		onDeleteSelected?()
 	}
 	
     @IBAction func didTapSelectAllActionButton(_ sender: ShadowButton) {
+		selectAllButton.animateButtonTransform()
         onSelectAll?()
     }
 }

@@ -10,6 +10,7 @@ import Photos
 
 protocol PhotoCollectionViewCellDelegate {
     func didSelectCell(at indexPath: IndexPath)
+	func didShowFullScreenPHAsset(at indexPath: IndexPath)
 }
 
 class PhotoCollectionViewCell: UICollectionViewCell {
@@ -63,7 +64,12 @@ class PhotoCollectionViewCell: UICollectionViewCell {
 		 super.layoutSubviews()
 	
 	}
-    
+	@IBAction func didTapShowPHassetActionButton(_ sender: Any) {
+		if let indexPath = indexPath {
+			delegate?.didShowFullScreenPHAsset(at: indexPath)
+		}
+	}
+	
     @IBAction func didTapSetSelectedCellActionButton(_ sender: Any) {
         
         if let indexPath = self.indexPath {

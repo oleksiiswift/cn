@@ -10,16 +10,26 @@ target 'ECleaner' do
   inhibit_all_warnings!
 
   # Pods for ECleaner
-  pod 'CocoaImageHashing'
+	
+	# - photo processing -
+  pod 'CocoaImageHashing' # use for handle dupl;icate and similar images
+	
+	# - contacts processing -
+	pod 'PhoneNumberKit' # use for handle contact phone number and detect country of registration
+	
+	# - ui elements -
+	pod 'SwiftMessages' # use for modal present screens and pop up
+	# - use for testing or thms -
+	
+	# - temporary disabled or not in use -
+	
+	#pod 'SwiftyMediaGallery'
+	#pod 'SwiftDate'
+	#pod 'SwiftyContacts'
+	#pod 'SwiftyUserDefaults'
+	
 #  pod 'cisua'
 #  pod 'SwiftyStoreKit'
-  pod 'SwiftMessages'
-  pod 'PhoneNumberKit'
-  
-#  pod 'SwiftDate'
-#  pod 'SwiftyUserDefaults'
-#  pod 'SwiftyContacts'
-  
 #  pod 'Google-Mobile-Ads-SDK'
 
 	pod 'SnapKit', '~> 5.0.0'

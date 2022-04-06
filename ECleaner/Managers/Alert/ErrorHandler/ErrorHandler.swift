@@ -17,7 +17,8 @@ class ErrorHandler {
     enum DeleteError {
         case errorDeleteContact
         case errorDeleteContacts
-		case errorDeletePhasset
+		case errorDeletePhoto
+		case errorDeleteVideo
     }
     
     enum MeergeError {
@@ -94,8 +95,10 @@ class ErrorHandler {
                 return "can't delete contact"
             case .errorDeleteContacts:
                 return "can't delete contacts"
-			case .errorDeletePhasset:
-				return "error delete assets"
+			case .errorDeletePhoto:
+				return "error delete photo"
+			case .errorDeleteVideo:
+				return "error delete video"
 		}
     }
     
