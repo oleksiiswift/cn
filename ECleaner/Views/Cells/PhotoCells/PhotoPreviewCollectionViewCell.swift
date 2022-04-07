@@ -414,6 +414,7 @@ extension PhotoPreviewCollectionViewCell: Themeble {
 	func updateColors() {
 		
 		baseView.backgroundColor = theme.backgroundColor
+		videoPreviewView.backgroundColor = .black
 		durationTimeSlider.minTrackStartColor = theme.minimumSliderColor
 		durationTimeSlider.minTrackEndColor = theme.maximumSliderTrackColor
 		durationTimeSlider.maxTrackColor = theme.msximumSliderkColor

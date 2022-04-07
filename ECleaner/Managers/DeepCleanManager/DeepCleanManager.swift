@@ -42,7 +42,7 @@ class DeepCleanManager {
 		
 		
 //        MARK: - similar photoassets -
-		let getSimilarPhotosAssetsOperation = photoManager.getSimilarPhotosAssetsOperation(from: startingFetchingDate, to: endingFetchingDate, cleanProcessingType: .deepCleen) { similarGroup in
+		let getSimilarPhotosAssetsOperation = photoManager.getSimilarPhotosAssetsOperation(from: startingFetchingDate, to: endingFetchingDate, cleanProcessingType: .deepCleen) { similarGroup, _ in
 			similarPhoto(similarGroup)
 			totalResultCount += 1
 			if totalResultCount == 13 {
@@ -52,7 +52,7 @@ class DeepCleanManager {
 		
 		
 //        MARK: - duplicated photo assets -
-		let duplicatedPhotoAssetOperation = photoManager.getDuplicatedPhotosAsset(from: startingFetchingDate, to: endingFetchingDate, cleanProcessingType: .deepCleen) { duplicateGroup in
+		let duplicatedPhotoAssetOperation = photoManager.getDuplicatedPhotosAsset(from: startingFetchingDate, to: endingFetchingDate, cleanProcessingType: .deepCleen) { duplicateGroup, _ in
 			duplicatedPhoto(duplicateGroup)
 			totalResultCount += 1
 			if totalResultCount == 13 {
@@ -61,7 +61,7 @@ class DeepCleanManager {
 		}
 		
 //        MARK: - screenshots -
-		let getScreenShotsAssetsOperation = photoManager.getScreenShotsOperation(from: startingFetchingDate, to: endingFetchingDate, cleanProcessingType: .deepCleen) { screenshots in
+		let getScreenShotsAssetsOperation = photoManager.getScreenShotsOperation(from: startingFetchingDate, to: endingFetchingDate, cleanProcessingType: .deepCleen) { screenshots, _ in
 			screenShots(screenshots)
 			totalResultCount += 1
 			if totalResultCount == 13 {
@@ -71,7 +71,7 @@ class DeepCleanManager {
 		
 //		MARK: - similar selfies photo -
 		
-		let getSimilarSelfiesPhotoPhassetOperation = photoManager.getSimilarSelfiePhotosOperation(from: startingFetchingDate, to: endingFetchingDate, cleanProcessingType: .deepCleen) { similartSelfiesGroup in
+		let getSimilarSelfiesPhotoPhassetOperation = photoManager.getSimilarSelfiePhotosOperation(from: startingFetchingDate, to: endingFetchingDate, cleanProcessingType: .deepCleen) { similartSelfiesGroup, _ in
 			similarSelfiesPhoto(similartSelfiesGroup)
 			totalResultCount += 1
 			if totalResultCount == 13 {
@@ -80,7 +80,7 @@ class DeepCleanManager {
 		}
 		
 //        MARK: - similar live photo -
-		let getLivePhotoAssetsOperation = photoManager.getSimilarLivePhotosOperation(from: startingFetchingDate, to: endingFetchingDate, cleanProcessingType: .deepCleen) { similarAssets in
+		let getLivePhotoAssetsOperation = photoManager.getSimilarLivePhotosOperation(from: startingFetchingDate, to: endingFetchingDate, cleanProcessingType: .deepCleen) { similarAssets, _ in
 			similarLivePhotos(similarAssets)
 			totalResultCount += 1
 			if totalResultCount == 13 {
@@ -89,7 +89,7 @@ class DeepCleanManager {
 		}
 		
 //        MARK: - large video -
-		let getLargevideoContentOperation = photoManager.getLargevideoContentOperation(from: startingFetchingDate, to: endingFetchingDate, cleanProcessingType: .deepCleen) { largeVodepAsset in
+		let getLargevideoContentOperation = photoManager.getLargevideoContentOperation(from: startingFetchingDate, to: endingFetchingDate, cleanProcessingType: .deepCleen) { largeVodepAsset, _ in
 			largeVideo(largeVodepAsset)
 			
 			totalResultCount += 1
@@ -99,7 +99,7 @@ class DeepCleanManager {
 		}
 		
 //        MARK: - duplicated video assets -
-		let getDuplicatedVideoAssetOperatioon = photoManager.getDuplicatedVideoAssetOperation(from: startingFetchingDate, to: endingFetchingDate, cleanProcessingType: .deepCleen) { duplicatedVideoAsset in
+		let getDuplicatedVideoAssetOperatioon = photoManager.getDuplicatedVideoAssetOperation(from: startingFetchingDate, to: endingFetchingDate, cleanProcessingType: .deepCleen) { duplicatedVideoAsset, _ in
 			duplicatedVideo(duplicatedVideoAsset)
 
 			totalResultCount += 1
@@ -109,7 +109,7 @@ class DeepCleanManager {
 		}
 
 //        MARK: - similar videos assets -
-		let getSimilarVideoAssetsOperation = photoManager.getSimilarVideoAssetsOperation(from: startingFetchingDate, to: endingFetchingDate, cleanProcessingType: .deepCleen) { similiarVideoAsset in
+		let getSimilarVideoAssetsOperation = photoManager.getSimilarVideoAssetsOperation(from: startingFetchingDate, to: endingFetchingDate, cleanProcessingType: .deepCleen) { similiarVideoAsset, _ in
 			similarVideo(similiarVideoAsset)
 
 			totalResultCount += 1
@@ -119,7 +119,7 @@ class DeepCleanManager {
 		}
 		
 //        MARK: - screen recordings assets -
-		let getScreenRecordsVideosOperation = photoManager.getScreenRecordsVideosOperation(from: startingFetchingDate, to: endingFetchingDate, cleanProcessingType: .deepCleen) { screenRecordsAssets in
+		let getScreenRecordsVideosOperation = photoManager.getScreenRecordsVideosOperation(from: startingFetchingDate, to: endingFetchingDate, cleanProcessingType: .deepCleen) { screenRecordsAssets, _ in
 			screenRecordings(screenRecordsAssets)
 
 			totalResultCount += 1

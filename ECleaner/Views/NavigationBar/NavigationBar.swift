@@ -142,6 +142,12 @@ class NavigationBar: UIView {
 		}
 		leftBarButtonItem.layoutIfNeeded()
 	}
+	
+	public func changeHotRightButton(with newImage: UIImage) {
+		U.UI {
+			self.rightBarButtonItem.addCenterImage(image: newImage, imageWidth: 24, imageHeight: 24)
+		}
+	}
 
     private func setAccentColorFor(buttonsTintColor: UIColor, title: UIColor) {
         

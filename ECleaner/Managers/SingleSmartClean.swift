@@ -14,12 +14,9 @@ class SmartCleanManager {
 	private var fetchManager = PHAssetFetchManager.shared
 	private var progressNotificationManager = ProgressSearchNotificationManager.instance
 	
+	public let smarCleanOperationQueue = OperationProcessingQueuer(name: C.key.operation.queue.smartClean, maxConcurrentOperationCount: 4, qualityOfService: .background)
 	
-	let wholeCleanOperationQueuer = OperationProcessingQueuer(name: C.key.operation.queue.smartClean, maxConcurrentOperationCount: 3, qualityOfService: .background)
-	
-	let smarCleanOperationQueue = OperationProcessingQueuer(name: C.key.operation.queue.smartClean, maxConcurrentOperationCount: 3, qualityOfService: .background)
-	
-	public func startSmartCleanFetch(_ optionMediaType: [PhotoMediaType], lowerBoundDate: Date, upperBoundDate: Date,
+	public func startSmartCleanFetch(_ scanOptions: [PhotoMediaType], lowerBoundDate: Date, upperBoundDate: Date,
 									 handler: @escaping ([PhotoMediaType]) -> Void,
 									 similarPhoto: @escaping ([PhassetGroup]) -> Void,
 									 duplicatedPhoto: @escaping ([PhassetGroup]) -> Void,
@@ -30,28 +27,28 @@ class SmartCleanManager {
 									 duplicatedVideo: @escaping ([PhassetGroup]) -> Void,
 									 similarVideo: @escaping ([PhassetGroup]) -> Void,
 									 screenRecordings: @escaping ([PHAsset]) -> Void,
-									 completionHandler: @escaping () -> Void) {
+									 completionHandler: @escaping (_ isCanceled: Bool) -> Void) {
 		
 		var totalResultsCount = 0
 		var operationQueueHandler: [ConcurrentProcessOperation] = []
 		
 //        MARK: - similar photoassets -
-		let getSimilarPhotosAssetsOperation = photoManager.getSimilarPhotosAssetsOperation(from: lowerBoundDate, to: upperBoundDate, cleanProcessingType: .singleSearch) { similarGroup in
+		let getSimilarPhotosAssetsOperation = photoManager.getSimilarPhotosAssetsOperation(from: lowerBoundDate, to: upperBoundDate, cleanProcessingType: .singleSearch) { similarGroup, isCancelled in
 			similarPhoto(similarGroup)
 			totalResultsCount += 1
-			if totalResultsCount == optionMediaType.count {
-				completionHandler()
+			if totalResultsCount == scanOptions.count {
+				completionHandler(isCancelled)
 			}
 		}
 		getSimilarPhotosAssetsOperation.name = C.key.operation.name.similarPhotoProcessingOperation
 		operationQueueHandler.append(getSimilarPhotosAssetsOperation)
 		
 //        MARK: - duplicated photo assets -
-		let duplicatedPhotoAssetOperation = photoManager.getDuplicatedPhotosAsset(from: lowerBoundDate, to: upperBoundDate, cleanProcessingType: .singleSearch) { duplicateGroup in
+		let duplicatedPhotoAssetOperation = photoManager.getDuplicatedPhotosAsset(from: lowerBoundDate, to: upperBoundDate, cleanProcessingType: .singleSearch) { duplicateGroup, isCancelled in
 			duplicatedPhoto(duplicateGroup)
 			totalResultsCount += 1
-			if totalResultsCount == optionMediaType.count {
-				completionHandler()
+			if totalResultsCount == scanOptions.count {
+				completionHandler(isCancelled)
 			}
 		}
 		duplicatedPhotoAssetOperation.name = C.key.operation.name.duplicatePhotoProcessingOperation
@@ -59,85 +56,85 @@ class SmartCleanManager {
 		
 		
 //		MARK: - screen shots photo assets =
-		let screenShotosPhotoAssetOperation = photoManager.getScreenShotsOperation(from: lowerBoundDate, to: upperBoundDate, cleanProcessingType: .singleSearch) { assets in
+		let screenShotosPhotoAssetOperation = photoManager.getScreenShotsOperation(from: lowerBoundDate, to: upperBoundDate, cleanProcessingType: .singleSearch) { assets, isCancelled in
 			screenShots(assets)
 			totalResultsCount += 1
-			if totalResultsCount == optionMediaType.count {
-				completionHandler()
+			if totalResultsCount == scanOptions.count {
+				completionHandler(isCancelled)
 			}
 		}
 		screenShotosPhotoAssetOperation.name = C.key.operation.name.screenShotsOperation
 		operationQueueHandler.append(screenShotosPhotoAssetOperation)
 		
 //		MARK: - simmiar selfie photo assets group -
-		let similarSelfiesPhotoAssetOperation = photoManager.getSimilarSelfiePhotosOperation(from: lowerBoundDate, to: upperBoundDate, cleanProcessingType: .singleSearch) { similartSelfiesGroup in
+		let similarSelfiesPhotoAssetOperation = photoManager.getSimilarSelfiePhotosOperation(from: lowerBoundDate, to: upperBoundDate, cleanProcessingType: .singleSearch) { similartSelfiesGroup, isCancelled in
 			similarSelfie(similartSelfiesGroup)
 			totalResultsCount += 1
-			if totalResultsCount == optionMediaType.count {
-				completionHandler()
+			if totalResultsCount == scanOptions.count {
+				completionHandler(isCancelled)
 			}
 		}
 		similarSelfiesPhotoAssetOperation.name = C.key.operation.name.similarSelfiesOperation
 		operationQueueHandler.append(similarSelfiesPhotoAssetOperation)
 		
 //		MARK: - livephoto assets -
-		let livePhotoAssetsOperation = photoManager.getLivePhotosOperation(from: lowerBoundDate, to: upperBoundDate, cleanProcessingType: .singleSearch) { assets in
+		let livePhotoAssetsOperation = photoManager.getLivePhotosOperation(from: lowerBoundDate, to: upperBoundDate, cleanProcessingType: .singleSearch) { assets, isCancelled in
 			livePhotos(assets)
 			totalResultsCount += 1
-			if totalResultsCount == optionMediaType.count {
-				completionHandler()
+			if totalResultsCount == scanOptions.count {
+				completionHandler(isCancelled)
 			}
 		}
 		livePhotoAssetsOperation.name = C.key.operation.name.livePhotoOperation
 		operationQueueHandler.append(livePhotoAssetsOperation)
 		
 //		MARK: - large video -
-		let largeVideoAssetsOperation = photoManager.getLargevideoContentOperation(from: lowerBoundDate, to: upperBoundDate, cleanProcessingType: .singleSearch) { assets in
+		let largeVideoAssetsOperation = photoManager.getLargevideoContentOperation(from: lowerBoundDate, to: upperBoundDate, cleanProcessingType: .singleSearch) { assets, isCancelled in
 			largeVideo(assets)
 			totalResultsCount += 1
-			if totalResultsCount == optionMediaType.count {
-				completionHandler()
+			if totalResultsCount == scanOptions.count {
+				completionHandler(isCancelled)
 			}
 		}
 		largeVideoAssetsOperation.name = C.key.operation.name.largeVideo
 		operationQueueHandler.append(largeVideoAssetsOperation)
 		
 //        MARK: - duplicated video assets -
-		let getDuplicatedVideoAssetOperation = photoManager.getDuplicatedVideoAssetOperation(from: lowerBoundDate, to: upperBoundDate, cleanProcessingType: .singleSearch) { duplicatedVideoAsset in
+		let getDuplicatedVideoAssetOperation = photoManager.getDuplicatedVideoAssetOperation(from: lowerBoundDate, to: upperBoundDate, cleanProcessingType: .singleSearch) { duplicatedVideoAsset, isCancelled in
 			duplicatedVideo(duplicatedVideoAsset)
 			totalResultsCount += 1
-			if totalResultsCount == optionMediaType.count {
-				completionHandler()
+			if totalResultsCount == scanOptions.count {
+				completionHandler(isCancelled)
 			}
 		}
 		getDuplicatedVideoAssetOperation.name = C.key.operation.name.duplicateVideoProcessingOperation
 		operationQueueHandler.append(getDuplicatedVideoAssetOperation)
 		
 //        MARK: - similar videos assets -
-		let getSimilarVideoAssetsOperation = photoManager.getSimilarVideoAssetsOperation(from: lowerBoundDate, to: upperBoundDate, cleanProcessingType: .singleSearch) { similiarVideoAsset in
+		let getSimilarVideoAssetsOperation = photoManager.getSimilarVideoAssetsOperation(from: lowerBoundDate, to: upperBoundDate, cleanProcessingType: .singleSearch) { similiarVideoAsset, isCancelled in
 			similarVideo(similiarVideoAsset)
 			totalResultsCount += 1
-			if totalResultsCount == optionMediaType.count {
-				completionHandler()
+			if totalResultsCount == scanOptions.count {
+				completionHandler(isCancelled)
 			}
 		}
 		getSimilarVideoAssetsOperation.name = C.key.operation.name.similarVideoProcessingOperation
 		operationQueueHandler.append(getSimilarVideoAssetsOperation)
 		
 //        MARK: - screen recordings assets -
-		let getScreenRecordsVideosOperation = photoManager.getScreenRecordsVideosOperation(from: lowerBoundDate, to: upperBoundDate, cleanProcessingType: .singleSearch) { screenRecordsAssets in
+		let getScreenRecordsVideosOperation = photoManager.getScreenRecordsVideosOperation(from: lowerBoundDate, to: upperBoundDate, cleanProcessingType: .singleSearch) { screenRecordsAssets, isCancelled in
 			screenRecordings(screenRecordsAssets)
 			totalResultsCount += 1
-			if totalResultsCount == optionMediaType.count {
-				completionHandler()
+			if totalResultsCount == scanOptions.count {
+				completionHandler(isCancelled)
 			}
 		}
 		getScreenRecordsVideosOperation.name = C.key.operation.name.screenRecordingOperation
 		operationQueueHandler.append(getScreenRecordsVideosOperation)
 		
 		
-		for type in optionMediaType {
-			if let operation = operationQueueHandler.first(where: {$0.name == type.cleanOperationName}) {
+		for option in scanOptions {
+			if let operation = operationQueueHandler.first(where: {$0.name == option.cleanOperationName}) {
 				smarCleanOperationQueue.addOperation(operation)
 			}
 		}
