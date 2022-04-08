@@ -851,6 +851,7 @@ extension PhotoManager {
 				
 					var assets: [PHAsset] = []
 					photoGallery.enumerateObjects { phasset, index, stop in
+						debugPrint("% enumerated objects \(operation.isCancelled)")
 						if operation.isCancelled {
 							self.sendEmptyNotification(processing: cleanProcessingType, deepCleanType: .duplicatePhoto, singleCleanType: .duplicatedPhoto)
 							completionHandler([], operation.isCancelled)
@@ -862,15 +863,30 @@ extension PhotoManager {
 						/// adding notification to handle progress similar photos processing
 					self.sendNotification(processing: cleanProcessingType, deepCleanType: .duplicatePhoto, singleCleanType: .duplicatedPhoto, status: .analyzing, totalItems: 0, currentIndex: 0)
 										
-					let rawTuples: [OSTuple<NSString, NSData>] = assets.enumerated().map { (index, asset) -> OSTuple<NSString, NSData> in
+//					let rawTuples: [OSTuple<NSString, NSData>] = assets.enumerated().map { (index, asset) -> OSTuple<NSString, NSData> in
+//						let imageData = asset.thumbnailSync?.pngData()
+//						debugPrint("$$ \(index)")
+//						if operation.isCancelled {
+//							self.sendEmptyNotification(processing: cleanProcessingType, deepCleanType: .duplicatePhoto, singleCleanType: .duplicatedPhoto)
+//							completionHandler([], operation.isCancelled)
+//
+//							return OSTuple<NSString, NSData>.init(first: "\(index)" as NSString, andSecond: imageData as NSData?)
+//						}
+//						self.sendNotification(processing: cleanProcessingType, deepCleanType: .duplicatePhoto, singleCleanType: .duplicatedPhoto, status: .progress, totalItems: assets.count, currentIndex: index)
+//						return OSTuple<NSString, NSData>.init(first: "\(index)" as NSString, andSecond: imageData as NSData?)
+//					}
+					
+					var rawTuples: [OSTuple<NSString, NSData>] = []
+
+					for (index, asset) in assets.enumerated() {
 						let imageData = asset.thumbnailSync?.pngData()
 						if operation.isCancelled {
 							self.sendEmptyNotification(processing: cleanProcessingType, deepCleanType: .duplicatePhoto, singleCleanType: .duplicatedPhoto)
 							completionHandler([], operation.isCancelled)
-							return OSTuple<NSString, NSData>.init(first: "\(index)" as NSString, andSecond: imageData as NSData?)
+							return
 						}
 						self.sendNotification(processing: cleanProcessingType, deepCleanType: .duplicatePhoto, singleCleanType: .duplicatedPhoto, status: .progress, totalItems: assets.count, currentIndex: index)
-						return OSTuple<NSString, NSData>.init(first: "\(index)" as NSString, andSecond: imageData as NSData?)
+						rawTuples.append(OSTuple<NSString, NSData>.init(first: "\(index)" as NSString, andSecond: imageData as NSData?))
 					}
 					
 					let photoTuples = rawTuples.filter({ $0.second != nil })
@@ -897,6 +913,10 @@ extension PhotoManager {
 		}
 		duplicatedPhotoAssetOperation.name = CommonOperationSearchType.duplicatedPhotoAssetsOperation.rawValue
 		return duplicatedPhotoAssetOperation
+	}
+	
+	private func getRowTuple(from phasset: [PHAsset], operatiom: ConcurrentProcessOperation, completionHandler: @escaping (_ tuples: [OSTuple<NSString, NSData>]) -> Void) {
+		
 	}
 }
 
@@ -1102,12 +1122,29 @@ extension PhotoManager {
 		let duplicatedVideoOperation = ConcurrentProcessOperation { operation in
 			
 			var phassetGroup: [PhassetGroup] = []
+		
+//			let rawTuples: [OSTuple<NSString, NSData>] = assets.enumerated().map { (index, asset) -> OSTuple<NSString, NSData> in
+//				let imageData = asset.thumbnailSync?.pngData()
+//				self.sendNotification(processing: cleanProcessingType, deepCleanType: .similarVideo, singleCleanType: .similarVideo, status: .progress, totalItems: assets.count, currentIndex: index)
+//				return OSTuple<NSString, NSData>.init(first: "\(index)" as NSString, andSecond: imageData as NSData?)
+//			}
 			
-			let rawTuples: [OSTuple<NSString, NSData>] = assets.enumerated().map { (index, asset) -> OSTuple<NSString, NSData> in
+			var rawTuples: [OSTuple<NSString, NSData>] = []
+			
+			for (index, asset) in assets.enumerated() {
+				
 				let imageData = asset.thumbnailSync?.pngData()
+				
+				if operation.isCancelled {
+					completionHandler([], operation.isCancelled)
+					self.sendEmptyNotification(processing: cleanProcessingType, deepCleanType: .similarVideo, singleCleanType: .similarVideo)
+					return
+				}
+				
 				self.sendNotification(processing: cleanProcessingType, deepCleanType: .similarVideo, singleCleanType: .similarVideo, status: .progress, totalItems: assets.count, currentIndex: index)
-				return OSTuple<NSString, NSData>.init(first: "\(index)" as NSString, andSecond: imageData as NSData?)
+				rawTuples.append(OSTuple<NSString, NSData>.init(first: "\(index)" as NSString, andSecond: imageData as NSData?))
 			}
+			
 			
 			let toCheckTuples = rawTuples.filter({ $0.second != nil })
 			

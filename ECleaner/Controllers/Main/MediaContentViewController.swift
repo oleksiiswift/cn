@@ -503,11 +503,13 @@ extension MediaContentViewController {
 extension MediaContentViewController {
 	
 	private func showAllContacts() {
+		
 		P.showIndicator()
 		self.contactsManager.getAllContacts { contacts in
 			self.updateContactsSingleChanged(contacts: contacts, content: .allContacts)
 			U.delay(0.1) {
 				P.hideIndicator()
+				self.searchingProcessingType = .clearSearchingProcessingQueue
 				if !contacts.isEmpty {
 					self.showContactViewController(contacts: contacts, contentType: .allContacts)
 				} else {
@@ -521,7 +523,7 @@ extension MediaContentViewController {
 		
 		self.currentlyScanningProcess = .emptyContactOperation
 		
-		self.contactsManager.getSingleDuplicatedCleaningContacts(of: .emptyContacts) { contactsGroup in
+		self.contactsManager.getSingleDuplicatedCleaningContacts(of: .emptyContacts) { contactsGroup, isCancelled in
 			let totalContacts = contactsGroup.map({$0.contacts}).count
 			let group = contactsGroup.filter({!$0.contacts.isEmpty})
 			self.updateGroupedContacts(contacts: group, media: .emptyContacts)
@@ -531,7 +533,7 @@ extension MediaContentViewController {
 				if totalContacts != 0 {
 					self.showContactViewController(contactGroup: group, contentType: .emptyContacts)
 				} else {
-					A.showEmptyContactsToPresent(of: .emptyContactsIsEmpty) {}
+					!isCancelled ? A.showEmptyContactsToPresent(of: .emptyContactsIsEmpty) {} : ()
 				}
 			}
 		}
@@ -550,7 +552,7 @@ extension MediaContentViewController {
 				self.currentlyScanningProcess = .none
 		}
 		
-		self.contactsManager.getSingleDuplicatedCleaningContacts(of: cleanType) { contactsGroup in
+		self.contactsManager.getSingleDuplicatedCleaningContacts(of: cleanType) { contactsGroup, isCancelled in
 			let mediaType = cleanType.photoMediaType
 			
 			self.updateGroupedContacts(contacts: contactsGroup, media: mediaType)
@@ -562,7 +564,7 @@ extension MediaContentViewController {
 					let group = contactsGroup.sorted(by: {$0.name < $1.name})
 					self.showGroupedContactsViewController(contacts: group, group: cleanType, content:  cleanType.photoMediaType)
 				} else {
-					A.showEmptyContactsToPresent(of: cleanType.alertEmptyType) {}
+					!isCancelled ? A.showEmptyContactsToPresent(of: cleanType.alertEmptyType) {} : ()
 				}
 			}
 		}
@@ -704,7 +706,7 @@ extension MediaContentViewController {
 	}
 	
 	private func updateContacts() {
-		self.contactsManager.getUpdatingContactsAfterContainerDidChange(cleanProcessingType: .background) {
+		self.contactsManager.getUpdatingContactsAfterContainerDidChange(cleanProcessingType: .background) { _ in
 			
 		} allContacts: { contacts in
 			self.updateContactsSingleChanged(contacts: contacts, content: .allContacts)

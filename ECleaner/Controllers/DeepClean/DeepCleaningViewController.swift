@@ -159,7 +159,6 @@ extension DeepCleaningViewController {
 			   self.setProcessingActionButton(.redyForStartingCleaning)
 			   self.showBottomButtonBar()
 			   P.hideIndicator()
-
 		  }
 	 }
 	 
@@ -205,6 +204,7 @@ extension DeepCleaningViewController {
                self.scansOptions = mediaType
           } screenShots: { assets in
                     /// `processing single screenshots`
+					debugPrint("incoming completion for # screesn shots")
                let photoMediaType: PhotoMediaType = .singleScreenShots
 			   let screenShotGroup = PhassetGroup(name: photoMediaType.rawValue, assets: assets, creationDate: assets.first?.creationDate)
                self.updateAssetsProcessingOfType(group: [screenShotGroup], mediaType: .userPhoto, contentType: photoMediaType)
@@ -212,60 +212,77 @@ extension DeepCleaningViewController {
                     /// `processing similar assets group`
                let photoMediaType: PhotoMediaType = .similarPhotos
                self.updateAssetsProcessingOfType(group: assetsGroup, mediaType: .userPhoto, contentType: photoMediaType)
+			   debugPrint("incoming completion for # similar photo")
           } duplicatedPhoto: { assetsGroup in
                     /// `processing duplicated assets group`
                let photoMediaType: PhotoMediaType = .duplicatedPhotos
                self.updateAssetsProcessingOfType(group: assetsGroup, mediaType: .userPhoto, contentType: photoMediaType)
+			   debugPrint("incoming completion for # dupliated photo")
 		  } similarSelfiesPhoto: { assetsGroup in
 					/// `processing similar selfies assets group`
 			   let photoMediaType: PhotoMediaType = .similarSelfies
 			   self.updateAssetsProcessingOfType(group: assetsGroup, mediaType: .userPhoto, contentType: photoMediaType)
+			   debugPrint("incoming completion for # similar selfies")
 		  } similarLivePhotos: { assetsGroup in
 					/// `processing similar live video group`
 			   let photoMediaType: PhotoMediaType = .similarLivePhotos
 			   self.updateAssetsProcessingOfType(group: assetsGroup, mediaType: .userPhoto, contentType: photoMediaType)
+			   debugPrint("incoming completion for # similar live photo")
 		  } largeVideo: { assets in
                     /// `processing large video group`
                let photoMediaType: PhotoMediaType = .singleLargeVideos
 			   let largeVideoGroup = PhassetGroup(name: photoMediaType.rawValue, assets: assets, creationDate: assets.first?.creationDate)
                self.updateAssetsProcessingOfType(group: [largeVideoGroup], mediaType: .userVideo  , contentType: photoMediaType)
+			   debugPrint("incoming completion for # large video")
           } similarVideo: { assetsGroup in
                     /// `processing similar videos`
                let photoMediaType: PhotoMediaType = .similarVideos
                self.updateAssetsProcessingOfType(group: assetsGroup, mediaType: .userVideo, contentType: photoMediaType)
+			   debugPrint("incoming completion for # similar video")
           } duplicatedVideo: { assetsGroup in
                     /// `duplicated video`
                let photoMediaType: PhotoMediaType = .duplicatedVideos
                self.updateAssetsProcessingOfType(group: assetsGroup, mediaType: .userVideo, contentType: photoMediaType)
+			   debugPrint("incoming completion for # duplicated video")
           } screenRecordings: { assets in
                     /// `screen recording`
                let photoMediaType: PhotoMediaType = .singleScreenRecordings
 			   let screenRecordings = PhassetGroup(name: photoMediaType.rawValue, assets: assets, creationDate: assets.first?.creationDate)
                self.updateAssetsProcessingOfType(group: [screenRecordings], mediaType: .userVideo  , contentType: photoMediaType)
+			   debugPrint("incoming completion for # screen recordings")
           } emptyContacts: { contactsGroup in
                     /// `empty contacts`
                let contentType: PhotoMediaType = .emptyContacts
                self.updateContactsProcessing(group: contactsGroup, contentType: contentType)
+			   debugPrint("incoming completion for # empty contacts")
           } duplicatedContats: { contactsGroup in
                     /// `duplicated contacts`
                let contentType:  PhotoMediaType = .duplicatedContacts
                self.updateContactsProcessing(group: contactsGroup, contentType: contentType)
+			   debugPrint("incoming completion for # duplicated contacts")
           } duplicatedPhoneNumbers: { contactsGroup in
                     /// `duplicated phone numbers contacts`
                let contentType:  PhotoMediaType = .duplicatedPhoneNumbers
                self.updateContactsProcessing(group: contactsGroup, contentType: contentType)
+			   debugPrint("incoming completion for # duplicated duplicated phone numbers")
           } duplicatedEmails: { contactsGroup in
                     /// `dublicated email contacts`
                let contentType:  PhotoMediaType = .duplicatedEmails
                self.updateContactsProcessing(group: contactsGroup, contentType: contentType)
-          } completionHandler: {
+			   debugPrint("incoming completion for # duplicated emails")
+          } completionHandler: { isCancelled in
 			   self.isDeepCleanSearchingProcessRunning = !self.isDeepCleanSearchingProcessRunning
-               U.UI {
-					self.setProcessingActionButton(.willAvailibleDelete)
-					self.handleButtonStateActive()
-					self.navigationBar.temporaryLockLeftButton(false)
-					U.application.isIdleTimerDisabled = true
-               }
+			   U.UI {
+					if isCancelled {
+						 self.removeObservers()
+						 self.cleanAndResetAllValues()
+					} else {
+						 self.setProcessingActionButton(.willAvailibleDelete)
+						 self.handleButtonStateActive()
+						 self.navigationBar.temporaryLockLeftButton(false)
+						 U.application.isIdleTimerDisabled = true
+					}
+			   }
           }
      }
      
@@ -370,14 +387,14 @@ extension DeepCleaningViewController: DeepCleanSelectableAssetsDelegate {
 			   
 			   switch contentType {
 					case .singleScreenShots, .singleLargeVideos, .singleScreenRecordings, .similarPhotos, .duplicatedPhotos, .similarLivePhotos, .similarVideos, .duplicatedVideos, .similarSelfies:
-						 let diskSpacePperation = photoManager.getAssetsUsedMemmoty(by: allSelectedAssetsIDS) { result in
+						 let diskSpaceOperation = photoManager.getAssetsUsedMemmoty(by: allSelectedAssetsIDS) { result in
 							  self.futuredCleaningSpaceUsage = result
 							  U.UI {
 								   self.checkCleaningButtonState()
 								   self.tableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .none)
 							  }
 						 }
-						 deepCleanManager.deepCleanOperationQue.addOperation(diskSpacePperation)
+						 deepCleanManager.deepCleanOperationQueue.addOperation(diskSpaceOperation)
 					case .emptyContacts, .duplicatedContacts, .duplicatedPhoneNumbers, .duplicatedEmails:
 						 self.checkCleaningButtonState()
 					default:

@@ -40,7 +40,7 @@ class SmartCleanManager {
 				completionHandler(isCancelled)
 			}
 		}
-		getSimilarPhotosAssetsOperation.name = C.key.operation.name.similarPhotoProcessingOperation
+		
 		operationQueueHandler.append(getSimilarPhotosAssetsOperation)
 		
 //        MARK: - duplicated photo assets -
@@ -51,9 +51,8 @@ class SmartCleanManager {
 				completionHandler(isCancelled)
 			}
 		}
-		duplicatedPhotoAssetOperation.name = C.key.operation.name.duplicatePhotoProcessingOperation
-		operationQueueHandler.append(duplicatedPhotoAssetOperation)
 		
+		operationQueueHandler.append(duplicatedPhotoAssetOperation)
 		
 //		MARK: - screen shots photo assets =
 		let screenShotosPhotoAssetOperation = photoManager.getScreenShotsOperation(from: lowerBoundDate, to: upperBoundDate, cleanProcessingType: .singleSearch) { assets, isCancelled in
@@ -63,7 +62,7 @@ class SmartCleanManager {
 				completionHandler(isCancelled)
 			}
 		}
-		screenShotosPhotoAssetOperation.name = C.key.operation.name.screenShotsOperation
+		
 		operationQueueHandler.append(screenShotosPhotoAssetOperation)
 		
 //		MARK: - simmiar selfie photo assets group -
@@ -74,7 +73,7 @@ class SmartCleanManager {
 				completionHandler(isCancelled)
 			}
 		}
-		similarSelfiesPhotoAssetOperation.name = C.key.operation.name.similarSelfiesOperation
+		
 		operationQueueHandler.append(similarSelfiesPhotoAssetOperation)
 		
 //		MARK: - livephoto assets -
@@ -85,7 +84,7 @@ class SmartCleanManager {
 				completionHandler(isCancelled)
 			}
 		}
-		livePhotoAssetsOperation.name = C.key.operation.name.livePhotoOperation
+		
 		operationQueueHandler.append(livePhotoAssetsOperation)
 		
 //		MARK: - large video -
@@ -96,7 +95,7 @@ class SmartCleanManager {
 				completionHandler(isCancelled)
 			}
 		}
-		largeVideoAssetsOperation.name = C.key.operation.name.largeVideo
+		
 		operationQueueHandler.append(largeVideoAssetsOperation)
 		
 //        MARK: - duplicated video assets -
@@ -107,7 +106,7 @@ class SmartCleanManager {
 				completionHandler(isCancelled)
 			}
 		}
-		getDuplicatedVideoAssetOperation.name = C.key.operation.name.duplicateVideoProcessingOperation
+		
 		operationQueueHandler.append(getDuplicatedVideoAssetOperation)
 		
 //        MARK: - similar videos assets -
@@ -118,7 +117,7 @@ class SmartCleanManager {
 				completionHandler(isCancelled)
 			}
 		}
-		getSimilarVideoAssetsOperation.name = C.key.operation.name.similarVideoProcessingOperation
+		
 		operationQueueHandler.append(getSimilarVideoAssetsOperation)
 		
 //        MARK: - screen recordings assets -
@@ -129,9 +128,8 @@ class SmartCleanManager {
 				completionHandler(isCancelled)
 			}
 		}
-		getScreenRecordsVideosOperation.name = C.key.operation.name.screenRecordingOperation
-		operationQueueHandler.append(getScreenRecordsVideosOperation)
 		
+		operationQueueHandler.append(getScreenRecordsVideosOperation)
 		
 		for option in scanOptions {
 			if let operation = operationQueueHandler.first(where: {$0.name == option.cleanOperationName}) {

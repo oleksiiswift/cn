@@ -17,7 +17,7 @@ class DeepCleanManager {
 	private var progressNotificationManager = ProgressSearchNotificationManager.instance
     
 	let wholeCleanOperationQueuer = OperationProcessingQueuer(name: C.key.operation.queue.deepClean, maxConcurrentOperationCount: 3, qualityOfService: .background)
-	let deepCleanOperationQue = OperationProcessingQueuer(name: C.key.operation.queue.deepClean, maxConcurrentOperationCount: 3, qualityOfService: .background)
+	let deepCleanOperationQueue = OperationProcessingQueuer(name: C.key.operation.queue.deepClean, maxConcurrentOperationCount: 3, qualityOfService: .background)
         
     public func startDeepCleaningFetch(_ optionMediaType: [PhotoMediaType], startingFetchingDate: Date, endingFetchingDate: Date,
                                        handler: @escaping ([PhotoMediaType]) -> Void,
@@ -34,148 +34,150 @@ class DeepCleanManager {
                                        duplicatedContats: @escaping ([ContactsGroup]) -> Void,
                                        duplicatedPhoneNumbers: @escaping ([ContactsGroup]) -> Void,
                                        duplicatedEmails: @escaping ([ContactsGroup]) -> Void,
-                                       completionHandler: @escaping () -> Void) {
+									   completionHandler: @escaping (_ isCancelled: Bool) -> Void) {
         
         var totalResultCount = 0
-    
+		var operationQueueHandler: [ConcurrentProcessOperation] = []
         handler(optionMediaType)
 		
-		
 //        MARK: - similar photoassets -
-		let getSimilarPhotosAssetsOperation = photoManager.getSimilarPhotosAssetsOperation(from: startingFetchingDate, to: endingFetchingDate, cleanProcessingType: .deepCleen) { similarGroup, _ in
+		let getSimilarPhotosAssetsOperation = photoManager.getSimilarPhotosAssetsOperation(from: startingFetchingDate, to: endingFetchingDate, cleanProcessingType: .deepCleen) { similarGroup, isCancelled in
 			similarPhoto(similarGroup)
 			totalResultCount += 1
 			if totalResultCount == 13 {
-				completionHandler()
+				completionHandler(isCancelled)
 			}
 		}
-		
+		operationQueueHandler.append(getSimilarPhotosAssetsOperation)
 		
 //        MARK: - duplicated photo assets -
-		let duplicatedPhotoAssetOperation = photoManager.getDuplicatedPhotosAsset(from: startingFetchingDate, to: endingFetchingDate, cleanProcessingType: .deepCleen) { duplicateGroup, _ in
+		let duplicatedPhotoAssetOperation = photoManager.getDuplicatedPhotosAsset(from: startingFetchingDate, to: endingFetchingDate, cleanProcessingType: .deepCleen) { duplicateGroup, isCancelled in
 			duplicatedPhoto(duplicateGroup)
 			totalResultCount += 1
+			debugPrint(totalResultCount)
 			if totalResultCount == 13 {
-				completionHandler()
+				completionHandler(isCancelled)
 			}
 		}
+		operationQueueHandler.append(duplicatedPhotoAssetOperation)
 		
 //        MARK: - screenshots -
-		let getScreenShotsAssetsOperation = photoManager.getScreenShotsOperation(from: startingFetchingDate, to: endingFetchingDate, cleanProcessingType: .deepCleen) { screenshots, _ in
+		let getScreenShotsAssetsOperation = photoManager.getScreenShotsOperation(from: startingFetchingDate, to: endingFetchingDate, cleanProcessingType: .deepCleen) { screenshots, isCancelled in
 			screenShots(screenshots)
 			totalResultCount += 1
 			if totalResultCount == 13 {
-				completionHandler()
+				completionHandler(isCancelled)
 			}
 		}
+		operationQueueHandler.append(getScreenShotsAssetsOperation)
 		
 //		MARK: - similar selfies photo -
 		
-		let getSimilarSelfiesPhotoPhassetOperation = photoManager.getSimilarSelfiePhotosOperation(from: startingFetchingDate, to: endingFetchingDate, cleanProcessingType: .deepCleen) { similartSelfiesGroup, _ in
+		let getSimilarSelfiesPhotoPhassetOperation = photoManager.getSimilarSelfiePhotosOperation(from: startingFetchingDate, to: endingFetchingDate, cleanProcessingType: .deepCleen) { similartSelfiesGroup, isCancelled in
 			similarSelfiesPhoto(similartSelfiesGroup)
 			totalResultCount += 1
 			if totalResultCount == 13 {
-				completionHandler()
+				completionHandler(isCancelled)
 			}
 		}
+		operationQueueHandler.append(getSimilarSelfiesPhotoPhassetOperation)
 		
 //        MARK: - similar live photo -
-		let getLivePhotoAssetsOperation = photoManager.getSimilarLivePhotosOperation(from: startingFetchingDate, to: endingFetchingDate, cleanProcessingType: .deepCleen) { similarAssets, _ in
+		let getLivePhotoAssetsOperation = photoManager.getSimilarLivePhotosOperation(from: startingFetchingDate, to: endingFetchingDate, cleanProcessingType: .deepCleen) { similarAssets, isCancelled in
 			similarLivePhotos(similarAssets)
 			totalResultCount += 1
 			if totalResultCount == 13 {
-				completionHandler()
+				completionHandler(isCancelled)
 			}
 		}
+		operationQueueHandler.append(getLivePhotoAssetsOperation)
 		
 //        MARK: - large video -
-		let getLargevideoContentOperation = photoManager.getLargevideoContentOperation(from: startingFetchingDate, to: endingFetchingDate, cleanProcessingType: .deepCleen) { largeVodepAsset, _ in
+		let getLargevideoContentOperation = photoManager.getLargevideoContentOperation(from: startingFetchingDate, to: endingFetchingDate, cleanProcessingType: .deepCleen) { largeVodepAsset, isCancelled in
 			largeVideo(largeVodepAsset)
 			
 			totalResultCount += 1
 			if totalResultCount == 13 {
-				completionHandler()
+				completionHandler(isCancelled)
 			}
 		}
+		operationQueueHandler.append(getLargevideoContentOperation)
 		
 //        MARK: - duplicated video assets -
-		let getDuplicatedVideoAssetOperatioon = photoManager.getDuplicatedVideoAssetOperation(from: startingFetchingDate, to: endingFetchingDate, cleanProcessingType: .deepCleen) { duplicatedVideoAsset, _ in
+		let getDuplicatedVideoAssetOperatioon = photoManager.getDuplicatedVideoAssetOperation(from: startingFetchingDate, to: endingFetchingDate, cleanProcessingType: .deepCleen) { duplicatedVideoAsset, isCancelled in
 			duplicatedVideo(duplicatedVideoAsset)
 
 			totalResultCount += 1
 			if totalResultCount == 13 {
-				completionHandler()
+				completionHandler(isCancelled)
 			}
 		}
+		operationQueueHandler.append(getDuplicatedVideoAssetOperatioon)
 
 //        MARK: - similar videos assets -
-		let getSimilarVideoAssetsOperation = photoManager.getSimilarVideoAssetsOperation(from: startingFetchingDate, to: endingFetchingDate, cleanProcessingType: .deepCleen) { similiarVideoAsset, _ in
+		let getSimilarVideoAssetsOperation = photoManager.getSimilarVideoAssetsOperation(from: startingFetchingDate, to: endingFetchingDate, cleanProcessingType: .deepCleen) { similiarVideoAsset, isCancelled in
 			similarVideo(similiarVideoAsset)
 
 			totalResultCount += 1
 			if totalResultCount == 13 {
-				completionHandler()
+				completionHandler(isCancelled)
 			}
 		}
+		operationQueueHandler.append(getSimilarVideoAssetsOperation)
 		
 //        MARK: - screen recordings assets -
-		let getScreenRecordsVideosOperation = photoManager.getScreenRecordsVideosOperation(from: startingFetchingDate, to: endingFetchingDate, cleanProcessingType: .deepCleen) { screenRecordsAssets, _ in
+		let getScreenRecordsVideosOperation = photoManager.getScreenRecordsVideosOperation(from: startingFetchingDate, to: endingFetchingDate, cleanProcessingType: .deepCleen) { screenRecordsAssets, isCancelled in
 			screenRecordings(screenRecordsAssets)
 
 			totalResultCount += 1
 			if totalResultCount == 13 {
-				completionHandler()
+				completionHandler(isCancelled)
 			}
 		}
 		
-		deepCleanOperationQue.addOperation(getSimilarPhotosAssetsOperation)
-		deepCleanOperationQue.addOperation(duplicatedPhotoAssetOperation)
-		deepCleanOperationQue.addOperation(getScreenShotsAssetsOperation)
-		deepCleanOperationQue.addOperation(getSimilarSelfiesPhotoPhassetOperation)
-		deepCleanOperationQue.addOperation(getLivePhotoAssetsOperation)
-		deepCleanOperationQue.addOperation(getLargevideoContentOperation)
-		deepCleanOperationQue.addOperation(getDuplicatedVideoAssetOperatioon)
-		deepCleanOperationQue.addOperation(getSimilarVideoAssetsOperation)
-		deepCleanOperationQue.addOperation(getScreenRecordsVideosOperation)
+		operationQueueHandler.append(getScreenRecordsVideosOperation)
 		
+		operationQueueHandler.forEach { operation in
+			self.deepCleanOperationQueue.addOperation(operation)
+		}
+
 //        MARK: - mark fetch contacts -
-		contactManager.getDeepCleanContactsProcessing {
+		contactManager.getDeepCleanContactsProcessing { isCancelled in
 			
-			
-		} emptyContactsCompletion: { emptyContactsGroup in
+		} emptyContactsCompletion: { emptyContactsGroup, isCancelled in
 				/// - empty fields contacts
 			emptyContacts(emptyContactsGroup)
 			totalResultCount += 1
 			if totalResultCount == 13 {
-				completionHandler()
+				completionHandler(isCancelled)
 			}
-		} duplicatedContactsCompletion: { duplicatedContactsGroup in
+		} duplicatedContactsCompletion: { duplicatedContactsGroup, isCancelled in
 				/// - duplicated contacts -
 			duplicatedContats(duplicatedContactsGroup)
 			totalResultCount += 1
 			if totalResultCount == 13 {
-				completionHandler()
+				completionHandler(isCancelled)
 			}
-		} duplicatedPhoneNumbersCompletion: { duplicatedNumbersContactsGroup in
+		} duplicatedPhoneNumbersCompletion: { duplicatedNumbersContactsGroup, isCancelled in
 				/// - duplicated phone numbers contacts -
 			duplicatedPhoneNumbers(duplicatedNumbersContactsGroup)
 			totalResultCount += 1
 			if totalResultCount == 13 {
-				completionHandler()
+				completionHandler(isCancelled)
 			}
-		} duplicatedEmailsContactsCompletion: { duplicatedEmailsContactsGroup in
+		} duplicatedEmailsContactsCompletion: { duplicatedEmailsContactsGroup, isCancelled in
 				/// duplicated email contact s-
 			duplicatedEmails(duplicatedEmailsContactsGroup)
 			totalResultCount += 1
 			if totalResultCount == 13 {
-				completionHandler()
+				completionHandler(isCancelled)
 			}
 		}
     }
 	
 	public func cancelAllOperation() {
 		photoManager.serviceUtilsCalculatedOperationsQueuer.cancelAll()
-		deepCleanOperationQue.cancelAll()
+		deepCleanOperationQueue.cancelAll()
 		contactManager.contactsProcessingOperationQueuer.cancelAll()
 	}
 	
@@ -353,6 +355,6 @@ extension DeepCleanManager {
 	
 	public func stopDeepCleanOperation() {
 		self.wholeCleanOperationQueuer.cancelAll()
-		self.deepCleanOperationQue.cancelAll()
+		self.deepCleanOperationQueue.cancelAll()
 	}
 }
