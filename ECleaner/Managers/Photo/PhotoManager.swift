@@ -536,7 +536,7 @@ extension PhotoManager {
 	
 	public func getSimilarSelfiePhotosOperation(from lowerDate: Date = lowerDateValue, to upperDate: Date = upperDateValue, cleanProcessingType: CleanProcessingPresentType, completionHandler: @escaping ((_ similartSelfiesGroup: [PhassetGroup],_ isCanceled: Bool) -> Void)) -> ConcurrentProcessOperation {
 		
-		let similarPhotoProcessingOperation = ConcurrentProcessOperation { operation in
+		let similarSelfiesProcessingOperation = ConcurrentProcessOperation { operation in
 			
 			self.fetchManager.fetchFromGallery(from: lowerDate, to: upperDate, collectiontype: .smartAlbumSelfPortraits, by: PHAssetMediaType.image.rawValue) { photosInGallery in
 				
@@ -611,8 +611,8 @@ extension PhotoManager {
 				}
 			}
 		}
-		similarPhotoProcessingOperation.name = CommonOperationSearchType.similarPhotoAssetsOperaton.rawValue
-		return similarPhotoProcessingOperation
+		similarSelfiesProcessingOperation.name = CommonOperationSearchType.similarSelfiesAssetsOperation.rawValue
+		return similarSelfiesProcessingOperation
 	}
 		
 		/// `load screenshots` from gallery

@@ -80,5 +80,15 @@ class SingleCleanStateModel {
 				return true
 		}
 	}
+	
+	public func resetSingleMode() {
+		self.phassets = []
+		self.phassetGroup = []
+		self.contacts = []
+		self.contactsGroup = []
+		
+		self.cleanProgress = 0
+		self.cleanState = .sleeping
+	}
 }
 

@@ -868,21 +868,35 @@ extension MediaContentViewController {
 			
 			let type = operation.mediaType
 			
-			switch type {
-				case .singleScreenShots, .singleRecentlyDeletedPhotos, .similarLivePhotos, .singleLargeVideos, .singleRecentlyDeletedVideos, .singleScreenRecordings:
-					self.updateSingleChanged(phasset: [], content: type)
-				case .similarPhotos, .duplicatedPhotos, .similarSelfies, .duplicatedVideos, .similarVideos:
-					self.updateGroupedChanged(phasset: [], media: type)
-				case .allContacts:
-					self.updateContactsSingleChanged(contacts: [], content: .allContacts)
-				case .emptyContacts, .duplicatedContacts, .duplicatedPhoneNumbers, .duplicatedEmails:
-					self.updateGroupedContacts(contacts: [], media: type)
-				default:
-					return
+			guard let object = self.singleCleanModel.objects[type] else { return }
+			
+			object.resetSingleMode()
+			
+			U.UI {
+				if let cell = self.tableView.cellForRow(at: type.singleSearchIndexPath) as? ContentTypeTableViewCell {
+					self.configure(cell, at: type.singleSearchIndexPath)
+				}
 			}
 		}
 	}
-				
+	
+	private func desintagrateSearchingResults() {
+		
+		self.resetRecievingData()
+		self.resetAllProgressVisual()
+		self.smartCleaningDidFinishWithResults = false
+		UIView.performWithoutAnimation {
+			self.tableView.reloadData()
+		}
+	}
+	
+	
+	private func resetRecievingData() {
+		for ( _ , value) in singleCleanModel.objects {
+			value.resetSingleMode()
+		}
+	}
+	
 	private func resetAllProgressVisual() {
 		let numberOFOperationElemtnth = self.tableView.numberOfRows(inSection: 0)
 		let allSectionIndexPath = (0..<numberOFOperationElemtnth).map {IndexPath(row: $0, section: 0)}
@@ -945,10 +959,16 @@ extension MediaContentViewController {
 extension MediaContentViewController: DateSelectebleViewDelegate {
     
     func didSelectStartingDate() {
+		
+		guard self.searchingProcessingType == .clearSearchingProcessingQueue else { return }
+		
 		performSegue(withIdentifier: C.identifiers.segue.showLowerDatePicker, sender: self)
     }
     
     func didSelectEndingDate() {
+		
+		guard self.searchingProcessingType == .clearSearchingProcessingQueue else { return }
+		
 		performSegue(withIdentifier: C.identifiers.segue.showUpperDatePicker, sender: self)
     }
 }
@@ -1144,9 +1164,15 @@ extension MediaContentViewController: Themeble {
 			  dateSelectedController.selectedDateCompletion = { selectedDate in
 				   switch selectedType {
 						case .lowerDateSelectable:
-							 self.lowerBoundDate = selectedDate
+						   if self.lowerBoundDate != selectedDate {
+							   self.lowerBoundDate = selectedDate
+							   self.desintagrateSearchingResults()
+						   }
 						case .upperDateSelectable:
+						   if self.upperBoundDate != selectedDate {
 							 self.upperBoundDate = selectedDate
+							   self.desintagrateSearchingResults()
+						   }
 						default:
 							 return
 				   }

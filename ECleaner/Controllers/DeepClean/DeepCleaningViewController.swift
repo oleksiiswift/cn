@@ -32,7 +32,11 @@ class DeepCleaningViewController: UIViewController {
      
      /// properties
      private var bottomMenuHeight: CGFloat = 80
-	 private var isDeepCleanSearchingProcessRunning: Bool = false
+	 private var isDeepCleanSearchingProcessRunning: Bool = false {
+		  didSet {
+			   navigationBar.temporaryLockLeftButton(isDeepCleanSearchingProcessRunning)
+		  }
+	 }
 	 
 	 public var scansOptions: [PhotoMediaType]?
      private var deepCleaningState: DeepCleaningState = .willStartCleaning
@@ -196,7 +200,6 @@ extension DeepCleaningViewController {
           
           guard let options = scansOptions else { return }
 		  
-		  navigationBar.temporaryLockLeftButton(true)
 		  isDeepCleanSearchingProcessRunning = !isDeepCleanSearchingProcessRunning
 		  U.application.isIdleTimerDisabled = true
           
@@ -279,7 +282,6 @@ extension DeepCleaningViewController {
 					} else {
 						 self.setProcessingActionButton(.willAvailibleDelete)
 						 self.handleButtonStateActive()
-						 self.navigationBar.temporaryLockLeftButton(false)
 						 U.application.isIdleTimerDisabled = true
 					}
 			   }
@@ -821,9 +823,17 @@ extension DeepCleaningViewController {
 			   dateSelectedController.selectedDateCompletion = { selectedDate in
 					switch selectedType {
 						 case .lowerDateSelectable:
-							  self.lowerBoundDate = selectedDate
+							  if self.lowerBoundDate != selectedDate {
+								   self.lowerBoundDate = selectedDate
+								   self.removeObservers()
+								   self.cleanAndResetAllValues()
+							  }
 						 case .upperDateSelectable:
-							  self.upperBoundDate = selectedDate
+							  if self.upperBoundDate != selectedDate {
+								   self.upperBoundDate = selectedDate
+								   self.removeObservers()
+								   self.cleanAndResetAllValues()
+							  }
 						 default:
 							  return
 					}
