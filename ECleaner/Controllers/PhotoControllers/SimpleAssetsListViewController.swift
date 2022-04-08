@@ -658,7 +658,7 @@ extension SimpleAssetsListViewController: UpdatingChangesInOpenedScreensListener
         
         if mediaType == .singleScreenShots {
 			
-			let screenShotsOperation = photoManager.getScreenShotsOperation(from: S.lowerBoundSavedDate, to: S.upperBoundSavedDate, cleanProcessingType: .singleSearch) { screenShots in
+			let screenShotsOperation = photoManager.getScreenShotsOperation(from: S.lowerBoundSavedDate, to: S.upperBoundSavedDate, cleanProcessingType: .singleSearch) { screenShots, _ in
 				if self.assetCollection.count != screenShots.count {
 					U.UI {
 						self.assetCollection = screenShots

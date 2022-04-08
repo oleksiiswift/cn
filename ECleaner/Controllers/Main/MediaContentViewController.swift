@@ -23,7 +23,12 @@ class MediaContentViewController: UIViewController {
 	@IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var dateSelectContainerHeigntConstraint: NSLayoutConstraint!
     
-	private var searchingProcessingType: SearchingProcessingType = .clearSearchingProcessingQueue
+	private var searchingProcessingType: SearchingProcessingType = .clearSearchingProcessingQueue {
+		didSet {
+			handleChangeSmartCleanProcessing()
+		}
+	}
+
     public var mediaContentType: MediaContentType = .none
 	private var photoManager = PhotoManager.shared
     private var contactsManager = ContactsManager.shared
@@ -51,7 +56,6 @@ class MediaContentViewController: UIViewController {
 	public var singleCleanModel: SingleCleanModel!
 	
 	private var currentlyScanningProcess: CommonOperationSearchType = .none
-    private var scanningProcessIsRunning: Bool = false
 	private var smartCleaningDidFinishWithResults: Bool = false
 	
     override func viewDidLoad() {
@@ -166,6 +170,8 @@ extension MediaContentViewController {
         
 		guard searchingProcessingType == .clearSearchingProcessingQueue else { return}
 		
+		searchingProcessingType = .singleSearchProcess
+		
 		U.application.isIdleTimerDisabled = true
         
         switch selectedType {
@@ -251,19 +257,18 @@ extension MediaContentViewController {
     */
 
     private func showSimilarPhotos() {
-		
-		self.scanningProcessIsRunning = !self.scanningProcessIsRunning
+	
 		self.currentlyScanningProcess = .similarPhotoAssetsOperaton
 		
-		let getSimilarPhotosAssetsOperation = photoManager.getSimilarPhotosAssetsOperation(from: lowerBoundDate, to: upperBoundDate, cleanProcessingType: .singleSearch) { similarGroup in
+		let getSimilarPhotosAssetsOperation = photoManager.getSimilarPhotosAssetsOperation(from: lowerBoundDate, to: upperBoundDate, cleanProcessingType: .singleSearch) { similarGroup, isCancelled  in
 			self.updateGroupedChanged(phasset: similarGroup, media: .similarPhotos)
 			U.delay(0.1) {
-				self.scanningProcessIsRunning = !self.scanningProcessIsRunning
+				self.searchingProcessingType = .clearSearchingProcessingQueue
 				self.currentlyScanningProcess = .none
 				if !similarGroup.isEmpty {
 					self.showGropedContoller(grouped: similarGroup, photoContent: .similarPhotos, media: .userPhoto)
 				} else {
-					ErrorHandler.shared.showEmptySearchResultsFor(.similarPhotoIsEmpty, completion: nil)
+					!isCancelled ? ErrorHandler.shared.showEmptySearchResultsFor(.similarPhotoIsEmpty, completion: nil) : ()
 				}
 			}
 		}
@@ -272,19 +277,18 @@ extension MediaContentViewController {
     }
 	
 	private func showDuplicatePhotos() {
-		
-		self.scanningProcessIsRunning = !self.scanningProcessIsRunning
+	
 		self.currentlyScanningProcess = .duplicatedPhotoAssetsOperation
 		
-		let duplicatedPhotoAssetOperation = photoManager.getDuplicatedPhotosAsset(from: lowerBoundDate, to: upperBoundDate, cleanProcessingType: .singleSearch) { duplicateGroup in
+		let duplicatedPhotoAssetOperation = photoManager.getDuplicatedPhotosAsset(from: lowerBoundDate, to: upperBoundDate, cleanProcessingType: .singleSearch) { duplicateGroup, isCancelled in
 			self.updateGroupedChanged(phasset: duplicateGroup, media: .duplicatedPhotos)
 			U.delay(0.1) {
-				self.scanningProcessIsRunning = !self.scanningProcessIsRunning
+				self.searchingProcessingType = .clearSearchingProcessingQueue
 				self.currentlyScanningProcess = .none
 				if !duplicateGroup.isEmpty {
 					self.showGropedContoller(grouped: duplicateGroup, photoContent: .duplicatedPhotos, media: .userPhoto)
 				} else {
-					ErrorHandler.shared.showEmptySearchResultsFor(.duplicatedPhotoIsEmpty, completion: nil)
+					!isCancelled ? ErrorHandler.shared.showEmptySearchResultsFor(.duplicatedPhotoIsEmpty, completion: nil) : ()
 				}
 			}
 		}
@@ -294,18 +298,17 @@ extension MediaContentViewController {
 	
 	private func showScreenshots() {
 		
-		self.scanningProcessIsRunning = !self.scanningProcessIsRunning
 		self.currentlyScanningProcess = .screenShotsAssetsOperation
 		
-		let getScreenShotsAssetsOperation = photoManager.getScreenShotsOperation(from: lowerBoundDate, to: upperBoundDate, cleanProcessingType: .singleSearch) { screenshots in
+		let getScreenShotsAssetsOperation = photoManager.getScreenShotsOperation(from: lowerBoundDate, to: upperBoundDate, cleanProcessingType: .singleSearch) { screenshots, isCancelled in
 			self.updateSingleChanged(phasset: screenshots, content: .singleScreenShots)
 			U.delay(0.1) {
-				self.scanningProcessIsRunning = !self.scanningProcessIsRunning
+				self.searchingProcessingType = .clearSearchingProcessingQueue
 				self.currentlyScanningProcess = .none
 				if !screenshots.isEmpty {
 					self.showAssetViewController(collection: screenshots, photoContent: .singleScreenShots, media: .userPhoto)
 				} else {
-					ErrorHandler.shared.showEmptySearchResultsFor(.screenShotsIsEmpty, completion: nil)
+					!isCancelled ? ErrorHandler.shared.showEmptySearchResultsFor(.screenShotsIsEmpty, completion: nil) : ()
 				}
 			}
 		}
@@ -315,20 +318,19 @@ extension MediaContentViewController {
 	
 	private func showSimilarSelfies() {
 	
-		self.scanningProcessIsRunning = !self.scanningProcessIsRunning
 		self.currentlyScanningProcess = .similarSelfiesAssetsOperation
 		
-		let getSimilarSelfiesPhotoPhassetsOperation = photoManager.getSimilarSelfiePhotosOperation(from: lowerBoundDate, to: upperBoundDate, cleanProcessingType: .singleSearch) { similartSelfiesGroup in
+		let getSimilarSelfiesPhotoPhassetsOperation = photoManager.getSimilarSelfiePhotosOperation(from: lowerBoundDate, to: upperBoundDate, cleanProcessingType: .singleSearch) { similartSelfiesGroup, isCancelled in
 			
 			self.updateGroupedChanged(phasset: similartSelfiesGroup, media: .similarSelfies)
 			
 			U.delay(1) {
-				self.scanningProcessIsRunning = !self.scanningProcessIsRunning
+				self.searchingProcessingType = .clearSearchingProcessingQueue
 				self.currentlyScanningProcess = .none
 				if !similartSelfiesGroup.isEmpty {
 					self.showGropedContoller(grouped: similartSelfiesGroup, photoContent: .similarSelfies, media: .userPhoto)
 				} else {
-					ErrorHandler.shared.showEmptySearchResultsFor(.similarSelfiesIsEmpty, completion: nil)
+					!isCancelled ? ErrorHandler.shared.showEmptySearchResultsFor(.similarSelfiesIsEmpty, completion: nil) : ()
 				}
 			}
 		}
@@ -338,19 +340,18 @@ extension MediaContentViewController {
 	
 	private func showLivePhotos() {
 		
-		self.scanningProcessIsRunning = !self.scanningProcessIsRunning
 		self.currentlyScanningProcess = .livePhotoAssetsOperation
-		let getLivePhotoAssetsOperation = photoManager.getLivePhotosOperation(from: lowerBoundDate, to: upperBoundDate, cleanProcessingType: .singleSearch) { livePhoto in
+		let getLivePhotoAssetsOperation = photoManager.getLivePhotosOperation(from: lowerBoundDate, to: upperBoundDate, cleanProcessingType: .singleSearch) { livePhoto, isCancelled in
 			
 			self.updateSingleChanged(phasset: livePhoto, content: .singleLivePhotos)
 			
 			U.delay(0.1) {
-				self.scanningProcessIsRunning = !self.scanningProcessIsRunning
+				self.searchingProcessingType = .clearSearchingProcessingQueue
 				self.currentlyScanningProcess = .none
 				if !livePhoto.isEmpty {
 					self.showAssetViewController(collection: livePhoto, photoContent: .singleLivePhotos, media: .userPhoto)
 				} else {
-					ErrorHandler.shared.showEmptySearchResultsFor(.livePhotoIsEmpty, completion: nil)
+					!isCancelled ? ErrorHandler.shared.showEmptySearchResultsFor(.livePhotoIsEmpty, completion: nil) : ()
 				}
 			}
 		}
@@ -360,22 +361,21 @@ extension MediaContentViewController {
     
 	private func showRecentlyDeletedPhotos() {
 			
-		self.scanningProcessIsRunning = !self.scanningProcessIsRunning
 		self.currentlyScanningProcess = .recentlyDeletedOperation
 		let getSortedRecentlyDeletedAssetsOperation = PHAssetFetchManager.shared.recentlyDeletdSortedAlbumsFetchOperation { photosAssets, videoAssets in
 			self.singleCleanModel.objects[.singleRecentlyDeletedPhotos]!.phassets = photosAssets
 			
 			self.updateSingleChanged(phasset: photosAssets, content: .singleRecentlyDeletedPhotos)
-
+			
 			U.delay(0.1) {
-					self.scanningProcessIsRunning = !self.scanningProcessIsRunning
-					self.currentlyScanningProcess = .none
-					if photosAssets.count != 0 {
-						self.showAssetViewController(collection: photosAssets, photoContent: .singleRecentlyDeletedPhotos, media: .userPhoto)
-					} else {
-						ErrorHandler.shared.showEmptySearchResultsFor(.recentlyDeletedPhotosIsEmpty, completion: nil)
-					}
+				self.searchingProcessingType = .clearSearchingProcessingQueue
+				self.currentlyScanningProcess = .none
+				if photosAssets.count != 0 {
+					self.showAssetViewController(collection: photosAssets, photoContent: .singleRecentlyDeletedPhotos, media: .userPhoto)
+				} else {
+					ErrorHandler.shared.showEmptySearchResultsFor(.recentlyDeletedPhotosIsEmpty, completion: nil)
 				}
+			}
 		}
 		getSortedRecentlyDeletedAssetsOperation.name = self.currentlyScanningProcess.rawValue
 		phassetProcessingOperationQueuer.addOperation(getSortedRecentlyDeletedAssetsOperation)
@@ -386,17 +386,17 @@ extension MediaContentViewController {
 extension MediaContentViewController {
     
 	private func showLargeVideoFiles() {
-		self.scanningProcessIsRunning = !self.scanningProcessIsRunning
+		
 		self.currentlyScanningProcess = .largeVideoContentOperation
-		let getLargevideoContentOperation = photoManager.getLargevideoContentOperation(from: lowerBoundDate, to: upperBoundDate, cleanProcessingType: .singleSearch) { largeVodeoAsset in
+		let getLargevideoContentOperation = photoManager.getLargevideoContentOperation(from: lowerBoundDate, to: upperBoundDate, cleanProcessingType: .singleSearch) { largeVodeoAsset, isCancelled in
 			self.updateSingleChanged(phasset: largeVodeoAsset, content: .singleLargeVideos)
 			U.delay(0.1) {
-				self.scanningProcessIsRunning = !self.scanningProcessIsRunning
+				self.searchingProcessingType = .clearSearchingProcessingQueue
 				self.currentlyScanningProcess = .none
 				if largeVodeoAsset.count != 0 {
 					self.showAssetViewController(collection: largeVodeoAsset, photoContent: .singleLargeVideos, media: .userVideo)
 				} else {
-					ErrorHandler.shared.showEmptySearchResultsFor(.largeVideoIsEmpty, completion: nil)
+					!isCancelled ? ErrorHandler.shared.showEmptySearchResultsFor(.largeVideoIsEmpty, completion: nil) : ()
 				}
 			}
 		}
@@ -406,18 +406,17 @@ extension MediaContentViewController {
     
 	private func showDuplicateVideoFiles() {
 		
-		self.scanningProcessIsRunning = !self.scanningProcessIsRunning
 		self.currentlyScanningProcess = .duplicatedVideoAssetOperation
-		let getDuplicatedVideoAssetOperatioon = photoManager.getDuplicatedVideoAssetOperation(from: lowerBoundDate, to: upperBoundDate, cleanProcessingType: .singleSearch) { duplicatedVideoAsset in
+		let getDuplicatedVideoAssetOperatioon = photoManager.getDuplicatedVideoAssetOperation(from: lowerBoundDate, to: upperBoundDate, cleanProcessingType: .singleSearch) { duplicatedVideoAsset, isCancelled in
 			
 			self.updateGroupedChanged(phasset: duplicatedVideoAsset, media: .duplicatedVideos)
 			U.delay(0.1) {
-				self.scanningProcessIsRunning = !self.scanningProcessIsRunning
+				self.searchingProcessingType = .clearSearchingProcessingQueue
 				self.currentlyScanningProcess = .none
 				if duplicatedVideoAsset.count != 0 {
 					self.showGropedContoller(grouped: duplicatedVideoAsset, photoContent: .duplicatedVideos, media: .userVideo)
 				} else {
-					ErrorHandler.shared.showEmptySearchResultsFor(.duplicatedVideoIsEmpty, completion: nil)
+					!isCancelled ? ErrorHandler.shared.showEmptySearchResultsFor(.duplicatedVideoIsEmpty, completion: nil) : ()
 				}
 			}
 		}
@@ -426,19 +425,19 @@ extension MediaContentViewController {
 	}
     
 	private func showSimilarVideoFiles() {
-		self.scanningProcessIsRunning = !self.scanningProcessIsRunning
+		
 		self.currentlyScanningProcess = .similarVideoAssetsOperation
-		let getSimilarVideoAssetsOperation = photoManager.getSimilarVideoAssetsOperation(from: lowerBoundDate, to: upperBoundDate, cleanProcessingType: .singleSearch) { similiarVideoAsset in
+		let getSimilarVideoAssetsOperation = photoManager.getSimilarVideoAssetsOperation(from: lowerBoundDate, to: upperBoundDate, cleanProcessingType: .singleSearch) { similiarVideoAsset, isCancelled in
 			
 			self.updateGroupedChanged(phasset: similiarVideoAsset, media: .similarVideos)
 			
 			U.delay(0.1) {
-				self.scanningProcessIsRunning = !self.scanningProcessIsRunning
+				self.searchingProcessingType = .clearSearchingProcessingQueue
 				self.currentlyScanningProcess = .none
 				if similiarVideoAsset.count != 0 {
 					self.showGropedContoller(grouped: similiarVideoAsset, photoContent: .similarVideos, media: .userVideo)
 				} else {
-					ErrorHandler.shared.showEmptySearchResultsFor(.similarVideoIsEmpty, completion: nil)
+					!isCancelled ? ErrorHandler.shared.showEmptySearchResultsFor(.similarVideoIsEmpty, completion: nil) : ()
 				}
 			}
 		}
@@ -447,18 +446,18 @@ extension MediaContentViewController {
 	}
     
 	private func showScreenRecordsVideoFiles() {
-		self.scanningProcessIsRunning = !self.scanningProcessIsRunning
+		
 		self.currentlyScanningProcess = .screenRecordingsVideoOperation
-		let getScreenRecordsVideosOperation = photoManager.getScreenRecordsVideosOperation(from: lowerBoundDate, to: upperBoundDate, cleanProcessingType: .singleSearch) { screenRecordsAssets in
+		let getScreenRecordsVideosOperation = photoManager.getScreenRecordsVideosOperation(from: lowerBoundDate, to: upperBoundDate, cleanProcessingType: .singleSearch) { screenRecordsAssets, isCancelled in
 			
 			self.updateSingleChanged(phasset: screenRecordsAssets, content: .singleScreenRecordings)
 			U.delay(0.1) {
-				self.scanningProcessIsRunning = !self.scanningProcessIsRunning
+				self.searchingProcessingType = .clearSearchingProcessingQueue
 				self.currentlyScanningProcess = .none
 				if screenRecordsAssets.count != 0 {
 					self.showAssetViewController(collection: screenRecordsAssets, photoContent: .singleScreenRecordings, media: .userVideo)
 				} else {
-					ErrorHandler.shared.showEmptySearchResultsFor(.screenRecordingIsEmpty, completion: nil)
+					!isCancelled ? ErrorHandler.shared.showEmptySearchResultsFor(.screenRecordingIsEmpty, completion: nil) : ()
 				}
 			}
 		}
@@ -467,13 +466,13 @@ extension MediaContentViewController {
 	}
 	
 	private func showRecentlyDeletedVideos() {
-		self.scanningProcessIsRunning = !self.scanningProcessIsRunning
+		
 		self.currentlyScanningProcess = .recentlyDeletedOperation
 		let getSortedRecentlyDeletedAssetsOperation = PHAssetFetchManager.shared.recentlyDeletdSortedAlbumsFetchOperation { photosAssets, videoAssets in
 			
 			self.updateSingleChanged(phasset: videoAssets, content: .singleRecentlyDeletedVideos)
 			U.delay(0.1) {
-				self.scanningProcessIsRunning = !self.scanningProcessIsRunning
+				self.searchingProcessingType = .clearSearchingProcessingQueue
 				self.currentlyScanningProcess = .none
 				if videoAssets.count != 0 {
 					self.showAssetViewController(collection: videoAssets, photoContent: .singleRecentlyDeletedVideos, media: .userVideo)
@@ -487,9 +486,9 @@ extension MediaContentViewController {
 	}
     
     private func showSimmilarVideoFilesByTimeStamp() {
-		self.scanningProcessIsRunning = !self.scanningProcessIsRunning
+		
 		let getSimilarVideosByTimeStamp = photoManager.getSimilarVideosByTimeStampOperation(from: lowerBoundDate, to: upperBoundDate, cleanProcessingType: .singleSearch) { similarVideos in
-			self.scanningProcessIsRunning = !self.scanningProcessIsRunning
+			self.searchingProcessingType = .clearSearchingProcessingQueue
 			if similarVideos.count != 0 {
 				self.showGropedContoller(grouped: similarVideos, photoContent: .similarVideos, media: .userVideo)
 			} else {
@@ -504,11 +503,13 @@ extension MediaContentViewController {
 extension MediaContentViewController {
 	
 	private func showAllContacts() {
+		
 		P.showIndicator()
 		self.contactsManager.getAllContacts { contacts in
 			self.updateContactsSingleChanged(contacts: contacts, content: .allContacts)
 			U.delay(0.1) {
 				P.hideIndicator()
+				self.searchingProcessingType = .clearSearchingProcessingQueue
 				if !contacts.isEmpty {
 					self.showContactViewController(contacts: contacts, contentType: .allContacts)
 				} else {
@@ -520,28 +521,25 @@ extension MediaContentViewController {
 	
 	private func showEmptyGroupsContacts() {
 		
-		self.scanningProcessIsRunning = !scanningProcessIsRunning
 		self.currentlyScanningProcess = .emptyContactOperation
 		
-		self.contactsManager.getSingleDuplicatedCleaningContacts(of: .emptyContacts) { contactsGroup in
+		self.contactsManager.getSingleDuplicatedCleaningContacts(of: .emptyContacts) { contactsGroup, isCancelled in
 			let totalContacts = contactsGroup.map({$0.contacts}).count
 			let group = contactsGroup.filter({!$0.contacts.isEmpty})
 			self.updateGroupedContacts(contacts: group, media: .emptyContacts)
 			U.delay(0.1) {
-				self.scanningProcessIsRunning = !self.scanningProcessIsRunning
+				self.searchingProcessingType = .clearSearchingProcessingQueue
 				self.currentlyScanningProcess = .none
 				if totalContacts != 0 {
 					self.showContactViewController(contactGroup: group, contentType: .emptyContacts)
 				} else {
-					A.showEmptyContactsToPresent(of: .emptyContactsIsEmpty) {}
+					!isCancelled ? A.showEmptyContactsToPresent(of: .emptyContactsIsEmpty) {} : ()
 				}
 			}
 		}
 	}
 	
 	private func showContactCleanController(cleanType: ContactasCleaningType) {
-		
-		self.scanningProcessIsRunning = !scanningProcessIsRunning
 		
 		switch cleanType {
 			case .duplicatedPhoneNumnber:
@@ -554,19 +552,19 @@ extension MediaContentViewController {
 				self.currentlyScanningProcess = .none
 		}
 		
-		self.contactsManager.getSingleDuplicatedCleaningContacts(of: cleanType) { contactsGroup in
+		self.contactsManager.getSingleDuplicatedCleaningContacts(of: cleanType) { contactsGroup, isCancelled in
 			let mediaType = cleanType.photoMediaType
 			
 			self.updateGroupedContacts(contacts: contactsGroup, media: mediaType)
 			
 			U.delay(0.1) {
-				self.scanningProcessIsRunning = !self.scanningProcessIsRunning
+				self.searchingProcessingType = .clearSearchingProcessingQueue
 				self.currentlyScanningProcess = .none
 				if contactsGroup.count != 0 {
 					let group = contactsGroup.sorted(by: {$0.name < $1.name})
 					self.showGroupedContactsViewController(contacts: group, group: cleanType, content:  cleanType.photoMediaType)
 				} else {
-					A.showEmptyContactsToPresent(of: cleanType.alertEmptyType) {}
+					!isCancelled ? A.showEmptyContactsToPresent(of: cleanType.alertEmptyType) {} : ()
 				}
 			}
 		}
@@ -682,12 +680,12 @@ extension MediaContentViewController {
 	}
 	
 	private func updatePhoto() {
-		let getScreenShotsAssetsOperation = photoManager.getScreenShotsOperation(from: lowerBoundDate, to: upperBoundDate, cleanProcessingType: .background) { screenshots in
+		let getScreenShotsAssetsOperation = photoManager.getScreenShotsOperation(from: lowerBoundDate, to: upperBoundDate, cleanProcessingType: .background) { screenshots, _ in
 			self.updateSingleChanged(phasset: screenshots, content: .singleScreenShots)
 		}
 		phassetProcessingOperationQueuer.addOperation(getScreenShotsAssetsOperation)
 		
-		let getLivePhotoAssetsOperation = photoManager.getLivePhotosOperation(from: lowerBoundDate, to: upperBoundDate, cleanProcessingType: .background) { livePhoto in
+		let getLivePhotoAssetsOperation = photoManager.getLivePhotosOperation(from: lowerBoundDate, to: upperBoundDate, cleanProcessingType: .background) { livePhoto, _ in
 			
 			self.updateSingleChanged(phasset: livePhoto, content: .singleLivePhotos)
 		}
@@ -696,19 +694,19 @@ extension MediaContentViewController {
 	
 	
 	private func updateVideo() {
-		let screenRecordsVideosOperation = photoManager.getScreenRecordsVideosOperation(from: lowerBoundDate, to: upperBoundDate, cleanProcessingType: .background) { screenRecordsAssets in
+		let screenRecordsVideosOperation = photoManager.getScreenRecordsVideosOperation(from: lowerBoundDate, to: upperBoundDate, cleanProcessingType: .background) { screenRecordsAssets, _ in
 			self.updateSingleChanged(phasset: screenRecordsAssets, content: .singleScreenRecordings)
 		}
 		phassetProcessingOperationQueuer.addOperation(screenRecordsVideosOperation)
 		
-		let largeVideosOperation = photoManager.getLargevideoContentOperation(from: lowerBoundDate, to: upperBoundDate, cleanProcessingType: .background) { videoAssets in
+		let largeVideosOperation = photoManager.getLargevideoContentOperation(from: lowerBoundDate, to: upperBoundDate, cleanProcessingType: .background) { videoAssets, _ in
 			self.updateSingleChanged(phasset: videoAssets, content: .singleLargeVideos)
 		}
 		phassetProcessingOperationQueuer.addOperation(largeVideosOperation)
 	}
 	
 	private func updateContacts() {
-		self.contactsManager.getUpdatingContactsAfterContainerDidChange(cleanProcessingType: .background) {
+		self.contactsManager.getUpdatingContactsAfterContainerDidChange(cleanProcessingType: .background) { _ in
 			
 		} allContacts: { contacts in
 			self.updateContactsSingleChanged(contacts: contacts, content: .allContacts)
@@ -724,7 +722,6 @@ extension MediaContentViewController {
 		}
 	}
 }
-
 
 //      MARK: - handle progressUpdating cell content
 
@@ -776,7 +773,7 @@ extension MediaContentViewController {
     }
     
     private func recieveNotification(by type: SingleContentSearchNotificationType, userInfo: [AnyHashable: Any]) {
-        
+		
 		guard let status = userInfo[type.dictionaryProcessingState] as? ProcessingProgressOperationState,
 			let totalProcessingCount = userInfo[type.dictionaryCountName] as? Int,
               let currentIndex = userInfo[type.dictioanartyIndexName] as? Int else { return }
@@ -811,7 +808,9 @@ extension MediaContentViewController {
 		self.configure(cell, at: indexPath)
     }
     	
-	private func setCanselActiveOperation() {
+	private func setCanselActiveOperation(completionHandler: @escaping () -> Void) {
+		
+		self.searchingProcessingType = .clearSearchingProcessingQueue
 		
 		if self.mediaContentType == .userContacts {
 			if let operation = self.contactsProcessingOperationQueuer.operations.first(where: {$0.name == self.currentlyScanningProcess.rawValue}) {
@@ -819,6 +818,9 @@ extension MediaContentViewController {
 					self.contactsProcessingOperationQueuer.cancelOperation(with: name)
 					U.delay(1) {
 						self.updateProcessingCancel(for: name)
+						U.delay(0.33) {
+							completionHandler()
+						}
 					}
 				}
 			}
@@ -828,14 +830,36 @@ extension MediaContentViewController {
 					self.phassetProcessingOperationQueuer.cancelOperation(with: name)
 					U.delay(1) {
 						self.updateProcessingCancel(for: name)
+						U.delay(0.33) {
+							completionHandler()
+						}
 					}
 				}
 			}
 		}
 	}
 	
-	private func setCancelSmartSearchOperationQueue() {
+	private func setCancelSmartSearchOperationQueue(completionHandler: @escaping () -> Void) {
 		
+		self.searchingProcessingType = .clearSearchingProcessingQueue
+		
+		let operations = self.smartCleanManager.smarCleanOperationQueue.operations
+		var cleanedOperation = 0
+		
+		if !operations.isEmpty {
+			for operation in operations {
+				if let name = operation.name {
+					self.smartCleanManager.smarCleanOperationQueue.cancelOperation(with: name)
+					cleanedOperation += 1
+					U.delay(0.33) {
+						self.updateProcessingCancel(for: name)
+						if cleanedOperation == operations.count {
+							completionHandler()
+						}
+					}
+				}
+			}
+		}
 	}
 	
 	private func updateProcessingCancel(for operationName: String) {
@@ -844,21 +868,35 @@ extension MediaContentViewController {
 			
 			let type = operation.mediaType
 			
-			switch type {
-				case .singleScreenShots, .singleRecentlyDeletedPhotos, .similarLivePhotos, .singleLargeVideos, .singleRecentlyDeletedVideos, .singleScreenRecordings:
-					self.updateSingleChanged(phasset: [], content: type)
-				case .similarPhotos, .duplicatedPhotos, .similarSelfies, .duplicatedVideos, .similarVideos:
-					self.updateGroupedChanged(phasset: [], media: type)
-				case .allContacts:
-					self.updateContactsSingleChanged(contacts: [], content: .allContacts)
-				case .emptyContacts, .duplicatedContacts, .duplicatedPhoneNumbers, .duplicatedEmails:
-					self.updateGroupedContacts(contacts: [], media: type)
-				default:
-					return
+			guard let object = self.singleCleanModel.objects[type] else { return }
+			
+			object.resetSingleMode()
+			
+			U.UI {
+				if let cell = self.tableView.cellForRow(at: type.singleSearchIndexPath) as? ContentTypeTableViewCell {
+					self.configure(cell, at: type.singleSearchIndexPath)
+				}
 			}
 		}
 	}
-				
+	
+	private func desintagrateSearchingResults() {
+		
+		self.resetRecievingData()
+		self.resetAllProgressVisual()
+		self.smartCleaningDidFinishWithResults = false
+		UIView.performWithoutAnimation {
+			self.tableView.reloadData()
+		}
+	}
+	
+	
+	private func resetRecievingData() {
+		for ( _ , value) in singleCleanModel.objects {
+			value.resetSingleMode()
+		}
+	}
+	
 	private func resetAllProgressVisual() {
 		let numberOFOperationElemtnth = self.tableView.numberOfRows(inSection: 0)
 		let allSectionIndexPath = (0..<numberOFOperationElemtnth).map {IndexPath(row: $0, section: 0)}
@@ -876,7 +914,7 @@ extension MediaContentViewController {
 	private func startSmartCleanProcessing() {
 		
 		self.searchingProcessingType = .smartGroupSearchProcess
-	
+		
 		smartCleanManager.startSmartCleanFetch(self.mediaContentType.sections,
 											   lowerBoundDate: self.lowerBoundDate,
 											   upperBoundDate: self.upperBoundDate) { _ in
@@ -899,21 +937,38 @@ extension MediaContentViewController {
 			self.updateGroupedChanged(phasset: phassetGroups, media: .similarVideos)
 		} screenRecordings: { phassets in
 			self.updateSingleChanged(phasset: phassets, content: .singleScreenRecordings)
-		} completionHandler: {
+		} completionHandler: { isCanceled in
 			self.searchingProcessingType = .clearSearchingProcessingQueue
-			self.smartCleaningDidFinishWithResults = true
+			self.smartCleaningDidFinishWithResults = !isCanceled
+		}
+	}
+	
+	private func handleChangeSmartCleanProcessing() {
+		
+		switch searchingProcessingType {
+			case .clearSearchingProcessingQueue:
+				self.navigationBar.changeHotRightButton(with: I.systemItems.navigationBarItems.magic)
+			case .singleSearchProcess:
+				self.navigationBar.changeHotRightButton(with: I.systemItems.navigationBarItems.stopMagic)
+			case .smartGroupSearchProcess:
+				self.navigationBar.changeHotRightButton(with: I.systemItems.navigationBarItems.stopMagic)
 		}
 	}
 }
 
-
 extension MediaContentViewController: DateSelectebleViewDelegate {
     
     func didSelectStartingDate() {
+		
+		guard self.searchingProcessingType == .clearSearchingProcessingQueue else { return }
+		
 		performSegue(withIdentifier: C.identifiers.segue.showLowerDatePicker, sender: self)
     }
     
     func didSelectEndingDate() {
+		
+		guard self.searchingProcessingType == .clearSearchingProcessingQueue else { return }
+		
 		performSegue(withIdentifier: C.identifiers.segue.showUpperDatePicker, sender: self)
     }
 }
@@ -925,22 +980,35 @@ extension MediaContentViewController: NavigationBarDelegate {
 		switch self.searchingProcessingType {
 			case .smartGroupSearchProcess:
 				A.showStopSmartSingleSearchProcess {
-					self.setCancelSmartSearchOperationQueue()
+					self.setCancelSmartSearchOperationQueue {
+						self.navigationController?.popViewController(animated: true)
+					}
 				}
 			case .singleSearchProcess:
 				A.showStopSingleSearchProcess {
-					self.setCanselActiveOperation()
+					self.setCanselActiveOperation {
+						self.navigationController?.popViewController(animated: true)
+					}
 				}
 			case .clearSearchingProcessingQueue:
 				self.navigationController?.popViewController(animated: true)
 		}
     }
     
-    func didTapRightBarButton(_ sender: UIButton) {
+	func didTapRightBarButton(_ sender: UIButton) {
 		
-		guard self.searchingProcessingType == .clearSearchingProcessingQueue else { return }
-	
-		startSmartCleanProcessing()
+		switch searchingProcessingType {
+			case .clearSearchingProcessingQueue:
+				startSmartCleanProcessing()
+			case .smartGroupSearchProcess:
+				A.showStopSmartSingleSearchProcess {
+					self.setCancelSmartSearchOperationQueue() {}
+				}
+			case .singleSearchProcess:
+				A.showStopSingleSearchProcess {
+					self.setCanselActiveOperation() {}
+				}
+		}
 	}
 }
 
@@ -1008,7 +1076,7 @@ extension MediaContentViewController: Themeble {
     }
     
     private func setupNavigation() {
-        
+		
 		if mediaContentType != .userContacts {
 			
 			navigationBar.setIsDropShadow = false
@@ -1096,9 +1164,15 @@ extension MediaContentViewController: Themeble {
 			  dateSelectedController.selectedDateCompletion = { selectedDate in
 				   switch selectedType {
 						case .lowerDateSelectable:
-							 self.lowerBoundDate = selectedDate
+						   if self.lowerBoundDate != selectedDate {
+							   self.lowerBoundDate = selectedDate
+							   self.desintagrateSearchingResults()
+						   }
 						case .upperDateSelectable:
+						   if self.upperBoundDate != selectedDate {
 							 self.upperBoundDate = selectedDate
+							   self.desintagrateSearchingResults()
+						   }
 						default:
 							 return
 				   }

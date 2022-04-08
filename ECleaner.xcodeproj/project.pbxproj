@@ -936,9 +936,9 @@
 				049CC2222683179E0002F988 /* ThemeManager */,
 				049CC22C268321DC0002F988 /* NotificationManager */,
 				97E54A8D2690AA0E00C7FD54 /* SegueManager */,
-				97C909C92748F68B00BC2E47 /* ECFileManager.swift */,
-				97C909CB2748FA5300BC2E47 /* ShareManager.swift */,
-				97D38C0427FDDB12007A80E8 /* SingleSmartClean.swift */,
+				97C4217927FF4E0300FF62D7 /* FileManager */,
+				97C4217827FF4DF200FF62D7 /* ShareManager */,
+				97C4217727FF4DDB00FF62D7 /* SmartCleanManager */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -1519,6 +1519,30 @@
 				97B01A7E2747CB8C00DDE03C /* ExportContactsViewController.swift */,
 			);
 			path = Export;
+			sourceTree = "<group>";
+		};
+		97C4217727FF4DDB00FF62D7 /* SmartCleanManager */ = {
+			isa = PBXGroup;
+			children = (
+				97D38C0427FDDB12007A80E8 /* SingleSmartClean.swift */,
+			);
+			path = SmartCleanManager;
+			sourceTree = "<group>";
+		};
+		97C4217827FF4DF200FF62D7 /* ShareManager */ = {
+			isa = PBXGroup;
+			children = (
+				97C909CB2748FA5300BC2E47 /* ShareManager.swift */,
+			);
+			path = ShareManager;
+			sourceTree = "<group>";
+		};
+		97C4217927FF4E0300FF62D7 /* FileManager */ = {
+			isa = PBXGroup;
+			children = (
+				97C909C92748F68B00BC2E47 /* ECFileManager.swift */,
+			);
+			path = FileManager;
 			sourceTree = "<group>";
 		};
 		97C4D71C27F3737900C476FE /* PHAssetViewCells */ = {

@@ -229,19 +229,19 @@ extension ContactsManager {
 		concurrentOperationContacts.name = C.key.operation.name.updateContectContacts
 		self.contactsProcessingOperationQueuer.addOperation(concurrentOperationContacts)
 		
-		self.getEmptyContacts(contacts) { contactsGroup in
+		self.getEmptyContacts(contacts) { contactsGroup, _ in
 			UpdateContentDataBaseMediator.instance.getAllEmptyContacts(contactsGroup)
 		}
 		
-		self.getDuplicatedNames(contacts) { contactsGroup in
+		self.getDuplicatedNames(contacts) { contactsGroup, _ in
 			UpdateContentDataBaseMediator.instance.getAllDuplicatedContactsGroup(contactsGroup)
 		}
 		
-		self.getDuplicatedPhones(contacts) { contactsGroup in
+		self.getDuplicatedPhones(contacts) { contactsGroup, _ in
 			UpdateContentDataBaseMediator.instance.getAllDuplicatedNumbersContactsGroup(contactsGroup)
 		}
 		
-		self.getDuplicatedEmails(contacts) { contactsGroup in
+		self.getDuplicatedEmails(contacts) { contactsGroup, _ in
 			UpdateContentDataBaseMediator.instance.getAllDuplicatedEmailsContactsGroup(contactsGroup)
 		}
 	}
@@ -252,9 +252,9 @@ extension ContactsManager {
 		/// `` - send notificatons to main screen updating contacts values
 		/// - Parameter contacts: recieved all contacts and statint processing
 		
-	private func getEmptyContacts(_ contacts: [CNContact], completion: @escaping ([ContactsGroup]) -> Void) {
-		let operation = self.getEmptyContactsOperation(contacts: contacts, cleanProcessingType: .background) { contactsGroup in
-			completion(contactsGroup)
+	private func getEmptyContacts(_ contacts: [CNContact], completion: @escaping (_ contactsGroup: [ContactsGroup],_ isCancelled: Bool) -> Void) {
+		let operation = self.getEmptyContactsOperation(contacts: contacts, cleanProcessingType: .background) { contactsGroup, isCancelled in
+			completion(contactsGroup, isCancelled)
 		}
 		
 		if let operationInQueue = self.contactsProcessingOperationQueuer.operations.first(where: {$0.name == operation.name}) {
@@ -267,9 +267,9 @@ extension ContactsManager {
 		}
 	}
 	
-	private func getDuplicatedNames(_ contacts: [CNContact], completion: @escaping ([ContactsGroup]) -> Void) {
-		let operation = self.getDuplicatedContactsNamesOperation(contacts: contacts, cleanProcessingType: .background) { contactsGroup in
-			completion(contactsGroup)
+	private func getDuplicatedNames(_ contacts: [CNContact], completion: @escaping (_ contactsGroup: [ContactsGroup],_ isCancelled: Bool) -> Void) {
+		let operation = self.getDuplicatedContactsNamesOperation(contacts: contacts, cleanProcessingType: .background) { contactsGroup, isCancelled in
+			completion(contactsGroup, isCancelled)
 		}
 		if let operationInQueue = self.contactsProcessingOperationQueuer.operations.first(where: {$0.name == operation.name}) {
 			operationInQueue.cancel()
@@ -281,9 +281,9 @@ extension ContactsManager {
 		}
 	}
 	
-	private func getDuplicatedPhones(_ contacts: [CNContact], completion: @escaping ([ContactsGroup]) -> Void) {
-		let operation = self.getPhoneDuplicatedOperation(contacts: contacts, cleanProcessingType: .background) { contactsGroup in
-			completion(contactsGroup)
+	private func getDuplicatedPhones(_ contacts: [CNContact], completion: @escaping (_ contactsGroup: [ContactsGroup],_ isCancelled: Bool) -> Void) {
+		let operation = self.getPhoneDuplicatedOperation(contacts: contacts, cleanProcessingType: .background) { contactsGroup, isCancelled in
+			completion(contactsGroup, isCancelled)
 		}
 		if let operationInQueue = self.contactsProcessingOperationQueuer.operations.first(where: {$0.name == operation.name}) {
 			operationInQueue.cancel()
@@ -295,9 +295,9 @@ extension ContactsManager {
 		}
 	}
 	
-	private func getDuplicatedEmails(_ contacts: [CNContact], completion: @escaping ([ContactsGroup]) -> Void) {
-		let operation = self.getEmailDuplicatesOperation(contacts: contacts, cleanProcessingType: .background) { contactsGroup in
-			completion(contactsGroup)
+	private func getDuplicatedEmails(_ contacts: [CNContact], completion: @escaping (_ contactsGroup: [ContactsGroup],_ isCancelled: Bool) -> Void) {
+		let operation = self.getEmailDuplicatesOperation(contacts: contacts, cleanProcessingType: .background) { contactsGroup, isCancelled in
+			completion(contactsGroup, isCancelled)
 		}
 		if let operationInQueue = self.contactsProcessingOperationQueuer.operations.first(where: {$0.name == operation.name}) {
 			operationInQueue.cancel()
@@ -322,7 +322,7 @@ extension ContactsManager {
 		///   - `duplicatedPhoneNumbers:` duplicated phone numbers group
 		///   - `duplicatedEmailGrops:` - duplicated emails groups
 	public func getUpdatingContactsAfterContainerDidChange(cleanProcessingType: CleanProcessingPresentType = .background,
-														   completionHandler: @escaping () -> Void,
+														   completionHandler: @escaping (_ isCancelled: Bool) -> Void,
 														   allContacts: @escaping ([CNContact]) -> Void,
 														   emptyContacts: @escaping ([ContactsGroup]) -> Void,
 														   duplicatedNames: @escaping ([ContactsGroup]) -> Void,
@@ -334,35 +334,35 @@ extension ContactsManager {
 				/// returned contacts all containers
 			allContacts(contacts)
 			
-			let emptyContactsOperation = self.getEmptyContactsOperation(contacts: contacts, cleanProcessingType: cleanProcessingType) { contactsGroup in
+			let emptyContactsOperation = self.getEmptyContactsOperation(contacts: contacts, cleanProcessingType: cleanProcessingType) { contactsGroup, isCancelled in
 				emptyContacts(contactsGroup)
 				numbersOfOperations += 1
 				if numbersOfOperations == 4 {
-					completionHandler()
+					completionHandler(isCancelled)
 				}
 			}
 			
-			let duplicatedContactNameOperation = self.getDuplicatedContactsNamesOperation(contacts: contacts, cleanProcessingType: cleanProcessingType) { contactsGroup in
+			let duplicatedContactNameOperation = self.getDuplicatedContactsNamesOperation(contacts: contacts, cleanProcessingType: cleanProcessingType) { contactsGroup, isCancelled in
 				duplicatedNames(contactsGroup)
 				numbersOfOperations += 1
 				if numbersOfOperations == 4 {
-					completionHandler()
+					completionHandler(isCancelled)
 				}
 			}
 			
-			let duplicatedPhoneNumnberOperation = self.getPhoneDuplicatedOperation(contacts: contacts, cleanProcessingType: cleanProcessingType) { contactsGroup in
+			let duplicatedPhoneNumnberOperation = self.getPhoneDuplicatedOperation(contacts: contacts, cleanProcessingType: cleanProcessingType) { contactsGroup, isCancelled in
 				duplicatedPhoneNumbers(contactsGroup)
 				numbersOfOperations += 1
 				if numbersOfOperations == 4 {
-					completionHandler()
+					completionHandler(isCancelled)
 				}
 			}
 			
-			let duplicatedEmailOperation = self.getEmailDuplicatesOperation(contacts: contacts, cleanProcessingType: cleanProcessingType) { contactsGroup in
+			let duplicatedEmailOperation = self.getEmailDuplicatesOperation(contacts: contacts, cleanProcessingType: cleanProcessingType) { contactsGroup, isCancelled in
 				duplicatedEmailGrops(contactsGroup)
 				numbersOfOperations += 1
 				if numbersOfOperations == 4 {
-					completionHandler()
+					completionHandler(isCancelled)
 				}
 			}
 			if !self.contactsProcessingOperationQueuer.operations.contains(where: {$0.name == emptyContactsOperation.name}) {
@@ -384,18 +384,21 @@ extension ContactsManager {
 	}
 }
 
-
 extension ContactsManager {
 	
-	public func getSingleDuplicatedCleaningContacts(of type: ContactasCleaningType, cleanProcessingType: CleanProcessingPresentType = .singleSearch, completionHandler: @escaping ([ContactsGroup]) -> Void) {
+	public func getSingleDuplicatedCleaningContacts(of type: ContactasCleaningType, cleanProcessingType: CleanProcessingPresentType = .singleSearch, completionHandler: @escaping (_ contactsGroup: [ContactsGroup],_ isCancelled: Bool) -> Void) {
 		
 		self.getAllContacts { contacts in
-			guard !contacts.isEmpty else { completionHandler([]); return }
+
+			guard !contacts.isEmpty else {
+				completionHandler([], false)
+				return
+			}
 			
 			switch type {
 				case .emptyContacts:
-					let operation = self.getEmptyContactsOperation(contacts: contacts, cleanProcessingType: cleanProcessingType) { contactsGroup in
-						completionHandler(contactsGroup)
+					let operation = self.getEmptyContactsOperation(contacts: contacts, cleanProcessingType: cleanProcessingType) { contactsGroup, isCancelled in
+						completionHandler(contactsGroup, isCancelled)
 					}
 					if !self.contactsProcessingOperationQueuer.operations.contains(where: {$0.name == operation.name}) {
 						self.contactsProcessingOperationQueuer.addOperation(operation)
@@ -403,8 +406,8 @@ extension ContactsManager {
 						self.checkActiveOperation(operation)
 					}
 				case .duplicatedContactName:
-					let operation = self.getDuplicatedContactsNamesOperation(contacts: contacts, cleanProcessingType: cleanProcessingType) { contactsGroup in
-						completionHandler(contactsGroup)
+					let operation = self.getDuplicatedContactsNamesOperation(contacts: contacts, cleanProcessingType: cleanProcessingType) { contactsGroup, isCancelled in
+						completionHandler(contactsGroup, isCancelled)
 					}
 					if !self.contactsProcessingOperationQueuer.operations.contains(where: {$0.name == operation.name}) {
 						self.contactsProcessingOperationQueuer.addOperation(operation)
@@ -412,8 +415,8 @@ extension ContactsManager {
 						self.checkActiveOperation(operation)
 					}
 				case .duplicatedPhoneNumnber:
-					let operation = self.getPhoneDuplicatedOperation(contacts: contacts, cleanProcessingType: cleanProcessingType) { contactsGroup in
-						completionHandler(contactsGroup)
+					let operation = self.getPhoneDuplicatedOperation(contacts: contacts, cleanProcessingType: cleanProcessingType) { contactsGroup, isCancelled in
+						completionHandler(contactsGroup, isCancelled)
 					}
 					if !self.contactsProcessingOperationQueuer.operations.contains(where: {$0.name == operation.name}) {
 						self.contactsProcessingOperationQueuer.addOperation(operation)
@@ -421,8 +424,8 @@ extension ContactsManager {
 						self.checkActiveOperation(operation)
 					}
 				case .duplicatedEmail:
-					let operation = self.getEmailDuplicatesOperation(contacts: contacts, cleanProcessingType: cleanProcessingType) { contactsGroup in
-						completionHandler(contactsGroup)
+					let operation = self.getEmailDuplicatesOperation(contacts: contacts, cleanProcessingType: cleanProcessingType) { contactsGroup, isCancelled in
+						completionHandler(contactsGroup, isCancelled)
 					}
 					if !self.contactsProcessingOperationQueuer.operations.contains(where: {$0.name == operation.name}) {
 						self.contactsProcessingOperationQueuer.addOperation(operation)
@@ -430,7 +433,7 @@ extension ContactsManager {
 						self.checkActiveOperation(operation)
 					}
 				default:
-					completionHandler([])
+					completionHandler([], false)
 			}
 		}
 	}
@@ -450,58 +453,62 @@ extension ContactsManager {
 		}
 	}
 	
-	public func getDeepCleanContactsProcessing(completionHandler: @escaping () -> Void,
-											   emptyContactsCompletion: @escaping ([ContactsGroup]) -> Void,
-											   duplicatedContactsCompletion: @escaping ([ContactsGroup]) -> Void,
-											   duplicatedPhoneNumbersCompletion: @escaping ([ContactsGroup]) -> Void,
-											   duplicatedEmailsContactsCompletion: @escaping ([ContactsGroup]) -> Void) {
+	public func getDeepCleanContactsProcessing(completionHandler: @escaping (_ isCancelled: Bool) -> Void,
+											   emptyContactsCompletion: @escaping (_ contactsGroup: [ContactsGroup],_ isCancelled: Bool) -> Void,
+											   duplicatedContactsCompletion: @escaping (_ contactsGroup: [ContactsGroup],_ isCancelled: Bool) -> Void,
+											   duplicatedPhoneNumbersCompletion: @escaping (_ contactsGroup: [ContactsGroup],_ isCancelled: Bool) -> Void,
+											   duplicatedEmailsContactsCompletion: @escaping (_ contactsGroup: [ContactsGroup],_ isCancelled: Bool) -> Void) {
 		
 		self.getAllContacts { contacts in
 						
 			var totalProcessingCompleteTasks = 0
 			
-			guard !contacts.isEmpty else { completionHandler(); return }
+			guard !contacts.isEmpty else { completionHandler(false); return }
 			
-			let emptyContactsOperation = self.getEmptyContactsOperation(contacts: contacts, cleanProcessingType: .deepCleen) { contactsGroup in
-				emptyContactsCompletion(contactsGroup)
+			var processingOperationQueue: [ConcurrentProcessOperation] = []
+			
+			let emptyContactsOperation = self.getEmptyContactsOperation(contacts: contacts, cleanProcessingType: .deepCleen) { contactsGroup, isCancelled in
+				emptyContactsCompletion(contactsGroup, isCancelled)
 				
 				totalProcessingCompleteTasks += 1
 				if totalProcessingCompleteTasks == 4 {
-					completionHandler()
+					completionHandler(isCancelled)
 				}
 			}
-			
-			let duplicatedNamesOperation = self.getDuplicatedContactsNamesOperation(contacts: contacts, cleanProcessingType: .deepCleen) { contactsGroup in
-				duplicatedContactsCompletion(contactsGroup)
+			processingOperationQueue.append(emptyContactsOperation)
+		
+			let duplicatedNamesOperation = self.getDuplicatedContactsNamesOperation(contacts: contacts, cleanProcessingType: .deepCleen) { contactsGroup, isCancelled in
+				duplicatedContactsCompletion(contactsGroup, isCancelled)
 				
 				totalProcessingCompleteTasks += 1
 				if totalProcessingCompleteTasks == 4 {
-					completionHandler()
+					completionHandler(isCancelled)
 				}
 			}
+			processingOperationQueue.append(duplicatedNamesOperation)
 			
-			let duplicatedPhoneNumbersOperation = self.getPhoneDuplicatedOperation(contacts: contacts, cleanProcessingType: .deepCleen) { contactsGroup in
-				duplicatedPhoneNumbersCompletion(contactsGroup)
+			let duplicatedPhoneNumbersOperation = self.getPhoneDuplicatedOperation(contacts: contacts, cleanProcessingType: .deepCleen) { contactsGroup, isCancelled in
+				duplicatedPhoneNumbersCompletion(contactsGroup, isCancelled)
 				
 				totalProcessingCompleteTasks += 1
 				if totalProcessingCompleteTasks == 4 {
-					completionHandler()
+					completionHandler(isCancelled)
 				}
 			}
+			processingOperationQueue.append(duplicatedPhoneNumbersOperation)
 			
-			let duplicatedEmailsOperation = self.getEmailDuplicatesOperation(contacts: contacts, cleanProcessingType: .deepCleen) { contactsGroup in
-				duplicatedEmailsContactsCompletion(contactsGroup)
+			let duplicatedEmailsOperation = self.getEmailDuplicatesOperation(contacts: contacts, cleanProcessingType: .deepCleen) { contactsGroup, isCancelled in
+				duplicatedEmailsContactsCompletion(contactsGroup, isCancelled)
 				totalProcessingCompleteTasks += 1
 				if totalProcessingCompleteTasks == 4 {
-					completionHandler()
+					completionHandler(isCancelled)
 				}
 			}
-						
-			self.contactsProcessingOperationQueuer.addOperation(emptyContactsOperation)
-			self.contactsProcessingOperationQueuer.addOperation(duplicatedNamesOperation)
-			self.contactsProcessingOperationQueuer.addOperation(duplicatedPhoneNumbersOperation)
-			self.contactsProcessingOperationQueuer.addOperation(duplicatedEmailsOperation)
-			
+			processingOperationQueue.append(duplicatedEmailsOperation)
+
+			processingOperationQueue.forEach { operation in
+				self.contactsProcessingOperationQueuer.addOperation(operation)
+			}
 		}
 	}
 }
@@ -515,12 +522,12 @@ extension ContactsManager {
 		/// ``getEmailDuplicatesOperation`` - check for empty fields
 	
 		/// `check empty filds` - check if some fileds is emty
-	private func getEmptyContactsOperation(contacts: [CNContact], cleanProcessingType: CleanProcessingPresentType, _ completionHandler: @escaping ([ContactsGroup]) -> Void) -> ConcurrentProcessOperation {
+	private func getEmptyContactsOperation(contacts: [CNContact], cleanProcessingType: CleanProcessingPresentType, _ completionHandler: @escaping (_ contactsGroup: [ContactsGroup],_ isCancelled: Bool) -> Void) -> ConcurrentProcessOperation {
 		
 		let emptyContactsOperation = ConcurrentProcessOperation { operation in
 			
 			guard contacts.count != 0 else {
-				completionHandler([])
+				completionHandler([], operation.isCancelled)
 				return
 			}
 			
@@ -572,7 +579,7 @@ extension ContactsManager {
 			
 			if operation.isCancelled {
 				self.sendEmptyNotification(processing: cleanProcessingType, deepCleanType: .emptyContacts, singleCleanType: .emptyContacts)
-				completionHandler([])
+				completionHandler([], operation.isCancelled)
 				return
 			}
 			
@@ -583,7 +590,7 @@ extension ContactsManager {
 			
 			self.sendNotification(processing: cleanProcessingType, deepCleanType: .emptyContacts, singleCleanType: .emptyContacts, status: .result, totalItems: contacts.count, currentIndex: contacts.count)
 			U.delay(deleyInterval) {
-				completionHandler(contactsGroup)
+				completionHandler(contactsGroup, operation.isCancelled)
 			}
 		}
 		emptyContactsOperation.name = COT.emptyContactOperation.rawValue
@@ -592,7 +599,7 @@ extension ContactsManager {
 	
 	
 		/// `names duplicated contacts group`
-	private func getDuplicatedContactsNamesOperation(contacts: [CNContact], cleanProcessingType: CleanProcessingPresentType, _ completionHandler: @escaping ([ContactsGroup]) -> Void) -> ConcurrentProcessOperation {
+	private func getDuplicatedContactsNamesOperation(contacts: [CNContact], cleanProcessingType: CleanProcessingPresentType, _ completionHandler: @escaping (_ contactsGroup: [ContactsGroup],_ isCancelled: Bool) -> Void) -> ConcurrentProcessOperation {
 	
 		let duplicatedContactsOperation = ConcurrentProcessOperation { operation in
 			
@@ -613,7 +620,7 @@ extension ContactsManager {
 										
 					if operation.isCancelled {
 						self.sendEmptyNotification(processing: cleanProcessingType, deepCleanType: .duplicateContacts, singleCleanType: .duplicatesNames)
-						completionHandler([])
+						completionHandler([], operation.isCancelled)
 						return
 					}
 					
@@ -634,7 +641,7 @@ extension ContactsManager {
 			}
 			self.sendNotification(processing: cleanProcessingType, deepCleanType: .duplicateContacts, singleCleanType: .duplicatesNames, status: .result, totalItems: filterDictionary.count, currentIndex: filterDictionary.count)
 			U.delay(deleyInterval) {
-				completionHandler(group)
+				completionHandler(group, operation.isCancelled)
 			}
 		}
 		duplicatedContactsOperation.name = COT.duplicatedNameOperation.rawValue
@@ -642,7 +649,7 @@ extension ContactsManager {
 	}
 	
 		/// `phone numbers duplicated group`
-	private func getPhoneDuplicatedOperation(contacts: [CNContact], cleanProcessingType: CleanProcessingPresentType, completionHandler: @escaping ([ContactsGroup]) -> Void) -> ConcurrentProcessOperation {
+	private func getPhoneDuplicatedOperation(contacts: [CNContact], cleanProcessingType: CleanProcessingPresentType, completionHandler: @escaping (_ contactsGroup: [ContactsGroup],_ isCancelled: Bool) -> Void) -> ConcurrentProcessOperation {
 		
 		let phoneDuplicatedOperation = ConcurrentProcessOperation { operation in
 			
@@ -661,7 +668,7 @@ extension ContactsManager {
 					
 					if operation.isCancelled {
 						self.sendEmptyNotification(processing: cleanProcessingType, deepCleanType: .duplicatedPhoneNumbers, singleCleanType: .duplicatesNumbers)
-						completionHandler([])
+						completionHandler([], operation.isCancelled)
 						return
 					}
 					
@@ -685,7 +692,7 @@ extension ContactsManager {
 			}
 			self.sendNotification(processing: cleanProcessingType, deepCleanType: .duplicatedPhoneNumbers, singleCleanType: .duplicatesNumbers, status: .result, totalItems: phoneNumbers.count, currentIndex: phoneNumbers.count)
 			U.delay(deleyInterval) {
-				completionHandler(duplicatedContacts)
+				completionHandler(duplicatedContacts, operation.isCancelled)
 			}
 		}
 		phoneDuplicatedOperation.name = COT.duplicatedPhoneNumbersOperation.rawValue
@@ -693,7 +700,7 @@ extension ContactsManager {
 	}
 	
 		/// `duplicated email list group`
-	private func getEmailDuplicatesOperation(contacts: [CNContact], cleanProcessingType: CleanProcessingPresentType, completionHandler: @escaping ([ContactsGroup]) -> Void) -> ConcurrentProcessOperation {
+	private func getEmailDuplicatesOperation(contacts: [CNContact], cleanProcessingType: CleanProcessingPresentType, completionHandler: @escaping (_ contactsGroup: [ContactsGroup],_ isCancelled: Bool) -> Void) -> ConcurrentProcessOperation {
 		
 		let emailDuplicatedOperation = ConcurrentProcessOperation { operation in
 			
@@ -711,7 +718,7 @@ extension ContactsManager {
 				
 					if operation.isCancelled {
 						self.sendEmptyNotification(processing: cleanProcessingType, deepCleanType: .duplicatedEmails, singleCleanType: .duplicatesEmails)
-						completionHandler([])
+						completionHandler([], operation.isCancelled)
 						return
 					}
 					
@@ -735,7 +742,7 @@ extension ContactsManager {
 			}
 			self.sendNotification(processing: cleanProcessingType, deepCleanType: .duplicatedEmails, singleCleanType: .duplicatesEmails, status: .result, totalItems: emailsList.count, currentIndex: emailsList.count)
 			U.delay(deleyInterval) {
-				completionHandler(duplicatedContacts)
+				completionHandler(duplicatedContacts, operation.isCancelled)
 			}
 		}
 		emailDuplicatedOperation.name = COT.duplicatedEmailsOperation.rawValue

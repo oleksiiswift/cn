@@ -71,7 +71,9 @@ public class OperationProcessingQueuer {
 	
 	public func cancelAll() {
 		operations.forEach { operation in
+			debugPrint(operation.name)
 			operation.cancel()
+			debugPrint(operation.name, operation.isCancelled)
 		}
 	}
 	

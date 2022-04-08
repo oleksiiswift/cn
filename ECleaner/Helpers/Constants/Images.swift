@@ -29,6 +29,7 @@ class Images {
             static let settings = UIImage(named: "settings")!
             static let burgerDots = UIImage(named: "burgerDots")!
             static let magic = UIImage(named: "magicSparcle")!
+			static let stopMagic = UIImage(named: "stopMagicSearch")!
         }
         
         struct selectItems {
