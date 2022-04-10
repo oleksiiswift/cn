@@ -1016,10 +1016,11 @@ extension MediaContentViewController: UITableViewDelegate, UITableViewDataSource
 
 	private func setupTableView() {
 		
-		tableView.delegate = self
-		tableView.dataSource = self
-		tableView.separatorStyle = .none
-		tableView.register(UINib(nibName: C.identifiers.xibs.contentTypeCell, bundle: nil), forCellReuseIdentifier: C.identifiers.cells.contentTypeCell)
+		self.tableView.delegate = self
+		self.tableView.dataSource = self
+		self.tableView.separatorStyle = .none
+		self.tableView.register(UINib(nibName: C.identifiers.xibs.contentTypeCell, bundle: nil), forCellReuseIdentifier: C.identifiers.cells.contentTypeCell)
+		self.tableView.register(UINib(nibName: C.identifiers.xibs.bannerCell, bundle: nil), forCellReuseIdentifier: C.identifiers.cells.helperBannerCell)
 		if mediaContentType == .userContacts {
 			tableView.contentInset.top = 20
 		} else {
@@ -1029,10 +1030,14 @@ extension MediaContentViewController: UITableViewDelegate, UITableViewDataSource
 	}
 	
 	func configure(_ cell: ContentTypeTableViewCell, at indexPath: IndexPath) {
-	
-		let  photoMediaType: PhotoMediaType = .getSingleSearchMediaContentType(from: indexPath, type: mediaContentType)
+		let photoMediaType: PhotoMediaType = .getSingleSearchMediaContentType(from: indexPath, type: mediaContentType)
 		let singleModel = self.singleCleanModel.objects[photoMediaType]!
 		cell.singleCleanCellConfigure(with: singleModel, mediaType: photoMediaType, indexPath: indexPath)
+	}
+	
+	func configureHelper(cell: HelperBannerTableViewCell, at indexPath: IndexPath) {
+		let  photoMediaType: PhotoMediaType = .getSingleSearchMediaContentType(from: indexPath, type: mediaContentType)
+		cell.cellConfigure(with: photoMediaType.getHelperBanner())
 	}
 		
 	func numberOfSections(in tableView: UITableView) -> Int {
@@ -1040,24 +1045,54 @@ extension MediaContentViewController: UITableViewDelegate, UITableViewDataSource
 	}
 	
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		let cell = tableView.dequeueReusableCell(withIdentifier: C.identifiers.cells.contentTypeCell, for: indexPath) as! ContentTypeTableViewCell
-		configure(cell, at: indexPath)
-		return cell
+		return self.setupCellFor(rowAt: indexPath)
 	}
 	
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		return mediaContentType.numberOfRows
+		return self.mediaContentType.getNumbersOfRows(for: section)
 	}
 	
 	func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-		return 100
+		return self.mediaContentType.getRowHeight(for: indexPath.section)
 	}
 	
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-		if self.smartCleaningDidFinishWithResults {
-			self.showPrescanMediaContent(by: mediaContentType, selected: indexPath.row)
-		} else {
-			self.showMediaContent(by: mediaContentType, selected: indexPath.row)
+		self.didSelect(rowAt: indexPath)
+	}
+}
+
+extension MediaContentViewController {
+	
+	private func setupCellFor(rowAt indexPath: IndexPath) -> UITableViewCell {
+		switch indexPath.section {
+			case 1:
+				let cell = tableView.dequeueReusableCell(withIdentifier: C.identifiers.cells.helperBannerCell, for: indexPath) as! HelperBannerTableViewCell
+				self.configureHelper(cell: cell, at: indexPath)
+				return cell
+			default:
+				let cell = tableView.dequeueReusableCell(withIdentifier: C.identifiers.cells.contentTypeCell, for: indexPath) as! ContentTypeTableViewCell
+				self.configure(cell, at: indexPath)
+				return cell
+		}
+	}
+	
+	private func didSelect(rowAt indexPath: IndexPath) {
+		switch indexPath.section {
+			case 1:
+				switch self.mediaContentType {
+					case .userVideo:
+						self.openCompressVideoPickerController()
+					case .userContacts:
+						self.openContactExportBackupController()
+					default:
+						return
+				}
+			default:
+				if self.smartCleaningDidFinishWithResults {
+					self.showPrescanMediaContent(by: self.mediaContentType, selected: indexPath.row)
+				} else {
+					self.showMediaContent(by: self.mediaContentType, selected: indexPath.row)
+				}
 		}
 	}
 }
@@ -1179,5 +1214,19 @@ extension MediaContentViewController: Themeble {
 				   self.dateSelectPickerView.setupDisplaysDate(lowerDate: self.lowerBoundDate, upperdDate: self.upperBoundDate)
 			  }
 		 }
+	}
+}
+
+extension MediaContentViewController {
+	
+	private func openCompressVideoPickerController() {
+		
+	}
+}
+
+extension MediaContentViewController {
+	
+	private func openContactExportBackupController() {
+		
 	}
 }

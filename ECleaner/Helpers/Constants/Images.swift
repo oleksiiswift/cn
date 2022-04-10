@@ -73,20 +73,20 @@ class Images {
             static let contactPhoto = UIImage(named: "contactWithoutPhoto")!
             static let processingThumb = UIImage(named: "contactsProcessingEmptyItem")!
             static let unavailibleThumb = UIImage(named: "contactsThumbUnselect")!
+			static let backupContacts = UIImage(named: "backupContactsItem")!
         }
         
         struct photo {
-            
             static let processingThumb = UIImage(named: "photoProcessingEmptyItem")!
             static let unavailibleThumb = UIImage(named: "photoThumbUnselect")!
 			static let checkmark = UIImage(named: "photoSectionSelect")!
         }
         
         struct video {
-            
             static let processingThumb = UIImage(named: "videoProcessingEmptyItem")!
             static let unavailibleThumb = UIImage(named: "videoThumbUnselect")!
 			static let checkmark = UIImage(named: "videoSectionSelect")!
+			static let videoCompress = UIImage(named: "compressVideoItem")!
         }
     }
 	

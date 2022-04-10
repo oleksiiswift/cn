@@ -7,7 +7,6 @@
 
 import Foundation
 
-    
 enum PhotoMediaType: String {
     
         /// `photo section`
@@ -33,6 +32,7 @@ enum PhotoMediaType: String {
     case duplicatedContacts = "duplicatedContacts"
     case duplicatedPhoneNumbers = "duplicatedPhoneNumbers"
     case duplicatedEmails = "duplicatedEmails"
+	case backup = "backup"
     
     case none = ""
 	
@@ -40,9 +40,9 @@ enum PhotoMediaType: String {
 		switch self {
 			case .similarPhotos, .duplicatedPhotos, .singleScreenShots, .singleLivePhotos, .similarLivePhotos, .similarSelfies, .singleRecentlyDeletedPhotos:
 				return .userPhoto
-			case .singleLargeVideos, .duplicatedVideos, .similarVideos, .singleScreenRecordings, .singleRecentlyDeletedVideos:
+			case .singleLargeVideos, .duplicatedVideos, .similarVideos, .singleScreenRecordings, .singleRecentlyDeletedVideos, .compress:
 				return .userVideo
-			case .allContacts, .emptyContacts, .duplicatedContacts, .duplicatedPhoneNumbers, .duplicatedEmails:
+			case .allContacts, .emptyContacts, .duplicatedContacts, .duplicatedPhoneNumbers, .duplicatedEmails, .backup:
 				return .userContacts
 			default:
 				return .none
@@ -106,6 +106,8 @@ enum PhotoMediaType: String {
                 return "none"
             case .compress:
                 return "compress video"
+			case .backup:
+				return "backup contacts"
         }
     }
 	
@@ -345,41 +347,62 @@ enum PhotoMediaType: String {
                         return .none
                 }
             case .userVideo:
-                switch indexPath.row {
-                    case 0:
-                        return .singleLargeVideos
-                    case 1:
-                        return .duplicatedVideos
-                    case 2:
-                        return .similarVideos
-                    case 3:
-                        return .singleScreenRecordings
-                    case 4:
-                        return .compress
-                    case 5:
-                        return .singleRecentlyDeletedVideos
-                    default:
-                        return .none
-                }
+				switch indexPath.section {
+					case 0:
+						switch indexPath.row {
+							case 0:
+								return .singleLargeVideos
+							case 1:
+								return .duplicatedVideos
+							case 2:
+								return .similarVideos
+							case 3:
+								return .singleScreenRecordings
+							default:
+								return .none
+						}
+					case 1:
+						return .compress
+					default:
+						return .none
+				}
             case .userContacts:
-                switch indexPath.row {
-                    case 0:
-                        return .allContacts
-                    case 1:
-                        return .emptyContacts
-                    case 2:
-                        return .duplicatedContacts
-                    case 3:
-                        return .duplicatedPhoneNumbers
-                    case 4:
-                        return .duplicatedEmails
-                    default:
-                        return .none
-                }
+				switch indexPath.section {
+					case 0:
+						switch indexPath.row {
+							case 0:
+								return .allContacts
+							case 1:
+								return .emptyContacts
+							case 2:
+								return .duplicatedContacts
+							case 3:
+								return .duplicatedPhoneNumbers
+							case 4:
+								return .duplicatedEmails
+							default:
+								return .none
+						}
+					case 1:
+						return .backup
+					default:
+						return .none
+				}
             case .none:
                 return .none
         }
     }
+	
+	public func getHelperBanner() -> UIImage {
+		switch self {
+			case .compress:
+				return I.personalisation.video.videoCompress
+			case .backup:
+				return I.personalisation.contacts.backupContacts
+			default:
+				return UIImage()
+		}
+	}
 }
 
 
