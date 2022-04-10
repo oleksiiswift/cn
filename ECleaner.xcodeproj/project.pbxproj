@@ -129,6 +129,9 @@
 		970D778B275B9B850048F41D /* ProgressSearchNotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970D778A275B9B850048F41D /* ProgressSearchNotificationManager.swift */; };
 		970D778D275B9C9E0048F41D /* SingleContentSearchNotificationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970D778C275B9C9E0048F41D /* SingleContentSearchNotificationType.swift */; };
 		970D778F275B9D170048F41D /* DeepCleanNotificationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970D778E275B9D170048F41D /* DeepCleanNotificationType.swift */; };
+		9710285028032602003CBF7E /* VideoCollectionCompressingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9710284F28032602003CBF7E /* VideoCollectionCompressingViewController.swift */; };
+		9710285228038216003CBF7E /* VideoProcessing.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9710285128038216003CBF7E /* VideoProcessing.storyboard */; };
+		9710285428038274003CBF7E /* VideoCompressingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9710285328038274003CBF7E /* VideoCompressingViewController.swift */; };
 		9712C05C27B43B220013A7C9 /* ProcessingProgressOperationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9712C05B27B43B220013A7C9 /* ProcessingProgressOperationState.swift */; };
 		9716241827653D7C0071FA17 /* CALayer+Position.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9716241727653D7C0071FA17 /* CALayer+Position.swift */; };
 		971AD5E927EAB72900811A3A /* ZoomTransitionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971AD5E827EAB72900811A3A /* ZoomTransitionController.swift */; };
@@ -389,6 +392,9 @@
 		970D778A275B9B850048F41D /* ProgressSearchNotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressSearchNotificationManager.swift; sourceTree = "<group>"; };
 		970D778C275B9C9E0048F41D /* SingleContentSearchNotificationType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleContentSearchNotificationType.swift; sourceTree = "<group>"; };
 		970D778E275B9D170048F41D /* DeepCleanNotificationType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepCleanNotificationType.swift; sourceTree = "<group>"; };
+		9710284F28032602003CBF7E /* VideoCollectionCompressingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoCollectionCompressingViewController.swift; sourceTree = "<group>"; };
+		9710285128038216003CBF7E /* VideoProcessing.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = VideoProcessing.storyboard; sourceTree = "<group>"; };
+		9710285328038274003CBF7E /* VideoCompressingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoCompressingViewController.swift; sourceTree = "<group>"; };
 		9712C05B27B43B220013A7C9 /* ProcessingProgressOperationState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcessingProgressOperationState.swift; sourceTree = "<group>"; };
 		9716241727653D7C0071FA17 /* CALayer+Position.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CALayer+Position.swift"; sourceTree = "<group>"; };
 		971AD5E827EAB72900811A3A /* ZoomTransitionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoomTransitionController.swift; sourceTree = "<group>"; };
@@ -624,6 +630,7 @@
 			children = (
 				97FC78972688CC06000D7F26 /* SimpleAssetsListViewController.swift */,
 				97238A082689D01E00C523DC /* GroupedAssetListViewController.swift */,
+				9710284F28032602003CBF7E /* VideoCollectionCompressingViewController.swift */,
 			);
 			path = PhotoControllers;
 			sourceTree = "<group>";
@@ -875,6 +882,7 @@
 				975AF43C2728307300744E3B /* Contacts */,
 				040E288926A98B150019F372 /* DeepClean */,
 				9701D26427BD2ED60078E39F /* Settings */,
+				9710285528038278003CBF7E /* VideoProcessing */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -1031,6 +1039,7 @@
 				97B01A7D2747CB4100DDE03C /* Contacts */,
 				9701D27A27BE78B40078E39F /* SizeSelector.storyboard */,
 				04467CE1270D9B1200DBBB39 /* DatePicker.storyboard */,
+				9710285128038216003CBF7E /* VideoProcessing.storyboard */,
 			);
 			path = Storyboards;
 			sourceTree = "<group>";
@@ -1233,6 +1242,14 @@
 				97B01A742746ED5D00DDE03C /* UIFont+Italic.swift */,
 			);
 			path = UIFont;
+			sourceTree = "<group>";
+		};
+		9710285528038278003CBF7E /* VideoProcessing */ = {
+			isa = PBXGroup;
+			children = (
+				9710285328038274003CBF7E /* VideoCompressingViewController.swift */,
+			);
+			path = VideoProcessing;
 			sourceTree = "<group>";
 		};
 		971AD5EA27EAB72D00811A3A /* TransitionController */ = {
@@ -1791,6 +1808,7 @@
 				4F4A17B9271D812400CAF157 /* StartingNavigationBar.xib in Resources */,
 				047DE61A26AAA53100733CD5 /* DeepCleanInfoTableViewCell.xib in Resources */,
 				97DAB62F272C164A00F05CEA /* GroupContactTableViewCell.xib in Resources */,
+				9710285228038216003CBF7E /* VideoProcessing.storyboard in Resources */,
 				97B01A7C2747CB3A00DDE03C /* ExportContact.storyboard in Resources */,
 				97CB3517273A9129005DA881 /* ContactTableViewCell.xib in Resources */,
 				97CE449B273D307700DF6114 /* NavigationBar.xib in Resources */,
@@ -1905,6 +1923,7 @@
 				97EB665327B1BC1F00B21EF5 /* UICollectionView+NextItem.swift in Sources */,
 				4F56074027205AF300CA19E9 /* ArcView.swift in Sources */,
 				97238A0F2689EE2700C523DC /* CustomDoneHud.swift in Sources */,
+				9710285028032602003CBF7E /* VideoCollectionCompressingViewController.swift in Sources */,
 				04E5837E267B60F600EDC3A3 /* AlertManager.swift in Sources */,
 				975AF440272898AE00744E3B /* ContactsViewController.swift in Sources */,
 				97C70B54277634AC0033F466 /* ShadowButton.swift in Sources */,
@@ -2051,6 +2070,7 @@
 				971AD5E927EAB72900811A3A /* ZoomTransitionController.swift in Sources */,
 				4F56073F27205AF300CA19E9 /* GradientArcView.swift in Sources */,
 				047DE61926AAA53100733CD5 /* DeepCleanInfoTableViewCell.swift in Sources */,
+				9710285428038274003CBF7E /* VideoCompressingViewController.swift in Sources */,
 				04E58371267A4A0A00EDC3A3 /* UIDevice+Model.swift in Sources */,
 				04CFFFFB2685E546000CA850 /* UIView+SelectedCornerRadius.swift in Sources */,
 				97011E1627ECCBA600663C8E /* DeepCleanSelectableAssetsDelegate.swift in Sources */,

@@ -25,13 +25,13 @@ class GroupedAssetListViewController: UIViewController {
 	var scrollView = UIScrollView()
 	let collectionViewFlowLayout = SNCollectionViewLayout()
 	
-	private var currentCell: PhotoCollectionViewCell? {
-		view.layoutIfNeeded()
-		collectionView.layoutIfNeeded()
-		return collectionView.cellForItem(at: self.currentIndex) as? PhotoCollectionViewCell
-	}
-	
-	private var currentIndex = (IndexPath(row: 0, section: 0))
+//	private var currentCell: PhotoCollectionViewCell? {
+//		view.layoutIfNeeded()
+//		collectionView.layoutIfNeeded()
+//		return collectionView.cellForItem(at: self.currentIndex) as? PhotoCollectionViewCell
+//	}
+//	
+//	private var currentIndex = (IndexPath(row: 0, section: 0))
 		
 		/// - delegates -
 	private weak var delegate: ContentGroupedDataProviderDelegate?
@@ -135,7 +135,6 @@ extension GroupedAssetListViewController {
 		
 		guard let selectedIndexPath = self.collectionView.indexPathsForSelectedItems else { return }
 		
-		self.currentIndex = indexPath
 		let storyboard = UIStoryboard(name: C.identifiers.storyboards.preview, bundle: nil)
 		let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.media) as! MediaViewController
 		viewController.isDeepCleaningSelectableFlow = self.isDeepCleaningSelectableFlow

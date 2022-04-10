@@ -286,6 +286,7 @@ class Constants {
             static let contactsGroup = "ContactsGroup"
             static let exportContacts = "ExportContact"
 			static let settings = "Settings"
+			static let videoProcessing = "VideoProcessing"
         }
         
         struct viewControllers {
@@ -296,6 +297,8 @@ class Constants {
             static let assetsList = "SimpleAssetsListViewController"
             static let groupedList = "GroupedAssetListViewController"
 			static let media = "MediaViewController"
+			static let videoCompressCollection = "VideoCollectionCompressingViewController"
+			static let videoCompressing = "VideoCompressingViewController"
 			static let preview = "PreviewViewController"
             static let contacts = "ContactsViewController"
             static let deepClean = "DeepCleaningViewController"

@@ -22,13 +22,13 @@ class SimpleAssetsListViewController: UIViewController {
 													inset: UIEdgeInsets(top: 10, left: 4, bottom: 0, right: 4))
 	var scrollView = UIScrollView()
 	
-	private var currentCell: PhotoCollectionViewCell? {
-		view.layoutIfNeeded()
-		collectionView.layoutIfNeeded()
-		return collectionView.cellForItem(at: self.currentIndex) as? PhotoCollectionViewCell
-	}
-	
-	private var currentIndex = (IndexPath(row: 0, section: 0))
+//	private var currentCell: PhotoCollectionViewCell? {
+//		view.layoutIfNeeded()
+//		collectionView.layoutIfNeeded()
+//		return collectionView.cellForItem(at: self.currentIndex) as? PhotoCollectionViewCell
+//	}
+//
+//	private var currentIndex = (IndexPath(row: 0, section: 0))
 	
 	var selectedAssetsDelegate: DeepCleanSelectableAssetsDelegate?
 	private var photoManager = PhotoManager.shared
@@ -71,12 +71,12 @@ class SimpleAssetsListViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+		updateCachedAssets()
     }
 	
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
 		
-		updateCachedAssets()
 	}
 }
 

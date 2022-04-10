@@ -336,7 +336,7 @@ extension PhotoManager {
 					}
 				}
 				
-				self.serviceUtilsCalculatedOperationsQueuer.addOperation(similarVideoPhassetOperation)
+				self.phassetProcessingOperationQueuer.addOperation(similarVideoPhassetOperation)
 				
 			} else {
 				self.sendEmptyNotification(processing: cleanProcessingType, deepCleanType: .similarVideo, singleCleanType: .similarVideo)
@@ -824,7 +824,8 @@ extension PhotoManager {
 							completionHandler(similarLivePhotoGroup, isCancelled)
 						}
 					}
-					self.serviceUtilsCalculatedOperationsQueuer.addOperation(duplicatedTuplesOperation)
+					
+					self.phassetProcessingOperationQueuer.addOperation(duplicatedTuplesOperation)
 					
 				} else {
 					self.sendEmptyNotification(processing: cleanProcessingType, deepCleanType: .similarLivePhoto, singleCleanType: .similarLivePhoto)
@@ -902,7 +903,7 @@ extension PhotoManager {
 						}
 					}
 					duplicatedTuplesOperation.name = CommonOperationSearchType.utitlityDuplicatedPhotoTuplesOperation.rawValue
-					self.serviceUtilsCalculatedOperationsQueuer.addOperation(duplicatedTuplesOperation)
+					self.phassetProcessingOperationQueuer.addOperation(duplicatedTuplesOperation)
 				} else {
 					self.sendEmptyNotification(processing: cleanProcessingType, deepCleanType: .duplicatePhoto, singleCleanType: .duplicatedPhoto)
 					U.delay(1) {
@@ -1200,6 +1201,16 @@ extension PhotoManager {
 		}
 		duplicatedVideoOperation.name = C.key.operation.name.findDuplicatedVideoOperation
 		return duplicatedVideoOperation
+	}
+}
+
+extension PhotoManager {
+	
+	public func getVideoCollection(completionHandler: @escaping (_ phassets: [PHAsset]) -> Void) {
+		
+		self.fetchManager.fetchVideoPHAssets { videoPHAssets in
+			completionHandler(videoPHAssets)
+		}
 	}
 }
 

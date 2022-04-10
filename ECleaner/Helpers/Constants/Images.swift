@@ -50,6 +50,7 @@ class Images {
 			static let trashBin = UIImage(named: "defaultTrashBin")!
             static let star = UIImage(named: "starItem")!
             static let arrowUP = UIImage(named: "arrowUpDown")!
+			static let compress = UIImage(named: "compressItem")!
         }
 		
 		struct helpersItems {

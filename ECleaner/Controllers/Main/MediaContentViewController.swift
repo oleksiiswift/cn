@@ -497,6 +497,18 @@ extension MediaContentViewController {
 		}
 		phassetProcessingOperationQueuer.addOperation(getSimilarVideosByTimeStamp)
     }
+	
+	private func showVideoContentForCompressingOperation() {
+		
+		self.photoManager.getVideoCollection { phassets in
+			if !phassets.isEmpty {
+				self.showCompressVideoPickerController(with: phassets)
+			} else {
+				#warning("TODDO")
+//				ErrorHandler.shared.showEmptySearchResultsFor(, completion: <#T##(() -> Void)?##(() -> Void)?##() -> Void#>)
+			}
+		}
+	}
 }
 
 	//      MARK: - contacts content -
@@ -656,6 +668,20 @@ extension MediaContentViewController {
 			self.updateContacts()
 		}
 
+		self.navigationController?.pushViewController(viewController, animated: true)
+	}
+	
+	private func showCompressVideoPickerController(with videoPHAsset: [PHAsset]) {
+		
+		let type: PhotoMediaType = .compress
+		let content: MediaContentType = .userVideo
+		
+		let storyboard = UIStoryboard(name: C.identifiers.storyboards.media, bundle: nil)
+		let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.videoCompressCollection) as! VideoCollectionCompressingViewController
+		viewController.title = type.mediaTypeName
+		viewController.assetCollection = videoPHAsset
+		viewController.mediaType = type
+		viewController.contentType = content
 		self.navigationController?.pushViewController(viewController, animated: true)
 	}
 }
@@ -825,15 +851,22 @@ extension MediaContentViewController {
 				}
 			}
 		} else {
-			if let operation = self.phassetProcessingOperationQueuer.operations.first(where: {$0.name == self.currentlyScanningProcess.rawValue}) {
+			let managerOperationsOperations = self.photoManager.phassetProcessingOperationQueuer.operations
+			for operation in managerOperationsOperations {
+				if let name = operation.name {
+					self.photoManager.phassetProcessingOperationQueuer.cancelOperation(with: name)
+				}
+			}
+			for operation in self.phassetProcessingOperationQueuer.operations {
 				if let name = operation.name {
 					self.phassetProcessingOperationQueuer.cancelOperation(with: name)
-					U.delay(1) {
-						self.updateProcessingCancel(for: name)
-						U.delay(0.33) {
-							completionHandler()
-						}
-					}
+				}
+			}
+
+			U.delay(1) {
+				self.updateProcessingCancel(for: self.currentlyScanningProcess.rawValue)
+				U.delay(0.33) {
+					completionHandler()
 				}
 			}
 		}
@@ -1081,7 +1114,7 @@ extension MediaContentViewController {
 			case 1:
 				switch self.mediaContentType {
 					case .userVideo:
-						self.openCompressVideoPickerController()
+						self.showVideoContentForCompressingOperation()
 					case .userContacts:
 						self.openContactExportBackupController()
 					default:
@@ -1219,9 +1252,7 @@ extension MediaContentViewController: Themeble {
 
 extension MediaContentViewController {
 	
-	private func openCompressVideoPickerController() {
-		
-	}
+	
 }
 
 extension MediaContentViewController {
