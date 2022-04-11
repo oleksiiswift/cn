@@ -156,6 +156,11 @@
 		975AF43E2728987500744E3B /* Contacts.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 975AF43D2728987500744E3B /* Contacts.storyboard */; };
 		975AF440272898AE00744E3B /* ContactsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 975AF43F272898AE00744E3B /* ContactsViewController.swift */; };
 		976465D42727055200F8CDA6 /* String+Alphabetical+Range.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976465D32727055200F8CDA6 /* String+Alphabetical+Range.swift */; };
+		976D8E39280468A3005004F4 /* VideoCompressionConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976D8E38280468A3005004F4 /* VideoCompressionConfig.swift */; };
+		976D8E3D280468E5005004F4 /* VideoCompressionQuality.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976D8E3C280468E5005004F4 /* VideoCompressionQuality.swift */; };
+		976D8E4128046E9B005004F4 /* VideoCompressionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976D8E4028046E9B005004F4 /* VideoCompressionManager.swift */; };
+		976D8E4328046EDF005004F4 /* VideoCompressionErrorHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976D8E4228046EDF005004F4 /* VideoCompressionErrorHandler.swift */; };
+		976D8E45280497CC005004F4 /* AVFileType+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976D8E44280497CC005004F4 /* AVFileType+Extension.swift */; };
 		97708662276A283A003D0416 /* CommonOperationSearchType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97708661276A283A003D0416 /* CommonOperationSearchType.swift */; };
 		9770C805274D183F0046EF84 /* ErrorHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9770C804274D183F0046EF84 /* ErrorHandler.swift */; };
 		9770C808274D34A90046EF84 /* FileFormats.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9770C807274D34A90046EF84 /* FileFormats.swift */; };
@@ -419,6 +424,11 @@
 		975AF43D2728987500744E3B /* Contacts.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Contacts.storyboard; sourceTree = "<group>"; };
 		975AF43F272898AE00744E3B /* ContactsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsViewController.swift; sourceTree = "<group>"; };
 		976465D32727055200F8CDA6 /* String+Alphabetical+Range.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Alphabetical+Range.swift"; sourceTree = "<group>"; };
+		976D8E38280468A3005004F4 /* VideoCompressionConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoCompressionConfig.swift; sourceTree = "<group>"; };
+		976D8E3C280468E5005004F4 /* VideoCompressionQuality.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoCompressionQuality.swift; sourceTree = "<group>"; };
+		976D8E4028046E9B005004F4 /* VideoCompressionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoCompressionManager.swift; sourceTree = "<group>"; };
+		976D8E4228046EDF005004F4 /* VideoCompressionErrorHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoCompressionErrorHandler.swift; sourceTree = "<group>"; };
+		976D8E44280497CC005004F4 /* AVFileType+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AVFileType+Extension.swift"; sourceTree = "<group>"; };
 		97708661276A283A003D0416 /* CommonOperationSearchType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonOperationSearchType.swift; sourceTree = "<group>"; };
 		9770C804274D183F0046EF84 /* ErrorHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorHandler.swift; sourceTree = "<group>"; };
 		9770C807274D34A90046EF84 /* FileFormats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileFormats.swift; sourceTree = "<group>"; };
@@ -914,6 +924,7 @@
 				972AAACF27F755A100F3A1D2 /* Thread */,
 				972AAAD027F755B800F3A1D2 /* CGSize */,
 				9785E54827DD6E66000B360C /* UINavigationController */,
+				976D8E4628049900005004F4 /* AVFileType */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -947,6 +958,7 @@
 				97C4217927FF4E0300FF62D7 /* FileManager */,
 				97C4217827FF4DF200FF62D7 /* ShareManager */,
 				97C4217727FF4DDB00FF62D7 /* SmartCleanManager */,
+				976D8E3A280468A8005004F4 /* Video */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -1339,6 +1351,33 @@
 				9755500E2731412800E54C5A /* Group */,
 			);
 			path = Contacts;
+			sourceTree = "<group>";
+		};
+		976D8E3A280468A8005004F4 /* Video */ = {
+			isa = PBXGroup;
+			children = (
+				976D8E3B280468B4005004F4 /* Compression */,
+			);
+			path = Video;
+			sourceTree = "<group>";
+		};
+		976D8E3B280468B4005004F4 /* Compression */ = {
+			isa = PBXGroup;
+			children = (
+				976D8E38280468A3005004F4 /* VideoCompressionConfig.swift */,
+				976D8E3C280468E5005004F4 /* VideoCompressionQuality.swift */,
+				976D8E4028046E9B005004F4 /* VideoCompressionManager.swift */,
+				976D8E4228046EDF005004F4 /* VideoCompressionErrorHandler.swift */,
+			);
+			path = Compression;
+			sourceTree = "<group>";
+		};
+		976D8E4628049900005004F4 /* AVFileType */ = {
+			isa = PBXGroup;
+			children = (
+				976D8E44280497CC005004F4 /* AVFileType+Extension.swift */,
+			);
+			path = AVFileType;
 			sourceTree = "<group>";
 		};
 		9770C806274D18420046EF84 /* ErrorHandler */ = {
@@ -1884,6 +1923,7 @@
 				97C4D71F27F37ABC00C476FE /* PhotoPreviewCollectionViewCell.swift in Sources */,
 				049CC219268225500002F988 /* Colors.swift in Sources */,
 				9716241827653D7C0071FA17 /* CALayer+Position.swift in Sources */,
+				976D8E45280497CC005004F4 /* AVFileType+Extension.swift in Sources */,
 				0459DF9526A579950085EEDF /* CarouselPhotoFlowLayout.swift in Sources */,
 				97FC789626889541000D7F26 /* TimeIInterval.swift in Sources */,
 				97DB8D0D2798874000F2BBA0 /* Date+Compare.swift in Sources */,
@@ -2000,11 +2040,13 @@
 				97D2BEC6275A292E002082EB /* OperationProcessingQueuer.swift in Sources */,
 				04CFFFE926846A38000CA850 /* Screen.swift in Sources */,
 				971AD5EC27EAC10800811A3A /* ZoomDismissalInteractionController.swift in Sources */,
+				976D8E3D280468E5005004F4 /* VideoCompressionQuality.swift in Sources */,
 				97FDA09C27FB5A0A002BC233 /* SliderShadowView.swift in Sources */,
 				9776F5802735944E009D806A /* CALAyer+Extension+SL.swift in Sources */,
 				97C909CC2748FA5300BC2E47 /* ShareManager.swift in Sources */,
 				979487BF27B6AA4200135D47 /* DeepCleaningType.swift in Sources */,
 				97238A092689D01E00C523DC /* GroupedAssetListViewController.swift in Sources */,
+				976D8E4328046EDF005004F4 /* VideoCompressionErrorHandler.swift in Sources */,
 				049CC22426831B800002F988 /* UIColor+Hex.swift in Sources */,
 				975AF4372728279900744E3B /* String+Numeric.swift in Sources */,
 				970B208D27F604D300B5AF7D /* String+Secionds.swift in Sources */,
@@ -2066,6 +2108,7 @@
 				97B01A732746DF6300DDE03C /* EmptyContactListDataSource.swift in Sources */,
 				049CC23A2683761B0002F988 /* String+ConvertInteger.swift in Sources */,
 				04649B3E268DDDE700336FE4 /* UICollectionView+SelectAll.swift in Sources */,
+				976D8E39280468A3005004F4 /* VideoCompressionConfig.swift in Sources */,
 				04E5836F267A47FB00EDC3A3 /* Utils.swift in Sources */,
 				971AD5E927EAB72900811A3A /* ZoomTransitionController.swift in Sources */,
 				4F56073F27205AF300CA19E9 /* GradientArcView.swift in Sources */,
@@ -2079,6 +2122,7 @@
 				04CFFFEF268479CE000CA850 /* CircleProgressView.swift in Sources */,
 				4F56074627205AF300CA19E9 /* BlueIndicatorStyle.swift in Sources */,
 				970D778B275B9B850048F41D /* ProgressSearchNotificationManager.swift in Sources */,
+				976D8E4128046E9B005004F4 /* VideoCompressionManager.swift in Sources */,
 				97D2BEC8275A2AA2002082EB /* OperationServiceQueue.swift in Sources */,
 				97A39FE92764A9B8007CB482 /* DatePickerStringComponents.swift in Sources */,
 				97011E1A27ECCBED00663C8E /* GroupSelectableAssetsDelegate.swift in Sources */,

@@ -10,6 +10,7 @@ import Foundation
 enum FileFormat {
     case vcf
     case csv
+	case mp4
     
     var fileExtension: String {
         switch self {
@@ -17,6 +18,8 @@ enum FileFormat {
                 return "vcf"
             case .csv:
                 return "csv"
+			case .mp4:
+				return "mp4"
         }
     }
 }
@@ -24,11 +27,24 @@ enum FileFormat {
 enum AppDirectories: String {
     case temp = "temp"
     case contactsArcive = "contactsArcive"
-    
+	case compressedVideo  = "compressedVideo"
+	
     var name: String {
         return self.rawValue
     }
 }
+
+enum CreateTempDirectoryError: Error, LocalizedError {
+	case fileExisted
+	
+	public var errorDescription: String? {
+		switch self {
+			case .fileExisted:
+				return "File existed"
+		}
+	}
+}
+
  
 class ECFileManager {
     
@@ -145,4 +161,39 @@ class ECFileManager {
             }
         }
     }
+}
+
+extension ECFileManager {
+	
+	public func getTempDirectory(with pathComponent: String = ProcessInfo.processInfo.globallyUniqueString) throws -> URL {
+		
+		var tempURL: URL
+		
+		let caacheURL = fileManager.temporaryDirectory
+		
+		if let url = try? fileManager.url(for: .itemReplacementDirectory, in: .userDomainMask, appropriateFor: caacheURL, create: true) {
+			tempURL = url
+		} else {
+			tempURL = URL(fileURLWithPath: NSTemporaryDirectory())
+		}
+		tempURL.appendPathComponent(pathComponent)
+		
+		if !fileManager.fileExists(atPath: tempURL.absoluteString) {
+			do {
+				try fileManager.createDirectory(at: tempURL, withIntermediateDirectories: true, attributes: nil)
+				return tempURL
+			} catch {
+				throw error
+			}
+		} else {
+			return tempURL
+		}
+	}
+	
+	public func removeAllCompressedVideos(from paths: [URL]) {
+		
+		paths.forEach {
+			try? fileManager.removeItem(at: $0)
+		}
+	}
 }

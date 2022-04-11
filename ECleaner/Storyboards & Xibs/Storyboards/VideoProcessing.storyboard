@@ -16,8 +16,23 @@
                     <view key="view" contentMode="scaleToFill" id="5EZ-qb-Rvc">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ixU-uj-gJS" customClass="NavigationBar" customModule="ECleaner" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="44" width="414" height="70"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="70" id="3us-4k-aKT"/>
+                                    <constraint firstAttribute="height" constant="70" id="zkw-6G-c82"/>
+                                </constraints>
+                            </view>
+                        </subviews>
                         <viewLayoutGuide key="safeArea" id="vDu-zF-Fre"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="ixU-uj-gJS" firstAttribute="leading" secondItem="5EZ-qb-Rvc" secondAttribute="leading" id="GrO-hI-qRp"/>
+                            <constraint firstItem="ixU-uj-gJS" firstAttribute="top" secondItem="vDu-zF-Fre" secondAttribute="top" id="dcC-xf-twC"/>
+                            <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="ixU-uj-gJS" secondAttribute="trailing" id="pub-9f-pKl"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="klk-YE-iDE"/>
                 </viewController>

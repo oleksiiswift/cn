@@ -108,9 +108,11 @@ class Constants {
 		}
 		
 		struct dispatch {
-			static let mergeContacts = "mergeContactsLabel"
-			static let deleteContacts = "deletingContactsLabel"
-			static let selectedPhassetsQueue = "selectedPhassetsQueue"
+			static let mergeContactsQueue = "com.contacts.merge_queue"
+			static let deleteContactsQueue = "com.contacts.delete_queue"
+			static let selectedPhassetsQueue = "com.photo.selectedPHAssets_queue"
+			static let compressVideoQueue = "com.video.compressVideo_queue"
+			static let compressAudieQueue = "com.audio.compressAudio_queue"
 		}
 		
 		struct operation {
@@ -366,6 +368,12 @@ class Constants {
 			static let showSizeSelector = "ShowVideoSizeSelectorSegue"
         }
     }
+	
+	struct folders {
+		static let temp = "temp"
+		static let contactsArchive = "ContactsArchhive"
+		static let compressedVideo = "CompressedVideo"
+	}
 	
 	struct uiElementsNames {
 		struct layers {

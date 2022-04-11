@@ -269,6 +269,7 @@ extension VideoCollectionCompressingViewController: BottomActionButtonDelegate {
 		
 		let storyboard = UIStoryboard(name: C.identifiers.storyboards.videoProcessing, bundle: nil)
 		let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.videoCompressing) as! VideoCompressingViewController
+		viewController.processingPHAsset = phasset
 		
 		self.navigationController?.pushViewController(viewController, animated: true)
 	}

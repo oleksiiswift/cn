@@ -124,6 +124,12 @@ class PhotoManager {
 			accessGranted ? completion() : A.showResrictedAlert(by: .photoLibraryRestricted) {}
 		}
 	}
+	
+	public func saveVideoAsset(from url: URL, completionHandler: @escaping (_ isSaved: Bool) -> Void) {
+		self.fetchManager.saveAVAsset(with: url) { isSaved, _ in
+			completionHandler(isSaved)
+		}
+	}
 }
 
 //	MARK: - INIT PHOTO LIBRARY -

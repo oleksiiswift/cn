@@ -505,4 +505,20 @@ extension PHAssetFetchManager {
 //		MARK: - UTILS -
 extension PHAssetFetchManager {
 	
+	public func saveAVAsset(with url: URL, completionHandler: ((Bool,Error?) -> Void)) {
+		
+		PHPhotoLibrary.shared().performChanges({
+			let request = PHAssetCreationRequest.forAsset()
+			request.addResource(with: .video, fileURL: url, options: nil)
+		}) { result, error in
+			DispatchQueue.main.async {
+				if let error = error {
+					debugPrint(error.localizedDescription)
+					completionHandler(false, error)
+				} else {
+					completionHandler(true, nil)
+				}
+			}
+		}
+	}
 }

@@ -775,7 +775,7 @@ extension ContactsManager {
 		let mergrgeContactsOperation = ConcurrentProcessOperation { operation in
 			
 			let dispatchGroup = DispatchGroup()
-			let dispatchQueue = DispatchQueue(label: C.key.dispatch.mergeContacts)
+			let dispatchQueue = DispatchQueue(label: C.key.dispatch.mergeContactsQueue)
 			let dispatchSemaphore = DispatchSemaphore(value: 0)
 			
 			var finalProcessingIndexeForUpdating: [Int] = []
@@ -825,7 +825,7 @@ extension ContactsManager {
 			var indexesForUpdate: [Int] = []
 			
 			let dispatchGroup = DispatchGroup()
-			let dispatchQuoue = DispatchQueue(label: C.key.dispatch.mergeContacts)
+			let dispatchQuoue = DispatchQueue(label: C.key.dispatch.mergeContactsQueue)
 			let dispatchSemaphore = DispatchSemaphore(value: 0)
 			
 			var currentMergeProcessingIndex = 0
@@ -1116,7 +1116,7 @@ extension ContactsManager {
 			
 			var errorsCount = 0
 			let dispatchGroup = DispatchGroup()
-			let dispatchQueue = DispatchQueue(label: C.key.dispatch.deleteContacts)
+			let dispatchQueue = DispatchQueue(label: C.key.dispatch.deleteContactsQueue)
 			let dispatchSemaphore = DispatchSemaphore(value: 0)
 			var currentDeletingContatsIndex = 0
 			
