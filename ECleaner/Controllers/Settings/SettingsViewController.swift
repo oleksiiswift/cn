@@ -221,6 +221,4 @@ extension SettingsViewController {
 }
 
 
-protocol SettingActionsDelegate {
-	func setAction(at cell: SettingsModel)
-}
+

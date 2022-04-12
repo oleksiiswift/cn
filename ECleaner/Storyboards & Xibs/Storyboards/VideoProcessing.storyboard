@@ -17,6 +17,10 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="R3P-fQ-KC3">
+                                <rect key="frame" x="0.0" y="114" width="414" height="782"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            </tableView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ixU-uj-gJS" customClass="NavigationBar" customModule="ECleaner" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="44" width="414" height="70"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -25,16 +29,37 @@
                                     <constraint firstAttribute="height" constant="70" id="zkw-6G-c82"/>
                                 </constraints>
                             </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Csv-w1-iqI" customClass="BottomButtonBarView" customModule="ECleaner" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="806" width="414" height="90"/>
+                                <viewLayoutGuide key="safeArea" id="dNi-Ev-7yi"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="90" id="DNt-Qc-Ax0"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="vDu-zF-Fre"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="ixU-uj-gJS" firstAttribute="leading" secondItem="5EZ-qb-Rvc" secondAttribute="leading" id="GrO-hI-qRp"/>
+                            <constraint firstItem="R3P-fQ-KC3" firstAttribute="bottom" secondItem="5EZ-qb-Rvc" secondAttribute="bottom" id="P76-7u-iDy"/>
+                            <constraint firstItem="R3P-fQ-KC3" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" id="U7n-Dd-VHL"/>
+                            <constraint firstAttribute="trailing" secondItem="Csv-w1-iqI" secondAttribute="trailing" id="ZJD-hN-4i8"/>
                             <constraint firstItem="ixU-uj-gJS" firstAttribute="top" secondItem="vDu-zF-Fre" secondAttribute="top" id="dcC-xf-twC"/>
+                            <constraint firstItem="R3P-fQ-KC3" firstAttribute="top" secondItem="ixU-uj-gJS" secondAttribute="bottom" id="fcV-0S-6IV"/>
+                            <constraint firstAttribute="bottom" secondItem="Csv-w1-iqI" secondAttribute="bottom" id="fmF-f7-fq7"/>
+                            <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="R3P-fQ-KC3" secondAttribute="trailing" id="nB9-De-glD"/>
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="ixU-uj-gJS" secondAttribute="trailing" id="pub-9f-pKl"/>
+                            <constraint firstItem="Csv-w1-iqI" firstAttribute="leading" secondItem="5EZ-qb-Rvc" secondAttribute="leading" id="vRu-d6-EUy"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="klk-YE-iDE"/>
+                    <connections>
+                        <outlet property="bottomButtonBarView" destination="Csv-w1-iqI" id="nEX-Hx-4OI"/>
+                        <outlet property="bottomButtonViewHeightConstraint" destination="DNt-Qc-Ax0" id="g0R-yz-mOo"/>
+                        <outlet property="navigationBarView" destination="ixU-uj-gJS" id="qpU-oF-DJt"/>
+                        <outlet property="tableView" destination="R3P-fQ-KC3" id="AVX-SI-IqV"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ief-a0-LHa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>

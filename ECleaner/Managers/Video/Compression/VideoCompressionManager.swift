@@ -93,6 +93,8 @@ extension VideoCompressionManager {
 				treshold = 1080
 			case .custom(_, _, let scale):
 				return scale
+			default:
+				return CGSize()
 		}
 		
 		if isPortrait {
@@ -144,6 +146,8 @@ extension VideoCompressionManager {
 				case .high:
 					targetBitrate = self.getMaxBitrate(from: originBitrate / 2)
 				case .custom(_, _, _):
+					break
+				default:
 					break
 			}
 		}
@@ -213,10 +217,9 @@ extension VideoCompressionManager {
 				
 				if let buffer = videoOuput.copyNextSampleBuffer() {
 					if index < randeomFrames.count {
-						let frameIndes = randeomFrames[index]
-						if counter == frameIndes {
+						let frameIndex = randeomFrames[index]
+						if counter == frameIndex {
 							index += 1
-							
 							let timingInfo = UnsafeMutablePointer<CMSampleTimingInfo>.allocate(capacity: 1)
 							let newSample = UnsafeMutablePointer<CMSampleBuffer?>.allocate(capacity: 1)
 							

@@ -11,10 +11,8 @@ import Photos
 class PhotoPreviewCollectionViewCell: UICollectionViewCell {
 	
 	@IBOutlet weak var baseView: UIView!
-	
 	@IBOutlet weak var sliderShadowBackroundView: SliderShadowView!
 	@IBOutlet weak var reuseShadowView: PreviewCollectionShadowView!
-	
 	@IBOutlet weak var sliderContainerView: UIView!
 	@IBOutlet weak var playCurrentItemButton: PrimaryButton!
 	@IBOutlet weak var durationTimeSlider: GradientSlider!
@@ -287,9 +285,9 @@ extension PhotoPreviewCollectionViewCell {
 		
 		let timeObserverFPS: Int = 30
 		let scaleObserveValue: Double = 1 / Double(timeObserverFPS)
-		let timeIntervar = CMTime(seconds: scaleObserveValue, preferredTimescale: CMTimeScale(NSEC_PER_SEC))
+		let timeInterval = CMTime(seconds: scaleObserveValue, preferredTimescale: CMTimeScale(NSEC_PER_SEC))
 		
-		self.timeObserver = self.phassetMediaPlayer.addPeriodicTimeObserver(forInterval: timeIntervar, queue: .main, using: { (CMTime) in
+		self.timeObserver = self.phassetMediaPlayer.addPeriodicTimeObserver(forInterval: timeInterval, queue: .main, using: { (CMTime) in
 			
 			guard let currentItem = self.phassetMediaPlayer.currentItem,
 				  currentItem.status.rawValue == AVPlayer.Status.readyToPlay.rawValue,

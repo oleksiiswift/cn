@@ -310,8 +310,8 @@
                             <constraint firstItem="wDP-0E-wnz" firstAttribute="top" secondItem="mxv-XT-7nl" secondAttribute="top" id="6Lf-xM-qWF"/>
                             <constraint firstItem="i7X-lQ-P9l" firstAttribute="top" secondItem="wDP-0E-wnz" secondAttribute="bottom" id="8gh-X6-3wx"/>
                             <constraint firstItem="mxv-XT-7nl" firstAttribute="trailing" secondItem="wDP-0E-wnz" secondAttribute="trailing" id="N9A-bc-hcG"/>
+                            <constraint firstAttribute="bottom" secondItem="i7X-lQ-P9l" secondAttribute="bottom" id="QO3-4v-cFv"/>
                             <constraint firstAttribute="trailing" secondItem="Vq3-L5-8lS" secondAttribute="trailing" id="gAf-0E-fBE"/>
-                            <constraint firstItem="Vq3-L5-8lS" firstAttribute="top" secondItem="i7X-lQ-P9l" secondAttribute="bottom" id="nXN-xB-sK4"/>
                             <constraint firstItem="Vq3-L5-8lS" firstAttribute="leading" secondItem="NBj-aB-qyU" secondAttribute="leading" id="uwG-iW-EiJ"/>
                             <constraint firstItem="wDP-0E-wnz" firstAttribute="leading" secondItem="NBj-aB-qyU" secondAttribute="leading" id="vzT-UN-gXg"/>
                             <constraint firstItem="mxv-XT-7nl" firstAttribute="trailing" secondItem="i7X-lQ-P9l" secondAttribute="trailing" id="xzJ-Sp-edu"/>

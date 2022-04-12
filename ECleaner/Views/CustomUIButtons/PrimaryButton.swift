@@ -9,12 +9,21 @@ import UIKit
 
 class PrimaryButton: UIButton {
 	
-	let primaryLayer = CALayer()
-	let secondaryLayer = CALayer()
+	private let primaryLayer = CALayer()
+	private let secondaryLayer = CALayer()
+	
+	public var primaryShadowsIsActive = true
 		
 	override func layoutSubviews() {
 		super.layoutSubviews()
 
+		configureShadow()
+	}
+	
+	private func configureShadow() {
+		
+		guard primaryShadowsIsActive else { return }
+		
 		primaryLayer.backgroundColor = theme.primaryButtonBackgroundColor.cgColor
 		primaryLayer.cornerRadius = 10
 		[primaryLayer, secondaryLayer].forEach {

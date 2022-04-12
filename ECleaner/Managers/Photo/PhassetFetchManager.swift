@@ -505,7 +505,7 @@ extension PHAssetFetchManager {
 //		MARK: - UTILS -
 extension PHAssetFetchManager {
 	
-	public func saveAVAsset(with url: URL, completionHandler: ((Bool,Error?) -> Void)) {
+	public func saveAVAsset(with url: URL, completionHandler: @escaping ((Bool,Error?) -> Void)) {
 		
 		PHPhotoLibrary.shared().performChanges({
 			let request = PHAssetCreationRequest.forAsset()
