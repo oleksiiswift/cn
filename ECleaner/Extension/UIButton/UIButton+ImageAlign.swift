@@ -109,5 +109,12 @@ extension UIButton {
 			imageView.removeFromSuperview()
 		}
 	}
+	
+	public func removeCenterImage() {
+		
+		if let imageView = self.subviews.first(where: {$0.tag == 100500}) as? UIImageView {
+			imageView.removeFromSuperview()
+		}
+	}
 }
 

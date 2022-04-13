@@ -19,20 +19,19 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="n5b-zV-NIG" customClass="ReuseShadowView" customModule="ECleaner" customModuleProvider="target">
-                        <rect key="frame" x="20" y="20" width="279" height="340"/>
+                        <rect key="frame" x="20" y="20" width="279" height="330"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </view>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ggy-th-MzC">
-                        <rect key="frame" x="20" y="20" width="279" height="340"/>
+                        <rect key="frame" x="20" y="20" width="279" height="330"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="duw-yg-npa">
-                                <rect key="frame" x="10" y="10" width="259" height="320"/>
+                                <rect key="frame" x="10" y="10" width="259" height="310"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1oT-Fo-g4s">
-                                <rect key="frame" x="0.0" y="0.0" width="279" height="340"/>
-                                <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="plain" title="Button"/>
+                                <rect key="frame" x="0.0" y="0.0" width="279" height="330"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                 <connections>
                                     <action selector="didTapPlayPauseVideo:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="nSc-SO-yMy"/>
                                 </connections>
@@ -51,16 +50,16 @@
                         </constraints>
                     </view>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kva-8M-EAe" customClass="ReuseShadowView" customModule="ECleaner" customModuleProvider="target">
-                        <rect key="frame" x="20" y="380" width="279" height="60"/>
+                        <rect key="frame" x="20" y="370" width="279" height="60"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="60" id="8Ot-UW-ZrU"/>
                         </constraints>
                     </view>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xOA-g0-ljV">
-                        <rect key="frame" x="20" y="380" width="279" height="60"/>
+                        <rect key="frame" x="20" y="370" width="279" height="60"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ndh-x5-8tY" customClass="TrimmerView" customModule="ECleaner" customModuleProvider="target">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ndh-x5-8tY" customClass="SliderView" customModule="ECleaner" customModuleProvider="target">
                                 <rect key="frame" x="10" y="10" width="259" height="40"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </view>
@@ -87,7 +86,7 @@
                     <constraint firstAttribute="trailing" secondItem="ggy-th-MzC" secondAttribute="trailing" constant="20" id="kiU-0m-HQI"/>
                     <constraint firstItem="kva-8M-EAe" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="20" id="mfP-yD-6ta"/>
                     <constraint firstItem="kva-8M-EAe" firstAttribute="top" secondItem="xOA-g0-ljV" secondAttribute="top" id="pNE-IX-iWJ"/>
-                    <constraint firstAttribute="bottom" secondItem="kva-8M-EAe" secondAttribute="bottom" constant="10" id="seo-4s-Nho"/>
+                    <constraint firstAttribute="bottom" secondItem="kva-8M-EAe" secondAttribute="bottom" constant="20" id="seo-4s-Nho"/>
                     <constraint firstItem="kva-8M-EAe" firstAttribute="leading" secondItem="xOA-g0-ljV" secondAttribute="leading" id="t8e-ck-GJy"/>
                     <constraint firstItem="xOA-g0-ljV" firstAttribute="top" secondItem="n5b-zV-NIG" secondAttribute="bottom" constant="20" id="wZ3-Ra-5sB"/>
                     <constraint firstAttribute="trailing" secondItem="kva-8M-EAe" secondAttribute="trailing" constant="20" id="wvG-sI-qzR"/>
@@ -97,6 +96,7 @@
             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <connections>
                 <outlet property="baseView" destination="ggy-th-MzC" id="Od6-ah-yCR"/>
+                <outlet property="playPauseButton" destination="1oT-Fo-g4s" id="zOz-M8-GHL"/>
                 <outlet property="reuseShadowView" destination="n5b-zV-NIG" id="kDt-9L-dG9"/>
                 <outlet property="sliderShadowView" destination="kva-8M-EAe" id="Trh-J9-bse"/>
                 <outlet property="sliderView" destination="ndh-x5-8tY" id="FdF-XH-gtU"/>

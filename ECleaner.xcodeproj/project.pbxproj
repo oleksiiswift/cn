@@ -154,14 +154,6 @@
 		972A2A0128057D6700D6F54A /* CompressionSettingsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 972A29FF28057D6700D6F54A /* CompressionSettingsTableViewCell.xib */; };
 		972A2A052805F01E00D6F54A /* VideoPreviewTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972A2A032805F01E00D6F54A /* VideoPreviewTableViewCell.swift */; };
 		972A2A062805F01E00D6F54A /* VideoPreviewTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 972A2A042805F01E00D6F54A /* VideoPreviewTableViewCell.xib */; };
-		972A2A44280633E600D6F54A /* AssetVideoScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972A2A3A280633E500D6F54A /* AssetVideoScrollView.swift */; };
-		972A2A45280633E600D6F54A /* AVAssetTimeSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972A2A3B280633E500D6F54A /* AVAssetTimeSelector.swift */; };
-		972A2A46280633E600D6F54A /* ThumbSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972A2A3C280633E500D6F54A /* ThumbSelectorView.swift */; };
-		972A2A47280633E600D6F54A /* VideoCropView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972A2A3E280633E500D6F54A /* VideoCropView.swift */; };
-		972A2A48280633E600D6F54A /* VideoScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972A2A3F280633E500D6F54A /* VideoScrollView.swift */; };
-		972A2A49280633E600D6F54A /* CropMaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972A2A40280633E500D6F54A /* CropMaskView.swift */; };
-		972A2A4A280633E600D6F54A /* HandlerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972A2A42280633E500D6F54A /* HandlerView.swift */; };
-		972A2A4B280633E600D6F54A /* PryntTrimmerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972A2A43280633E600D6F54A /* PryntTrimmerView.swift */; };
 		972AAACD27F7524A00F3A1D2 /* UIView+AnimateButtonsAndViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972AAACC27F7524A00F3A1D2 /* UIView+AnimateButtonsAndViews.swift */; };
 		972E02542741050D00C236C7 /* SingleContactsGroupOperationsListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972E02532741050D00C236C7 /* SingleContactsGroupOperationsListener.swift */; };
 		972E0256274105B300C236C7 /* SingleContactsGroupOperationsMediator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972E0255274105B300C236C7 /* SingleContactsGroupOperationsMediator.swift */; };
@@ -200,6 +192,10 @@
 		978FEF12274BB73700ADE1D9 /* AlertType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978FEF11274BB73700ADE1D9 /* AlertType.swift */; };
 		978FEF14274BC21A00ADE1D9 /* ProgressAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978FEF13274BC21A00ADE1D9 /* ProgressAlertController.swift */; };
 		978FEF1A274C1C5400ADE1D9 /* UIAlertController+Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978FEF19274C1C5400ADE1D9 /* UIAlertController+Colors.swift */; };
+		9790CDBC28074A39005E9570 /* SliderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9790CDBB28074A39005E9570 /* SliderView.swift */; };
+		9790CDBE28074ADB005E9570 /* HandlerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9790CDBD28074ADB005E9570 /* HandlerView.swift */; };
+		9790CDC028074B6C005E9570 /* AssetVideoScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9790CDBF28074B6C005E9570 /* AssetVideoScrollView.swift */; };
+		9790CDC228074B77005E9570 /* AVAssetTimeSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9790CDC128074B77005E9570 /* AVAssetTimeSelector.swift */; };
 		979487BD27B6A9D800135D47 /* CleanProcessingType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 979487BC27B6A9D800135D47 /* CleanProcessingType.swift */; };
 		979487BF27B6AA4200135D47 /* DeepCleaningType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 979487BE27B6AA4200135D47 /* DeepCleaningType.swift */; };
 		979487C127B7065E00135D47 /* DeepCleanStateModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 979487C027B7065E00135D47 /* DeepCleanStateModel.swift */; };
@@ -440,14 +436,6 @@
 		972A29FF28057D6700D6F54A /* CompressionSettingsTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CompressionSettingsTableViewCell.xib; sourceTree = "<group>"; };
 		972A2A032805F01E00D6F54A /* VideoPreviewTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPreviewTableViewCell.swift; sourceTree = "<group>"; };
 		972A2A042805F01E00D6F54A /* VideoPreviewTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = VideoPreviewTableViewCell.xib; sourceTree = "<group>"; };
-		972A2A3A280633E500D6F54A /* AssetVideoScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssetVideoScrollView.swift; sourceTree = "<group>"; };
-		972A2A3B280633E500D6F54A /* AVAssetTimeSelector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVAssetTimeSelector.swift; sourceTree = "<group>"; };
-		972A2A3C280633E500D6F54A /* ThumbSelectorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThumbSelectorView.swift; sourceTree = "<group>"; };
-		972A2A3E280633E500D6F54A /* VideoCropView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoCropView.swift; sourceTree = "<group>"; };
-		972A2A3F280633E500D6F54A /* VideoScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoScrollView.swift; sourceTree = "<group>"; };
-		972A2A40280633E500D6F54A /* CropMaskView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CropMaskView.swift; sourceTree = "<group>"; };
-		972A2A42280633E500D6F54A /* HandlerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HandlerView.swift; sourceTree = "<group>"; };
-		972A2A43280633E600D6F54A /* PryntTrimmerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PryntTrimmerView.swift; sourceTree = "<group>"; };
 		972AAACC27F7524A00F3A1D2 /* UIView+AnimateButtonsAndViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+AnimateButtonsAndViews.swift"; sourceTree = "<group>"; };
 		972E02532741050D00C236C7 /* SingleContactsGroupOperationsListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleContactsGroupOperationsListener.swift; sourceTree = "<group>"; };
 		972E0255274105B300C236C7 /* SingleContactsGroupOperationsMediator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleContactsGroupOperationsMediator.swift; sourceTree = "<group>"; };
@@ -486,6 +474,10 @@
 		978FEF11274BB73700ADE1D9 /* AlertType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertType.swift; sourceTree = "<group>"; };
 		978FEF13274BC21A00ADE1D9 /* ProgressAlertController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressAlertController.swift; sourceTree = "<group>"; };
 		978FEF19274C1C5400ADE1D9 /* UIAlertController+Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIAlertController+Colors.swift"; sourceTree = "<group>"; };
+		9790CDBB28074A39005E9570 /* SliderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderView.swift; sourceTree = "<group>"; };
+		9790CDBD28074ADB005E9570 /* HandlerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HandlerView.swift; sourceTree = "<group>"; };
+		9790CDBF28074B6C005E9570 /* AssetVideoScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssetVideoScrollView.swift; sourceTree = "<group>"; };
+		9790CDC128074B77005E9570 /* AVAssetTimeSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVAssetTimeSelector.swift; sourceTree = "<group>"; };
 		979487BC27B6A9D800135D47 /* CleanProcessingType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CleanProcessingType.swift; sourceTree = "<group>"; };
 		979487BE27B6AA4200135D47 /* DeepCleaningType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepCleaningType.swift; sourceTree = "<group>"; };
 		979487C027B7065E00135D47 /* DeepCleanStateModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepCleanStateModel.swift; sourceTree = "<group>"; };
@@ -676,7 +668,6 @@
 			children = (
 				97FC78972688CC06000D7F26 /* SimpleAssetsListViewController.swift */,
 				97238A082689D01E00C523DC /* GroupedAssetListViewController.swift */,
-				9710284F28032602003CBF7E /* VideoCollectionCompressingViewController.swift */,
 			);
 			path = PhotoControllers;
 			sourceTree = "<group>";
@@ -796,13 +787,13 @@
 			children = (
 				97CB3519273A9166005DA881 /* Contacts */,
 				97011E1227ECAD8200663C8E /* PhotoCells */,
+				972A2A0228057DB000D6F54A /* Compression */,
 				049CC22D268337310002F988 /* MediaTypeCollectionViewCell.swift */,
 				9701D26B27BD36250078E39F /* HelperBannerTableViewCell.swift */,
 				04CFFFFE2685F0C3000CA850 /* ContentTypeTableViewCell.swift */,
 				044281FF2693034600B6B47C /* DropDownMenuTableViewCell.swift */,
 				0459DF8A26A55F360085EEDF /* CarouselCollectionViewCell.swift */,
 				047DE61726AAA53100733CD5 /* DeepCleanInfoTableViewCell.swift */,
-				972A2A0228057DB000D6F54A /* Compression */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -1046,6 +1037,7 @@
 				97DC39B1273C091C00D487BE /* ShadowButtons */,
 				9776F57A27359382009D806A /* Layer */,
 				97A39FDF27649F7C007CB482 /* DatePicker */,
+				972A2A38280633E500D6F54A /* SliderView */,
 				97A867AF27E9546B00891297 /* CustomUIButtons */,
 				970B208B27F5BCB900B5AF7D /* GradientSlider */,
 			);
@@ -1300,6 +1292,7 @@
 		9710285528038278003CBF7E /* VideoProcessing */ = {
 			isa = PBXGroup;
 			children = (
+				9710284F28032602003CBF7E /* VideoCollectionCompressingViewController.swift */,
 				9710285328038274003CBF7E /* VideoCompressingViewController.swift */,
 				972A29F628057B7300D6F54A /* CompressingSettingsDataSource.swift */,
 			);
@@ -1363,49 +1356,20 @@
 		972A2A172806255300D6F54A /* temp */ = {
 			isa = PBXGroup;
 			children = (
-				972A2A38280633E500D6F54A /* PryntTrimmerView */,
 				972A29EF28055CCA00D6F54A /* Temp.swift */,
 			);
 			path = temp;
 			sourceTree = "<group>";
 		};
-		972A2A38280633E500D6F54A /* PryntTrimmerView */ = {
+		972A2A38280633E500D6F54A /* SliderView */ = {
 			isa = PBXGroup;
 			children = (
-				972A2A39280633E500D6F54A /* Parents */,
-				972A2A3C280633E500D6F54A /* ThumbSelectorView.swift */,
-				972A2A3D280633E500D6F54A /* Cropper */,
-				972A2A41280633E500D6F54A /* Trimmer */,
+				9790CDBD28074ADB005E9570 /* HandlerView.swift */,
+				9790CDBB28074A39005E9570 /* SliderView.swift */,
+				9790CDBF28074B6C005E9570 /* AssetVideoScrollView.swift */,
+				9790CDC128074B77005E9570 /* AVAssetTimeSelector.swift */,
 			);
-			path = PryntTrimmerView;
-			sourceTree = "<group>";
-		};
-		972A2A39280633E500D6F54A /* Parents */ = {
-			isa = PBXGroup;
-			children = (
-				972A2A3A280633E500D6F54A /* AssetVideoScrollView.swift */,
-				972A2A3B280633E500D6F54A /* AVAssetTimeSelector.swift */,
-			);
-			path = Parents;
-			sourceTree = "<group>";
-		};
-		972A2A3D280633E500D6F54A /* Cropper */ = {
-			isa = PBXGroup;
-			children = (
-				972A2A3E280633E500D6F54A /* VideoCropView.swift */,
-				972A2A3F280633E500D6F54A /* VideoScrollView.swift */,
-				972A2A40280633E500D6F54A /* CropMaskView.swift */,
-			);
-			path = Cropper;
-			sourceTree = "<group>";
-		};
-		972A2A41280633E500D6F54A /* Trimmer */ = {
-			isa = PBXGroup;
-			children = (
-				972A2A42280633E500D6F54A /* HandlerView.swift */,
-				972A2A43280633E600D6F54A /* PryntTrimmerView.swift */,
-			);
-			path = Trimmer;
+			path = SliderView;
 			sourceTree = "<group>";
 		};
 		972AAACE27F7559900F3A1D2 /* UIImage */ = {
@@ -2040,10 +2004,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				972A2A49280633E600D6F54A /* CropMaskView.swift in Sources */,
 				972E02542741050D00C236C7 /* SingleContactsGroupOperationsListener.swift in Sources */,
 				970D7782275A9C400048F41D /* PHAssetGroupModel.swift in Sources */,
-				972A2A48280633E600D6F54A /* VideoScrollView.swift in Sources */,
 				048D65C926B171E5004F0ADC /* PlainProgressview.swift in Sources */,
 				97A39FE52764A040007CB482 /* SegmentDatePickerComponents.swift in Sources */,
 				0459DF8B26A55F360085EEDF /* CarouselCollectionViewCell.swift in Sources */,
@@ -2081,6 +2043,7 @@
 				4F56073B27205AF300CA19E9 /* Property.swift in Sources */,
 				97C656B32773CABE00E88BBF /* ShadowMultiplyerButton.swift in Sources */,
 				04E58373267A4A2000EDC3A3 /* UIDevice+Enviroment.swift in Sources */,
+				9790CDBE28074ADB005E9570 /* HandlerView.swift in Sources */,
 				9776F5792735937E009D806A /* InnerShadowLayer.swift in Sources */,
 				97D2BECC275A3D06002082EB /* CNContactVCard+ImageData.swift in Sources */,
 				975617D8273BC32A00E07A62 /* ReuseShadowRoundedView.swift in Sources */,
@@ -2092,6 +2055,7 @@
 				97D2BECA275A2D1D002082EB /* ContactsManager.swift in Sources */,
 				972A29F028055CCA00D6F54A /* Temp.swift in Sources */,
 				97F50C2C27B8107E00FBDA0C /* DeepCleaningState.swift in Sources */,
+				9790CDC228074B77005E9570 /* AVAssetTimeSelector.swift in Sources */,
 				97EB665327B1BC1F00B21EF5 /* UICollectionView+NextItem.swift in Sources */,
 				4F56074027205AF300CA19E9 /* ArcView.swift in Sources */,
 				97238A0F2689EE2700C523DC /* CustomDoneHud.swift in Sources */,
@@ -2099,7 +2063,6 @@
 				04E5837E267B60F600EDC3A3 /* AlertManager.swift in Sources */,
 				975AF440272898AE00744E3B /* ContactsViewController.swift in Sources */,
 				97C70B54277634AC0033F466 /* ShadowButton.swift in Sources */,
-				972A2A45280633E600D6F54A /* AVAssetTimeSelector.swift in Sources */,
 				97C70B50277633AC0033F466 /* UIImage+Gradient.swift in Sources */,
 				972A29FC28057C7100D6F54A /* CompressionActionDelegate.swift in Sources */,
 				4F4A17BB271D819F00CAF157 /* StartingNavigationBar.swift in Sources */,
@@ -2168,7 +2131,7 @@
 				97DC39B0273C08ED00D487BE /* PrimaryShadowImageWithTextButton.swift in Sources */,
 				97F50C2E27B8426500FBDA0C /* SingleCleanStateModel.swift in Sources */,
 				4F56073A27205AF300CA19E9 /* GradientCircularProgress.swift in Sources */,
-				972A2A46280633E600D6F54A /* ThumbSelectorView.swift in Sources */,
+				9790CDBC28074A39005E9570 /* SliderView.swift in Sources */,
 				4F56073D27205AF300CA19E9 /* ProgressAtRatioView.swift in Sources */,
 				9701D25B27BD17D70078E39F /* SettingsModel.swift in Sources */,
 				4F56074127205AF300CA19E9 /* Background.swift in Sources */,
@@ -2218,7 +2181,6 @@
 				04649B31268C507F00336FE4 /* GroupedAssetsReusableHeaderView.swift in Sources */,
 				97238A112689EECE00C523DC /* UIView+BlurView.swift in Sources */,
 				04CFFFF92685BF01000CA850 /* MediaContentViewController.swift in Sources */,
-				972A2A47280633E600D6F54A /* VideoCropView.swift in Sources */,
 				4F56074327205AF300CA19E9 /* GradientArcWithClearColorView.swift in Sources */,
 				049CC215268221D40002F988 /* AdvertisementViewController.swift in Sources */,
 				97FC78982688CC06000D7F26 /* SimpleAssetsListViewController.swift in Sources */,
@@ -2241,7 +2203,6 @@
 				04CF00002685F0C3000CA850 /* ContentTypeTableViewCell.swift in Sources */,
 				970D7786275B70420048F41D /* PHAsset+FileSize.swift in Sources */,
 				97AFE8F6278C5B730062E5D1 /* AlertHandler.swift in Sources */,
-				972A2A4B280633E600D6F54A /* PryntTrimmerView.swift in Sources */,
 				4F56074727205AF300CA19E9 /* BlueDarkStyle.swift in Sources */,
 				049CC221268314690002F988 /* NotificationManager.swift in Sources */,
 				9784D3A82742CDDB00340D97 /* ReuseShadowView.swift in Sources */,
@@ -2264,7 +2225,6 @@
 				04CFFFEF268479CE000CA850 /* CircleProgressView.swift in Sources */,
 				4F56074627205AF300CA19E9 /* BlueIndicatorStyle.swift in Sources */,
 				970D778B275B9B850048F41D /* ProgressSearchNotificationManager.swift in Sources */,
-				972A2A44280633E600D6F54A /* AssetVideoScrollView.swift in Sources */,
 				976D8E4128046E9B005004F4 /* VideoCompressionManager.swift in Sources */,
 				97D2BEC8275A2AA2002082EB /* OperationServiceQueue.swift in Sources */,
 				97A39FE92764A9B8007CB482 /* DatePickerStringComponents.swift in Sources */,
@@ -2279,7 +2239,7 @@
 				9701D26727BD31A40078E39F /* SettingsViewController.swift in Sources */,
 				97C44FBB274EF93B001B61AB /* ContactasCleaningType.swift in Sources */,
 				9701D27827BE56DD0078E39F /* StepSlider.m in Sources */,
-				972A2A4A280633E600D6F54A /* HandlerView.swift in Sources */,
+				9790CDC028074B6C005E9570 /* AssetVideoScrollView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

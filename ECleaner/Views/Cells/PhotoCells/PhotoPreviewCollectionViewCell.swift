@@ -283,7 +283,7 @@ extension PhotoPreviewCollectionViewCell {
 	
 	private func timeObserverSetup() {
 		
-		let timeObserverFPS: Int = 30
+		let timeObserverFPS: Int = 60
 		let scaleObserveValue: Double = 1 / Double(timeObserverFPS)
 		let timeInterval = CMTime(seconds: scaleObserveValue, preferredTimescale: CMTimeScale(NSEC_PER_SEC))
 		

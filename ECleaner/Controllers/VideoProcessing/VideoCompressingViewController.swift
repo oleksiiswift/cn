@@ -26,6 +26,8 @@ class VideoCompressingViewController: UIViewController {
 	private var customBitrate: Int = 0
 	private var customScale: CGSize = .zero
 
+	private var popGesture: UIGestureRecognizer?
+
     override func viewDidLoad() {
         super.viewDidLoad()
 		
@@ -42,6 +44,27 @@ class VideoCompressingViewController: UIViewController {
 		
 		loadLastUsedSavedCompressedSettings()
 	}
+
+	override func viewDidAppear(_ animated: Bool) {
+		super.viewDidAppear(animated)
+
+		if navigationController!.responds(to: #selector(getter: UINavigationController.interactivePopGestureRecognizer)) {
+			self.popGesture = navigationController!.interactivePopGestureRecognizer
+			self.navigationController!.view.removeGestureRecognizer(navigationController!.interactivePopGestureRecognizer!)
+		}
+
+	}
+
+	override func viewWillDisappear(_ animated: Bool) {
+		super.viewWillDisappear(animated)
+
+		if let gesture = self.popGesture {
+			self.navigationController!.view.addGestureRecognizer(gesture)
+		}
+
+	}
+	
+
 }
 
 extension VideoCompressingViewController: BottomActionButtonDelegate {
@@ -96,6 +119,7 @@ extension VideoCompressingViewController {
 		
 		self.tableView.contentInset.top = 0
 		self.tableView.contentInset.bottom = 85
+		
 		
 		let view = UIView(frame: CGRect(origin: .zero, size: CGSize(width: U.screenWidth, height: 20)))
 		view.backgroundColor = .clear

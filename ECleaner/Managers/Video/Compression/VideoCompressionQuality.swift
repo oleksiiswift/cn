@@ -64,7 +64,7 @@ enum VideoCompressionQuality: Equatable {
 	var heightForRow: CGFloat {
 		switch self {
 			case .videoPreview:
-				return 365
+				return 370
 			default:
 				return 100
 		}

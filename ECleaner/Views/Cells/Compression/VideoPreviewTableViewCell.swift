@@ -8,14 +8,14 @@
 import UIKit
 import Photos
 
-
 class VideoPreviewTableViewCell: UITableViewCell {
 	
 	@IBOutlet weak var reuseShadowView: ReuseShadowView!
 	@IBOutlet weak var sliderShadowView: ReuseShadowView!
 	@IBOutlet weak var baseView: UIView!
 	@IBOutlet weak var videoPreview: UIView!
-	@IBOutlet weak var sliderView: TrimmerView!
+	@IBOutlet weak var sliderView: SliderView!
+	@IBOutlet weak var playPauseButton: UIButton!
 	
 	private var asset: PHAsset?
 	private var imageManager: PHCachingImageManager?
@@ -103,40 +103,16 @@ extension VideoPreviewTableViewCell {
 	
 	private func handlePlayerButton() {
 		
-	}
-	
-	@objc func sliderValueDidChange(_ notification: Notification) {
+		playPauseButton.animateButtonTransform()
 		
-		let sliderValue: Double = 0
-		#warning("TODO")
-		let currentDuration = self.getOriginDurationValue()
-		let currentTime = CMTime(seconds: sliderValue, preferredTimescale: 1)
-		
-//		switch touch.phase {
-//			case .began:
-//				self.isSeekInProgress = true
-//			case .moved:
-//				if isPlaying {
-//					self.phassetMediaPlayer.pause()
-//				}
-//				self.phassetMediaPlayer.seek(to: currentTime) { [weak self] _ in
-//					guard let `self` = self else { return}
-//					self.updateLabelsTimesCodes(by: currentTime, with: currentDuration)
-//				}
-//			case .ended:
-//				self.phassetMediaPlayer.seek(to: currentTime) { [weak self] _ in
-//					guard let `self` = self else { return }
-//
-//					self.isSeekInProgress = false
-//
-//					if self.isPlaying {
-//						self.phassetMediaPlayer.play()
-//					}
-//				}
-//			default:
-//				return
-//		}
-		
+		if isPlaying {
+			playPauseButton.addCenterImage(image: I.player.templatePause, imageWidth: 50, imageHeight: 50)
+			U.delay(1) {
+				self.playPauseButton.removeCenterImage()
+			}
+		} else {
+			playPauseButton.addCenterImage(image: I.player.templatePlay, imageWidth: 50, imageHeight: 50)
+		}
 	}
 }
 
@@ -146,9 +122,7 @@ extension VideoPreviewTableViewCell {
 		
 		guard let _ = playerItem else { return }
 		
-		self.playerObserver = playerItem!.observe(\.status, options: [.new, .old], changeHandler: { playerItem, change in
-			debugPrint(playerItem.status)
-		})
+		self.playerObserver = playerItem!.observe(\.status, options: [.new, .old], changeHandler: { playerItem, change in })
 	}
 	
 	private func timeObserverSetup() {
@@ -186,33 +160,34 @@ extension VideoPreviewTableViewCell {
 		self.player.currentItem?.addObserver(self, forKeyPath: C.key.observers.player.duration, options: [.new, .initial], context: nil)
 		U.notificationCenter.addObserver(self, selector: #selector(self.playerDidEndPlay), name: .AVPlayerItemDidPlayToEndTime, object: self.playerItem)
 	}
-	
-	private func setupSlider() {
-		
-		
-	}
-	
-	private func setupDelegate() {
-		
-		sliderView.delegate = self
-		
-	}
 }
 
-extension VideoPreviewTableViewCell: TrimmerViewDelegate {
+extension VideoPreviewTableViewCell: SliderViewDelegate {
 	
 	func didChangePositionBar(_ playerTime: CMTime) {
 		
+		self.isSeekInProgress = true
+		
+		if isPlaying {
+			self.player.pause()
+		}
+		
+		self.player.seek(to: playerTime)
 	}
 	
 	func positionBarStoppedMoving(_ playerTime: CMTime) {
-		
+		self.player.seek(to: playerTime) { [weak self] _ in
+			
+			guard let `self` = self else { return }
+			
+			self.isSeekInProgress = false
+			
+			if self.isPlaying {
+				self.player.play()
+			}
+		}
 	}
-	
-	
 }
-
-
 
 extension VideoPreviewTableViewCell {
 	
@@ -227,27 +202,42 @@ extension VideoPreviewTableViewCell {
 	}
 }
 
+//		MARK: - ui setup -
 extension VideoPreviewTableViewCell: Themeble {
 	
 	private func setupUI() {
 		
-		self.setCorner(6)
+		self.selectionStyle = .none
 		self.contentView.setCorner(8)
+		self.setCorner(6)
 		baseView.setCorner(8)
 		videoPreview.setCorner(6)
-		reuseShadowView.layoutIfNeeded()
-		reuseShadowView.layoutSubviews()
-		
 		sliderShadowView.cornerRadius = 8
-		reuseShadowView.layoutSubviews()
+		playPauseButton.alpha = 0.8
+		playPauseButton.addCenterImage(image: I.player.templatePlay, imageWidth: 50, imageHeight: 50)
 	}
 	
+	private func setupDelegate() {
+		
+		sliderView.delegate = self
+	}
+	
+	private func setupSlider() {
+		
+		sliderView.positionBarBorderWidth = 3
+		sliderView.positionBarWidth = 9
+		sliderView.mobWidth = 0
+	}
+
 	func updateColors() {
 		
 		baseView.backgroundColor = theme.backgroundColor
 		videoPreview.backgroundColor = .black
 		sliderView.handleColor = theme.backgroundColor
 		sliderView.mainColor = theme.backgroundColor
-		sliderView.positionBarColor = .yellow
+		sliderView.positionBarColor = .clear
+		sliderView.positionBarBorderColor = UIColor().colorFromHexString("F07378")
+		
+		playPauseButton.tintColor = .white
 	}
 }
