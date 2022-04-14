@@ -21,6 +21,7 @@ class VideoCompressingViewController: UIViewController {
 	
 	private var compressionSettingsViewModel: CompressingSettingsViewModel!
 	private var compressionSettingsDataSource: CompressingSettingsDataSource!
+	private var compressionConfiguration = VideoCompressionConfig()
 	
 	private var customFPS: Float = 0
 	private var customBitrate: Int = 0
@@ -52,7 +53,6 @@ class VideoCompressingViewController: UIViewController {
 			self.popGesture = navigationController!.interactivePopGestureRecognizer
 			self.navigationController!.view.removeGestureRecognizer(navigationController!.interactivePopGestureRecognizer!)
 		}
-
 	}
 
 	override func viewWillDisappear(_ animated: Bool) {
@@ -61,10 +61,16 @@ class VideoCompressingViewController: UIViewController {
 		if let gesture = self.popGesture {
 			self.navigationController!.view.addGestureRecognizer(gesture)
 		}
-
 	}
 	
-
+	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+		switch segue.identifier {
+			case C.identifiers.segue.showCustomCompression:
+				self.setupShowCustomCompressionSettingsController(segue: segue)
+			default:
+				break
+		}
+	}
 }
 
 extension VideoCompressingViewController: BottomActionButtonDelegate {
@@ -103,6 +109,11 @@ extension VideoCompressingViewController {
 		if let asset = processingPHAsset {
 			self.compressionSettingsDataSource.prefetch(asset)
 		}
+	}
+	
+	private func setupCustomConfiguration() {
+		
+		self.compressionConfiguration = CompressionSettingsConfiguretion.getSavedConfiguration()
 	}
 	
 	private func tableViewSetup() {
@@ -154,7 +165,7 @@ extension VideoCompressingViewController: CompressionSettingsActionsDelegate {
 	}
 	
 	private func openCustomSettingsViewController() {
-		
+		performSegue(withIdentifier: C.identifiers.segue.showCustomCompression, sender: self)
 	}
 }
 
@@ -163,6 +174,25 @@ extension VideoCompressingViewController {
 	private func closeViewController() {
 		
 		self.navigationController?.popViewController(animated: true)
+	}
+	
+	private func setupShowCustomCompressionSettingsController(segue: UIStoryboardSegue) {
+		
+		guard let segue = segue as? ShowVideoCompressionCustomSettingsSelectorViewControllerSegue else { return }
+		
+		segue.configure(layout: .bottomMessage)
+		segue.dimMode = .gray(interactive: true)
+		segue.interactiveHide = false
+		
+		segue.messageView.setupForShadow(shadowColor: theme.bottomShadowColor, cornerRadius: 14, shadowOffcet: CGSize(width: 6, height: 6), shadowOpacity: 10, shadowRadius: 14)
+		segue.messageView.configureNoDropShadow()
+		
+		if let customSettingViewController = segue.destination as? VideoCompressionCustomSettingsViewController {
+			customSettingViewController.asset = self.processingPHAsset
+			customSettingViewController.selectVideoCompressingConfig = { config in
+				self.compressionConfiguration = config
+			}
+		}
 	}
 }
 
@@ -204,6 +234,9 @@ extension VideoCompressingViewController: Themeble {
 		bottomButtonBarView.updateColorsSettings()
 	}
 }
+
+
+
 
 
 

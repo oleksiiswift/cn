@@ -19,7 +19,7 @@ class ReuseShadowView: UIView {
     public var topBlurValue: CGFloat = 19
     public var topAlpha: Float = 0.9
     public var shadowBlurValue: CGFloat = 10
-	public var cornerRadius: CGFloat = 14
+	public var cornerRadius: CGFloat = 14 
     
     override func layoutSubviews() {
         super.layoutSubviews()

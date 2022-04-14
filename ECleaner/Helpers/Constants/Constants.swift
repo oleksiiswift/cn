@@ -39,6 +39,16 @@ class Constants {
             static let videoSpace = "videoDiskSpace"
             static let allMediaSpace = "wholeAssetsDiskSpace"
         }
+		
+		struct compressionSettings {
+			static let videoBitrate = "videoBitrate"
+			static let audioBitrate = "audioBitrate"
+			static let fps = "videoFPS"
+			static let frameInterval = "maximumVideoKeyframeInterval"
+			static let resolutionWidth = "scaleResolutionWidth"
+			static let resolutionHeight = "scaleResolutionHeight"
+			static let defaultConfigurationIsSet = "defaultConfigurationIsSet"
+		}
         
         struct notification {
             
@@ -307,6 +317,7 @@ class Constants {
             static let contactsGroup = "ContactsGroupViewController"
             static let expordContacts = "ExportContactsViewController"
 			static let settings = "SettingsViewController"
+			static let customCompression = "VideoCompressionCustomSettingsViewController"
         }
         
         struct cells {
@@ -370,6 +381,7 @@ class Constants {
 			static let showUpperDatePicker = "ShowDatePickerUpperDateSelectorViewController"
             static let showExportContacts = "ShowExportContactsViewControllerSegue"
 			static let showSizeSelector = "ShowVideoSizeSelectorSegue"
+			static let showCustomCompression = "ShowCustomCompressionSegue"
         }
     }
 	

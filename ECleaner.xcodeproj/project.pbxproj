@@ -157,6 +157,9 @@
 		972AAACD27F7524A00F3A1D2 /* UIView+AnimateButtonsAndViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972AAACC27F7524A00F3A1D2 /* UIView+AnimateButtonsAndViews.swift */; };
 		972E02542741050D00C236C7 /* SingleContactsGroupOperationsListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972E02532741050D00C236C7 /* SingleContactsGroupOperationsListener.swift */; };
 		972E0256274105B300C236C7 /* SingleContactsGroupOperationsMediator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972E0255274105B300C236C7 /* SingleContactsGroupOperationsMediator.swift */; };
+		972ED06B2808E09000096502 /* CompressionSettingsConfiguretion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972ED06A2808E09000096502 /* CompressionSettingsConfiguretion.swift */; };
+		9745CC1B280765DA00335C04 /* VideoCompressionCustomSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9745CC1A280765D900335C04 /* VideoCompressionCustomSettingsViewController.swift */; };
+		9745CC1E2807E2EE00335C04 /* MarkSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 9745CC1D2807E2EE00335C04 /* MarkSlider.m */; };
 		975617D8273BC32A00E07A62 /* ReuseShadowRoundedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 975617D7273BC32A00E07A62 /* ReuseShadowRoundedView.swift */; };
 		975AF43127281DF700744E3B /* ContactListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 975AF43027281DF700744E3B /* ContactListViewModel.swift */; };
 		975AF4352728210A00744E3B /* DynamicListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 975AF4342728210A00744E3B /* DynamicListener.swift */; };
@@ -266,6 +269,8 @@
 		97DC39AC273BE9D300D487BE /* GroupedContactsHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 97DC39AB273BE9D300D487BE /* GroupedContactsHeaderView.xib */; };
 		97DC39AE273C003300D487BE /* PrimaryShadowButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97DC39AD273C003300D487BE /* PrimaryShadowButton.swift */; };
 		97DC39B0273C08ED00D487BE /* PrimaryShadowImageWithTextButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97DC39AF273C08ED00D487BE /* PrimaryShadowImageWithTextButton.swift */; };
+		97DDCAB0280822760093D5F5 /* CompressionResolution.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97DDCAAF280822760093D5F5 /* CompressionResolution.swift */; };
+		97DDCAB2280873EA0093D5F5 /* StepSlider+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97DDCAB1280873EA0093D5F5 /* StepSlider+Extension.swift */; };
 		97E54A86268BB16A00C7FD54 /* SNCollectionViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97E54A85268BB16A00C7FD54 /* SNCollectionViewLayout.swift */; };
 		97E678462750F68A004E340B /* UsageDataNotificationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97E678452750F68A004E340B /* UsageDataNotificationType.swift */; };
 		97EB665127B1A4AE00B21EF5 /* CGSize+pixel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97EB665027B1A4AE00B21EF5 /* CGSize+pixel.swift */; };
@@ -439,6 +444,10 @@
 		972AAACC27F7524A00F3A1D2 /* UIView+AnimateButtonsAndViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+AnimateButtonsAndViews.swift"; sourceTree = "<group>"; };
 		972E02532741050D00C236C7 /* SingleContactsGroupOperationsListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleContactsGroupOperationsListener.swift; sourceTree = "<group>"; };
 		972E0255274105B300C236C7 /* SingleContactsGroupOperationsMediator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleContactsGroupOperationsMediator.swift; sourceTree = "<group>"; };
+		972ED06A2808E09000096502 /* CompressionSettingsConfiguretion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompressionSettingsConfiguretion.swift; sourceTree = "<group>"; };
+		9745CC1A280765D900335C04 /* VideoCompressionCustomSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoCompressionCustomSettingsViewController.swift; sourceTree = "<group>"; };
+		9745CC1C2807E28500335C04 /* MarkSlider.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MarkSlider.h; sourceTree = "<group>"; };
+		9745CC1D2807E2EE00335C04 /* MarkSlider.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MarkSlider.m; sourceTree = "<group>"; };
 		975617D7273BC32A00E07A62 /* ReuseShadowRoundedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReuseShadowRoundedView.swift; sourceTree = "<group>"; };
 		975AF43027281DF700744E3B /* ContactListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactListViewModel.swift; sourceTree = "<group>"; };
 		975AF4342728210A00744E3B /* DynamicListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicListener.swift; sourceTree = "<group>"; };
@@ -548,6 +557,8 @@
 		97DC39AB273BE9D300D487BE /* GroupedContactsHeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GroupedContactsHeaderView.xib; sourceTree = "<group>"; };
 		97DC39AD273C003300D487BE /* PrimaryShadowButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimaryShadowButton.swift; sourceTree = "<group>"; };
 		97DC39AF273C08ED00D487BE /* PrimaryShadowImageWithTextButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimaryShadowImageWithTextButton.swift; sourceTree = "<group>"; };
+		97DDCAAF280822760093D5F5 /* CompressionResolution.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompressionResolution.swift; sourceTree = "<group>"; };
+		97DDCAB1280873EA0093D5F5 /* StepSlider+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StepSlider+Extension.swift"; sourceTree = "<group>"; };
 		97E54A85268BB16A00C7FD54 /* SNCollectionViewLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SNCollectionViewLayout.swift; sourceTree = "<group>"; };
 		97E678452750F68A004E340B /* UsageDataNotificationType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsageDataNotificationType.swift; sourceTree = "<group>"; };
 		97EB665027B1A4AE00B21EF5 /* CGSize+pixel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGSize+pixel.swift"; sourceTree = "<group>"; };
@@ -766,6 +777,7 @@
 			isa = PBXGroup;
 			children = (
 				049CC21A268225E60002F988 /* SettingsManager.swift */,
+				972ED06A2808E09000096502 /* CompressionSettingsConfiguretion.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -1040,6 +1052,8 @@
 				972A2A38280633E500D6F54A /* SliderView */,
 				97A867AF27E9546B00891297 /* CustomUIButtons */,
 				970B208B27F5BCB900B5AF7D /* GradientSlider */,
+				9745CC1C2807E28500335C04 /* MarkSlider.h */,
+				9745CC1D2807E2EE00335C04 /* MarkSlider.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1252,6 +1266,7 @@
 			children = (
 				9701D27727BE56DC0078E39F /* StepSlider.h */,
 				9701D27627BE56DB0078E39F /* StepSlider.m */,
+				97DDCAB1280873EA0093D5F5 /* StepSlider+Extension.swift */,
 			);
 			path = StepSlider;
 			sourceTree = "<group>";
@@ -1295,6 +1310,7 @@
 				9710284F28032602003CBF7E /* VideoCollectionCompressingViewController.swift */,
 				9710285328038274003CBF7E /* VideoCompressingViewController.swift */,
 				972A29F628057B7300D6F54A /* CompressingSettingsDataSource.swift */,
+				9745CC1A280765D900335C04 /* VideoCompressionCustomSettingsViewController.swift */,
 			);
 			path = VideoProcessing;
 			sourceTree = "<group>";
@@ -1456,6 +1472,7 @@
 				976D8E3C280468E5005004F4 /* VideoCompressionQuality.swift */,
 				976D8E4028046E9B005004F4 /* VideoCompressionManager.swift */,
 				976D8E4228046EDF005004F4 /* VideoCompressionErrorHandler.swift */,
+				97DDCAAF280822760093D5F5 /* CompressionResolution.swift */,
 			);
 			path = Compression;
 			sourceTree = "<group>";
@@ -2117,6 +2134,7 @@
 				044A6FBD270F1B9B00CF0D17 /* Sequence+GetSum.swift in Sources */,
 				97CB351127395803005DA881 /* SectionShadowView.swift in Sources */,
 				97A867AE27E9546700891297 /* PrimaryButton.swift in Sources */,
+				972ED06B2808E09000096502 /* CompressionSettingsConfiguretion.swift in Sources */,
 				049CC22A26831D630002F988 /* Images.swift in Sources */,
 				04E09472267A06B500A69956 /* SceneDelegate.swift in Sources */,
 				97CC2F3E268743A80072EF8C /* SegueManager.swift in Sources */,
@@ -2160,6 +2178,7 @@
 				972A29F928057C4700D6F54A /* SettingActionsDelegate.swift in Sources */,
 				049CC22F268337310002F988 /* MediaTypeCollectionViewCell.swift in Sources */,
 				049CC21D268225F80002F988 /* ThemeManager.swift in Sources */,
+				97DDCAB2280873EA0093D5F5 /* StepSlider+Extension.swift in Sources */,
 				04428204269313AD00B6B47C /* DropDownMenuItems.swift in Sources */,
 				0447A68926B2A1E20074919B /* ConcurentPhotoProcessOperation.swift in Sources */,
 				97CA423F273EBBFA001FEA15 /* BottomButtonBarView.swift in Sources */,
@@ -2195,12 +2214,14 @@
 				970D7784275B66CE0048F41D /* PhotoManager.swift in Sources */,
 				975AF43B2728306C00744E3B /* ContactListDataSource.swift in Sources */,
 				97A39FDE27649F0C007CB482 /* UIView+RecurciveSearch.swift in Sources */,
+				97DDCAB0280822760093D5F5 /* CompressionResolution.swift in Sources */,
 				97B01A752746ED5D00DDE03C /* UIFont+Italic.swift in Sources */,
 				97CC2F3A2683D00F0072EF8C /* UpdateContentDataBaseListener.swift in Sources */,
 				9776F57E27359406009D806A /* ShadowRoundedView.swift in Sources */,
 				047DE61C26AAD5F000733CD5 /* DeepCleanManager.swift in Sources */,
 				97DC39AE273C003300D487BE /* PrimaryShadowButton.swift in Sources */,
 				04CF00002685F0C3000CA850 /* ContentTypeTableViewCell.swift in Sources */,
+				9745CC1E2807E2EE00335C04 /* MarkSlider.m in Sources */,
 				970D7786275B70420048F41D /* PHAsset+FileSize.swift in Sources */,
 				97AFE8F6278C5B730062E5D1 /* AlertHandler.swift in Sources */,
 				4F56074727205AF300CA19E9 /* BlueDarkStyle.swift in Sources */,
@@ -2220,6 +2241,7 @@
 				04CFFFFB2685E546000CA850 /* UIView+SelectedCornerRadius.swift in Sources */,
 				97011E1627ECCBA600663C8E /* DeepCleanSelectableAssetsDelegate.swift in Sources */,
 				972A29F2280572FC00D6F54A /* CompressingSection.swift in Sources */,
+				9745CC1B280765DA00335C04 /* VideoCompressionCustomSettingsViewController.swift in Sources */,
 				9701D27027BD39540078E39F /* SettingsDataSource.swift in Sources */,
 				4F56074A27205AF300CA19E9 /* ColorUtil.swift in Sources */,
 				04CFFFEF268479CE000CA850 /* CircleProgressView.swift in Sources */,

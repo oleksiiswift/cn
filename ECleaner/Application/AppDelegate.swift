@@ -43,5 +43,9 @@ extension AppDelegate {
 	
 		U.setUpperDefaultValue()
 		U.setLowerDafaultValue()
+		
+		if !CompressionSettingsConfiguretion.isDefaultConfigurationIsSet {
+			CompressionSettingsConfiguretion.setDefaultConfiguration()
+		}
     }
 }

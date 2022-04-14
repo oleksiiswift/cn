@@ -106,12 +106,12 @@ extension VideoPreviewTableViewCell {
 		playPauseButton.animateButtonTransform()
 		
 		if isPlaying {
-			playPauseButton.addCenterImage(image: I.player.templatePause, imageWidth: 50, imageHeight: 50)
+			playPauseButton.addCenterImage(image: I.player.templatePause, imageWidth: 40, imageHeight: 40)
 			U.delay(1) {
 				self.playPauseButton.removeCenterImage()
 			}
 		} else {
-			playPauseButton.addCenterImage(image: I.player.templatePlay, imageWidth: 50, imageHeight: 50)
+			playPauseButton.addCenterImage(image: I.player.templatePlay, imageWidth: 40, imageHeight: 40)
 		}
 	}
 }
@@ -214,7 +214,7 @@ extension VideoPreviewTableViewCell: Themeble {
 		videoPreview.setCorner(6)
 		sliderShadowView.cornerRadius = 8
 		playPauseButton.alpha = 0.8
-		playPauseButton.addCenterImage(image: I.player.templatePlay, imageWidth: 50, imageHeight: 50)
+		playPauseButton.addCenterImage(image: I.player.templatePlay, imageWidth: 40, imageHeight: 40)
 	}
 	
 	private func setupDelegate() {

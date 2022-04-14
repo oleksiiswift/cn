@@ -22,14 +22,14 @@ struct VideoCompressionConfig {
 				audioBitrate: Int = 128_000,
 				fps: Float = 24,
 				audioSampleRate: Int = 44100,
-				maximumVideoKeyFrameInterval: Int = 10,
+				maximumVideoKeyframeInterval: Int = 10,
 				scaleResolution: CGSize? = nil,
 				fileType: AVFileType = .mp4) {
 		self.videoBitrate = videoBitrate
 		self.audioBitrate = audioBitrate
 		self.fps = fps
 		self.audioSampleRate = audioSampleRate
-		self.maximumVideoKeyframeInterval = maximumVideoKeyFrameInterval
+		self.maximumVideoKeyframeInterval = maximumVideoKeyframeInterval
 		self.scaleResolution = scaleResolution
 		self.fileType = fileType
 	}
