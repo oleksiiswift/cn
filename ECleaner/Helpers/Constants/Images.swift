@@ -90,6 +90,7 @@ class Images {
 			static let videoCompress = UIImage(named: "compressVideoItem")!
 			static let unselected = UIImage(named: "unselectedRoundedItem")!
 			static let selected = UIImage(named: "selectedRoundedItem")!
+			static let reset = UIImage(named: "resetBackwardItem")!
         }
     }
 	

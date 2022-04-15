@@ -25,13 +25,17 @@ class VideoCollectionCompressingViewController: UIViewController {
 	private var thumbnailSize: CGSize = .zero
 	private var previousPreheatRect: CGRect = CGRect()
 	private var bottomMenuHeight: CGFloat = 80
-	
-	
-	
+
 	private var photoManager = PhotoManager.shared
 	private var prefetchCacheImageManager = PhotoManager.shared.prefetchManager
 	public var mediaType: PhotoMediaType = .none
 	public var contentType: MediaContentType = .none
+	
+	private var isBatchSelect: Bool = false {
+		didSet {
+			
+		}
+	}
 
 	public var assetCollection: [PHAsset] = []
 	
@@ -146,11 +150,16 @@ extension VideoCollectionCompressingViewController: UICollectionViewDelegate, UI
 	}
 	
 	func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
-		if let cell = collectionView.cellForItem(at: indexPath) {
-			if cell.isSelected {
-				self.collectionView.deselectItem(at: indexPath, animated: true)
-				self.collectionView.delegate?.collectionView?(self.collectionView, didDeselectItemAt: indexPath)
-				return false
+		if !isBatchSelect {
+			showComressionViewController(with: indexPath.row)
+			return false
+		} else {
+			if let cell = collectionView.cellForItem(at: indexPath) {
+				if cell.isSelected {
+					self.collectionView.deselectItem(at: indexPath, animated: true)
+					self.collectionView.delegate?.collectionView?(self.collectionView, didDeselectItemAt: indexPath)
+					return false
+				}
 			}
 		}
 		return true
@@ -265,12 +274,16 @@ extension VideoCollectionCompressingViewController: BottomActionButtonDelegate {
 	func didTapActionButton() {
 		
 		guard let selectedIndexPath = self.collectionView.indexPathsForSelectedItems?.first else { return }
-		let phasset = self.assetCollection[selectedIndexPath.row]
 		
+		showComressionViewController(with: selectedIndexPath.row)
+	}
+	
+	private func showComressionViewController(with index: Int) {
+		let phasset = self.assetCollection[index]
 		let storyboard = UIStoryboard(name: C.identifiers.storyboards.videoProcessing, bundle: nil)
-		let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.videoCompressing) as! VideoCompressingViewController
+		let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.videoCompressing) as!
+		VideoCompressingViewController
 		viewController.processingPHAsset = phasset
-		
 		self.navigationController?.pushViewController(viewController, animated: true)
 	}
 }

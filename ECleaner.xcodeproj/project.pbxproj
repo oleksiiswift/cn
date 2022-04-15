@@ -973,10 +973,10 @@
 		04E5835E267A3E7D00EDC3A3 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				049CC22826831D540002F988 /* Constants */,
 				4F56072327205ADC00CA19E9 /* CustomCircular */,
 				0447A68C26B2A9170074919B /* Operation */,
 				049CC22726831D480002F988 /* Utilites */,
-				049CC22826831D540002F988 /* Constants */,
 				049CC2382683730E0002F988 /* FlowLayout */,
 				04CFFFEA26846A3E000CA850 /* Device */,
 				979278672771241F0090F368 /* FileFormats */,

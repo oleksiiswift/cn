@@ -403,8 +403,10 @@ extension VideoCompressionManager {
 		var audioSettings: [String: Any]?
 		
 		if let assetAudioTrack = asset.tracks(withMediaType: .audio).first {
-			audioTrack = assetAudioTrack
-			audioSettings = self.createAudioSettings(with: assetAudioTrack, bitrate: config.audioBitrate, sampleRate: config.audioSampleRate)
+			if !config.removeAudioComponent {
+				audioTrack = assetAudioTrack
+				audioSettings = self.createAudioSettings(with: assetAudioTrack, bitrate: config.audioBitrate, sampleRate: config.audioSampleRate)
+			}
 		}
 		
 		self.startVideoCompressing(asset: asset, fileType: config.fileType, videoTrack: videoTrack, audioTrack: audioTrack, videoSettigs: videoSettings, audioSettings: audioSettings, targetFPS: config.fps, completionHandler: completionHandler)

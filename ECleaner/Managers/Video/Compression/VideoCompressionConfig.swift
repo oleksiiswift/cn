@@ -17,6 +17,7 @@ struct VideoCompressionConfig {
 	public var maximumVideoKeyframeInterval: Int
 	public var scaleResolution: CGSize?
 	public var fileType: AVFileType
+	public var removeAudioComponent: Bool
 	
 	public init(videoBitrate: Int = 1000_000,
 				audioBitrate: Int = 128_000,
@@ -24,7 +25,8 @@ struct VideoCompressionConfig {
 				audioSampleRate: Int = 44100,
 				maximumVideoKeyframeInterval: Int = 10,
 				scaleResolution: CGSize? = nil,
-				fileType: AVFileType = .mp4) {
+				fileType: AVFileType = .mp4,
+				removeAudioComponent: Bool = false) {
 		self.videoBitrate = videoBitrate
 		self.audioBitrate = audioBitrate
 		self.fps = fps
@@ -32,5 +34,6 @@ struct VideoCompressionConfig {
 		self.maximumVideoKeyframeInterval = maximumVideoKeyframeInterval
 		self.scaleResolution = scaleResolution
 		self.fileType = fileType
+		self.removeAudioComponent = removeAudioComponent
 	}
 }

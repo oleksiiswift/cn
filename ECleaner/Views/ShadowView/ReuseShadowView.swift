@@ -41,7 +41,7 @@ class ReuseShadowView: UIView {
 											 y: viewShadowOffsetOriginY,
 											 blur: shadowBlurValue,
 											 corners: [.allCorners],
-											 radius: 14)
+											 radius: cornerRadius)
         
         topShadowView.frame = CGRect(x: 0, y: 0, width: self.frame.width, height: self.frame.height)
         self.insertSubview(topShadowView, at: 0)

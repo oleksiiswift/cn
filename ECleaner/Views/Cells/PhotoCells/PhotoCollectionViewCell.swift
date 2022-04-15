@@ -122,7 +122,7 @@ extension PhotoCollectionViewCell: Themeble {
 		}
     }
 	
-    public func selectButtonSetup(by contentType: PhotoMediaType) {
+	public func selectButtonSetup(by contentType: PhotoMediaType, isBatchSelect: Bool = false) {
         switch contentType {
 			case .duplicatedVideos, .similarVideos, .similarPhotos, .duplicatedPhotos, .similarSelfies:
                 if indexPath?.row != 0 {
@@ -140,7 +140,7 @@ extension PhotoCollectionViewCell: Themeble {
 				selectCellButtonWidthConstraint.constant = 0
 				selectCellButtonHeightConstraint.constant = 0
 				setBestView(availible: false)
-				setSelectable(availible: true)
+				setSelectable(availible: isBatchSelect)
             default:
                 setBestView(availible: false)
 				setSelectable(availible: true)

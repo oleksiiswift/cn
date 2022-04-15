@@ -40,6 +40,11 @@ class VideoCompressionCustomSettingsViewController: UIViewController {
 	
 	@IBOutlet weak var keyframeShadowView: ReuseShadowView!
 	@IBOutlet weak var bitrateShadowView: ReuseShadowView!
+	@IBOutlet weak var resetButtonShadowView: ReuseShadowView!
+	@IBOutlet weak var resetToDafaultButton: UIButton!
+	@IBOutlet weak var removeAudioShadowView: ReuseShadowView!
+	@IBOutlet weak var removeAudioButton: UIButton!
+	
 	@IBOutlet var titleLabelsCollection: [UILabel]!
 	
 	private var dissmissGestureRecognizer = UIPanGestureRecognizer()
@@ -51,28 +56,52 @@ class VideoCompressionCustomSettingsViewController: UIViewController {
 	private var audioSampleRateSlider = StepSlider()
 	private var slidersContainer: [StepSlider] = []
 	
+	private var isAudioAvailible: Bool = false {
+		didSet {
+			handlRemoveTrackButtonAvailible()
+		}
+	}
+	
+	private var removeAudioComponent: Bool = false {
+		didSet {
+			handleRemoveAudioComponentButtom()
+		}
+	}
+	
 	public var asset: PHAsset?
 	
 	private var videoResolutionValue: VideoResolution = .res1080p {
 		didSet {
 			resolutionSizeTextLabel.text = videoResolutionValue.resolutionInfo
+			handleValuesDidChange()
 		}
 	}
 	
-	private var videoFpsValue: FPS = .fps24
+	private var videoFpsValue: FPS = .fps24 {
+		didSet {
+			handleValuesDidChange()
+		}
+	}
+	
 	private var videoBitrateValue: Int = 1000_000 {
 		didSet {
 			let value = videoBitrateValue / 1000_000
 			bitrateTextLabel.text = String(value) + "Mbs"
+			handleValuesDidChange()
 		}
 	}
 	
 	private var videoKeyframeValue: Int = 10 {
 		didSet {
 			keyframeTextLabel.text = String(videoKeyframeValue)
+			handleValuesDidChange()
 		}
 	}
-	private var audioBitrateValue: AudioBitrate = .bit128
+	private var audioBitrateValue: AudioBitrate = .bit128 {
+		didSet {
+			handleValuesDidChange()
+		}
+	}
 	
 	private var compressionConfig = VideoCompressionConfig()
 	public var selectVideoCompressingConfig: ((_ compressinggConfig: VideoCompressionConfig) -> Void)?
@@ -83,6 +112,7 @@ class VideoCompressionCustomSettingsViewController: UIViewController {
         setupUI()
 		videoResolutionSliderSetupUI()
 		pfsSliderSetupUI()
+		handleAudioTrackIsEnable()
 		videoBitrateSliderSetupUI()
 		videoKeyFrameSliderSetupUI()
 		audioBitrateSliderSetupUI()
@@ -90,15 +120,29 @@ class VideoCompressionCustomSettingsViewController: UIViewController {
 		setupSlidersTarget()
 		stupGesturerecognizers()
 		setupSliders()
-		getSavedConfig()
+		loadPreSavedConfiguration(CompressionSettingsConfiguretion.getSavedConfiguration())
 		updateColors()
 		setupDelegate()
+		handleValuesDidChange()
     }
 	
 	override func viewDidLayoutSubviews() {
 		super.viewDidLayoutSubviews()
 		
 		mainContainerView.cornerSelectRadiusView(corners: [.topLeft, .topRight], radius: 20)
+	}
+	
+	@IBAction func didTapResetToDefaultSettingsActionButton(_ sender: Any) {
+		
+		resetToDafaultButton.animateButtonTransform()
+		let defaultConfiguration = VideoCompressionConfig()
+		loadPreSavedConfiguration(defaultConfiguration)
+	}
+	
+	@IBAction func didTapRemoveAudioTrackActionButton(_ sender: Any) {
+		
+		removeAudioButton.animateButtonTransform()
+		removeAudioComponent = !removeAudioComponent
 	}
 }
 
@@ -132,7 +176,6 @@ extension VideoCompressionCustomSettingsViewController {
 		} else {
 			resoultion = CGSize(width: resoultion.width, height: -1)
 		}
-		
 	
 		let config = VideoCompressionConfig(videoBitrate: videoBitrate,
 											audioBitrate: audioBitrate,
@@ -140,7 +183,8 @@ extension VideoCompressionCustomSettingsViewController {
 											audioSampleRate: audioSampleRate,
 											maximumVideoKeyframeInterval: maximumVideoKeyframeInterval,
 											scaleResolution: resoultion,
-											fileType: .mp4)
+											fileType: .mp4,
+											removeAudioComponent: self.removeAudioComponent)
 		
 		CompressionSettingsConfiguretion.saveCompressionConfiguration(config)
 		
@@ -149,10 +193,8 @@ extension VideoCompressionCustomSettingsViewController {
 		}
 	}
 	
-	private func getSavedConfig() {
+	private func loadPreSavedConfiguration(_ savedConfig: VideoCompressionConfig) {
 		
-		let savedConfig = CompressionSettingsConfiguretion.getSavedConfiguration()
-	
 		self.setVideoBitrateSlider(to: savedConfig.videoBitrate)
 		self.setAudioBitrateSlider(to: savedConfig.audioBitrate)
 		self.setFpsSlider(to: savedConfig.fps)
@@ -160,6 +202,7 @@ extension VideoCompressionCustomSettingsViewController {
 		if let resolution = savedConfig.scaleResolution {
 			self.setResolutionSlider(value: resolution)
 		}
+		self.removeAudioComponent = savedConfig.removeAudioComponent
 	}
 	
 	private func setupSlidersTarget() {
@@ -308,6 +351,79 @@ extension VideoCompressionCustomSettingsViewController {
 			}
 		}
 	}
+	
+	private func getResolutionFrom(_ size: CGSize) -> VideoResolution {
+		
+		let heightResolution = VideoResolution.allCases.first(where: {$0.resolutionSize.height == size.height})
+		let widthResolution = VideoResolution.allCases.first(where: {$0.resolutionSize.width == size.width})
+		
+		if let _ = heightResolution {
+			return heightResolution!
+		} else if let _ = widthResolution {
+			return widthResolution!
+		}
+		return .res1080p
+	}
+	
+	private func handleAudioTrackIsEnable() {
+		
+		if let asset = asset {
+			asset.getPhassetURL { responseURL in
+				if let url =  responseURL {
+					let avasset = AVAsset(url: url)
+					if let _ = avasset.tracks(withMediaType: .audio).first {
+						self.isAudioAvailible = true
+					} else {
+						self.isAudioAvailible = false
+					}
+				}
+			}
+		}
+	}
+	
+	private func handleRemoveAudioComponentButtom() {
+		
+		let image = removeAudioComponent ? I.personalisation.video.selected : I.personalisation.video.unselected
+		
+		removeAudioButton.addLeftImage(image: image, size: CGSize(width: 15, height: 15), spacing: 5)
+	}
+	
+	private func handlRemoveTrackButtonAvailible() {
+		U.UI {
+			self.removeAudioButton.isEnabled = self.isAudioAvailible
+			self.audioBitrateSlider.isEnabled = self.isAudioAvailible
+			self.audioBitrateSlider.alpha = self.isAudioAvailible ? 1.0 : 0.5
+		}
+	}
+	
+	private func handleValuesDidChange() {
+		
+		let defaultConfigurationValues = VideoCompressionConfig()
+		
+		var isDefaultResolution: Bool = false
+		
+		if let size = defaultConfigurationValues.scaleResolution {
+			let resolution = getResolutionFrom(size)
+			isDefaultResolution = resolution == self.videoResolutionValue
+		} else if defaultConfigurationValues.scaleResolution == nil {
+			isDefaultResolution = true
+		}
+
+		if isDefaultResolution &&
+			defaultConfigurationValues.videoBitrate == self.videoBitrateValue &&
+			defaultConfigurationValues.audioBitrate == self.audioBitrateValue.rawValue &&
+			defaultConfigurationValues.fps == self.videoFpsValue.rawValue &&
+			defaultConfigurationValues.maximumVideoKeyframeInterval == self.videoKeyframeValue {
+			
+			setResetToDefaultButton(isEnable: false)
+		} else {
+			setResetToDefaultButton(isEnable: true)
+		}
+	}
+	
+	private func setResetToDefaultButton(isEnable: Bool) {
+		self.resetToDafaultButton.isEnabled = isEnable
+	}
 }
 
 extension VideoCompressionCustomSettingsViewController: Themeble {
@@ -349,6 +465,16 @@ extension VideoCompressionCustomSettingsViewController: Themeble {
 		
 		bitrateShadowView.cornerRadius = 6
 		keyframeShadowView.cornerRadius = 6
+		
+		resetToDafaultButton.setTitle("Reset to Default", for: .normal)
+		resetToDafaultButton.titleLabel?.font = .systemFont(ofSize: 12, weight: .semibold)
+		resetToDafaultButton.addLeftImage(image: I.personalisation.video.reset, size: CGSize(width: 15, height: 15), spacing: 5)
+		resetButtonShadowView.cornerRadius = 8
+		
+		removeAudioButton.setTitle("Remove audio", for: .normal)
+		removeAudioButton.titleLabel?.font = .systemFont(ofSize: 12, weight: .semibold)
+		removeAudioShadowView.cornerRadius = 8
+		handleRemoveAudioComponentButtom()
 	}
 	
 	private func videoResolutionSliderSetupUI() {
@@ -514,6 +640,9 @@ extension VideoCompressionCustomSettingsViewController: Themeble {
 		titleLabelsCollection.forEach {
 			$0.textColor = theme.titleTextColor
 		}
+		
+		resetToDafaultButton.tintColor = theme.titleTextColor
+		removeAudioButton.tintColor = theme.titleTextColor
 	}
 }
 

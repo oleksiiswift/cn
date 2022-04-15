@@ -124,7 +124,9 @@ extension VideoCompressingViewController {
 				switch result {
 					case .success(let compressedVideoURL):
 						self.photoManager.saveVideoAsset(from: compressedVideoURL) { isSaved in
-//							self.navigationController?.popViewController(animated: true)
+							self.navigationController?.popViewController(animated: true, completion: {
+								
+							})
 						}
 					case .failure(let error):
 						debugPrint(error)
@@ -243,7 +245,7 @@ extension VideoCompressingViewController {
 		
 		segue.configure(layout: .bottomMessage)
 		segue.dimMode = .gray(interactive: true)
-		segue.interactiveHide = false
+		segue.interactiveHide = true
 		
 		segue.messageView.setupForShadow(shadowColor: theme.bottomShadowColor, cornerRadius: 14, shadowOffcet: CGSize(width: 6, height: 6), shadowOpacity: 10, shadowRadius: 14)
 		segue.messageView.configureNoDropShadow()
