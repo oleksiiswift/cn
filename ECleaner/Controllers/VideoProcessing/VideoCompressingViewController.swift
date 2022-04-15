@@ -22,6 +22,10 @@ class VideoCompressingViewController: UIViewController {
 	private var compressionSettingsViewModel: CompressingSettingsViewModel!
 	private var compressionSettingsDataSource: CompressingSettingsDataSource!
 	private var compressionConfiguration = VideoCompressionConfig()
+	private var currentCompressionModel: ComprssionModel?
+	
+	private var compressingManager = VideoCompressionManager.insstance
+	private var photoManager = PhotoManager.shared
 	
 	private var customFPS: Float = 0
 	private var customBitrate: Int = 0
@@ -76,7 +80,57 @@ class VideoCompressingViewController: UIViewController {
 extension VideoCompressingViewController: BottomActionButtonDelegate {
 	
 	func didTapActionButton() {
-		debugPrint("compressVideo with settings")
+		
+		guard let asset = self.processingPHAsset, let model = self.currentCompressionModel else { return }
+		
+		switch model {
+			case .custom(fps: _, bitrate: _, scale: _):
+				startVideoCompressing(from: asset, with: self.compressionConfiguration)
+			default:
+				startVideoCompressing(from: asset, with: model)
+		}
+	}
+}
+
+extension VideoCompressingViewController {
+	
+	private func startVideoCompressing(from asset: PHAsset, with configuration: VideoCompressionConfig) {
+		P.showIndicator()
+		asset.getPhassetURL { responseURL in
+			
+			guard let url = responseURL else { return }
+			
+			self.compressingManager.compressVideo(from: url, with: configuration) { result in
+				P.hideIndicator()
+				switch result {
+					case .success(let compressedVideoURL):
+						self.photoManager.saveVideoAsset(from: compressedVideoURL) { isSaved in
+//							self.navigationController?.popViewController(animated: true)
+						}
+					case .failure(let error):
+						debugPrint(error)
+				}
+			}
+		}
+	}
+	
+	private func startVideoCompressing(from asset: PHAsset, with compressingModel: ComprssionModel) {
+		
+		asset.getPhassetURL { responseURL in
+			
+			guard let url = responseURL else { return }
+			
+			self.compressingManager.compressVideo(from: url, quality: compressingModel) { result in
+				switch result {
+					case .success(let compressedVideoURL):
+						self.photoManager.saveVideoAsset(from: compressedVideoURL) { isSaved in
+//							self.navigationController?.popViewController(animated: true)
+						}
+					case .failure(let error):
+						debugPrint(error)
+				}
+			}
+		}
 	}
 }
 
@@ -138,30 +192,37 @@ extension VideoCompressingViewController {
 	}
 	
 	private func loadLastUsedSavedCompressedSettings() {
-			self.tableView.selectRow(at: IndexPath(row: 0, section: 1), animated: false, scrollPosition: .none)
-			self.tableView.delegate?.tableView?(self.tableView, didSelectRowAt: IndexPath(row: 0, section: 1))
+		
+		let index = CompressionSettingsConfiguretion.lastSelectedCompressionModel
+		self.tableView.selectRow(at: IndexPath(row: index, section: 1), animated: false, scrollPosition: .none)
+		
+		switch index {
+			case 0:
+				self.currentCompressionModel = .low
+			case 1:
+				self.currentCompressionModel = .medium
+			case 2:
+				self.currentCompressionModel = .high
+			case 3:
+				self.currentCompressionModel = .custom(fps: 0, bitrate: 0, scale: .zero)
+			default:
+				return
+		}
 	}
 }
 
 extension VideoCompressingViewController: CompressionSettingsActionsDelegate {
 	
 	func setCompressionSettingsForValue(with model: ComprssionModel) {
+		
+		CompressionSettingsConfiguretion.lastSelectedCompressionModel = model.selectedIndex
+		
 		switch model {
-			case .low:
-				self.setCompressionModel(of: .low)
-			case .medium:
-				self.setCompressionModel(of: .medium)
-			case .high:
-				self.setCompressionModel(of: .high)
 			case .custom(fps: _, bitrate: _, scale: _):
 				self.openCustomSettingsViewController()
 			default:
-				return
+				self.currentCompressionModel = model
 		}
-	}
-	
-	private func setCompressionModel(of quality: VideoCompressionQuality) {
-		
 	}
 	
 	private func openCustomSettingsViewController() {
@@ -191,6 +252,7 @@ extension VideoCompressingViewController {
 			customSettingViewController.asset = self.processingPHAsset
 			customSettingViewController.selectVideoCompressingConfig = { config in
 				self.compressionConfiguration = config
+				self.currentCompressionModel = .custom(fps: 0, bitrate: 0, scale: .zero)
 			}
 		}
 	}

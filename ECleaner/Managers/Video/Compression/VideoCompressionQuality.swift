@@ -10,6 +10,7 @@ import Foundation
 typealias ComprssionModel = VideoCompressionQuality
 
 enum VideoCompressionQuality: Equatable {
+
 	case videoPreview
 	case low
 	case medium
@@ -67,6 +68,21 @@ enum VideoCompressionQuality: Equatable {
 				return 370
 			default:
 				return 100
+		}
+	}
+	
+	var selectedIndex: Int {
+		switch self {
+			case .videoPreview:
+				return 666
+			case .low:
+				return 0
+			case .medium:
+				return 1
+			case .high:
+				return 2
+			case .custom( _, _, _):
+				return 3
 		}
 	}
 	

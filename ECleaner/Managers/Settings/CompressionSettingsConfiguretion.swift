@@ -12,6 +12,7 @@ class CompressionSettingsConfiguretion {
 	public static func setDefaultConfiguration() {
 		let config = VideoCompressionConfig()
 		saveCompressionConfiguration(config)
+		isDefaultConfigurationIsSet = true
 	}
 	
 	public static func getSavedConfiguration() -> VideoCompressionConfig {
@@ -99,6 +100,14 @@ class CompressionSettingsConfiguretion {
 			return U.userDefaults.bool(forKey: C.key.compressionSettings.defaultConfigurationIsSet)
 		} set {
 			U.userDefaults.set(newValue, forKey: C.key.compressionSettings.defaultConfigurationIsSet)
+		}
+	}
+	
+	public static var lastSelectedCompressionModel: Int {
+		get {
+			return U.userDefaults.integer(forKey: C.key.compressionSettings.lastSelectedCompressionModel)
+		} set {
+			U.userDefaults.set(newValue, forKey: C.key.compressionSettings.lastSelectedCompressionModel)
 		}
 	}
 }
