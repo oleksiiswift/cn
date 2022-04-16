@@ -372,11 +372,19 @@
                                                                                 <nil key="textColor"/>
                                                                                 <nil key="highlightedColor"/>
                                                                             </label>
+                                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8Px-w5-fGf">
+                                                                                <rect key="frame" x="207" y="7.5" width="187" height="20.5"/>
+                                                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                                                <nil key="textColor"/>
+                                                                                <nil key="highlightedColor"/>
+                                                                            </label>
                                                                         </subviews>
                                                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                         <constraints>
+                                                                            <constraint firstItem="8Px-w5-fGf" firstAttribute="centerY" secondItem="O1h-sL-Ves" secondAttribute="centerY" id="8nU-9s-h2l"/>
                                                                             <constraint firstItem="UDH-Jb-yC7" firstAttribute="centerY" secondItem="O1h-sL-Ves" secondAttribute="centerY" id="BcG-6I-fLC"/>
                                                                             <constraint firstItem="UDH-Jb-yC7" firstAttribute="centerY" secondItem="O1h-sL-Ves" secondAttribute="centerY" id="FD9-RP-YV4"/>
+                                                                            <constraint firstItem="8Px-w5-fGf" firstAttribute="leading" secondItem="O1h-sL-Ves" secondAttribute="centerX" id="QJR-Nd-sYs"/>
                                                                         </constraints>
                                                                     </view>
                                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZRB-ky-zr6">
@@ -474,12 +482,14 @@
                                                 </subviews>
                                                 <constraints>
                                                     <constraint firstItem="4UV-49-Txa" firstAttribute="leading" secondItem="x8Q-Ed-vRH" secondAttribute="leading" id="2SI-RD-kvo"/>
+                                                    <constraint firstItem="8Px-w5-fGf" firstAttribute="trailing" secondItem="W7J-N7-FeY" secondAttribute="trailing" id="2fC-uA-R20"/>
                                                     <constraint firstItem="Dyf-F9-adg" firstAttribute="trailing" secondItem="v6U-cm-kws" secondAttribute="trailing" id="5BN-hS-tzd"/>
                                                     <constraint firstItem="v6U-cm-kws" firstAttribute="trailing" secondItem="4UV-49-Txa" secondAttribute="trailing" id="FcL-Zw-Xv8"/>
                                                     <constraint firstItem="4UV-49-Txa" firstAttribute="trailing" secondItem="x8Q-Ed-vRH" secondAttribute="trailing" id="NJK-eW-Tmt"/>
                                                     <constraint firstItem="xCl-cQ-f7b" firstAttribute="trailing" secondItem="PG4-q5-Lbi" secondAttribute="trailing" id="OiH-DR-G10"/>
                                                     <constraint firstItem="UDH-Jb-yC7" firstAttribute="trailing" secondItem="Dyf-F9-adg" secondAttribute="trailing" id="SSw-gv-HVP"/>
                                                     <constraint firstItem="Dyf-F9-adg" firstAttribute="leading" secondItem="v6U-cm-kws" secondAttribute="leading" id="U47-q7-l6y"/>
+                                                    <constraint firstItem="8Px-w5-fGf" firstAttribute="height" secondItem="W7J-N7-FeY" secondAttribute="height" id="Yk1-YR-vOO"/>
                                                     <constraint firstItem="v6U-cm-kws" firstAttribute="leading" secondItem="4UV-49-Txa" secondAttribute="leading" id="cZT-Ld-JqA"/>
                                                     <constraint firstItem="xCl-cQ-f7b" firstAttribute="height" secondItem="PG4-q5-Lbi" secondAttribute="height" id="j2Z-gJ-Gis"/>
                                                     <constraint firstItem="xCl-cQ-f7b" firstAttribute="leading" secondItem="PG4-q5-Lbi" secondAttribute="leading" id="wPc-i4-qP5"/>
@@ -532,6 +542,7 @@
                     <size key="freeformSize" width="414" height="600"/>
                     <connections>
                         <outlet property="audioBitrateSliderContainerView" destination="ZRB-ky-zr6" id="pQc-Vp-dSI"/>
+                        <outlet property="audioBitrateTextLabel" destination="8Px-w5-fGf" id="7wN-y0-ErH"/>
                         <outlet property="audioBitrateTitleTextLabel" destination="UDH-Jb-yC7" id="jBe-mx-PLF"/>
                         <outlet property="audioSampleRateContainerView" destination="9M2-Ph-YpK" id="2hA-1c-PsF"/>
                         <outlet property="bitrateShadowView" destination="fkV-Qt-wsF" id="hxK-GL-c84"/>

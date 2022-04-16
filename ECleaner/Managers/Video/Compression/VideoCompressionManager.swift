@@ -196,6 +196,7 @@ extension VideoCompressionManager {
 			while videoInput.isReadyForMoreMediaData {
 				if let videoBuffer = videoOutput.copyNextSampleBuffer(), CMSampleBufferDataIsReady(videoBuffer) {
 					videoInput.append(videoBuffer)
+					debugPrint(videoBuffer)
 				} else {
 					videoInput.markAsFinished()
 					completionHandler()
@@ -220,6 +221,7 @@ extension VideoCompressionManager {
 						let frameIndex = randeomFrames[index]
 						if counter == frameIndex {
 							index += 1
+							debugPrint(index)
 							let timingInfo = UnsafeMutablePointer<CMSampleTimingInfo>.allocate(capacity: 1)
 							let newSample = UnsafeMutablePointer<CMSampleBuffer?>.allocate(capacity: 1)
 							
@@ -248,7 +250,7 @@ extension VideoCompressionManager {
 
 extension VideoCompressionManager {
 	
-	private func startVideoCompressing(asset: AVAsset, fileType: AVFileType, videoTrack: AVAssetTrack, audioTrack: AVAssetTrack?, videoSettigs: [String: Any]?, audioSettings: [String: Any]?, targetFPS: Float, completionHandler: @escaping (Result<URL, Error>) -> Void) {
+	private func startVideoCompressing(asset: AVAsset, fileType: AVFileType, videoTrack: AVAssetTrack, audioTrack: AVAssetTrack?, videoSettigs: [String: Any]?, audioSettings: [String: Any]?, targetFPS: Float, completionHandler: @escaping (Result<URL, VideoCompressionErrorHandler>) -> Void) {
 		
 		let videoOutputSettings: [String: Any] = [
 			kCVPixelBufferPixelFormatTypeKey as String : kCVPixelFormatType_32BGRA
@@ -347,24 +349,25 @@ extension VideoCompressionManager {
 							}
 						}
 					default:
-						completionHandler(.failure(writer.error!))
+						debugPrint(writer.error!)
+						completionHandler(.failure(.compressedFailed(writer.error!)))
 				}
 			}
 			
 		} catch {
-			completionHandler(.failure(error))
+			completionHandler(.failure(.compressedFailed(error)))
 		}
 	}
 }
 
 extension VideoCompressionManager {
 	
-	public func compressVideo(from url: URL, quality: VideoCompressionQuality = .medium, completionHandler: @escaping (Result<URL, Error>) -> Void) {
+	public func compressVideo(from url: URL, quality: VideoCompressionQuality = .medium, completionHandler: @escaping (Result<URL, VideoCompressionErrorHandler>) -> Void) {
 		
 		let asset = AVAsset(url: url)
 		
 		guard let videoTrack = asset.tracks(withMediaType: .video).first else {
-			completionHandler(.failure(VideoCompressionErrorHandler.noVideoFile))
+			completionHandler(.failure(.noVideoFile))
 			return
 		}
 		
@@ -386,13 +389,12 @@ extension VideoCompressionManager {
 		self.startVideoCompressing(asset: asset, fileType: .mp4, videoTrack: videoTrack, audioTrack: audioTrack, videoSettigs: videoSettings, audioSettings: audioSettings, targetFPS: quality.preSavedValues.fps, completionHandler: completionHandler)
 	}
 	
-	
-	public func compressVideo(from url: URL, with config: VideoCompressionConfig, completionHandler: @escaping (Result<URL, Error>) -> Void) {
+	public func compressVideo(from url: URL, with config: VideoCompressionConfig, completionHandler: @escaping (Result<URL, VideoCompressionErrorHandler>) -> Void) {
 		
 		let asset = AVAsset(url: url)
 		
 		guard let videoTrack = asset.tracks(withMediaType: .video).first else {
-			completionHandler(.failure(VideoCompressionErrorHandler.noVideoFile))
+			completionHandler(.failure(.noVideoFile))
 			return
 		}
 		
@@ -415,12 +417,12 @@ extension VideoCompressionManager {
 
 extension VideoCompressionManager {
 	
-	public func removeAudioComponentFromVideo(with url: URL, completionHandler: @escaping (Result<URL, Error>) -> Void) {
+	public func removeAudioComponentFromVideo(with url: URL, completionHandler: @escaping (Result<URL, VideoCompressionErrorHandler>) -> Void) {
 		
 		let asset = AVURLAsset(url: url)
 		
 		guard let inputVideoTrack = asset.tracks(withMediaType: .video).first else {
-			completionHandler(.failure(VideoCompressionErrorHandler.noVideoFile))
+			completionHandler(.failure(.noVideoFile))
 			return
 		}
 		
@@ -448,11 +450,11 @@ extension VideoCompressionManager {
 					case .exporting:
 						debugPrint(exportSession.status)
 					default:
-						completionHandler(.failure(VideoCompressionErrorHandler.errorRemoveAudioComponent))
+						completionHandler(.failure(.errorRemoveAudioComponent))
 				}
 			})
 		} catch {
-			completionHandler(.failure(error))
+			completionHandler(.failure(.errorRemoveAudioComponent))
 		}
 	}
 }

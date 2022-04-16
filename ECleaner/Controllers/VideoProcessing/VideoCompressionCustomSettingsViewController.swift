@@ -37,7 +37,7 @@ class VideoCompressionCustomSettingsViewController: UIViewController {
 	@IBOutlet weak var bitrateTextLabel: UILabel!
 	@IBOutlet weak var keyframeTextLabel: UILabel!
 	@IBOutlet weak var resolutionSizeTextLabel: UILabel!
-	
+	@IBOutlet weak var audioBitrateTextLabel: UILabel!
 	@IBOutlet weak var keyframeShadowView: ReuseShadowView!
 	@IBOutlet weak var bitrateShadowView: ReuseShadowView!
 	@IBOutlet weak var resetButtonShadowView: ReuseShadowView!
@@ -58,7 +58,7 @@ class VideoCompressionCustomSettingsViewController: UIViewController {
 	
 	private var isAudioAvailible: Bool = false {
 		didSet {
-			handlRemoveTrackButtonAvailible()
+			handlRemoveTrackButtonAvailible(isEnabled: isAudioAvailible)
 		}
 	}
 	
@@ -99,6 +99,7 @@ class VideoCompressionCustomSettingsViewController: UIViewController {
 	}
 	private var audioBitrateValue: AudioBitrate = .bit128 {
 		didSet {
+			audioBitrateTextLabel.text = audioBitrateValue.shortDescription
 			handleValuesDidChange()
 		}
 	}
@@ -159,7 +160,9 @@ extension VideoCompressionCustomSettingsViewController {
 	private func setCompressionConfiguration() {
 		
 		guard let asset = self.asset else {
-			debugPrint("error loading phasset")
+			ErrorHandler.shared.showCompressionErrorFor(.cantLoadFile) {
+				self.dismiss(animated: true, completion: nil)
+			}
 			return
 		}
 		
@@ -194,15 +197,55 @@ extension VideoCompressionCustomSettingsViewController {
 	}
 	
 	private func loadPreSavedConfiguration(_ savedConfig: VideoCompressionConfig) {
-		
+	
+		if let resolution = savedConfig.scaleResolution {
+			self.setResolutionSlider(value: resolution)
+		}
+	
 		self.setVideoBitrateSlider(to: savedConfig.videoBitrate)
 		self.setAudioBitrateSlider(to: savedConfig.audioBitrate)
 		self.setFpsSlider(to: savedConfig.fps)
 		self.setKeyIntervalSlider(value: savedConfig.maximumVideoKeyframeInterval)
-		if let resolution = savedConfig.scaleResolution {
-			self.setResolutionSlider(value: resolution)
-		}
 		self.removeAudioComponent = savedConfig.removeAudioComponent
+	}
+	
+	private func setResolutionProblem(_ savedConfig: VideoCompressionConfig) {
+		
+		self.getOriginVideoResolution { size, isPortrait in
+			U.UI {
+				if let resolution = savedConfig.scaleResolution {
+					if isPortrait {
+						let originWidthIsBigger = size.height > resolution.width
+						let originHeightIsBigger = size.width > resolution.height
+						
+						if originWidthIsBigger && originHeightIsBigger {
+							if size.height > 1920 {
+								let res = VideoResolution.res1080p.resolutionSize
+								self.setResolutionSlider(value: res)
+							} else {
+								self.setResolutionSlider(value: size)
+							}
+						} else {
+							self.setResolutionSlider(value: resolution)
+						}
+					} else {
+						let originWidthIsBigger = size.width > resolution.width
+						let originHeighIsBigger = size.height > resolution.height
+						
+						if originWidthIsBigger && originHeighIsBigger {
+							if size.width > 1920 {
+								let res = VideoResolution.res1080p.resolutionSize
+								self.setResolutionSlider(value: res)
+							} else {
+								self.setResolutionSlider(value: size)
+							}
+						} else {
+							self.setResolutionSlider(value: resolution)
+						}
+					}
+				}
+			}
+		}
 	}
 	
 	private func setupSlidersTarget() {
@@ -285,6 +328,8 @@ extension VideoCompressionCustomSettingsViewController {
 				setAudioBitrate(value: .bit160)
 			case 3:
 				setAudioBitrate(value: .bit192)
+			case 4:
+				setAudioBitrate(value: .bit256)
 			default:
 				return
 		}
@@ -386,14 +431,20 @@ extension VideoCompressionCustomSettingsViewController {
 		let image = removeAudioComponent ? I.personalisation.video.selected : I.personalisation.video.unselected
 		
 		removeAudioButton.addLeftImage(image: image, size: CGSize(width: 15, height: 15), spacing: 5)
+		self.audioSlider(isEnabled: !removeAudioComponent)
 	}
 	
-	private func handlRemoveTrackButtonAvailible() {
+	private func handlRemoveTrackButtonAvailible(isEnabled: Bool) {
 		U.UI {
-			self.removeAudioButton.isEnabled = self.isAudioAvailible
-			self.audioBitrateSlider.isEnabled = self.isAudioAvailible
-			self.audioBitrateSlider.alpha = self.isAudioAvailible ? 1.0 : 0.5
+			self.removeAudioButton.isEnabled = isEnabled
+			self.audioSlider(isEnabled: isEnabled)
 		}
+	}
+	
+	private func audioSlider(isEnabled: Bool) {
+		self.audioBitrateSlider.isEnabled = isEnabled
+		self.audioBitrateSlider.alpha = isEnabled ? 1.0 : 0.5
+		self.audioBitrateTextLabel.alpha = isEnabled ? 1.0 : 0.5
 	}
 	
 	private func handleValuesDidChange() {
@@ -423,6 +474,30 @@ extension VideoCompressionCustomSettingsViewController {
 	
 	private func setResetToDefaultButton(isEnable: Bool) {
 		self.resetToDafaultButton.isEnabled = isEnable
+	}
+	
+	private func getOriginVideoResolution(competionHandler: @escaping (_ size: CGSize,_ isPortrait: Bool) -> Void) {
+		
+		guard let asset = self.asset else { return }
+		
+		let isPortrait = asset.isPortrait
+		
+		asset.getPhassetURL { responseURL in
+			
+			guard let url = responseURL else {
+				competionHandler(.zero, isPortrait)
+				return
+			}
+			
+			let avasset = AVAsset(url: url)
+			
+			if let videoTrack = avasset.tracks(withMediaType: .video).first {
+				let size = videoTrack.naturalSize
+				competionHandler(size, isPortrait)
+			} else {
+				competionHandler(.zero, isPortrait)
+			}
+		}
 	}
 }
 
@@ -459,6 +534,7 @@ extension VideoCompressionCustomSettingsViewController: Themeble {
 		bitrateTextLabel.font = .systemFont(ofSize: 10, weight: .medium)
 		keyframeTextLabel.font = .systemFont(ofSize: 10, weight: .medium)
 		resolutionSizeTextLabel.font = .systemFont(ofSize: 10, weight: .medium)
+		audioBitrateTextLabel.font = .systemFont(ofSize: 10, weight: .medium)
 		
 		bitrateTextLabel.text = "150"
 		keyframeTextLabel.text = "10"
@@ -628,6 +704,7 @@ extension VideoCompressionCustomSettingsViewController: Themeble {
 		bitrateTextLabel.textColor = theme.titleTextColor
 		keyframeTextLabel.textColor = theme.titleTextColor
 		resolutionSizeTextLabel.textColor = theme.subTitleTextColor
+		audioBitrateTextLabel.textColor = theme.subTitleTextColor
 		
 		slidersContainer.forEach {
 			$0.trackColor = theme.sliderUntrackBackgroundColor

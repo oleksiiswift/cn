@@ -41,7 +41,7 @@ struct AlertHandler {
 					return "permition request for photolibrary"
 			}
 		}
-		
+	
 		var message: String {
 			switch self {
 				case .notification:
@@ -69,7 +69,7 @@ struct AlertHandler {
 		let alertAction = UIAlertAction(title: "ok", style: .default)
 		
 		DispatchQueue.main.async {
-			A.showAlert(type.titleHandler, message: self.deepCleanHandlerForKey(type), actions: [alertAction], withCancel: false, completion: nil)
+			A.showAlert(type.titleHandler, message: self.deepCleanHandlerForKey(type), actions: [alertAction], withCancel: false, style: .alert, completion: nil)
 		}
 	}
 }
@@ -101,8 +101,79 @@ extension AlertHandler {
 				return "Select all duplucated contacts?"
 			default:
 				return ""
-			
 		}
 	}
 }
 
+extension AlertHandler {
+	
+	public enum AlertActionsButtons {
+		case cancel
+		case ok
+		case settings
+		case delete
+		case merge
+		case stop
+		case exit
+		case selectAll
+		case share
+		case save
+		case deleteVideo
+		case deleteVideos
+		case deletePhoto
+		case deletePhotos
+	
+		var title: String {
+			switch self {
+				case .cancel:
+					return "cancel"
+				case .ok:
+					return "ok"
+				case .settings:
+					return "settings"
+				case .delete:
+					return "delete"
+				case .merge:
+					return "merge"
+				case .stop:
+					return "stop"
+				case .exit:
+					return "exit"
+				case .selectAll:
+					return "select all"
+				case .share:
+					return "share"
+				case .save:
+					return "save"
+				case .deleteVideo:
+					return "delete video"
+				case .deleteVideos:
+					return "delete videos"
+				case .deletePhoto:
+					return "delete photos"
+				case .deletePhotos:
+					return "delete photo"
+			}
+		}
+	}
+	
+	public static func getAlertTitle(for aletrType: AlertType) -> String {
+		
+		switch aletrType {
+			case .compressionvideoFileComplete:
+				return "compression complete"
+			default:
+				return ""
+		}
+	}
+	
+	public static func getAlertMessage(for alertType: AlertType) -> String {
+		
+		switch alertType {
+			case .compressionvideoFileComplete:
+				return "video file compression is suxxesfully competed. file size: "
+			default:
+				return ""
+		}
+	}
+}

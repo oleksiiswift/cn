@@ -62,6 +62,15 @@ enum VideoCompressionQuality: Equatable {
 		}
 	}
 	
+	var portraitHeightForRow: CGFloat {
+		switch self {
+			case .videoPreview:
+				return U.screenHeight / 2
+			default:
+				return 100
+		}
+	}
+	
 	var heightForRow: CGFloat {
 		switch self {
 			case .videoPreview:

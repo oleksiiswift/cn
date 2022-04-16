@@ -17,24 +17,24 @@ enum ElementhCount {
 typealias A = AlertManager
 class AlertManager: NSObject {
     
-    private static func showAlert(type: AlertType, actions: [UIAlertAction], withCancel: Bool = true, cancelCompletion: (() -> Void)? = nil) {
+    private static func showAlert(type: AlertType, actions: [UIAlertAction], cancelCompletion: (() -> Void)? = nil) {
         
-        showAlert(type.alertTitle, message: type.alertMessage, actions: actions, withCancel: withCancel) {
+		showAlert(type.alertTitle, message: type.alertMessage, actions: actions, withCancel: type.withCancel, style: type.alertStyle) {
             cancelCompletion?()
         }
     }
     
     /// default alert
-    static func showAlert(_ title: String? = nil, message: String? = nil, actions: [UIAlertAction] = [], withCancel: Bool = true, completion: (() -> Void)? = nil) {
-    
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+	static func showAlert(_ title: String? = nil, message: String? = nil, actions: [UIAlertAction] = [], withCancel: Bool = true, style: UIAlertController.Style, completion: (() -> Void)? = nil) {
+	
+		let alert = UIAlertController(title: title, message: message, preferredStyle: style)
         
-        let cancelAction = UIAlertAction(title: "cancel", style: .cancel) { action in
+		let cancelAction = UIAlertAction(title: AlertHandler.AlertActionsButtons.cancel.title, style: .cancel) { action in
             completion?()
         }
         
         if actions.isEmpty {
-            let alertAction = UIAlertAction(title: "ok", style: .default) { _ in
+			let alertAction = UIAlertAction(title: AlertHandler.AlertActionsButtons.ok.title, style: .default) { _ in
                 completion?()
             }
             alert.addAction(alertAction)
@@ -56,7 +56,7 @@ class AlertManager: NSObject {
         
         let alertController = UIAlertController(title: alerttype.alertTitle, message: alerttype.alertMessage, preferredStyle: alerttype.alertStyle)
         
-        let cancelAction = UIAlertAction(title: "loco cancel", style: .default) { (_) in
+		let cancelAction = UIAlertAction(title: AlertHandler.AlertActionsButtons.cancel.title, style: .default) { (_) in
             
             cancelAction(false)
         }
@@ -76,11 +76,11 @@ extension AlertManager {
 	
 	static func showResrictedAlert(by type: AlertType, completionHandler: @escaping () -> Void) {
 		
-		let settingsAction = UIAlertAction(title: "Settings", style: .default) { _ in
+		let settingsAction = UIAlertAction(title: AlertHandler.AlertActionsButtons.settings.title, style: .default) { _ in
 			U.openSettings()
 		}
 		
-		self.showAlert(type: type, actions: [settingsAction], withCancel: true) {
+		self.showAlert(type: type, actions: [settingsAction]) {
 			completionHandler()
 		}
 	}
@@ -88,7 +88,7 @@ extension AlertManager {
     
     static func showOpenSettingsAlert(_ alertType: AlertType) {
         
-        let settingsAction = UIAlertAction(title: "loco open settings title", style: .default, handler: openSetting(action:))
+		let settingsAction = UIAlertAction(title: AlertHandler.AlertActionsButtons.settings.title, style: .default, handler: openSetting(action:))
         
         showPermissionAlert(alerttype: alertType, actions: [settingsAction]) { isCancel in
             debugPrint(isCancel)
@@ -139,7 +139,7 @@ extension AlertManager {
 			completionHandler()
 		}
 		
-		showAlert(type: alertType, actions: [confirmDeleteAction], withCancel: true)
+		showAlert(type: alertType, actions: [confirmDeleteAction])
 	}
 }
 
@@ -150,7 +150,7 @@ extension AlertManager {
     static func showSuxxessfullDeleted(for contacts: ElementhCount, completion: (() -> Void)? = nil) {
         
         let alertType: AlertType = contacts == .many ? .suxxessDeleteContacts : .suxxessDeleteContact
-        showAlert(type: alertType, actions: [], withCancel: alertType.withCancel) {
+        showAlert(type: alertType, actions: []) {
             completion?()
         }
     }
@@ -159,17 +159,17 @@ extension AlertManager {
     
         let alertType: AlertType = contacts == .one ? .deleteContact : .deleteContacts
         
-        let allowDeleteAction = UIAlertAction(title: "delete", style: .default) { _ in
+		let allowDeleteAction = UIAlertAction(title: AlertHandler.AlertActionsButtons.delete.title, style: .default) { _ in
             completion()
         }
         
-        showAlert(type: alertType, actions: [allowDeleteAction], withCancel: alertType.withCancel)
+        showAlert(type: alertType, actions: [allowDeleteAction])
     }
     
     /// `merge section`
     static func showSuxxessFullMerged(for section: ElementhCount, completion: (() -> Void)? = nil) {
         let alertType: AlertType = section == .many ? .suxxessMergedContacts : .suxxessMergedContact
-        showAlert(type: alertType, actions: [], withCancel: alertType.withCancel) {
+        showAlert(type: alertType, actions: []) {
             completion?()
         }
     }
@@ -178,11 +178,11 @@ extension AlertManager {
         
         let alertType: AlertType = sections == .one ? .mergeContact : .mergeContacts
         
-        let allowMergeContacts = UIAlertAction(title: "merge", style: .default) { _ in
+		let allowMergeContacts = UIAlertAction(title: AlertHandler.AlertActionsButtons.merge.title, style: .default) { _ in
             comletion()
         }
         
-        showAlert(type: alertType, actions: [allowMergeContacts], withCancel: alertType.withCancel)
+        showAlert(type: alertType, actions: [allowMergeContacts])
     }
     
     static func showEmptyContactsToPresent(of type: AlertType, completion: @escaping () -> Void) {
@@ -198,59 +198,78 @@ extension AlertManager {
 	
 	static func showStopDeepCleanSearchProcess(_ completion: @escaping () -> Void) {
 		
-		let stopDeepCleanAlertAction = UIAlertAction(title: "stop", style: .default) { _ in
+		let stopDeepCleanAlertAction = UIAlertAction(title: AlertHandler.AlertActionsButtons.stop.title, style: .default) { _ in
 			completion()
 		}
 		
-		showAlert(type: .setBreakDeepCleanSearch, actions: [stopDeepCleanAlertAction], withCancel: true, cancelCompletion: nil)
+		showAlert(type: .setBreakDeepCleanSearch, actions: [stopDeepCleanAlertAction], cancelCompletion: nil)
 	}
 	
 	static func showStopSingleSearchProcess(_ completion: @escaping () -> Void) {
 		
-		let stopSingleCleanAlertAction = UIAlertAction(title: "stop", style: .default) { _ in
+		let stopSingleCleanAlertAction = UIAlertAction(title: AlertHandler.AlertActionsButtons.stop.title, style: .default) { _ in
 			completion()
 		}
-		showAlert(type: .setBreakSingleCleanSearch, actions: [stopSingleCleanAlertAction], withCancel: true, cancelCompletion: nil)
+		showAlert(type: .setBreakSingleCleanSearch, actions: [stopSingleCleanAlertAction], cancelCompletion: nil)
 	}
 	
 	static func showStopSmartSingleSearchProcess(_ completion: @escaping () -> Void) {
-		let stopSmartSingleCleanAlertAction = UIAlertAction(title: "Stop", style: .default) { _ in
+		let stopSmartSingleCleanAlertAction = UIAlertAction(title: AlertHandler.AlertActionsButtons.stop.title, style: .default) { _ in
 			completion()
 		}
 		
-		showAlert(type: .setBreakSmartSingleCleanSearch, actions: [stopSmartSingleCleanAlertAction], withCancel: true, cancelCompletion: nil)
+		showAlert(type: .setBreakSmartSingleCleanSearch, actions: [stopSmartSingleCleanAlertAction], cancelCompletion: nil)
 	}
 	
 	static func showStopDeepCleanProcessing(_ completion: @escaping () -> Void) {
 		
-		let stopDeepCleanAlertAction = UIAlertAction(title: "stop", style: .default) { _ in
+		let stopDeepCleanAlertAction = UIAlertAction(title: AlertHandler.AlertActionsButtons.stop.title, style: .default) { _ in
 			completion()
 		}
-		showAlert(type: .setBreakDeepCleanDelete, actions: [stopDeepCleanAlertAction], withCancel: true, cancelCompletion: nil)
+		showAlert(type: .setBreakDeepCleanDelete, actions: [stopDeepCleanAlertAction], cancelCompletion: nil)
 	}
 	
 	static func showQuiteDeepCleanResults(_ completion: @escaping () -> Void) {
 	
-		let quiteDeepCleanAlertAction = UIAlertAction(title: "exit", style: .default) { _ in
+		let quiteDeepCleanAlertAction = UIAlertAction(title: AlertHandler.AlertActionsButtons.exit.title, style: .default) { _ in
 			completion()
 		}
 		
-		showAlert(type: .resetDeepCleanResults, actions: [quiteDeepCleanAlertAction], withCancel: true, cancelCompletion: nil)
+		showAlert(type: .resetDeepCleanResults, actions: [quiteDeepCleanAlertAction], cancelCompletion: nil)
 	}
 }
-
 
 extension AlertManager {
 	
 	public static func showSelectAllStarterAlert(for type: PhotoMediaType, completionHandler: @escaping () -> Void) {
 		
-		let alertAction = UIAlertAction(title: "Select all", style: .default) { _ in
+		let alertAction = UIAlertAction(title: AlertHandler.AlertActionsButtons.selectAll.title, style: .default) { _ in
 			completionHandler()
 		}
 		
 		let alertMessage = AlertHandler.getSelectableAutimaticAletMessage(for: type)
 		
 		
-		showAlert("Select Items?", message: alertMessage, actions: [alertAction], withCancel: true, completion: nil)
+		showAlert("Select Items?", message: alertMessage, actions: [alertAction], withCancel: true, style: .alert, completion: nil)
+	}
+}
+
+extension AlertManager {
+	
+	public static func showCompressionVideoFileComplete(fileSize: String, shareCompletionHandler: @escaping () -> Void, savedInPhotoLibraryCompletionHandler: @escaping () -> Void) {
+		
+		let shareAction = UIAlertAction(title: AlertHandler.AlertActionsButtons.share.title,
+										style: .default) { _ in
+			shareCompletionHandler()
+		}
+		let saveAction = UIAlertAction(title: AlertHandler.AlertActionsButtons.save.title,
+									   style: .default) { _ in
+			savedInPhotoLibraryCompletionHandler()
+		}
+	
+		let type: AlertType = .compressionvideoFileComplete
+		let message = type.alertMessage! + fileSize
+		
+		showAlert(type.alertTitle, message: message, actions: [shareAction, saveAction], withCancel: type.withCancel, style: type.alertStyle) {}
 	}
 }

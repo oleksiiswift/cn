@@ -108,6 +108,9 @@ class Constants {
             /// `contacts notification`
             static let mergeContactsSelectionDidChange = "mergeContactsSelectionDidChange"
             static let selectedContactsDidChange = "selectedContactsDidChange"
+			
+			/// `compression notification`
+			static let compressionDidStart = "CompressionVideoFileDidStartNotification"
         }
 		
 		struct observers {

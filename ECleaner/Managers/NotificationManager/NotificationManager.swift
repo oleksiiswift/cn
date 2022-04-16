@@ -71,5 +71,7 @@ extension Notification.Name {
 	
 	static let avPlayerDidPlayEndTime = NSNotification.Name.AVPlayerItemDidPlayToEndTime
 //	Notification.Name.AVPlayerItemDidPlayToEndTime
+	
+	static let compressionVideoDidStart = NSNotification.Name(C.key.notification.compressionDidStart)
 }
 

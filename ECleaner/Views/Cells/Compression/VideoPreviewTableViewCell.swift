@@ -35,6 +35,7 @@ class VideoPreviewTableViewCell: UITableViewCell {
 		updateColors()
 		setupSlider()
 		setupDelegate()
+		setupObservers()
     }
 
 	override func setSelected(_ selected: Bool, animated: Bool) {
@@ -112,6 +113,14 @@ extension VideoPreviewTableViewCell {
 			}
 		} else {
 			playPauseButton.addCenterImage(image: I.player.templatePlay, imageWidth: 40, imageHeight: 40)
+		}
+	}
+	
+	@objc func didStartCompressingStopPlayer() {
+		
+		if isPlaying {
+			self.player.seek(to: .zero)
+			self.didPlayCurrentMediaItem()
 		}
 	}
 }
@@ -220,6 +229,11 @@ extension VideoPreviewTableViewCell: Themeble {
 	private func setupDelegate() {
 		
 		sliderView.delegate = self
+	}
+	
+	private func setupObservers() {
+		
+		U.notificationCenter.addObserver(self, selector: #selector(didStartCompressingStopPlayer), name: .compressionVideoDidStart, object: nil)
 	}
 	
 	private func setupSlider() {

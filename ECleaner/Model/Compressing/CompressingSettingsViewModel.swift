@@ -11,9 +11,12 @@ import Photos
 class CompressingSettingsViewModel {
 	
 	private var sections: [CompressingSection]
+	private var phasset: PHAsset
 	
-	init(sections: [CompressingSection]) {
+	
+	init(sections: [CompressingSection], phasset: PHAsset) {
 		self.sections = sections
+		self.phasset = phasset
 	}
 	
 	public func getCompressingPHAsset() -> PHAsset? {
@@ -41,6 +44,10 @@ class CompressingSettingsViewModel {
 	}
 	
 	public func getHeightForRow(at indexPath: IndexPath) -> CGFloat {
-		return self.sections[indexPath.section].cells[indexPath.row].heightForRow
+		if self.phasset.isPortrait {
+			return self.sections[indexPath.section].cells[indexPath.row].portraitHeightForRow
+		} else {
+			return self.sections[indexPath.section].cells[indexPath.row].heightForRow
+		}
 	}
 }

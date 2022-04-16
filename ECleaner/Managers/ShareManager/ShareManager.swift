@@ -18,6 +18,9 @@ class ShareManager {
     
     private var fileManager = ECFileManager()
     private var contactsExportManager = ContactsExportManager.shared
+}
+
+extension ShareManager {
     
     public func shareAllContacts(_ exportType: ExportContactsAvailibleFormat,_ comtpletionHandler: @escaping (Bool) -> Void) {
         switch exportType {
@@ -116,3 +119,24 @@ class ShareManager {
     }
 }
 
+extension ShareManager {
+	
+	public func shareCompressedVideFile(with url: URL, completion: @escaping (() -> Void)) {
+		
+		let activityViewController = UIActivityViewController(activityItems: [url], applicationActivities: [])
+		activityViewController.completionWithItemsHandler = { (_, _, _, _) -> Void in
+			self.fileManager.deletefile(at: url)
+			completion()
+		}
+		
+		if !MFMailComposeViewController.canSendMail() {
+			activityViewController.excludedActivityTypes = [UIActivity.ActivityType.mail]
+		}
+		
+		U.UI {
+			if let topController = topController() {
+				topController.present(activityViewController, animated: true, completion: nil)
+			}
+		}
+	}
+}

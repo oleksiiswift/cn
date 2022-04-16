@@ -26,12 +26,15 @@ class VideoCompressingViewController: UIViewController {
 	
 	private var compressingManager = VideoCompressionManager.insstance
 	private var photoManager = PhotoManager.shared
+	private var shareManager = ShareManager.shared
 	
 	private var customFPS: Float = 0
 	private var customBitrate: Int = 0
 	private var customScale: CGSize = .zero
 
 	private var popGesture: UIGestureRecognizer?
+	
+	public var updateCollectionWithNewCompressionPHAssets: ((_ updatedPHAssets: [PHAsset]) -> Void)?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -80,8 +83,10 @@ class VideoCompressingViewController: UIViewController {
 extension VideoCompressingViewController: BottomActionButtonDelegate {
 	
 	func didTapActionButton() {
-		
+	
 		guard let asset = self.processingPHAsset, let model = self.currentCompressionModel else { return }
+		
+		U.notificationCenter.post(name: .compressionVideoDidStart, object: nil)
 		
 		switch model {
 			case .custom(fps: _, bitrate: _, scale: _):
@@ -95,6 +100,7 @@ extension VideoCompressingViewController: BottomActionButtonDelegate {
 extension VideoCompressingViewController {
 	
 	private func startVideoCompressing(from asset: PHAsset, with configuration: VideoCompressionConfig) {
+		
 		P.showIndicator()
 		asset.getPhassetURL { responseURL in
 			
@@ -104,11 +110,11 @@ extension VideoCompressingViewController {
 				P.hideIndicator()
 				switch result {
 					case .success(let compressedVideoURL):
-						self.photoManager.saveVideoAsset(from: compressedVideoURL) { isSaved in
-//							self.navigationController?.popViewController(animated: true)
+						self.compressVideoResultCompleted(with: compressedVideoURL)
+					case .failure(let handler):
+						handler.showErrorAlert {
+							self.navigationController?.popViewController(animated: true)
 						}
-					case .failure(let error):
-						debugPrint(error)
 				}
 			}
 		}
@@ -123,14 +129,57 @@ extension VideoCompressingViewController {
 			self.compressingManager.compressVideo(from: url, quality: compressingModel) { result in
 				switch result {
 					case .success(let compressedVideoURL):
-						self.photoManager.saveVideoAsset(from: compressedVideoURL) { isSaved in
-							self.navigationController?.popViewController(animated: true, completion: {
-								
-							})
+						self.compressVideoResultCompleted(with: compressedVideoURL)
+					case .failure(let errorHandler):
+						errorHandler.showErrorAlert {
+							self.navigationController?.popViewController(animated: true)
 						}
-					case .failure(let error):
-						debugPrint(error)
 				}
+			}
+		}
+	}
+	
+	private func compressVideoResultCompleted(with url: URL) {
+		
+		let fileSize = Int64(url.fileSize)
+		let stringSize = U.getSpaceFromInt(fileSize)
+		
+		A.showCompressionVideoFileComplete(fileSize: stringSize) {
+			self.shareVideo(with: url)
+		} savedInPhotoLibraryCompletionHandler: {
+			self.savedVideo(with: url)
+		}
+	}
+	
+	private func shareVideo(with url: URL) {
+		
+		self.shareManager.shareCompressedVideFile(with: url) {
+			self.navigationController?.popViewController(animated: true)
+		}
+	}
+	
+	private func savedVideo(with url: URL) {
+		
+		self.photoManager.saveVideoAsset(from: url) { isSaved in
+			if isSaved {
+				self.showPHAssetCollectionController()
+			} else {
+				ErrorHandler.shared.showCompressionErrorFor(.errorSavedFile, completion: {})
+			}
+		}
+	}
+	
+	private func showPHAssetCollectionController() {
+		self.photoManager.getVideoCollection { phassets in
+			if !phassets.isEmpty {
+				self.updateCollectionWithNewCompressionPHAssets?(phassets)
+				self.navigationController?.popViewController(animated: true, completion: {
+				})
+			} else {
+				ErrorHandler.shared.showEmptySearchResultsFor(.photoLibraryIsEmpty) {
+					self.navigationController?.popViewController(animated: true)
+				}
+				
 			}
 		}
 	}
@@ -149,6 +198,13 @@ extension VideoCompressingViewController {
 	
 	private func setupViewModel() {
 		
+		guard let phasset = self.processingPHAsset else {
+			ErrorHandler.shared.showCompressionErrorFor(.cantLoadFile) {
+				self.navigationController?.popViewController(animated: false)
+			}
+			return
+		}
+		
 		let previewSectionCell = CompressingSection(cells: [.videoPreview], compressingPHAsset: processingPHAsset)
 		let settingsSectionsCell = CompressingSection(cells: [.low,
 															  .medium,
@@ -159,7 +215,7 @@ extension VideoCompressingViewController {
 													  headerHeight: 40)
 		
 		let sections: [CompressingSection] = [previewSectionCell, settingsSectionsCell]
-		self.compressionSettingsViewModel = CompressingSettingsViewModel(sections: sections)
+		self.compressionSettingsViewModel = CompressingSettingsViewModel(sections: sections, phasset: phasset)
 		self.compressionSettingsDataSource = CompressingSettingsDataSource(compressionSettinsViewModel: self.compressionSettingsViewModel)
 		
 		if let asset = processingPHAsset {
@@ -284,7 +340,7 @@ extension VideoCompressingViewController: Themeble {
 		bottomButtonBarView.delegate = self
 		compressionSettingsDataSource.delegate = self
 	}
-	
+
 	func updateColors() {
 		
 		self.view.backgroundColor = theme.backgroundColor

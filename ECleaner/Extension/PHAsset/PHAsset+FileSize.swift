@@ -27,6 +27,11 @@ extension PHAsset {
 extension PHAsset {
 	
 	var isPortrait: Bool {
-		return self.pixelHeight > self.pixelHeight
+
+		if let image = self.getImage {
+			return image.size.height > image.size.width
+		} else {
+			return self.pixelHeight > self.pixelHeight
+		}
 	}
 }

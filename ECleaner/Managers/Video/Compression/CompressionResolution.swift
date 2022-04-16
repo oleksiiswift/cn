@@ -118,7 +118,7 @@ enum FPS: CaseIterable {
 }
 	
 enum AudioBitrate: CaseIterable {
-//	case bit256
+	case bit256
 	case bit192
 	case bit160
 	case bit128
@@ -128,8 +128,8 @@ enum AudioBitrate: CaseIterable {
 	public var rawValue: Int {
 		switch self {
 				
-//			case .bit256:
-//				return 256_000
+			case .bit256:
+				return 256_000
 			case .bit192:
 				return 192_000
 			case .bit160:
@@ -145,8 +145,8 @@ enum AudioBitrate: CaseIterable {
 	
 	public var name: String {
 		switch self {
-//			case .bit256:
-//				return "256 kbit/s"
+			case .bit256:
+				return "256 kbit/s"
 			case .bit192:
 				return "192kbit/s"
 			case .bit160:
@@ -163,8 +163,8 @@ enum AudioBitrate: CaseIterable {
 	public var description: String {
 		switch self {
 				
-//			case .bit256:
-//				return "a commonly used high-quality bitrate."
+			case .bit256:
+				return "a commonly used high-quality bitrate."
 			case .bit192:
 				return "medium quality bitrate."
 			case .bit160:
@@ -175,6 +175,21 @@ enum AudioBitrate: CaseIterable {
 				return "generally used for speech or low-quality streaming."
 //			case .bit32:
 //				return "generally acceptable only for speech."
+		}
+	}
+	
+	public var shortDescription: String {
+		switch self {
+			case .bit256:
+				return "high-quality"
+			case .bit192:
+				return "medium quality"
+			case .bit160:
+				return "mid-range quality"
+			case .bit128:
+				return "mid-range quality"
+			case .bit96:
+				return "low-quality"
 		}
 	}
 }
