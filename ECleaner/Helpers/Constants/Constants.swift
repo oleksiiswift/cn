@@ -127,6 +127,7 @@ class Constants {
 			static let selectedPhassetsQueue = "com.photo.selectedPHAssets_queue"
 			static let compressVideoQueue = "com.video.compressVideo_queue"
 			static let compressAudieQueue = "com.audio.compressAudio_queue"
+			static let animatedProgressQueue = "com.progressAlert.progressBar_queue"
 		}
 		
 		struct operation {

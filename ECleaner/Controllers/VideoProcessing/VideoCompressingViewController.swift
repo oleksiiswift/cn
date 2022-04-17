@@ -27,6 +27,7 @@ class VideoCompressingViewController: UIViewController {
 	private var compressingManager = VideoCompressionManager.insstance
 	private var photoManager = PhotoManager.shared
 	private var shareManager = ShareManager.shared
+	private var progressAlert = ProgressAlertController.shared
 	
 	private var customFPS: Float = 0
 	private var customBitrate: Int = 0
@@ -101,20 +102,24 @@ extension VideoCompressingViewController {
 	
 	private func startVideoCompressing(from asset: PHAsset, with configuration: VideoCompressionConfig) {
 		
-		P.showIndicator()
 		asset.getPhassetURL { responseURL in
 			
 			guard let url = responseURL else { return }
 			
+			self.progressAlert.showCompressingProgressAlertController(from: self, delegate: self)
+			
 			self.compressingManager.compressVideo(from: url, with: configuration) { result in
-				P.hideIndicator()
-				switch result {
-					case .success(let compressedVideoURL):
-						self.compressVideoResultCompleted(with: compressedVideoURL)
-					case .failure(let handler):
-						handler.showErrorAlert {
-							self.navigationController?.popViewController(animated: true)
-						}
+				
+				self.progressAlert.closeProgressAnimatedController()
+				U.delay(1) {
+					switch result {
+						case .success(let compressedVideoURL):
+							self.compressVideoResultCompleted(with: compressedVideoURL)
+						case .failure(let handler):
+							handler.showErrorAlert {
+								self.navigationController?.popViewController(animated: true)
+							}
+					}
 				}
 			}
 		}
@@ -126,14 +131,20 @@ extension VideoCompressingViewController {
 			
 			guard let url = responseURL else { return }
 			
+			self.progressAlert.showCompressingProgressAlertController(from: self, delegate: self)
+			
 			self.compressingManager.compressVideo(from: url, quality: compressingModel) { result in
-				switch result {
-					case .success(let compressedVideoURL):
-						self.compressVideoResultCompleted(with: compressedVideoURL)
-					case .failure(let errorHandler):
-						errorHandler.showErrorAlert {
-							self.navigationController?.popViewController(animated: true)
-						}
+				
+				self.progressAlert.closeProgressAnimatedController()
+				U.delay(1) {
+					switch result {
+						case .success(let compressedVideoURL):
+							self.compressVideoResultCompleted(with: compressedVideoURL)
+						case .failure(let errorHandler):
+							errorHandler.showErrorAlert {
+								self.navigationController?.popViewController(animated: true)
+							}
+					}
 				}
 			}
 		}
@@ -179,9 +190,15 @@ extension VideoCompressingViewController {
 				ErrorHandler.shared.showEmptySearchResultsFor(.photoLibraryIsEmpty) {
 					self.navigationController?.popViewController(animated: true)
 				}
-				
 			}
 		}
+	}
+}
+
+extension VideoCompressingViewController: AnimatedProgressDelegate {
+	
+	func didProgressSetCanceled() {
+		compressingManager.stopWritingReading()
 	}
 }
 
@@ -354,17 +371,3 @@ extension VideoCompressingViewController: Themeble {
 		bottomButtonBarView.updateColorsSettings()
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

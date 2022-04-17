@@ -13,6 +13,10 @@ protocol ProgressAlertControllerDelegate: AnyObject {
     func didAutoCloseController()
 }
 
+protocol AnimatedProgressDelegate: AnyObject {
+	func didProgressSetCanceled()
+}
+
 enum ProgressContactsAlertType {
 	case mergeContacts
 	case deleteContacts
@@ -33,9 +37,10 @@ class ProgressAlertController: Themeble {
     
     var alertController = UIAlertController()
     let progressBar = ProgressAlertBar()
+	let animatedProgressBar = AnimatedGradientProgressView()
     
     var delegate: ProgressAlertControllerDelegate?
-    
+
     var contentProgressType: MediaContentType = .none
 	
 	public var controllerPresented: Bool = false
@@ -98,6 +103,35 @@ class ProgressAlertController: Themeble {
 			}
         }
     }
+	
+	private func presentAnimatedProgress(title: String, progressDelegate: AnimatedProgressDelegate?, from viewController: UIViewController, barColor: UIColor, animatedColor: UIColor) {
+		
+		alertController = UIAlertController(title: title, message: "", preferredStyle: .alert)
+		animatedProgressBar.progressMainColor = barColor
+		animatedProgressBar.progressAnimatedColor = animatedColor
+		
+		let cancelAction = UIAlertAction(title: AlertHandler.AlertActionsButtons.cancel.title, style: .cancel) { _ in
+			progressDelegate?.didProgressSetCanceled()
+			self.removeAnimatedProgress()
+		}
+		
+		self.alertController.view.addSubview(self.animatedProgressBar)
+		animatedProgressBar.translatesAutoresizingMaskIntoConstraints = false
+		let margin: CGFloat = 16
+		let rect = CGRect(x: margin, y: 56, width: self.alertController.view.frame.width - margin * 2.0, height: 2.0)
+		self.animatedProgressBar.frame = rect
+		
+		self.animatedProgressBar.leadingAnchor.constraint(equalTo: self.alertController.view.leadingAnchor, constant: margin).isActive = true
+		self.animatedProgressBar.trailingAnchor.constraint(equalTo: self.alertController.view.trailingAnchor, constant: -margin).isActive = true
+		self.animatedProgressBar.topAnchor.constraint(equalTo: self.alertController.view.topAnchor, constant: 56).isActive = true
+		self.animatedProgressBar.heightAnchor.constraint(equalToConstant: 2.0).isActive = true
+		self.animatedProgressBar.performAnimation()
+	
+		alertController.addAction(cancelAction)
+		viewController.present(self.alertController, animated: true) {
+			self.animatedProgressBar.startAnimation()
+		}
+	}
     
 	public func setProgress(_ progress: CGFloat, totalFilesProcessong: String) {
         alertController.message = totalFilesProcessong
@@ -122,6 +156,19 @@ class ProgressAlertController: Themeble {
 	public func closeForceController() {
 		alertController.dismiss(animated: true, completion: nil)
 	}
+	
+	public func closeProgressAnimatedController() {
+		alertController.dismiss(animated: true) {
+			self.removeAnimatedProgress()
+		}
+	}
+	
+	private func removeAnimatedProgress() {
+		
+		animatedProgressBar.stopAnimation()
+		animatedProgressBar.removeFromSuperview()
+		animatedProgressBar.layer.removeAllAnimations()
+	}
 }
 
 extension ProgressAlertController {
@@ -141,79 +188,14 @@ extension ProgressAlertController {
 	public func showContactsProgressAlert(of type: ProgressContactsAlertType) {
 		setProgress(controllerType: .userContacts, title: type.progressTitle)
 	}
+	
+	public func showCompressingProgressAlertController(from viewController: UIViewController, delegate: AnimatedProgressDelegate?)  {
+		U.UI {
+			self.presentAnimatedProgress(title: "compressing", progressDelegate: delegate, from: viewController, barColor: UIColor().colorFromHexString("3C82C8"), animatedColor: self.theme.videosTintColor )
+		}
+	}
 }
 
-class ProgressAlertBar: UIView {
-    
-    private var progressView = UIView()
-    
-    var progressColor: UIColor = .green {
-        didSet {
-            setNeedsDisplay()
-        }
-    }
-    
-    var mainBackgroundColor: UIColor = .gray {
-        didSet {
-            setNeedsDisplay()
-        }
-    }
-    
-    var progressCorner: CGFloat = 6 {
-        didSet {
-            setNeedsDisplay()
-        }
-    }
-    
-    var borderColor: UIColor = .orange {
-        didSet {
-            setNeedsDisplay()
-        }
-    }
-    
-    var borderWidth: CGFloat = 1.5 {
-        didSet {
-            setNeedsDisplay()
-        }
-    }
-    
-    var progress: CGFloat = 0 {
-        didSet {
-            setNeedsDisplay()
-        }
-    }
 
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        
-        setupView()
-        updateColors()
-    }
-    
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        
-        setupView()
-    }
-    
-    private func setupView() {
-        
-        self.addSubview(progressView)
-    }
-    
-    public func updateColors() {
-        self.backgroundColor = mainBackgroundColor
-        self.setCorner(progressCorner)
-        self.layer.borderWidth = borderWidth
-        self.layer.borderColor = borderColor.cgColor
-    }
-    
-    override func draw(_ rect: CGRect) {
-        
-        let progressFrame: CGRect = CGRect(origin: .zero, size: CGSize(width: rect.width * progress, height: rect.height))
-        progressView.setCorner(progressCorner)
-        progressView.backgroundColor = progressColor
-        progressView.frame = progressFrame
-    }
-}
+
 

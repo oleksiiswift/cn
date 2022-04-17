@@ -11,6 +11,7 @@ enum VideoCompressionErrorHandler: Error, LocalizedError {
 	case noVideoFile
 	case compressedFailed(_ error: Error)
 	case errorRemoveAudioComponent
+	case operationIsCanceled
 	
 	public var errorDescription: String? {
 		switch self {
@@ -20,6 +21,8 @@ enum VideoCompressionErrorHandler: Error, LocalizedError {
 				return error.localizedDescription
 			case .errorRemoveAudioComponent:
 				return ErrorHandler.CompressionError.removeAudio.errorMessage
+			case .operationIsCanceled:
+				return ErrorHandler.CompressionError.operationIsCanceled.errorMessage
 		}
 	}
 	
@@ -35,6 +38,10 @@ enum VideoCompressionErrorHandler: Error, LocalizedError {
 				}
 			case .errorRemoveAudioComponent:
 				ErrorHandler.shared.showCompressionErrorFor(.removeAudio) {
+					completionHandler()
+				}
+			case .operationIsCanceled:
+				ErrorHandler.shared.showCompressionErrorFor(.operationIsCanceled) {
 					completionHandler()
 				}
 		}

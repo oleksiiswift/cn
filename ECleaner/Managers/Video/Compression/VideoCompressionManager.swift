@@ -71,6 +71,18 @@ extension VideoCompressionManager {
 		]
 		return settings
 	}
+	
+	public func stopWritingReading() {
+		
+		if reader?.status == .reading {
+			reader?.cancelReading()
+		}
+		
+		if writer?.status == .writing {
+			writer?.cancelWriting()
+		}
+		ErrorHandler.shared.showCompressionErrorFor(.operationIsCanceled) {}
+	}
 }
 
 //		MARK: - calculate -
@@ -196,7 +208,6 @@ extension VideoCompressionManager {
 			while videoInput.isReadyForMoreMediaData {
 				if let videoBuffer = videoOutput.copyNextSampleBuffer(), CMSampleBufferDataIsReady(videoBuffer) {
 					videoInput.append(videoBuffer)
-					debugPrint(videoBuffer)
 				} else {
 					videoInput.markAsFinished()
 					completionHandler()
@@ -221,7 +232,6 @@ extension VideoCompressionManager {
 						let frameIndex = randeomFrames[index]
 						if counter == frameIndex {
 							index += 1
-							debugPrint(index)
 							let timingInfo = UnsafeMutablePointer<CMSampleTimingInfo>.allocate(capacity: 1)
 							let newSample = UnsafeMutablePointer<CMSampleBuffer?>.allocate(capacity: 1)
 							
@@ -304,7 +314,7 @@ extension VideoCompressionManager {
 			reader.startReading()
 			writer.startWriting()
 			writer.startSession(atSourceTime: CMTime.zero)
-			
+	
 			group.enter()
 			
 			let reduceFPS = targetFPS < videoTrack.nominalFrameRate
@@ -339,7 +349,7 @@ extension VideoCompressionManager {
 					}
 				}
 			}
-			
+
 			group.notify(queue: .main) {
 				switch writer.status {
 					case .writing, .completed:

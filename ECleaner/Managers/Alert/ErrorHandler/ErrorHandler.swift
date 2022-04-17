@@ -91,6 +91,7 @@ class ErrorHandler {
 		case errorSavedFile
 		case noVideoFile
 		case removeAudio
+		case operationIsCanceled
 		
 		var withCancel: Bool {
 			switch self {
@@ -105,6 +106,8 @@ class ErrorHandler {
 				case .noVideoFile:
 					return false
 				case .removeAudio:
+					return false
+				case .operationIsCanceled:
 					return false
 			}
 		}
@@ -123,6 +126,8 @@ class ErrorHandler {
 					return errorTitle.error.title
 				case .removeAudio:
 					return errorTitle.error.title
+				case .operationIsCanceled:
+					return errorTitle.attention.title
 			}
 		}
 		
@@ -140,6 +145,8 @@ class ErrorHandler {
 					return "no video file"
 				case .removeAudio:
 					return "cant remove audioComponent"
+				case .operationIsCanceled:
+					return "operation is canceled"
 			}
 		}
 
@@ -301,6 +308,6 @@ extension ErrorHandler {
 		
 		let actions = errorType.withCancel ? [errorAction] : []
 		
-		A.showAlert(errorType.title, message: errorType.title, actions: actions, withCancel: errorType.withCancel, style: .alert) {}
+		A.showAlert(errorType.title, message: errorType.errorMessage, actions: actions, withCancel: errorType.withCancel, style: .alert) {}
 	}
 }
