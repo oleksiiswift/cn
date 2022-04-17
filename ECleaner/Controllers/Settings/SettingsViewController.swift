@@ -20,7 +20,7 @@ class SettingsViewController: UIViewController {
         super.viewDidLoad()
 
 		setupViewModel()
-		setupNavigateion()
+		setupNavigation()
 		setupTableView()
 		setupDelegate()
 		updateColors()
@@ -66,7 +66,7 @@ extension SettingsViewController {
 
 extension SettingsViewController {
 	
-	private func setupNavigateion() {
+	private func setupNavigation() {
 		
 		navigationBar.setupNavigation(title: settingsViewModel.controllerTitle,
 									  leftBarButtonImage: I.systemItems.navigationBarItems.back,
@@ -166,6 +166,8 @@ extension SettingsViewController: SettingActionsDelegate {
 				self.showPrivacyPolicyAction()
 			case .termsOfUse:
 				self.showTermsOfUseAction()
+			default:
+				return
 		}
 	}
 	
@@ -219,6 +221,4 @@ extension SettingsViewController {
 }
 
 
-protocol SettingActionsDelegate {
-	func setAction(at cell: SettingsModel)
-}
+

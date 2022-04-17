@@ -17,6 +17,7 @@ enum AlertType {
 	case allowConstacStore
 	case allowPhotoLibrary
 		///  `empty search`
+	case photoLibraryIsEmpty
 	case similarPhotoIsEmpty
 	case duplicatedPhotoIsEmpty
 	case screenShotsIsEmpty
@@ -63,6 +64,8 @@ enum AlertType {
     case suxxessDeleteContacts
     case suxxessMergedContact
     case suxxessMergedContacts
+	
+	case compressionvideoFileComplete
     
     case none
     
@@ -84,6 +87,8 @@ enum AlertType {
 				return AlertHandler.AllowAccessHandler.contactStore.title
 			case .allowPhotoLibrary:
 				return AlertHandler.AllowAccessHandler.photoLibrary.title
+			case .photoLibraryIsEmpty:
+				return ErrorHandler.errorTitle.error.title
 
 //				MARK: no searching data
 			case .similarPhotoIsEmpty,
@@ -133,6 +138,8 @@ enum AlertType {
                 return "good need locale"
             case .suxxessMergedContact, .suxxessMergedContacts:
                 return "good merged locale"
+			case .compressionvideoFileComplete:
+				return "compression complete"
 			case .none:
 				return ""
 		}
@@ -157,6 +164,8 @@ enum AlertType {
 				return AlertHandler.AllowAccessHandler.photoLibrary.message
 				
 //				MARK: no searching data
+			case .photoLibraryIsEmpty:
+				return ErrorHandler.shared.emptyResultsForKey(.photoLibrararyIsEmpty)
 			case .similarPhotoIsEmpty:
 				return ErrorHandler.shared.emptyResultsForKey(.similarPhotoIsEmpty)
 			case .duplicatedPhotoIsEmpty:
@@ -226,6 +235,8 @@ enum AlertType {
 				return "cintact suxx merged"
 			case .suxxessMergedContacts:
 				return "contacts suxx merged"
+			case .compressionvideoFileComplete:
+				return AlertHandler.getAlertMessage(for: self)
 //				MARK: cancel none
             case .withCancel:
                 return "cancel"
@@ -253,11 +264,12 @@ enum AlertType {
     
 //    /// alert or action sheet
     var alertStyle: UIAlertController.Style {
-        if U.isIpad {
-            return .alert
-        } else {
-            return .alert
-        }
+		switch self {
+			case .compressionvideoFileComplete:
+				return .actionSheet
+			default:
+				return .alert
+		}
     }
     
     var withCancel: Bool {
@@ -266,7 +278,8 @@ enum AlertType {
 			case .contactsRestricted, .photoLibraryRestricted:
 				return true
 				
-			case .similarPhotoIsEmpty,
+			case .photoLibraryIsEmpty,
+					.similarPhotoIsEmpty,
 					.duplicatedPhotoIsEmpty,
 					.screenShotsIsEmpty,
 					.similarSelfiesIsEmpty,
@@ -295,6 +308,8 @@ enum AlertType {
                 return true
             case .suxxessDeleteContact, .suxxessDeleteContacts, .suxxessMergedContact, .suxxessMergedContacts:
                 return false
+			case .compressionvideoFileComplete:
+				return true
             case .none:
                 return false
         }

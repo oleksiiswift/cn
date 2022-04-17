@@ -39,6 +39,17 @@ class Constants {
             static let videoSpace = "videoDiskSpace"
             static let allMediaSpace = "wholeAssetsDiskSpace"
         }
+		
+		struct compressionSettings {
+			static let videoBitrate = "videoBitrate"
+			static let audioBitrate = "audioBitrate"
+			static let fps = "videoFPS"
+			static let frameInterval = "maximumVideoKeyframeInterval"
+			static let resolutionWidth = "scaleResolutionWidth"
+			static let resolutionHeight = "scaleResolutionHeight"
+			static let defaultConfigurationIsSet = "defaultConfigurationIsSet"
+			static let lastSelectedCompressionModel = "selectedCompressionModel"
+		}
         
         struct notification {
             
@@ -97,6 +108,9 @@ class Constants {
             /// `contacts notification`
             static let mergeContactsSelectionDidChange = "mergeContactsSelectionDidChange"
             static let selectedContactsDidChange = "selectedContactsDidChange"
+			
+			/// `compression notification`
+			static let compressionDidStart = "CompressionVideoFileDidStartNotification"
         }
 		
 		struct observers {
@@ -108,9 +122,12 @@ class Constants {
 		}
 		
 		struct dispatch {
-			static let mergeContacts = "mergeContactsLabel"
-			static let deleteContacts = "deletingContactsLabel"
-			static let selectedPhassetsQueue = "selectedPhassetsQueue"
+			static let mergeContactsQueue = "com.contacts.merge_queue"
+			static let deleteContactsQueue = "com.contacts.delete_queue"
+			static let selectedPhassetsQueue = "com.photo.selectedPHAssets_queue"
+			static let compressVideoQueue = "com.video.compressVideo_queue"
+			static let compressAudieQueue = "com.audio.compressAudio_queue"
+			static let animatedProgressQueue = "com.progressAlert.progressBar_queue"
 		}
 		
 		struct operation {
@@ -286,6 +303,7 @@ class Constants {
             static let contactsGroup = "ContactsGroup"
             static let exportContacts = "ExportContact"
 			static let settings = "Settings"
+			static let videoProcessing = "VideoProcessing"
         }
         
         struct viewControllers {
@@ -296,12 +314,15 @@ class Constants {
             static let assetsList = "SimpleAssetsListViewController"
             static let groupedList = "GroupedAssetListViewController"
 			static let media = "MediaViewController"
+			static let videoCompressCollection = "VideoCollectionCompressingViewController"
+			static let videoCompressing = "VideoCompressingViewController"
 			static let preview = "PreviewViewController"
             static let contacts = "ContactsViewController"
             static let deepClean = "DeepCleaningViewController"
             static let contactsGroup = "ContactsGroupViewController"
             static let expordContacts = "ExportContactsViewController"
 			static let settings = "SettingsViewController"
+			static let customCompression = "VideoCompressionCustomSettingsViewController"
         }
         
         struct cells {
@@ -315,6 +336,8 @@ class Constants {
             static let contactCell = "ContactTableViewCell"
             static let groupContactCell = "GroupContactTableViewCell"
 			static let helperBannerCell = "HelperBannerTableViewCell"
+			static let compressionCell = "CompressionSettingsTableViewCell"
+			static let videoPreviewCell = "VideoPreviewTableViewCell"
         }
         
         struct views {
@@ -337,6 +360,8 @@ class Constants {
             static let contactCell = "ContactTableViewCell"
             static let groupContactCell = "GroupContactTableViewCell"
 			static let bannerCell = "HelperBannerTableViewCell"
+			static let compressionCell = "CompressionSettingsTableViewCell"
+			static let videoPreivew = "VideoPreviewTableViewCell"
             /// `views`
             static let groupHeader = "GroupedAssetsReusableHeaderView"
             static let groupFooter = "GroupedAssetsReusableFooterView"
@@ -361,8 +386,15 @@ class Constants {
 			static let showUpperDatePicker = "ShowDatePickerUpperDateSelectorViewController"
             static let showExportContacts = "ShowExportContactsViewControllerSegue"
 			static let showSizeSelector = "ShowVideoSizeSelectorSegue"
+			static let showCustomCompression = "ShowCustomCompressionSegue"
         }
     }
+	
+	struct folders {
+		static let temp = "temp"
+		static let contactsArchive = "ContactsArchhive"
+		static let compressedVideo = "CompressedVideo"
+	}
 	
 	struct uiElementsNames {
 		struct layers {

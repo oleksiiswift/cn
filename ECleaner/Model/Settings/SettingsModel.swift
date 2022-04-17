@@ -20,6 +20,7 @@ enum SettingsModel {
 	case rate
 	case privacypolicy
 	case termsOfUse
+	case videoCompress
 	
 	var settingsTitle: String {
 		switch self {
@@ -43,6 +44,8 @@ enum SettingsModel {
 				return "privacy policy"
 			case .termsOfUse:
 				return "terms of use"
+			case .videoCompress:
+				return "compress video"
 		}
 	}
 	
@@ -68,12 +71,16 @@ enum SettingsModel {
 				return I.setting.privacy
 			case .termsOfUse:
 				return I.setting.terms
+			default:
+				return UIImage()
 		}
 	}
 	
 	var optionalBannerImage: UIImage {
 		switch self {
 			case .premium:
+				return I.setting.premiumBanner
+			case .videoCompress:
 				return I.setting.premiumBanner
 			default:
 				return UIImage()
@@ -83,6 +90,8 @@ enum SettingsModel {
 	var heightForRow: CGFloat {
 		switch self {
 			case .premium:
+				return 187
+			case .videoCompress:
 				return 187
 			default:
 				return 80

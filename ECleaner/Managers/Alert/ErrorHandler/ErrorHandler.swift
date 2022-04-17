@@ -14,6 +14,23 @@ class ErrorHandler {
         return instance
     }()
 	
+	enum errorTitle {
+		case error
+		case fatalError
+		case attention
+		
+		var title: String {
+			switch self {
+				case .error:
+					return "Error"
+				case .fatalError:
+					return "Fatal Error"
+				case .attention:
+					return "Atention"
+			}
+		}
+	}
+	
     enum DeleteError {
         case errorDeleteContact
         case errorDeleteContacts
@@ -67,7 +84,76 @@ class ErrorHandler {
 		}
 	}
 	
+	enum CompressionError {
+		case cantLoadFile
+		case compressionFailed
+		case resolutionIsBigger
+		case errorSavedFile
+		case noVideoFile
+		case removeAudio
+		case operationIsCanceled
+		
+		var withCancel: Bool {
+			switch self {
+				case .cantLoadFile:
+					return false
+				case .compressionFailed:
+					return false
+				case .resolutionIsBigger:
+					return true
+				case .errorSavedFile:
+					return false
+				case .noVideoFile:
+					return false
+				case .removeAudio:
+					return false
+				case .operationIsCanceled:
+					return false
+			}
+		}
+		
+		var title: String {
+			switch self {
+				case .cantLoadFile:
+					return errorTitle.error.title
+				case .compressionFailed:
+					return errorTitle.error.title
+				case .resolutionIsBigger:
+					return errorTitle.attention.title
+				case .errorSavedFile:
+					return errorTitle.error.title
+				case .noVideoFile:
+					return errorTitle.error.title
+				case .removeAudio:
+					return errorTitle.error.title
+				case .operationIsCanceled:
+					return errorTitle.attention.title
+			}
+		}
+		
+		var errorMessage: String {
+			switch self {
+				case .cantLoadFile:
+					return "cant load video file"
+				case .compressionFailed:
+					return "compression vide file are failed"
+				case .resolutionIsBigger:
+					return "resolution in settings are bigger than original video resolution"
+				case .errorSavedFile:
+					return "cant save compressed file"
+				case .noVideoFile:
+					return "no video file"
+				case .removeAudio:
+					return "cant remove audioComponent"
+				case .operationIsCanceled:
+					return "operation is canceled"
+			}
+		}
+
+	}
+	
 	enum EmptyResultsError {
+		case photoLibrararyIsEmpty
 		case similarPhotoIsEmpty
 		case duplicatedPhotoIsEmpty
 		case screenShotsIsEmpty
@@ -131,6 +217,8 @@ class ErrorHandler {
 	
 	public func emptyResultsForKey(_ error: EmptyResultsError) -> String {
 		switch error {
+			case .photoLibrararyIsEmpty:
+				return "photo library is empty"
 			case .similarPhotoIsEmpty:
 				return "np similar photo"
 			case .duplicatedPhotoIsEmpty:
@@ -176,26 +264,26 @@ class ErrorHandler {
 extension ErrorHandler {
 	
     public func showDeleteAlertError(_ errorType: DeleteError) {
-        let alertTitle = "Error"
-        let alertAction = UIAlertAction(title: "ok", style: .default)
-        A.showAlert(alertTitle, message: deleteErrorForKey(errorType), actions: [alertAction], withCancel: false, completion: nil)
+        let alertTitle = ""
+		let alertAction = UIAlertAction(title: AlertHandler.AlertActionsButtons.ok.title, style: .default)
+		A.showAlert(alertTitle, message: deleteErrorForKey(errorType), actions: [alertAction], withCancel: false, style: .alert, completion: nil)
     }
     
     public func showLoadAlertError(_ errorType: LoadError) {
-        let alertTitle = "Error"
-        A.showAlert(alertTitle, message: loadErrorForKey(errorType), actions: [], withCancel: false, completion: nil)
+		let alertTitle = errorTitle.error.title
+		A.showAlert(alertTitle, message: loadErrorForKey(errorType), actions: [], withCancel: false, style: .alert, completion: nil)
     }
     
     public func showMergeAlertError(_ errorType: MeergeError, completion: (() -> Void)? = nil) {
-        let alertTitle = "Error"
-        A.showAlert(alertTitle, message: mergeErrorForKey(errorType), actions: [], withCancel: false) {
+		let alertTitle = errorTitle.error.title
+		A.showAlert(alertTitle, message: mergeErrorForKey(errorType), actions: [], withCancel: false, style: .alert) {
             completion?()
         }
     }
 	
 	public func showFatalErrorAlert(_ errorType: FatalError, completion: (() -> Void)? = nil) {
-		let alertTitle = "Fatal Error"
-		A.showAlert(alertTitle, message: fatalErrorForKey(errorType), actions: [], withCancel: false, completion: nil)
+		let alertTitle = errorTitle.fatalError.title
+		A.showAlert(alertTitle, message: fatalErrorForKey(errorType), actions: [], withCancel: false, style: .alert, completion: nil)
 	}
 }
 
@@ -203,9 +291,23 @@ extension ErrorHandler {
 extension ErrorHandler {
 	
 	public func showEmptySearchResultsFor(_ alertType: AlertType, completion: (() -> Void)? = nil) {
-		let alertAction = UIAlertAction(title: "ok", style: .default) { _ in
+		let alertAction = UIAlertAction(title: AlertHandler.AlertActionsButtons.ok.title, style: .default) { _ in
 			completion?()
 		}
-		A.showAlert(alertType.alertTitle, message: alertType.alertMessage, actions: [alertAction], withCancel: alertType.withCancel, completion: nil)
+		A.showAlert(alertType.alertTitle, message: alertType.alertMessage, actions: [alertAction], withCancel: alertType.withCancel, style: .alert, completion: nil)
+	}
+}
+
+extension ErrorHandler {
+	
+	public func showCompressionErrorFor(_ errorType: CompressionError, completion: @escaping () -> Void) {
+		
+		let errorAction = UIAlertAction(title: errorType.title, style: .default) { _ in
+			completion()
+		}
+		
+		let actions = errorType.withCancel ? [errorAction] : []
+		
+		A.showAlert(errorType.title, message: errorType.errorMessage, actions: actions, withCancel: errorType.withCancel, style: .alert) {}
 	}
 }

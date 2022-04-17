@@ -13,7 +13,10 @@ class StartingNavigationBar: UIView {
     @IBOutlet weak var leftBarButton: PrimaryButton!
     @IBOutlet weak var rightBarButton: PrimaryButton!
     @IBOutlet weak var titleLabel: UILabel!
-    
+	
+	@IBOutlet weak var leftShadowView: ReuseShadowView!
+	@IBOutlet weak var rightShadowView: ReuseShadowView!
+	
     var delegate: StartingNavigationBarDelegate?
     
     override func awakeFromNib() {
@@ -48,6 +51,9 @@ class StartingNavigationBar: UIView {
         containerView.frame = self.bounds
         containerView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         
+		leftBarButton.primaryShadowsIsActive = false
+		rightBarButton.primaryShadowsIsActive = false
+		
         leftBarButton.clipsToBounds = true
         leftBarButton.layer.cornerRadius = 10
         
@@ -55,6 +61,12 @@ class StartingNavigationBar: UIView {
         rightBarButton.layer.cornerRadius = 10
 		
 		titleLabel.textColor = theme.titleTextColor
+		
+		leftShadowView.topShadowOffsetOriginX = -2
+		leftShadowView.topShadowOffsetOriginY = -5
+		
+		rightShadowView.topShadowOffsetOriginY = -2
+		rightShadowView.topShadowOffsetOriginX = -5
     }
     
     public func setUpNavigation(title: String?, leftImage: UIImage?, rightImage: UIImage?) {
@@ -67,17 +79,21 @@ class StartingNavigationBar: UIView {
         }
         
         if let rightImage = rightImage {
+			rightShadowView.isHidden = false
             rightBarButton.isHidden = false
             rightBarButton.setImage(rightImage, for: .normal)
         } else {
             rightBarButton.isHidden = true
+			rightShadowView.isHidden = true
         }
         
         if let leftImage = leftImage {
+			leftShadowView.isHidden = false
             leftBarButton.isHidden = false
             leftBarButton.setImage(leftImage, for: .normal)
         } else {
             leftBarButton.isHidden = true
+			leftShadowView.isHidden = true
         }
     }
     

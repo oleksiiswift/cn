@@ -31,4 +31,8 @@ class ShadowRoundedView: UIView {
         
         imageView.layer.applySketchShadow(color: theme.bottomShadowColor, alpha: 1.0, x: 9, y: 9, blur: 32, spread: 0)
     }
+	
+	public func setImage(_ image: UIImage?) {
+		self.imageView.image = image
+	}
 }

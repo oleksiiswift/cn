@@ -23,3 +23,15 @@ extension PHAsset {
 		return fileDiskSpace
 	}
 }
+
+extension PHAsset {
+	
+	var isPortrait: Bool {
+
+		if let image = self.getImage {
+			return image.size.height > image.size.width
+		} else {
+			return self.pixelHeight > self.pixelHeight
+		}
+	}
+}

@@ -162,6 +162,18 @@ extension PHAssetFetchManager {
             return PHAsset.fetchAssets(with: fetchOption)
         }
     }
+//	 MARK: fetch videophassets
+	public func fetchVideoPHAssets(completionHandler: @escaping (_ videoPHAssets: [PHAsset]) -> Void) {
+		var fetchedVideos: [PHAsset] = []
+ 		let fetchOption = PHFetchOptions()
+		fetchOption.sortDescriptors = [NSSortDescriptor(key: SortingDesriptionKey.creationDate.value, ascending: false)]
+		fetchOption.predicate = NSPredicate(format: SDKey.singleMediaType.value, PHAssetMediaType.video.rawValue)
+		let result = PHAsset.fetchAssets(with: fetchOption)
+		result.enumerateObjects  { phasset, index, stopped in
+			fetchedVideos.append(phasset)
+		}
+		completionHandler(fetchedVideos)
+	}
 	
 	public func fetchImagesDiskUsageFromGallery(with identifiers: [String], completionHandler: @escaping (Int64) -> Void) {
 		
@@ -493,4 +505,20 @@ extension PHAssetFetchManager {
 //		MARK: - UTILS -
 extension PHAssetFetchManager {
 	
+	public func saveAVAsset(with url: URL, completionHandler: @escaping ((Bool,Error?) -> Void)) {
+		
+		PHPhotoLibrary.shared().performChanges({
+			let request = PHAssetCreationRequest.forAsset()
+			request.addResource(with: .video, fileURL: url, options: nil)
+		}) { result, error in
+			DispatchQueue.main.async {
+				if let error = error {
+					debugPrint(error.localizedDescription)
+					completionHandler(false, error)
+				} else {
+					completionHandler(true, nil)
+				}
+			}
+		}
+	}
 }

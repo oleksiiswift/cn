@@ -169,22 +169,16 @@ enum MediaContentType {
     }
     
     var numberOfSection: Int {
-        return 1
+		switch self {
+			case .userVideo:
+				return 2
+			case .userContacts:
+				return 2
+			default:
+				return 1
+		}
     }
-    
-    var numberOfRows: Int {
-        switch self {
-            case .userPhoto:
-                return 5
-            case .userVideo:
-                return 4
-            case .userContacts:
-                return 5
-            case .none:
-                return 0
-        }
-    }
-    
+
     var imageOfRows: UIImage {
         switch self {
             case .userPhoto:
@@ -281,6 +275,33 @@ enum MediaContentType {
                 return ""
         }
     }
+	
+	public func getNumbersOfRows(for section: Int) -> Int {
+		switch section {
+			case 1:
+				return 1
+			default:
+				switch self {
+					case .userPhoto:
+						return 5
+					case .userVideo:
+						return 4
+					case .userContacts:
+						return 5
+					case .none:
+						return 0
+				}
+		}
+	}
+	
+	public func getRowHeight(for section: Int) -> CGFloat {
+		switch self {
+			case .userVideo, .userContacts:
+				return section == 1 ? 187 : 100
+			default:
+				return 100
+		}
+	}
     
     
         /// ``DEEP CLEAN PROPERTIES``

@@ -50,6 +50,7 @@ class Images {
 			static let trashBin = UIImage(named: "defaultTrashBin")!
             static let star = UIImage(named: "starItem")!
             static let arrowUP = UIImage(named: "arrowUpDown")!
+			static let compress = UIImage(named: "compressItem")!
         }
 		
 		struct helpersItems {
@@ -73,20 +74,23 @@ class Images {
             static let contactPhoto = UIImage(named: "contactWithoutPhoto")!
             static let processingThumb = UIImage(named: "contactsProcessingEmptyItem")!
             static let unavailibleThumb = UIImage(named: "contactsThumbUnselect")!
+			static let backupContacts = UIImage(named: "backupContactsItem")!
         }
         
         struct photo {
-            
             static let processingThumb = UIImage(named: "photoProcessingEmptyItem")!
             static let unavailibleThumb = UIImage(named: "photoThumbUnselect")!
 			static let checkmark = UIImage(named: "photoSectionSelect")!
         }
         
         struct video {
-            
             static let processingThumb = UIImage(named: "videoProcessingEmptyItem")!
             static let unavailibleThumb = UIImage(named: "videoThumbUnselect")!
 			static let checkmark = UIImage(named: "videoSectionSelect")!
+			static let videoCompress = UIImage(named: "compressVideoItem")!
+			static let unselected = UIImage(named: "unselectedRoundedItem")!
+			static let selected = UIImage(named: "selectedRoundedItem")!
+			static let reset = UIImage(named: "resetBackwardItem")!
         }
     }
 	
@@ -104,9 +108,11 @@ class Images {
 	}
 	
 	struct player {
-		static let play = UIImage(named: "playButtonItem")
-		static let pause = UIImage(named: "pauseItem")
-		static let sliderThumb = UIImage(named: "sliderThumbItem")
+		static let play = UIImage(named: "playButtonItem")!
+		static let pause = UIImage(named: "pauseItem")!
+		static let sliderThumb = UIImage(named: "sliderThumbItem")!
+		static let templatePlay = UIImage(named: "tePlayButtonItem")!
+		static let templatePause = UIImage(named: "tePauseItem")!
 	}
 
     

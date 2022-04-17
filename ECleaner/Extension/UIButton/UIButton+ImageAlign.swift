@@ -60,14 +60,18 @@ extension UIButton {
     
     private func addImage(image: UIImage, imageWidth: CGFloat, imageHeight: CGFloat, spacing: CGFloat, isLeft: Bool) {
         
+		let imageViewTag = 331122
+		removePreviousImageView(with: imageViewTag)
+		
         let imageView = UIImageView(image: image)
+		imageView.tag = imageViewTag
+		
         imageView.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(imageView)
         
         if isLeft {
             titleEdgeInsets.left += imageWidth
             imageView.trailingAnchor.constraint(equalTo: self.titleLabel!.leadingAnchor, constant: -spacing).isActive = true
-            
         } else {
             titleEdgeInsets.right += imageWidth
             imageView.leadingAnchor.constraint(equalTo: self.titleLabel!.trailingAnchor, constant: spacing).isActive = true
@@ -106,6 +110,19 @@ extension UIButton {
 	private func removePreviousImage() {
 		
 		if let imageView = self.subviews.first(where: {$0.tag == 66613}) as? UIImageView {
+			imageView.removeFromSuperview()
+		}
+	}
+	
+	public func removeCenterImage() {
+		
+		if let imageView = self.subviews.first(where: {$0.tag == 100500}) as? UIImageView {
+			imageView.removeFromSuperview()
+		}
+	}
+	
+	private func removePreviousImageView(with tag: Int) {
+		if let imageView = self.subviews.first(where: {$0.tag == tag}) as? UIImageView {
 			imageView.removeFromSuperview()
 		}
 	}

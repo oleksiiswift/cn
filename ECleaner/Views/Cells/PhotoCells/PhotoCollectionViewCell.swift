@@ -54,6 +54,13 @@ class PhotoCollectionViewCell: UICollectionViewCell {
         photoCheckmarkImageView.image = I.systemElementsItems.circleBox
         unload()
     }
+	
+	override var isSelected: Bool {
+		didSet {
+			self.checkIsSelected()
+		}
+	}
+	
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -64,6 +71,7 @@ class PhotoCollectionViewCell: UICollectionViewCell {
 		 super.layoutSubviews()
 	
 	}
+	
 	@IBAction func didTapShowPHassetActionButton(_ sender: Any) {
 		if let indexPath = indexPath {
 			delegate?.didShowFullScreenPHAsset(at: indexPath)
@@ -114,7 +122,7 @@ extension PhotoCollectionViewCell: Themeble {
 		}
     }
 	
-    public func selectButtonSetup(by contentType: PhotoMediaType) {
+	public func selectButtonSetup(by contentType: PhotoMediaType, isBatchSelect: Bool = false) {
         switch contentType {
 			case .duplicatedVideos, .similarVideos, .similarPhotos, .duplicatedPhotos, .similarSelfies:
                 if indexPath?.row != 0 {
@@ -125,9 +133,14 @@ extension PhotoCollectionViewCell: Themeble {
 					setSelectable(availible: true)
 				} else {
 					setSelectable(availible: false)
-					setupBestView()
 					setBestView(availible: true)
+					setupBestView()
 				}
+			case .compress:
+				selectCellButtonWidthConstraint.constant = 0
+				selectCellButtonHeightConstraint.constant = 0
+				setBestView(availible: false)
+				setSelectable(availible: isBatchSelect)
             default:
                 setBestView(availible: false)
 				setSelectable(availible: true)
@@ -178,7 +191,7 @@ extension PhotoCollectionViewCell: Themeble {
 			case .duplicatedPhotos, .similarPhotos, .similarSelfies, .similarLivePhotos:
                 videoAssetDurationView.isHidden = true
 				playPhassetImageView.isHidden = true
-			case .singleScreenRecordings, .singleRecentlyDeletedVideos, .singleLargeVideos:
+			case .singleScreenRecordings, .singleRecentlyDeletedVideos, .singleLargeVideos, .compress:
                 if asset.mediaType == .video {
                     let duration = CMTime(seconds: asset.duration, preferredTimescale: 1000000)
                     videoAssetDurationTextLabel.text = duration.durationText
