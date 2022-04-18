@@ -7,7 +7,7 @@
 
 import UIKit
 
-public class AnimatedGradientProgressView: UIView, CAAnimationDelegate {
+public class AnimatedProgressBar: UIView, CAAnimationDelegate {
 	
 	public var progressMainColor: UIColor = UIColor().colorFromHexString("46A3FF") {
 		didSet {
