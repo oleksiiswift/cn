@@ -125,10 +125,10 @@ class ProgressAlertController: Themeble {
 		self.animatedProgressBar.trailingAnchor.constraint(equalTo: self.alertController.view.trailingAnchor, constant: -margin).isActive = true
 		self.animatedProgressBar.topAnchor.constraint(equalTo: self.alertController.view.topAnchor, constant: 56).isActive = true
 		self.animatedProgressBar.heightAnchor.constraint(equalToConstant: 2.0).isActive = true
-		self.animatedProgressBar.performAnimation()
 	
-		withCancel ? alertController.addAction(cancelAction) : ()
 		U.UI {
+			self.animatedProgressBar.performAnimation()
+			withCancel ? self.alertController.addAction(cancelAction) : ()
 			viewController.present(self.alertController, animated: true) {
 				self.animatedProgressBar.startAnimation()
 			}
