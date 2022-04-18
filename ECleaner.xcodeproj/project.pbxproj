@@ -159,7 +159,6 @@
 		972E0256274105B300C236C7 /* SingleContactsGroupOperationsMediator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972E0255274105B300C236C7 /* SingleContactsGroupOperationsMediator.swift */; };
 		972ED06B2808E09000096502 /* CompressionSettingsConfiguretion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972ED06A2808E09000096502 /* CompressionSettingsConfiguretion.swift */; };
 		9745CC1B280765DA00335C04 /* VideoCompressionCustomSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9745CC1A280765D900335C04 /* VideoCompressionCustomSettingsViewController.swift */; };
-		9745CC1E2807E2EE00335C04 /* MarkSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 9745CC1D2807E2EE00335C04 /* MarkSlider.m */; };
 		975617D8273BC32A00E07A62 /* ReuseShadowRoundedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 975617D7273BC32A00E07A62 /* ReuseShadowRoundedView.swift */; };
 		975AF43127281DF700744E3B /* ContactListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 975AF43027281DF700744E3B /* ContactListViewModel.swift */; };
 		975AF4352728210A00744E3B /* DynamicListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 975AF4342728210A00744E3B /* DynamicListener.swift */; };
@@ -449,8 +448,6 @@
 		972E0255274105B300C236C7 /* SingleContactsGroupOperationsMediator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleContactsGroupOperationsMediator.swift; sourceTree = "<group>"; };
 		972ED06A2808E09000096502 /* CompressionSettingsConfiguretion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompressionSettingsConfiguretion.swift; sourceTree = "<group>"; };
 		9745CC1A280765D900335C04 /* VideoCompressionCustomSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoCompressionCustomSettingsViewController.swift; sourceTree = "<group>"; };
-		9745CC1C2807E28500335C04 /* MarkSlider.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MarkSlider.h; sourceTree = "<group>"; };
-		9745CC1D2807E2EE00335C04 /* MarkSlider.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MarkSlider.m; sourceTree = "<group>"; };
 		975617D7273BC32A00E07A62 /* ReuseShadowRoundedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReuseShadowRoundedView.swift; sourceTree = "<group>"; };
 		975AF43027281DF700744E3B /* ContactListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactListViewModel.swift; sourceTree = "<group>"; };
 		975AF4342728210A00744E3B /* DynamicListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicListener.swift; sourceTree = "<group>"; };
@@ -734,9 +731,9 @@
 		049CC21126821D5F0002F988 /* Alert */ = {
 			isa = PBXGroup;
 			children = (
+				04E5837D267B60F600EDC3A3 /* AlertManager.swift */,
 				9770C806274D18420046EF84 /* ErrorHandler */,
 				97AFE8F7278C5DEB0062E5D1 /* AlertHandler */,
-				04E5837D267B60F600EDC3A3 /* AlertManager.swift */,
 				97A57474280C7C8A00B76BD0 /* ProgressAlert */,
 				978FEF11274BB73700ADE1D9 /* AlertType.swift */,
 			);
@@ -1059,8 +1056,6 @@
 				972A2A38280633E500D6F54A /* SliderView */,
 				97A867AF27E9546B00891297 /* CustomUIButtons */,
 				970B208B27F5BCB900B5AF7D /* GradientSlider */,
-				9745CC1C2807E28500335C04 /* MarkSlider.h */,
-				9745CC1D2807E2EE00335C04 /* MarkSlider.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -2249,7 +2244,6 @@
 				047DE61C26AAD5F000733CD5 /* DeepCleanManager.swift in Sources */,
 				97DC39AE273C003300D487BE /* PrimaryShadowButton.swift in Sources */,
 				04CF00002685F0C3000CA850 /* ContentTypeTableViewCell.swift in Sources */,
-				9745CC1E2807E2EE00335C04 /* MarkSlider.m in Sources */,
 				970D7786275B70420048F41D /* PHAsset+FileSize.swift in Sources */,
 				97AFE8F6278C5B730062E5D1 /* AlertHandler.swift in Sources */,
 				4F56074727205AF300CA19E9 /* BlueDarkStyle.swift in Sources */,

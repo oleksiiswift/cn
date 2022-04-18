@@ -37,7 +37,7 @@ class ProgressAlertController: Themeble {
     
     var alertController = UIAlertController()
     let progressBar = ProgressAlertBar()
-	let animatedProgressBar = AnimatedGradientProgressView()
+	let animatedProgressBar = AnimatedProgressBar()
     
     var delegate: ProgressAlertControllerDelegate?
 
@@ -104,7 +104,7 @@ class ProgressAlertController: Themeble {
         }
     }
 	
-	private func presentAnimatedProgress(title: String, progressDelegate: AnimatedProgressDelegate?, from viewController: UIViewController, barColor: UIColor, animatedColor: UIColor) {
+	private func presentAnimatedProgress(title: String, progressDelegate: AnimatedProgressDelegate?, from viewController: UIViewController, barColor: UIColor, animatedColor: UIColor, withCancel: Bool = true) {
 		
 		alertController = UIAlertController(title: title, message: "", preferredStyle: .alert)
 		animatedProgressBar.progressMainColor = barColor
@@ -127,9 +127,11 @@ class ProgressAlertController: Themeble {
 		self.animatedProgressBar.heightAnchor.constraint(equalToConstant: 2.0).isActive = true
 		self.animatedProgressBar.performAnimation()
 	
-		alertController.addAction(cancelAction)
-		viewController.present(self.alertController, animated: true) {
-			self.animatedProgressBar.startAnimation()
+		withCancel ? alertController.addAction(cancelAction) : ()
+		U.UI {
+			viewController.present(self.alertController, animated: true) {
+				self.animatedProgressBar.startAnimation()
+			}
 		}
 	}
     
@@ -154,11 +156,13 @@ class ProgressAlertController: Themeble {
     }
 	
 	public func closeForceController() {
+		self.controllerPresented = false
 		alertController.dismiss(animated: true, completion: nil)
 	}
 	
 	public func closeProgressAnimatedController() {
 		alertController.dismiss(animated: true) {
+			self.controllerPresented = false
 			self.removeAnimatedProgress()
 		}
 	}
@@ -190,10 +194,14 @@ extension ProgressAlertController {
 	}
 	
 	public func showCompressingProgressAlertController(from viewController: UIViewController, delegate: AnimatedProgressDelegate?)  {
-		U.UI {
-			self.presentAnimatedProgress(title: "compressing", progressDelegate: delegate, from: viewController, barColor: UIColor().colorFromHexString("3C82C8"), animatedColor: self.theme.videosTintColor )
-		}
+		presentAnimatedProgress(title: "compressing", progressDelegate: delegate, from: viewController, barColor: UIColor().colorFromHexString("3C82C8"), animatedColor: theme.videosTintColor )
 	}
+	
+	public func showContactsProgressAlertController(from viewController: UIViewController, delegate: AnimatedProgressDelegate?) {
+		presentAnimatedProgress(title: "updating contacts", progressDelegate: delegate, from: viewController, barColor: .white, animatedColor: theme.contactsTintColor, withCancel: false)
+	}
+	
+	
 }
 
 

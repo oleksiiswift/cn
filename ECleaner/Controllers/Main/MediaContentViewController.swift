@@ -504,8 +504,7 @@ extension MediaContentViewController {
 			if !phassets.isEmpty {
 				self.showCompressVideoPickerController(with: phassets)
 			} else {
-				#warning("TODDO")
-//				ErrorHandler.shared.showEmptySearchResultsFor(, completion: <#T##(() -> Void)?##(() -> Void)?##() -> Void#>)
+				ErrorHandler.shared.emptyResultsForKey(.photoLibrararyIsEmpty)
 			}
 		}
 	}
@@ -659,7 +658,7 @@ extension MediaContentViewController {
 		viewController.navigationTitle = content.mediaTypeName
 		viewController.contentType = content
 		viewController.mediaType = .userContacts
-		
+		viewController.cleaningType = type
 		viewController.updatableContactsAfterProcessing = { changedContactsGroup, currentChangedMediaType, storeDidChange in
 	
 			guard storeDidChange else { return}
@@ -922,7 +921,6 @@ extension MediaContentViewController {
 			self.tableView.reloadData()
 		}
 	}
-	
 	
 	private func resetRecievingData() {
 		for ( _ , value) in singleCleanModel.objects {

@@ -21,11 +21,14 @@ class ContactsGroupViewController: UIViewController {
     private var contactsManager = ContactsManager.shared
     private var progressAlert = ProgressAlertController.shared
 	private var shareManager = ShareManager.shared
+	
     public var contactGroup: [ContactsGroup] = []
     public var contactGroupListViewModel: ContactGroupListViewModel!
     public var contactGroupListDataSource: ContactsGroupDataSource!
     public var mediaType: MediaContentType = .none
     public var contentType: PhotoMediaType = .none
+	public var cleaningType: ContactasCleaningType = .none
+	
 	private var contactStoreDidChange: Bool = false
 	public var updatableContactsAfterProcessing: ((_ contactsGroups: [ContactsGroup],_ type: PhotoMediaType,_ contactStoreDidChangeCompletion: Bool) -> Void)?
     private var isSelectedAllItems: Bool {
@@ -154,6 +157,10 @@ extension ContactsGroupViewController {
 			} completionHandler: { suxxess, indexes in
 				let errorsCount = selectedSectionsIndexes.count - indexes.count
 				
+				U.delay(0.5) {
+					self.contactsManager.setProcess(.merge, state: .availible)
+				}
+				
 				U.delay(1) {
 					if suxxess {
 						if self.contactGroup.count == indexes.count {
@@ -164,20 +171,17 @@ extension ContactsGroupViewController {
 								}
 							}
 						} else {
-							indexes.count != 0 ? self.updateRemovedIndexes(indexes, errorsCount: errorsCount) : ()
-							if errorsCount == 0 {
-								A.showSuxxessFullMerged(for: .many) {}
-							} else {
-								ErrorHandler.shared.showMergeAlertError(.errorMergeContacts) {}
+							self.progressAlert.showContactsProgressAlertController(from: self, delegate: self)
+							self.updateContactsGroups { contactsGroup in
+								self.progressAlert.closeProgressAnimatedController()
+								self.contactGroup = contactsGroup
+								self.contactGroup.isEmpty ? self.closeController() : self.reloadDataSource()
 							}
 						}
 					} else {
 						ErrorHandler.shared.showMergeAlertError(.errorMergeContacts) {
 							self.closeController()
 						}
-					}
-					U.delay(0.5) {
-						self.contactsManager.setProcess(.merge, state: .availible)
 					}
 				}
 			}
@@ -198,16 +202,27 @@ extension ContactsGroupViewController {
 				if errorsCount != mergedSingleGroup.contacts.count - 1 {
 					if self.contactGroup.count == 1 {
 						A.showSuxxessFullMerged(for: .one) {
+							self.contactGroup = []
 							self.closeController()
 						}
 					} else {
 						A.showSuxxessFullMerged(for: .one) {
-							self.updateRemovedIndexes([section], errorsCount: errorsCount)
+							self.progressAlert.showContactsProgressAlertController(from: self, delegate: self)
+							self.updateContactsGroups { contactsGroup in
+								self.progressAlert.closeProgressAnimatedController()
+								self.contactGroup = contactsGroup
+								self.contactGroup.isEmpty ? self.closeController() : self.reloadDataSource()
+							}
 						}
 					}
 				} else {
 					ErrorHandler.shared.showMergeAlertError(.errorMergeContact) {
-						self.updateRemovedIndexes([section], errorsCount: errorsCount)
+						self.progressAlert.showContactsProgressAlertController(from: self, delegate: self)
+						self.updateContactsGroups { contactsGroup in
+							self.progressAlert.closeProgressAnimatedController()
+							self.contactGroup = contactsGroup
+							self.contactGroup.isEmpty ? self.closeController() : self.reloadDataSource()
+						}
 					}
 				}
 			}
@@ -227,38 +242,50 @@ extension ContactsGroupViewController {
 			self.updateProgressAlert(of: .deleteContacts, currentPosition: currentDeletingContactIndex, totalProcessing: contacts.count)
 		} completionHandler: { errorsCount in
 			U.delay(0.5) {
-				if errorsCount != contacts.count {
-					A.showSuxxessfullDeleted(for: contacts.count > 1 ? .many : .one)
-				} else {
-					ErrorHandler.shared.showDeleteAlertError(contacts.count - errorsCount > 1 ? .errorDeleteContacts : .errorDeleteContact)
-				}
 				completionHandler(errorsCount)
 			}
 		}
     }
 }
 
+extension ContactsGroupViewController {
+	
+	private func updateContactsGroups(completionHandler: @escaping (_ contactsGroup: [ContactsGroup]) -> Void) {
+		
+		self.contactsManager.getSingleDuplicatedCleaningContacts(of: self.cleaningType) { contactsGroup, _ in
+			completionHandler(contactsGroup)
+		}
+	}
+}
+
+extension ContactsGroupViewController: AnimatedProgressDelegate {
+	func didProgressSetCanceled() {}
+}
 
 //		MARK: - update contacts and appearance buttons and state -
 extension ContactsGroupViewController {
-	
+		
 	private func updateRemovedIndexes(_ indexes: [Int], errorsCount: Int) {
 		U.UI {
 			_ = self.contactGroup.remove(elementsAtIndices: indexes)
-			self.setupViewModel(contacts: self.contactGroup)
-			self.tableView.delegate = self.contactGroupListDataSource
-			self.tableView.dataSource = self.contactGroupListDataSource
-			self.handleMergeContactsAppearButton()
-			
-			UIView.transition(with: self.tableView, duration: 0.35, options: .transitionCrossDissolve) {
-				self.tableView.reloadData()
-			} completion: { _ in
-				debugPrint("data source reloaded")
-				self.handleSelectedAssetsNavigationCount()
-			}
+			self.reloadDataSource()
 		}
 	}
 	
+	private func reloadDataSource() {
+		self.setupViewModel(contacts: self.contactGroup)
+		self.tableView.delegate = self.contactGroupListDataSource
+		self.tableView.dataSource = self.contactGroupListDataSource
+		self.handleMergeContactsAppearButton()
+		
+		UIView.transition(with: self.tableView, duration: 0.35, options: .transitionCrossDissolve) {
+			self.tableView.reloadData()
+		} completion: { _ in
+			debugPrint("data source reloaded")
+			self.handleSelectedAssetsNavigationCount()
+		}
+	}
+
 	@objc func mergeContactsDidChange(_ notification: Notification) {
 		
 		handleMergeContactsAppearButton()
@@ -491,10 +518,17 @@ extension ContactsGroupViewController: SingleContactsGroupOperationsListener {
     func didDeleteFullContactsGroup(in section: Int) {
         A.showDeleteContactsAlerts(for: .many) {
 			self.deleteContacts(in: section) { errorsCount in
-				if self.contactGroup.count != 1 {
-					self.updateRemovedIndexes([section], errorsCount: errorsCount)
+				if errorsCount == 0 {
+					A.showSuxxessfullDeleted(for: .many)
+					self.updateRemovedIndexes([section], errorsCount: 0)
+					self.contactGroup.count == 0 ? self.closeController() : ()
 				} else {
-					self.closeController()
+					self.progressAlert.showContactsProgressAlertController(from: self, delegate: self)
+					self.updateContactsGroups { contactsGroup in
+						self.progressAlert.closeProgressAnimatedController()
+						self.contactGroup = contactsGroup
+						self.contactGroup.isEmpty ? self.closeController() : self.reloadDataSource()
+					}
 				}
 			}
         }
