@@ -68,6 +68,7 @@ extension CALayer {
     
         let path = UIBezierPath(roundedRect: bounds, byRoundingCorners: corners, cornerRadii: CGSize(width: radius, height: radius))
         let layerMask = CAShapeLayer()
+		layerMask.frame = self.bounds
         layerMask.path = path.cgPath
         layerMask.fillColor = backgroundColor.cgColor
         layerMask.name = "corners"
