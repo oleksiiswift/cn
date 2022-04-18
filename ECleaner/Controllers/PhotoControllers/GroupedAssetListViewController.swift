@@ -697,61 +697,43 @@ extension GroupedAssetListViewController {
 	
 	private func onDeleteAllSelectedInSectionButtonTapped(for sectionHeader: GroupedAssetsReusableHeaderView, at indexPath: IndexPath) {
 		
-		let indexPathsOfSection = self.getIndexPathInSectionWithoutFirst(section: indexPath.section)
-		let sectionCells = self.getSectionsCells(at: indexPathsOfSection)
+		guard let selectedIndexPath = self.collectionView.indexPathsForSelectedItems else { return }
+		let indexPathOfSection = self.getIndexPathInSectionWithoutFirst(section: indexPath.section)
 		
-		if !sectionCells.isEmpty {
-			let selectedCells = sectionCells.filter({$0.isSelected})
-			if !selectedCells.isEmpty {
-		
-				let changedGroup = assetGroups[indexPath.section]
-				var phassets: [PHAsset] = []
-				
-				selectedCells.forEach { cell in
-					if let index = collectionView.indexPath(for: cell) {
-						phassets.append(changedGroup.assets[index.item])
-					}
-				}
-				
-				if !phassets.isEmpty {
-					self.showDelecteConfirmAlert(for: phassets) { suxxess in
-						
-						phassets.forEach { asset in
-							self.selectedAssets.removeAll(asset)
-						}
-						
-						U.UI {
-							if indexPathsOfSection.count == phassets.count {
-						
-								self.assetGroups.remove(at: indexPath.section)
-								
-								self.collectionView.performBatchUpdates {
-									self.collectionView.deleteSections(IndexSet(integer: indexPath.section))
-								} completion: { _ in
-									self.handleDeleteAssetsButton()
-									self.handleSelectAssetsNavigationCount()
-								}
-							} else {
-								var indexPathsSelectedSections: [IndexPath] = []
-								
-								selectedCells.forEach { cell in
-									if let indexPath = self.collectionView.indexPath(for: cell) {
-										indexPathsSelectedSections.append(indexPath)
-									}
-								}
-								
-								phassets.forEach { asset in
-									self.assetGroups[indexPath.section].assets.removeAll(asset)
-								}
-								
-								self.collectionView.performBatchUpdates {
-									self.collectionView.deleteItems(at: indexPathsSelectedSections)
-								} completion: { _ in
-									self.handleDeleteAssetsButton()
-									self.handleSelectAssetsNavigationCount()
-								}
+		let selectedIndexPathsInSection = selectedIndexPath.intersection(with: indexPathOfSection)
+		let selectedIndixes = selectedIndexPathsInSection.map({$0.row})
+	
+		if !selectedIndexPathsInSection.isEmpty {
+			let changedGroupsPHAssets = assetGroups[indexPath.section].assets
+			let phassets = selectedIndixes.map({changedGroupsPHAssets[$0]})
+			
+			if !phassets.isEmpty {
+				self.showDelecteConfirmAlert(for: phassets) { suxxess in
+					
+					guard suxxess else {return }
+					
+					self.selectedAssets = self.selectedAssets.filter({!phassets.contains($0)})
+					
+					U.UI {
+						if phassets.count == indexPathOfSection.count {
+							self.assetGroups.remove(at: indexPath.section)
+							self.collectionView.performBatchUpdates {
+								self.collectionView.deleteSections(IndexSet(integer: indexPath.section))
+							} completion: { _ in
+								self.handleDeleteAssetsButton()
+								self.handleSelectAssetsNavigationCount()
+							}
+						} else {
+							self.assetGroups[indexPath.section].assets = self.assetGroups[indexPath.section].assets.filter({!phassets.contains($0)})
+							self.collectionView.performBatchUpdates {
+								self.collectionView.deleteItems(at: selectedIndexPathsInSection)
+							} completion: { _ in
+								self.handleDeleteAssetsButton()
+								self.handleSelectAssetsNavigationCount()
 							}
 						}
+						self.handleSelectAllButtonSection(indexPath)
+						self.checkForSelectedSection()
 					}
 				}
 			}
@@ -1092,4 +1074,14 @@ extension GroupedAssetListViewController: Themeble {
 		bottomButtonBarView.activityIndicatorColor = theme.backgroundColor
 		bottomButtonBarView.updateColorsSettings()
 	}
+}
+
+
+
+extension Collection where Element: Equatable {
+
+	func intersection(with filter: [Element]) -> [Element] {
+		return self.filter { element in filter.contains(element) }
+	}
+
 }
