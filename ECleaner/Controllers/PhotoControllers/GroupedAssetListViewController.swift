@@ -1075,13 +1075,3 @@ extension GroupedAssetListViewController: Themeble {
 		bottomButtonBarView.updateColorsSettings()
 	}
 }
-
-
-
-extension Collection where Element: Equatable {
-
-	func intersection(with filter: [Element]) -> [Element] {
-		return self.filter { element in filter.contains(element) }
-	}
-
-}
