@@ -465,6 +465,8 @@ extension ContactsViewController {
 		
 		P.showIndicator()
 		self.handleEdit()
+		self.resetSearchBarState()
+		self.setActiveSearchBar(setActive: false)
 		
 		self.contactStoreDidChange = true
 		
@@ -547,7 +549,6 @@ extension ContactsViewController {
     }
 }
 
-
 	//		MARK: - bottom action button/buttons -
 extension ContactsViewController: BottomDoubleActionButtonDelegate {
     
@@ -594,6 +595,8 @@ extension ContactsViewController {
 			self.searchBarView.searchBar.text = ""
 			self.contactListViewModel.updateSearchState()
 			self.setActiveSearchBar(setActive: false)
+			self.handleBottomButtonChangeAppearence()
+			self.contactContentIsEditing ? self.handleEdit() : ()
 		}
 	}
     
@@ -655,6 +658,12 @@ extension ContactsViewController: UISearchBarDelegate {
     func searchBarShouldEndEditing(_ searchBar: UISearchBar) -> Bool {
         self.searchBarView.searchBar.resignFirstResponder()
     }
+	
+	@objc func searchBarClearButtonClicked() {
+		self.contactContentIsEditing ? self.resetContreollerState() : ()
+		self.setCancelAndDeselectAllItems()
+		self.handleBottomButtonChangeAppearence(disableAnimation: true)
+	}
 }
 
 extension ContactsViewController: NavigationBarDelegate {
@@ -902,6 +911,7 @@ extension ContactsViewController: Themeble {
 		U.notificationCenter.addObserver(self, selector: #selector(contentDidBeginDraging), name: .scrollViewDidBegingDragging, object: nil)
 		U.notificationCenter.addObserver(self, selector: #selector(didSelectDeselectContact), name: .selectedContactsCountDidChange, object: nil)
 		U.notificationCenter.addObserver(self, selector: #selector(searchBarResignFirstResponder), name: .searchBarShouldResign, object: nil)
+		U.notificationCenter.addObserver(self, selector: #selector(searchBarClearButtonClicked), name: .searchBarClearButtonClicked, object: nil)
 	}
 
     private func setupShowExportContactController(segue: UIStoryboardSegue) {

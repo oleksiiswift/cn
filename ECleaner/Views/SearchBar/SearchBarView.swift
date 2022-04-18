@@ -9,7 +9,8 @@ import UIKit
 
 class SearchBarView: UIView {
 
-    @IBOutlet var containerView: UIView!
+	@IBOutlet var containerView: UIView!
+	@IBOutlet weak var reuseShadowView: ReuseShadowView!
     @IBOutlet weak var baseView: UIView!
     @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var cancelButton: UIButton!
@@ -65,7 +66,7 @@ class SearchBarView: UIView {
         shadowView.frame = CGRect(x: 0, y: halfSize, width: U.screenWidth, height: halfSize)
         
         self.insertSubview(shadowView, at: 0)
-        shadowView.layer.setShadow(color: theme.bottomShadowColor, alpha: 1, x: 3, y: 0, blur: 10, spread: 0)
+        shadowView.layer.setShadow(color: theme.bottomShadowColor, alpha: 1, x: 2, y: 2, blur: 10, spread: 0)
         
         let baseBackgroundImage: UIImageView = UIImageView(image: I.systemItems.backroundStaticItems.spreadBackground)
         
@@ -78,12 +79,20 @@ class SearchBarView: UIView {
         baseBackgroundImage.topAnchor.constraint(equalTo: baseView.topAnchor).isActive = true
         baseBackgroundImage.bottomAnchor.constraint(equalTo: baseView.bottomAnchor).isActive = true
     
-        baseView.layer.setShadowAndCustomCorners(backgroundColor: .clear, shadow: theme.sideShadowColor, alpha: 1.0, x: 6, y: 6, blur: 10, corners: .allCorners, radius: 14)
-        
         baseView.bringSubviewToFront(searchBar)
-        
+		
+		reuseShadowView.isHidden = true
+//		baseView.layer.setShadowAndCustomCorners(backgroundColor: .clear, shadow: .red, alpha: 1.0, x: 26, y: 3, blur: 10, corners: .allCorners, radius: 14)
         setShowCancelButton(false, animated: false)
+		
+		if let searchBar = self.searchBar.value(forKey: "searchField") as? UITextField, let clearButton = searchBar.value(forKey: "_clearButton") as? UIButton {
+			clearButton.addTarget(self, action: #selector(didTapClearSearchTextFieldActionButton), for: .touchUpInside)
+		}
     }
+	
+	@objc func didTapClearSearchTextFieldActionButton() {
+		U.notificationCenter.post(name: .searchBarClearButtonClicked, object: nil)
+	}
     
     private func setupCancelButton() {
         
@@ -111,9 +120,13 @@ class SearchBarView: UIView {
         if animated {
             U.animate(0.3) {
                 self.cancelButton.layoutIfNeeded()
+				self.baseView.layoutIfNeeded()
+				self.reuseShadowView.layoutSubviews()
             }
         } else {
             self.cancelButton.layoutIfNeeded()
+			self.baseView.layoutIfNeeded()
+			self.reuseShadowView.layoutSubviews()
         }
     }
     
