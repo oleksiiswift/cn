@@ -504,7 +504,7 @@ extension MediaContentViewController {
 			if !phassets.isEmpty {
 				self.showCompressVideoPickerController(with: phassets)
 			} else {
-				ErrorHandler.shared.emptyResultsForKey(.photoLibrararyIsEmpty)
+				ErrorHandler.shared.showEmptySearchResultsFor(.photoLibraryIsEmpty)
 			}
 		}
 	}
@@ -820,7 +820,7 @@ extension MediaContentViewController {
     }
     
 	private func progressUpdate(_ notificationType: SingleContentSearchNotificationType, status: ProcessingProgressOperationState, currentProgress: CGFloat) {
-        
+		
         let indexPath = notificationType.mediaTypeRawValue.singleSearchIndexPath
 		let mediaType: PhotoMediaType = notificationType.mediaTypeRawValue
 		
@@ -1246,11 +1246,6 @@ extension MediaContentViewController: Themeble {
 			  }
 		 }
 	}
-}
-
-extension MediaContentViewController {
-	
-	
 }
 
 extension MediaContentViewController {

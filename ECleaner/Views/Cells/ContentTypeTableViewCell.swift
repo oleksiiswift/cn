@@ -86,6 +86,8 @@ extension ContentTypeTableViewCell {
 		let activeImage = model.mediaType.contenType.imageOfRows
 		let processingImage = model.mediaType.contenType.processingImageOfRows
 		
+		self.horizontalProgressView.state = model.cleanState
+		
 		switch model.cleanState {
 			case .sleeping:
 				self.handleRightArrowState(false)
@@ -106,7 +108,7 @@ extension ContentTypeTableViewCell {
 				self.handleRightArrowState(false)
 				self.reuseShadowRoundedView.showIndicator()
 				self.reuseShadowRoundedView.setImage(processingImage)
-				self.resetProgress()
+				self.setProgress(model.deepCleanProgress)
 			case .progress:
 				self.handleRightArrowState(false)
 				self.reuseShadowRoundedView.showIndicator()
@@ -142,6 +144,8 @@ extension ContentTypeTableViewCell {
 		let activeImage = model.mediaType.contenType.imageOfRows
 		let processingImage = model.mediaType.contenType.processingImageOfRows
 		
+		self.horizontalProgressView.state = model.cleanState
+		
 		switch model.cleanState {
 			case .sleeping:
 				self.handleRightArrowState(false)
@@ -162,7 +166,7 @@ extension ContentTypeTableViewCell {
 				self.handleRightArrowState(false)
 				self.reuseShadowRoundedView.showIndicator()
 				self.reuseShadowRoundedView.setImage(processingImage)
-				self.resetProgress()
+				self.setProgress(model.cleanProgress)
 			case .progress:
 				self.handleRightArrowState(false)
 				self.reuseShadowRoundedView.showIndicator()

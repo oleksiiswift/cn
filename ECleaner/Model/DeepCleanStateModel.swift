@@ -38,6 +38,10 @@ class DeepCleanStateModel {
 		self.mediaType = type
 	}
 	
+	public func checkForCleanState() {
+		self.cleanState = self.isEmpty ? .empty : .complete
+	}
+	
 	private func flowContentCount() -> Int {
 		switch self.mediaType {
 			case .singleScreenShots, .singleLargeVideos, .singleScreenRecordings:

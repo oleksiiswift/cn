@@ -7,9 +7,9 @@
 
 import UIKit
 
-@IBDesignable class HorizontalProgressBar: UIView {
+class HorizontalProgressBar: UIView {
     
-    @IBInspectable var progressColor: UIColor = .gray {
+	var progressColor: UIColor = .gray {
         didSet{
             setNeedsDisplay()
         }
@@ -23,6 +23,7 @@ import UIKit
     
     private var progressView = UIView()
 	private let backgroundMask = CAShapeLayer()
+	public var state: ProcessingProgressOperationState = .sleeping
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -43,15 +44,16 @@ import UIKit
 		progressView.backgroundColor = .clear
     }
     
-    override func draw(_ rect: CGRect) {
+	override func draw(_ rect: CGRect) {
 		
-		let progressRect = CGRect(origin: .zero, size: CGSize(width: rect.width * progress, height: rect.height))
+		let drowingProgress = state == .progress ? progress : 0.0
+		let progressRect = CGRect(origin: .zero, size: CGSize(width: rect.width *  drowingProgress, height: rect.height))
 		let progressLayer = CALayer()
 		progressLayer.name = "progress"
 		progressLayer.frame = progressRect
 		progressView.layer.addSublayer(progressLayer)
 		progressLayer.backgroundColor = progressColor.cgColor
-    }
+	}
 	
 	public func resetProgressLayer() {
 		
