@@ -79,12 +79,11 @@ class ContactsViewController: UIViewController {
         updateColors()
         handleBottomButtonChangeAppearence(disableAnimation: true)
     }
-	
-	override func viewWillAppear(_ animated: Bool) {
-		super.viewWillAppear(animated)
 		
-		!previouslySelectedIndexPaths.isEmpty ? didSelectPreviousIndexPath() : ()
-		previouslySelectedIndexPaths.isEmpty ? handleStartingSelectableContacts() : ()
+	override func viewDidAppear(_ animated: Bool) {
+		super.viewDidAppear(animated)
+		
+		didSelectPreviousIndexPath()
 	}
 	
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -201,11 +200,13 @@ extension ContactsViewController {
 		guard isDeepCleaningSelectableFlow else { return }
 		
 		self.handleEdit()
+		self.navigationBar.handleChangeRightButtonSelectState(selectAll: true)
+		self.setContactsSelect(true) {}
 		
-		A.showSelectAllStarterAlert(for: self.contentType) {
-			self.navigationBar.handleChangeRightButtonSelectState(selectAll: true)
-			self.setContactsSelect(true) {}
-		}
+//		A.showSelectAllStarterAlert(for: self.contentType) {
+//			self.navigationBar.handleChangeRightButtonSelectState(selectAll: true)
+//			self.setContactsSelect(true) {}
+//		}
 	}
 	
 	public func handleContactsPreviousSelected(selectedContactsIDs: [String], contactsCollection: [CNContact], contactsGroupCollection: [ContactsGroup]) {

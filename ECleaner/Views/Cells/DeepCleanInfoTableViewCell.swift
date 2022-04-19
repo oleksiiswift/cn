@@ -22,6 +22,8 @@ class DeepCleanInfoTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         
+		totalSpaceTextLabel.isHidden = true
+		totalSpaceTitleLabel.isHidden = true
         setupUI()
         updateColors()
     }

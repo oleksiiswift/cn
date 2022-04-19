@@ -131,6 +131,8 @@ extension DeepCleaningViewController {
                self.photoManager.getPartitionalMediaAssetsCount(from: self.lowerBoundDate, to: self.upperBoundDate) { assetGroupPartitionCount in
 					self.setProcessingActionButton(.didCleaning)
                     self.totalPartitinAssetsCount = assetGroupPartitionCount
+					self.futuredCleaningSpaceUsage = 0
+					self.tableView.reloadRowWithoutAnimation(at: IndexPath(row: 0, section: 0))
 					U.delay(1) {
 						 self.startDeepCleanScan()
 					}
@@ -386,14 +388,16 @@ extension DeepCleaningViewController: DeepCleanSelectableAssetsDelegate {
 			   
 			   switch contentType {
 					case .singleScreenShots, .singleLargeVideos, .singleScreenRecordings, .similarPhotos, .duplicatedPhotos, .similarLivePhotos, .similarVideos, .duplicatedVideos, .similarSelfies:
-						 let diskSpaceOperation = photoManager.getAssetsUsedMemmoty(by: allSelectedAssetsIDS) { result in
-							  self.futuredCleaningSpaceUsage = result
-							  U.UI {
-								   self.checkCleaningButtonState()
-								   self.tableView.reloadRowWithoutAnimation(at: topIndexPath)
-							  }
-						 }
-						 deepCleanManager.deepCleanOperationQueue.addOperation(diskSpaceOperation)
+//						 let diskSpaceOperation = photoManager.getAssetsUsedMemmoty(by: allSelectedAssetsIDS) { result in
+//							  self.futuredCleaningSpaceUsage = result
+//							  debugPrint(result)
+//							  U.UI {
+//								   self.checkCleaningButtonState()
+//								   self.tableView.reloadRowWithoutAnimation(at: topIndexPath)
+//							  }
+//						 }
+//						 deepCleanManager.deepCleanOperationQueue.addOperation(diskSpaceOperation)
+						 self.checkCleaningButtonState()
 					case .emptyContacts, .duplicatedContacts, .duplicatedPhoneNumbers, .duplicatedEmails:
 						 self.checkCleaningButtonState()
 					default:
@@ -958,11 +962,12 @@ extension DeepCleaningViewController {
 		  SwiftMessages.show(config: config, view: messageView)
 	 }
 	 
+	 
 	 private func checkCleaningButtonState() {
 		  
 		  guard deepCleaningState == .willAvailibleDelete else { return }
 		  
-		  updateCleaningItemPopUpinfo()
+//		  updateCleaningItemPopUpinfo() .. remove pop up screen
 		  handleButtonStateActive()
 	 }
 	 

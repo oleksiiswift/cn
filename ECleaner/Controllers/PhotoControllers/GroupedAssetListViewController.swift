@@ -31,6 +31,7 @@ class GroupedAssetListViewController: UIViewController {
 		/// - managers -
 	private var prefetchCacheImageManager = PhotoManager.shared.prefetchManager
 	private var photoManager = PhotoManager.shared
+	private var progressAlertController = ProgressAlertController.shared
 		/// `assets`
 	public var assetGroups: [PhassetGroup] = []
 	public var mediaType: PhotoMediaType = .none
@@ -65,17 +66,13 @@ class GroupedAssetListViewController: UIViewController {
 		updateColors()
 		handleDeleteAssetsButton()
     }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-    }
-    
+	
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
 		updateCachedAssets()
         self.defaultContainerHeight = self.photoContentContainerView.frame.height
+		handleDeepCleanStartSelectablePHAssetsGroup()
     }
 }
 
@@ -158,7 +155,7 @@ extension GroupedAssetListViewController {
 			}).flatMap({
 				$0
 			})
-			
+			debugPrint(selectedAssetsID)
 			if let section = sectionIndex {
 				let index: Int = Int(section)
 				let indexPath = assetGroupCollection[index].assets.firstIndex(where: {
@@ -195,6 +192,7 @@ extension GroupedAssetListViewController {
 			if let cell = collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell {
 				cell.isSelected = true
 				cell.checkIsSelected()
+				self.handleSelectAllButtonSection(IndexPath(item: 0, section: indexPath.section))
 			}
 		}
 		checkForSelectedSection()
@@ -287,11 +285,20 @@ extension GroupedAssetListViewController {
 		guard isDeepCleaningSelectableFlow else { return }
 		
 		if !previousSelectedIDs.isEmpty {
-			handlePreviousSelected(selectedAssetsIDs: self.previousSelectedIDs, assetGroupCollection: self.assetGroups) { indexPaths in
-				self.handleSelected(for: indexPaths)
+			self.progressAlertController.showSelecContentBar(from: self, contentType: self.contentType)
+			#warning("TODO")
+			U.delay(1) {
+				U.BG {
+					self.handlePreviousSelected(selectedAssetsIDs: self.previousSelectedIDs, assetGroupCollection: self.assetGroups) { indexPaths in
+						self.handleSelected(for: indexPaths)
+						U.delay(0.33) {
+							self.progressAlertController.closeProgressAnimatedController()
+						}
+					}
+				}
 			}
 		} else {
-			self.shouldSelectAllAssetsInSections(false)
+//			self.shouldSelectAllAssetsInSections(false)
 			self.handleDeleteAssetsButton()
 		}
 	}
