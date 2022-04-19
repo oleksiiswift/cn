@@ -86,7 +86,7 @@ class DeepCleaningViewController: UIViewController {
 		  setProcessingActionButton(.willStartCleaning)
 		  prepareStartDeepCleanProcessing()
      }
-     
+	      
      override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
 		  switch segue.identifier {
 			   case C.identifiers.segue.showLowerDatePicker:
@@ -291,13 +291,11 @@ extension DeepCleaningViewController {
 	 /// `for photos and video`
 	 private func updateAssetsProcessingOfType(group: [PhassetGroup], mediaType: MediaContentType, contentType: PhotoMediaType) {
 		  
-		  guard deepCleaningState == .didCleaning else { return }
-		  
-		  self.deepCleanModel.objects[contentType]?.cleanState = !group.isEmpty ? .complete : .empty
 		  self.deepCleanModel.objects[contentType]?.deepCleanProgress = 100.0
 		  self.deepCleanModel.objects[contentType]?.mediaFlowGroup = group
 		  self.totalDeepCleanProgress.progressForMediaType[contentType] = 100.0
 		  U.delay(0.5) {
+			   self.deepCleanModel.objects[contentType]?.checkForCleanState()
 			   self.updateCellInfoCount(by: mediaType, contentType: contentType)
 			   self.updateTotalFilesTitleChecked()
 			   Vibration.success.vibrate()
@@ -306,13 +304,11 @@ extension DeepCleaningViewController {
      
 	 private func updateContactsProcessing(group: [ContactsGroup], contentType: PhotoMediaType) {
 		  
-		  guard deepCleaningState == .didCleaning else { return }
-		  
-		  self.deepCleanModel.objects[contentType]?.cleanState = !group.isEmpty ? .complete : .empty
 		  self.deepCleanModel.objects[contentType]?.deepCleanProgress = 100.0
 		  self.deepCleanModel.objects[contentType]?.contactsFlowGroup = group
 		  self.totalDeepCleanProgress.progressForMediaType[contentType] = 100.0
 		  U.delay(0.5) {
+			   self.deepCleanModel.objects[contentType]?.checkForCleanState()
 			   self.updateCellInfoCount(by: .userContacts, contentType: contentType)
 			   self.updateTotalFilesTitleChecked()
 			   Vibration.success.vibrate()
@@ -364,6 +360,7 @@ extension DeepCleaningViewController: DeepCleanSelectableAssetsDelegate {
 		  
 		  var enabled: Bool
 		  let isSelected = !assetsListIds.isEmpty
+		  let topIndexPath = IndexPath(row: 0, section: 0)
 		  
 		  switch contentType {
 			   case .singleScreenShots, .singleLargeVideos, .singleScreenRecordings:
@@ -393,7 +390,7 @@ extension DeepCleaningViewController: DeepCleanSelectableAssetsDelegate {
 							  self.futuredCleaningSpaceUsage = result
 							  U.UI {
 								   self.checkCleaningButtonState()
-								   self.tableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .none)
+								   self.tableView.reloadRowWithoutAnimation(at: topIndexPath)
 							  }
 						 }
 						 deepCleanManager.deepCleanOperationQueue.addOperation(diskSpaceOperation)
@@ -404,12 +401,12 @@ extension DeepCleaningViewController: DeepCleanSelectableAssetsDelegate {
 			   }
 		  } else {
 			   self.futuredCleaningSpaceUsage = 0
-			   self.tableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .none)
+			   self.tableView.reloadRowWithoutAnimation(at: topIndexPath)
 			   self.checkCleaningButtonState()
 		  }
 		  
 		  U.UI {
-			   self.tableView.reloadRows(at: [contentType.deepCleanIndexPath], with: .none)
+			   self.tableView.reloadRowWithoutAnimation(at: contentType.deepCleanIndexPath)
 		  }
 	 }
 }
@@ -476,7 +473,6 @@ extension DeepCleaningViewController {
 		  }
      }
      
-
      private func updateTotalFilesTitleChecked() {
 
 		  totalFilesChecked = (totalFilesOnDevice / 100) * Int(self.totalDeepCleanProgress.totalProgress)
@@ -496,14 +492,24 @@ extension DeepCleaningViewController {
 	 private func deepCleanProgressStatusUpdate(_ notificationType: DeepCleanNotificationType, status: ProcessingProgressOperationState, currentProgress: CGFloat) {
 		  
 		  let mediaType: PhotoMediaType = notificationType.mediaTypeRawValue
+	 
 		  self.deepCleanModel.objects[mediaType]?.cleanState = status
 		  self.deepCleanModel.objects[mediaType]?.deepCleanProgress = currentProgress
 		  
 		  if !currentProgress.isNaN {
 			   self.totalDeepCleanProgress.progressForMediaType[mediaType] = currentProgress
 		  }
-		  
 		  let objectIndexPath = notificationType.mediaTypeRawValue.deepCleanIndexPath
+
+		  if status == .result {
+			   U.delay(1) {
+					self.deepCleanModel.objects[mediaType]?.checkForCleanState()
+					if let cell = self.tableView.cellForRow(at: objectIndexPath) as? ContentTypeTableViewCell {
+					self.configure(cell, at: objectIndexPath, currentProgress: currentProgress)
+					}
+			   }
+		  }
+		  
 		  guard !objectIndexPath.isEmpty else { return }
 		  guard let cell = tableView.cellForRow(at: objectIndexPath) as? ContentTypeTableViewCell else { return }
 		  self.configure(cell, at: objectIndexPath, currentProgress: currentProgress)
@@ -635,7 +641,7 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
 		  
           let photoMediaType: PhotoMediaType = .getDeepCleanMediaContentType(from: indexPath)
 		  let deepModel = self.deepCleanModel.objects[photoMediaType]!
-		  	 
+		  	 		  
           var progress: CGFloat {
                if let currentProgress = currentProgress {
                     return currentProgress
