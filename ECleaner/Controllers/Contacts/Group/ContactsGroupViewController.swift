@@ -57,7 +57,6 @@ class ContactsGroupViewController: UIViewController {
         super.viewWillAppear(animated)
 		
 		!previouslySelectedIndexPaths.isEmpty ? didSelectPreviouslyIndexPath() : ()
-//		handleStartingSelectableAssets()
     }
 	
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

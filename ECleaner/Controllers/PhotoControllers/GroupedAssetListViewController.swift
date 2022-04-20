@@ -43,6 +43,7 @@ class GroupedAssetListViewController: UIViewController {
 	}
 	public var isDeepCleaningSelectableFlow: Bool = false
 	public var changedPhassetGroupCompletionHandler: ((_ phassetGroup: [PhassetGroup]) -> Void)?
+	public let phassetsTechnicalUseOperation = OperationProcessingQueuer(name: Constants.key.operation.queue.techUseQueue, maxConcurrentOperationCount: 2, qualityOfService: .userInteractive)
 	
 	private var selectedAssets: [PHAsset] = []
 	private var selectedSection: Set<Int> = []
@@ -141,63 +142,75 @@ extension GroupedAssetListViewController {
 //		MARK: - handle selected previous index path and phassets ids -
 extension GroupedAssetListViewController {
 	
-	private func handlePreviousSelected(selectedAssetsIDs: [String], assetGroupCollection: [PhassetGroup],_ completionHandler: @escaping (_ indexPaths: [IndexPath]) -> Void) {
-		
-		var previousSelected: [IndexPath] = []
-		let dispatchGroup = DispatchGroup()
-		let dispatchQueue = DispatchQueue(label: C.key.dispatch.selectedPhassetsQueue)
-		let dispatchSemaphore = DispatchSemaphore(value: 0)
-		
-		for selectedAssetsID in selectedAssetsIDs {
-			dispatchGroup.enter()
-			let sectionIndex = assetGroupCollection.firstIndex(where: {
-				$0.assets.contains(where: {$0.localIdentifier == selectedAssetsID})
-			}).flatMap({
-				$0
-			})
-			debugPrint(selectedAssetsID)
-			if let section = sectionIndex {
-				let index: Int = Int(section)
-				let indexPath = assetGroupCollection[index].assets.firstIndex(where: {
-					$0.localIdentifier == selectedAssetsID
-				}).flatMap({
-					IndexPath(row: $0, section: index)
-				})
-				
-				if let existingIndexPath = indexPath {
-					previousSelected.append(existingIndexPath)
+	private func handlePreviousSelected(selectedAssetsIDs: [String], assetGroupCollection: [PhassetGroup],_ completionHandler: @escaping (_ indexPaths: [IndexPath]) -> Void) -> ConcurrentProcessOperation {
+
+		let findSelectedIndexPathsOperation = ConcurrentProcessOperation { operation in
+			
+			var previousSelected: [IndexPath] = []
+			let dispatchGroup = DispatchGroup()
+			let dispatchQueue = DispatchQueue(label: C.key.dispatch.selectedPhassetsQueue)
+			let dispatchSemaphore = DispatchSemaphore(value: 0)
+			
+			let start = Date()
+			var endstart = Date()
+			for selectedAssetsID in selectedAssetsIDs {
+				autoreleasepool {
+					dispatchGroup.enter()
+					let sectionIndex = assetGroupCollection.firstIndex(where: {
+						$0.assets.contains(where: {$0.localIdentifier == selectedAssetsID})
+					}).flatMap({
+						$0
+					})
+					debugPrint(selectedAssetsID)
+					if let section = sectionIndex {
+						let index: Int = Int(section)
+						let indexPath = assetGroupCollection[index].assets.firstIndex(where: {
+							$0.localIdentifier == selectedAssetsID
+						}).flatMap({
+							IndexPath(row: $0, section: index)
+						})
+						
+						if let existingIndexPath = indexPath {
+							previousSelected.append(existingIndexPath)
+						}
+					}
+					dispatchSemaphore.signal()
+					dispatchGroup.leave()
+					endstart = Date()
 				}
 			}
-			dispatchSemaphore.signal()
-			dispatchGroup.leave()
-		}
-		
-		dispatchGroup.notify(queue: dispatchQueue) {
-			U.UI {
-				completionHandler(previousSelected)
+
+			dispatchGroup.notify(queue: dispatchQueue) {
+				U.UI {
+					let time = endstart.timeIntervalSince1970 - start.timeIntervalSince1970
+					debugPrint(time)
+					completionHandler(previousSelected)
+				}
 			}
 		}
+			
+		return findSelectedIndexPathsOperation
 	}
 
-	private func handleSelected(for indexPaths: [IndexPath]) {
-		
-		self.selectedAssets = []
-		
-		for indexPath in indexPaths {
-			self.collectionView.selectItem(at: indexPath, animated: false, scrollPosition: [])
-			self.collectionView.delegate?.collectionView?(self.collectionView, didSelectItemAt: indexPath)
-			let phasset = self.assetGroups[indexPath.section].assets[indexPath.row]
-			self.selectedAssets.append(phasset)
-			
-			if let cell = collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell {
-				cell.isSelected = true
-				cell.checkIsSelected()
-				self.handleSelectAllButtonSection(IndexPath(item: 0, section: indexPath.section))
+	private func handleSelected(for indexPaths: [IndexPath], completionHandler: @escaping () -> Void) {
+	
+			self.selectedAssets = []
+			for indexPath in indexPaths {
+				self.collectionView.selectItem(at: indexPath, animated: false, scrollPosition: [])
+				self.collectionView.delegate?.collectionView?(self.collectionView, didSelectItemAt: indexPath)
+				let phasset = self.assetGroups[indexPath.section].assets[indexPath.row]
+				self.selectedAssets.append(phasset)
+				
+				if let cell = self.collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell {
+					cell.isSelected = true
+					cell.checkIsSelected()
+					self.handleSelectAllButtonSection(IndexPath(item: 0, section: indexPath.section))
+				}
 			}
-		}
-		checkForSelectedSection()
-		handleSelectAssetsNavigationCount()
-		handleDeleteAssetsButton()
+			self.checkForSelectedSection()
+			self.handleSelectAssetsNavigationCount()
+			self.handleDeleteAssetsButton()
+			completionHandler()
 	}
 	
 	private func didSelectAllAssets(at indexPath: IndexPath, in sectionHeader: GroupedAssetsReusableHeaderView) {
@@ -286,19 +299,15 @@ extension GroupedAssetListViewController {
 		
 		if !previousSelectedIDs.isEmpty {
 			self.progressAlertController.showSelecContentBar(from: self, contentType: self.contentType)
-			#warning("TODO")
-			U.delay(1) {
-				U.BG {
-					self.handlePreviousSelected(selectedAssetsIDs: self.previousSelectedIDs, assetGroupCollection: self.assetGroups) { indexPaths in
-						self.handleSelected(for: indexPaths)
-						U.delay(0.33) {
-							self.progressAlertController.closeProgressAnimatedController()
-						}
-					}
+			let selectedOperation = self.handlePreviousSelected(selectedAssetsIDs: self.previousSelectedIDs,
+																assetGroupCollection: self.assetGroups) { indexPaths in
+				self.handleSelected(for: indexPaths) {
+					self.progressAlertController.closeProgressAnimatedController()
 				}
 			}
+			phassetsTechnicalUseOperation.addOperation(selectedOperation)
+	
 		} else {
-//			self.shouldSelectAllAssetsInSections(false)
 			self.handleDeleteAssetsButton()
 		}
 	}
@@ -344,7 +353,7 @@ extension GroupedAssetListViewController: GroupSelectableAssetsDelegate {
 		} else {
 			self.collectionView.reloadDataWitoutAnimation()
 			if !slectedIndexPath.isEmpty {
-				self.handleSelected(for: slectedIndexPath)
+				self.handleSelected(for: slectedIndexPath) {}
 			}
 		}
 	}
@@ -586,7 +595,7 @@ extension GroupedAssetListViewController {
 	}
 	
 	public func hederConfigure(_ view: GroupedAssetsReusableHeaderView, at indexPath: IndexPath) {
-		
+//		view.deleteSelectedButton.isHidden = isDeepCleaningSelectableFlow
 		view.mediaContentType = self.contentType
 		view.deleteSelectedButton.contentType = self.contentType
 		view.setupUI()
