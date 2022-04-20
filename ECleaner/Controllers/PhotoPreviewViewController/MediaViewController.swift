@@ -103,6 +103,7 @@ extension MediaViewController: PhotoCollectionViewCellDelegate {
 			}
 			cell.checkIsSelected()
 		}
+		self.handleSelectAssetsNavigationCount()
 	}
 }
 
@@ -119,6 +120,7 @@ extension MediaViewController {
 				cell.checkIsSelected()
 			}
 		}
+		self.handleSelectAssetsNavigationCount()
 	}
 	
 	private func didTapBackActionButtonWithSelectablePhaassets() {
@@ -134,6 +136,17 @@ extension MediaViewController {
 				return
 		}
 		self.navigationController?.popViewController(animated: true)
+	}
+	
+	private func handleSelectAssetsNavigationCount() {
+		
+		guard let indexPaths = self.collectionView.indexPathsForSelectedItems else { return }
+		
+		if !indexPaths.isEmpty {
+			self.navigationBar.changeHotLeftTitleWithImage(newTitle: String(" (\(indexPaths.count))"), image: I.systemItems.navigationBarItems.back)
+		} else {
+			self.navigationBar.changeHotLeftTitleWithImage(newTitle: "", image: I.systemItems.navigationBarItems.back)
+		}
 	}
 }
 
