@@ -228,6 +228,7 @@ extension SimpleAssetsListViewController {
 		}
 		handleSelectAllButtonState()
 		handleBottomButtonMenu()
+		handleSelectAssetsNavigationCount()
 	}
 	
 	private func setCollection(selected: Bool) {
