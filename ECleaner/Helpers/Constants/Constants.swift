@@ -140,6 +140,7 @@ class Constants {
 				static let cleaningProcess = "cleaningProcessOprationQueuer"
 				static let utils = "utilsBackgroudSpaceCalculated"
                 static let preetchPHasssetQueue = "prefetchPhassetsImagesOperationQueuer"
+				static let techUseQueue = "technicalUseProcessingOperationQueuer"
 			}
 			
 			struct name {

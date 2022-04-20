@@ -184,7 +184,7 @@ extension PHAssetFetchManager {
 		results.enumerateObjects { phasset, index, stopped in
 			let resource = PHAssetResource.assetResources(for: phasset)
 			let fileSize = resource.first?.value(forKey: "fileSize") as! Int64
-			
+			debugPrint("file size: \(U.getSpaceFromInt(fileSize))")
 			resultsDiskUssage += fileSize
 			analyzingPhassets += 1
 			

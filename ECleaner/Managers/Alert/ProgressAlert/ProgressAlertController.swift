@@ -201,7 +201,9 @@ extension ProgressAlertController {
 		presentAnimatedProgress(title: "updating contacts", progressDelegate: delegate, from: viewController, barColor: .white, animatedColor: theme.contactsTintColor, withCancel: false)
 	}
 	
-	
+	public func showSelecContentBar(from viewController: UIViewController, contentType: MediaContentType) {
+		presentAnimatedProgress(title: "select content, wait", progressDelegate: nil, from: viewController, barColor: .white, animatedColor: contentType.screenAcentTintColor, withCancel: false)
+	}
 }
 
 

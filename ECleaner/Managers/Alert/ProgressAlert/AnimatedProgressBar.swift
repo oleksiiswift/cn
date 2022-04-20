@@ -113,8 +113,9 @@ public class AnimatedProgressBar: UIView, CAAnimationDelegate {
 	public func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
 		
 		if flag && numberOfOperations > 0 {
-			
-			performAnimation()
+			DispatchQueue.main.async {
+				self.performAnimation()
+			}
 		}
 		else {
 			self.isHidden = true
