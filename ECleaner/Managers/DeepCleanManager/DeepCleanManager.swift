@@ -142,8 +142,17 @@ class DeepCleanManager {
 		}
 
 //        MARK: - mark fetch contacts -
-		contactManager.getDeepCleanContactsProcessing { isCancelled in
-			
+		contactManager.getDeepCleanContactsProcessing { contactStoreIsEmpty, isCancelled  in
+			if contactStoreIsEmpty {
+				emptyContacts([])
+				duplicatedContats([])
+				duplicatedPhoneNumbers([])
+				duplicatedEmails([])
+				totalResultCount += 4
+				if totalResultCount == 13 {
+					completionHandler(isCancelled)
+				}
+			}
 		} emptyContactsCompletion: { emptyContactsGroup, isCancelled in
 				/// - empty fields contacts
 			emptyContacts(emptyContactsGroup)
