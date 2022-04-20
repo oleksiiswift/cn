@@ -79,13 +79,13 @@ class ContactsViewController: UIViewController {
         updateColors()
         handleBottomButtonChangeAppearence(disableAnimation: true)
     }
-		
-	override func viewDidAppear(_ animated: Bool) {
-		super.viewDidAppear(animated)
+
+	override func viewWillAppear(_ animated: Bool) {
+		super.viewWillAppear(animated)
 		
 		didSelectPreviousIndexPath()
 	}
-	
+
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         switch segue.identifier {
             case C.identifiers.segue.showExportContacts:
@@ -235,12 +235,16 @@ extension ContactsViewController {
 	
 	private func didSelectPreviousIndexPath() {
 		
-		guard isDeepCleaningSelectableFlow, !previouslySelectedIndexPaths.isEmpty else { return }
+		guard isDeepCleaningSelectableFlow else { return }
+		
 		self.handleEdit()
-		for indexPath in previouslySelectedIndexPaths {
-			_ = tableView.delegate?.tableView?(tableView, willSelectRowAt: indexPath)
-			tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
-			tableView.delegate?.tableView?(tableView, didSelectRowAt: indexPath)
+		
+		if !previouslySelectedIndexPaths.isEmpty {
+			for indexPath in previouslySelectedIndexPaths {
+				_ = tableView.delegate?.tableView?(tableView, willSelectRowAt: indexPath)
+				tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
+				tableView.delegate?.tableView?(tableView, didSelectRowAt: indexPath)
+			}
 		}
 	}
 	

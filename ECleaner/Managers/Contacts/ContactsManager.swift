@@ -453,7 +453,7 @@ extension ContactsManager {
 		}
 	}
 	
-	public func getDeepCleanContactsProcessing(completionHandler: @escaping (_ isCancelled: Bool) -> Void,
+	public func getDeepCleanContactsProcessing(completionHandler: @escaping (_ contactStoreIsEmpty: Bool,_ isCancelled: Bool) -> Void,
 											   emptyContactsCompletion: @escaping (_ contactsGroup: [ContactsGroup],_ isCancelled: Bool) -> Void,
 											   duplicatedContactsCompletion: @escaping (_ contactsGroup: [ContactsGroup],_ isCancelled: Bool) -> Void,
 											   duplicatedPhoneNumbersCompletion: @escaping (_ contactsGroup: [ContactsGroup],_ isCancelled: Bool) -> Void,
@@ -463,7 +463,7 @@ extension ContactsManager {
 						
 			var totalProcessingCompleteTasks = 0
 			
-			guard !contacts.isEmpty else { completionHandler(false); return }
+			guard !contacts.isEmpty else { completionHandler(true, false); return }
 			
 			var processingOperationQueue: [ConcurrentProcessOperation] = []
 			
@@ -472,7 +472,7 @@ extension ContactsManager {
 				
 				totalProcessingCompleteTasks += 1
 				if totalProcessingCompleteTasks == 4 {
-					completionHandler(isCancelled)
+					completionHandler(contacts.isEmpty, isCancelled)
 				}
 			}
 			processingOperationQueue.append(emptyContactsOperation)
@@ -482,7 +482,7 @@ extension ContactsManager {
 				
 				totalProcessingCompleteTasks += 1
 				if totalProcessingCompleteTasks == 4 {
-					completionHandler(isCancelled)
+					completionHandler(contacts.isEmpty, isCancelled)
 				}
 			}
 			processingOperationQueue.append(duplicatedNamesOperation)
@@ -492,7 +492,7 @@ extension ContactsManager {
 				
 				totalProcessingCompleteTasks += 1
 				if totalProcessingCompleteTasks == 4 {
-					completionHandler(isCancelled)
+					completionHandler(contacts.isEmpty, isCancelled)
 				}
 			}
 			processingOperationQueue.append(duplicatedPhoneNumbersOperation)
@@ -501,7 +501,7 @@ extension ContactsManager {
 				duplicatedEmailsContactsCompletion(contactsGroup, isCancelled)
 				totalProcessingCompleteTasks += 1
 				if totalProcessingCompleteTasks == 4 {
-					completionHandler(isCancelled)
+					completionHandler(contacts.isEmpty, isCancelled)
 				}
 			}
 			processingOperationQueue.append(duplicatedEmailsOperation)
