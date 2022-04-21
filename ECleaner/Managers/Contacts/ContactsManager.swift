@@ -770,7 +770,7 @@ extension ContactsManager {
 //		MARK: - MERGE CONTACTS -
 extension ContactsManager {
 	
-	public func mergeAsyncContacts(in groups: [ContactsGroup], merged indexes: [Int],_ currentProgressConpletionHandler: @escaping(_ progressType: ProgressContactsAlertType,_ currentIndex: Int,_ totalIndexes: Int) -> Void, completionHandler: @escaping(_ suxees: Bool,_ mergedContactsIndexes: [Int]) -> Void) {
+	public func mergeAsyncContacts(in groups: [ContactsGroup], merged indexes: [Int],_ currentProgressConpletionHandler: @escaping(_ progressType: ProgressAlertType,_ currentIndex: Int,_ totalIndexes: Int) -> Void, completionHandler: @escaping(_ suxees: Bool,_ mergedContactsIndexes: [Int]) -> Void) {
 		
 		let mergrgeContactsOperation = ConcurrentProcessOperation { operation in
 			
@@ -817,7 +817,7 @@ extension ContactsManager {
 		contactsProcessingOperationQueuer.addOperation(mergrgeContactsOperation)
 	}
 	
-	public func mergeContactsDoNotInUSe(in groups: [ContactsGroup], merged indexes: [Int], currentCompletionIndex: @escaping(_ progressType: ProgressContactsAlertType,_ currentIndex: Int,_ totalIndexes: Int) -> Void, completionHandler: @escaping(_ suxxes: Bool,_ mergedIndexes: [Int]) -> Void) {
+	public func mergeContactsDoNotInUSe(in groups: [ContactsGroup], merged indexes: [Int], currentCompletionIndex: @escaping(_ progressType: ProgressAlertType,_ currentIndex: Int,_ totalIndexes: Int) -> Void, completionHandler: @escaping(_ suxxes: Bool,_ mergedIndexes: [Int]) -> Void) {
 		
 		let mergeContactsOperation = ConcurrentProcessOperation { operation in
 			

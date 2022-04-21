@@ -717,7 +717,7 @@ extension ContactsViewController: UIPopoverPresentationControllerDelegate {
 // 		MARK: - handle progress alert controller -
 extension ContactsViewController: ProgressAlertControllerDelegate {
 	
-	private func updateProgressAlert(of type: ProgressContactsAlertType, currentPosition: Int, totalProcessing: Int) {
+	private func updateProgressAlert(of type: ProgressAlertType, currentPosition: Int, totalProcessing: Int) {
 		
 		let progress: CGFloat = CGFloat(100 * currentPosition / totalProcessing) / 100
 		let totalProcessingString: String = "\(currentPosition) / \(totalProcessing)"

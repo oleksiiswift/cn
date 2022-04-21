@@ -171,7 +171,7 @@ extension ContactsGroupViewController {
 								}
 							}
 						} else {
-							self.progressAlert.showContactsProgressAlertController(from: self, delegate: self)
+							self.progressAlert.showSimpleProgressAlerControllerBar(of: .updatingContacts, from: self, delegate: self)
 							self.updateContactsGroups { contactsGroup in
 								self.progressAlert.closeProgressAnimatedController()
 								self.contactGroup = contactsGroup
@@ -207,7 +207,7 @@ extension ContactsGroupViewController {
 						}
 					} else {
 						A.showSuxxessFullMerged(for: .one) {
-							self.progressAlert.showContactsProgressAlertController(from: self, delegate: self)
+							self.progressAlert.showSimpleProgressAlerControllerBar(of: .updatingContacts, from: self, delegate: self)
 							self.updateContactsGroups { contactsGroup in
 								self.progressAlert.closeProgressAnimatedController()
 								self.contactGroup = contactsGroup
@@ -217,7 +217,7 @@ extension ContactsGroupViewController {
 					}
 				} else {
 					ErrorHandler.shared.showMergeAlertError(.errorMergeContact) {
-						self.progressAlert.showContactsProgressAlertController(from: self, delegate: self)
+						self.progressAlert.showSimpleProgressAlerControllerBar(of: .updatingContacts, from: self, delegate: self)
 						self.updateContactsGroups { contactsGroup in
 							self.progressAlert.closeProgressAnimatedController()
 							self.contactGroup = contactsGroup
@@ -410,7 +410,7 @@ extension ContactsGroupViewController: ProgressAlertControllerDelegate {
         }
     }
 	
-	private func updateProgressAlert(of type: ProgressContactsAlertType, currentPosition: Int, totalProcessing: Int) {
+	private func updateProgressAlert(of type: ProgressAlertType, currentPosition: Int, totalProcessing: Int) {
 		
 		let progress: CGFloat = CGFloat(100 * currentPosition / totalProcessing) / 100
 		let totalProcessingString: String = "\(currentPosition) / \(totalProcessing)"
@@ -523,7 +523,7 @@ extension ContactsGroupViewController: SingleContactsGroupOperationsListener {
 					self.updateRemovedIndexes([section], errorsCount: 0)
 					self.contactGroup.count == 0 ? self.closeController() : ()
 				} else {
-					self.progressAlert.showContactsProgressAlertController(from: self, delegate: self)
+					self.progressAlert.showSimpleProgressAlerControllerBar(of: .updatingContacts, from: self, delegate: self)
 					self.updateContactsGroups { contactsGroup in
 						self.progressAlert.closeProgressAnimatedController()
 						self.contactGroup = contactsGroup
