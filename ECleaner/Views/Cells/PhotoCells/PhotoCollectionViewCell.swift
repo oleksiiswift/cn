@@ -66,12 +66,7 @@ class PhotoCollectionViewCell: UICollectionViewCell {
         super.awakeFromNib()
 
     }
-	
-	override func layoutSubviews() {
-		 super.layoutSubviews()
-	
-	}
-	
+		
 	@IBAction func didTapShowPHassetActionButton(_ sender: Any) {
 		delegate?.didShowFullScreenPHasset(at: self)
 	}

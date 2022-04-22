@@ -34,8 +34,9 @@ class DeepCleanManager {
                                        duplicatedContats: @escaping ([ContactsGroup]) -> Void,
                                        duplicatedPhoneNumbers: @escaping ([ContactsGroup]) -> Void,
                                        duplicatedEmails: @escaping ([ContactsGroup]) -> Void,
-									   completionHandler: @escaping (_ isCancelled: Bool) -> Void) {
-        
+									   completionHandler: @escaping (_ isCancelled: Bool) -> Void,
+									   emptyResultsHandler: @escaping () -> Void) {
+		var emptyResultsCount = 0
         var totalResultCount = 0
 		var operationQueueHandler: [ConcurrentProcessOperation] = []
         handler(optionMediaType)
@@ -43,9 +44,12 @@ class DeepCleanManager {
 //        MARK: - similar photoassets -
 		let getSimilarPhotosAssetsOperation = photoManager.getSimilarPhotosAssetsOperation(from: startingFetchingDate, to: endingFetchingDate, cleanProcessingType: .deepCleen) { similarGroup, isCancelled in
 			similarPhoto(similarGroup)
+			similarGroup.isEmpty ? emptyResultsCount += 1 : ()
 			totalResultCount += 1
 			if totalResultCount == 13 {
 				completionHandler(isCancelled)
+				emptyResultsCount == 13 ? emptyResultsHandler() : ()
+				
 			}
 		}
 		operationQueueHandler.append(getSimilarPhotosAssetsOperation)
@@ -53,10 +57,11 @@ class DeepCleanManager {
 //        MARK: - duplicated photo assets -
 		let duplicatedPhotoAssetOperation = photoManager.getDuplicatedPhotosAsset(from: startingFetchingDate, to: endingFetchingDate, cleanProcessingType: .deepCleen) { duplicateGroup, isCancelled in
 			duplicatedPhoto(duplicateGroup)
+			duplicateGroup.isEmpty ? emptyResultsCount += 1 : ()
 			totalResultCount += 1
-			debugPrint(totalResultCount)
 			if totalResultCount == 13 {
 				completionHandler(isCancelled)
+				emptyResultsCount == 13 ? emptyResultsHandler() : ()
 			}
 		}
 		operationQueueHandler.append(duplicatedPhotoAssetOperation)
@@ -64,9 +69,11 @@ class DeepCleanManager {
 //        MARK: - screenshots -
 		let getScreenShotsAssetsOperation = photoManager.getScreenShotsOperation(from: startingFetchingDate, to: endingFetchingDate, cleanProcessingType: .deepCleen) { screenshots, isCancelled in
 			screenShots(screenshots)
+			screenshots.isEmpty ? emptyResultsCount += 1 : ()
 			totalResultCount += 1
 			if totalResultCount == 13 {
 				completionHandler(isCancelled)
+				emptyResultsCount == 13 ? emptyResultsHandler() : ()
 			}
 		}
 		operationQueueHandler.append(getScreenShotsAssetsOperation)
@@ -75,9 +82,11 @@ class DeepCleanManager {
 		
 		let getSimilarSelfiesPhotoPhassetOperation = photoManager.getSimilarSelfiePhotosOperation(from: startingFetchingDate, to: endingFetchingDate, cleanProcessingType: .deepCleen) { similartSelfiesGroup, isCancelled in
 			similarSelfiesPhoto(similartSelfiesGroup)
+			similartSelfiesGroup.isEmpty ? emptyResultsCount += 1 : ()
 			totalResultCount += 1
 			if totalResultCount == 13 {
 				completionHandler(isCancelled)
+				emptyResultsCount == 13 ? emptyResultsHandler() : ()
 			}
 		}
 		operationQueueHandler.append(getSimilarSelfiesPhotoPhassetOperation)
@@ -85,9 +94,11 @@ class DeepCleanManager {
 //        MARK: - similar live photo -
 		let getLivePhotoAssetsOperation = photoManager.getSimilarLivePhotosOperation(from: startingFetchingDate, to: endingFetchingDate, cleanProcessingType: .deepCleen) { similarAssets, isCancelled in
 			similarLivePhotos(similarAssets)
+			similarAssets.isEmpty ? emptyResultsCount += 1 : ()
 			totalResultCount += 1
 			if totalResultCount == 13 {
 				completionHandler(isCancelled)
+				emptyResultsCount == 13 ? emptyResultsHandler() : ()
 			}
 		}
 		operationQueueHandler.append(getLivePhotoAssetsOperation)
@@ -95,10 +106,11 @@ class DeepCleanManager {
 //        MARK: - large video -
 		let getLargevideoContentOperation = photoManager.getLargevideoContentOperation(from: startingFetchingDate, to: endingFetchingDate, cleanProcessingType: .deepCleen) { largeVodepAsset, isCancelled in
 			largeVideo(largeVodepAsset)
-			
+			largeVodepAsset.isEmpty ? emptyResultsCount += 1 : ()
 			totalResultCount += 1
 			if totalResultCount == 13 {
 				completionHandler(isCancelled)
+				emptyResultsCount == 13 ? emptyResultsHandler() : ()
 			}
 		}
 		operationQueueHandler.append(getLargevideoContentOperation)
@@ -106,10 +118,11 @@ class DeepCleanManager {
 //        MARK: - duplicated video assets -
 		let getDuplicatedVideoAssetOperatioon = photoManager.getDuplicatedVideoAssetOperation(from: startingFetchingDate, to: endingFetchingDate, cleanProcessingType: .deepCleen) { duplicatedVideoAsset, isCancelled in
 			duplicatedVideo(duplicatedVideoAsset)
-
+			duplicatedVideoAsset.isEmpty ?  emptyResultsCount += 1 : ()
 			totalResultCount += 1
 			if totalResultCount == 13 {
 				completionHandler(isCancelled)
+				emptyResultsCount == 13 ? emptyResultsHandler() : ()
 			}
 		}
 		operationQueueHandler.append(getDuplicatedVideoAssetOperatioon)
@@ -117,10 +130,11 @@ class DeepCleanManager {
 //        MARK: - similar videos assets -
 		let getSimilarVideoAssetsOperation = photoManager.getSimilarVideoAssetsOperation(from: startingFetchingDate, to: endingFetchingDate, cleanProcessingType: .deepCleen) { similiarVideoAsset, isCancelled in
 			similarVideo(similiarVideoAsset)
-
+			similiarVideoAsset.isEmpty ? emptyResultsCount += 1 : ()
 			totalResultCount += 1
 			if totalResultCount == 13 {
 				completionHandler(isCancelled)
+				emptyResultsCount == 13 ? emptyResultsHandler() : ()
 			}
 		}
 		operationQueueHandler.append(getSimilarVideoAssetsOperation)
@@ -128,10 +142,11 @@ class DeepCleanManager {
 //        MARK: - screen recordings assets -
 		let getScreenRecordsVideosOperation = photoManager.getScreenRecordsVideosOperation(from: startingFetchingDate, to: endingFetchingDate, cleanProcessingType: .deepCleen) { screenRecordsAssets, isCancelled in
 			screenRecordings(screenRecordsAssets)
-
+			screenRecordsAssets.isEmpty ? emptyResultsCount += 1 : ()
 			totalResultCount += 1
 			if totalResultCount == 13 {
 				completionHandler(isCancelled)
+				emptyResultsCount == 13 ? emptyResultsHandler() : ()
 			}
 		}
 		
@@ -149,8 +164,10 @@ class DeepCleanManager {
 				duplicatedPhoneNumbers([])
 				duplicatedEmails([])
 				totalResultCount += 4
+				emptyResultsCount += 4
 				if totalResultCount == 13 {
 					completionHandler(isCancelled)
+					emptyResultsCount == 13 ? emptyResultsHandler() : ()
 				}
 			}
 		} emptyContactsCompletion: { emptyContactsGroup, isCancelled in

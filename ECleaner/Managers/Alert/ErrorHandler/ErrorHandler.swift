@@ -173,6 +173,8 @@ class ErrorHandler {
 		case duplicatedNamesIsEmpty
 		case duplicatedNumbersIsEmpty
 		case duplicatedEmailsIsEmpty
+		
+		case deepCleanResultsIsEmpty
 	}
 	
     private func deleteErrorForKey(_ error: DeleteError) -> String {
@@ -253,6 +255,17 @@ class ErrorHandler {
 				return "no duplicated phone numbers found"
 			case .duplicatedEmailsIsEmpty:
 				return "no duplicated emails found"
+			case .deepCleanResultsIsEmpty:
+				return "deep clean search complete with empty results"
+		}
+	}
+	
+	public func emptyResultsTitle(for emptyKey: EmptyResultsError) -> String {
+		switch emptyKey {
+			case .deepCleanResultsIsEmpty:
+				return "search complete"
+			default:
+				return emptyResultsErrorTitle()
 		}
 	}
 	

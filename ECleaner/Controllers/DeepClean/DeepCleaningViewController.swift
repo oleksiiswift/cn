@@ -204,7 +204,7 @@ extension DeepCleaningViewController {
 		  
 		  isDeepCleanSearchingProcessRunning = !isDeepCleanSearchingProcessRunning
 		  U.application.isIdleTimerDisabled = true
-          
+		  
           deepCleanManager.startDeepCleaningFetch(options, startingFetchingDate: lowerBoundDate, endingFetchingDate: upperBoundDate) { mediaType in
                self.scansOptions = mediaType
           } screenShots: { assets in
@@ -287,7 +287,13 @@ extension DeepCleaningViewController {
 						 U.application.isIdleTimerDisabled = true
 					}
 			   }
-          }
+		  } emptyResultsHandler: {
+			   U.delay(1) {
+					ErrorHandler.shared.showEmptySearchResultsFor(.deepCleanSearchinResultsIsEmpty) {
+						 self.navigationController?.popViewController(animated: true)
+					}
+			   }
+		  }
      }
      
 	 /// `for photos and video`
