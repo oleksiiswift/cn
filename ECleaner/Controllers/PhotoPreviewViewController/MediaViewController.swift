@@ -90,19 +90,20 @@ extension MediaViewController {
 //		MARK: - select delegate -
 extension MediaViewController: PhotoCollectionViewCellDelegate {
 	
-	func didShowFullScreenPHAsset(at indexPath: IndexPath) {}
+	func didShowFullScreenPHasset(at cell: PhotoCollectionViewCell) {}
 	
-	func didSelectCell(at indexPath: IndexPath) {
-		if let cell = self.collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell {
-			if cell.isSelected {
-				self.collectionView.deselectItem(at: indexPath, animated: true)
-				self.collectionView.delegate?.collectionView?(self.collectionView, didSelectItemAt: indexPath)
-			} else {
-				self.collectionView.selectItem(at: indexPath, animated: true, scrollPosition: [])
-				self.collectionView.delegate?.collectionView?(self.collectionView, didDeselectItemAt: indexPath)
-			}
-			cell.checkIsSelected()
+	func didSelect(cell: PhotoCollectionViewCell) {
+		
+		guard let indexPath = self.collectionView.indexPath(for: cell) else { return }
+		
+		if cell.isSelected {
+			self.collectionView.deselectItem(at: indexPath, animated: true)
+			self.collectionView.delegate?.collectionView?(self.collectionView, didSelectItemAt: indexPath)
+		} else {
+			self.collectionView.selectItem(at: indexPath, animated: true, scrollPosition: [])
+			self.collectionView.delegate?.collectionView?(self.collectionView, didDeselectItemAt: indexPath)
 		}
+		cell.checkIsSelected()
 		self.handleSelectAssetsNavigationCount()
 	}
 }
@@ -298,11 +299,15 @@ extension MediaViewController {
 				if self.assetCollection.isEmpty {
 					singleSelectionDelegate?.didSelect(selectedIndexPath: [], phasstsColledtion: [])
 					self.navigationController?.popViewController(animated: true)
+				} else {
+					self.handleSelectAssetsNavigationCount()
 				}
 			case .grouped:
 				if self.assetGroups.isEmpty {
 					groupSelectionDelegate?.didSelect(slectedIndexPath: [], phassetsGroups: [])
 					self.navigationController?.popViewController(animated: true)
+				} else {
+					self.handleSelectAssetsNavigationCount()
 				}
 			case .none:
 				return

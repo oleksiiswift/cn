@@ -25,6 +25,7 @@ class SimpleAssetsListViewController: UIViewController {
 	var selectedAssetsDelegate: DeepCleanSelectableAssetsDelegate?
 	private var photoManager = PhotoManager.shared
 	private var prefetchCacheImageManager = PhotoManager.shared.prefetchManager
+	private var progrssAlertController = ProgressAlertController.shared
 	public var mediaType: PhotoMediaType = .none
 	public var contentType: MediaContentType = .none
 	
@@ -80,7 +81,13 @@ extension SimpleAssetsListViewController {
 		guard let selectedPHAssets = self.collectionView.indexPathsForSelectedItems else { return }
 		
 		A.deletePHAssets(of: self.contentType, of: selectedPHAssets.count > 1 ? .many : .one) {
-			self.deleteSelectedAssets()
+			U.delay(1) {
+				let progress: ProgressAlertType = self.contentType == .userPhoto ? .deletePhotos : .deleteVideos
+				self.progrssAlertController.showSimpleProgressAlerControllerBar(of: progress, from: self)
+				U.delay(0.5) {
+					self.deleteSelectedAssets()
+				}
+			}
 		}
     }
     
@@ -97,6 +104,7 @@ extension SimpleAssetsListViewController {
 	}
 	
 	private func deleteOperationWith(selectedPHAassets: [PHAsset], at indexPath: [IndexPath]) {
+		
 		let deleteOperation = photoManager.deleteSelectedOperation(assets: selectedPHAassets) { success in
 			if success {
 				let assetIdentifiers = selectedPHAassets.map({ $0.localIdentifier})
@@ -105,9 +113,12 @@ extension SimpleAssetsListViewController {
 					self.collectionView.performBatchUpdates {
 						self.collectionView.deleteItems(at: indexPath)
 					} completion: { _ in
-						self.smoothReloadData()
+						self.progrssAlertController.closeProgressAnimatedController()
+						self.handleActionButtons()
 					}
 				}
+			} else {
+				self.progrssAlertController.closeProgressAnimatedController()
 			}
 		}
 		self.photoManager.serviceUtilsCalculatedOperationsQueuer.addOperation(deleteOperation)
@@ -124,6 +135,16 @@ extension SimpleAssetsListViewController {
 			self.handleSelectAllButtonState()
 			self.handleBottomButtonMenu()
 		}
+	}
+	
+	private func updateAfterRefactor() {
+		self.collectionView.reloadDataWitoutAnimation()
+	}
+	
+	private func handleActionButtons() {
+		self.handleSelectAssetsNavigationCount()
+		self.handleSelectAllButtonState()
+		self.handleBottomButtonMenu()
 	}
 	
     private func createCellContextMenu(for asset: PHAsset, at indexPath: IndexPath) -> UIMenu {
@@ -226,9 +247,7 @@ extension SimpleAssetsListViewController {
 				cell.checkIsSelected()
 			}
 		}
-		handleSelectAllButtonState()
-		handleBottomButtonMenu()
-		handleSelectAssetsNavigationCount()
+		self.handleActionButtons()
 	}
 	
 	private func setCollection(selected: Bool) {
@@ -248,9 +267,7 @@ extension SimpleAssetsListViewController {
 				cell.checkIsSelected()
 			}
 		}
-		handleBottomButtonMenu()
-		handleSelectAllButtonState()
-		handleSelectAssetsNavigationCount()
+		self.handleActionButtons()
 	}
 	
 	private func didSelectAll() {
@@ -307,27 +324,34 @@ extension SimpleAssetsListViewController {
 			}
 		}
 	}
+	
+	private func handleForEmptyCollection() {
+		
+		if assetCollection.isEmpty {
+			isDeepCleaningSelectableFlow ? self.deepCleanFlowBackActionButton() : self.singleCleanFlowBackActionButton()
+		}
+	}
 }
 
 extension SimpleAssetsListViewController: PhotoCollectionViewCellDelegate {
 	
-	func didShowFullScreenPHAsset(at indexPath: IndexPath) {
+	func didShowFullScreenPHasset(at cell: PhotoCollectionViewCell) {
+		guard let indexPath = self.collectionView.indexPath(for: cell) else { return }
 		self.showFullScreenAssetPreviewAndFocus(at: indexPath)
 	}
 	
-	func didSelectCell(at indexPath: IndexPath) {
-		if let cell = self.collectionView.cellForItem(at: indexPath) {
-			if cell.isSelected {
-				self.collectionView.deselectItem(at: indexPath, animated: true)
-				self.collectionView.delegate?.collectionView?(self.collectionView, didDeselectItemAt: indexPath)
-			} else {
-				self.collectionView.selectItem(at: indexPath, animated: true, scrollPosition: [])
-				self.collectionView.delegate?.collectionView?(self.collectionView, didSelectItemAt: indexPath)
-			}
+	func didSelect(cell: PhotoCollectionViewCell) {
+		
+		guard let indexPath = self.collectionView.indexPath(for: cell) else { return }
+		
+		if cell.isSelected {
+			self.collectionView.deselectItem(at: indexPath, animated: true)
+			self.collectionView.delegate?.collectionView?(self.collectionView, didDeselectItemAt: indexPath)
+		} else {
+			self.collectionView.selectItem(at: indexPath, animated: true, scrollPosition: [])
+			self.collectionView.delegate?.collectionView?(self.collectionView, didSelectItemAt: indexPath)
 		}
-		handleSelectAllButtonState()
-		handleBottomButtonMenu()
-		handleSelectAssetsNavigationCount()
+		self.handleActionButtons()
 	}
 }
 

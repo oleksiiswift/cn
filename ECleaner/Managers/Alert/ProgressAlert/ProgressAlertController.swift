@@ -17,9 +17,16 @@ protocol AnimatedProgressDelegate: AnyObject {
 	func didProgressSetCanceled()
 }
 
-enum ProgressContactsAlertType {
+enum ProgressAlertType {
 	case mergeContacts
 	case deleteContacts
+	case deleteVideos
+	case deletePhotos
+	case compressing
+	case updatingContacts
+	case selectingContacts
+	case selectingPhotos
+	case selectingVideos
 	
 	var progressTitle: String {
 		switch self {
@@ -27,6 +34,73 @@ enum ProgressContactsAlertType {
 				return "merged contacts"
 			case .deleteContacts:
 				return "delete contacts"
+			case .deleteVideos:
+				return "delete contacts"
+			case .deletePhotos:
+				return "delete photos"
+			case .compressing:
+				return "compressing"
+			case .updatingContacts:
+				return "updating contacts"
+			case .selectingContacts:
+				return "select contacts, wait"
+			case .selectingPhotos:
+				return "select photo, wait"
+			case .selectingVideos:
+				return "select videio, wait"
+		}
+	}
+	
+	var withCancel: Bool {
+		switch self {
+			case .mergeContacts:
+				return true
+			case .deleteContacts:
+				return true
+			case .deleteVideos:
+				return false
+			case .deletePhotos:
+				return false
+			case .compressing:
+				return true
+			case .updatingContacts:
+				return false
+			case .selectingContacts, .selectingVideos, .selectingPhotos:
+				return false
+		}
+	}
+	
+	var accentColor: UIColor {
+		switch self {
+			case .mergeContacts, .deleteContacts, .updatingContacts, .selectingPhotos:
+				return self.contentType.screenAcentTintColor
+			case .deleteVideos, .deletePhotos, .compressing, .selectingVideos:
+				return self.contentType.screenAcentTintColor
+			case .selectingContacts:
+				return self.contentType.screenAcentTintColor
+		}
+	}
+	
+	private var contentType: MediaContentType {
+		switch self {
+			case .mergeContacts:
+				return .userContacts
+			case .deleteContacts:
+				return .userContacts
+			case .deleteVideos:
+				return .userVideo
+			case .deletePhotos:
+				return .userPhoto
+			case .compressing:
+				return .userVideo
+			case .updatingContacts:
+				return .userContacts
+			case .selectingContacts:
+				return .userContacts
+			case .selectingVideos:
+				return .userVideo
+			case .selectingPhotos:
+				return .userPhoto
 		}
 	}
 }
@@ -76,7 +150,7 @@ class ProgressAlertController: Themeble {
         contentProgressType = .userContacts
         alertController = UIAlertController(title: title, message: " ", preferredStyle: .alert)
         
-        let cancelAction = UIAlertAction(title: "cancel", style: .cancel) { _ in
+		let cancelAction = UIAlertAction(title: AlertHandler.AlertActionsButtons.cancel.title, style: .cancel) { _ in
 			self.controllerPresented = false
             self.delegate?.didTapCancelOperation()
         }
@@ -161,9 +235,11 @@ class ProgressAlertController: Themeble {
 	}
 	
 	public func closeProgressAnimatedController() {
-		alertController.dismiss(animated: true) {
-			self.controllerPresented = false
-			self.removeAnimatedProgress()
+		U.UI {
+			self.alertController.dismiss(animated: true) {
+				self.controllerPresented = false
+				self.removeAnimatedProgress()
+			}
 		}
 	}
 	
@@ -189,23 +265,18 @@ extension ProgressAlertController {
 		setProgress(controllerType: .none, title: "deep clean processing")
 	}
 	
-	public func showContactsProgressAlert(of type: ProgressContactsAlertType) {
+	public func showContactsProgressAlert(of type: ProgressAlertType) {
 		setProgress(controllerType: .userContacts, title: type.progressTitle)
 	}
 	
 	public func showCompressingProgressAlertController(from viewController: UIViewController, delegate: AnimatedProgressDelegate?)  {
-		presentAnimatedProgress(title: "compressing", progressDelegate: delegate, from: viewController, barColor: UIColor().colorFromHexString("3C82C8"), animatedColor: theme.videosTintColor )
+		let progress: ProgressAlertType = .compressing
+		presentAnimatedProgress(title: progress.progressTitle, progressDelegate: delegate, from: viewController, barColor: UIColor().colorFromHexString("3C82C8"), animatedColor: theme.videosTintColor )
 	}
-	
-	public func showContactsProgressAlertController(from viewController: UIViewController, delegate: AnimatedProgressDelegate?) {
-		presentAnimatedProgress(title: "updating contacts", progressDelegate: delegate, from: viewController, barColor: .white, animatedColor: theme.contactsTintColor, withCancel: false)
-	}
-	
-	public func showSelecContentBar(from viewController: UIViewController, contentType: MediaContentType) {
-		presentAnimatedProgress(title: "select content, wait", progressDelegate: nil, from: viewController, barColor: .white, animatedColor: contentType.screenAcentTintColor, withCancel: false)
+			
+	public func showSimpleProgressAlerControllerBar(of type: ProgressAlertType, from viewController: UIViewController, delegate: AnimatedProgressDelegate? = nil) {
+		presentAnimatedProgress(title: type.progressTitle, progressDelegate: delegate, from: viewController, barColor: .white, animatedColor: type.accentColor, withCancel: type.withCancel)
 	}
 }
-
-
 
 
