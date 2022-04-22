@@ -16,6 +16,12 @@ extension UICollectionView {
 		}
 	}
 	
+	func reloadDataWithotAnimationKeepSelect(at indexPath: [IndexPath]) {
+		UIView.performWithoutAnimation {
+			reloadSelectedItems(at: indexPath)
+		}
+	}
+	 
 	func reloadDataWithotAnimation(in section: IndexSet) {
 		
 		UIView.performWithoutAnimation {

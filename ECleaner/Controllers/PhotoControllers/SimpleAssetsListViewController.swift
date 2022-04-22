@@ -81,12 +81,10 @@ extension SimpleAssetsListViewController {
 		guard let selectedPHAssets = self.collectionView.indexPathsForSelectedItems else { return }
 		
 		A.deletePHAssets(of: self.contentType, of: selectedPHAssets.count > 1 ? .many : .one) {
+			let progress: ProgressAlertType = self.contentType == .userPhoto ? .deletePhotos : .deleteVideos
+			self.progrssAlertController.showSimpleProgressAlerControllerBar(of: progress, from: self)
 			U.delay(1) {
-				let progress: ProgressAlertType = self.contentType == .userPhoto ? .deletePhotos : .deleteVideos
-				self.progrssAlertController.showSimpleProgressAlerControllerBar(of: progress, from: self)
-				U.delay(0.5) {
-					self.deleteSelectedAssets()
-				}
+				self.deleteSelectedAssets()
 			}
 		}
     }
@@ -113,12 +111,16 @@ extension SimpleAssetsListViewController {
 					self.collectionView.performBatchUpdates {
 						self.collectionView.deleteItems(at: indexPath)
 					} completion: { _ in
-						self.progrssAlertController.closeProgressAnimatedController()
 						self.handleActionButtons()
+						U.delay(1) {
+							self.progrssAlertController.closeProgressAnimatedController()
+						}
 					}
 				}
 			} else {
-				self.progrssAlertController.closeProgressAnimatedController()
+				U.delay(1) {
+					self.progrssAlertController.closeProgressAnimatedController()
+				}
 			}
 		}
 		self.photoManager.serviceUtilsCalculatedOperationsQueuer.addOperation(deleteOperation)
@@ -145,8 +147,9 @@ extension SimpleAssetsListViewController {
 		self.handleSelectAssetsNavigationCount()
 		self.handleSelectAllButtonState()
 		self.handleBottomButtonMenu()
+		self.handleForEmptyCollection()
 	}
-	
+
     private func createCellContextMenu(for asset: PHAsset, at indexPath: IndexPath) -> UIMenu {
         
         let fullScreenPreviewAction = UIAction(title: "full screen preview", image: I.systemItems.defaultItems.arrowUP) { _ in

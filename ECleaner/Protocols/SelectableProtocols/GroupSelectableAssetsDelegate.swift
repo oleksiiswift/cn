@@ -8,5 +8,5 @@
 import Foundation
 
 protocol GroupSelectableAssetsDelegate: AnyObject {
-	func didSelect(slectedIndexPath: [IndexPath], phassetsGroups: [PhassetGroup])
+	func didSelect(selectedIndexPath: [IndexPath], phassetsGroups: [PhassetGroup])
 }
