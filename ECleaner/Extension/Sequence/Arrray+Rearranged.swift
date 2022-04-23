@@ -45,3 +45,29 @@ extension Array {
         self.insert(self.remove(at: oldIndex), at: newIndex)
     }
 }
+
+public extension Sequence where Element : Hashable {
+	func containsElements(_ elements: [Element]) -> Bool {
+		return Set(elements).isSubset(of:Set(self))
+	}
+}
+
+extension Sequence where Iterator.Element : Hashable {
+
+	func intersects<S : Sequence>(with sequence: S) -> Bool
+		where S.Iterator.Element == Iterator.Element
+	{
+		let sequenceSet = Set(sequence)
+		return self.contains(where: sequenceSet.contains)
+	}
+}
+
+extension Array where Element: Equatable {
+  func subtracting(_ array: [Element]) -> [Element] {
+	  self.filter { !array.contains($0) }
+  }
+
+  mutating func remove(_ array: [Element]) {
+	  self = self.subtracting(array)
+  }
+}

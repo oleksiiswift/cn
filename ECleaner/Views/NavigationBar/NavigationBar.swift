@@ -134,10 +134,10 @@ class NavigationBar: UIView {
 		if newTitle.isEmpty {
 			leftButtonLeadingConstraint.constant = 5
 			leftBarButtonItem.setImage(image, for: .normal)
-			leftBarButtonItem.setTitle(nil, for: .normal)
+			leftBarButtonItem.setTitleWithoutAnimation(title: "")
 		} else {
 			leftBarButtonItem.setImage(image, for: .normal)
-			leftBarButtonItem.setTitle(newTitle, for: .normal)
+			leftBarButtonItem.setTitleWithoutAnimation(title: newTitle)
 			leftButtonLeadingConstraint.constant = 15
 		}
 		leftBarButtonItem.layoutIfNeeded()

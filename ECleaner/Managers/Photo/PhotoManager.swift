@@ -858,7 +858,6 @@ extension PhotoManager {
 				
 					var assets: [PHAsset] = []
 					photoGallery.enumerateObjects { phasset, index, stop in
-						debugPrint("% enumerated objects \(operation.isCancelled)")
 						if operation.isCancelled {
 							self.sendEmptyNotification(processing: cleanProcessingType, deepCleanType: .duplicatePhoto, singleCleanType: .duplicatedPhoto)
 							completionHandler([], operation.isCancelled)
@@ -982,7 +981,6 @@ extension PhotoManager {
 			var index = 0
 			
 			for pair in duplicatedPhotosIDsAsTuples {
-				debugPrint(index)
 				if operation.isCancelled {
 					self.sendEmptyNotification(processing: cleanProcessingType, deepCleanType: deepCleanType, singleCleanType: sinlgeCleanType)
 					completionHandler([], operation.isCancelled)

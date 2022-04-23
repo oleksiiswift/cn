@@ -9,8 +9,8 @@ import UIKit
 import Photos
 
 protocol PhotoCollectionViewCellDelegate {
-    func didSelectCell(at indexPath: IndexPath)
-	func didShowFullScreenPHAsset(at indexPath: IndexPath)
+	func didShowFullScreenPHasset(at cell: PhotoCollectionViewCell)
+	func didSelect(cell: PhotoCollectionViewCell)
 }
 
 class PhotoCollectionViewCell: UICollectionViewCell {
@@ -66,24 +66,13 @@ class PhotoCollectionViewCell: UICollectionViewCell {
         super.awakeFromNib()
 
     }
-	
-	override func layoutSubviews() {
-		 super.layoutSubviews()
-	
-	}
-	
+		
 	@IBAction func didTapShowPHassetActionButton(_ sender: Any) {
-		if let indexPath = indexPath {
-			delegate?.didShowFullScreenPHAsset(at: indexPath)
-		}
+		delegate?.didShowFullScreenPHasset(at: self)
 	}
 	
     @IBAction func didTapSetSelectedCellActionButton(_ sender: Any) {
-        
-        if let indexPath = self.indexPath {
-            delegate?.didSelectCell(at: indexPath)
-            checkIsSelected()
-        }
+		delegate?.didSelect(cell: self)
     }
 }
 

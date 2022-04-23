@@ -184,3 +184,11 @@ extension Array {
         return removedElements
     }
 }
+
+extension Collection where Element: Equatable {
+
+	func intersection(with filter: [Element]) -> [Element] {
+		return self.filter { element in filter.contains(element) }
+	}
+
+}

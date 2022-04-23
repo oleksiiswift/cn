@@ -79,14 +79,13 @@ class ContactsViewController: UIViewController {
         updateColors()
         handleBottomButtonChangeAppearence(disableAnimation: true)
     }
-	
+
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 		
-		!previouslySelectedIndexPaths.isEmpty ? didSelectPreviousIndexPath() : ()
-		previouslySelectedIndexPaths.isEmpty ? handleStartingSelectableContacts() : ()
+		didSelectPreviousIndexPath()
 	}
-	
+
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         switch segue.identifier {
             case C.identifiers.segue.showExportContacts:
@@ -201,11 +200,13 @@ extension ContactsViewController {
 		guard isDeepCleaningSelectableFlow else { return }
 		
 		self.handleEdit()
+		self.navigationBar.handleChangeRightButtonSelectState(selectAll: true)
+		self.setContactsSelect(true) {}
 		
-		A.showSelectAllStarterAlert(for: self.contentType) {
-			self.navigationBar.handleChangeRightButtonSelectState(selectAll: true)
-			self.setContactsSelect(true) {}
-		}
+//		A.showSelectAllStarterAlert(for: self.contentType) {
+//			self.navigationBar.handleChangeRightButtonSelectState(selectAll: true)
+//			self.setContactsSelect(true) {}
+//		}
 	}
 	
 	public func handleContactsPreviousSelected(selectedContactsIDs: [String], contactsCollection: [CNContact], contactsGroupCollection: [ContactsGroup]) {
@@ -234,12 +235,16 @@ extension ContactsViewController {
 	
 	private func didSelectPreviousIndexPath() {
 		
-		guard isDeepCleaningSelectableFlow, !previouslySelectedIndexPaths.isEmpty else { return }
+		guard isDeepCleaningSelectableFlow else { return }
+		
 		self.handleEdit()
-		for indexPath in previouslySelectedIndexPaths {
-			_ = tableView.delegate?.tableView?(tableView, willSelectRowAt: indexPath)
-			tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
-			tableView.delegate?.tableView?(tableView, didSelectRowAt: indexPath)
+		
+		if !previouslySelectedIndexPaths.isEmpty {
+			for indexPath in previouslySelectedIndexPaths {
+				_ = tableView.delegate?.tableView?(tableView, willSelectRowAt: indexPath)
+				tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
+				tableView.delegate?.tableView?(tableView, didSelectRowAt: indexPath)
+			}
 		}
 	}
 	
@@ -465,6 +470,8 @@ extension ContactsViewController {
 		
 		P.showIndicator()
 		self.handleEdit()
+		self.resetSearchBarState()
+		self.setActiveSearchBar(setActive: false)
 		
 		self.contactStoreDidChange = true
 		
@@ -547,7 +554,6 @@ extension ContactsViewController {
     }
 }
 
-
 	//		MARK: - bottom action button/buttons -
 extension ContactsViewController: BottomDoubleActionButtonDelegate {
     
@@ -594,6 +600,8 @@ extension ContactsViewController {
 			self.searchBarView.searchBar.text = ""
 			self.contactListViewModel.updateSearchState()
 			self.setActiveSearchBar(setActive: false)
+			self.handleBottomButtonChangeAppearence()
+			self.contactContentIsEditing ? self.handleEdit() : ()
 		}
 	}
     
@@ -655,6 +663,12 @@ extension ContactsViewController: UISearchBarDelegate {
     func searchBarShouldEndEditing(_ searchBar: UISearchBar) -> Bool {
         self.searchBarView.searchBar.resignFirstResponder()
     }
+	
+	@objc func searchBarClearButtonClicked() {
+		self.contactContentIsEditing ? self.resetContreollerState() : ()
+		self.setCancelAndDeselectAllItems()
+		self.handleBottomButtonChangeAppearence(disableAnimation: true)
+	}
 }
 
 extension ContactsViewController: NavigationBarDelegate {
@@ -703,7 +717,7 @@ extension ContactsViewController: UIPopoverPresentationControllerDelegate {
 // 		MARK: - handle progress alert controller -
 extension ContactsViewController: ProgressAlertControllerDelegate {
 	
-	private func updateProgressAlert(of type: ProgressContactsAlertType, currentPosition: Int, totalProcessing: Int) {
+	private func updateProgressAlert(of type: ProgressAlertType, currentPosition: Int, totalProcessing: Int) {
 		
 		let progress: CGFloat = CGFloat(100 * currentPosition / totalProcessing) / 100
 		let totalProcessingString: String = "\(currentPosition) / \(totalProcessing)"
@@ -902,6 +916,7 @@ extension ContactsViewController: Themeble {
 		U.notificationCenter.addObserver(self, selector: #selector(contentDidBeginDraging), name: .scrollViewDidBegingDragging, object: nil)
 		U.notificationCenter.addObserver(self, selector: #selector(didSelectDeselectContact), name: .selectedContactsCountDidChange, object: nil)
 		U.notificationCenter.addObserver(self, selector: #selector(searchBarResignFirstResponder), name: .searchBarShouldResign, object: nil)
+		U.notificationCenter.addObserver(self, selector: #selector(searchBarClearButtonClicked), name: .searchBarClearButtonClicked, object: nil)
 	}
 
     private func setupShowExportContactController(segue: UIStoryboardSegue) {
