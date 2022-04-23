@@ -137,6 +137,7 @@
 		971AD5E927EAB72900811A3A /* ZoomTransitionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971AD5E827EAB72900811A3A /* ZoomTransitionController.swift */; };
 		971AD5EC27EAC10800811A3A /* ZoomDismissalInteractionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971AD5EB27EAC10800811A3A /* ZoomDismissalInteractionController.swift */; };
 		971AD5EE27EAC13C00811A3A /* ZoomAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971AD5ED27EAC13C00811A3A /* ZoomAnimator.swift */; };
+		971F05152813EE56009B796C /* ParkBenchTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971F05142813EE56009B796C /* ParkBenchTimer.swift */; };
 		97238A072689BD8000C523DC /* PhotoMediaType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97238A062689BD8000C523DC /* PhotoMediaType.swift */; };
 		97238A092689D01E00C523DC /* GroupedAssetListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97238A082689D01E00C523DC /* GroupedAssetListViewController.swift */; };
 		97238A0B2689EDD200C523DC /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97238A0A2689EDD200C523DC /* Toast.swift */; };
@@ -427,6 +428,7 @@
 		971AD5E827EAB72900811A3A /* ZoomTransitionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoomTransitionController.swift; sourceTree = "<group>"; };
 		971AD5EB27EAC10800811A3A /* ZoomDismissalInteractionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoomDismissalInteractionController.swift; sourceTree = "<group>"; };
 		971AD5ED27EAC13C00811A3A /* ZoomAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoomAnimator.swift; sourceTree = "<group>"; };
+		971F05142813EE56009B796C /* ParkBenchTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParkBenchTimer.swift; sourceTree = "<group>"; };
 		97238A062689BD8000C523DC /* PhotoMediaType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoMediaType.swift; sourceTree = "<group>"; };
 		97238A082689D01E00C523DC /* GroupedAssetListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupedAssetListViewController.swift; sourceTree = "<group>"; };
 		97238A0A2689EDD200C523DC /* Toast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
@@ -988,6 +990,7 @@
 				979278672771241F0090F368 /* FileFormats */,
 				971AD5EA27EAB72D00811A3A /* TransitionController */,
 				972A2A172806255300D6F54A /* temp */,
+				971F05142813EE56009B796C /* ParkBenchTimer.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -2131,6 +2134,7 @@
 				97DA18F12797502B00427587 /* Thread+Extension.swift in Sources */,
 				04467CE0270D929D00DBBB39 /* HorizontalProgressBar.swift in Sources */,
 				97CE449D273D311400DF6114 /* NavigationBarDelegate.swift in Sources */,
+				971F05152813EE56009B796C /* ParkBenchTimer.swift in Sources */,
 				044281FE2692F9B800B6B47C /* SelectDropDownMenuDelegate.swift in Sources */,
 				97CB351E273A9746005DA881 /* TableView+IndexPath.swift in Sources */,
 				4F56073E27205AF300CA19E9 /* ProgressView.swift in Sources */,

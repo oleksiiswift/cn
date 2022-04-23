@@ -190,6 +190,8 @@ class Constants {
 				static let deepCleanProcessingCleaningOperation = "deepCleanProcessingCleaningOperation"
                     /// `prefetch phassets`
                 static let prefetchPHAssetsOperation = "prefetchPHassetsOperation"
+					/// `find duplicated assets and indexes`
+				static let analizeDuplicatedPHAssetsIndexPathsSearch = "analizeDuplicatedPHAssetsIndexPathsSearch"
 			}
 		}
         
