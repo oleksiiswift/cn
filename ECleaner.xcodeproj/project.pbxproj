@@ -922,9 +922,9 @@
 				04E5835D267A3E6C00EDC3A3 /* Extension */,
 				04E58366267A3F7200EDC3A3 /* Listeners */,
 				04E58361267A3ED000EDC3A3 /* Protocols */,
-				04E0947D267A06B900A69956 /* Info.plist */,
 				04E58367267A3F8F00EDC3A3 /* Assets */,
 				9701D27527BE56DA0078E39F /* ECleaner-Bridging-Header.h */,
+				04E0947D267A06B900A69956 /* Info.plist */,
 			);
 			path = ECleaner;
 			sourceTree = "<group>";
@@ -2455,7 +2455,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 0108;
+				CURRENT_PROJECT_VERSION = 2304;
 				DEVELOPMENT_TEAM = 7684Y6KS7W;
 				INFOPLIST_FILE = ECleaner/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -2463,7 +2463,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.01;
+				MARKETING_VERSION = 0.01.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.phone.clean.cache;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "ECleaner/ECleaner-Bridging-Header.h";
@@ -2481,7 +2481,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 0108;
+				CURRENT_PROJECT_VERSION = 2304;
 				DEVELOPMENT_TEAM = 7684Y6KS7W;
 				INFOPLIST_FILE = ECleaner/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -2489,7 +2489,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.01;
+				MARKETING_VERSION = 0.01.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.phone.clean.cache;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "ECleaner/ECleaner-Bridging-Header.h";
