@@ -7,9 +7,9 @@ PODS:
   - PhoneNumberKit/UIKit (3.3.4):
     - PhoneNumberKit/PhoneNumberKitCore
   - SnapKit (5.0.1)
-  - SwiftMessages (9.0.5):
-    - SwiftMessages/App (= 9.0.5)
-  - SwiftMessages/App (9.0.5)
+  - SwiftMessages (9.0.6):
+    - SwiftMessages/App (= 9.0.6)
+  - SwiftMessages/App (9.0.6)
 
 DEPENDENCIES:
   - CocoaImageHashing
@@ -28,7 +28,7 @@ SPEC CHECKSUMS:
   CocoaImageHashing: 2c8efd6dd60f9030cd54086b34ffc48e927821c3
   PhoneNumberKit: 441e8b26ec88d598e3591de9061eff18f5dd12e8
   SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
-  SwiftMessages: 9cca50659fa22bb523b4dd2a958d4442e843a354
+  SwiftMessages: f0c7ef4705a570ad6c5e208b611f4333e660ed92
 
 PODFILE CHECKSUM: d635000e5f44e37fa9adf4f6a2aaf72ed52fd1e2
 
