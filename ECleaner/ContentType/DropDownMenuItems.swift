@@ -8,14 +8,18 @@
 import UIKit
 
 enum DropDownMenuItems {
-    case unselectAll
+	case selectAll
+    case deselectAll
     case changeLayout
+    case share
+    case edit
+	case delete
 }
 
 struct DropDownOptionsMenuItem {
     var titleMenu: String
     var itemThumbnail : UIImage?
-    var titleFont: UIFont = .systemFont(ofSize: 13, weight: .medium)
+    var titleFont: UIFont = .systemFont(ofSize: 16, weight: .regular)
     var isSelected: Bool
     var menuItem: DropDownMenuItems
 }

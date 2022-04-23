@@ -7,6 +7,7 @@
 
 import Foundation
 import Photos
+import Contacts
 
 
 class UpdateContentDataBaseMediator {
@@ -25,27 +26,60 @@ class UpdateContentDataBaseMediator {
         self.listener = listener
     }
     
-    func updatePhotos(_ count: Int, calculatedSpace: Int64) {
-        listener?.getPhotoLibraryCount(count: count, calculatedSpace: calculatedSpace)
-    }
-    
-    func updateVideos(_ count: Int, calculatedSpace: Int64) {
-        listener?.getVideoCount(count: count, calculatedSpace: calculatedSpace)
-    }
-    
-    func updateContacts(_ count: Int) {
-        listener?.getContactsCount(count: count)
-    }
-    
-    func getFrontCameraAsset(_ assets: [PHAsset]) {
-        listener?.getFrontCameraAsset(assets)
+    func updateContentStoreCount(mediaType: MediaContentType, itemsCount: Int, calculatedSpace: Int64?) {
+        listener?.updateContentStoreCount(mediaType: mediaType, itemsCount: itemsCount, calculatedSpace: calculatedSpace)
     }
     
     func getScreenshots(_ assets: [PHAsset]) {
-        listener?.getScreenAsset(assets)
+        listener?.getScreenAssets(assets)
     }
     
-    func getLivePhotosAsset(_ assets: [PHAsset]) {
-        listener?.getLivePhotosAsset(assets)
+    func getLivePhotosAssets(_ assets: [PHAsset]) {
+        listener?.getLivePhotosAssets(assets)
     }
+    
+    func getLargeVideosAssets(_ assets: [PHAsset]) {
+        listener?.getLargeVideosAssets(assets)
+    }
+    
+    func getSimilarVidesAssets(_ assetsGroup: [PhassetGroup]) {
+        listener?.getSimmilarVideosAssets(assetsGroup)
+    }
+    
+    func getDuplicatesVideosAssets(_ assetsGroup: [PhassetGroup]) {
+        listener?.getSimmilarVideosAssets(assetsGroup)
+    }
+    
+    func getScreenRecordsVideosAssets(_ assets: [PHAsset]) {
+        listener?.getScreenRecordsVideosAssets(assets)
+    }
+    
+    func getRecentlyDeletedPhotosAssets(_ assets: [PHAsset]) {
+        listener?.getRecentlyDeletedPhotoAsssets(assets)
+    }
+    
+    func getRecentlyDeletedVideosAssets(_ assets: [PHAsset]) {
+        listener?.getRecentlyDeletedVideoAssets(assets)
+    }
+    
+    func getAllContacts(_ contacts: [CNContact]) {
+        listener?.getAllCNContacts(contacts)
+    }
+    
+    func getAllEmptyContacts(_ contacts: [ContactsGroup]) {
+        listener?.getAllEmptyContacts(contacts)
+    }
+    
+    func getAllDuplicatedContactsGroup(_ contactsGroup: [ContactsGroup]) {
+        listener?.getAllDuplicatedContactsGroup(contactsGroup)
+    }
+    
+    func getAllDuplicatedNumbersContactsGroup(_ contactsGroup: [ContactsGroup]) {
+        listener?.getAllDuplicatedNumbersContactsGroup(contactsGroup)
+    }
+    
+    func getAllDuplicatedEmailsContactsGroup(_ contactsGroup: [ContactsGroup]) {
+        listener?.getAllDuplicatedEmailsContactsGroup(contactsGroup)
+    }
+
 }

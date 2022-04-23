@@ -11,6 +11,7 @@ class SimpleColumnFlowLayout: UICollectionViewFlowLayout {
     
     var cellsPerRow: Int
     var itemHieght: CGFloat = 100
+    var isSquare: Bool = false
     
     init(cellsPerRow: Int, minimumInterSpacing: CGFloat, minimumLineSpacing: CGFloat, inset: UIEdgeInsets = .zero) {
         self.cellsPerRow = cellsPerRow
@@ -32,7 +33,11 @@ class SimpleColumnFlowLayout: UICollectionViewFlowLayout {
         guard let collectionView = collectionView else { return }
         let margInsets = sectionInset.left + sectionInset.right + collectionView.safeAreaInsets.left + collectionView.safeAreaInsets.right + minimumInteritemSpacing * CGFloat(cellsPerRow - 1)
         let itemWidth = ((collectionView.bounds.size.width - margInsets) / CGFloat(cellsPerRow).rounded(.down))
-        itemSize = CGSize(width: itemWidth, height: itemHieght)
+        if isSquare {
+            itemSize = CGSize(width: itemWidth, height: itemWidth)
+        } else {
+            itemSize = CGSize(width: itemWidth, height: itemHieght)
+        }
     }
     
     override func invalidationContext(forBoundsChange newBounds: CGRect) -> UICollectionViewLayoutInvalidationContext {

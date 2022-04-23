@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19519"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <customFonts key="customFonts">
+        <array key="Roboto-Bold.ttf">
+            <string>Roboto-Bold</string>
+        </array>
+    </customFonts>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="StartingNavigationBar" customModule="ECleaner" customModuleProvider="target">
+            <connections>
+                <outlet property="containerView" destination="iN0-l3-epB" id="Qq8-qc-vR5"/>
+                <outlet property="leftBarButton" destination="Lxw-5y-LbO" id="jEg-WR-abw"/>
+                <outlet property="leftShadowView" destination="edI-y9-inu" id="CJx-P7-nQI"/>
+                <outlet property="rightBarButton" destination="xTe-gy-rXY" id="WV5-37-Rdi"/>
+                <outlet property="rightShadowView" destination="0Xa-N9-MwO" id="uFi-Gu-Drf"/>
+                <outlet property="titleLabel" destination="NlV-9o-emq" id="My8-x8-NfX"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB">
+            <rect key="frame" x="0.0" y="0.0" width="414" height="80"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="edI-y9-inu" customClass="ReuseShadowView" customModule="ECleaner" customModuleProvider="target">
+                    <rect key="frame" x="20" y="15" width="50" height="50"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                </view>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Lxw-5y-LbO" customClass="PrimaryButton" customModule="ECleaner" customModuleProvider="target">
+                    <rect key="frame" x="20" y="15" width="50" height="50"/>
+                    <color key="backgroundColor" red="0.9137254901960784" green="0.93725490196078431" blue="0.94901960784313721" alpha="1" colorSpace="calibratedRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="50" id="jhR-nB-0lF"/>
+                        <constraint firstAttribute="width" secondItem="Lxw-5y-LbO" secondAttribute="height" id="sYF-Nr-18c"/>
+                    </constraints>
+                    <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                    <state key="normal" image="premium"/>
+                    <buttonConfiguration key="configuration" style="plain" image="premium"/>
+                </button>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Title" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NlV-9o-emq">
+                    <rect key="frame" x="192" y="30.5" width="30" height="19"/>
+                    <fontDescription key="fontDescription" name="Roboto-Bold" family="Roboto" pointSize="16"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0Xa-N9-MwO" customClass="ReuseShadowView" customModule="ECleaner" customModuleProvider="target">
+                    <rect key="frame" x="344" y="15" width="50" height="50"/>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                </view>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xTe-gy-rXY" customClass="PrimaryButton" customModule="ECleaner" customModuleProvider="target">
+                    <rect key="frame" x="344" y="15" width="50" height="50"/>
+                    <color key="backgroundColor" red="0.9137254901960784" green="0.93725490196078431" blue="0.94901960784313721" alpha="1" colorSpace="calibratedRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="width" secondItem="xTe-gy-rXY" secondAttribute="height" id="2bc-yu-4Kf"/>
+                        <constraint firstAttribute="height" constant="50" id="34v-tj-ymw"/>
+                    </constraints>
+                    <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                    <state key="normal" image="settings"/>
+                    <buttonConfiguration key="configuration" style="plain" image="settings"/>
+                </button>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <constraints>
+                <constraint firstItem="xTe-gy-rXY" firstAttribute="centerY" secondItem="NlV-9o-emq" secondAttribute="centerY" id="7AV-ye-6FZ"/>
+                <constraint firstItem="xTe-gy-rXY" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="NlV-9o-emq" secondAttribute="trailing" constant="10" id="DGd-b7-fKk"/>
+                <constraint firstItem="0Xa-N9-MwO" firstAttribute="top" secondItem="xTe-gy-rXY" secondAttribute="top" id="Ega-WE-NUf"/>
+                <constraint firstItem="edI-y9-inu" firstAttribute="top" secondItem="Lxw-5y-LbO" secondAttribute="top" id="EiI-bA-3H7"/>
+                <constraint firstItem="0Xa-N9-MwO" firstAttribute="leading" secondItem="xTe-gy-rXY" secondAttribute="leading" id="I28-mt-t29"/>
+                <constraint firstItem="NlV-9o-emq" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="Lxw-5y-LbO" secondAttribute="trailing" constant="10" id="K77-IR-bLS"/>
+                <constraint firstItem="Lxw-5y-LbO" firstAttribute="centerY" secondItem="NlV-9o-emq" secondAttribute="centerY" id="KrG-j4-1tO"/>
+                <constraint firstItem="Lxw-5y-LbO" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="20" id="M6c-Td-ZSK"/>
+                <constraint firstItem="0Xa-N9-MwO" firstAttribute="bottom" secondItem="xTe-gy-rXY" secondAttribute="bottom" id="QCF-wQ-ZA6"/>
+                <constraint firstItem="0Xa-N9-MwO" firstAttribute="trailing" secondItem="xTe-gy-rXY" secondAttribute="trailing" id="RKw-5F-eIm"/>
+                <constraint firstItem="NlV-9o-emq" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="URm-pk-zwZ"/>
+                <constraint firstItem="NlV-9o-emq" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="UYz-nt-In6"/>
+                <constraint firstItem="edI-y9-inu" firstAttribute="bottom" secondItem="Lxw-5y-LbO" secondAttribute="bottom" id="j6S-hT-xJu"/>
+                <constraint firstItem="edI-y9-inu" firstAttribute="trailing" secondItem="Lxw-5y-LbO" secondAttribute="trailing" id="pMY-4Q-8hu"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="xTe-gy-rXY" secondAttribute="trailing" constant="20" id="rcE-6s-DwT"/>
+                <constraint firstItem="edI-y9-inu" firstAttribute="leading" secondItem="Lxw-5y-LbO" secondAttribute="leading" id="tca-pz-t1v"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <point key="canvasLocation" x="137.68115942028987" y="99.776785714285708"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="premium" width="50" height="50"/>
+        <image name="settings" width="50" height="50"/>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

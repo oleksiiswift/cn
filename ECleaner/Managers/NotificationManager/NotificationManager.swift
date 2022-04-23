@@ -9,7 +9,70 @@ import Foundation
 
 extension Notification.Name {
 
-    /// colors
+        /// `colors asets`
     static let colorDidChange = Notification.Name("colorDidChange")
-
+        /// `premium`
+    static let premiumDidChange = Notification.Name("premiumDidChange")
+    
+        /// `disk space`
+    static let photoSpaceDidChange =         Notification.Name(C.key.notification.photoSpaceNotificationName)
+    static let videoSpaceDidChange =         Notification.Name(C.key.notification.videoSpaceNotificationName)
+    static let mediaSpaceDidChange =    	 Notification.Name(C.key.notification.mediaSpaceNotificationName)
+    static let contactsCountDidChange =      Notification.Name(C.key.notification.contactsCountNotificationName)
+	static let removeContactsStoreObserver = Notification.Name(C.key.notification.removeStoreObserver)
+	static let addContactsStoreObserver = 	 Notification.Name(C.key.notification.addStoreObserver)
+    
+        /// `deep clean progress notification`
+    static let deepCleanSimilarPhotoPhassetScan =       Notification.Name(C.key.notification.deepClean.deepCleanSimilarPhotoPhassetScan)
+    static let deepCleanDuplicatedPhotoPhassetScan =    Notification.Name(C.key.notification.deepClean.deepCleanDuplicatedPhotoPhassetScan)
+    static let deepCleanScreenShotsPhassetScan =        Notification.Name(C.key.notification.deepClean.deepCleanScreenShotsPhotoPhassetScan)
+	static let deepCleanSimilarSelfiesPhassetScan =		Notification.Name(C.key.notification.deepClean.deepCleanSimilarSelfiesPhotoPhassetScan)
+    static let deepCleanSimilarLivePhotosPhaassetScan = Notification.Name(C.key.notification.deepClean.deepCleanSimilarLivePhotosPhassetScan)
+    static let deepCleanLargeVideoPhassetScan =         Notification.Name(C.key.notification.deepClean.deepCleanLargeVideoPhassetScan)
+    static let deepCleanDuplicateVideoPhassetScan =     Notification.Name(C.key.notification.deepClean.deepCleanDuplicateVideoPhassetScan)
+    static let deepCleanSimilarVideoPhassetScan =       Notification.Name(C.key.notification.deepClean.deepCleanSimilarVideoPhassetScan)
+    static let deepCleanScreenRecordingsPhassetScan =   Notification.Name(C.key.notification.deepClean.deepCleanScreenRecordingsPhassetScan)
+    static let deepCleanEmptyContactsScan =             Notification.Name(C.key.notification.deepClean.deepCleanEmptyContactsScan)
+    static let deepCleanDuplicatedContactsScan =        Notification.Name(C.key.notification.deepClean.deepCleanDuplicatedContactsScan)
+    static let deepCleanDuplicatedPhoneNumbersScan =    Notification.Name(C.key.notification.deepClean.deepCleanDuplicatedPhoneNumbersScan)
+    static let deepCleanDupLicatedMailsScan =           Notification.Name(C.key.notification.deepClean.deepCleanDupLicatedMailsScan)
+    
+        ///  `single search scan progress notification`
+	static let singleSearchSimilarPhotoScan = 				Notification.Name(C.key.notification.singleSearch.singleSearchSimilarPhotoPHAssetScan)
+	static let singleSearchDuplicatedPhotoScan = 			Notification.Name(C.key.notification.singleSearch.singleDuplicatedPhotoPHAssetScan)
+	static let singleSearchSimilarLivePhotoScan =			Notification.Name(C.key.notification.singleSearch.singleLivePhotoPHAssetScan)
+	static let singleSearchScreenShotsPhotoScan = 			Notification.Name(C.key.notification.singleSearch.singleScreeenshotsPhotoPHAssetScan)
+	static let singleSearchSimilarSelfiePhotoScan = 		Notification.Name(C.key.notification.singleSearch.singleSimilarSelfiesPHassetScan)
+	static let singleSearchLivePhotoScan = 					Notification.Name(C.key.notification.singleSearch.singleLivePhotoPHAssetScan)
+	static let singleSearchRecentlyDeletedPhotoScan = 		Notification.Name(C.key.notification.singleSearch.singleRecentlyDeletedPHAssetScan)
+	static let singleSearchLargeVideoScan = 				Notification.Name(C.key.notification.singleSearch.singleLargeVideoPHAssetScan)
+	static let singleSearchDuplicatedVideoScan = 			Notification.Name(C.key.notification.singleSearch.singleDuplicatedVideoPHAssetScan)
+	static let singleSearchSimilarVideoScan = 				Notification.Name(C.key.notification.singleSearch.singleSimilarVideoPHAssetScan)
+	static let singleSearchScreenRecordingVideoScan = 		Notification.Name(C.key.notification.singleSearch.singleScreenRecordingsVideoPHAssetScan)
+	static let singleSearchRecentlyDeletedVideoScan = 		Notification.Name(C.key.notification.singleSearch.singleRecentlyDeleteVideoPHAssetScan)
+    static let singleSearchAllContactsScan =                Notification.Name(C.key.notification.singleSearch.singleSearchAllContactsScan)
+    static let singleSearchEmptyContactsScan =              Notification.Name(C.key.notification.singleSearch.singleSearchEmptyContactsScan)
+    static let singleSearchDuplicatesNamesContactsScan =    Notification.Name(C.key.notification.singleSearch.singleSearchDuplicatesNamesContactsScan)
+    static let singleSearchDuplicatesNumbersContactsScan =  Notification.Name(C.key.notification.singleSearch.singleSearchDuplicatesNumbersContactsScan)
+    static let singleSearchDupliatesEmailsContactsScan =    Notification.Name(C.key.notification.singleSearch.singleSearchDupliatesEmailsContactsScan)
+    
+        /// `contacts`
+    static let mergeContactsSelectionDidChange =    Notification.Name(C.key.notification.mergeContactsSelectionDidChange)
+    static let selectedContactsCountDidChange =     Notification.Name(C.key.notification.selectedContactsDidChange)
+    static let scrollViewDidScroll =                Notification.Name("scrollViewDidScroll")
+    static let scrollViewDidBegingDragging =        Notification.Name("scrollViewDidBeginDragging")
+    static let searchBarDidCancel =                 Notification.Name("searchBarDidCancel")
+    static let searchBarShouldResign =              Notification.Name("searchBarShouldResign")
+	static let searchBarClearButtonClicked = 		Notification.Name("searchBarClearButtonClicked")
+    
+        /// `progress alert notification`
+    static let progressDeleteContactsAlertDidChangeProgress =   Notification.Name("progressDeleteContactsAlertDidChangeProgress")
+    static let progressMergeContactsAlertDidChangeProgress =    Notification.Name("progressMergeContactsAlertDidChangeProgress")
+	static let progressDeepCleanDidChangeProgress = 			Notification.Name("progressDeepCleanDidChangeProgress")
+	
+	static let avPlayerDidPlayEndTime = NSNotification.Name.AVPlayerItemDidPlayToEndTime
+//	Notification.Name.AVPlayerItemDidPlayToEndTime
+	
+	static let compressionVideoDidStart = NSNotification.Name(C.key.notification.compressionDidStart)
 }
+

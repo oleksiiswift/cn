@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="dgf-k2-Ase">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19519"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Deep Cleaning View Controller-->
+        <scene sceneID="l06-Vf-Z4u">
+            <objects>
+                <viewController storyboardIdentifier="DeepCleaningViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="dgf-k2-Ase" customClass="DeepCleaningViewController" customModule="ECleaner" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="NYr-Eo-MdD">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="aPq-V3-ZQn">
+                                <rect key="frame" x="0.0" y="198" width="414" height="698"/>
+                                <subviews>
+                                    <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" translatesAutoresizingMaskIntoConstraints="NO" id="Shn-gL-5Xd">
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="698"/>
+                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                    </tableView>
+                                </subviews>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstItem="Shn-gL-5Xd" firstAttribute="leading" secondItem="aPq-V3-ZQn" secondAttribute="leading" id="KpC-OY-B2C"/>
+                                    <constraint firstAttribute="trailing" secondItem="Shn-gL-5Xd" secondAttribute="trailing" id="Ovu-lb-lMw"/>
+                                    <constraint firstAttribute="bottom" secondItem="Shn-gL-5Xd" secondAttribute="bottom" id="cpA-Eb-jQH"/>
+                                    <constraint firstItem="Shn-gL-5Xd" firstAttribute="top" secondItem="aPq-V3-ZQn" secondAttribute="top" id="q9W-r4-Nvv"/>
+                                </constraints>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="AfT-1t-egB" customClass="NavigationBar" customModule="ECleaner" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="44" width="414" height="70"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="70" id="oqP-Gv-7aC"/>
+                                </constraints>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6Ng-o0-PeD" customClass="DateSelectebleView" customModule="ECleaner" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="114" width="414" height="84"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="84" id="NfA-T9-K4L"/>
+                                </constraints>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Wky-jb-hpF" customClass="BottomButtonBarView" customModule="ECleaner" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="786" width="414" height="110"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="110" id="AUQ-2o-b9A"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="RQj-fH-pIt"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="Wky-jb-hpF" secondAttribute="trailing" id="0zf-zV-270"/>
+                            <constraint firstItem="aPq-V3-ZQn" firstAttribute="leading" secondItem="NYr-Eo-MdD" secondAttribute="leading" id="FlC-Nz-DLu"/>
+                            <constraint firstItem="AfT-1t-egB" firstAttribute="trailing" secondItem="RQj-fH-pIt" secondAttribute="trailing" id="Fnf-67-wix"/>
+                            <constraint firstItem="AfT-1t-egB" firstAttribute="leading" secondItem="RQj-fH-pIt" secondAttribute="leading" id="Uh3-cr-7AP"/>
+                            <constraint firstItem="6Ng-o0-PeD" firstAttribute="top" secondItem="AfT-1t-egB" secondAttribute="bottom" id="WLz-vO-9On"/>
+                            <constraint firstItem="6Ng-o0-PeD" firstAttribute="trailing" secondItem="RQj-fH-pIt" secondAttribute="trailing" id="bGz-yB-0PI"/>
+                            <constraint firstAttribute="bottom" secondItem="aPq-V3-ZQn" secondAttribute="bottom" id="df1-3v-XST"/>
+                            <constraint firstItem="Wky-jb-hpF" firstAttribute="leading" secondItem="NYr-Eo-MdD" secondAttribute="leading" id="jb1-Pu-Zol"/>
+                            <constraint firstAttribute="bottom" secondItem="Wky-jb-hpF" secondAttribute="bottom" id="pPy-Fa-VqD"/>
+                            <constraint firstItem="aPq-V3-ZQn" firstAttribute="top" secondItem="6Ng-o0-PeD" secondAttribute="bottom" id="pV4-iP-n60"/>
+                            <constraint firstAttribute="trailing" secondItem="aPq-V3-ZQn" secondAttribute="trailing" id="pVa-pD-XOR"/>
+                            <constraint firstItem="AfT-1t-egB" firstAttribute="top" secondItem="RQj-fH-pIt" secondAttribute="top" id="vB4-QW-QiW"/>
+                            <constraint firstItem="6Ng-o0-PeD" firstAttribute="leading" secondItem="RQj-fH-pIt" secondAttribute="leading" id="zrz-pH-hfS"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="vpx-hF-lDg"/>
+                    <connections>
+                        <outlet property="bottomButtonView" destination="Wky-jb-hpF" id="IpC-It-V1c"/>
+                        <outlet property="bottomContainerHeightConstraint" destination="AUQ-2o-b9A" id="rag-sk-09r"/>
+                        <outlet property="dateSelectContainerHeigntConstraint" destination="NfA-T9-K4L" id="Kxc-S3-qiI"/>
+                        <outlet property="dateSelectPickerView" destination="6Ng-o0-PeD" id="7cj-71-Wpe"/>
+                        <outlet property="navigationBar" destination="AfT-1t-egB" id="Z9I-6G-U0a"/>
+                        <outlet property="tableView" destination="Shn-gL-5Xd" id="A6o-3c-XuL"/>
+                        <segue destination="SRX-sV-Dqj" kind="custom" identifier="ShowDatePickerLowerDateSelectorViewController" customClass="ShowDatePickerLowerDateSelectorViewController" customModule="ECleaner" customModuleProvider="target" id="v7i-we-zer"/>
+                        <segue destination="SRX-sV-Dqj" kind="custom" identifier="ShowDatePickerUpperDateSelectorViewController" customClass="ShowDatePickerUpperDateSelectorViewController" customModule="ECleaner" customModuleProvider="target" id="OgB-Fx-PBO"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="aOG-3J-YcB" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2139.130434782609" y="114.50892857142857"/>
+        </scene>
+        <!--DatePicker-->
+        <scene sceneID="gjw-wz-K4k">
+            <objects>
+                <viewControllerPlaceholder storyboardName="DatePicker" id="SRX-sV-Dqj" sceneMemberID="viewController">
+                    <navigationItem key="navigationItem" id="o8P-po-boj"/>
+                </viewControllerPlaceholder>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="tcT-bU-qXc" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3372" y="115"/>
+        </scene>
+    </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="OgB-Fx-PBO"/>
+    </inferredMetricsTieBreakers>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

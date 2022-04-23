@@ -10,45 +10,73 @@ import UIKit
 class GroupedAssetsReusableHeaderView: UICollectionReusableView {
     
     @IBOutlet weak var baseView: UIView!
-    @IBOutlet weak var assetsSelectedCountTextLabel: UILabel!
-    @IBOutlet weak var selectAllButtonTextLabel: UILabel!
-    
+	@IBOutlet weak var currentAssetsDate: UILabel!
+	@IBOutlet weak var deleteSelectedButton: ShadowButtonWithImage!
+	@IBOutlet weak var selectAllButton: ShadowButton!
+	
+	public var indexPath: IndexPath?
     public var onSelectAll: (() -> Void)?
-
-    public var indexPath: IndexPath?
+	public var onDeleteSelected: (() -> Void)?
+	
+	public var mediaContentType: MediaContentType = .none
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        
-        assetsSelectedCountTextLabel.text = ""
-        selectAllButtonTextLabel.text = "select all"
+		
+		currentAssetsDate.text = nil
     }
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        
-        setupUI()
-        updateColors()   
+		
     }
-    
-    @IBAction func didTapSelectAllActionButton(_ sender: Any) {
-        
+	
+	@IBAction func didTapDeleteSelectedAssetsActionButton(_ sender: ShadowButtonWithImage) {
+		deleteSelectedButton.animateButtonTransform()
+		onDeleteSelected?()
+	}
+	
+    @IBAction func didTapSelectAllActionButton(_ sender: ShadowButton) {
+		selectAllButton.animateButtonTransform()
         onSelectAll?()
     }
 }
 
 extension GroupedAssetsReusableHeaderView: Themeble {
     
-    private func setupUI() {}
+    public func setupUI() {
+		
+		let deletedText = "delete selected".uppercased()
+		let image = I.systemItems.defaultItems.trashBin
+		deleteSelectedButton.contentType = mediaContentType
+		selectAllButton.contentType = mediaContentType
+		deleteSelectedButton.setMainButton(text: deletedText, image: image)
+				
+		currentAssetsDate.font = .systemFont(ofSize: 14, weight: .bold)
+		currentAssetsDate.textColor = theme.helperTitleTextColor
+	}
+	
+	public func handleSelectableAsstes(to select: Bool) {
+		
+		let handledImage = !select ? I.systemItems.selectItems.circleMark : I.systemItems.selectItems.roundedCheckMark
+		selectAllButton.setImage(handledImage, enabled: select)
+	}
+	
+	public func handleDeleteAssets(to select: Bool) {
+		
+		deleteSelectedButton.updateColors(for: select)
+		deleteSelectedButton.isEnabled = select
+	}
+	
+	public func setGroupDate(_ date: Date?) {
+			
+		if let date = date {
+			let headerTitle = Date().convertDateFormatterFromDate(date: date, format: C.dateFormat.monthDateYear)
+			currentAssetsDate.text = headerTitle
+		} else {
+			currentAssetsDate.text = "-"
+		}
+	}
     
-    public func setSelectDeselectButton(_ isSelectAll: Bool) {
-        
-        self.selectAllButtonTextLabel.text = isSelectAll ? "deselect all" : "select all"
-    }
-    
-    public func updateColors() {
-        
-        assetsSelectedCountTextLabel.textColor = currentTheme.titleTextColor
-        selectAllButtonTextLabel.textColor = currentTheme.titleTextColor
-    }
+    public func updateColors() {}
 }

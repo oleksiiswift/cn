@@ -31,42 +31,134 @@ class SettingsManager {
             U.userDefaults.setValue(newValue, forKey: C.key.settings.photoLibraryAccessGranted)
         }
     }
-    
-    static var startingSavedDate: String {
+	
+	static var defaultLowerDateValue: Date {
+		get {
+			return Date(timeIntervalSince1970: 0)
+		}
+	}
+	
+	static var defaultUpperDateValue: Date {
+		get {
+			return U.getDateFromComponents(day: 1, month: 1, year: 2666)
+		}
+	}
+	
+	static var lowerBoundSavedDate: Date {
+		get {
+			if let date = U.userDefaults.getDate(forKey: C.key.settings.lowerBoundSavedDate) {
+				return date
+			} else {
+				return Date(timeIntervalSince1970: 0)
+			}
+		} set {
+			U.userDefaults.set(date: newValue, forKey: C.key.settings.lowerBoundSavedDate)
+		}
+	}
+	
+	static var upperBoundSavedDate: Date {
+		get {
+			if let date = U.userDefaults.getDate(forKey: C.key.settings.upperBoundSavedDate) {
+				return date
+			} else {
+				let currentDate = Date()
+				let days = U.numbersOfDays(at: currentDate.getMonth(), in: currentDate.getYear())
+				let date = U.getDateFromComponents(day: days, month: currentDate.getMonth(), year: currentDate.getYear())
+				return date
+			}
+		} set {
+			U.userDefaults.set(date: newValue, forKey: C.key.settings.upperBoundSavedDate)
+		}
+	}
+	
+    static var lastSmartCleanDate: Date? {
         get {
-            if let savedDate = U.userDefaults.string(forKey: C.key.settings.startingSavedDate) {
-                return savedDate
-            } else {
-                self.startingSavedDate = timeMachine
-                return timeMachine
-            }
+			return U.userDefaults.getDate(forKey: C.key.settings.lastSmartClean)
         } set {
-            U.userDefaults.setValue(newValue, forKey: C.key.settings.startingSavedDate)
+			U.userDefaults.set(date: newValue, forKey: C.key.settings.lastSmartClean)
         }
     }
-    
-    static var endingSavedDate: String {
-        get {
-            if let endingDate = U.userDefaults.string(forKey: C.key.settings.endingSavedDate) {
-                return endingDate
-            } else {
-                
-                let currentDate = U.getString(from: Date(), format: C.dateFormat.fullDmy)
-                self.endingSavedDate = currentDate
-                return currentDate
-            }
-        } set {
-            U.userDefaults.setValue(newValue, forKey: C.key.settings.endingSavedDate)
-        }
-    }
-    
-    static var lastSmartCleanDate: String? {
-        get {
-            return U.userDefaults.string(forKey: C.key.settings.lastSmartClean)
-        } set {
-            U.userDefaults.set(newValue, forKey: C.key.settings.lastSmartClean)
-        }
-    }
-    
-    static var timeMachine = "01-01-1970 00:00:00"
+	
+	static var largeVideoLowerSize: Int64 {
+		get {
+			if let fileSize = U.userDefaults.value(forKey: C.key.settings.largeVideoLowerSize) as? Int64 {
+				return fileSize
+			} else {
+				return LargeVideoSize.medium.rawValue
+			}
+		} set {
+			U.userDefaults.setValue(newValue, forKey: C.key.settings.largeVideoLowerSize)
+		}
+	}
 }
+
+//  MARK: file sizez String values
+    /// `phassetPhotoFilesSizes` -> disk space for all photos assets
+    /// `phassetVideoFilesSizes` -> disk space for all videos assets
+    /// `phassetFilesSize` -> disk space for all phassets
+
+extension SettingsManager {
+    
+    static var phassetPhotoFilesSizes: Int64? {
+        get {
+            return U.userDefaults.value(forKey: C.key.settings.photoSpace) as? Int64
+        } set {
+            let info = [C.key.settings.photoSpace: newValue]
+            U.userDefaults.setValue(newValue, forKey: C.key.settings.photoSpace)
+            do {
+                U.notificationCenter.post(name: .photoSpaceDidChange, object: nil, userInfo: info as [AnyHashable : Any])
+            }
+        }
+    }
+    
+    static var phassetVideoFilesSizes: Int64? {
+        get {
+            return U.userDefaults.value(forKey: C.key.settings.videoSpace) as? Int64
+        } set {
+            let info = [C.key.settings.videoSpace: newValue]
+            U.userDefaults.setValue(newValue, forKey: C.key.settings.videoSpace)
+            do {
+                U.notificationCenter.post(name: .videoSpaceDidChange, object: nil, userInfo: info as [AnyHashable : Any])
+            }
+        }
+    }
+    
+    static var phassetFilesSize: Int64? {
+        get {
+            return U.userDefaults.value(forKey: C.key.settings.allMediaSpace) as? Int64
+        } set {
+            let info = [C.key.settings.allMediaSpace: newValue]
+            U.userDefaults.setValue(newValue, forKey: C.key.settings.allMediaSpace)
+            do {
+                U.notificationCenter.post(name: .mediaSpaceDidChange, object: nil, userInfo: info as [AnyHashable : Any])
+            }
+        }
+    }
+    
+    static func getDiskSpaceFiles(of type: MediaContentType) -> Int64? {
+        switch type {
+            case .userPhoto:
+                return S.phassetPhotoFilesSizes
+            case .userVideo:
+                return S.phassetVideoFilesSizes
+            case .userContacts:
+                return 0
+            case .none:
+                return S.phassetFilesSize
+        }
+    }
+    
+    static func setDiskSpaceFiles(of type: MediaContentType, newValue: Int64) {
+        switch type {
+            case .userPhoto:
+                S.phassetPhotoFilesSizes = newValue
+            case .userVideo:
+                S.phassetVideoFilesSizes = newValue
+            case .none:
+                S.phassetFilesSize = newValue
+            default:
+                return
+        }
+    }
+}
+

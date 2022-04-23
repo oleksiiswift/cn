@@ -13,6 +13,8 @@ class Utils {
     
 //    MARK: - DEFAULT VALUES -
     
+    static let appName: String = Bundle.main.appName
+    
     static let userDefaults: UserDefaults = .standard
     
     static let application: UIApplication = .shared
@@ -43,7 +45,18 @@ class Utils {
     
     static let window = U.application.windows.filter { $0.isKeyWindow}.first
     
-    static let statusBarHeight: CGFloat = window?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0
+    static let windowScene = UIApplication.shared.connectedScenes
+                    .filter { $0.activationState == .foregroundActive }
+        .compactMap { $0 as? UIWindowScene }
+    
+    static let keyWindow = UIApplication.shared.connectedScenes
+            .filter({$0.activationState == .foregroundActive})
+            .map({$0 as? UIWindowScene})
+            .compactMap({$0})
+            .first?.windows
+            .filter({$0.isKeyWindow}).first
+    
+    static let statusBarHeight: CGFloat = UIApplication.shared.windows.first?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0
     
     static let topSafeAreaInset: CGFloat = U.screenHeight < 600 ? 5 : 10
     
@@ -82,11 +95,11 @@ class Utils {
     static let isLandscapeOrientation = device.orientation.isLandscape
     
     static public var hasTopNotch: Bool {
-        return window?.safeAreaInsets.top ?? 0 > 20
+        return UIApplication.shared.windows.first?.safeAreaInsets.top ?? 0 > 20
     }
     
     static public var bottomSafeAreaHeight: CGFloat {
-        return window?.safeAreaInsets.bottom ?? 0
+        return UIApplication.shared.windows.first?.safeAreaInsets.bottom ?? 0
     }
     
     static let isSimulator = UIDevice.isSimulator
@@ -130,21 +143,30 @@ extension Utils {
             completion()
         }
     }
-    
+
+    /// main
     static func UI(_ block: @escaping () -> Void) {
         DispatchQueue.main.async(execute: block)
     }
     
+    /// main after
+    static func UI(after: Float, _ block: @escaping ()->Void) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: block)
+    }
+    
+    /// background
     static func BG(_ block: @escaping () -> Void) {
         DispatchQueue.global(qos: .background).async(execute: block)
     }
     
+    /// background delay
     static func BGD(after: Float,_ block: @escaping () -> Void) {
         DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + 0.5, execute: block)
     }
     
-    static func UI(after: Float, _ block: @escaping ()->Void) {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: block)
+    /// global
+    static func GLB(qos: DispatchQoS.QoSClass,_ block: @escaping () -> Void) {
+        DispatchQueue.global(qos: qos).async(execute: block)
     }
 }
 
@@ -160,10 +182,9 @@ extension Utils {
     }
 }
 
-
 //      MARK: - get the most top view controller - 
 func topController() -> UIViewController? {
-    if var controller = U.window?.rootViewController {
+    if var controller = UIApplication.shared.windows.first?.rootViewController {
         while let presentedViewController = controller.presentedViewController {
             controller = presentedViewController
         }
@@ -172,7 +193,7 @@ func topController() -> UIViewController? {
     return nil
 }
 
-func getTheMostTopController(controller: UIViewController? = U.window?.rootViewController) -> UIViewController? {
+func getTheMostTopController(controller: UIViewController? = UIApplication.shared.windows.first?.rootViewController) -> UIViewController? {
     if let navigationController = controller as? UINavigationController {
         return getTheMostTopController(controller: navigationController.visibleViewController)
     } else if let presentedViewController = controller?.presentedViewController {
@@ -209,7 +230,6 @@ extension Utils {
                 .replacingOccurrences(of: ".0", with: "")
         }
     }
-    
 }
 
 //      MARK: - Date time manager
@@ -230,5 +250,57 @@ extension Utils {
     
     static func getDateFrom(string date: String, format: String) -> Date? {
         return Date().getDateFromString(stringDate: date, format: format)
+    }
+
+	static func numbersOfDays(at month: Int, in year: Int) -> Int {
+		let calendar = Calendar(identifier: .gregorian)
+		var components = DateComponents()
+		components.day = 1
+		components.month = month
+		components.year = year
+		return (calendar as NSCalendar).range(of: .day, in: .month, for: calendar.date(from: components)!).length
+	}
+	
+	static func getDateFromComponents(day: Int, month: Int, year: Int) -> Date {
+		let calendar = Calendar(identifier: .gregorian)
+		var components = DateComponents()
+		components.day = day
+		components.month = month
+		components.year = year
+		components.timeZone = TimeZone(secondsFromGMT: 0)
+		return calendar.date(from: components)!
+	}
+	
+	static func setUpperDefaultValue() {
+		
+		let currentDay = Date()
+		let numbersOfDayInThisMonth = numbersOfDays(at: currentDay.getMonth(), in: currentDay.getYear())
+		let upperDate = getDateFromComponents(day: numbersOfDayInThisMonth, month: currentDay.getMonth(), year: currentDay.getYear())
+		S.upperBoundSavedDate = upperDate
+	}
+	
+	static func setLowerDafaultValue() {
+		S.lowerBoundSavedDate = Date(timeIntervalSinceReferenceDate: 0)
+	}
+}
+
+//  TODO: temp get name from bundle, for future get localized app name
+internal extension Bundle {
+    
+    var appName: String {
+        if let bundleName = self.object(forInfoDictionaryKey: kCFBundleNameKey as String) as? String {
+            return bundleName
+        }
+        return ""
+    }
+}
+
+
+class Hello: NSObject {
+    
+    private static let shared = Hello()
+    
+    static var sharedInstance: Hello {
+        return self.shared
     }
 }

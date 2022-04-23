@@ -8,13 +8,12 @@
 import UIKit
 
 extension UIButton {
+    
     func setTitleWithoutAnimation(title: String?) {
         
-        UIView.setAnimationsEnabled(false)
-        
-        setTitle(title, for: .normal)
-
-        layoutIfNeeded()
-        UIView.setAnimationsEnabled(true)
+        UIView.performWithoutAnimation {
+            setTitle(title, for: .normal)
+            layoutIfNeeded()
+        }
     }
 }
