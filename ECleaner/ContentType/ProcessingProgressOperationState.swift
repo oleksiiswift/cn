@@ -37,7 +37,7 @@ enum ProcessingProgressOperationState {
 			case .empty:
 				return ProcessingResultComplete.instance.emptyResultProcessingComplete(mediaType)
 			case .selected:
-				return ProcessingResultComplete.instance.selectedVsResultProcessing(mediaType, files: files, selected: selected)
+				return ProcessingResultComplete.instance.selectedResultProcessing(mediaType, files: files, selected: selected)
 		}
 	}
 }
@@ -78,6 +78,43 @@ struct ProcessingResultComplete {
 				return String("\(files) ") + "duplicated contacts group" + "(\(selected) selected contacts)"
 			case .duplicatedEmails:
 				return String("\(files) ") + "duplicated contacts group" + "(\(selected) selected contacts)"
+			default:
+				return "none"
+		}
+	}
+	
+	func selectedResultProcessing(_ mediaType: PhotoMediaType, files: Int, selected: Int) -> String {
+		switch mediaType {
+			case .similarPhotos:
+				return selected == 0 ? String("\(files) " + "similar groups") : "\(selected) selected photos"
+			case .duplicatedPhotos:
+				return selected == 0 ? String("\(files) ") + "duplicated groups" : "\(selected) selected photos"
+			case .singleScreenShots:
+				return selected == 0 ? String("\(files) ") + "files" : "\(selected) selected photos"
+			case .singleLivePhotos:
+				return selected == 0 ? String("\(files) ") + "files" : "\(selected) selected photos"
+			case .similarLivePhotos:
+				return selected == 0 ? String("\(files) ") + "similar groups" : "\(selected) selected photos"
+			case .similarSelfies:
+				return selected == 0 ? String("\(files) ") + "similar groups" : "\(selected) selected photos"
+			case .singleLargeVideos:
+				return selected == 0 ? String("\(files) ") + "files" : "\(selected) selected videos"
+			case .duplicatedVideos:
+				return selected == 0 ? String("\(files) ") + "duplicated groups" : "\(selected) selected videos"
+			case .similarVideos:
+				return selected == 0 ? String("\(files) ") + "similar groups" : "\(selected) selected videos"
+			case .singleScreenRecordings:
+				return selected == 0 ? String("\(files) ") + "files" : "\(selected) selected videos"
+			case .allContacts:
+				return selected == 0 ? String("\(files) ") + "contacts" : "\(selected) selected contacts"
+			case .emptyContacts:
+				return selected == 0 ? String("\(files) ") + "contacts" : "\(selected) selected contacts"
+			case .duplicatedContacts:
+				return selected == 0 ? String("\(files) ") + "duplicated contacts group" : "\(selected) selected contacts"
+			case .duplicatedPhoneNumbers:
+				return selected == 0 ? String("\(files) ") + "duplicated contacts group" : "\(selected) selected contacts"
+			case .duplicatedEmails:
+				return selected == 0 ? String("\(files) ") + "duplicated contacts group" : "\(selected) selected contacts"
 			default:
 				return "none"
 		}

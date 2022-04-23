@@ -137,6 +137,7 @@
 		971AD5E927EAB72900811A3A /* ZoomTransitionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971AD5E827EAB72900811A3A /* ZoomTransitionController.swift */; };
 		971AD5EC27EAC10800811A3A /* ZoomDismissalInteractionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971AD5EB27EAC10800811A3A /* ZoomDismissalInteractionController.swift */; };
 		971AD5EE27EAC13C00811A3A /* ZoomAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971AD5ED27EAC13C00811A3A /* ZoomAnimator.swift */; };
+		971F05152813EE56009B796C /* ParkBenchTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971F05142813EE56009B796C /* ParkBenchTimer.swift */; };
 		97238A072689BD8000C523DC /* PhotoMediaType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97238A062689BD8000C523DC /* PhotoMediaType.swift */; };
 		97238A092689D01E00C523DC /* GroupedAssetListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97238A082689D01E00C523DC /* GroupedAssetListViewController.swift */; };
 		97238A0B2689EDD200C523DC /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97238A0A2689EDD200C523DC /* Toast.swift */; };
@@ -158,8 +159,8 @@
 		972E02542741050D00C236C7 /* SingleContactsGroupOperationsListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972E02532741050D00C236C7 /* SingleContactsGroupOperationsListener.swift */; };
 		972E0256274105B300C236C7 /* SingleContactsGroupOperationsMediator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972E0255274105B300C236C7 /* SingleContactsGroupOperationsMediator.swift */; };
 		972ED06B2808E09000096502 /* CompressionSettingsConfiguretion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972ED06A2808E09000096502 /* CompressionSettingsConfiguretion.swift */; };
+		9740EB7D280EFDB000B8E63C /* TableView+ReoloadRows.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9740EB7C280EFDB000B8E63C /* TableView+ReoloadRows.swift */; };
 		9745CC1B280765DA00335C04 /* VideoCompressionCustomSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9745CC1A280765D900335C04 /* VideoCompressionCustomSettingsViewController.swift */; };
-		9745CC1E2807E2EE00335C04 /* MarkSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 9745CC1D2807E2EE00335C04 /* MarkSlider.m */; };
 		975617D8273BC32A00E07A62 /* ReuseShadowRoundedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 975617D7273BC32A00E07A62 /* ReuseShadowRoundedView.swift */; };
 		975AF43127281DF700744E3B /* ContactListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 975AF43027281DF700744E3B /* ContactListViewModel.swift */; };
 		975AF4352728210A00744E3B /* DynamicListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 975AF4342728210A00744E3B /* DynamicListener.swift */; };
@@ -427,6 +428,7 @@
 		971AD5E827EAB72900811A3A /* ZoomTransitionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoomTransitionController.swift; sourceTree = "<group>"; };
 		971AD5EB27EAC10800811A3A /* ZoomDismissalInteractionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoomDismissalInteractionController.swift; sourceTree = "<group>"; };
 		971AD5ED27EAC13C00811A3A /* ZoomAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoomAnimator.swift; sourceTree = "<group>"; };
+		971F05142813EE56009B796C /* ParkBenchTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParkBenchTimer.swift; sourceTree = "<group>"; };
 		97238A062689BD8000C523DC /* PhotoMediaType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoMediaType.swift; sourceTree = "<group>"; };
 		97238A082689D01E00C523DC /* GroupedAssetListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupedAssetListViewController.swift; sourceTree = "<group>"; };
 		97238A0A2689EDD200C523DC /* Toast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
@@ -448,9 +450,8 @@
 		972E02532741050D00C236C7 /* SingleContactsGroupOperationsListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleContactsGroupOperationsListener.swift; sourceTree = "<group>"; };
 		972E0255274105B300C236C7 /* SingleContactsGroupOperationsMediator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleContactsGroupOperationsMediator.swift; sourceTree = "<group>"; };
 		972ED06A2808E09000096502 /* CompressionSettingsConfiguretion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompressionSettingsConfiguretion.swift; sourceTree = "<group>"; };
+		9740EB7C280EFDB000B8E63C /* TableView+ReoloadRows.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TableView+ReoloadRows.swift"; sourceTree = "<group>"; };
 		9745CC1A280765D900335C04 /* VideoCompressionCustomSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoCompressionCustomSettingsViewController.swift; sourceTree = "<group>"; };
-		9745CC1C2807E28500335C04 /* MarkSlider.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MarkSlider.h; sourceTree = "<group>"; };
-		9745CC1D2807E2EE00335C04 /* MarkSlider.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MarkSlider.m; sourceTree = "<group>"; };
 		975617D7273BC32A00E07A62 /* ReuseShadowRoundedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReuseShadowRoundedView.swift; sourceTree = "<group>"; };
 		975AF43027281DF700744E3B /* ContactListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactListViewModel.swift; sourceTree = "<group>"; };
 		975AF4342728210A00744E3B /* DynamicListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicListener.swift; sourceTree = "<group>"; };
@@ -734,9 +735,9 @@
 		049CC21126821D5F0002F988 /* Alert */ = {
 			isa = PBXGroup;
 			children = (
+				04E5837D267B60F600EDC3A3 /* AlertManager.swift */,
 				9770C806274D18420046EF84 /* ErrorHandler */,
 				97AFE8F7278C5DEB0062E5D1 /* AlertHandler */,
-				04E5837D267B60F600EDC3A3 /* AlertManager.swift */,
 				97A57474280C7C8A00B76BD0 /* ProgressAlert */,
 				978FEF11274BB73700ADE1D9 /* AlertType.swift */,
 			);
@@ -921,9 +922,9 @@
 				04E5835D267A3E6C00EDC3A3 /* Extension */,
 				04E58366267A3F7200EDC3A3 /* Listeners */,
 				04E58361267A3ED000EDC3A3 /* Protocols */,
-				04E0947D267A06B900A69956 /* Info.plist */,
 				04E58367267A3F8F00EDC3A3 /* Assets */,
 				9701D27527BE56DA0078E39F /* ECleaner-Bridging-Header.h */,
+				04E0947D267A06B900A69956 /* Info.plist */,
 			);
 			path = ECleaner;
 			sourceTree = "<group>";
@@ -989,6 +990,7 @@
 				979278672771241F0090F368 /* FileFormats */,
 				971AD5EA27EAB72D00811A3A /* TransitionController */,
 				972A2A172806255300D6F54A /* temp */,
+				971F05142813EE56009B796C /* ParkBenchTimer.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -1059,8 +1061,6 @@
 				972A2A38280633E500D6F54A /* SliderView */,
 				97A867AF27E9546B00891297 /* CustomUIButtons */,
 				970B208B27F5BCB900B5AF7D /* GradientSlider */,
-				9745CC1C2807E28500335C04 /* MarkSlider.h */,
-				9745CC1D2807E2EE00335C04 /* MarkSlider.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1780,6 +1780,7 @@
 			isa = PBXGroup;
 			children = (
 				97CB351D273A9746005DA881 /* TableView+IndexPath.swift */,
+				9740EB7C280EFDB000B8E63C /* TableView+ReoloadRows.swift */,
 			);
 			path = TableView;
 			sourceTree = "<group>";
@@ -2133,6 +2134,7 @@
 				97DA18F12797502B00427587 /* Thread+Extension.swift in Sources */,
 				04467CE0270D929D00DBBB39 /* HorizontalProgressBar.swift in Sources */,
 				97CE449D273D311400DF6114 /* NavigationBarDelegate.swift in Sources */,
+				971F05152813EE56009B796C /* ParkBenchTimer.swift in Sources */,
 				044281FE2692F9B800B6B47C /* SelectDropDownMenuDelegate.swift in Sources */,
 				97CB351E273A9746005DA881 /* TableView+IndexPath.swift in Sources */,
 				4F56073E27205AF300CA19E9 /* ProgressView.swift in Sources */,
@@ -2249,9 +2251,9 @@
 				047DE61C26AAD5F000733CD5 /* DeepCleanManager.swift in Sources */,
 				97DC39AE273C003300D487BE /* PrimaryShadowButton.swift in Sources */,
 				04CF00002685F0C3000CA850 /* ContentTypeTableViewCell.swift in Sources */,
-				9745CC1E2807E2EE00335C04 /* MarkSlider.m in Sources */,
 				970D7786275B70420048F41D /* PHAsset+FileSize.swift in Sources */,
 				97AFE8F6278C5B730062E5D1 /* AlertHandler.swift in Sources */,
+				9740EB7D280EFDB000B8E63C /* TableView+ReoloadRows.swift in Sources */,
 				4F56074727205AF300CA19E9 /* BlueDarkStyle.swift in Sources */,
 				049CC221268314690002F988 /* NotificationManager.swift in Sources */,
 				9784D3A82742CDDB00340D97 /* ReuseShadowView.swift in Sources */,
@@ -2453,7 +2455,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 0108;
+				CURRENT_PROJECT_VERSION = 2304;
 				DEVELOPMENT_TEAM = 7684Y6KS7W;
 				INFOPLIST_FILE = ECleaner/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -2461,7 +2463,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.01;
+				MARKETING_VERSION = 0.01.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.phone.clean.cache;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "ECleaner/ECleaner-Bridging-Header.h";
@@ -2479,7 +2481,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 0108;
+				CURRENT_PROJECT_VERSION = 2304;
 				DEVELOPMENT_TEAM = 7684Y6KS7W;
 				INFOPLIST_FILE = ECleaner/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -2487,7 +2489,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.01;
+				MARKETING_VERSION = 0.01.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.phone.clean.cache;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "ECleaner/ECleaner-Bridging-Header.h";

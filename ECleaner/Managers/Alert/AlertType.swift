@@ -38,6 +38,8 @@ enum AlertType {
 	case duplicatedNumbersIsEmpty
 	case duplicatedEmailsIsEmpty
 	
+	case deepCleanSearchinResultsIsEmpty
+	
 		/// `permite delete`
     case allowDeleteSelectedPhotos
 	case allowDeleteSelectedPhoto
@@ -109,7 +111,8 @@ enum AlertType {
 					.duplicatedNumbersIsEmpty,
 					.duplicatedEmailsIsEmpty:
 				return ErrorHandler.shared.emptyResultsErrorTitle()
-				
+			case .deepCleanSearchinResultsIsEmpty:
+				return ErrorHandler.shared.emptyResultsTitle(for: .deepCleanResultsIsEmpty)
 			case .setBreakDeepCleanSearch, .setBreakSingleCleanSearch, .setBreakSmartSingleCleanSearch:
 				return "stop search process?"
 			case .setBreakDeepCleanDelete:
@@ -200,6 +203,8 @@ enum AlertType {
 				return ErrorHandler.shared.emptyResultsForKey(.duplicatedNumbersIsEmpty)
 			case .duplicatedEmailsIsEmpty:
 				return ErrorHandler.shared.emptyResultsForKey(.duplicatedEmailsIsEmpty)
+			case .deepCleanSearchinResultsIsEmpty:
+				return ErrorHandler.shared.emptyResultsForKey(.deepCleanResultsIsEmpty)
 				
 			case .setBreakDeepCleanSearch:
 				return "this will reset all search progress"
@@ -295,7 +300,8 @@ enum AlertType {
 					.emptyContactsIsEmpty,
 					.duplicatedNamesIsEmpty,
 					.duplicatedNumbersIsEmpty,
-					.duplicatedEmailsIsEmpty:
+					.duplicatedEmailsIsEmpty,
+					.deepCleanSearchinResultsIsEmpty:
 				return false
 				
             case .allowNotification, .allowConstacStore, .allowPhotoLibrary, .withCancel:

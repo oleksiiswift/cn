@@ -25,20 +25,13 @@ class GroupedAssetListViewController: UIViewController {
 	var scrollView = UIScrollView()
 	let collectionViewFlowLayout = SNCollectionViewLayout()
 	
-//	private var currentCell: PhotoCollectionViewCell? {
-//		view.layoutIfNeeded()
-//		collectionView.layoutIfNeeded()
-//		return collectionView.cellForItem(at: self.currentIndex) as? PhotoCollectionViewCell
-//	}
-//	
-//	private var currentIndex = (IndexPath(row: 0, section: 0))
-		
 		/// - delegates -
 	private weak var delegate: ContentGroupedDataProviderDelegate?
 	var selectedAssetsDelegate: DeepCleanSelectableAssetsDelegate?
 		/// - managers -
 	private var prefetchCacheImageManager = PhotoManager.shared.prefetchManager
 	private var photoManager = PhotoManager.shared
+	private var progressAlertController = ProgressAlertController.shared
 		/// `assets`
 	public var assetGroups: [PhassetGroup] = []
 	public var mediaType: PhotoMediaType = .none
@@ -50,6 +43,7 @@ class GroupedAssetListViewController: UIViewController {
 	}
 	public var isDeepCleaningSelectableFlow: Bool = false
 	public var changedPhassetGroupCompletionHandler: ((_ phassetGroup: [PhassetGroup]) -> Void)?
+	public let phassetsTechnicalUseOperation = OperationProcessingQueuer(name: Constants.key.operation.queue.techUseQueue, maxConcurrentOperationCount: 2, qualityOfService: .userInteractive)
 	
 	private var selectedAssets: [PHAsset] = []
 	private var selectedSection: Set<Int> = []
@@ -73,20 +67,15 @@ class GroupedAssetListViewController: UIViewController {
 		updateColors()
 		handleDeleteAssetsButton()
     }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-    }
-    
+	
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
 		updateCachedAssets()
         self.defaultContainerHeight = self.photoContentContainerView.frame.height
+		handleDeepCleanStartSelectablePHAssetsGroup()
     }
 }
-
 
 extension GroupedAssetListViewController {
 	
@@ -106,10 +95,12 @@ extension GroupedAssetListViewController {
 extension GroupedAssetListViewController {
 	
 	func openBurgerMenu() {
-	
+
+		let deleteButtonIsSelected: Bool = !self.selectedAssets.isEmpty
+		
 		let selectAllOptionItem = DropDownOptionsMenuItem(titleMenu: "select all", itemThumbnail: I.systemElementsItems.circleCheckBox!, isSelected: true, menuItem: .selectAll)
 		let deselectAllOptionItem = DropDownOptionsMenuItem(titleMenu: "deselect all", itemThumbnail: I.systemElementsItems.circleBox!, isSelected: true, menuItem: .deselectAll)
-		let deleteOptionItem = DropDownOptionsMenuItem(titleMenu: "delete", itemThumbnail: I.systemItems.defaultItems.trashBin, isSelected: true, menuItem: .delete)
+		let deleteOptionItem = DropDownOptionsMenuItem(titleMenu: "delete", itemThumbnail: I.systemItems.defaultItems.trashBin, isSelected: deleteButtonIsSelected, menuItem: .delete)
 		let firstRowMenuItem = isSelectAllAssetsMode ? deselectAllOptionItem : selectAllOptionItem
 		presentDropDonwMenu(with: [firstRowMenuItem, deleteOptionItem], from:  navigationBar.rightBarButtonItem)
 	}
@@ -152,62 +143,73 @@ extension GroupedAssetListViewController {
 //		MARK: - handle selected previous index path and phassets ids -
 extension GroupedAssetListViewController {
 	
-	private func handlePreviousSelected(selectedAssetsIDs: [String], assetGroupCollection: [PhassetGroup],_ completionHandler: @escaping (_ indexPaths: [IndexPath]) -> Void) {
-		
-		var previousSelected: [IndexPath] = []
-		let dispatchGroup = DispatchGroup()
-		let dispatchQueue = DispatchQueue(label: C.key.dispatch.selectedPhassetsQueue)
-		let dispatchSemaphore = DispatchSemaphore(value: 0)
-		
-		for selectedAssetsID in selectedAssetsIDs {
-			dispatchGroup.enter()
-			let sectionIndex = assetGroupCollection.firstIndex(where: {
-				$0.assets.contains(where: {$0.localIdentifier == selectedAssetsID})
-			}).flatMap({
-				$0
-			})
+	private func handlePreviousSelected(selectedAssetsIDs: [String], assetGroupCollection: [PhassetGroup],_ completionHandler: @escaping (_ indexPaths: [IndexPath]) -> Void) -> ConcurrentProcessOperation {
+
+		let findSelectedIndexPathsOperation = ConcurrentProcessOperation { operation in
 			
-			if let section = sectionIndex {
-				let index: Int = Int(section)
-				let indexPath = assetGroupCollection[index].assets.firstIndex(where: {
-					$0.localIdentifier == selectedAssetsID
-				}).flatMap({
-					IndexPath(row: $0, section: index)
-				})
-				
-				if let existingIndexPath = indexPath {
-					previousSelected.append(existingIndexPath)
+			var previousSelected: [IndexPath] = []
+			let dispatchGroup = DispatchGroup()
+			let dispatchQueue = DispatchQueue(label: C.key.dispatch.selectedPhassetsQueue)
+			let dispatchSemaphore = DispatchSemaphore(value: 0)
+			
+			let start = Date()
+			var endstart = Date()
+			for selectedAssetsID in selectedAssetsIDs {
+				autoreleasepool {
+					dispatchGroup.enter()
+					let sectionIndex = assetGroupCollection.firstIndex(where: {
+						$0.assets.contains(where: {$0.localIdentifier == selectedAssetsID})
+					}).flatMap({
+						$0
+					})
+					debugPrint(selectedAssetsID)
+					if let section = sectionIndex {
+						let index: Int = Int(section)
+						let indexPath = assetGroupCollection[index].assets.firstIndex(where: {
+							$0.localIdentifier == selectedAssetsID
+						}).flatMap({
+							IndexPath(row: $0, section: index)
+						})
+						
+						if let existingIndexPath = indexPath {
+							previousSelected.append(existingIndexPath)
+						}
+					}
+					dispatchSemaphore.signal()
+					dispatchGroup.leave()
+					endstart = Date()
 				}
 			}
-			dispatchSemaphore.signal()
-			dispatchGroup.leave()
-		}
-		
-		dispatchGroup.notify(queue: dispatchQueue) {
-			U.UI {
-				completionHandler(previousSelected)
+
+			dispatchGroup.notify(queue: dispatchQueue) {
+				U.UI {
+					let time = endstart.timeIntervalSince1970 - start.timeIntervalSince1970
+					debugPrint(time)
+					completionHandler(previousSelected)
+				}
 			}
 		}
+			
+		return findSelectedIndexPathsOperation
 	}
 
-	private func handleSelected(for indexPaths: [IndexPath]) {
-		
-		self.selectedAssets = []
-		
-		for indexPath in indexPaths {
-			self.collectionView.selectItem(at: indexPath, animated: false, scrollPosition: [])
-			self.collectionView.delegate?.collectionView?(self.collectionView, didSelectItemAt: indexPath)
-			let phasset = self.assetGroups[indexPath.section].assets[indexPath.row]
-			self.selectedAssets.append(phasset)
-			
-			if let cell = collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell {
-				cell.isSelected = true
-				cell.checkIsSelected()
+	private func handleSelected(for indexPaths: [IndexPath], completionHandler: @escaping () -> Void) {
+	
+			self.selectedAssets = []
+			for indexPath in indexPaths {
+				self.collectionView.selectItem(at: indexPath, animated: false, scrollPosition: [])
+				self.collectionView.delegate?.collectionView?(self.collectionView, didSelectItemAt: indexPath)
+				let phasset = self.assetGroups[indexPath.section].assets[indexPath.row]
+				self.selectedAssets.append(phasset)
+				
+				if let cell = self.collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell {
+					cell.isSelected = true
+					cell.checkIsSelected()
+					self.handleSelectAllButtonSection(IndexPath(item: 0, section: indexPath.section))
+				}
 			}
-		}
-		checkForSelectedSection()
-		handleSelectAssetsNavigationCount()
-		handleDeleteAssetsButton()
+			self.handleActionButtons()
+			completionHandler()
 	}
 	
 	private func didSelectAllAssets(at indexPath: IndexPath, in sectionHeader: GroupedAssetsReusableHeaderView) {
@@ -295,11 +297,21 @@ extension GroupedAssetListViewController {
 		guard isDeepCleaningSelectableFlow else { return }
 		
 		if !previousSelectedIDs.isEmpty {
-			handlePreviousSelected(selectedAssetsIDs: self.previousSelectedIDs, assetGroupCollection: self.assetGroups) { indexPaths in
-				self.handleSelected(for: indexPaths)
+			
+			let progress: ProgressAlertType = self.contentType == .userPhoto ? .selectingPhotos : .selectingVideos
+			self.progressAlertController.showSimpleProgressAlerControllerBar(of: progress, from: self)
+			
+			let selectedOperation = self.handlePreviousSelected(selectedAssetsIDs: self.previousSelectedIDs,
+																assetGroupCollection: self.assetGroups) { indexPaths in
+				self.handleSelected(for: indexPaths) {
+					U.delay(1) {
+						self.progressAlertController.closeProgressAnimatedController()
+					}
+				}
 			}
+			phassetsTechnicalUseOperation.addOperation(selectedOperation)
+	
 		} else {
-			self.shouldSelectAllAssetsInSections(false)
 			self.handleDeleteAssetsButton()
 		}
 	}
@@ -308,35 +320,36 @@ extension GroupedAssetListViewController {
 //		  MARK: - flow with select deselect cell
 extension GroupedAssetListViewController: PhotoCollectionViewCellDelegate {
 	
-	func didShowFullScreenPHAsset(at indexPath: IndexPath) {
+	func didShowFullScreenPHasset(at cell: PhotoCollectionViewCell) {
+		guard let indexPath = self.collectionView.indexPath(for: cell) else { return }
 		self.showFullScreenAssetPreviewAndFocus(at: indexPath)
 	}
 	
-	func didSelectCell(at indexPath: IndexPath) {
-		if let cell = self.collectionView.cellForItem(at: indexPath) {
-			if cell.isSelected {
-				self.collectionView.deselectItem(at: indexPath, animated: true)
-				cell.isSelected = false
-				if self.selectedAssets.contains(self.assetGroups[indexPath.section].assets[indexPath.row]) {
-					self.selectedAssets = self.selectedAssets.filter({ $0 != self.assetGroups[indexPath.section].assets[indexPath.row]})
-				}
-			} else {
-				self.collectionView.selectItem(at: indexPath, animated: true, scrollPosition: [])
-				cell.isSelected = true
-				if !self.selectedAssets.contains(self.assetGroups[indexPath.section].assets[indexPath.row]) {
-					self.selectedAssets.append(self.assetGroups[indexPath.section].assets[indexPath.row])
-				}
+	func didSelect(cell: PhotoCollectionViewCell) {
+		guard let indexPath = self.collectionView.indexPath(for: cell) else { return }
+		
+		let phasset = self.assetGroups[indexPath.section].assets[indexPath.row]
+		
+		if cell.isSelected {
+			self.collectionView.deselectItem(at: indexPath, animated: true)
+			self.collectionView.delegate?.collectionView?(self.collectionView, didDeselectItemAt: indexPath)
+			if self.selectedAssets.contains(phasset) {
+				self.selectedAssets = self.selectedAssets.filter({$0 != phasset})
 			}
-			self.handleSelectAllButtonSection(indexPath)
-			self.handleDeleteAssetsButton()
-			self.handleSelectAssetsNavigationCount()
+		} else {
+			self.collectionView.selectItem(at: indexPath, animated: true, scrollPosition: [])
+			self.collectionView.delegate?.collectionView?(self.collectionView, didSelectItemAt: indexPath)
+			if !self.selectedAssets.contains(phasset) {
+				self.selectedAssets.append(phasset)
+			}
 		}
+		self.handleActionButtons(indexPath: indexPath)
 	}
 }
 
 extension GroupedAssetListViewController: GroupSelectableAssetsDelegate {
 	
-	func didSelect(slectedIndexPath: [IndexPath], phassetsGroups: [PhassetGroup]) {
+	func didSelect(selectedIndexPath: [IndexPath], phassetsGroups: [PhassetGroup]) {
 		
 		self.assetGroups = phassetsGroups
 		
@@ -344,8 +357,8 @@ extension GroupedAssetListViewController: GroupSelectableAssetsDelegate {
 			didTapBackSingleCleanActionButton()
 		} else {
 			self.collectionView.reloadDataWitoutAnimation()
-			if !slectedIndexPath.isEmpty {
-				self.handleSelected(for: slectedIndexPath)
+			if !selectedIndexPath.isEmpty {
+				self.handleSelected(for: selectedIndexPath) {}
 			}
 		}
 	}
@@ -450,6 +463,13 @@ extension GroupedAssetListViewController {
 			} else {
 				self.didSelectAllAssets(at: indexPath, in: sectionHeader)
 			}
+		}
+	}
+	
+	private func checkForEmptyCollection() {
+		
+		if assetGroups.isEmpty {
+			isDeepCleaningSelectableFlow ? didTapBackDeepCleanActionButton() : didTapBackSingleCleanActionButton()
 		}
 	}
 }
@@ -587,7 +607,7 @@ extension GroupedAssetListViewController {
 	}
 	
 	public func hederConfigure(_ view: GroupedAssetsReusableHeaderView, at indexPath: IndexPath) {
-		
+//		view.deleteSelectedButton.isHidden = isDeepCleaningSelectableFlow
 		view.mediaContentType = self.contentType
 		view.deleteSelectedButton.contentType = self.contentType
 		view.setupUI()
@@ -698,72 +718,23 @@ extension GroupedAssetListViewController: UICollectionViewDelegate, UICollection
 			self.handleSelectAssetsNavigationCount()
 		}
 	}
-}
-
-//      MARK: - check selected index path cell
-extension GroupedAssetListViewController {
 	
-	private func onDeleteAllSelectedInSectionButtonTapped(for sectionHeader: GroupedAssetsReusableHeaderView, at indexPath: IndexPath) {
-		
-		let indexPathsOfSection = self.getIndexPathInSectionWithoutFirst(section: indexPath.section)
-		let sectionCells = self.getSectionsCells(at: indexPathsOfSection)
-		
-		if !sectionCells.isEmpty {
-			let selectedCells = sectionCells.filter({$0.isSelected})
-			if !selectedCells.isEmpty {
-		
-				let changedGroup = assetGroups[indexPath.section]
-				var phassets: [PHAsset] = []
-				
-				selectedCells.forEach { cell in
-					if let index = collectionView.indexPath(for: cell) {
-						phassets.append(changedGroup.assets[index.item])
-					}
-				}
-				
-				if !phassets.isEmpty {
-					self.showDelecteConfirmAlert(for: phassets) { suxxess in
-						
-						phassets.forEach { asset in
-							self.selectedAssets.removeAll(asset)
-						}
-						
-						U.UI {
-							if indexPathsOfSection.count == phassets.count {
-						
-								self.assetGroups.remove(at: indexPath.section)
-								
-								self.collectionView.performBatchUpdates {
-									self.collectionView.deleteSections(IndexSet(integer: indexPath.section))
-								} completion: { _ in
-									self.handleDeleteAssetsButton()
-									self.handleSelectAssetsNavigationCount()
-								}
-							} else {
-								var indexPathsSelectedSections: [IndexPath] = []
-								
-								selectedCells.forEach { cell in
-									if let indexPath = self.collectionView.indexPath(for: cell) {
-										indexPathsSelectedSections.append(indexPath)
-									}
-								}
-								
-								phassets.forEach { asset in
-									self.assetGroups[indexPath.section].assets.removeAll(asset)
-								}
-								
-								self.collectionView.performBatchUpdates {
-									self.collectionView.deleteItems(at: indexPathsSelectedSections)
-								} completion: { _ in
-									self.handleDeleteAssetsButton()
-									self.handleSelectAssetsNavigationCount()
-								}
-							}
-						}
-					}
-				}
-			}
+	private func reloadDataAfterRefactor() {
+		self.collectionView.reloadDataWitoutAnimation()
+		self.selectedAssets = []
+		self.selectedSection = []
+		self.handleDeleteAssetsButton()
+		self.handleSelectAssetsNavigationCount()
+		self.checkForEmptyCollection()
+	}
+	
+	private func handleActionButtons(indexPath: IndexPath? = nil) {
+		self.handleDeleteAssetsButton()
+		self.handleSelectAssetsNavigationCount()
+		if let indexPath = indexPath {
+			self.handleSelectAllButtonSection(indexPath)
 		}
+		self.checkForEmptyCollection()
 	}
 }
 
@@ -776,6 +747,85 @@ extension GroupedAssetListViewController {
 		}
 	}
 	
+	private func showDelecteConfirmAlert(for assets: [PHAsset], completionHandler: @escaping (Bool) -> Void) {
+		
+		let deletePhassetOperation = photoManager.deleteSelectedOperation(assets: assets) { suxxess in
+			if !suxxess {
+				U.delay(1) {
+					self.progressAlertController.closeProgressAnimatedController()
+					U.delay(1) {
+						ErrorHandler.shared.showDeleteAlertError(self.contentType == .userVideo ? .errorDeleteVideo : .errorDeletePhoto)
+					}
+				}
+			}
+			completionHandler(suxxess)
+		}
+		
+		A.deletePHAssets(of: self.contentType, of: assets.count > 1 ? .many : .one) {
+			let type: ProgressAlertType = self.contentType == .userPhoto ? .deletePhotos : .deleteVideos
+			self.progressAlertController.showSimpleProgressAlerControllerBar(of: type, from: self)
+			U.delay(1) {
+				self.photoManager.phassetProcessingOperationQueuer.addOperation(deletePhassetOperation)
+			}
+		}
+	}
+	
+	/// `delete selected phassets from bottom action`
+	private func deleteSelectedAssets() {
+		
+		guard let selectedIndexPaths = self.collectionView.indexPathsForSelectedItems else { return }
+		
+		let selectedPhassets: [PHAsset] = selectedIndexPaths.map({self.assetGroups[$0.section].assets[$0.row]})
+		
+		guard !selectedPhassets.isEmpty else { return }
+		
+		var sectionsOperation = self.assetGroups.enumerated().filter({
+			$0.element.assets.intersects(with: selectedPhassets)
+		}).map({$0.offset})
+		
+		let progress: ProgressAlertType = self.contentType == .userPhoto ? .deletePhotos : .deleteVideos
+		progressAlertController.showSimpleProgressAlerControllerBar(of: progress, from: self)
+		
+		let deletePhassetOperation = photoManager.deleteSelectedOperation(assets: selectedPhassets) { success in
+			U.UI {
+				if success {
+					
+					var removableSections: [Int] = []
+					var updatedAssetsGroups: [PhassetGroup] = self.assetGroups
+					
+					let _: [PhassetGroup] = sectionsOperation.map({
+						let assets = self.assetGroups[$0].assets.subtracting(selectedPhassets)
+						assets.count == 1 ? removableSections.append($0) : ()
+						updatedAssetsGroups[$0].assets = assets.count == 1 ? [] : assets
+						return updatedAssetsGroups[$0]
+					})
+					
+					sectionsOperation = sectionsOperation.subtracting(removableSections)
+					let _ = updatedAssetsGroups.remove(elementsAtIndices: removableSections)
+					
+					self.collectionView.performBatchUpdates {
+						self.collectionView.deleteItems(at: selectedIndexPaths)
+						self.collectionView.deleteSections(IndexSet(removableSections))
+						self.assetGroups = updatedAssetsGroups
+					} completion: { _ in
+						U.delay(1) {
+						self.reloadDataAfterRefactor()
+							self.progressAlertController.closeProgressAnimatedController()
+						}
+					}
+				} else {
+					U.delay(1) {
+						self.progressAlertController.closeProgressAnimatedController()
+					}
+				}
+			}
+		}
+		
+		U.delay(1) {
+			self.photoManager.phassetProcessingOperationQueuer.addOperation(deletePhassetOperation)
+		}
+	}
+	
 	private func deleteAsset(at indexPath: IndexPath) {
 		
 		let phasset = self.assetGroups[indexPath.section].assets[indexPath.row]
@@ -784,66 +834,100 @@ extension GroupedAssetListViewController {
 			U.UI {
 				if suxxess {
 					self.selectedAssets.removeAll(phasset)
+				
 					self.assetGroups[indexPath.section].assets.remove(at: indexPath.item)
 				
 					let oldGropsValue = self.assetGroups.count
-
-					self.assetGroups = self.assetGroups.filter({$0.assets.count != 1})
-					
-					if oldGropsValue != self.assetGroups.count {
-						self.collectionView.deleteSections(IndexSet(integer: indexPath.section))
-						self.assetGroups.remove(at: indexPath.section)
-						self.smoothReloadData()
+					let newGroupsValue = self.assetGroups.filter({$0.assets.count != 1})
+					if oldGropsValue != newGroupsValue.count {
+						self.collectionView.performBatchUpdates {
+							self.collectionView.deleteSections(IndexSet(integer: indexPath.section))
+							self.assetGroups.remove(at: indexPath.section)
+							self.assetGroups = newGroupsValue
+						} completion: { _ in
+							U.delay(1) {
+								self.handleActionButtons()
+								self.progressAlertController.closeProgressAnimatedController()
+							}
+						}
 					} else {
 						self.collectionView.performBatchUpdates {
 							self.collectionView.deleteItems(at: [indexPath])
+							self.assetGroups = newGroupsValue
 						} completion: { _ in
-							self.handleDeleteAssetsButton()
-							self.handleSelectAssetsNavigationCount()
+							U.delay(1) {
+								self.handleActionButtons(indexPath: indexPath)
+								self.progressAlertController.closeProgressAnimatedController()
+							}
 						}
 					}
 				}
 			}
 		}
 	}
-		
-	private func showDelecteConfirmAlert(for assets: [PHAsset], completionHandler: @escaping (Bool) -> Void) {
-		
-		let deletePhassetOperation = photoManager.deleteSelectedOperation(assets: assets) { suxxess in
-			if !suxxess {
-				U.UI {
-					ErrorHandler.shared.showDeleteAlertError(self.contentType == .userVideo ? .errorDeleteVideo : .errorDeletePhoto)
-				}
-			}
-			completionHandler(suxxess)
-		}
-		
-		A.deletePHAssets(of: self.contentType, of: assets.count > 1 ? .many : .one) {
-			self.photoManager.phassetProcessingOperationQueuer.addOperation(deletePhassetOperation)
-		}
-	}
-	
-	private func deleteSelectedAssets() {
-		
-		let identifiers = selectedAssets.map({$0.localIdentifier})
-		
-		let deletePhassetOperation = photoManager.deleteSelectedOperation(assets: selectedAssets) { success in
-			U.UI {
-				if success {
-					for group in self.assetGroups {
-						group.assets = group.assets.filter({!identifiers.contains($0.localIdentifier)})
-					}
-					self.assetGroups = self.assetGroups.filter({$0.assets.count != 1})
-				}
-				self.selectedAssets = []
-				self.selectedSection = []
-				self.smoothReloadData()
-			}
-		}
-		
-		photoManager.phassetProcessingOperationQueuer.addOperation(deletePhassetOperation)
-	}
+}
 
+extension GroupedAssetListViewController {
+	
+	private func onDeleteAllSelectedInSectionButtonTapped(for sectionHeader: GroupedAssetsReusableHeaderView, at indexPath: IndexPath) {
+		
+		guard let selectedIndexPath = self.collectionView.indexPathsForSelectedItems else { return }
+		
+		let indexPathOfSection = self.getIndexPathInSectionWithoutFirst(section: indexPath.section)
+		
+		let selectedIndexPathsInSection = selectedIndexPath.intersection(with: indexPathOfSection)
+		let selectedIndixes = selectedIndexPathsInSection.map({$0.row})
+	
+		if !selectedIndexPathsInSection.isEmpty {
+			let changedGroupsPHAssets = assetGroups[indexPath.section].assets
+			let phassets = selectedIndixes.map({changedGroupsPHAssets[$0]})
+			
+			if !phassets.isEmpty {
+				self.showDelecteConfirmAlert(for: phassets) { suxxess in
+					
+					guard suxxess else {return }
+					
+					self.selectedAssets = self.selectedAssets.filter({!phassets.contains($0)})
+					
+					U.UI {
+						if phassets.count == indexPathOfSection.count {
+							self.assetGroups.remove(at: indexPath.section)
+							self.collectionView.performBatchUpdates {
+								self.collectionView.deleteSections(IndexSet(integer: indexPath.section))
+							} completion: { _ in
+								U.delay(1) {
+									
+								
+								self.handleSelectAllButtonSection(indexPath)
+								self.checkForSelectedSection()
+								self.handleActionButtons()
+								
+									self.progressAlertController.closeProgressAnimatedController()
+								}
+							}
+						} else {
+							self.assetGroups[indexPath.section].assets = self.assetGroups[indexPath.section].assets.filter({!phassets.contains($0)})
+							self.collectionView.performBatchUpdates {
+								self.collectionView.deleteItems(at: selectedIndexPathsInSection)
+							} completion: { _ in
+								U.delay(1) {
+								self.handleSelectAllButtonSection(indexPath)
+								self.checkForSelectedSection()
+								self.handleActionButtons()
+									self.progressAlertController.closeProgressAnimatedController()
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+
+extension GroupedAssetListViewController {
+	
 	private func createCellContextMenu(for asset: PHAsset, at indexPath: IndexPath) -> UIMenu {
 		
 		let fullScreenPreviewActionImage = I.systemItems.defaultItems.arrowUP.withTintColor(theme.titleTextColor).withRenderingMode(.alwaysTemplate)
@@ -863,7 +947,7 @@ extension GroupedAssetListViewController {
 		}
 		
 		if indexPath.row == 0 {
-			return UIMenu(title: "", children: [fullScreenPreviewAction, deleteAssetAction])
+			return UIMenu(title: "", children: [fullScreenPreviewAction])
 		} else {
 			return UIMenu(title: "", children: [fullScreenPreviewAction, setAsBestAction, deleteAssetAction])
 		}
@@ -900,11 +984,18 @@ extension GroupedAssetListViewController {
 	
 	private func setAsBest(asset: PHAsset, at indexPath: IndexPath) {
 		
+		guard let cell = self.collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell else { return }
+		
+		let bestPHAssetIndexPath = IndexPath(row: 0, section: indexPath.section)
+		
+		cell.isSelected ? cell.delegate?.didSelect(cell: cell) : ()
+			
 		assetGroups[indexPath.section].assets.move(at: indexPath.row, to: 0)
 		collectionView.performBatchUpdates {
-			collectionView.moveItem(at: indexPath, to: IndexPath(row: 0, section: indexPath.section))
+			collectionView.moveItem(at: indexPath, to: bestPHAssetIndexPath)
 		} completion: { _ in
-			self.collectionView.reloadDataWithotAnimation(in: IndexSet(integer: indexPath.section))
+			self.collectionView.reloadDataWithotAnimationKeepSelect(at: [bestPHAssetIndexPath, IndexPath(row: 1, section: indexPath.section)])
+			self.handleActionButtons(indexPath: indexPath)
 		}
 	}
  }
@@ -1079,6 +1170,7 @@ extension GroupedAssetListViewController {
 extension GroupedAssetListViewController: SNCollectionViewLayoutDelegate {
 	
 	func scaleForItem(inCollectionView collectionView: UICollectionView, withLayout layout: UICollectionViewLayout, atIndexPath indexPath: IndexPath) -> UInt {
+
 		return indexPath.row == 0 ? 2 : 1
 	}
 	

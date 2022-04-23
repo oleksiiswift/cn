@@ -22,6 +22,8 @@ class DeepCleanInfoTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         
+		totalSpaceTextLabel.isHidden = true
+		totalSpaceTitleLabel.isHidden = true
         setupUI()
         updateColors()
     }
@@ -45,7 +47,6 @@ extension DeepCleanInfoTableViewCell {
     
 	func setRoundedProgress(value: CGFloat, futuredCleaningSpace: Int64?) {
         progressRing.progress = value
-		debugPrint("--- \(value)")
 		
 		if let futuredCleaningSpace = futuredCleaningSpace {
 			let stringSpace = U.getSpaceFromInt(futuredCleaningSpace)

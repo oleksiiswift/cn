@@ -140,6 +140,7 @@ class Constants {
 				static let cleaningProcess = "cleaningProcessOprationQueuer"
 				static let utils = "utilsBackgroudSpaceCalculated"
                 static let preetchPHasssetQueue = "prefetchPhassetsImagesOperationQueuer"
+				static let techUseQueue = "technicalUseProcessingOperationQueuer"
 			}
 			
 			struct name {
@@ -189,6 +190,8 @@ class Constants {
 				static let deepCleanProcessingCleaningOperation = "deepCleanProcessingCleaningOperation"
                     /// `prefetch phassets`
                 static let prefetchPHAssetsOperation = "prefetchPHassetsOperation"
+					/// `find duplicated assets and indexes`
+				static let analizeDuplicatedPHAssetsIndexPathsSearch = "analizeDuplicatedPHAssetsIndexPathsSearch"
 			}
 		}
         

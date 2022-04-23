@@ -22,17 +22,10 @@ class SimpleAssetsListViewController: UIViewController {
 													inset: UIEdgeInsets(top: 10, left: 4, bottom: 0, right: 4))
 	var scrollView = UIScrollView()
 	
-//	private var currentCell: PhotoCollectionViewCell? {
-//		view.layoutIfNeeded()
-//		collectionView.layoutIfNeeded()
-//		return collectionView.cellForItem(at: self.currentIndex) as? PhotoCollectionViewCell
-//	}
-//
-//	private var currentIndex = (IndexPath(row: 0, section: 0))
-	
 	var selectedAssetsDelegate: DeepCleanSelectableAssetsDelegate?
 	private var photoManager = PhotoManager.shared
 	private var prefetchCacheImageManager = PhotoManager.shared.prefetchManager
+	private var progrssAlertController = ProgressAlertController.shared
 	public var mediaType: PhotoMediaType = .none
 	public var contentType: MediaContentType = .none
 	
@@ -88,7 +81,11 @@ extension SimpleAssetsListViewController {
 		guard let selectedPHAssets = self.collectionView.indexPathsForSelectedItems else { return }
 		
 		A.deletePHAssets(of: self.contentType, of: selectedPHAssets.count > 1 ? .many : .one) {
-			self.deleteSelectedAssets()
+			let progress: ProgressAlertType = self.contentType == .userPhoto ? .deletePhotos : .deleteVideos
+			self.progrssAlertController.showSimpleProgressAlerControllerBar(of: progress, from: self)
+			U.delay(1) {
+				self.deleteSelectedAssets()
+			}
 		}
     }
     
@@ -105,6 +102,7 @@ extension SimpleAssetsListViewController {
 	}
 	
 	private func deleteOperationWith(selectedPHAassets: [PHAsset], at indexPath: [IndexPath]) {
+		
 		let deleteOperation = photoManager.deleteSelectedOperation(assets: selectedPHAassets) { success in
 			if success {
 				let assetIdentifiers = selectedPHAassets.map({ $0.localIdentifier})
@@ -113,8 +111,15 @@ extension SimpleAssetsListViewController {
 					self.collectionView.performBatchUpdates {
 						self.collectionView.deleteItems(at: indexPath)
 					} completion: { _ in
-						self.smoothReloadData()
+						self.handleActionButtons()
+						U.delay(1) {
+							self.progrssAlertController.closeProgressAnimatedController()
+						}
 					}
+				}
+			} else {
+				U.delay(1) {
+					self.progrssAlertController.closeProgressAnimatedController()
 				}
 			}
 		}
@@ -134,6 +139,17 @@ extension SimpleAssetsListViewController {
 		}
 	}
 	
+	private func updateAfterRefactor() {
+		self.collectionView.reloadDataWitoutAnimation()
+	}
+	
+	private func handleActionButtons() {
+		self.handleSelectAssetsNavigationCount()
+		self.handleSelectAllButtonState()
+		self.handleBottomButtonMenu()
+		self.handleForEmptyCollection()
+	}
+
     private func createCellContextMenu(for asset: PHAsset, at indexPath: IndexPath) -> UIMenu {
         
         let fullScreenPreviewAction = UIAction(title: "full screen preview", image: I.systemItems.defaultItems.arrowUP) { _ in
@@ -234,8 +250,7 @@ extension SimpleAssetsListViewController {
 				cell.checkIsSelected()
 			}
 		}
-		handleSelectAllButtonState()
-		handleBottomButtonMenu()
+		self.handleActionButtons()
 	}
 	
 	private func setCollection(selected: Bool) {
@@ -255,9 +270,7 @@ extension SimpleAssetsListViewController {
 				cell.checkIsSelected()
 			}
 		}
-		handleBottomButtonMenu()
-		handleSelectAllButtonState()
-		handleSelectAssetsNavigationCount()
+		self.handleActionButtons()
 	}
 	
 	private func didSelectAll() {
@@ -314,27 +327,34 @@ extension SimpleAssetsListViewController {
 			}
 		}
 	}
+	
+	private func handleForEmptyCollection() {
+		
+		if assetCollection.isEmpty {
+			isDeepCleaningSelectableFlow ? self.deepCleanFlowBackActionButton() : self.singleCleanFlowBackActionButton()
+		}
+	}
 }
 
 extension SimpleAssetsListViewController: PhotoCollectionViewCellDelegate {
 	
-	func didShowFullScreenPHAsset(at indexPath: IndexPath) {
+	func didShowFullScreenPHasset(at cell: PhotoCollectionViewCell) {
+		guard let indexPath = self.collectionView.indexPath(for: cell) else { return }
 		self.showFullScreenAssetPreviewAndFocus(at: indexPath)
 	}
 	
-	func didSelectCell(at indexPath: IndexPath) {
-		if let cell = self.collectionView.cellForItem(at: indexPath) {
-			if cell.isSelected {
-				self.collectionView.deselectItem(at: indexPath, animated: true)
-				self.collectionView.delegate?.collectionView?(self.collectionView, didDeselectItemAt: indexPath)
-			} else {
-				self.collectionView.selectItem(at: indexPath, animated: true, scrollPosition: [])
-				self.collectionView.delegate?.collectionView?(self.collectionView, didSelectItemAt: indexPath)
-			}
+	func didSelect(cell: PhotoCollectionViewCell) {
+		
+		guard let indexPath = self.collectionView.indexPath(for: cell) else { return }
+		
+		if cell.isSelected {
+			self.collectionView.deselectItem(at: indexPath, animated: true)
+			self.collectionView.delegate?.collectionView?(self.collectionView, didDeselectItemAt: indexPath)
+		} else {
+			self.collectionView.selectItem(at: indexPath, animated: true, scrollPosition: [])
+			self.collectionView.delegate?.collectionView?(self.collectionView, didSelectItemAt: indexPath)
 		}
-		handleSelectAllButtonState()
-		handleBottomButtonMenu()
-		handleSelectAssetsNavigationCount()
+		self.handleActionButtons()
 	}
 }
 

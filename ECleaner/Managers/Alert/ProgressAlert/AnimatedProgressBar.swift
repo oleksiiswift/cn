@@ -7,7 +7,7 @@
 
 import UIKit
 
-public class AnimatedGradientProgressView: UIView, CAAnimationDelegate {
+public class AnimatedProgressBar: UIView, CAAnimationDelegate {
 	
 	public var progressMainColor: UIColor = UIColor().colorFromHexString("46A3FF") {
 		didSet {
@@ -113,8 +113,9 @@ public class AnimatedGradientProgressView: UIView, CAAnimationDelegate {
 	public func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
 		
 		if flag && numberOfOperations > 0 {
-			
-			performAnimation()
+			DispatchQueue.main.async {
+				self.performAnimation()
+			}
 		}
 		else {
 			self.isHidden = true

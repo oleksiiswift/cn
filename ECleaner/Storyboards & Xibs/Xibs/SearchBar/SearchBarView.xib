@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19162" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19144"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19519"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -14,6 +15,7 @@
                 <outlet property="cancelButton" destination="q38-1d-CVD" id="tdx-3x-mrL"/>
                 <outlet property="containerView" destination="iN0-l3-epB" id="6va-WP-oqv"/>
                 <outlet property="leadingButtonConstraint" destination="Vin-xI-mAu" id="07U-DF-amw"/>
+                <outlet property="reuseShadowView" destination="baR-sB-1S1" id="qP9-3p-gft"/>
                 <outlet property="searchBar" destination="7aE-ny-h8e" id="usQ-Lc-glN"/>
                 <outlet property="trailingButtonConstraint" destination="t0c-0i-XPL" id="577-LK-NIp"/>
             </connections>
@@ -23,6 +25,10 @@
             <rect key="frame" x="0.0" y="0.0" width="414" height="60"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="baR-sB-1S1" customClass="ReuseShadowView" customModule="ECleaner" customModuleProvider="target">
+                    <rect key="frame" x="20" y="5" width="294" height="40"/>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="SbQ-Mo-v6Q">
                     <rect key="frame" x="20" y="5" width="294" height="40"/>
                     <subviews>
@@ -51,16 +57,25 @@
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <constraints>
+                <constraint firstItem="baR-sB-1S1" firstAttribute="top" secondItem="SbQ-Mo-v6Q" secondAttribute="top" id="08P-6D-u51"/>
+                <constraint firstItem="baR-sB-1S1" firstAttribute="bottom" secondItem="SbQ-Mo-v6Q" secondAttribute="bottom" id="17D-8E-5Sr"/>
                 <constraint firstItem="SbQ-Mo-v6Q" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="5" id="1Y5-Zo-w6E"/>
                 <constraint firstItem="q38-1d-CVD" firstAttribute="top" secondItem="7aE-ny-h8e" secondAttribute="top" id="Dyh-de-Uss"/>
                 <constraint firstItem="q38-1d-CVD" firstAttribute="bottom" secondItem="7aE-ny-h8e" secondAttribute="bottom" id="Eo9-fP-eHz"/>
                 <constraint firstItem="SbQ-Mo-v6Q" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="20" id="J7Y-C1-GUp"/>
                 <constraint firstAttribute="bottom" secondItem="SbQ-Mo-v6Q" secondAttribute="bottom" constant="15" id="Ol1-xx-ujS"/>
                 <constraint firstItem="q38-1d-CVD" firstAttribute="leading" secondItem="SbQ-Mo-v6Q" secondAttribute="trailing" constant="10" id="Vin-xI-mAu"/>
+                <constraint firstItem="baR-sB-1S1" firstAttribute="leading" secondItem="SbQ-Mo-v6Q" secondAttribute="leading" id="neF-Br-mcU"/>
                 <constraint firstAttribute="trailing" secondItem="q38-1d-CVD" secondAttribute="trailing" id="t0c-0i-XPL"/>
+                <constraint firstItem="baR-sB-1S1" firstAttribute="trailing" secondItem="SbQ-Mo-v6Q" secondAttribute="trailing" id="yHo-eT-WSS"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <point key="canvasLocation" x="131.8840579710145" y="116.51785714285714"/>
         </view>
     </objects>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
 </document>

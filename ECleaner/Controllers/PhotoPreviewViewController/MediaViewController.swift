@@ -90,19 +90,21 @@ extension MediaViewController {
 //		MARK: - select delegate -
 extension MediaViewController: PhotoCollectionViewCellDelegate {
 	
-	func didShowFullScreenPHAsset(at indexPath: IndexPath) {}
+	func didShowFullScreenPHasset(at cell: PhotoCollectionViewCell) {}
 	
-	func didSelectCell(at indexPath: IndexPath) {
-		if let cell = self.collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell {
-			if cell.isSelected {
-				self.collectionView.deselectItem(at: indexPath, animated: true)
-				self.collectionView.delegate?.collectionView?(self.collectionView, didSelectItemAt: indexPath)
-			} else {
-				self.collectionView.selectItem(at: indexPath, animated: true, scrollPosition: [])
-				self.collectionView.delegate?.collectionView?(self.collectionView, didDeselectItemAt: indexPath)
-			}
-			cell.checkIsSelected()
+	func didSelect(cell: PhotoCollectionViewCell) {
+		
+		guard let indexPath = self.collectionView.indexPath(for: cell) else { return }
+		
+		if cell.isSelected {
+			self.collectionView.deselectItem(at: indexPath, animated: true)
+			self.collectionView.delegate?.collectionView?(self.collectionView, didSelectItemAt: indexPath)
+		} else {
+			self.collectionView.selectItem(at: indexPath, animated: true, scrollPosition: [])
+			self.collectionView.delegate?.collectionView?(self.collectionView, didDeselectItemAt: indexPath)
 		}
+		cell.checkIsSelected()
+		self.handleSelectAssetsNavigationCount()
 	}
 }
 
@@ -119,6 +121,7 @@ extension MediaViewController {
 				cell.checkIsSelected()
 			}
 		}
+		self.handleSelectAssetsNavigationCount()
 	}
 	
 	private func didTapBackActionButtonWithSelectablePhaassets() {
@@ -127,13 +130,29 @@ extension MediaViewController {
 		
 		switch self.collectionType {
 			case .grouped:
-				self.groupSelectionDelegate?.didSelect(slectedIndexPath: selectedIndexPath, phassetsGroups: self.assetGroups)
+				self.groupSelectionDelegate?.didSelect(selectedIndexPath: selectedIndexPath, phassetsGroups: self.assetGroups)
+				U.delay(0.1) {
+					self.navigationController?.popViewController(animated: true)
+				}
 			case .single:
 				self.singleSelectionDelegate?.didSelect(selectedIndexPath: selectedIndexPath, phasstsColledtion: self.assetCollection)
+				U.delay(0.1) {
+					self.navigationController?.popViewController(animated: true)
+				}
 			default:
 				return
 		}
-		self.navigationController?.popViewController(animated: true)
+	}
+	
+	private func handleSelectAssetsNavigationCount() {
+		
+		guard let indexPaths = self.collectionView.indexPathsForSelectedItems else { return }
+		
+		if !indexPaths.isEmpty {
+			self.navigationBar.changeHotLeftTitleWithImage(newTitle: String(" (\(indexPaths.count))"), image: I.systemItems.navigationBarItems.back)
+		} else {
+			self.navigationBar.changeHotLeftTitleWithImage(newTitle: "", image: I.systemItems.navigationBarItems.back)
+		}
 	}
 }
 
@@ -166,15 +185,9 @@ extension MediaViewController {
 		switch collectionType {
 			case .grouped:
 				if !isDeepCleaningSelectableFlow {
-					if indexPath.row == 0 {
-						return deleteMenuCollection
-					} else {
 						return deleteAndSetAsBestCollection
-					}
 				} else {
-					if indexPath.row != 0 {
-						return setAsBestMenuCollection
-					}
+					return setAsBestMenuCollection
 				}
 			case .single:
 				if !isDeepCleaningSelectableFlow {
@@ -191,15 +204,21 @@ extension MediaViewController {
 	
 	private func setAsBest(phasset: PHAsset, at indexPath: IndexPath) {
 		
+		guard let cell = self.collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell else { return }
+		
+		let bestPHAssetIndexPath = IndexPath(row: 0, section: indexPath.section)
 		self.assetGroups[indexPath.section].assets.move(at: indexPath.row, to: 0)
-		let zeroUpdatableIndexPath = IndexPath(row: 0, section: indexPath.section)
+		
+		cell.isSelected ? cell.delegate?.didSelect(cell: cell) : ()
 		
 		self.collectionView.performBatchUpdates {
-			self.collectionView.moveItem(at: indexPath, to: zeroUpdatableIndexPath)
-			self.collectionView.reloadSections(IndexSet(integer: indexPath.section))
-		} completion: { _ in }
+			self.collectionView.moveItem(at: indexPath, to: bestPHAssetIndexPath)
+		} completion: { _ in
+			self.collectionView.reloadDataWithotAnimationKeepSelect(at: [bestPHAssetIndexPath, IndexPath(row: 1, section: indexPath.section)])
+			self.handleSelectAssetsNavigationCount()
+		}
 		self.previewCollectionView.performBatchUpdates {
-			self.previewCollectionView.moveItem(at: indexPath, to: zeroUpdatableIndexPath)
+			self.previewCollectionView.moveItem(at: indexPath, to: bestPHAssetIndexPath)
 		} completion: { _ in }
 	}
 }
@@ -285,11 +304,15 @@ extension MediaViewController {
 				if self.assetCollection.isEmpty {
 					singleSelectionDelegate?.didSelect(selectedIndexPath: [], phasstsColledtion: [])
 					self.navigationController?.popViewController(animated: true)
+				} else {
+					self.handleSelectAssetsNavigationCount()
 				}
 			case .grouped:
 				if self.assetGroups.isEmpty {
-					groupSelectionDelegate?.didSelect(slectedIndexPath: [], phassetsGroups: [])
+					groupSelectionDelegate?.didSelect(selectedIndexPath: [], phassetsGroups: [])
 					self.navigationController?.popViewController(animated: true)
+				} else {
+					self.handleSelectAssetsNavigationCount()
 				}
 			case .none:
 				return
@@ -463,6 +486,10 @@ extension MediaViewController: UICollectionViewDelegate, UICollectionViewDataSou
 					}
 				case .none:
 					return nil
+			}
+		} else {
+			if collectionType == .grouped && indexPath.row == 0 {
+				return nil
 			}
 		}
 		

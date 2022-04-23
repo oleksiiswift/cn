@@ -63,6 +63,7 @@ extension Notification.Name {
     static let scrollViewDidBegingDragging =        Notification.Name("scrollViewDidBeginDragging")
     static let searchBarDidCancel =                 Notification.Name("searchBarDidCancel")
     static let searchBarShouldResign =              Notification.Name("searchBarShouldResign")
+	static let searchBarClearButtonClicked = 		Notification.Name("searchBarClearButtonClicked")
     
         /// `progress alert notification`
     static let progressDeleteContactsAlertDidChangeProgress =   Notification.Name("progressDeleteContactsAlertDidChangeProgress")

@@ -504,8 +504,7 @@ extension MediaContentViewController {
 			if !phassets.isEmpty {
 				self.showCompressVideoPickerController(with: phassets)
 			} else {
-				#warning("TODDO")
-//				ErrorHandler.shared.showEmptySearchResultsFor(, completion: <#T##(() -> Void)?##(() -> Void)?##() -> Void#>)
+				ErrorHandler.shared.showEmptySearchResultsFor(.photoLibraryIsEmpty)
 			}
 		}
 	}
@@ -659,7 +658,7 @@ extension MediaContentViewController {
 		viewController.navigationTitle = content.mediaTypeName
 		viewController.contentType = content
 		viewController.mediaType = .userContacts
-		
+		viewController.cleaningType = type
 		viewController.updatableContactsAfterProcessing = { changedContactsGroup, currentChangedMediaType, storeDidChange in
 	
 			guard storeDidChange else { return}
@@ -821,7 +820,7 @@ extension MediaContentViewController {
     }
     
 	private func progressUpdate(_ notificationType: SingleContentSearchNotificationType, status: ProcessingProgressOperationState, currentProgress: CGFloat) {
-        
+		
         let indexPath = notificationType.mediaTypeRawValue.singleSearchIndexPath
 		let mediaType: PhotoMediaType = notificationType.mediaTypeRawValue
 		
@@ -922,7 +921,6 @@ extension MediaContentViewController {
 			self.tableView.reloadData()
 		}
 	}
-	
 	
 	private func resetRecievingData() {
 		for ( _ , value) in singleCleanModel.objects {
@@ -1248,11 +1246,6 @@ extension MediaContentViewController: Themeble {
 			  }
 		 }
 	}
-}
-
-extension MediaContentViewController {
-	
-	
 }
 
 extension MediaContentViewController {
