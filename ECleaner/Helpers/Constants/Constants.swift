@@ -49,6 +49,7 @@ class Constants {
 			static let resolutionHeight = "scaleResolutionHeight"
 			static let defaultConfigurationIsSet = "defaultConfigurationIsSet"
 			static let lastSelectedCompressionModel = "selectedCompressionModel"
+			static let originalResolutionIsOnUse = "originalResolutionIsOnUse"
 		}
         
         struct notification {

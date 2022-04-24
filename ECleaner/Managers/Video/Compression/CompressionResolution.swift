@@ -7,7 +7,51 @@
 
 import Foundation
 
+enum CustomCompressionSection {
+	case resolution
+	case fps
+	case videoBitrate
+	case keyframe
+	case audioBitrate
+	case none
+	
+	var name: String {
+		switch self {
+			case .resolution:
+				return "Resolution"
+			case .fps:
+				return "FPS"
+			case .videoBitrate:
+				return "Video Bitrate"
+			case .keyframe:
+				return "Interval Between Keyframe"
+			case .audioBitrate:
+				return "Audio Bitrate"
+			case .none:
+				return ""
+		}
+	}
+	
+	var description: String {
+		switch self {
+			case .resolution:
+				return "if set to a lower value, the picture will be more pixelated and the file size will be smaller"
+			case .fps:
+				return "a lower framerate means the video will be less smooth and the file size will be significantly smaller"
+			case .videoBitrate:
+				return "if set to a lower value, it will reduce video quality and considerably decrease file size"
+			case .keyframe:
+				return "if set to a higher value, video quality and size will decrease, it is recommended to choose higher values if your video has no dynamic scenes"
+			case .audioBitrate:
+				return "if set to a lower value, the audio quality will deteriorate and the file size will be insignificantly reduced"
+			case .none:
+				return ""
+		}
+	}
+}
+
 enum VideoResolution: CaseIterable {
+	case origin
 	case res1080p
 	case res720p
 	case res540p
@@ -17,6 +61,8 @@ enum VideoResolution: CaseIterable {
 	
 	public var resolutionName: String {
 		switch self {
+			case .origin:
+				return "origin"
 			case .res1080p:
 				return "1080p"
 			case .res720p:
@@ -34,6 +80,8 @@ enum VideoResolution: CaseIterable {
 	
 	public var resolutionSize: CGSize { 
 		switch self {
+			case .origin:
+				return CGSize(width: -1, height: -1)
 			case .res1080p:
 				return CGSize(width: 1920, height: 1080)
 			case .res720p:
@@ -51,6 +99,8 @@ enum VideoResolution: CaseIterable {
 	
 	public var resolutionDescription: String {
 		switch self {
+			case .origin:
+				return "keep origin resolution"
 			case .res1080p:
 				return "1920 x 1080 (or 1080p)"
 			case .res720p:
@@ -68,6 +118,8 @@ enum VideoResolution: CaseIterable {
 	
 	public var resolutionInfo: String {
 		switch self {
+			case .origin:
+				return "origin resolution"
 			case .res1080p:
 				return "1920 x 1080"
 			case .res720p:

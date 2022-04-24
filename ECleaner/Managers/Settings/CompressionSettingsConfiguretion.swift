@@ -92,9 +92,18 @@ class CompressionSettingsConfiguretion {
 		} set {
 			self.widthResolution = newValue.width
 			self.heightResolution = newValue.height
+			self.originalResultionIsUse = newValue.width == -1 && newValue.height == -1 
 		}
 	}
 	
+	private static var originalResultionIsUse: Bool {
+		get {
+			return U.userDefaults.bool(forKey: C.key.compressionSettings.originalResolutionIsOnUse)
+		} set {
+			U.userDefaults.set(newValue, forKey: C.key.compressionSettings.originalResolutionIsOnUse)
+		}
+	}
+
 	public static var isDefaultConfigurationIsSet: Bool {
 		get {
 			return U.userDefaults.bool(forKey: C.key.compressionSettings.defaultConfigurationIsSet)

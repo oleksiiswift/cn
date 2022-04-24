@@ -19,6 +19,7 @@ class VideoCompressionCustomSettingsViewController: UIViewController {
 	@IBOutlet weak var bottomButtonView: BottomButtonBarView!
 	@IBOutlet weak var mainContainerHeightConstraint: NSLayoutConstraint!
 	
+	@IBOutlet weak var segmentContainerView: UIView!
 	@IBOutlet weak var videoResolutionSliderContainerView: UIView!
 	@IBOutlet weak var fpsSliderContainerView: UIView!
 	@IBOutlet weak var videoBitrateSliderContainerView: UIView!
@@ -26,18 +27,21 @@ class VideoCompressionCustomSettingsViewController: UIViewController {
 	@IBOutlet weak var audioBitrateSliderContainerView: UIView!
 	@IBOutlet weak var audioSampleRateContainerView: UIView!
 	@IBOutlet weak var slidersStackView: UIStackView!
-	@IBOutlet weak var resolutionTitleTextLabel: UILabel!
-	@IBOutlet weak var fpsTitleTextLabel: UILabel!
-	@IBOutlet weak var bitrateTitleTextLabel: UILabel!
-	@IBOutlet weak var keyframeTitleTextLabel: UILabel!
-	@IBOutlet weak var audioBitrateTitleTextLabel: UILabel!
+	@IBOutlet weak var resolutionSegmentControll: CustomSegmentedControl!
 	
+	@IBOutlet weak var resolutionTitleButton: UIButton!
+	@IBOutlet weak var fpsTitleButton: UIButton!
+	@IBOutlet weak var bitrateTitleButton: UIButton!
+	@IBOutlet weak var keyframeTitleButton: UIButton!
+	@IBOutlet weak var audioBitrateTitleButton: UIButton!
+
 	@IBOutlet weak var bitrateView: UIView!
 	@IBOutlet weak var keyframeView: UIView!
 	@IBOutlet weak var bitrateTextLabel: UILabel!
 	@IBOutlet weak var keyframeTextLabel: UILabel!
 	@IBOutlet weak var resolutionSizeTextLabel: UILabel!
 	@IBOutlet weak var audioBitrateTextLabel: UILabel!
+		
 	@IBOutlet weak var keyframeShadowView: ReuseShadowView!
 	@IBOutlet weak var bitrateShadowView: ReuseShadowView!
 	@IBOutlet weak var resetButtonShadowView: ReuseShadowView!
@@ -45,8 +49,8 @@ class VideoCompressionCustomSettingsViewController: UIViewController {
 	@IBOutlet weak var removeAudioShadowView: ReuseShadowView!
 	@IBOutlet weak var removeAudioButton: UIButton!
 	
-	@IBOutlet var titleLabelsCollection: [UILabel]!
-	
+	@IBOutlet var titleButtonsCollection: [UIButton]!
+
 	private var dissmissGestureRecognizer = UIPanGestureRecognizer()
 	private var resolutionStepSlider = StepSlider()
 	private var fpsStepSlider = StepSlider()
@@ -55,6 +59,12 @@ class VideoCompressionCustomSettingsViewController: UIViewController {
 	private var audioBitrateSlider = StepSlider()
 	private var audioSampleRateSlider = StepSlider()
 	private var slidersContainer: [StepSlider] = []
+	
+	private var isResolutionChangeAvailible: Bool = true {
+		didSet {
+			handleResolutionChangeSliderAvailible(isEnabled: isResolutionChangeAvailible)
+		}
+	}
 	
 	private var isAudioAvailible: Bool = false {
 		didSet {
@@ -72,7 +82,15 @@ class VideoCompressionCustomSettingsViewController: UIViewController {
 	
 	private var videoResolutionValue: VideoResolution = .res1080p {
 		didSet {
-			resolutionSizeTextLabel.text = videoResolutionValue.resolutionInfo
+			if videoResolutionValue == .origin {
+				if let asset = asset {
+					resolutionSizeTextLabel.text = "\(asset.pixelWidth) x \(asset.pixelHeight)"
+				} else {
+					resolutionSizeTextLabel.text = videoResolutionValue.resolutionInfo
+				}
+			} else {
+				resolutionSizeTextLabel.text = videoResolutionValue.resolutionInfo
+			}
 			handleValuesDidChange()
 		}
 	}
@@ -111,6 +129,7 @@ class VideoCompressionCustomSettingsViewController: UIViewController {
         super.viewDidLoad()
 
         setupUI()
+		segmentControllSetup()
 		videoResolutionSliderSetupUI()
 		pfsSliderSetupUI()
 		handleAudioTrackIsEnable()
@@ -133,17 +152,46 @@ class VideoCompressionCustomSettingsViewController: UIViewController {
 		mainContainerView.cornerSelectRadiusView(corners: [.topLeft, .topRight], radius: 20)
 	}
 	
+	@IBAction func didTapResolutionTitleActionButton(_ sender: UIButton) {
+		
+		self.presentPopUpInfoController(with: .resolution, from: sender)
+	}
+	
+	@IBAction func didTapFpsTitleActionButton(_ sender: UIButton) {
+		
+		self.presentPopUpInfoController(with: .fps, from: sender)
+	}
+	
+	@IBAction func didTapVideoBitrateTitleActionButton(_ sender: UIButton) {
+		
+		self.presentPopUpInfoController(with: .videoBitrate, from: sender)
+	}
+		
+	@IBAction func didTapKeyframeTitleActionButton(_ sender: UIButton) {
+		
+		self.presentPopUpInfoController(with: .keyframe, from: sender)
+	}
+	
+	@IBAction func didTapAudioFrameTitleActionButton(_ sender: UIButton) {
+		
+		self.presentPopUpInfoController(with: .audioBitrate, from: sender)
+	}
+	
 	@IBAction func didTapResetToDefaultSettingsActionButton(_ sender: Any) {
 		
 		resetToDafaultButton.animateButtonTransform()
-		let defaultConfiguration = VideoCompressionConfig()
-		loadPreSavedConfiguration(defaultConfiguration)
+		self.resetToDefault()
 	}
 	
 	@IBAction func didTapRemoveAudioTrackActionButton(_ sender: Any) {
 		
 		removeAudioButton.animateButtonTransform()
 		removeAudioComponent = !removeAudioComponent
+	}
+	
+	@IBAction func swgmentControlDidChange(_ sender: Any) {
+
+		switchResolutionChange()
 	}
 }
 
@@ -174,7 +222,9 @@ extension VideoCompressionCustomSettingsViewController {
 		
 		var resoultion = self.videoResolutionValue.resolutionSize
 		
-		if asset.isPortrait {
+		if !self.isResolutionChangeAvailible {
+			resoultion = VideoResolution.origin.resolutionSize
+		} else if asset.isPortrait {
 			resoultion = CGSize(width: -1, height: resoultion.height)
 		} else {
 			resoultion = CGSize(width: resoultion.width, height: -1)
@@ -248,15 +298,18 @@ extension VideoCompressionCustomSettingsViewController {
 		}
 	}
 	
-	private func setupSlidersTarget() {
+	private func resetToDefault() {
 		
-		resolutionStepSlider.addTarget(self, action: #selector(resolutionSliderDidChangeValue), for: .valueChanged)
-		fpsStepSlider.addTarget(self, action: #selector(fpsSliderDidChangeValue), for: .valueChanged)
-		videoBitrateSlider.addTarget(self, action: #selector(videoBitrateSliderDidChangeValue), for: .valueChanged)
-		videoKeyFrameSlider.addTarget(self, action: #selector(videoKeyframeSliderDidChangeValue), for: .valueChanged)
-		audioBitrateSlider.addTarget(self, action: #selector(audioBitrateSliderDidChangeValue), for: .valueChanged)
+		let defaultConfiguration = VideoCompressionConfig()
+		loadPreSavedConfiguration(defaultConfiguration)
+		resolutionSegmentControll.selectedSegmentIndex = 0
+		switchResolutionChange()
 	}
-	
+}
+
+//	MARK: - reolution
+extension VideoCompressionCustomSettingsViewController {
+
 	@objc func resolutionSliderDidChangeValue() {
 		
 		switch resolutionStepSlider.index {
@@ -281,110 +334,16 @@ extension VideoCompressionCustomSettingsViewController {
 		videoResolutionValue = value
 	}
 	
-	@objc func fpsSliderDidChangeValue() {
-		
-		switch fpsStepSlider.index {
-			case 0:
-				setFps(value: .fps15)
-			case 1:
-				setFps(value: .fps24)
-			case 2:
-				setFps(value: .fps30)
-			case 3:
-				setFps(value: .fps60)
-			default:
-				return
-		}
-	}
-	
-	private func setFps(value: FPS) {
-		videoFpsValue = value
-	}
-	
-	@objc func videoBitrateSliderDidChangeValue() {
-		setBitrate(value: videoBitrateSlider.index)
-	}
-	
-	private func setBitrate(value: UInt) {
-		videoBitrateValue = Int(value + 1) * 1000_000
-	}
-	
-	@objc func videoKeyframeSliderDidChangeValue() {
-		setKeyframe(value: videoKeyFrameSlider.index)
-	}
-	
-	private func setKeyframe(value: UInt) {
-		videoKeyframeValue = Int(value) + 1
-	}
-	
-	@objc func audioBitrateSliderDidChangeValue() {
-		
-		switch audioBitrateSlider.index {
-			case 0:
-				setAudioBitrate(value: .bit96)
-			case 1:
-				setAudioBitrate(value: .bit128)
-			case 2:
-				setAudioBitrate(value: .bit160)
-			case 3:
-				setAudioBitrate(value: .bit192)
-			case 4:
-				setAudioBitrate(value: .bit256)
-			default:
-				return
-		}
-	}
-	
-	private func setAudioBitrate(value: AudioBitrate) {
-		audioBitrateValue = value
-	}
-}
-
-extension VideoCompressionCustomSettingsViewController {
-	
-	private func setVideoBitrateSlider(to value: Int) {
-		self.videoBitrateValue = value
-		self.videoBitrateSlider.index = UInt(value - 1) / 1000_000
-	}
-	
-	private func setAudioBitrateSlider(to value: Int) {
-		
-		let rawValue = AudioBitrate.allCases.first(where: {$0.rawValue == value})
-		let valuesArray: [AudioBitrate] = Array(AudioBitrate.allCases.reversed())
-	
-		if let savedValue = rawValue {
-			self.audioBitrateValue = savedValue
-			if let index = valuesArray.firstIndex(of: savedValue) {
-				audioBitrateSlider.index = UInt(index)
-			}
-		}
-	}
-	
-	private func setFpsSlider(to value: Float) {
-		
-		let rawValue = FPS.allCases.first(where: {$0.rawValue == value})
-		let valuesArray: [FPS] = Array(FPS.allCases.reversed())
-		
-		if let savedValue = rawValue {
-			self.videoFpsValue = savedValue
-			if let index = valuesArray.firstIndex(of: savedValue) {
-				fpsStepSlider.index = UInt(index)
-			}
-		}
-	}
-	
-	private func setKeyIntervalSlider(value: Int) {
-		videoKeyframeValue = value
-		videoKeyFrameSlider.index = UInt(value - 1)
-	}
-	
 	private func setResolutionSlider(value: CGSize) {
 		
 		let heightResolution = VideoResolution.allCases.first(where: {$0.resolutionSize.height == value.height})
 		let widthResolution = VideoResolution.allCases.first(where: {$0.resolutionSize.width == value.width})
-		let valuesArray: [VideoResolution] = Array(VideoResolution.allCases.reversed())
+		let valuesArray: [VideoResolution] = Array(VideoResolution.allCases.reversed()).dropLast()
 		
-		if let heightSavedValue = heightResolution {
+		if heightResolution == .origin && widthResolution == .origin {
+			resolutionStepSlider.index = UInt(valuesArray.count - 1)
+			videoResolutionValue = .origin
+		} else if let heightSavedValue = heightResolution {
 			videoResolutionValue = heightSavedValue
 			if let index = valuesArray.firstIndex(of: heightSavedValue) {
 				resolutionStepSlider.index = UInt(index)
@@ -395,6 +354,9 @@ extension VideoCompressionCustomSettingsViewController {
 				resolutionStepSlider.index = UInt(index)
 			}
 		}
+		
+		isResolutionChangeAvailible = videoResolutionValue != .origin
+		setMenualResolutionSegment(isOn: isResolutionChangeAvailible)
 	}
 	
 	private func getResolutionFrom(_ size: CGSize) -> VideoResolution {
@@ -410,70 +372,16 @@ extension VideoCompressionCustomSettingsViewController {
 		return .res1080p
 	}
 	
-	private func handleAudioTrackIsEnable() {
+	private func setMenualResolutionSegment(isOn: Bool) {
 		
-		if let asset = asset {
-			asset.getPhassetURL { responseURL in
-				if let url =  responseURL {
-					let avasset = AVAsset(url: url)
-					if let _ = avasset.tracks(withMediaType: .audio).first {
-						self.isAudioAvailible = true
-					} else {
-						self.isAudioAvailible = false
-					}
-				}
-			}
-		}
+		resolutionSegmentControll.selectedSegmentIndex = isOn ? 1 : 0
 	}
 	
-	private func handleRemoveAudioComponentButtom() {
-		
-		let image = removeAudioComponent ? I.personalisation.video.selected : I.personalisation.video.unselected
-		
-		removeAudioButton.addLeftImage(image: image, size: CGSize(width: 15, height: 15), spacing: 5)
-		self.audioSlider(isEnabled: !removeAudioComponent)
-	}
-	
-	private func handlRemoveTrackButtonAvailible(isEnabled: Bool) {
+	private func handleResolutionChangeSliderAvailible(isEnabled: Bool) {
 		U.UI {
-			self.removeAudioButton.isEnabled = isEnabled
-			self.audioSlider(isEnabled: isEnabled)
+			self.resolutionStepSlider.isEnabled = isEnabled
+			self.resolutionStepSlider.alpha = isEnabled ? 1.0 : 0.5
 		}
-	}
-	
-	private func audioSlider(isEnabled: Bool) {
-		self.audioBitrateSlider.isEnabled = isEnabled
-		self.audioBitrateSlider.alpha = isEnabled ? 1.0 : 0.5
-		self.audioBitrateTextLabel.alpha = isEnabled ? 1.0 : 0.5
-	}
-	
-	private func handleValuesDidChange() {
-		
-		let defaultConfigurationValues = VideoCompressionConfig()
-		
-		var isDefaultResolution: Bool = false
-		
-		if let size = defaultConfigurationValues.scaleResolution {
-			let resolution = getResolutionFrom(size)
-			isDefaultResolution = resolution == self.videoResolutionValue
-		} else if defaultConfigurationValues.scaleResolution == nil {
-			isDefaultResolution = true
-		}
-
-		if isDefaultResolution &&
-			defaultConfigurationValues.videoBitrate == self.videoBitrateValue &&
-			defaultConfigurationValues.audioBitrate == self.audioBitrateValue.rawValue &&
-			defaultConfigurationValues.fps == self.videoFpsValue.rawValue &&
-			defaultConfigurationValues.maximumVideoKeyframeInterval == self.videoKeyframeValue {
-			
-			setResetToDefaultButton(isEnable: false)
-		} else {
-			setResetToDefaultButton(isEnable: true)
-		}
-	}
-	
-	private func setResetToDefaultButton(isEnable: Bool) {
-		self.resetToDafaultButton.isEnabled = isEnable
 	}
 	
 	private func getOriginVideoResolution(competionHandler: @escaping (_ size: CGSize,_ isPortrait: Bool) -> Void) {
@@ -499,6 +407,214 @@ extension VideoCompressionCustomSettingsViewController {
 			}
 		}
 	}
+	
+	private func switchResolutionChange() {
+		
+		resolutionSegmentControll.selectedSegmentIndex == 0 ? setResolution(value: .origin) : resolutionSliderDidChangeValue()
+		isResolutionChangeAvailible = self.resolutionSegmentControll.selectedSegmentIndex == 1
+	}
+}
+
+//		MARK: - FPS -
+extension VideoCompressionCustomSettingsViewController {
+	
+	@objc func fpsSliderDidChangeValue() {
+		
+		switch fpsStepSlider.index {
+			case 0:
+				setFps(value: .fps15)
+			case 1:
+				setFps(value: .fps24)
+			case 2:
+				setFps(value: .fps30)
+			case 3:
+				setFps(value: .fps60)
+			default:
+				return
+		}
+	}
+	
+	private func setFps(value: FPS) {
+		videoFpsValue = value
+	}
+	
+	private func setFpsSlider(to value: Float) {
+		
+		let rawValue = FPS.allCases.first(where: {$0.rawValue == value})
+		let valuesArray: [FPS] = Array(FPS.allCases.reversed())
+		
+		if let savedValue = rawValue {
+			self.videoFpsValue = savedValue
+			if let index = valuesArray.firstIndex(of: savedValue) {
+				fpsStepSlider.index = UInt(index)
+			}
+		}
+	}
+}
+
+//		MARK: - video bitrate -
+extension VideoCompressionCustomSettingsViewController {
+	
+	@objc func videoBitrateSliderDidChangeValue() {
+		setBitrate(value: videoBitrateSlider.index)
+	}
+	
+	private func setVideoBitrateSlider(to value: Int) {
+		self.videoBitrateValue = value
+		self.videoBitrateSlider.index = UInt(value - 1) / 1000_000
+	}
+	
+	private func setBitrate(value: UInt) {
+		videoBitrateValue = Int(value + 1) * 1000_000
+	}
+}
+
+//		MARK: - audio bitrate -
+extension VideoCompressionCustomSettingsViewController {
+	
+	@objc func audioBitrateSliderDidChangeValue() {
+		
+		switch audioBitrateSlider.index {
+			case 0:
+				setAudioBitrate(value: .bit96)
+			case 1:
+				setAudioBitrate(value: .bit128)
+			case 2:
+				setAudioBitrate(value: .bit160)
+			case 3:
+				setAudioBitrate(value: .bit192)
+			case 4:
+				setAudioBitrate(value: .bit256)
+			default:
+				return
+		}
+	}
+	
+	@objc func videoKeyframeSliderDidChangeValue() {
+		setKeyframe(value: videoKeyFrameSlider.index)
+	}
+	
+	private func setKeyframe(value: UInt) {
+		videoKeyframeValue = Int(value) + 1
+	}
+	
+	private func setKeyIntervalSlider(value: Int) {
+		videoKeyframeValue = value
+		videoKeyFrameSlider.index = UInt(value - 1)
+	}
+}
+
+//		MARK: - audio bitrate -
+extension VideoCompressionCustomSettingsViewController {
+	
+	private func setAudioBitrate(value: AudioBitrate) {
+		audioBitrateValue = value
+	}
+	
+	private func setAudioBitrateSlider(to value: Int) {
+		
+		let rawValue = AudioBitrate.allCases.first(where: {$0.rawValue == value})
+		let valuesArray: [AudioBitrate] = Array(AudioBitrate.allCases.reversed())
+	
+		if let savedValue = rawValue {
+			self.audioBitrateValue = savedValue
+			if let index = valuesArray.firstIndex(of: savedValue) {
+				audioBitrateSlider.index = UInt(index)
+			}
+		}
+	}
+	
+	private func audioSlider(isEnabled: Bool) {
+		self.audioBitrateSlider.isEnabled = isEnabled
+		self.audioBitrateSlider.alpha = isEnabled ? 1.0 : 0.5
+		self.audioBitrateTextLabel.alpha = isEnabled ? 1.0 : 0.5
+	}
+}
+
+//		MARK: - components - defaults -
+extension VideoCompressionCustomSettingsViewController {
+	
+	private func handleRemoveAudioComponentButtom() {
+		
+		let image = removeAudioComponent ? I.personalisation.video.selected : I.personalisation.video.unselected
+		
+		removeAudioButton.addLeftImage(image: image, size: CGSize(width: 15, height: 15), spacing: 5)
+		self.audioSlider(isEnabled: !removeAudioComponent)
+	}
+	
+	private func handlRemoveTrackButtonAvailible(isEnabled: Bool) {
+		U.UI {
+			self.removeAudioButton.isEnabled = isEnabled
+			self.audioSlider(isEnabled: isEnabled)
+		}
+	}
+	
+	private func setResetToDefaultButton(isEnable: Bool) {
+		self.resetToDafaultButton.isEnabled = isEnable
+	}
+}
+
+//		MARK: - values changed -
+extension VideoCompressionCustomSettingsViewController {
+	
+	private func handleValuesDidChange() {
+		
+		let defaultConfigurationValues = VideoCompressionConfig()
+		
+		var isDefaultResolution: Bool = false
+		
+		if self.videoResolutionValue == .origin {
+			isDefaultResolution = true
+		} else if self.videoResolutionValue == .res1080p {
+			isDefaultResolution = true
+		} else {
+			isDefaultResolution = false
+		}
+
+		if isDefaultResolution &&
+			defaultConfigurationValues.videoBitrate == self.videoBitrateValue &&
+			defaultConfigurationValues.audioBitrate == self.audioBitrateValue.rawValue &&
+			defaultConfigurationValues.fps == self.videoFpsValue.rawValue &&
+			defaultConfigurationValues.maximumVideoKeyframeInterval == self.videoKeyframeValue {
+			
+			setResetToDefaultButton(isEnable: false)
+		} else {
+			setResetToDefaultButton(isEnable: true)
+		}
+	}
+	
+	private func handleAudioTrackIsEnable() {
+		
+		if let asset = asset {
+			asset.getPhassetURL { responseURL in
+				if let url =  responseURL {
+					let avasset = AVAsset(url: url)
+					if let _ = avasset.tracks(withMediaType: .audio).first {
+						self.isAudioAvailible = true
+					} else {
+						self.isAudioAvailible = false
+					}
+				}
+			}
+		}
+	}
+}
+
+extension VideoCompressionCustomSettingsViewController {
+	
+	private func presentPopUpInfoController(with model: CustomCompressionSection, from button: UIButton) {
+		
+		let infoViewController = CompressingInfoViewController()
+		infoViewController.compressingSection = model
+		
+		guard let popOverPresentationController = infoViewController.popoverPresentationController else { return }
+		popOverPresentationController.permittedArrowDirections = []
+		popOverPresentationController.delegate = self
+		popOverPresentationController.sourceView = button
+		popOverPresentationController.canOverlapSourceViewRect = true
+		popOverPresentationController.sourceRect = CGRect(x: button.bounds.midX, y: button.bounds.midY, width: 0, height: 0)
+		self.present(infoViewController, animated: true)
+	}
 }
 
 extension VideoCompressionCustomSettingsViewController: Themeble {
@@ -520,17 +636,20 @@ extension VideoCompressionCustomSettingsViewController: Themeble {
 		bottomButtonView.actionButton.imageSize = CGSize(width: 24, height: 22)
 		bottomButtonView.setImage(I.systemItems.defaultItems.compress)
 		
-		
-		titleLabelsCollection.forEach {
-			$0.font = .systemFont(ofSize: 12, weight: .semibold)
+		titleButtonsCollection.forEach {
+			$0.addRightImage(image: I.systemItems.defaultItems.info,
+							 size: CGSize(width: 10, height: 10),
+							 spacing: 5, tintColor: theme.subTitleTextColor)
+			$0.titleLabel?.font = .systemFont(ofSize: 12, weight: .semibold)
+			$0.contentHorizontalAlignment = .left
 		}
 		
-		resolutionTitleTextLabel.text = "Resolution"
-		fpsTitleTextLabel.text = "FPS"
-		bitrateTitleTextLabel.text = "Video Bitrate"
-		keyframeTitleTextLabel.text = "Interval Between Keyframes"
-		audioBitrateTitleTextLabel.text = "Audio Bitrate"
-		
+		resolutionTitleButton.setTitle(CustomCompressionSection.resolution.name, for: .normal)
+		fpsTitleButton.setTitle(CustomCompressionSection.fps.name, for: .normal)
+		bitrateTitleButton.setTitle(CustomCompressionSection.videoBitrate.name, for: .normal)
+		keyframeTitleButton.setTitle(CustomCompressionSection.keyframe.name, for: .normal)
+		audioBitrateTitleButton.setTitle(CustomCompressionSection.audioBitrate.name, for: .normal)
+			
 		bitrateTextLabel.font = .systemFont(ofSize: 10, weight: .medium)
 		keyframeTextLabel.font = .systemFont(ofSize: 10, weight: .medium)
 		resolutionSizeTextLabel.font = .systemFont(ofSize: 10, weight: .medium)
@@ -551,6 +670,42 @@ extension VideoCompressionCustomSettingsViewController: Themeble {
 		removeAudioButton.titleLabel?.font = .systemFont(ofSize: 12, weight: .semibold)
 		removeAudioShadowView.cornerRadius = 8
 		handleRemoveAudioComponentButtom()
+	}
+	
+	private func setupSlidersTarget() {
+		
+		resolutionStepSlider.addTarget(self, action: #selector(resolutionSliderDidChangeValue), for: .valueChanged)
+		fpsStepSlider.addTarget(self, action: #selector(fpsSliderDidChangeValue), for: .valueChanged)
+		videoBitrateSlider.addTarget(self, action: #selector(videoBitrateSliderDidChangeValue), for: .valueChanged)
+		videoKeyFrameSlider.addTarget(self, action: #selector(videoKeyframeSliderDidChangeValue), for: .valueChanged)
+		audioBitrateSlider.addTarget(self, action: #selector(audioBitrateSliderDidChangeValue), for: .valueChanged)
+	}
+	
+	private func segmentControllSetup() {
+		
+		resolutionSegmentControll.setTitle("origin", forSegmentAt: 0)
+		resolutionSegmentControll.setTitle("manual", forSegmentAt: 1)
+		
+		let font: UIFont = .systemFont(ofSize: 10, weight: .medium)
+		let segmentTitleTextAttributes = [NSAttributedString.Key.foregroundColor: theme.subTitleTextColor,
+										  NSAttributedString.Key.font: font]
+		let selectedSegmentTitleTextAttributes = [NSAttributedString.Key.foregroundColor: theme.titleTextColor,
+												  NSAttributedString.Key.font: font]
+		resolutionSegmentControll.setTitleTextAttributes(selectedSegmentTitleTextAttributes, for: .selected)
+		resolutionSegmentControll.setTitleTextAttributes(segmentTitleTextAttributes, for: .normal)
+		
+		let shadowView = ReuseShadowView()
+		shadowView.cellBackgroundColor = UIColor().colorFromHexString("ECF0F6")
+		shadowView.cornerRadius = 6
+		
+		shadowView.frame = resolutionSegmentControll.bounds
+		segmentContainerView.addSubview(shadowView)
+		shadowView.translatesAutoresizingMaskIntoConstraints = false
+		shadowView.leadingAnchor.constraint(equalTo: resolutionSegmentControll.leadingAnchor).isActive = true
+		shadowView.trailingAnchor.constraint(equalTo: resolutionSegmentControll.trailingAnchor).isActive = true
+		shadowView.topAnchor.constraint(equalTo: resolutionSegmentControll.topAnchor).isActive = true
+		shadowView.bottomAnchor.constraint(equalTo: resolutionSegmentControll.bottomAnchor, constant: 1).isActive = true
+		segmentContainerView.bringSubviewToFront(resolutionSegmentControll)
 	}
 	
 	private func videoResolutionSliderSetupUI() {
@@ -633,7 +788,7 @@ extension VideoCompressionCustomSettingsViewController: Themeble {
 		
 			/// `resolution slider`
 		
-		let resolutionValues: [String] = VideoResolution.allCases.map({$0.resolutionName}).reversed()
+		let resolutionValues: [String] = VideoResolution.allCases.map({$0.resolutionName}).reversed().dropLast()
 		resolutionStepSlider.maxCount = UInt(resolutionValues.count)
 		resolutionStepSlider.labels = resolutionValues
 		
@@ -714,8 +869,8 @@ extension VideoCompressionCustomSettingsViewController: Themeble {
 			$0.labelColor = theme.subTitleTextColor
 		}
 		
-		titleLabelsCollection.forEach {
-			$0.textColor = theme.titleTextColor
+		titleButtonsCollection.forEach {
+			$0.tintColor = theme.titleTextColor
 		}
 		
 		resetToDafaultButton.tintColor = theme.titleTextColor
@@ -754,5 +909,12 @@ extension VideoCompressionCustomSettingsViewController: UIGestureRecognizerDeleg
 	
 	func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
 		return true
+	}
+}
+
+extension VideoCompressionCustomSettingsViewController: UIPopoverPresentationControllerDelegate {
+	
+	func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
+		return .none
 	}
 }
