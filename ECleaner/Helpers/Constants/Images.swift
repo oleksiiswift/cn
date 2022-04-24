@@ -51,6 +51,7 @@ class Images {
             static let star = UIImage(named: "starItem")!
             static let arrowUP = UIImage(named: "arrowUpDown")!
 			static let compress = UIImage(named: "compressItem")!
+			static let info = UIImage(named: "infoItem")!
         }
 		
 		struct helpersItems {

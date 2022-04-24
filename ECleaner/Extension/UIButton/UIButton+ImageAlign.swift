@@ -19,26 +19,26 @@ extension UIButton {
         self.contentEdgeInsets = UIEdgeInsets(top: 0, left: inset, bottom: 0, right: inset)
     }
     
-    func addLeftImageWithFixLeft(spacing: CGFloat, size: CGSize, image: UIImage) {
+	func addLeftImageWithFixLeft(spacing: CGFloat, size: CGSize, image: UIImage, tintColor: UIColor? = nil) {
 		removePreviousImage()
-        addImageWithFix(spacing: spacing, isLeft: true, imageWidth: size.width, imageHeight: size.height, image: image)
+        addImageWithFix(spacing: spacing, isLeft: true, imageWidth: size.width, imageHeight: size.height, image: image, tintColor: tintColor)
     }
     
-    func addRighttImageWithFixRight(spacing: CGFloat, size: CGSize, image: UIImage) {
+	func addRighttImageWithFixRight(spacing: CGFloat, size: CGSize, image: UIImage, tintColor: UIColor? = nil) {
 		removePreviousImage()
-        addImageWithFix(spacing: spacing, isLeft: false, imageWidth: size.width, imageHeight: size.height, image: image)
+        addImageWithFix(spacing: spacing, isLeft: false, imageWidth: size.width, imageHeight: size.height, image: image, tintColor: tintColor)
     }
 
-    func addLeftImage(image: UIImage, size: CGSize, spacing: CGFloat) {
-        addImage(image: image, imageWidth: size.width, imageHeight: size.height, spacing: spacing, isLeft: true)
+	func addLeftImage(image: UIImage, size: CGSize, spacing: CGFloat, tintColor: UIColor? = nil) {
+        addImage(image: image, imageWidth: size.width, imageHeight: size.height, spacing: spacing, isLeft: true, tintColor: tintColor)
     }
     
     
-    func addRightImage(image: UIImage, size: CGSize, spacing: CGFloat) {
-        addImage(image: image, imageWidth: size.width, imageHeight: size.height, spacing: spacing, isLeft: false)
+	func addRightImage(image: UIImage, size: CGSize, spacing: CGFloat, tintColor: UIColor? = nil) {
+        addImage(image: image, imageWidth: size.width, imageHeight: size.height, spacing: spacing, isLeft: false, tintColor: tintColor)
     }
     
-    func addCenterImage(image: UIImage, imageWidth: CGFloat, imageHeight: CGFloat, spacing: CGFloat = 0) {
+	func addCenterImage(image: UIImage, imageWidth: CGFloat, imageHeight: CGFloat, spacing: CGFloat = 0, tintColor: UIColor? = nil) {
         
 		self.setImage(nil, for: .normal)
 		if let imageView = self.subviews.first(where: {$0.tag == 100500}) as? UIImageView {
@@ -47,6 +47,10 @@ extension UIButton {
 		
         let imageView = UIImageView(image: image)
 		imageView.tag = 100500
+		
+		if let color = tintColor {
+			imageView.tintColor = color
+		}
         imageView.translatesAutoresizingMaskIntoConstraints = false
         
         self.addSubview(imageView)
@@ -58,7 +62,7 @@ extension UIButton {
     }
 
     
-    private func addImage(image: UIImage, imageWidth: CGFloat, imageHeight: CGFloat, spacing: CGFloat, isLeft: Bool) {
+	private func addImage(image: UIImage, imageWidth: CGFloat, imageHeight: CGFloat, spacing: CGFloat, isLeft: Bool, tintColor: UIColor? = nil) {
         
 		let imageViewTag = 331122
 		removePreviousImageView(with: imageViewTag)
@@ -66,6 +70,10 @@ extension UIButton {
         let imageView = UIImageView(image: image)
 		imageView.tag = imageViewTag
 		
+		if let color = tintColor {
+			imageView.tintColor = color
+		}
+	
         imageView.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(imageView)
         
@@ -82,10 +90,14 @@ extension UIButton {
         imageView.heightAnchor.constraint(equalToConstant: imageHeight).isActive = true
     }
 
-    private func addImageWithFix(spacing: CGFloat, isLeft: Bool, imageWidth: CGFloat, imageHeight: CGFloat, image: UIImage) {
+	private func addImageWithFix(spacing: CGFloat, isLeft: Bool, imageWidth: CGFloat, imageHeight: CGFloat, image: UIImage, tintColor: UIColor? = nil) {
 
         let imageView = UIImageView(image: image)
         imageView.tag = 66613
+		
+		if let color = tintColor {
+			imageView.tintColor = color
+		}
         imageView.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(imageView)
         

@@ -19,7 +19,11 @@ class ReuseShadowView: UIView {
     public var topBlurValue: CGFloat = 19
     public var topAlpha: Float = 0.9
     public var shadowBlurValue: CGFloat = 10
-	public var cornerRadius: CGFloat = 14 
+	public var cornerRadius: CGFloat = 14
+	
+	public var cellBackgroundColor: UIColor = Theme.light.cellBackGroundColor
+	public var topShadowColor: UIColor = Theme.light.topShadowColor
+	public var cellShadowColor: UIColor = Theme.light.sideShadowColor
     
     override func layoutSubviews() {
         super.layoutSubviews()
@@ -28,11 +32,7 @@ class ReuseShadowView: UIView {
     }
     
     private func setupViews() {
-        
-		let cellBackgroundColor: UIColor = theme.cellBackGroundColor
-		let topShadowColor: UIColor = theme.topShadowColor
-		let cellShadowColor: UIColor = theme.sideShadowColor
-        
+
         self.backgroundColor = .clear
 
         self.layer.setShadowAndCustomCorners(backgroundColor: cellBackgroundColor,
