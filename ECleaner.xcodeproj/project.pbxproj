@@ -869,6 +869,7 @@
 		04B20F03269C4F9A00C6BC14 /* ModalControllers */ = {
 			isa = PBXGroup;
 			children = (
+				97067E6C281685410060F113 /* Dimmer */,
 				97B01A802747CB9100DDE03C /* Export */,
 				97A867A927E7927B00891297 /* DateSelector */,
 				97A867AA27E9273400891297 /* DropDownMenu */,
@@ -1100,7 +1101,6 @@
 			isa = PBXGroup;
 			children = (
 				04E0946F267A06B500A69956 /* AppDelegate.swift */,
-				970A0F362814CF730071FCD9 /* DimmerViewController.swift */,
 				04E09471267A06B500A69956 /* SceneDelegate.swift */,
 			);
 			path = Application;
@@ -1289,6 +1289,14 @@
 				97DDCAB1280873EA0093D5F5 /* StepSlider+Extension.swift */,
 			);
 			path = StepSlider;
+			sourceTree = "<group>";
+		};
+		97067E6C281685410060F113 /* Dimmer */ = {
+			isa = PBXGroup;
+			children = (
+				970A0F362814CF730071FCD9 /* DimmerViewController.swift */,
+			);
+			name = Dimmer;
 			sourceTree = "<group>";
 		};
 		970B208B27F5BCB900B5AF7D /* GradientSlider */ = {
