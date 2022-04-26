@@ -111,6 +111,14 @@ class BottomButtonBarView: UIView {
 		actionButton.addTarget(self, action: #selector(didTapActionButton), for: .touchUpInside)
 	}
 	
+	public func setButtonHeight(_ height: CGFloat) {
+		buttonHeightConstraint.constant = height
+	}
+	
+	public func setFont(_ font: UIFont) {
+		actionButton.font = font
+	}
+	
 	public func title(_ title: String) {
 		actionButton.setTitle(title)
 	}
@@ -138,6 +146,7 @@ class BottomBarButtonItem: UIButton {
 	
 	public var imageSpacing: CGFloat = 26
 	public var imageSize: CGSize = CGSize(width: 18, height: 22)
+	public var font: UIFont = .systemFont(ofSize: 16.8, weight: .bold)
 	
 	override func layoutSubviews() {
 		super.layoutSubviews()
@@ -148,7 +157,7 @@ class BottomBarButtonItem: UIButton {
 	private func configure() {
 		
 		self.setCorner(14)
-		self.titleLabel?.font = .systemFont(ofSize: 16.8, weight: .bold)
+		self.setFont()
 	}
 	
 	public func processingButton(_ isStart: Bool) {
@@ -160,6 +169,10 @@ class BottomBarButtonItem: UIButton {
 	public func configureAppearance(buttonColor: UIColor, tintColor: UIColor) {
 		self.backgroundColor = buttonColor
 		self.tintColor = tintColor
+	}
+	
+	public func setFont() {
+		self.titleLabel?.font = font
 	}
 	
 	public func setTitle(_ newTitle: String) {

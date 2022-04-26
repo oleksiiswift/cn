@@ -17,7 +17,10 @@ class StartingNavigationBar: UIView {
 	@IBOutlet weak var leftShadowView: ReuseShadowView!
 	@IBOutlet weak var rightShadowView: ReuseShadowView!
 	
-    var delegate: StartingNavigationBarDelegate?
+	@IBOutlet weak var leftButtonSizeHeightConstraint: NSLayoutConstraint!
+	@IBOutlet weak var rightButtonHeightConstraint: NSLayoutConstraint!
+	
+	var delegate: StartingNavigationBarDelegate?
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -96,6 +99,11 @@ class StartingNavigationBar: UIView {
 			leftShadowView.isHidden = true
         }
     }
+	
+	public func setButtonsSize(_ height: CGFloat) {
+		leftButtonSizeHeightConstraint.constant = height
+		rightButtonHeightConstraint.constant = height
+	}
     
     private func actionButtonsSetup() {
         

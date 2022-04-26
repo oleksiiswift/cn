@@ -377,7 +377,6 @@
 		04EE29FA269891F30013837D /* PHasset+Thumbnail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PHasset+Thumbnail.swift"; sourceTree = "<group>"; };
 		4F4A17B8271D812400CAF157 /* StartingNavigationBar.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = StartingNavigationBar.xib; sourceTree = "<group>"; };
 		4F4A17BA271D819F00CAF157 /* StartingNavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartingNavigationBar.swift; sourceTree = "<group>"; };
-		4F560717271DC5C400CA19E9 /* en-GB */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-GB"; path = "en-GB.lproj/Main.strings"; sourceTree = "<group>"; };
 		4F560718271DC5C400CA19E9 /* en-GB */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-GB"; path = "en-GB.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
 		4F56071F271DC6FC00CA19E9 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		4F56072427205AF100CA19E9 /* GradientCircularProgress.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GradientCircularProgress.swift; sourceTree = "<group>"; };
@@ -2338,7 +2337,6 @@
 			isa = PBXVariantGroup;
 			children = (
 				04E09476267A06B500A69956 /* Base */,
-				4F560717271DC5C400CA19E9 /* en-GB */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";

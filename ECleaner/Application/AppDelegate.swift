@@ -16,6 +16,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         configureApplication(with: launchOptions)
         setDefaults()
 		
+		developmentSettings()
+		
         return true
     }
 
@@ -48,4 +50,9 @@ extension AppDelegate {
 			CompressionSettingsConfiguretion.setDefaultConfiguration()
 		}
     }
+	
+	private func developmentSettings() {
+		
+		S.premium.allowAdvertisementBanner = false
+	}
 }

@@ -16,13 +16,21 @@ class MediaTypeCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var mediaSpaceTitleTextLabel: UILabel!
     @IBOutlet weak var infoSpaceStackView: UIStackView!
     @IBOutlet weak var diskSpaceImageView: UIImageView!
-    
+	@IBOutlet weak var mainStackView: UIStackView!
     @IBOutlet weak var contentViewHeightConstraint: NSLayoutConstraint!
-    
     private lazy var loadingActivityIndicatorView = UIActivityIndicatorView()
 
 	private var photoManager = PhotoManager.shared
     public var mediaTypeCell: MediaContentType = .none
+	
+	private var spaceViewIndicatorSize: CGSize {
+		switch Screen.size {
+			case .small:
+				return CGSize(width: 15, height: 15)
+			default:
+				return CGSize(width: 25, height: 25)
+		}
+	}
     
     override func prepareForReuse() {
         super.prepareForReuse()
@@ -47,9 +55,6 @@ extension MediaTypeCollectionViewCell: Themeble {
         loadingActivityIndicatorView.tag = 666
         
         mainView.setCorner(12)
-		mediaContentTitleTextLabel.font = .systemFont(ofSize: 18, weight: .bold)
-		mediaContentSubTitleTextLabel.font = .systemFont(ofSize: 14, weight: .medium)
-		mediaSpaceTitleTextLabel.font = .systemFont(ofSize: 14, weight: .medium)
     }
     
     public func configureCell(mediaType: MediaContentType, contentCount: Int?, diskSpace: Int64?) {
@@ -109,7 +114,8 @@ extension MediaTypeCollectionViewCell: Themeble {
         
         guard !infoSpaceStackView.subviews.contains(where: {$0.tag == 666}) else { return }
         
-        loadingActivityIndicatorView.frame = CGRect(x: 0, y: 0, width: 25, height: 25)
+		loadingActivityIndicatorView.frame = CGRect(origin: .zero, size: spaceViewIndicatorSize)
+		
         infoSpaceStackView.addSubview(loadingActivityIndicatorView)
         
         loadingActivityIndicatorView.translatesAutoresizingMaskIntoConstraints = false
@@ -117,7 +123,10 @@ extension MediaTypeCollectionViewCell: Themeble {
         loadingActivityIndicatorView.trailingAnchor.constraint(equalTo: infoSpaceStackView.trailingAnchor).isActive = true
         loadingActivityIndicatorView.topAnchor.constraint(equalTo: infoSpaceStackView.topAnchor).isActive = true
         loadingActivityIndicatorView.bottomAnchor.constraint(equalTo: infoSpaceStackView.bottomAnchor).isActive = true
-        loadingActivityIndicatorView.heightAnchor.constraint(equalToConstant: 25).isActive = true
+		loadingActivityIndicatorView.heightAnchor.constraint(equalToConstant: spaceViewIndicatorSize.width).isActive = true
+		
+		Screen.size == .small ? loadingActivityIndicatorView.transform = CGAffineTransform(scaleX: 0.7, y: 0.7) : ()
+		
         loadingActivityIndicatorView.startAnimating()
         infoSpaceStackView.layoutIfNeeded()
     }
@@ -139,39 +148,51 @@ extension MediaTypeCollectionViewCell: Themeble {
     
     private func addDimmerSpaceClearView() {
         let spaceView = UIView()
-        spaceView.frame = CGRect(x: 0, y: 0, width: 25, height: 25)
+		spaceView.frame = CGRect(origin: .zero, size: spaceViewIndicatorSize)
         infoSpaceStackView.addSubview(spaceView)
         spaceView.translatesAutoresizingMaskIntoConstraints = false
         spaceView.leadingAnchor.constraint(equalTo: infoSpaceStackView.leadingAnchor).isActive = true
         spaceView.trailingAnchor.constraint(equalTo: infoSpaceStackView.trailingAnchor).isActive = true
         spaceView.topAnchor.constraint(equalTo: infoSpaceStackView.topAnchor).isActive = true
         spaceView.bottomAnchor.constraint(equalTo: infoSpaceStackView.bottomAnchor).isActive = true
-        spaceView.heightAnchor.constraint(equalToConstant: 25).isActive = true
+		spaceView.heightAnchor.constraint(equalToConstant: spaceViewIndicatorSize.width).isActive = true
         infoSpaceStackView.layoutIfNeeded()
     }
 
-    private func handleContentSize() {
-        
-        switch Screen.size {
-          case .small:
-            debugPrint("")
-          case .medium:
-            debugPrint("")
-          case .plus:
-            debugPrint("")
-            contentViewHeightConstraint.constant = 200
-          case .large:
-            debugPrint("")
-            contentViewHeightConstraint.constant = 200
-          case .modern:
-            debugPrint("")
-            contentViewHeightConstraint.constant = 200
-          case .max:
-            debugPrint("")
-          case .madMax:
-            debugPrint("")
-        }
-    }
+	private func handleContentSize() {
+		
+		switch Screen.size {
+			case .small:
+				mainStackView.spacing = 8
+			case .medium:
+				mainStackView.spacing = 11
+			case .plus:
+				mainStackView.spacing = 12
+			case .large:
+				mainStackView.spacing = 14
+			case .modern:
+				mainStackView.spacing = 16
+			case .max:
+				mainStackView.spacing = 18
+			case .madMax:
+				mainStackView.spacing = 20
+		}
+		
+		switch Screen.size {
+			case .small:
+				mediaContentTitleTextLabel.font = .systemFont(ofSize: 12, weight: .bold)
+				mediaContentSubTitleTextLabel.font = .systemFont(ofSize: 10, weight: .medium)
+				mediaSpaceTitleTextLabel.font = .systemFont(ofSize: 10, weight: .medium)
+			case .medium:
+				mediaContentTitleTextLabel.font = .systemFont(ofSize: 17, weight: .bold)
+				mediaContentSubTitleTextLabel.font = .systemFont(ofSize: 13, weight: .medium)
+				mediaSpaceTitleTextLabel.font = .systemFont(ofSize: 13, weight: .medium)
+			default:
+				mediaContentTitleTextLabel.font = .systemFont(ofSize: 18, weight: .bold)
+				mediaContentSubTitleTextLabel.font = .systemFont(ofSize: 14, weight: .medium)
+				mediaSpaceTitleTextLabel.font = .systemFont(ofSize: 14, weight: .medium)
+		}
+	}
     
     func updateColors() {
         

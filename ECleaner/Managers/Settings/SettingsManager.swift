@@ -15,6 +15,19 @@ class SettingsManager {
     static var sharedInstance: SettingsManager {
         return self.shared
     }
+	
+	struct premium {
+		
+		 static var allowAdvertisementBanner: Bool {
+			get {
+				U.userDefaults.bool(forKey: C.key.advertisement.bannerIsShow)
+			} set {
+				U.userDefaults.set(newValue, forKey: C.key.advertisement.bannerIsShow)
+			}
+		}
+	}
+	
+
     
     public var isDarkMode: Bool {
         get {
