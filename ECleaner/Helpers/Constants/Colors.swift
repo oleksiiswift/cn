@@ -480,4 +480,22 @@ enum Theme: Int {
                 return UIColor().colorFromHexString("4F4F4F")
         }
     }
+
+	var circleProgresStartingGradient: UIColor {
+		switch self {
+			case .light:
+				return UIColor().colorFromHexString("66CDFF")
+			case .dark:
+				return UIColor().colorFromHexString("66CDFF")
+		}
+	}
+	
+	var circleProgresEndingGradient: UIColor {
+		switch self {
+			case .light:
+				return UIColor().colorFromHexString("3677FF")
+			case .dark:
+				return UIColor().colorFromHexString("3677FF")
+		}
+	}
 }

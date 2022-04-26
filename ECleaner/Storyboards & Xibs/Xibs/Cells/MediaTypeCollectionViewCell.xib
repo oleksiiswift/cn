@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19455" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19454"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -21,21 +21,21 @@
                         <rect key="frame" x="30" y="30" width="150" height="220"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kRt-Ta-nlS" customClass="ShadowRoundedView" customModule="ECleaner" customModuleProvider="target">
-                                <rect key="frame" x="42.5" y="32" width="65" height="65"/>
+                                <rect key="frame" x="42.5" y="22" width="65" height="65"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="kRt-Ta-nlS" secondAttribute="height" multiplier="1:1" id="VzL-HA-niV"/>
                                 </constraints>
                             </view>
-                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="Drq-4P-gkP">
-                                <rect key="frame" x="18.5" y="32" width="113" height="156"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" alignment="center" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="Drq-4P-gkP">
+                                <rect key="frame" x="18.5" y="22" width="113" height="176"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kZu-EV-x76">
                                         <rect key="frame" x="0.0" y="0.0" width="113" height="65"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     </view>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" alignment="center" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="24m-oN-FOP">
-                                        <rect key="frame" x="39" y="75" width="35" height="46"/>
+                                        <rect key="frame" x="39" y="85" width="35" height="46"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Title" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HZd-Lx-c5G">
                                                 <rect key="frame" x="1" y="0.0" width="33" height="20.5"/>
@@ -52,7 +52,7 @@
                                         </subviews>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="O7N-8B-EFa">
-                                        <rect key="frame" x="18.5" y="131" width="76.5" height="25"/>
+                                        <rect key="frame" x="18.5" y="151" width="76.5" height="25"/>
                                         <subviews>
                                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="path" translatesAutoresizingMaskIntoConstraints="NO" id="vcD-43-xaQ">
                                                 <rect key="frame" x="0.0" y="0.0" width="25" height="25"/>
@@ -101,6 +101,7 @@
                 <outlet property="contentViewHeightConstraint" destination="KmZ-hN-0Uv" id="xi1-EK-bGE"/>
                 <outlet property="diskSpaceImageView" destination="vcD-43-xaQ" id="OlC-YM-mZu"/>
                 <outlet property="infoSpaceStackView" destination="O7N-8B-EFa" id="qof-1w-gtH"/>
+                <outlet property="mainStackView" destination="Drq-4P-gkP" id="kG2-kn-Qrd"/>
                 <outlet property="mainView" destination="DDF-aQ-mOR" id="cZi-96-BtM"/>
                 <outlet property="mediaContentSubTitleTextLabel" destination="nmQ-vH-i7R" id="dbx-2S-t1M"/>
                 <outlet property="mediaContentTitleTextLabel" destination="HZd-Lx-c5G" id="gdQ-Ly-Mud"/>

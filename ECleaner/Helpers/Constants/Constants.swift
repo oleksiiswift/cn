@@ -25,6 +25,10 @@ class Constants {
     }
     
     struct key {
+		
+		struct advertisement {
+			static let bannerIsShow = "advertisementBannerDidShow"
+		}
         
         struct settings {
             static let isDarkModeOn = "darkModeIsSetOn"

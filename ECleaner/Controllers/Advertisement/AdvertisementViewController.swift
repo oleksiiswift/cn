@@ -18,6 +18,7 @@ class AdvertisementViewController: UIViewController {
         super.viewDidLoad()
         
         setupUI()
+		setupAdvertisementView()
         updateColors()
         setupNavigation()
     }
@@ -32,6 +33,11 @@ extension AdvertisementViewController: UpdateColorsDelegate {
     private func setupUI() {
         
 //        TODO:
+		
+		
+		
+		
+		
         
         // if device has top notch and no premium users
 //        containerViewBottomConstraint.constant = -U.bottomSafeAreaHeight ???
@@ -53,4 +59,12 @@ extension AdvertisementViewController: UpdateColorsDelegate {
     }
 }
 
-
+extension AdvertisementViewController {
+	
+	private func setupAdvertisementView() {
+		
+		let advertisementHeigh: CGFloat = S.premium.allowAdvertisementBanner ? 50 : -U.bottomSafeAreaHeight
+		let containerHeignt = advertisementHeigh + U.bottomSafeAreaHeight
+		advertisementHightConstraint.constant = containerHeignt
+	}
+}
