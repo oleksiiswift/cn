@@ -35,7 +35,7 @@ struct Screen {
         
         let screenSize: CGFloat = UIScreen.main.bounds.height
             /// 568 . 667 . 736 .812 . 844 . 896 . 926
-        
+		U.notificationCenter
         switch screenSize {
             case 568:
                 return .small
