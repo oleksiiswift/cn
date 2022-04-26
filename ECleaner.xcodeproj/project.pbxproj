@@ -232,6 +232,7 @@
 		97B01A752746ED5D00DDE03C /* UIFont+Italic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B01A742746ED5D00DDE03C /* UIFont+Italic.swift */; };
 		97B01A7C2747CB3A00DDE03C /* ExportContact.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97B01A7B2747CB3A00DDE03C /* ExportContact.storyboard */; };
 		97B01A7F2747CB8C00DDE03C /* ExportContactsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B01A7E2747CB8C00DDE03C /* ExportContactsViewController.swift */; };
+		97B53A06281803750054B826 /* String+Size.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B53A05281803750054B826 /* String+Size.swift */; };
 		97C1C71427F5A95800E262FA /* GradientSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97C1C71327F5A95800E262FA /* GradientSlider.swift */; };
 		97C44FBB274EF93B001B61AB /* ContactasCleaningType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97C44FBA274EF93B001B61AB /* ContactasCleaningType.swift */; };
 		97C44FBD274EF959001B61AB /* ContactsContainerType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97C44FBC274EF959001B61AB /* ContactsContainerType.swift */; };
@@ -377,7 +378,6 @@
 		04EE29FA269891F30013837D /* PHasset+Thumbnail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PHasset+Thumbnail.swift"; sourceTree = "<group>"; };
 		4F4A17B8271D812400CAF157 /* StartingNavigationBar.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = StartingNavigationBar.xib; sourceTree = "<group>"; };
 		4F4A17BA271D819F00CAF157 /* StartingNavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartingNavigationBar.swift; sourceTree = "<group>"; };
-		4F560717271DC5C400CA19E9 /* en-GB */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-GB"; path = "en-GB.lproj/Main.strings"; sourceTree = "<group>"; };
 		4F560718271DC5C400CA19E9 /* en-GB */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-GB"; path = "en-GB.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
 		4F56071F271DC6FC00CA19E9 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		4F56072427205AF100CA19E9 /* GradientCircularProgress.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GradientCircularProgress.swift; sourceTree = "<group>"; };
@@ -528,6 +528,7 @@
 		97B01A742746ED5D00DDE03C /* UIFont+Italic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+Italic.swift"; sourceTree = "<group>"; };
 		97B01A7B2747CB3A00DDE03C /* ExportContact.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ExportContact.storyboard; sourceTree = "<group>"; };
 		97B01A7E2747CB8C00DDE03C /* ExportContactsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportContactsViewController.swift; sourceTree = "<group>"; };
+		97B53A05281803750054B826 /* String+Size.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Size.swift"; sourceTree = "<group>"; };
 		97C1C71327F5A95800E262FA /* GradientSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientSlider.swift; sourceTree = "<group>"; };
 		97C44FBA274EF93B001B61AB /* ContactasCleaningType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactasCleaningType.swift; sourceTree = "<group>"; };
 		97C44FBC274EF959001B61AB /* ContactsContainerType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsContainerType.swift; sourceTree = "<group>"; };
@@ -729,6 +730,7 @@
 				976465D32727055200F8CDA6 /* String+Alphabetical+Range.swift */,
 				975AF4362728279900744E3B /* String+Numeric.swift */,
 				970B208C27F604D300B5AF7D /* String+Secionds.swift */,
+				97B53A05281803750054B826 /* String+Size.swift */,
 			);
 			path = Strings;
 			sourceTree = "<group>";
@@ -869,6 +871,7 @@
 		04B20F03269C4F9A00C6BC14 /* ModalControllers */ = {
 			isa = PBXGroup;
 			children = (
+				97067E6C281685410060F113 /* Dimmer */,
 				97B01A802747CB9100DDE03C /* Export */,
 				97A867A927E7927B00891297 /* DateSelector */,
 				97A867AA27E9273400891297 /* DropDownMenu */,
@@ -1100,7 +1103,6 @@
 			isa = PBXGroup;
 			children = (
 				04E0946F267A06B500A69956 /* AppDelegate.swift */,
-				970A0F362814CF730071FCD9 /* DimmerViewController.swift */,
 				04E09471267A06B500A69956 /* SceneDelegate.swift */,
 			);
 			path = Application;
@@ -1289,6 +1291,14 @@
 				97DDCAB1280873EA0093D5F5 /* StepSlider+Extension.swift */,
 			);
 			path = StepSlider;
+			sourceTree = "<group>";
+		};
+		97067E6C281685410060F113 /* Dimmer */ = {
+			isa = PBXGroup;
+			children = (
+				970A0F362814CF730071FCD9 /* DimmerViewController.swift */,
+			);
+			name = Dimmer;
 			sourceTree = "<group>";
 		};
 		970B208B27F5BCB900B5AF7D /* GradientSlider */ = {
@@ -2220,6 +2230,7 @@
 				97238A092689D01E00C523DC /* GroupedAssetListViewController.swift in Sources */,
 				976D8E4328046EDF005004F4 /* VideoCompressionErrorHandler.swift in Sources */,
 				049CC22426831B800002F988 /* UIColor+Hex.swift in Sources */,
+				97B53A06281803750054B826 /* String+Size.swift in Sources */,
 				97A57476280C7C9B00B76BD0 /* ProgressBar.swift in Sources */,
 				975AF4372728279900744E3B /* String+Numeric.swift in Sources */,
 				970B208D27F604D300B5AF7D /* String+Secionds.swift in Sources */,
@@ -2330,7 +2341,6 @@
 			isa = PBXVariantGroup;
 			children = (
 				04E09476267A06B500A69956 /* Base */,
-				4F560717271DC5C400CA19E9 /* en-GB */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";

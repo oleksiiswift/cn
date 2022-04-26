@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19455" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="CK9-qa-cg6">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="CK9-qa-cg6">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19454"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="collection view cell content view" minToolsVersion="11.0"/>
@@ -72,20 +72,20 @@
                                         <rect key="frame" x="0.0" y="0.0" width="414" height="808"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="d7L-g7-bO4">
-                                                <rect key="frame" x="0.0" y="80" width="414" height="568"/>
+                                                <rect key="frame" x="0.0" y="80" width="414" height="588"/>
                                                 <subviews>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZZg-q9-TUe">
-                                                        <rect key="frame" x="0.0" y="0.0" width="414" height="288"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="414" height="308"/>
                                                         <subviews>
                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FiS-cX-K1W" customClass="CircleProgressView" customModule="ECleaner" customModuleProvider="target">
-                                                                <rect key="frame" x="73" y="0.0" width="268" height="268"/>
+                                                                <rect key="frame" x="63" y="0.0" width="288" height="288"/>
                                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                 <constraints>
                                                                     <constraint firstAttribute="width" secondItem="FiS-cX-K1W" secondAttribute="height" multiplier="1:1" id="VBl-5R-fGS"/>
                                                                 </constraints>
                                                             </view>
                                                             <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="oeD-qr-sj7" customClass="MMTGradientArcView" customModule="ECleaner" customModuleProvider="target">
-                                                                <rect key="frame" x="0.0" y="0.0" width="414" height="288"/>
+                                                                <rect key="frame" x="0.0" y="0.0" width="414" height="308"/>
                                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                             </view>
                                                         </subviews>
@@ -101,7 +101,7 @@
                                                         </constraints>
                                                     </view>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9Zu-Nv-jnl">
-                                                        <rect key="frame" x="0.0" y="288" width="414" height="280"/>
+                                                        <rect key="frame" x="0.0" y="308" width="414" height="280"/>
                                                         <subviews>
                                                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="Dg3-qT-o61">
                                                                 <rect key="frame" x="-10" y="0.0" width="434" height="280"/>
@@ -137,7 +137,7 @@
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             </stackView>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qc5-FH-bni">
-                                                <rect key="frame" x="207" y="358" width="187" height="20"/>
+                                                <rect key="frame" x="207" y="378" width="187" height="20"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gca-7p-eY1">
                                                         <rect key="frame" x="0.0" y="0.0" width="187" height="20"/>
@@ -157,10 +157,10 @@
                                                 </constraints>
                                             </view>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="poS-86-x66" customClass="BottomButtonBarView" customModule="ECleaner" customModuleProvider="target">
-                                                <rect key="frame" x="0.0" y="648" width="414" height="160"/>
+                                                <rect key="frame" x="0.0" y="668" width="414" height="140"/>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <constraints>
-                                                    <constraint firstAttribute="height" constant="160" id="fAQ-ep-UWf"/>
+                                                    <constraint firstAttribute="height" constant="140" id="fAQ-ep-UWf"/>
                                                 </constraints>
                                             </view>
                                         </subviews>
@@ -213,11 +213,15 @@
                     <nil key="simulatedTopBarMetrics"/>
                     <connections>
                         <outlet property="bottomButtonBarView" destination="poS-86-x66" id="PmH-38-pJ8"/>
+                        <outlet property="bottomButtonHeightConstraint" destination="fAQ-ep-UWf" id="MbU-oQ-4BI"/>
+                        <outlet property="circleProgressBottomConstraint" destination="Eea-6b-NMV" id="a77-YA-7B1"/>
+                        <outlet property="circleProgressTopConstraint" destination="F4c-HT-a9R" id="tUx-Vj-kPa"/>
                         <outlet property="circleProgressView" destination="oeD-qr-sj7" id="Jaj-lB-HAO"/>
-                        <outlet property="circleTotlaSpaceView" destination="FiS-cX-K1W" id="P5d-7m-G2J"/>
+                        <outlet property="circleTotalSpaceView" destination="FiS-cX-K1W" id="P5d-7m-G2J"/>
                         <outlet property="collectionViewHeightConstraint" destination="U1g-Ww-fyt" id="6u2-Dc-SMa"/>
                         <outlet property="mediaCollectionView" destination="Dg3-qT-o61" id="p6Y-t8-dtI"/>
                         <outlet property="navigationBar" destination="o3N-4y-HyM" id="uvu-lf-Okl"/>
+                        <outlet property="navigationBarHeightConstraint" destination="wTo-aQ-Ok7" id="DsS-ZJ-h3F"/>
                         <outlet property="scrollView" destination="7Yr-dc-Kkh" id="StV-gn-MkC"/>
                         <outlet property="sectionHeaderTextLabel" destination="gca-7p-eY1" id="MUx-tc-F7G"/>
                     </connections>

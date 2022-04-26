@@ -7,6 +7,13 @@
 
 import UIKit
 
+enum TitlePercentLablelsPosition {
+	case centered
+	case customWithinset
+	case centeredRightAlign
+	case centeredLeftAlign
+}
+
 /// `line cap` style setup
 public enum LineCap : Int{
     case round, butt, square
@@ -34,11 +41,46 @@ public enum ProgressBarOrientation: Int {
 class CircleProgressView: UIView {
 
     // MARK: - Variables
-    
     public var titleLabelWidth: CGFloat = 140
     public let percentLabel = UILabel(frame: .zero)
-    
-    public var titleLabel = UILabel(frame: .zero)
+	public var titleLabel = UILabel(frame: .zero)
+	
+	public var titleLabelsPercentPosition: TitlePercentLablelsPosition = .centered {
+		didSet {
+			updateLabels()
+		}
+	}
+	
+	public var titleLabelMargin: CGFloat = 20 {
+		didSet {
+			titleLabel.rightMargin(margin: titleLabelMargin)
+		}
+	}
+	
+	public var percentLabelTextAligement: NSTextAlignment = .center {
+		didSet {
+			updateLabels()
+		}
+	}
+	
+		/// work only when constraint activated
+	public var percentTitleLabelSpaceOffset: CGFloat = -20 {
+		didSet {
+			updateLabels()
+		}
+	}
+	
+	public var percentLabelYOffset: CGFloat = 0 {
+		didSet {
+			updateLabels()
+		}
+	}
+		
+	public var titleLabelTextAligement: NSTextAlignment = .center {
+		didSet {
+			updateLabels()
+		}
+	}
 
     /// `Stroke background color`
     public var clockwise: Bool = true {
@@ -82,12 +124,19 @@ class CircleProgressView: UIView {
     }
 
     /// `Space value`
-    public var spaceDegree: CGFloat = 0.0 {
+    public var spaceDegree: CGFloat = 12.0 {
         didSet {
             layoutSubviews()
             updateShapes()
         }
     }
+	/// `Space value for background
+	public var backgrounSpaceDegree: CGFloat = 0.0 {
+		didSet {
+			layoutSubviews()
+			updateShapes()
+		}
+	}
 
     /// The progress shapes line width will be the `line width` minus the `inset`.
     public var inset: CGFloat = 0.0 {
@@ -109,7 +158,6 @@ class CircleProgressView: UIView {
         }
     }
 
-
     /// progress text (progress bottom label)
     public var title: String = "" {
         didSet {
@@ -123,7 +171,6 @@ class CircleProgressView: UIView {
         }
     }
 
-
     // progress text (progress bottom label)
     public var font: UIFont = .systemFont(ofSize: 13) {
         didSet {
@@ -131,7 +178,6 @@ class CircleProgressView: UIView {
             percentLabel.font = font
         }
     }
-
 
     // progress Orientation
     public var orientation: ProgressBarOrientation = .bottom {
@@ -147,13 +193,15 @@ class CircleProgressView: UIView {
         }
     }
     
-    public var startColor: UIColor = UIColor().colorFromHexString("66CDFF") {
+	public var startColor: UIColor = .yellow {
+//	UIColor().colorFromHexString("66CDFF") {
         didSet {
             setNeedsLayout()
         }
     }
     
-    public var endColor:   UIColor = UIColor().colorFromHexString("3677FF") {
+	public var endColor:   UIColor = .blue {
+//UIColor().colorFromHexString("3677FF") {
         didSet {
             setNeedsLayout()
         }
@@ -168,7 +216,25 @@ class CircleProgressView: UIView {
             return progressShape.strokeEnd
         }
     }
-
+	
+	public var backgroundShadowColor: UIColor = .red {
+		didSet {
+			setNeedsLayout()
+		}
+	}
+	
+	public var backgroundShadowOffcet: CGSize = CGSize(width: 6, height: 6) {
+		didSet {
+			setNeedsLayout()
+		}
+	}
+	
+	public var backgroundShadwoOppacity: Float = 1.0 {
+		didSet {
+			setNeedsLayout()
+		}
+	}
+	
     /// Duration for a complete animation from 0.0 to 1.0.
     open var completeDuration: Double = 2.0
 
@@ -176,13 +242,14 @@ class CircleProgressView: UIView {
     private var progressShape: CAShapeLayer!
     private var progressAnimation: CABasicAnimation!
 
-  
     private let gradientLayer: CAGradientLayer = {
         let gradientLayer = CAGradientLayer()
-        gradientLayer.type = .axial
+		gradientLayer.type = .conic
 //        gradientLayer.locations = [0.2,0.5,0.75,1]
-        gradientLayer.startPoint = CGPoint(x: 0.0, y: 0.0)
-        gradientLayer.endPoint = CGPoint(x: 1.0, y: 0.0)
+//        gradientLayer.startPoint = CGPoint(x: 0.0, y: 0.0)
+//        gradientLayer.endPoint = CGPoint(x: 1.0, y: 0.0)
+		gradientLayer.startPoint = CGPoint(x: 0.5, y: 0.5)
+		gradientLayer.endPoint = CGPoint(x: 0.5, y: 1.0)
         return gradientLayer
     }()
 
@@ -199,7 +266,7 @@ class CircleProgressView: UIView {
     }
 
     private func setup() {
-
+		
         backgroundShape = CAShapeLayer()
         backgroundShape.fillColor = nil
         backgroundShape.strokeColor = backgroundShapeColor.cgColor
@@ -209,24 +276,15 @@ class CircleProgressView: UIView {
         progressShape.fillColor   = nil
         progressShape.strokeStart = 0.0
         progressShape.strokeEnd   = 0.1
+
         layer.addSublayer(progressShape)
-      
         layer.addSublayer(gradientLayer)
-
+		
         progressAnimation = CABasicAnimation(keyPath: "strokeEnd")
-
-        percentLabel.frame = CGRect(x: (self.bounds.size.width - titleLabelWidth) / 2, y: self.bounds.midY - percentLabelCenterInset, width: titleLabelWidth, height: 61)
-
-        percentLabel.textAlignment = .center
         
         self.addSubview(percentLabel)
         
         percentLabel.text = String(format: "%.1f%%", progress * 100)
-
-
-        titleLabel.frame = CGRect(x: (self.bounds.size.width - titleLabelWidth) / 2, y: self.percentLabel.frame.maxY, width: titleLabelWidth, height: 21)
-
-        titleLabel.textAlignment = .center
         titleLabel.text = title
         titleLabel.contentScaleFactor = 0.3
 
@@ -234,10 +292,80 @@ class CircleProgressView: UIView {
 
         titleLabel.adjustsFontSizeToFitWidth = true
         self.addSubview(titleLabel)
+		
+		updateLabels()
     }
+	
+	public func updateLabels() {
+		// heigt of percent and title label is fix
+		let percentTitleLabelHeight: CGFloat = 61
+		let titleLabelHeight: CGFloat = 42
+		
+		var calculatedPercentLabelWidth: CGFloat = 0
+		
+		if let stringText = self.percentLabel.text, let font = self.percentLabel.font {
+			calculatedPercentLabelWidth = stringText.width(withConstrainedHeight: percentTitleLabelHeight, font: font)
+		}
+		
+		switch self.titleLabelsPercentPosition {
+			case .centered:
+				self.percentLabel.textAlignment = .center
+				self.titleLabel.textAlignment = .center
+				
+				self.percentLabel.translatesAutoresizingMaskIntoConstraints = false
+				self.percentLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
+				self.percentLabel.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: percentLabelYOffset).isActive = true
+				self.percentLabel.heightAnchor.constraint(equalToConstant: percentTitleLabelHeight).isActive = true
+				self.percentLabel.widthAnchor.constraint(equalToConstant: self.titleLabelWidth).isActive = true
+				
+				self.titleLabel.translatesAutoresizingMaskIntoConstraints = false
+				self.titleLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
+				self.titleLabel.topAnchor.constraint(equalTo: self.percentLabel.bottomAnchor, constant: self.percentTitleLabelSpaceOffset).isActive = true
+				self.titleLabel.heightAnchor.constraint(equalToConstant: titleLabelHeight).isActive = true
+				self.titleLabel.widthAnchor.constraint(equalToConstant: self.titleLabelWidth).isActive = true
+			case .customWithinset:
+				self.percentLabel.textAlignment = percentLabelTextAligement
+				self.titleLabel.textAlignment = titleLabelTextAligement
+				
+				self.percentLabel.frame = CGRect(x: (self.bounds.size.width - titleLabelWidth) / 2,
+												 y: self.bounds.midY - percentLabelCenterInset,
+												 width: titleLabelWidth,
+												 height: percentTitleLabelHeight)
+				self.titleLabel.frame = CGRect(x: (self.bounds.size.width - titleLabelWidth) / 2,
+											   y: self.percentLabel.frame.maxY,
+											   width: titleLabelWidth, height: titleLabelHeight)
+			case .centeredRightAlign:
+				self.percentLabel.textAlignment = .center
+				self.titleLabel.textAlignment = .right
+				self.percentLabel.translatesAutoresizingMaskIntoConstraints = false
+				self.percentLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
+				self.percentLabel.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: percentLabelYOffset).isActive = true
+				self.percentLabel.heightAnchor.constraint(equalToConstant: percentTitleLabelHeight).isActive = true
+				self.percentLabel.widthAnchor.constraint(equalToConstant: calculatedPercentLabelWidth).isActive = true
+				
+				self.titleLabel.translatesAutoresizingMaskIntoConstraints = false
+				self.titleLabel.trailingAnchor.constraint(equalTo: percentLabel.trailingAnchor, constant: -3).isActive = true
+				self.titleLabel.centerYAnchor.constraint(equalTo: self.percentLabel.bottomAnchor, constant: self.percentTitleLabelSpaceOffset).isActive = true
+				self.titleLabel.heightAnchor.constraint(equalToConstant: titleLabelHeight).isActive = true
+				self.titleLabel.widthAnchor.constraint(equalToConstant: self.titleLabelWidth).isActive = true
+			case .centeredLeftAlign:
+				self.percentLabel.textAlignment = .center
+				self.titleLabel.textAlignment = .left
+				self.percentLabel.translatesAutoresizingMaskIntoConstraints = false
+				self.percentLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
+				self.percentLabel.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: percentLabelYOffset).isActive = true
+				self.percentLabel.heightAnchor.constraint(equalToConstant: percentTitleLabelHeight).isActive = true
+				self.percentLabel.widthAnchor.constraint(equalToConstant: calculatedPercentLabelWidth).isActive = true
+				
+				self.titleLabel.translatesAutoresizingMaskIntoConstraints = false
+				self.titleLabel.leadingAnchor.constraint(equalTo: percentLabel.leadingAnchor, constant: 3).isActive = true
+				self.titleLabel.centerYAnchor.constraint(equalTo: self.percentLabel.bottomAnchor, constant: self.percentTitleLabelSpaceOffset).isActive = true
+				self.titleLabel.heightAnchor.constraint(equalToConstant: titleLabelHeight).isActive = true
+				self.titleLabel.widthAnchor.constraint(equalToConstant: self.titleLabelWidth).isActive = true
+		}
+	}
 
     // MARK: - Progress Animation
-    
     public func setProgress(progress: CGFloat, animated: Bool = true) {
 
         if progress > 1.0 {
@@ -273,12 +401,17 @@ class CircleProgressView: UIView {
         progressShape.frame   = bounds
         
         let rect = rectForShape()
-        backgroundShape.path = pathForShape(rect: rect).cgPath
-        progressShape.path   = pathForShape(rect: rect).cgPath
-        
+		backgroundShape.path = pathForShape(rect: rect, degree: backgrounSpaceDegree).cgPath
+		progressShape.path   = pathForShape(rect: rect, degree: spaceDegree).cgPath
         gradientLayer.frame = bounds
         gradientLayer.colors = [startColor, endColor].map { $0.cgColor }
-        
+		
+		layer.masksToBounds = false
+		layer.shadowOffset = backgroundShadowOffcet
+		layer.shadowColor = backgroundShadowColor.cgColor
+		layer.shadowRadius = 14
+		layer.shadowOpacity = backgroundShadwoOppacity
+
         let path = progressShape.path
         if let mask = progressShape {
             mask.fillColor = UIColor.clear.cgColor
@@ -287,9 +420,8 @@ class CircleProgressView: UIView {
             mask.path = path
             gradientLayer.mask = mask
         }
-        percentLabel.frame = CGRect(x: (self.bounds.size.width - titleLabelWidth) / 2, y: self.bounds.midY - percentLabelCenterInset, width: titleLabelWidth, height: 61)
-        self.titleLabel.frame = CGRect(x: (self.bounds.size.width - titleLabelWidth) / 2, y: self.percentLabel.frame.maxY, width: titleLabelWidth, height: 42)
         
+        updateLabels()
         updateShapes()
     }
 
@@ -298,9 +430,6 @@ class CircleProgressView: UIView {
         backgroundShape?.lineWidth   = lineWidth
         backgroundShape?.strokeColor = backgroundShapeColor.cgColor
         backgroundShape?.lineCap     = CAShapeLayerLineCap(rawValue: lineCap.style())
-
-//      progressShape?.strokeColor = endColor.cgColor//progressShapeColor.cgColor
-      
         progressShape?.lineWidth   = lineWidth - inset
         progressShape?.lineCap     = CAShapeLayerLineCap(rawValue: lineCap.style())
 
@@ -322,12 +451,11 @@ class CircleProgressView: UIView {
             
             titleLabel.isHidden = false
             
-//            UIView.animate(withDuration: 0.3, delay: 0.0, usingSpringWithDamping: 0.9, initialSpringVelocity: 0.0, options: [] , animations: { [weak self] in
-//                if let temp = self{
-//                    temp.titleLabel.frame = CGRect(x: (temp.bounds.size.width - temp.titleLabelWidth) / 2, y: temp.bounds.size.height - self!.titleLabelBottomInset, width: temp.titleLabelWidth, height: 42)
-//                }
-//
-//            }, completion: nil)
+            UIView.animate(withDuration: 0.3, delay: 0.0, usingSpringWithDamping: 0.9, initialSpringVelocity: 0.0, options: [] , animations: { [weak self] in
+			
+				guard let `self` = self else { return }
+				self.updateLabels()
+            }, completion: nil)
             
             self.progressShape.transform = CATransform3DMakeRotation( CGFloat.pi * 2, 0, 0, 1.0)
             self.backgroundShape.transform = CATransform3DMakeRotation(CGFloat.pi * 2, 0, 0, 1.0)
@@ -352,17 +480,17 @@ class CircleProgressView: UIView {
     private func rectForShape() -> CGRect {
       return bounds.insetBy(dx: lineWidth / 2.0, dy: lineWidth / 2.0)
     }
-    private func pathForShape(rect: CGRect) -> UIBezierPath {
+	private func pathForShape(rect: CGRect, degree: CGFloat) -> UIBezierPath {
         
         let startAngle: CGFloat!
         let endAngle: CGFloat!
         
         if clockwise{
-            startAngle = CGFloat(spaceDegree * .pi / 180.0) + (0.5 * .pi)
-            endAngle = CGFloat((360.0 - spaceDegree) * (.pi / 180.0)) + (0.5 * .pi)
+            startAngle = CGFloat(degree * .pi / 180.0) + (0.5 * .pi)
+            endAngle = CGFloat((360.0 - degree) * (.pi / 180.0)) + (0.5 * .pi)
         }else{
-            startAngle = CGFloat((360.0 - spaceDegree) * (.pi / 180.0)) + (0.5 * .pi)
-            endAngle = CGFloat(spaceDegree * .pi / 180.0) + (0.5 * .pi)
+            startAngle = CGFloat((360.0 - degree) * (.pi / 180.0)) + (0.5 * .pi)
+            endAngle = CGFloat(degree * .pi / 180.0) + (0.5 * .pi)
         }
         let path = UIBezierPath(arcCenter: CGPoint(x: rect.midX,
                                                    y: rect.midY),
@@ -370,7 +498,6 @@ class CircleProgressView: UIView {
                                 startAngle: startAngle,
                                 endAngle: endAngle,
                                 clockwise: clockwise)
-      
         return path
     }
 }
@@ -457,4 +584,6 @@ class MMTGradientArcView: UIView {
         }
     }
 }
+
+
 
