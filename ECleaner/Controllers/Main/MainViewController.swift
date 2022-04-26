@@ -15,11 +15,16 @@ class MainViewController: UIViewController {
     @IBOutlet weak var navigationBar: StartingNavigationBar!
     @IBOutlet weak var bottomButtonBarView: BottomButtonBarView!
     @IBOutlet weak var scrollView: UIScrollView!
-    @IBOutlet weak var circleTotlaSpaceView: CircleProgressView!
+    @IBOutlet weak var circleTotalSpaceView: CircleProgressView!
     @IBOutlet weak var circleProgressView: MMTGradientArcView!
     @IBOutlet weak var mediaCollectionView: UICollectionView!
-    @IBOutlet weak var collectionViewHeightConstraint: NSLayoutConstraint!
 	@IBOutlet weak var sectionHeaderTextLabel: UILabel!
+	
+	@IBOutlet weak var navigationBarHeightConstraint: NSLayoutConstraint!
+	@IBOutlet weak var circleProgressBottomConstraint: NSLayoutConstraint!
+	@IBOutlet weak var circleProgressTopConstraint: NSLayoutConstraint!
+	@IBOutlet weak var collectionViewHeightConstraint: NSLayoutConstraint!
+	@IBOutlet weak var bottomButtonHeightConstraint: NSLayoutConstraint!
 	
     private let baseCarouselLayout = BaseCarouselFlowLayout()
         
@@ -279,6 +284,7 @@ extension MainViewController {
         mediaCollectionView.register(UINib(nibName: C.identifiers.xibs.mediaTypeCell, bundle: nil), forCellWithReuseIdentifier: C.identifiers.cells.mediaTypeCell)
         mediaCollectionView.showsVerticalScrollIndicator = false
         mediaCollectionView.showsHorizontalScrollIndicator = false
+		mediaCollectionView.alwaysBounceVertical = false
     }
 
     private func configure(_ cell: MediaTypeCollectionViewCell, at indexPath: IndexPath) {
@@ -354,8 +360,20 @@ extension MainViewController: UpdateColorsDelegate {
         bottomButtonBarView.actionButton.imageSize = CGSize(width: 25, height: 25)
         bottomButtonBarView.setImage(I.mainStaticItems.clean)
 		
-		sectionHeaderTextLabel.text = "Select Category"
-		sectionHeaderTextLabel.font = .systemFont(ofSize: 14, weight: .heavy)
+		sectionHeaderTextLabel.text = "Categories:"
+		
+		switch Screen.size {
+			case .small:
+				sectionHeaderTextLabel.font = .systemFont(ofSize: 12, weight: .heavy)
+				bottomButtonBarView.setFont(.systemFont(ofSize: 14, weight: .bold))
+				bottomButtonBarView.setButtonHeight(50)
+				navigationBar.setButtonsSize(40)
+				navigationBarHeightConstraint.constant = 60
+			case .medium:
+				sectionHeaderTextLabel.font = .systemFont(ofSize: 12, weight: .heavy)
+			default:
+				sectionHeaderTextLabel.font = .systemFont(ofSize: 14, weight: .heavy)
+		}
     }
     
     func updateColors() {
@@ -370,75 +388,181 @@ extension MainViewController: UpdateColorsDelegate {
         bottomButtonBarView.updateColorsSettings()
     }
     
-    private func setupProgressAndCollectionSize() {
-        
-		circleTotlaSpaceView.font = .systemFont(ofSize: 50, weight: .black)
-		circleTotlaSpaceView.percentLabel.font = .systemFont(ofSize: 50, weight: .black)
-		circleTotlaSpaceView.percentLabelCenterInset = 45
-      
-      switch Screen.size {
-        case .small:
-          debugPrint("")
-            //                circleProgressBarViewHeightConstraint.constant = 140
-//          circleTotlaSpaceView.lineWidth = 10
-//          circleTotlaSpaceView.titleLabelBottomInset = (circleTotlaSpaceView.frame.height / 2) - 10
-//          circleTotlaSpaceView.percentLabelCenterInset = 25
-//          circleTotlaSpaceView.titleLabel.font = .systemFont(ofSize: 11, weight: .regular)
-//          circleTotlaSpaceView.percentLabel.font = .systemFont(ofSize: 18, weight: .bold)
-//
-//          circleTotlaSpaceView.layoutIfNeeded()
-//          self.view.layoutIfNeeded()
-//
-//          baseCarouselLayout.itemSize = CGSize(width: 138, height: mediaCollectionView.frame.height)
-          
-        case .medium:
-          debugPrint("")
-//          circleTotlaSpaceView.lineWidth = 20
-//          circleTotlaSpaceView.titleLabelBottomInset = (circleTotlaSpaceView.frame.height / 2) + 10
-//          circleTotlaSpaceView.titleLabel.font = .systemFont(ofSize: 13, weight: .regular)
-//          circleTotlaSpaceView.percentLabel.font = .systemFont(ofSize: 25, weight: .black)
-//          circleTotlaSpaceView.percentLabelCenterInset = 25
-        case .plus:
-          debugPrint("")
-          collectionViewHeightConstraint.constant = 260
-		
-		 circleTotlaSpaceView.font = .systemFont(ofSize: 20, weight: .black)
-          circleTotlaSpaceView.percentLabel.font = .systemFont(ofSize: 20, weight: .black)
-        case .large:
-          debugPrint("")
-          collectionViewHeightConstraint.constant = 260
-          
-          circleTotlaSpaceView.font = .systemFont(ofSize: 45, weight: .black)
-          circleTotlaSpaceView.percentLabel.font = .systemFont(ofSize: 45, weight: .black)
-        case .modern:
-          debugPrint("")
-          
-          collectionViewHeightConstraint.constant = 260
-          
-          circleTotlaSpaceView.font = .systemFont(ofSize: 50, weight: .black)
-          circleTotlaSpaceView.percentLabel.font = .systemFont(ofSize: 50, weight: .black)
-        case .max:
-          debugPrint("")
-        case .madMax:
-          debugPrint("")
-      }
-    }
+	private func setupProgressAndCollectionSize() {
+
+		switch Screen.size {
+			case .small:
+				if S.premium.allowAdvertisementBanner {
+					circleTotalSpaceView.percentLabel.font = .systemFont(ofSize: 30, weight: .black)
+					circleTotalSpaceView.titleLabel.font = .systemFont(ofSize: 8, weight: .bold)
+					circleTotalSpaceView.lineWidth = 28
+					
+					circleProgressTopConstraint.constant = -25
+					circleProgressBottomConstraint.constant = 10
+					collectionViewHeightConstraint.constant = 180
+					bottomButtonHeightConstraint.constant = 70
+					
+					baseCarouselLayout.itemSize = CGSize(width: 160, height: 180)
+				} else {
+					circleTotalSpaceView.percentLabel.font = .systemFont(ofSize: 30, weight: .black)
+					circleTotalSpaceView.titleLabel.font = .systemFont(ofSize: 8, weight: .bold)
+					circleTotalSpaceView.lineWidth = 32
+					
+					circleProgressTopConstraint.constant = -10
+					circleProgressBottomConstraint.constant = 20
+					collectionViewHeightConstraint.constant = 190
+					bottomButtonHeightConstraint.constant = 75
+					
+					baseCarouselLayout.itemSize = CGSize(width: 160, height: 190)
+				}
+				circleTotalSpaceView.percentTitleLabelSpaceOffset = -5
+				baseCarouselLayout.spacing = -40
+				baseCarouselLayout.focusedSpacing = -40
+			case .medium:
+				if S.premium.allowAdvertisementBanner {
+					circleTotalSpaceView.percentLabel.font = .systemFont(ofSize: 40, weight: .black)
+					circleTotalSpaceView.titleLabel.font = .systemFont(ofSize: 11, weight: .bold)
+					circleTotalSpaceView.lineWidth = 34
+					circleProgressTopConstraint.constant = -10
+					circleProgressBottomConstraint.constant = 10
+					collectionViewHeightConstraint.constant = 230
+					bottomButtonHeightConstraint.constant = 75
+					baseCarouselLayout.itemSize = CGSize(width: 190, height: 230)
+				} else {
+					circleTotalSpaceView.percentLabel.font = .systemFont(ofSize: 44, weight: .black)
+					circleTotalSpaceView.titleLabel.font = .systemFont(ofSize: 11, weight: .bold)
+					circleTotalSpaceView.lineWidth = 36
+					circleProgressTopConstraint.constant = -5
+					circleProgressBottomConstraint.constant = 20
+					collectionViewHeightConstraint.constant = 240
+					bottomButtonHeightConstraint.constant = 85
+					baseCarouselLayout.itemSize = CGSize(width: 190, height: 235)
+				}
+				circleTotalSpaceView.percentTitleLabelSpaceOffset = 8
+				baseCarouselLayout.spacing = -30
+				baseCarouselLayout.focusedSpacing = -30
+			case .plus:
+				if S.premium.allowAdvertisementBanner {
+					circleTotalSpaceView.percentLabel.font = .systemFont(ofSize: 44, weight: .black)
+					circleTotalSpaceView.titleLabel.font = .systemFont(ofSize: 11, weight: .bold)
+					circleTotalSpaceView.lineWidth = 36
+					circleProgressBottomConstraint.constant = 20
+					collectionViewHeightConstraint.constant = 240
+					bottomButtonHeightConstraint.constant = 80
+					baseCarouselLayout.itemSize = CGSize(width: 200, height: 240)
+				} else {
+					circleTotalSpaceView.percentLabel.font = .systemFont(ofSize: 46, weight: .black)
+					circleTotalSpaceView.titleLabel.font = .systemFont(ofSize: 12, weight: .bold)
+					circleTotalSpaceView.lineWidth = 40
+					circleProgressBottomConstraint.constant = 35
+					collectionViewHeightConstraint.constant = 250
+					bottomButtonHeightConstraint.constant = 90
+					baseCarouselLayout.itemSize = CGSize(width: 200, height: 250)
+				}
+				circleTotalSpaceView.percentTitleLabelSpaceOffset = 13
+				baseCarouselLayout.spacing = -25
+				baseCarouselLayout.focusedSpacing = -25
+			case .large:
+				if S.premium.allowAdvertisementBanner {
+					circleTotalSpaceView.percentLabel.font = .systemFont(ofSize: 46, weight: .black)
+					circleTotalSpaceView.titleLabel.font = .systemFont(ofSize: 12, weight: .bold)
+					circleTotalSpaceView.lineWidth = 38
+					circleProgressTopConstraint.constant = -10
+					circleProgressBottomConstraint.constant = 25
+					collectionViewHeightConstraint.constant = 260
+					bottomButtonHeightConstraint.constant = 80
+					baseCarouselLayout.itemSize = CGSize(width: 200, height: 250)
+				} else {
+					circleTotalSpaceView.percentLabel.font = .systemFont(ofSize: 46, weight: .black)
+					circleTotalSpaceView.titleLabel.font = .systemFont(ofSize: 13, weight: .bold)
+					circleTotalSpaceView.lineWidth = 40
+					circleProgressBottomConstraint.constant = 40
+					collectionViewHeightConstraint.constant = 270
+					bottomButtonHeightConstraint.constant = 110
+					baseCarouselLayout.itemSize = CGSize(width: 200, height: 260)
+				}
+				circleTotalSpaceView.percentTitleLabelSpaceOffset = 15
+				baseCarouselLayout.spacing = -35
+				baseCarouselLayout.focusedSpacing = -35
+			case .modern:
+				circleTotalSpaceView.percentLabel.font = .systemFont(ofSize: 48, weight: .black)
+				circleTotalSpaceView.titleLabel.font = .systemFont(ofSize: 13, weight: .bold)
+				if S.premium.allowAdvertisementBanner {
+					circleTotalSpaceView.lineWidth = 40
+					circleProgressTopConstraint.constant = -10
+					circleProgressBottomConstraint.constant = 30
+					collectionViewHeightConstraint.constant = 270
+					bottomButtonHeightConstraint.constant = 80
+				} else {
+					circleTotalSpaceView.lineWidth = 44
+					circleProgressBottomConstraint.constant = 50
+					collectionViewHeightConstraint.constant = 280
+					bottomButtonHeightConstraint.constant = 110
+				}
+				baseCarouselLayout.itemSize = CGSize(width: 200, height: 270)
+				circleTotalSpaceView.percentTitleLabelSpaceOffset = 16
+				baseCarouselLayout.spacing = -35
+				baseCarouselLayout.focusedSpacing = -35
+			case .max:
+				circleTotalSpaceView.percentLabel.font = .systemFont(ofSize: 50, weight: .black)
+				circleTotalSpaceView.titleLabel.font = .systemFont(ofSize: 14, weight: .bold)
+				if S.premium.allowAdvertisementBanner {
+					circleTotalSpaceView.lineWidth = 46
+					bottomButtonHeightConstraint.constant = 90
+					circleProgressBottomConstraint.constant = 35
+					collectionViewHeightConstraint.constant = 275
+				} else {
+					circleTotalSpaceView.lineWidth = 48
+					bottomButtonHeightConstraint.constant = 120
+					circleProgressBottomConstraint.constant = 60
+					collectionViewHeightConstraint.constant = 290
+				}
+				baseCarouselLayout.itemSize = CGSize(width: 210, height: 280)
+				circleTotalSpaceView.percentTitleLabelSpaceOffset = 20
+				baseCarouselLayout.spacing = -35
+				baseCarouselLayout.focusedSpacing = -35
+			case .madMax:
+				circleTotalSpaceView.lineWidth = 50
+				circleTotalSpaceView.percentLabel.font = .systemFont(ofSize: 50, weight: .black)
+				circleTotalSpaceView.titleLabel.font = .systemFont(ofSize: 14, weight: .bold)
+				if S.premium.allowAdvertisementBanner {
+					circleProgressBottomConstraint.constant = 40
+					collectionViewHeightConstraint.constant = 280
+					bottomButtonHeightConstraint.constant = 90
+				} else {
+					circleProgressBottomConstraint.constant = 80
+					collectionViewHeightConstraint.constant = 300
+					bottomButtonHeightConstraint.constant = 120
+				}
+				circleTotalSpaceView.percentTitleLabelSpaceOffset = 20
+				baseCarouselLayout.itemSize = CGSize(width: 210, height: 280)
+				baseCarouselLayout.spacing = -30
+				baseCarouselLayout.focusedSpacing = -30
+		}
+	}
     
+		/// `base progress settings`
     private func setupCircleProgressView() {
         
         let calculatePercentage: Double = Double(Device.usedDiskSpaceInBytes) / Double(Device.totalDiskSpaceInBytes)
-
-        circleTotlaSpaceView.setProgress(progress: CGFloat(calculatePercentage), animated: true)
-        circleTotlaSpaceView.progressShapeColor = theme.tintColor
-        circleTotlaSpaceView.backgroundShapeColor = theme.topShadowColor.withAlphaComponent(0.2)
-        circleTotlaSpaceView.titleColor = theme.subTitleTextColor
-        circleTotlaSpaceView.percentColor = theme.titleTextColor
-
-        circleTotlaSpaceView.orientation = .bottom
-        circleTotlaSpaceView.lineCap = .round
-        circleTotlaSpaceView.clockwise = true
-
-        circleTotlaSpaceView.title = "\(Device.usedDiskSpaceInGB.removeWhitespace()) FROM \(Device.totalDiskSpaceInGB.removeWhitespace()) USED"
-        circleTotlaSpaceView.percentLabelFormat = "%.f%%"
+		circleTotalSpaceView.setProgress(progress: CGFloat(calculatePercentage), animated: true)
+        circleTotalSpaceView.progressShapeColor = theme.tintColor
+        circleTotalSpaceView.backgroundShapeColor = theme.topShadowColor.withAlphaComponent(0.2)
+        circleTotalSpaceView.titleColor = theme.subTitleTextColor
+        circleTotalSpaceView.percentColor = theme.titleTextColor
+		
+		circleTotalSpaceView.titleLabelTextAligement = Screen.size == .medium || Screen.size == .small ? .center : .right
+		circleTotalSpaceView.orientation = .bottom
+		circleTotalSpaceView.titleLabelsPercentPosition = .centeredRightAlign
+		circleTotalSpaceView.backgroundShadowColor = theme.bottomShadowColor
+		circleTotalSpaceView.lineCap = .round
+        circleTotalSpaceView.clockwise = true
+		circleTotalSpaceView.startColor = theme.circleProgresStartingGradient
+		circleTotalSpaceView.endColor = theme.circleProgresEndingGradient
+        circleTotalSpaceView.title = "\(Device.usedDiskSpaceInGB) \n of \(Device.totalDiskSpaceInGB)"
+        circleTotalSpaceView.percentLabelFormat = "%.f%%"
     }
 }
+
+
+

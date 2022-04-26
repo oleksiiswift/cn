@@ -25,6 +25,10 @@ class Constants {
     }
     
     struct key {
+		
+		struct advertisement {
+			static let bannerIsShow = "advertisementBannerDidShow"
+		}
         
         struct settings {
             static let isDarkModeOn = "darkModeIsSetOn"
@@ -49,6 +53,7 @@ class Constants {
 			static let resolutionHeight = "scaleResolutionHeight"
 			static let defaultConfigurationIsSet = "defaultConfigurationIsSet"
 			static let lastSelectedCompressionModel = "selectedCompressionModel"
+			static let originalResolutionIsOnUse = "originalResolutionIsOnUse"
 		}
         
         struct notification {

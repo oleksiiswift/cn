@@ -62,7 +62,6 @@ extension UINavigationController {
     }
 }
 
-
 extension UIView {
     
     var theme: Theme {
@@ -73,7 +72,6 @@ extension UIView {
         backgroundColor = theme.backgroundColor
     }
 }
-
 
 extension UINavigationBar: UpdateColorsDelegate {
     
