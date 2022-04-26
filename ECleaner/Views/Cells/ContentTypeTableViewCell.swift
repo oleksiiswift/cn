@@ -17,8 +17,8 @@ class ContentTypeTableViewCell: UITableViewCell {
     @IBOutlet weak var contentTypeTextLabel: UILabel!
     @IBOutlet weak var contentSubtitleTextLabel: UILabel!
     @IBOutlet weak var horizontalProgressView: HorizontalProgressBar!
-
-    override func prepareForReuse() {
+	@IBOutlet weak var reuseShadowHeightConstraint: NSLayoutConstraint!
+	override func prepareForReuse() {
         super.prepareForReuse()
         
         contentTypeTextLabel.text = nil
@@ -45,7 +45,7 @@ class ContentTypeTableViewCell: UITableViewCell {
     override func layoutSubviews() {
           super.layoutSubviews()
 		
-          let margins = UIEdgeInsets(top: -20, left: 0, bottom: -20, right: 0)
+		let margins = U.UIHelper.AppDimensions.mediaContentTypeCellIEdgeInset
           contentView.frame = contentView.frame.inset(by: margins)
     }
 }
@@ -225,9 +225,21 @@ extension ContentTypeTableViewCell: Themeble {
 		selectionStyle = .none
 		rightArrowImageView.isHidden = true
 		baseView.setCorner(14)
-		contentTypeTextLabel.font = .systemFont(ofSize: 18, weight: .bold)
-		contentSubtitleTextLabel.font = .systemFont(ofSize: 14, weight: .medium)
 		rightArrowImageView.image = I.systemItems.navigationBarItems.forward
+		
+		switch Screen.size {
+				
+			case .small:
+				contentTypeTextLabel.font = .systemFont(ofSize: 14, weight: .bold)
+				contentSubtitleTextLabel.font = .systemFont(ofSize: 12, weight: .medium)
+				reuseShadowHeightConstraint.constant = 30
+			case .medium, .plus, .large:
+				contentTypeTextLabel.font = .systemFont(ofSize: 16, weight: .bold)
+				contentSubtitleTextLabel.font = .systemFont(ofSize: 13, weight: .medium)
+			case .modern, .max, .madMax:
+				contentTypeTextLabel.font = .systemFont(ofSize: 18, weight: .bold)
+				contentSubtitleTextLabel.font = .systemFont(ofSize: 14, weight: .medium)
+		}
 	}
 	
 	func updateColors() {

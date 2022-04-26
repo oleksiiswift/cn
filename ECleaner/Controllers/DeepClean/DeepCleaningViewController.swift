@@ -31,7 +31,6 @@ class DeepCleaningViewController: UIViewController {
      weak var selectableAssetsDelegate: DeepCleanSelectableAssetsDelegate?
      
      /// properties
-     private var bottomMenuHeight: CGFloat = 80
 	 private var isDeepCleanSearchingProcessRunning: Bool = false {
 		  didSet {
 			   navigationBar.temporaryLockLeftButton(isDeepCleanSearchingProcessRunning)
@@ -129,6 +128,7 @@ extension DeepCleaningViewController {
                self.totalFilesOnDevice = allAssetsCount
                
                self.photoManager.getPartitionalMediaAssetsCount(from: self.lowerBoundDate, to: self.upperBoundDate) { assetGroupPartitionCount in
+					
 					self.setProcessingActionButton(.didCleaning)
                     self.totalPartitinAssetsCount = assetGroupPartitionCount
 					self.futuredCleaningSpaceUsage = 0
@@ -643,8 +643,8 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
           tableView.register(UINib(nibName: C.identifiers.xibs.contentTypeCell, bundle: nil), forCellReuseIdentifier: C.identifiers.cells.contentTypeCell)
           tableView.register(UINib(nibName: C.identifiers.xibs.cleanInfoCell, bundle: nil), forCellReuseIdentifier: C.identifiers.cells.cleanInfoCell)
           tableView.separatorStyle = .none
-          tableView.contentInset.top = 30
-          tableView.contentInset.bottom = 40
+		  tableView.contentInset.top = U.UIHelper.AppDimensions.mediaContentTypeTopInset
+          tableView.contentInset.bottom = 50
      }
      
 	 private func configure(_ cell: ContentTypeTableViewCell, at indexPath: IndexPath, currentProgress: CGFloat? = nil) {
@@ -714,7 +714,7 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
      }
      
      func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-          return indexPath.section == 0 ? 151 : 100
+		  return indexPath.section == 0 ? U.UIHelper.AppDimensions.heightOfTopHelperCellBanner : U.UIHelper.AppDimensions.heightOfRowOfMediaContentType
      }
      
      func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -722,7 +722,17 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
           let view = UIView(frame: CGRect(x: 0, y: 0, width: U.screenWidth, height: 30))
           let sectionTitleTextLabel = UILabel()
           
-		  sectionTitleTextLabel.font = .systemFont(ofSize: 16, weight: .black)
+		  switch Screen.size {
+			   case .small:
+					sectionTitleTextLabel.font = .systemFont(ofSize: 12, weight: .bold)
+			   case .medium:
+					sectionTitleTextLabel.font = .systemFont(ofSize: 14, weight: .bold)
+			   case .plus:
+					sectionTitleTextLabel.font = .systemFont(ofSize: 15, weight: .bold)
+			   case .large, .modern, .max, .madMax:
+					sectionTitleTextLabel.font = .systemFont(ofSize: 16, weight: .black)
+		  }
+		  
           sectionTitleTextLabel.textColor = theme.titleTextColor
           
           view.addSubview(sectionTitleTextLabel)
@@ -751,8 +761,9 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
 extension DeepCleaningViewController {
      
      private func setupUI() {
-     
-          dateSelectContainerHeigntConstraint.constant = 60
+		  
+		  dateSelectContainerHeigntConstraint.constant = U.UIHelper.AppDimensions.dateSelectableHeight
+		  bottomContainerHeightConstraint.constant = U.UIHelper.AppDimensions.bottomBarDefaultHeight
      }
      
      private func setupDateInterval() {
@@ -968,7 +979,6 @@ extension DeepCleaningViewController {
 		  SwiftMessages.show(config: config, view: messageView)
 	 }
 	 
-	 
 	 private func checkCleaningButtonState() {
 		  
 		  guard deepCleaningState == .willAvailibleDelete else { return }
@@ -978,15 +988,15 @@ extension DeepCleaningViewController {
 	 }
 	 
 	 private func showBottomButtonBar() {
-		  bottomContainerHeightConstraint.constant = (bottomMenuHeight + U.bottomSafeAreaHeight - 5)
-		  self.tableView.contentInset.bottom = 25
+		  bottomContainerHeightConstraint.constant = U.UIHelper.AppDimensions.bottomBarDefaultHeight
+		  self.tableView.contentInset.bottom = 50
 		  self.tableView.layoutIfNeeded()
 		  self.view.layoutIfNeeded()
 	 }
 	 
 	 private func hideBottomButtonBar() {
 		  bottomContainerHeightConstraint.constant = 0
-		  self.tableView.contentInset.bottom = 25
+		  self.tableView.contentInset.bottom = 10
 		  self.tableView.layoutIfNeeded()
 		  self.view.layoutIfNeeded()
 	 }
@@ -994,8 +1004,8 @@ extension DeepCleaningViewController {
 	 private func handleButtonStateActive() {
 		  
 		  let selectedAssetsCount = deepCleanModel.objects.values.flatMap({$0.selectedAssetsCollectionID}).count
-		  bottomContainerHeightConstraint.constant = selectedAssetsCount > 0 ? (bottomMenuHeight + U.bottomSafeAreaHeight - 5) : 0
-		  self.tableView.contentInset.bottom = selectedAssetsCount > 0 ? 25 : 5
+		  bottomContainerHeightConstraint.constant = selectedAssetsCount > 0 ? U.UIHelper.AppDimensions.bottomBarDefaultHeight : 0
+		  self.tableView.contentInset.bottom = selectedAssetsCount > 0 ? 40 : 25
 		  
 		  U.animate(0.5) {
 			   self.tableView.layoutIfNeeded()
@@ -1075,9 +1085,7 @@ extension DeepCleaningViewController: ProgressAlertControllerDelegate {
 		  deepCleanManager.stopDeepCleanOperation()
 	 }
 	 
-	 func didAutoCloseController() {
-		  debugPrint("do thms")
-	 }
+	 func didAutoCloseController() {}
 	 	 
 	 private func showProgressAlert() {
 		  self.progressAlert.showDeepCleanProgressAlert()
@@ -1126,7 +1134,5 @@ extension DeepCleaningViewController: NavigationBarDelegate {
 		  }
      }
      
-     func didTapRightBarButton(_ sender: UIButton) {
-          debugPrint("show magic")
-     }
+     func didTapRightBarButton(_ sender: UIButton) {}
 }

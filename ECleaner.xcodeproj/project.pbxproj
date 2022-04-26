@@ -233,6 +233,7 @@
 		97B01A7C2747CB3A00DDE03C /* ExportContact.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97B01A7B2747CB3A00DDE03C /* ExportContact.storyboard */; };
 		97B01A7F2747CB8C00DDE03C /* ExportContactsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B01A7E2747CB8C00DDE03C /* ExportContactsViewController.swift */; };
 		97B53A06281803750054B826 /* String+Size.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B53A05281803750054B826 /* String+Size.swift */; };
+		97B53A08281831D70054B826 /* Utils+UIHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B53A07281831D70054B826 /* Utils+UIHelper.swift */; };
 		97C1C71427F5A95800E262FA /* GradientSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97C1C71327F5A95800E262FA /* GradientSlider.swift */; };
 		97C44FBB274EF93B001B61AB /* ContactasCleaningType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97C44FBA274EF93B001B61AB /* ContactasCleaningType.swift */; };
 		97C44FBD274EF959001B61AB /* ContactsContainerType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97C44FBC274EF959001B61AB /* ContactsContainerType.swift */; };
@@ -529,6 +530,7 @@
 		97B01A7B2747CB3A00DDE03C /* ExportContact.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ExportContact.storyboard; sourceTree = "<group>"; };
 		97B01A7E2747CB8C00DDE03C /* ExportContactsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportContactsViewController.swift; sourceTree = "<group>"; };
 		97B53A05281803750054B826 /* String+Size.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Size.swift"; sourceTree = "<group>"; };
+		97B53A07281831D70054B826 /* Utils+UIHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Utils+UIHelper.swift"; sourceTree = "<group>"; };
 		97C1C71327F5A95800E262FA /* GradientSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientSlider.swift; sourceTree = "<group>"; };
 		97C44FBA274EF93B001B61AB /* ContactasCleaningType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactasCleaningType.swift; sourceTree = "<group>"; };
 		97C44FBC274EF959001B61AB /* ContactsContainerType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsContainerType.swift; sourceTree = "<group>"; };
@@ -776,6 +778,7 @@
 			isa = PBXGroup;
 			children = (
 				04E5836E267A47FB00EDC3A3 /* Utils.swift */,
+				97B53A07281831D70054B826 /* Utils+UIHelper.swift */,
 				97238A122689EF6E00C523DC /* Presenter.swift */,
 				9701D27127BE4C910078E39F /* AudioToolBoxVibration.swift */,
 			);
@@ -2305,6 +2308,7 @@
 				971AD5E927EAB72900811A3A /* ZoomTransitionController.swift in Sources */,
 				4F56073F27205AF300CA19E9 /* GradientArcView.swift in Sources */,
 				047DE61926AAA53100733CD5 /* DeepCleanInfoTableViewCell.swift in Sources */,
+				97B53A08281831D70054B826 /* Utils+UIHelper.swift in Sources */,
 				9710285428038274003CBF7E /* VideoCompressingViewController.swift in Sources */,
 				04E58371267A4A0A00EDC3A3 /* UIDevice+Model.swift in Sources */,
 				04CFFFFB2685E546000CA850 /* UIView+SelectedCornerRadius.swift in Sources */,
