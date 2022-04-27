@@ -556,6 +556,14 @@ extension MainViewController: UpdateColorsDelegate {
 		circleTotalSpaceView.titleLabelsPercentPosition = .centeredRightAlign
 		circleTotalSpaceView.backgroundShadowColor = theme.bottomShadowColor
 		circleTotalSpaceView.lineCap = .round
+		circleTotalSpaceView.spaceDegree = 12.0
+		circleTotalSpaceView.progressShapeStart = 0.0
+		circleTotalSpaceView.progressShapeEnd = 1.0
+		
+		let startPoint = CGPoint(x: 0.5, y: 0.5)
+		let endPoint = CGPoint(x: 0.5, y: 1.0)
+		circleTotalSpaceView.gradientSetup(startPoint: startPoint, endPoint: endPoint, gradientType: .conic)
+		
         circleTotalSpaceView.clockwise = true
 		circleTotalSpaceView.startColor = theme.circleProgresStartingGradient
 		circleTotalSpaceView.endColor = theme.circleProgresEndingGradient

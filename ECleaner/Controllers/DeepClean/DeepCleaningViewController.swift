@@ -41,7 +41,10 @@ class DeepCleaningViewController: UIViewController {
      private var deepCleaningState: DeepCleaningState = .willStartCleaning
 	 
 	 private var handleSearchingResults: Bool {
-		  return self.deepCleanModel.objects.compactMap({$0.value}).flatMap({$0.mediaFlowGroup}).count + self.deepCleanModel.objects.compactMap({$0.value}).flatMap({$0.contactsFlowGroup}).count > 0
+		  if let values = deepCleanModel.map({$0.objects.map({$0.value.resultsCount})}) {
+			   return values.sum() > 0
+		  }
+		  return false
 	 }
 
      private var lowerBoundDate: Date {
@@ -59,13 +62,12 @@ class DeepCleaningViewController: UIViewController {
                S.upperBoundSavedDate = newValue
           }
      }
-     
+	 
      /// `file processing check count`
      private var totalFilesOnDevice: Int = 0
      private var totalFilesChecked: Int = 0
      private var totalPartitinAssetsCount: [AssetsGroupType: Int] = [:]
 	 private var futuredCleaningSpaceUsage: Int64?
-     	 
 	 private var totalDeepCleanProgress = DeepCleanTotalProgress()
 	 private var deepCleanModel: DeepCleanModel!
 
@@ -295,7 +297,7 @@ extension DeepCleaningViewController {
 			   }
 		  }
      }
-     
+	      
 	 /// `for photos and video`
 	 private func updateAssetsProcessingOfType(group: [PhassetGroup], mediaType: MediaContentType, contentType: PhotoMediaType) {
 		  
@@ -721,18 +723,7 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
           
           let view = UIView(frame: CGRect(x: 0, y: 0, width: U.screenWidth, height: 30))
           let sectionTitleTextLabel = UILabel()
-          
-		  switch Screen.size {
-			   case .small:
-					sectionTitleTextLabel.font = .systemFont(ofSize: 12, weight: .bold)
-			   case .medium:
-					sectionTitleTextLabel.font = .systemFont(ofSize: 14, weight: .bold)
-			   case .plus:
-					sectionTitleTextLabel.font = .systemFont(ofSize: 15, weight: .bold)
-			   case .large, .modern, .max, .madMax:
-					sectionTitleTextLabel.font = .systemFont(ofSize: 16, weight: .black)
-		  }
-		  
+		  sectionTitleTextLabel.font = U.UIHelper.AppDefaultFontSize.deepClentSectionHeaderTitleFont
           sectionTitleTextLabel.textColor = theme.titleTextColor
           
           view.addSubview(sectionTitleTextLabel)

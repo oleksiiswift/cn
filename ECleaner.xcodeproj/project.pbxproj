@@ -192,6 +192,7 @@
 		977FE23727306355004DE4C3 /* ContactsGroupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977FE23627306355004DE4C3 /* ContactsGroupViewController.swift */; };
 		977FE2392730658B004DE4C3 /* ContactsGroupDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977FE2382730658B004DE4C3 /* ContactsGroupDataSource.swift */; };
 		977FE23B273072A2004DE4C3 /* ContactsGroup.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 977FE23A273072A2004DE4C3 /* ContactsGroup.storyboard */; };
+		9781313D2819BE7C001478D3 /* Temp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9781313C2819BE7C001478D3 /* Temp.swift */; };
 		9784D3A82742CDDB00340D97 /* ReuseShadowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9784D3A72742CDDB00340D97 /* ReuseShadowView.swift */; };
 		9785E54727DD6E61000B360C /* UINavigationController+Completion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9785E54627DD6E61000B360C /* UINavigationController+Completion.swift */; };
 		9789D18827F48C400035539C /* PreviewCollectionShadowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9789D18727F48C400035539C /* PreviewCollectionShadowView.swift */; };
@@ -489,6 +490,7 @@
 		977FE23627306355004DE4C3 /* ContactsGroupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsGroupViewController.swift; sourceTree = "<group>"; };
 		977FE2382730658B004DE4C3 /* ContactsGroupDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsGroupDataSource.swift; sourceTree = "<group>"; };
 		977FE23A273072A2004DE4C3 /* ContactsGroup.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ContactsGroup.storyboard; sourceTree = "<group>"; };
+		9781313C2819BE7C001478D3 /* Temp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Temp.swift; sourceTree = "<group>"; };
 		9784D3A72742CDDB00340D97 /* ReuseShadowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReuseShadowView.swift; sourceTree = "<group>"; };
 		9785E54627DD6E61000B360C /* UINavigationController+Completion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UINavigationController+Completion.swift"; sourceTree = "<group>"; };
 		9789D18727F48C400035539C /* PreviewCollectionShadowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewCollectionShadowView.swift; sourceTree = "<group>"; };
@@ -673,7 +675,6 @@
 		04649B37268C624F00336FE4 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				4FE56A982729973B006CD946 /* DeepCleanInfoView.xib */,
 				97CA4240273EBC33001FEA15 /* BottomButtonBarView.xib */,
 				97B01A5A2745830500DDE03C /* BottomDoubleButtonBarView.xib */,
 				04467CE5270DA3B200DBBB39 /* DateSelectebleView.xib */,
@@ -942,6 +943,7 @@
 				04E58367267A3F8F00EDC3A3 /* Assets */,
 				9701D27527BE56DA0078E39F /* ECleaner-Bridging-Header.h */,
 				04E0947D267A06B900A69956 /* Info.plist */,
+				9781313B28192E93001478D3 /* TempFolder */,
 			);
 			path = ECleaner;
 			sourceTree = "<group>";
@@ -1060,7 +1062,6 @@
 			isa = PBXGroup;
 			children = (
 				9701D27927BE56E60078E39F /* StepSlider */,
-				4FE56A9727299714006CD946 /* DeepCleanInfoView */,
 				97CA4242273ECB59001FEA15 /* BottomButtonBarView */,
 				97B01A5C274584AC00DDE03C /* BottomDoubleButtonBarView */,
 				4F4A17B7271D80D400CAF157 /* NavigationBar */,
@@ -1568,6 +1569,16 @@
 				97D2BECB275A3D06002082EB /* CNContactVCard+ImageData.swift */,
 			);
 			path = CNContacts;
+			sourceTree = "<group>";
+		};
+		9781313B28192E93001478D3 /* TempFolder */ = {
+			isa = PBXGroup;
+			children = (
+				4FE56A9727299714006CD946 /* DeepCleanInfoView */,
+				4FE56A982729973B006CD946 /* DeepCleanInfoView.xib */,
+				9781313C2819BE7C001478D3 /* Temp.swift */,
+			);
+			path = TempFolder;
 			sourceTree = "<group>";
 		};
 		9785E54827DD6E66000B360C /* UINavigationController */ = {
@@ -2258,6 +2269,7 @@
 				9702443E27EA0F6900011743 /* PHAsset+URL.swift in Sources */,
 				04E58377267B323E00EDC3A3 /* Constants.swift in Sources */,
 				04CFFFE726846A23000CA850 /* Device.swift in Sources */,
+				9781313D2819BE7C001478D3 /* Temp.swift in Sources */,
 				4F56074427205AF300CA19E9 /* ProgressViewController.swift in Sources */,
 				97E678462750F68A004E340B /* UsageDataNotificationType.swift in Sources */,
 				4F56073C27205AF300CA19E9 /* CircularProgressView.swift in Sources */,

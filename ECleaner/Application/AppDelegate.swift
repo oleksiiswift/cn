@@ -53,6 +53,6 @@ extension AppDelegate {
 	
 	private func developmentSettings() {
 		
-//		S.premium.allowAdvertisementBanner = !S.premium.allowAdvertisementBanner
+		S.premium.allowAdvertisementBanner = false
 	}
 }

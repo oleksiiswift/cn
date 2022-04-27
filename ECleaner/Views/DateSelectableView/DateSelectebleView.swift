@@ -108,7 +108,6 @@ class DateSelectebleView: UIView {
         bottomShadowView.topAlpha = 0.0
         self.addSubview(self.bottomShadowView)
         bottomShadowView.translatesAutoresizingMaskIntoConstraints = false
-        
         let margins = self.safeAreaLayoutGuide
         
         bottomShadowView.leadingAnchor.constraint(equalTo: margins.leadingAnchor, constant: margingsSize).isActive = true
@@ -124,7 +123,8 @@ class DateSelectebleView: UIView {
     
 		let halfSize = U.UIHelper.AppDimensions.dateSelectableHeight / 2
 		
-		helperView.frame = CGRect(x: 0, y: 0, width: self.bounds.width, height: U.UIHelper.AppDimensions.dateSelectableHeight)
+		helperView.frame = CGRect(x: 0, y: 0, width: U.screenWidth, height: U.UIHelper.AppDimensions.dateSelectableHeight)
+		
         self.insertSubview(helperView, at: 0)
         
 		shadowView.frame = CGRect(x: 0, y: halfSize, width: U.screenWidth, height: halfSize)
@@ -141,8 +141,8 @@ class DateSelectebleView: UIView {
     
     private func setupUI() {
         
-		startingDateTitileTextLabel.text = "FROM".localized()
-		endingDateTitleTextLabel.text = "TO".localized()
+		startingDateTitileTextLabel.text = "From:"
+		endingDateTitleTextLabel.text = "To:"
 				
 		switch Screen.size {
 			case .small:

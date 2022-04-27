@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SwiftMessages
 
 enum Theme: Int {
     case light
@@ -498,4 +499,32 @@ enum Theme: Int {
 				return UIColor().colorFromHexString("3677FF")
 		}
 	}
+	
+	var circleStarterGradientColor: UIColor {
+		switch self {
+			case .light:
+				return UIColor().colorFromHexString("FF845A")
+			case .dark:
+				return UIColor().colorFromHexString("FF845A")
+		}
+	}
+	
+	var circleEndingGradientColor: UIColor {
+		switch self {
+			case .light:
+				return UIColor().colorFromHexString("E74BCD")
+			case .dark:
+				return UIColor().colorFromHexString("E74BCD")
+		}
+	}
+
+	var titleCircleGradientTitleColorSet: [CGColor] {
+		switch self {
+			case .light:
+				return [UIColor().colorFromHexString("FF845A").cgColor, UIColor().colorFromHexString("E74BCD").cgColor]
+			case .dark:
+				return [UIColor().colorFromHexString("FF845A").cgColor, UIColor().colorFromHexString("E74BCD").cgColor]
+		}
+	}
 }
+
