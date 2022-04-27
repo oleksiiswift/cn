@@ -192,6 +192,7 @@
 		977FE23727306355004DE4C3 /* ContactsGroupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977FE23627306355004DE4C3 /* ContactsGroupViewController.swift */; };
 		977FE2392730658B004DE4C3 /* ContactsGroupDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977FE2382730658B004DE4C3 /* ContactsGroupDataSource.swift */; };
 		977FE23B273072A2004DE4C3 /* ContactsGroup.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 977FE23A273072A2004DE4C3 /* ContactsGroup.storyboard */; };
+		9781313D2819BE7C001478D3 /* Temp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9781313C2819BE7C001478D3 /* Temp.swift */; };
 		9784D3A82742CDDB00340D97 /* ReuseShadowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9784D3A72742CDDB00340D97 /* ReuseShadowView.swift */; };
 		9785E54727DD6E61000B360C /* UINavigationController+Completion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9785E54627DD6E61000B360C /* UINavigationController+Completion.swift */; };
 		9789D18827F48C400035539C /* PreviewCollectionShadowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9789D18727F48C400035539C /* PreviewCollectionShadowView.swift */; };
@@ -233,6 +234,7 @@
 		97B01A7C2747CB3A00DDE03C /* ExportContact.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97B01A7B2747CB3A00DDE03C /* ExportContact.storyboard */; };
 		97B01A7F2747CB8C00DDE03C /* ExportContactsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B01A7E2747CB8C00DDE03C /* ExportContactsViewController.swift */; };
 		97B53A06281803750054B826 /* String+Size.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B53A05281803750054B826 /* String+Size.swift */; };
+		97B53A08281831D70054B826 /* Utils+UIHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B53A07281831D70054B826 /* Utils+UIHelper.swift */; };
 		97C1C71427F5A95800E262FA /* GradientSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97C1C71327F5A95800E262FA /* GradientSlider.swift */; };
 		97C44FBB274EF93B001B61AB /* ContactasCleaningType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97C44FBA274EF93B001B61AB /* ContactasCleaningType.swift */; };
 		97C44FBD274EF959001B61AB /* ContactsContainerType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97C44FBC274EF959001B61AB /* ContactsContainerType.swift */; };
@@ -488,6 +490,7 @@
 		977FE23627306355004DE4C3 /* ContactsGroupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsGroupViewController.swift; sourceTree = "<group>"; };
 		977FE2382730658B004DE4C3 /* ContactsGroupDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsGroupDataSource.swift; sourceTree = "<group>"; };
 		977FE23A273072A2004DE4C3 /* ContactsGroup.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ContactsGroup.storyboard; sourceTree = "<group>"; };
+		9781313C2819BE7C001478D3 /* Temp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Temp.swift; sourceTree = "<group>"; };
 		9784D3A72742CDDB00340D97 /* ReuseShadowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReuseShadowView.swift; sourceTree = "<group>"; };
 		9785E54627DD6E61000B360C /* UINavigationController+Completion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UINavigationController+Completion.swift"; sourceTree = "<group>"; };
 		9789D18727F48C400035539C /* PreviewCollectionShadowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewCollectionShadowView.swift; sourceTree = "<group>"; };
@@ -529,6 +532,7 @@
 		97B01A7B2747CB3A00DDE03C /* ExportContact.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ExportContact.storyboard; sourceTree = "<group>"; };
 		97B01A7E2747CB8C00DDE03C /* ExportContactsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportContactsViewController.swift; sourceTree = "<group>"; };
 		97B53A05281803750054B826 /* String+Size.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Size.swift"; sourceTree = "<group>"; };
+		97B53A07281831D70054B826 /* Utils+UIHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Utils+UIHelper.swift"; sourceTree = "<group>"; };
 		97C1C71327F5A95800E262FA /* GradientSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientSlider.swift; sourceTree = "<group>"; };
 		97C44FBA274EF93B001B61AB /* ContactasCleaningType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactasCleaningType.swift; sourceTree = "<group>"; };
 		97C44FBC274EF959001B61AB /* ContactsContainerType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsContainerType.swift; sourceTree = "<group>"; };
@@ -671,7 +675,6 @@
 		04649B37268C624F00336FE4 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				4FE56A982729973B006CD946 /* DeepCleanInfoView.xib */,
 				97CA4240273EBC33001FEA15 /* BottomButtonBarView.xib */,
 				97B01A5A2745830500DDE03C /* BottomDoubleButtonBarView.xib */,
 				04467CE5270DA3B200DBBB39 /* DateSelectebleView.xib */,
@@ -776,6 +779,7 @@
 			isa = PBXGroup;
 			children = (
 				04E5836E267A47FB00EDC3A3 /* Utils.swift */,
+				97B53A07281831D70054B826 /* Utils+UIHelper.swift */,
 				97238A122689EF6E00C523DC /* Presenter.swift */,
 				9701D27127BE4C910078E39F /* AudioToolBoxVibration.swift */,
 			);
@@ -939,6 +943,7 @@
 				04E58367267A3F8F00EDC3A3 /* Assets */,
 				9701D27527BE56DA0078E39F /* ECleaner-Bridging-Header.h */,
 				04E0947D267A06B900A69956 /* Info.plist */,
+				9781313B28192E93001478D3 /* TempFolder */,
 			);
 			path = ECleaner;
 			sourceTree = "<group>";
@@ -1057,7 +1062,6 @@
 			isa = PBXGroup;
 			children = (
 				9701D27927BE56E60078E39F /* StepSlider */,
-				4FE56A9727299714006CD946 /* DeepCleanInfoView */,
 				97CA4242273ECB59001FEA15 /* BottomButtonBarView */,
 				97B01A5C274584AC00DDE03C /* BottomDoubleButtonBarView */,
 				4F4A17B7271D80D400CAF157 /* NavigationBar */,
@@ -1565,6 +1569,16 @@
 				97D2BECB275A3D06002082EB /* CNContactVCard+ImageData.swift */,
 			);
 			path = CNContacts;
+			sourceTree = "<group>";
+		};
+		9781313B28192E93001478D3 /* TempFolder */ = {
+			isa = PBXGroup;
+			children = (
+				4FE56A9727299714006CD946 /* DeepCleanInfoView */,
+				4FE56A982729973B006CD946 /* DeepCleanInfoView.xib */,
+				9781313C2819BE7C001478D3 /* Temp.swift */,
+			);
+			path = TempFolder;
 			sourceTree = "<group>";
 		};
 		9785E54827DD6E66000B360C /* UINavigationController */ = {
@@ -2255,6 +2269,7 @@
 				9702443E27EA0F6900011743 /* PHAsset+URL.swift in Sources */,
 				04E58377267B323E00EDC3A3 /* Constants.swift in Sources */,
 				04CFFFE726846A23000CA850 /* Device.swift in Sources */,
+				9781313D2819BE7C001478D3 /* Temp.swift in Sources */,
 				4F56074427205AF300CA19E9 /* ProgressViewController.swift in Sources */,
 				97E678462750F68A004E340B /* UsageDataNotificationType.swift in Sources */,
 				4F56073C27205AF300CA19E9 /* CircularProgressView.swift in Sources */,
@@ -2305,6 +2320,7 @@
 				971AD5E927EAB72900811A3A /* ZoomTransitionController.swift in Sources */,
 				4F56073F27205AF300CA19E9 /* GradientArcView.swift in Sources */,
 				047DE61926AAA53100733CD5 /* DeepCleanInfoTableViewCell.swift in Sources */,
+				97B53A08281831D70054B826 /* Utils+UIHelper.swift in Sources */,
 				9710285428038274003CBF7E /* VideoCompressingViewController.swift in Sources */,
 				04E58371267A4A0A00EDC3A3 /* UIDevice+Model.swift in Sources */,
 				04CFFFFB2685E546000CA850 /* UIView+SelectedCornerRadius.swift in Sources */,
@@ -2493,7 +2509,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2604;
+				CURRENT_PROJECT_VERSION = 2704;
 				DEVELOPMENT_TEAM = 7684Y6KS7W;
 				INFOPLIST_FILE = ECleaner/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -2519,7 +2535,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2604;
+				CURRENT_PROJECT_VERSION = 2704;
 				DEVELOPMENT_TEAM = 7684Y6KS7W;
 				INFOPLIST_FILE = ECleaner/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;

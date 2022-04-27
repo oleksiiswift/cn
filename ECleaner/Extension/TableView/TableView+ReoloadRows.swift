@@ -10,8 +10,10 @@ import Foundation
 extension UITableView {
 	
 	func reloadRowWithoutAnimation(at indexPath: IndexPath) {
-		UIView.performWithoutAnimation {
-			self.reloadRows(at: [indexPath], with: .none)
+		DispatchQueue.main.async {
+			UIView.performWithoutAnimation {
+				self.reloadRows(at: [indexPath], with: .none)
+			}
 		}
 	}
 }

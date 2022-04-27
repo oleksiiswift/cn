@@ -96,8 +96,8 @@ class ShadowButtonWithImage: UIButton {
 		let colors = contentType.screeAcentGradientColorSet
 		let disableColors = [UIColor().colorFromHexString("DDDDDD").cgColor, UIColor().colorFromHexString("989898").cgColor]
 		
-		let gradient = getGradientLayer(bounds: self.bounds, colors: enabled ? colors: disableColors.reversed())
-		self.setTitleColor(gradientColor(bounds: self.bounds, gradientLayer: gradient), for: .normal)
+		let gradient = U.UIHelper.Manager.getGradientLayer(bounds: self.bounds, colors: enabled ? colors: disableColors.reversed())
+		self.setTitleColor(U.UIHelper.Manager.gradientColor(bounds: self.bounds, gradientLayer: gradient), for: .normal)
 		
 		if let image = buttonImageView.image {
 			buttonImageView.image = image.tintedWithLinearGradientColors(colorsArr: enabled ? colors.reversed() : disableColors)
@@ -106,23 +106,3 @@ class ShadowButtonWithImage: UIButton {
 }
 
 
-extension ShadowButtonWithImage {
-	
-	func gradientColor(bounds: CGRect, gradientLayer :CAGradientLayer) -> UIColor? {
-		  UIGraphicsBeginImageContext(gradientLayer.bounds.size)
-		  gradientLayer.render(in: UIGraphicsGetCurrentContext()!)
-		  let image = UIGraphicsGetImageFromCurrentImageContext()
-		  UIGraphicsEndImageContext()
-		  return UIColor(patternImage: image!)
-	}
-	
-	func getGradientLayer(bounds : CGRect, colors: [CGColor]) -> CAGradientLayer{
-		let gradient = CAGradientLayer()
-		gradient.frame = bounds
-		gradient.colors = colors
-
-		gradient.startPoint = CGPoint(x: 0.0, y: 0.0)
-		gradient.endPoint = CGPoint(x: 0.0, y: 1.0)
-		return gradient
-	}
-}

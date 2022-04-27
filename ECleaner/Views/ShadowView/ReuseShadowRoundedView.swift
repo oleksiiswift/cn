@@ -45,6 +45,8 @@ class ReuseShadowRoundedView: UIView {
         activityIndicatorView.frame = CGRect(x: 0, y: 0, width: self.frame.width / 2, height: self.frame.height / 2)
         activityIndicatorView.center = self.imageView.center
         activityIndicatorView.style = .medium
+		
+		Screen.size == .small ? activityIndicatorView.transform = CGAffineTransform(scaleX: 0.6, y: 0.6) : ()
     }
     
     public func showIndicator() {
