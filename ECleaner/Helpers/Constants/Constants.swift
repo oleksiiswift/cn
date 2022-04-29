@@ -133,6 +133,8 @@ class Constants {
 			static let compressVideoQueue = "com.video.compressVideo_queue"
 			static let compressAudieQueue = "com.audio.compressAudio_queue"
 			static let animatedProgressQueue = "com.progressAlert.progressBar_queue"
+			static let getPhotoFileSize = "com.photo.getFileSize_queue"
+			static let getVideoFileSize = "com.video.getFileSize_queue"
 		}
 		
 		struct operation {
@@ -143,7 +145,7 @@ class Constants {
 				static let deepClean = "deepCleanSearchOperationQueuer"
 				static let smartClean = "smartCleanSearchOperationQueuer"
 				static let cleaningProcess = "cleaningProcessOprationQueuer"
-				static let utils = "utilsBackgroudSpaceCalculated"
+				static let utils = "backgroundUtitlityQueuer"
                 static let preetchPHasssetQueue = "prefetchPhassetsImagesOperationQueuer"
 				static let techUseQueue = "technicalUseProcessingOperationQueuer"
 			}
@@ -197,6 +199,9 @@ class Constants {
                 static let prefetchPHAssetsOperation = "prefetchPHassetsOperation"
 					/// `find duplicated assets and indexes`
 				static let analizeDuplicatedPHAssetsIndexPathsSearch = "analizeDuplicatedPHAssetsIndexPathsSearch"
+				
+				static let phassetsEstimatedSizeOperation = "phassetsEstimatedSizeOperation"
+				static let avassetEstimatedSizeOperation = "avassetEstimatedSizeOperation"
 			}
 		}
         

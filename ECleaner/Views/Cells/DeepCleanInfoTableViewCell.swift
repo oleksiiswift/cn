@@ -58,6 +58,11 @@ extension DeepCleanInfoTableViewCell {
         infoTotalFilesTextLabel.text = String(count)
     }
 	
+	func setMemmoryChecket(_ bytes: Int64) {
+		
+		totalSpaceTextLabel.text = U.getSpaceFromInt(bytes)
+	}
+	
 	func setRoundedProgress(value: CGFloat, futuredCleaningSpace: Int64?) {
 
 		if let futuredCleaningSpace = futuredCleaningSpace {

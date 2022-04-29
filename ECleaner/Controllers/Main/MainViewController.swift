@@ -319,6 +319,7 @@ extension MainViewController: BottomActionButtonDelegate, StartingNavigationBarD
     }
     
     func didTapActionButton() {
+		self.photoMenager.stopEstimatedSizeProcessingOperations()
         self.openDeepCleanController()
     }
 }
