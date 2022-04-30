@@ -20,6 +20,10 @@
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="DDF-aQ-mOR" customClass="ShadowView" customModule="ECleaner" customModuleProvider="target">
                         <rect key="frame" x="30" y="30" width="150" height="220"/>
                         <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="G5n-QM-rKV" customClass="HorizontalProgressBar" customModule="ECleaner" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="0.0" width="150" height="220"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kRt-Ta-nlS" customClass="ShadowRoundedView" customModule="ECleaner" customModuleProvider="target">
                                 <rect key="frame" x="42.5" y="22" width="65" height="65"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -73,7 +77,9 @@
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
+                            <constraint firstItem="G5n-QM-rKV" firstAttribute="leading" secondItem="DDF-aQ-mOR" secondAttribute="leading" id="0J8-Iq-oEC"/>
                             <constraint firstItem="Drq-4P-gkP" firstAttribute="centerY" secondItem="DDF-aQ-mOR" secondAttribute="centerY" id="3tc-En-rBL"/>
+                            <constraint firstAttribute="bottom" secondItem="G5n-QM-rKV" secondAttribute="bottom" id="6qJ-dr-JfI"/>
                             <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="Drq-4P-gkP" secondAttribute="trailing" constant="10" id="6sm-bv-eNm"/>
                             <constraint firstItem="Drq-4P-gkP" firstAttribute="centerX" secondItem="DDF-aQ-mOR" secondAttribute="centerX" id="94h-Pn-QyW"/>
                             <constraint firstAttribute="width" constant="150" id="Ang-Om-wQc"/>
@@ -84,6 +90,8 @@
                             <constraint firstItem="kRt-Ta-nlS" firstAttribute="height" secondItem="DDF-aQ-mOR" secondAttribute="height" multiplier="0.295455" id="VvR-E5-J8c"/>
                             <constraint firstItem="Drq-4P-gkP" firstAttribute="top" relation="greaterThanOrEqual" secondItem="DDF-aQ-mOR" secondAttribute="top" constant="10" id="XyO-rZ-xa7"/>
                             <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="Drq-4P-gkP" secondAttribute="bottom" constant="10" id="YnV-3y-Dq7"/>
+                            <constraint firstAttribute="trailing" secondItem="G5n-QM-rKV" secondAttribute="trailing" id="f2o-Eb-Pix"/>
+                            <constraint firstItem="G5n-QM-rKV" firstAttribute="top" secondItem="DDF-aQ-mOR" secondAttribute="top" id="fp4-uj-SFm"/>
                             <constraint firstItem="kRt-Ta-nlS" firstAttribute="centerY" secondItem="kZu-EV-x76" secondAttribute="centerY" id="jdd-8S-2s1"/>
                         </constraints>
                     </view>
@@ -100,6 +108,7 @@
             <connections>
                 <outlet property="contentViewHeightConstraint" destination="KmZ-hN-0Uv" id="xi1-EK-bGE"/>
                 <outlet property="diskSpaceImageView" destination="vcD-43-xaQ" id="OlC-YM-mZu"/>
+                <outlet property="horizontalProgressBar" destination="G5n-QM-rKV" id="hvZ-o1-k9S"/>
                 <outlet property="infoSpaceStackView" destination="O7N-8B-EFa" id="qof-1w-gtH"/>
                 <outlet property="mainStackView" destination="Drq-4P-gkP" id="kG2-kn-Qrd"/>
                 <outlet property="mainView" destination="DDF-aQ-mOR" id="cZi-96-BtM"/>

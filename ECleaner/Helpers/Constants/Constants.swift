@@ -111,6 +111,9 @@ class Constants {
 				static let singleSimilarVideoPHAssetScan = "singleSimilarVideoPHAssetScan"
 				static let singleScreenRecordingsVideoPHAssetScan = "singleScreenRecordingsVideoPHAssetScan"
 				static let singleRecentlyDeleteVideoPHAssetScan = "singleRecentlyDeleteVideoPHAssetScan"
+				
+				static let singleOperationPhotoFilesSizeScan = "singleOperationPhotoFilesSizeScan"
+				static let singleOperationVideoFilesSizeScan = "singleOperationVideoFilesSizeScan"
             }
             
             /// `contacts notification`

@@ -1080,7 +1080,8 @@
 				972A2A38280633E500D6F54A /* SliderView */,
 				97A867AF27E9546B00891297 /* CustomUIButtons */,
 				970B208B27F5BCB900B5AF7D /* GradientSlider */,
-				9793300D2815E09F00DCFECD /* CustomSegmentControll.swift */,
+				97B288A6281D790D0020A235 /* SegementControll */,
+				97B288A9281D79340020A235 /* AnimatedProgressView */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1752,6 +1753,21 @@
 				97B01A7E2747CB8C00DDE03C /* ExportContactsViewController.swift */,
 			);
 			path = Export;
+			sourceTree = "<group>";
+		};
+		97B288A6281D790D0020A235 /* SegementControll */ = {
+			isa = PBXGroup;
+			children = (
+				9793300D2815E09F00DCFECD /* CustomSegmentControll.swift */,
+			);
+			path = SegementControll;
+			sourceTree = "<group>";
+		};
+		97B288A9281D79340020A235 /* AnimatedProgressView */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = AnimatedProgressView;
 			sourceTree = "<group>";
 		};
 		97C4217727FF4DDB00FF62D7 /* SmartCleanManager */ = {

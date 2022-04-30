@@ -58,6 +58,9 @@ extension Notification.Name {
     static let singleSearchDuplicatesNamesContactsScan =    Notification.Name(C.key.notification.singleSearch.singleSearchDuplicatesNamesContactsScan)
     static let singleSearchDuplicatesNumbersContactsScan =  Notification.Name(C.key.notification.singleSearch.singleSearchDuplicatesNumbersContactsScan)
     static let singleSearchDupliatesEmailsContactsScan =    Notification.Name(C.key.notification.singleSearch.singleSearchDupliatesEmailsContactsScan)
+	
+	static let singleOperationPhotoFilesSizeScan = 			Notification.Name(C.key.notification.singleSearch.singleOperationPhotoFilesSizeScan)
+	static let singleOperationVideoFilesSizeScan = 			Notification.Name(C.key.notification.singleSearch.singleOperationVideoFilesSizeScan)
     
         /// `contacts`
     static let mergeContactsSelectionDidChange =    Notification.Name(C.key.notification.mergeContactsSelectionDidChange)

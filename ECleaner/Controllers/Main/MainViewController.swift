@@ -11,7 +11,7 @@ import SwiftMessages
 import Contacts
 
 class MainViewController: UIViewController {
-  
+	
     @IBOutlet weak var navigationBar: StartingNavigationBar!
     @IBOutlet weak var bottomButtonBarView: BottomButtonBarView!
     @IBOutlet weak var scrollView: UIScrollView!
@@ -34,6 +34,9 @@ class MainViewController: UIViewController {
     private var contentCount: [MediaContentType : Int] = [:]
     private var diskSpaceForStartingScreen: [MediaContentType : Int64] = [:]
 	
+	var refreshControl: UIRefreshControl!
+	var openForUpdate: Bool = false
+	
     override func viewDidLoad() {
         super.viewDidLoad()
 		
@@ -49,15 +52,26 @@ class MainViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+		
+		self.addSizeCalcuateObeserver()
         setupNavigation()
         updateContactsCount()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+	
+		
     }
 	
+	override func viewWillDisappear(_ animated: Bool) {
+		super.viewWillDisappear(animated)
+		
+		self.removeSizeCalculateObserver()
+		self.setProgressSize(for: .userVideo, progress: 0)
+		self.setProgressSize(for: .userVideo, progress: 0)
+	}
+		
 	private func initializeSingleCleanModel() {
 		 
 		var objects: [PhotoMediaType : SingleCleanStateModel] = [:]
@@ -111,6 +125,44 @@ extension MainViewController {
     }
     
     private func updateCircleProgress() {}
+	
+	@objc func updateFilesSizeObserver(_ notification: Notification) {
+		
+		switch notification.name {
+			case .singleOperationPhotoFilesSizeScan:
+				self.setupUpdateSizeValues(from: .photosSizeCheckerType, userInfo: notification.userInfo)
+			case .singleOperationVideoFilesSizeScan:
+				self.setupUpdateSizeValues(from: .videosSizeCheckerType, userInfo: notification.userInfo)
+			default:
+				return
+		}
+	}
+	
+	private func setupUpdateSizeValues(from type: SingleContentSearchNotificationType, userInfo: [AnyHashable: Any]?) {
+		
+		guard let userInfo = userInfo,
+			  let totalProcessing = userInfo[type.dictionaryCountName] as? Int,
+			  let currentProcessingIndex = userInfo[type.dictioanartyIndexName] as? Int else { return }
+		
+		let progress = CGFloat(currentProcessingIndex) / CGFloat(totalProcessing)
+		
+		switch type {
+			case .photosSizeCheckerType:
+				self.setProgressSize(for: .userPhoto, progress: progress)
+			case .videosSizeCheckerType:
+				self.setProgressSize(for: .userVideo, progress: progress)
+			default:
+				return
+		}
+	}
+	
+	private func setProgressSize(for type: MediaContentType, progress: CGFloat) {
+		U.UI {
+			if let cell = self.mediaCollectionView.cellForItem(at: type.mainScreenIndexPath) as? MediaTypeCollectionViewCell {
+				cell.setProgress(progress)
+			}
+		}
+	}
 }
 
 //      MARK: - updating elements -
@@ -339,6 +391,16 @@ extension MainViewController: UpdateColorsDelegate {
 		U.notificationCenter.addObserver(self, selector: #selector(removeStoreObserver), name: .removeContactsStoreObserver, object: nil)
 		U.notificationCenter.addObserver(self, selector: #selector(addStoreObserver), name: .addContactsStoreObserver, object: nil)
     }
+	
+	private func addSizeCalcuateObeserver() {
+		U.notificationCenter.addObserver(self, selector: #selector(updateFilesSizeObserver(_:)), name: .singleOperationPhotoFilesSizeScan, object: nil)
+		U.notificationCenter.addObserver(self, selector: #selector(updateFilesSizeObserver(_:)), name: .singleOperationVideoFilesSizeScan, object: nil)
+	}
+	
+	private func removeSizeCalculateObserver() {
+		U.notificationCenter.removeObserver(self, name: .singleOperationPhotoFilesSizeScan, object: nil)
+		U.notificationCenter.removeObserver(self, name: .singleOperationVideoFilesSizeScan, object: nil)
+	}
 	
 	@objc func removeStoreObserver() {
 		U.notificationCenter.removeObserver(self, name: .CNContactStoreDidChange, object: nil)
@@ -574,4 +636,32 @@ extension MainViewController: UpdateColorsDelegate {
 }
 
 
-
+extension MainViewController {
+	
+	private func setupRefreshControll() {
+		
+		refreshControl = UIRefreshControl()
+		refreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
+		scrollView.refreshControl = refreshControl
+	}
+	
+	@objc func refresh() {
+			
+		guard  self.openForUpdate else {
+			self.refreshControl.endRefreshing()
+			return
+		}
+		self.contentCount = [:]
+		self.diskSpaceForStartingScreen = [:]
+		self.mediaCollectionView.reloadDataWitoutAnimation()
+		U.delay(1) {
+			self.photoMenager.stopEstimatedSizeProcessingOperations()
+			U.delay(1) {
+				self.photoMenager.getPhotoLibraryContentAndCalculateSpace()
+			}
+		}
+		U.delay(1) {
+			self.refreshControl.endRefreshing()
+		}
+	}
+}

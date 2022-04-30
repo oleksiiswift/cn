@@ -301,12 +301,14 @@ extension DeepCleaningViewController {
 					}
 			   }
 			   debugPrint("!!!! deep clean complete ->>> \(timer.stop())")
+			   self.photoManager.clearRequestsAfterDeepCleanProcessing()
 		  } emptyResultsHandler: {
 			   U.delay(1) {
 					ErrorHandler.shared.showEmptySearchResultsFor(.deepCleanSearchinResultsIsEmpty) {
 						 self.navigationController?.popViewController(animated: true)
 					}
 			   }
+			   self.photoManager.clearRequestsAfterDeepCleanProcessing()
 			   debugPrint("!!!! deep clean complete ->>> \(timer.stop())")
 		  }
      }
@@ -866,6 +868,9 @@ extension DeepCleaningViewController {
 		  U.notificationCenter.removeObserver(self, name: .deepCleanDupLicatedMailsScan, object: nil)
 		  
 		  U.notificationCenter.removeObserver(self, name: .progressDeepCleanDidChangeProgress, object: nil)
+		  
+		  U.notificationCenter.removeObserver(self, name: .deepCleanPhotoFilesScan, object: nil)
+		  U.notificationCenter.removeObserver(self, name: .deepCleanVideoFilesScan, object: nil)
 	 }
 	 
 	 private func setupDelegate() {

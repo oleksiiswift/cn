@@ -44,4 +44,10 @@ class ProgressSearchNotificationManager {
 							  notificationtype.dictionaryCountName: totlelFiles] as [String : Any]
 		NotificationCenter.default.post(name: notificationtype.notificationName, object: nil, userInfo: infoDictionary)
 	}
+	
+	public func sendSingleFilesCheckerNotification(notificationtype: SingleContentSearchNotificationType, currentIndex: Int, totalFiles: Int) {
+		let infoDictionary = [notificationtype.dictionaryCountName: totalFiles,
+							  notificationtype.dictioanartyIndexName: currentIndex] as [String : Any]
+		NotificationCenter.default.post(name: notificationtype.notificationName, object: nil, userInfo: infoDictionary)
+	}
 }
