@@ -225,6 +225,17 @@ enum DeepCleanNotificationType {
 		}
 	}
 	
+	var contentTypeRawValue: MediaContentType {
+		switch self {
+			case .photoFilesSize:
+				return .userPhoto
+			case .videoFilesSize:
+				return .userVideo
+			default:
+				return .none
+		}
+	}
+	
 	var positionInDeepCleanRowValue: Int {
 		switch self {
 			case .similarPhoto:

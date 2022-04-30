@@ -46,6 +46,7 @@ class MediaTypeCollectionViewCell: UICollectionViewCell {
         setupUI()
         updateColors()
         handleContentSize()
+		horizontalProgressBar.isHidden = true
 		horizontalProgressBar.progress = 0
 		horizontalProgressBar.setNeedsDisplay()
 		setupProgressBar()
@@ -114,15 +115,15 @@ extension MediaTypeCollectionViewCell: Themeble {
 	
 	public func setProgress(_ progress: CGFloat) {
 		
-		horizontalProgressBar.isHidden = progress == 0 || progress > 0.99
-		horizontalProgressBar.state = progress != 0 || progress < 0.99 ? .progress : .sleeping
-		self.horizontalProgressBar.progress = progress
-		self.horizontalProgressBar.layoutIfNeeded()
+//		horizontalProgressBar.isHidden = progress == 0 || progress > 0.95
+//		horizontalProgressBar.state = progress != 0 || progress < 0.95 ? .progress : .sleeping
+//		self.horizontalProgressBar.progress = progress
+//		self.horizontalProgressBar.layoutIfNeeded()
 	}
 	
 	private func setupProgressBar() {
 		self.horizontalProgressBar.setCorner(12)
-		self.horizontalProgressBar.alpha = 0.8
+//		self.horizontalProgressBar.alpha = 
 	}
     
     private func showActivityIndicator() {

@@ -57,18 +57,12 @@ class MainViewController: UIViewController {
         setupNavigation()
         updateContactsCount()
     }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-	
-		
-    }
 	
 	override func viewWillDisappear(_ animated: Bool) {
 		super.viewWillDisappear(animated)
 		
 		self.removeSizeCalculateObserver()
-		self.setProgressSize(for: .userVideo, progress: 0)
+		self.setProgressSize(for: .userPhoto, progress: 0)
 		self.setProgressSize(for: .userVideo, progress: 0)
 	}
 		
