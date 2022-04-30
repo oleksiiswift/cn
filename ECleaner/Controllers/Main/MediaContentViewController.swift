@@ -34,7 +34,7 @@ class MediaContentViewController: UIViewController {
     private var contactsManager = ContactsManager.shared
 	private var smartCleanManager = SmartCleanManager()
 
-	public let phassetProcessingOperationQueuer = OperationProcessingQueuer(name: Constants.key.operation.queue.phassets, maxConcurrentOperationCount: 5, qualityOfService: .background)
+	public let phassetProcessingOperationQueuer = OperationProcessingQueuer(name: Constants.key.operation.queue.phassets, maxConcurrentOperationCount: 5, qualityOfService: .userInitiated)
 	public let contactsProcessingOperationQueuer = ContactsManager.shared.contactsProcessingOperationQueuer
     
     private var lowerBoundDate: Date {

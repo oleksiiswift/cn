@@ -18,6 +18,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		
 		developmentSettings()
 		
+//		NotificationCenter.default.addObserver(forName: nil, object: nil, queue: nil) { notification in
+//			debugPrint(notification)
+//		}
+		
         return true
     }
 

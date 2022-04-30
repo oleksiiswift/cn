@@ -18,6 +18,7 @@ class ContentTypeTableViewCell: UITableViewCell {
     @IBOutlet weak var contentSubtitleTextLabel: UILabel!
     @IBOutlet weak var horizontalProgressView: HorizontalProgressBar!
 	@IBOutlet weak var reuseShadowHeightConstraint: NSLayoutConstraint!
+	
 	override func prepareForReuse() {
         super.prepareForReuse()
         

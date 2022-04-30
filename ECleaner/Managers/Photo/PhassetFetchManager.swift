@@ -37,6 +37,11 @@ enum SortingDesriptionKey {
     }
 }
 
+enum KeyMediaType {
+	case photo
+	case video
+}
+
 //		MARK: - FETCH PHASSET MANAGER - LOAD PHASSETS
 
 class PHAssetFetchManager {
@@ -45,8 +50,7 @@ class PHAssetFetchManager {
 	
 	private static let lowerDateValue: Date = S.defaultLowerDateValue
 	private static let upperDateValue: Date = S.defaultUpperDateValue
-	
-	
+		
 	public func fetchTotalAssetsCountOperation(from lowerDate: Date = lowerDateValue, to upperDate: Date = upperDateValue, completionHandler: @escaping (Int) -> Void) -> ConcurrentProcessOperation {
 		
 		let fetchTotalPHAssetsOperation = ConcurrentProcessOperation { _ in
@@ -91,7 +95,6 @@ class PHAssetFetchManager {
 }
 
 extension PHAssetFetchManager {
-	
 	
     public func fetchTotalAssetsCount(from lowerDate: Date = lowerDateValue, to upperDate: Date = upperDateValue, completionHandler: @escaping (Int) -> Void) {
         
@@ -173,6 +176,21 @@ extension PHAssetFetchManager {
 			fetchedVideos.append(phasset)
 		}
 		completionHandler(fetchedVideos)
+	}
+	
+	public func fetchPhotolibraryContent(by type: KeyMediaType, completionHandler: @escaping (_ result: PHFetchResult<PHAsset>) -> Void) {
+		let fetchOptions = PHFetchOptions()
+		fetchOptions.sortDescriptors = [NSSortDescriptor(key: SortingDesriptionKey.creationDate.value, ascending: false)]
+		
+		switch type {
+			case .photo:
+				fetchOptions.predicate = NSPredicate(format: SDKey.singleMediaType.value, PHAssetMediaType.image.rawValue)
+			case .video:
+				fetchOptions.predicate = NSPredicate(format: SDKey.singleMediaType.value, PHAssetMediaType.video.rawValue)
+		}
+		
+		let result = PHAsset.fetchAssets(with: fetchOptions)
+		completionHandler(result)
 	}
 	
 	public func fetchImagesDiskUsageFromGallery(with identifiers: [String], completionHandler: @escaping (Int64) -> Void) {
@@ -284,6 +302,7 @@ extension PHAssetFetchManager {
                     imageManager.requestImageDataAndOrientation(for: object as! PHAsset, options: requestOptions) { imageData, dataUTI, orientation, info in
                         if imageData != nil {
                             fileAllSizeB += Int64(imageData!.count)
+							debugPrint(index, fileAllSizeB)
                         }
                     }
                  })
@@ -366,10 +385,7 @@ extension PHAssetFetchManager {
 				fetchOption.sortDescriptors = [NSSortDescriptor(key: SortingDesriptionKey.creationDate.value, ascending: false)]
 				fetchOption.predicate = NSPredicate(format: SDKey.allMediaType.value, PHAssetMediaType.image.rawValue, PHAssetMediaType.video.rawValue)
 				let assets = PHAsset.fetchAssets(with: fetchOption)
-//				var media: [PHAsset] = []
 				assets.enumerateObjects { object, index, stopped in
-//					debugPrint("calculated space at index: ", index)
-//					media.append(object)
 					if object.mediaType == .image {
 						photoLibraryPHAssetCalculatedSpace += object.imageSize
 						photoPhassetSpace += object.imageSize
@@ -378,11 +394,7 @@ extension PHAssetFetchManager {
 						videoPhassetSpace += object.imageSize
 					}
 				}
-				
-//				photoPhassetSpace = media.filter({$0.mediaType == .image}).map({$0.imageSize}).sum()
-//				videoPhassetSpace = media.filter({$0.mediaType == .video}).map({$0.imageSize}).sum()
 
-//				photoLibraryPHAssetCalculatedSpace = photoPhassetSpace + videoPhassetSpace
 				completionHandler(photoPhassetSpace, videoPhassetSpace, photoLibraryPHAssetCalculatedSpace)
 			})
 		}
@@ -522,3 +534,4 @@ extension PHAssetFetchManager {
 		}
 	}
 }
+

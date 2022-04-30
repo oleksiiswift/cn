@@ -7,8 +7,19 @@
 
 import UIKit
 
+enum HorizontalProgressBarDirection {
+	case horizontal
+	case vertical
+}
+
 class HorizontalProgressBar: UIView {
-    
+
+	var direction: HorizontalProgressBarDirection = .horizontal {
+		didSet {
+			setNeedsDisplay()
+		}
+	}
+	
 	var progressColor: UIColor = .gray {
         didSet{
             setNeedsDisplay()
@@ -47,7 +58,11 @@ class HorizontalProgressBar: UIView {
 	override func draw(_ rect: CGRect) {
 		
 		let drowingProgress = state == .progress ? progress : 0.0
-		let progressRect = CGRect(origin: .zero, size: CGSize(width: rect.width *  drowingProgress, height: rect.height))
+		
+		let width = direction == .horizontal ? rect.width * drowingProgress : rect.width
+		let height = direction == .horizontal ? rect.height : rect.height * drowingProgress
+		
+		let progressRect = CGRect(origin: .zero, size: CGSize(width: width, height: height))
 		let progressLayer = CALayer()
 		progressLayer.name = "progress"
 		progressLayer.frame = progressRect

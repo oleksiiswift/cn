@@ -17,3 +17,12 @@ extension UIButton {
         }
     }
 }
+
+extension UILabel {
+	func setTitleWithoutAnimation(title: String) {
+		UIView.performWithoutAnimation {
+			text = title
+			layoutIfNeeded()
+		}
+	}
+}

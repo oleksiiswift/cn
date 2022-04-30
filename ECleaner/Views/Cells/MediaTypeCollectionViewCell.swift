@@ -18,7 +18,9 @@ class MediaTypeCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var diskSpaceImageView: UIImageView!
 	@IBOutlet weak var mainStackView: UIStackView!
     @IBOutlet weak var contentViewHeightConstraint: NSLayoutConstraint!
-    private lazy var loadingActivityIndicatorView = UIActivityIndicatorView()
+	@IBOutlet weak var horizontalProgressBar: HorizontalProgressBar!
+	
+	private lazy var loadingActivityIndicatorView = UIActivityIndicatorView()
 
 	private var photoManager = PhotoManager.shared
     public var mediaTypeCell: MediaContentType = .none
@@ -44,6 +46,10 @@ class MediaTypeCollectionViewCell: UICollectionViewCell {
         setupUI()
         updateColors()
         handleContentSize()
+		horizontalProgressBar.isHidden = true
+		horizontalProgressBar.progress = 0
+		horizontalProgressBar.setNeedsDisplay()
+		setupProgressBar()
     }
 }
 
@@ -53,7 +59,7 @@ extension MediaTypeCollectionViewCell: Themeble {
         
         loadingActivityIndicatorView.color = .red
         loadingActivityIndicatorView.tag = 666
-        
+		horizontalProgressBar.direction = .vertical
         mainView.setCorner(12)
     }
     
@@ -106,6 +112,19 @@ extension MediaTypeCollectionViewCell: Themeble {
             mediaSpaceTitleTextLabel.text = String("\(U.getSpaceFromInt(space ?? 0))")
         }
     }
+	
+	public func setProgress(_ progress: CGFloat) {
+		
+//		horizontalProgressBar.isHidden = progress == 0 || progress > 0.95
+//		horizontalProgressBar.state = progress != 0 || progress < 0.95 ? .progress : .sleeping
+//		self.horizontalProgressBar.progress = progress
+//		self.horizontalProgressBar.layoutIfNeeded()
+	}
+	
+	private func setupProgressBar() {
+		self.horizontalProgressBar.setCorner(12)
+//		self.horizontalProgressBar.alpha = 
+	}
     
     private func showActivityIndicator() {
         
@@ -200,5 +219,6 @@ extension MediaTypeCollectionViewCell: Themeble {
         mediaContentTitleTextLabel.textColor = theme.titleTextColor
         mediaContentSubTitleTextLabel.textColor = theme.subTitleTextColor
         mediaSpaceTitleTextLabel .textColor = theme.titleTextColor
+		horizontalProgressBar.progressColor = theme.progressBackgroundColor
     }
 }

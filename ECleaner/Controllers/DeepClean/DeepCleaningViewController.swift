@@ -19,7 +19,7 @@ class DeepCleaningViewController: UIViewController {
      @IBOutlet weak var tableView: UITableView!
      @IBOutlet weak var dateSelectContainerHeigntConstraint: NSLayoutConstraint!
      @IBOutlet weak var bottomContainerHeightConstraint: NSLayoutConstraint!
-
+	 
      /// managers∂
      private var deepCleanManager = DeepCleanManager()
 	 private var photoManager = PhotoManager.shared
@@ -70,11 +70,13 @@ class DeepCleaningViewController: UIViewController {
 	 private var futuredCleaningSpaceUsage: Int64?
 	 private var totalDeepCleanProgress = DeepCleanTotalProgress()
 	 private var deepCleanModel: DeepCleanModel!
-
+	 private var mediaStoreModel: MediaStoreInfoModel!
+	 	 
      override func viewDidLoad() {
           super.viewDidLoad()
           
 		  initializeDeepCleanModel()
+		  initializePhotoLibrarySizeCheckerModel()
 		  deepCleanManager.cancelAllOperation()
           setupUI()
           setupNavigation()
@@ -119,28 +121,39 @@ class DeepCleaningViewController: UIViewController {
 		  
 		  self.deepCleanModel = DeepCleanModel(objects: objects)
 	 }
+	 
+	 private func initializePhotoLibrarySizeCheckerModel() {
+		  
+		  var objects: [MediaContentType: MediaInfoContainerModel] = [:]
+		  objects[.userPhoto] = MediaInfoContainerModel(contentType: .userPhoto)
+		  objects[.userVideo] = MediaInfoContainerModel(contentType: .userVideo)
+		  objects[.userContacts] = MediaInfoContainerModel(contentType: .userContacts)
+		  self.mediaStoreModel = MediaStoreInfoModel(objects: objects)
+	 }
 }
 
 //      MARK: deep cleaning algorithm
 extension DeepCleaningViewController {
      
-     private func prepareStartDeepCleanProcessing() {
-          
-          self.photoManager.getPhotoAssetsCount(from: self.lowerBoundDate, to: self.upperBoundDate) { allAssetsCount in
-               self.totalFilesOnDevice = allAssetsCount
-               
-               self.photoManager.getPartitionalMediaAssetsCount(from: self.lowerBoundDate, to: self.upperBoundDate) { assetGroupPartitionCount in
+	 private func prepareStartDeepCleanProcessing() {
+		  
+		  U.delay(3) {
+			   self.photoManager.getPhotoAssetsCount(from: self.lowerBoundDate, to: self.upperBoundDate) { allAssetsCount in
+					self.totalFilesOnDevice = allAssetsCount
 					
-					self.setProcessingActionButton(.didCleaning)
-                    self.totalPartitinAssetsCount = assetGroupPartitionCount
-					self.futuredCleaningSpaceUsage = 0
-					self.tableView.reloadRowWithoutAnimation(at: IndexPath(row: 0, section: 0))
-					U.delay(1) {
-						 self.startDeepCleanScan()
+					self.photoManager.getPartitionalMediaAssetsCount(from: self.lowerBoundDate, to: self.upperBoundDate) { assetGroupPartitionCount in
+						 
+						 self.setProcessingActionButton(.didCleaning)
+						 self.totalPartitinAssetsCount = assetGroupPartitionCount
+						 self.futuredCleaningSpaceUsage = 0
+						 self.tableView.reloadRowWithoutAnimation(at: IndexPath(row: 0, section: 0))
+						 U.delay(1) {
+							  self.startDeepCleanScan()
+						 }
 					}
-               }
-          }
-     }
+			   }
+		  }
+	 }
 	 
 	 private func getTotalPhassetCount() {
 		  self.photoManager.getPhotoAssetsCount(from: S.lowerBoundSavedDate, to: S.upperBoundSavedDate) { allPhassets in
@@ -161,6 +174,7 @@ extension DeepCleaningViewController {
 		  deepCleaningState = .canclel
 		  P.showIndicator()
 		  U.delay(2) {
+			   self.mediaStoreModel.resetAllValues()
 			   self.resetProgress()
 			   self.resetAllValues()
 			   self.tableView.reloadData()
@@ -204,6 +218,8 @@ extension DeepCleaningViewController {
           
           guard let options = scansOptions else { return }
 		  
+		  let timer = ParkBenchTimer()
+	 
 		  isDeepCleanSearchingProcessRunning = !isDeepCleanSearchingProcessRunning
 		  U.application.isIdleTimerDisabled = true
 		  
@@ -289,12 +305,16 @@ extension DeepCleaningViewController {
 						 U.application.isIdleTimerDisabled = true
 					}
 			   }
+			   debugPrint("!!!! deep clean complete ->>> \(timer.stop())")
+			   self.photoManager.clearRequestsAfterDeepCleanProcessing()
 		  } emptyResultsHandler: {
 			   U.delay(1) {
 					ErrorHandler.shared.showEmptySearchResultsFor(.deepCleanSearchinResultsIsEmpty) {
 						 self.navigationController?.popViewController(animated: true)
 					}
 			   }
+			   self.photoManager.clearRequestsAfterDeepCleanProcessing()
+			   debugPrint("!!!! deep clean complete ->>> \(timer.stop())")
 		  }
      }
 	      
@@ -396,15 +416,6 @@ extension DeepCleaningViewController: DeepCleanSelectableAssetsDelegate {
 			   
 			   switch contentType {
 					case .singleScreenShots, .singleLargeVideos, .singleScreenRecordings, .similarPhotos, .duplicatedPhotos, .similarLivePhotos, .similarVideos, .duplicatedVideos, .similarSelfies:
-//						 let diskSpaceOperation = photoManager.getAssetsUsedMemmoty(by: allSelectedAssetsIDS) { result in
-//							  self.futuredCleaningSpaceUsage = result
-//							  debugPrint(result)
-//							  U.UI {
-//								   self.checkCleaningButtonState()
-//								   self.tableView.reloadRowWithoutAnimation(at: topIndexPath)
-//							  }
-//						 }
-//						 deepCleanManager.deepCleanOperationQueue.addOperation(diskSpaceOperation)
 						 self.checkCleaningButtonState()
 					case .emptyContacts, .duplicatedContacts, .duplicatedPhoneNumbers, .duplicatedEmails:
 						 self.checkCleaningButtonState()
@@ -484,20 +495,48 @@ extension DeepCleaningViewController {
 			   self.deepCleanProgressStatusUpdate(type, status: status, currentProgress: progress)
 		  }
      }
-     
+	 
+	 @objc private func recievFilesSizeNotification(_ notification: Notification) {
+		  
+		  guard deepCleaningState == .didCleaning else { return }
+		  switch notification.name {
+			   case .deepCleanPhotoFilesScan:
+					self.recieveSizeNotification(by: .photoFilesSize, info: notification.userInfo)
+			   case .deepCleanVideoFilesScan:
+					self.recieveSizeNotification(by: .videoFilesSize, info: notification.userInfo)
+			   default:
+					return
+		  }
+	 }
+		  
+	 private func recieveSizeNotification(by type: DeepCleanNotificationType, info: [AnyHashable: Any]?) {
+		  
+		  guard let userInfo = info,
+				let _ = userInfo[type.dictionaryCountName] as? Int,
+				let currentProcessingIndex = userInfo[type.dictionaryIndexName] as? Int,
+				let processingValue = userInfo[type.dictionaryProcessingSizeValue] as? Int64 else { return }
+		  
+		  self.mediaStoreModel.objects[type.contentTypeRawValue]?.processingCurrentIndex = currentProcessingIndex
+		  self.mediaStoreModel.objects[type.contentTypeRawValue]?.sizeProcessingCount += processingValue
+		  
+//		  if totalProcessing == currentProcessingIndex {
+//			   self.mediaStoreModel.objects[type.contentTypeRawValue]?.saveTotalSizeProcessing()
+//		  }
+		  
+		  U.UI {
+			   if let cell = self.tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? DeepCleanInfoTableViewCell {
+					cell.setProgress(files: self.mediaStoreModel.totalFilesProcesingCount)
+					cell.setMemmoryChecker(bytes: self.mediaStoreModel.totalPhotoLibrarySizeCount)
+			   }
+		  }
+	 }
+	 
      private func updateTotalFilesTitleChecked() {
 
 		  totalFilesChecked = (totalFilesOnDevice / 100) * Int(self.totalDeepCleanProgress.totalProgress)
           
           if let cell = self.tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? DeepCleanInfoTableViewCell {
-               
-               if self.totalDeepCleanProgress.totalProgress == 100 {
-                    totalFilesChecked = self.totalFilesOnDevice
-                    cell.setProgress(files: totalFilesChecked)
-               } else {
-                    cell.setProgress(files: totalFilesChecked)
-               }
-			   cell.setRoundedProgress(value: self.totalDeepCleanProgress.totalProgress.rounded(), futuredCleaningSpace: self.futuredCleaningSpaceUsage)
+			   cell.setRoundedProgress(value: self.totalDeepCleanProgress.totalProgress.rounded())
           }
      }
 	 
@@ -673,8 +712,9 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
           
 		  cell.selectionStyle = .none
 		  cell.isUserInteractionEnabled = false
-          cell.setProgress(files: self.totalFilesChecked)
-		  cell.setRoundedProgress(value: self.totalDeepCleanProgress.totalProgress, futuredCleaningSpace: self.futuredCleaningSpaceUsage)
+		  cell.setProgress(files: self.mediaStoreModel.totalFilesProcesingCount)
+		  cell.setMemmoryChecker(bytes: self.mediaStoreModel.totalPhotoLibrarySizeCount)
+		  cell.setRoundedProgress(value: self.totalDeepCleanProgress.totalProgress)
      }
      
      func numberOfSections(in tableView: UITableView) -> Int {
@@ -781,6 +821,9 @@ extension DeepCleaningViewController {
           U.notificationCenter.addObserver(self, selector: #selector(flowRoatingHandleNotification(_:)), name: .deepCleanDupLicatedMailsScan, object: nil)
 		  
 		  U.notificationCenter.addObserver(self, selector: #selector(handleDeepCleanProgressNotification(_:)), name: .progressDeepCleanDidChangeProgress, object: nil)
+		  
+		  U.notificationCenter.addObserver(self, selector: #selector(recievFilesSizeNotification(_:)), name: .deepCleanPhotoFilesScan, object: nil)
+		  U.notificationCenter.addObserver(self, selector: #selector(recievFilesSizeNotification(_:)), name: .deepCleanVideoFilesScan, object: nil)
      }
 	 
 	 private func removeObservers() {
@@ -802,6 +845,9 @@ extension DeepCleaningViewController {
 		  U.notificationCenter.removeObserver(self, name: .deepCleanDupLicatedMailsScan, object: nil)
 		  
 		  U.notificationCenter.removeObserver(self, name: .progressDeepCleanDidChangeProgress, object: nil)
+		  
+		  U.notificationCenter.removeObserver(self, name: .deepCleanPhotoFilesScan, object: nil)
+		  U.notificationCenter.removeObserver(self, name: .deepCleanVideoFilesScan, object: nil)
 	 }
 	 
 	 private func setupDelegate() {
@@ -1052,6 +1098,7 @@ extension DeepCleaningViewController: BottomActionButtonDelegate {
 		  U.delay(2) {
 			   self.resetAllValues()
 			   self.resetProgress()
+			   self.mediaStoreModel.resetAllValues()
 			   U.delay(1) {
 					P.hideIndicator()
 					self.tableView.reloadData()
