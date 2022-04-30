@@ -84,6 +84,9 @@ class Constants {
                 static let deepCleanDuplicatedContactsScan = "deepCleanDuplicatedContactsScan"
                 static let deepCleanDuplicatedPhoneNumbersScan = "deepCleanDuplicatedPhoneNumbersScan"
                 static let deepCleanDupLicatedMailsScan = "deepCleanDupLicatedEmaailScan"
+				
+				static let deepCleanPhotoFilesSizeScan = "deepCleanPhotoFilesSizeScan"
+				static let deepCleanVideoFilesSizeScan = "deepCleanVideoFilesSizeScan"
             }
             
                 /// `single Search update progress notification name`
@@ -235,6 +238,9 @@ class Constants {
                 static let duplicateNamesContactsIndex = "duplicateNamesContactsProcessingIndex"
                 static let duplicateNumbersContactsIndex = "duplicateNumbersContactsProcessingIndex"
                 static let duplicateEmailContactsIndex = "duplicateEmailContactsProcessingIndex"
+				
+				static let photoProcessingIndex = "photoProcessingIndex"
+				static let videoProcessingIndex = "videoProcessingIndex"
             }
             
                 /// `TOTAL COUNT`
@@ -258,6 +264,9 @@ class Constants {
                 static let duplicateNamesContactsCount = "duplicateNamesContactsCount"
                 static let duplicateNumbersContactsCount = "duplicateNumbersContactsCount"
                 static let duplicateEmailsContactsCount = "duplicateEmailsContactsCount"
+				
+				static let photoProcessingCount = "photoProcessingCount"
+				static let videoProcessingCount = "videoProcessingCount"
             }
 				/// `STATE`
 			struct state {
@@ -280,6 +289,11 @@ class Constants {
 				static let duplicateNamesContactsState = "duplicateNamesContactsProcessingState"
 				static let duplicateNumbersContactsState = "duplicateNumbersContactsProcessingState"
 				static let duplicateEmailContactsState = "duplicateEmailContactsProcessingState"
+			}
+			
+			struct value {
+				static let photoFilesSizeValue = "photoFilesSizeValue"
+				static let videoFileSizeValue = "videoFileSizeValue"
 			}
 			
             

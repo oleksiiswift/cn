@@ -36,6 +36,9 @@ extension Notification.Name {
     static let deepCleanDuplicatedContactsScan =        Notification.Name(C.key.notification.deepClean.deepCleanDuplicatedContactsScan)
     static let deepCleanDuplicatedPhoneNumbersScan =    Notification.Name(C.key.notification.deepClean.deepCleanDuplicatedPhoneNumbersScan)
     static let deepCleanDupLicatedMailsScan =           Notification.Name(C.key.notification.deepClean.deepCleanDupLicatedMailsScan)
+	
+	static let deepCleanPhotoFilesScan =				Notification.Name(C.key.notification.deepClean.deepCleanPhotoFilesSizeScan)
+	static let deepCleanVideoFilesScan = 				Notification.Name(C.key.notification.deepClean.deepCleanVideoFilesSizeScan)
     
         ///  `single search scan progress notification`
 	static let singleSearchSimilarPhotoScan = 				Notification.Name(C.key.notification.singleSearch.singleSearchSimilarPhotoPHAssetScan)

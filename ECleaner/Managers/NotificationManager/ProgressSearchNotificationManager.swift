@@ -37,4 +37,11 @@ class ProgressSearchNotificationManager {
 //		sleep(UInt32(0.1))
 		NotificationCenter.default.post(name: notificationType.notificationName, object: nil, userInfo: infoDictionary)
 	}
+	
+	public func sentSizeFilesCheckerNotification(notificationtype: DeepCleanNotificationType, value: Int64, currentIndex: Int, totlelFiles: Int) {
+		let infoDictionary = [notificationtype.dictionaryProcessingSizeValue: value,
+							  notificationtype.dictionaryIndexName: currentIndex,
+							  notificationtype.dictionaryCountName: totlelFiles] as [String : Any]
+		NotificationCenter.default.post(name: notificationtype.notificationName, object: nil, userInfo: infoDictionary)
+	}
 }

@@ -70,7 +70,14 @@ class DeepCleaningViewController: UIViewController {
 	 private var futuredCleaningSpaceUsage: Int64?
 	 private var totalDeepCleanProgress = DeepCleanTotalProgress()
 	 private var deepCleanModel: DeepCleanModel!
-
+	 
+	 private var filesProcesingCurentIndex: Int = 0
+	 private var photoProcessingCurrentIndex: Int = 0
+	 private var videoProcessingCurrentIndex: Int = 0
+	 private var filesSizeProcessingCount: Int64 = 0
+	 private var photoSizeProcessingCount: Int64 = 0
+	 private var videoSizeProcessingCount: Int64 = 0
+	 
      override func viewDidLoad() {
           super.viewDidLoad()
           
@@ -490,7 +497,54 @@ extension DeepCleaningViewController {
 			   self.deepCleanProgressStatusUpdate(type, status: status, currentProgress: progress)
 		  }
      }
-     
+	 
+	 @objc private func recievFilesSizeNotification(_ notification: Notification) {
+		  
+		  guard deepCleaningState == .didCleaning else { return }
+		  switch notification.name {
+			   case .deepCleanPhotoFilesScan:
+					self.recieveSizeNotification(by: .photoFilesSize, info: notification.userInfo)
+			   case .deepCleanVideoFilesScan:
+					self.recieveSizeNotification(by: .videoFilesSize, info: notification.userInfo)
+			   default:
+					return
+		  }
+	 }
+		  
+	 private func recieveSizeNotification(by type: DeepCleanNotificationType, info: [AnyHashable: Any]?) {
+		  
+		  guard let userInfo = info,
+				let totalProcessing = userInfo[type.dictionaryCountName] as? Int,
+				let currentProcessingIndex = userInfo[type.dictionaryIndexName] as? Int,
+				let processingValue = userInfo[type.dictionaryProcessingSizeValue] as? Int64 else { return }
+		  
+		  switch type {
+			   case .photoFilesSize:
+					self.photoProcessingCurrentIndex = currentProcessingIndex
+					self.photoSizeProcessingCount += processingValue
+					if totalProcessing == currentProcessingIndex {
+						 S.phassetPhotoFilesSizes = self.photoSizeProcessingCount
+					}
+			   case .videoFilesSize:
+					self.videoProcessingCurrentIndex = currentProcessingIndex
+					self.videoSizeProcessingCount += processingValue
+					if totalProcessing == currentProcessingIndex {
+						 S.phassetVideoFilesSizes = self.videoSizeProcessingCount
+					}
+			   default:
+					return
+		  }
+		  self.filesProcesingCurentIndex = self.photoProcessingCurrentIndex + self.videoProcessingCurrentIndex
+		  self.filesSizeProcessingCount = self.photoSizeProcessingCount + self.videoSizeProcessingCount
+		  
+		  U.UI {
+			   if let cell = self.tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? DeepCleanInfoTableViewCell {
+					cell.setProgress(files: self.filesProcesingCurentIndex)
+					cell.setMemmoryChecket(self.filesSizeProcessingCount)
+			   }
+		  }
+	 }
+	 
      private func updateTotalFilesTitleChecked() {
 
 		  totalFilesChecked = (totalFilesOnDevice / 100) * Int(self.totalDeepCleanProgress.totalProgress)
@@ -679,7 +733,8 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
           
 		  cell.selectionStyle = .none
 		  cell.isUserInteractionEnabled = false
-          cell.setProgress(files: self.totalFilesChecked)
+		  cell.setProgress(files: self.filesProcesingCurentIndex)
+		  cell.setMemmoryChecket(self.filesSizeProcessingCount)
 		  cell.setRoundedProgress(value: self.totalDeepCleanProgress.totalProgress, futuredCleaningSpace: self.futuredCleaningSpaceUsage)
      }
      
@@ -787,6 +842,9 @@ extension DeepCleaningViewController {
           U.notificationCenter.addObserver(self, selector: #selector(flowRoatingHandleNotification(_:)), name: .deepCleanDupLicatedMailsScan, object: nil)
 		  
 		  U.notificationCenter.addObserver(self, selector: #selector(handleDeepCleanProgressNotification(_:)), name: .progressDeepCleanDidChangeProgress, object: nil)
+		  
+		  U.notificationCenter.addObserver(self, selector: #selector(recievFilesSizeNotification(_:)), name: .deepCleanPhotoFilesScan, object: nil)
+		  U.notificationCenter.addObserver(self, selector: #selector(recievFilesSizeNotification(_:)), name: .deepCleanVideoFilesScan, object: nil)
      }
 	 
 	 private func removeObservers() {

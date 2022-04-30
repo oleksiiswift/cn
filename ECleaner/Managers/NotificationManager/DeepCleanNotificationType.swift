@@ -25,6 +25,9 @@ enum DeepCleanNotificationType {
 	case duplicatedPhoneNumbers
 	case duplicatedEmails
 	
+	case photoFilesSize
+	case videoFilesSize
+	
 	case none
 	
 	var dictionaryCountName: String {
@@ -56,6 +59,10 @@ enum DeepCleanNotificationType {
 				return C.key.notificationDictionary.count.duplicateNumbersContactsCount
 			case .duplicatedEmails:
 				return C.key.notificationDictionary.count.duplicateEmailsContactsCount
+			case .photoFilesSize:
+				return C.key.notificationDictionary.count.photoProcessingCount
+			case .videoFilesSize:
+				return C.key.notificationDictionary.count.videoProcessingCount
 			case .none:
 				return ""
 		}
@@ -91,6 +98,10 @@ enum DeepCleanNotificationType {
 				return C.key.notificationDictionary.index.duplicateNumbersContactsIndex
 			case .duplicatedEmails:
 				return C.key.notificationDictionary.index.duplicateEmailContactsIndex
+			case .photoFilesSize:
+				return C.key.notificationDictionary.index.photoProcessingIndex
+			case .videoFilesSize:
+				return C.key.notificationDictionary.index.videoProcessingIndex
 			case .none:
 				return ""
 		}
@@ -126,6 +137,19 @@ enum DeepCleanNotificationType {
 				return C.key.notificationDictionary.state.duplicateEmailContactsState
 			case .none:
 				return ""
+			default:
+				return ""
+		}
+	}
+	
+	var dictionaryProcessingSizeValue: String {
+		switch self {
+			case .photoFilesSize:
+				return C.key.notificationDictionary.value.photoFilesSizeValue
+			case .videoFilesSize:
+				return C.key.notificationDictionary.value.videoFileSizeValue
+			default:
+				return ""
 		}
 	}
 	
@@ -157,6 +181,10 @@ enum DeepCleanNotificationType {
 				return .deepCleanDuplicatedPhoneNumbersScan
 			case .duplicatedEmails:
 				return .deepCleanDupLicatedMailsScan
+			case .photoFilesSize:
+				return .deepCleanPhotoFilesScan
+			case  .videoFilesSize:
+				return .deepCleanVideoFilesScan
 			case .none:
 				return NSNotification.Name("")
 		}
@@ -192,6 +220,8 @@ enum DeepCleanNotificationType {
 				return .duplicatedEmails
 			case .none:
 				return .none
+			default:
+				return .none
 		}
 	}
 	
@@ -224,6 +254,8 @@ enum DeepCleanNotificationType {
 			case .duplicatedEmails:
 				return 12
 			case .none:
+				return 0
+			default:
 				return 0
 		}
 	}

@@ -54,23 +54,27 @@ class DeepCleanInfoTableViewCell: UITableViewCell {
 extension DeepCleanInfoTableViewCell {
     
     func setProgress(files count: Int) {
-        
+	
         infoTotalFilesTextLabel.text = String(count)
     }
 	
 	func setMemmoryChecket(_ bytes: Int64) {
 		
-		totalSpaceTextLabel.text = U.getSpaceFromInt(bytes)
+		if bytes == 0 {
+			totalSpaceTextLabel.text = "0 MB"
+		} else {
+			totalSpaceTextLabel.setTitleWithoutAnimation(title: U.getSpaceFromInt(bytes))
+		}
 	}
 	
 	func setRoundedProgress(value: CGFloat, futuredCleaningSpace: Int64?) {
 
-		if let futuredCleaningSpace = futuredCleaningSpace {
-			let stringSpace = U.getSpaceFromInt(futuredCleaningSpace)
-			totalSpaceTextLabel.text = stringSpace
-		} else {
-			totalSpaceTextLabel.text = "0"
-		}
+//		if let futuredCleaningSpace = futuredCleaningSpace {
+//			let stringSpace = U.getSpaceFromInt(futuredCleaningSpace)
+//			totalSpaceTextLabel.text = stringSpace
+//		} else {
+//			totalSpaceTextLabel.text = "0"
+//		}
 		circleProgressView.setProgress(progress: value / 100, animated: false)
     }
 }
