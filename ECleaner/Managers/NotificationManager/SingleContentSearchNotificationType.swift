@@ -32,6 +32,9 @@ enum SingleContentSearchNotificationType {
 	case duplicatesNumbers
 	case duplicatesEmails
 	
+	case photosSizeCheckerType
+	case videosSizeCheckerType
+	
 	case none
 	
 	var dictionaryCountName: String {
@@ -74,6 +77,10 @@ enum SingleContentSearchNotificationType {
 				return C.key.notificationDictionary.count.duplicateNumbersContactsCount
 			case .duplicatesEmails:
 				return C.key.notificationDictionary.count.duplicateEmailsContactsCount
+			case .photosSizeCheckerType:
+				return C.key.notificationDictionary.count.photoProcessingCount
+			case .videosSizeCheckerType:
+				return C.key.notificationDictionary.count.videoProcessingCount
 			case .none:
 				return ""
 		}
@@ -118,6 +125,10 @@ enum SingleContentSearchNotificationType {
 				return C.key.notificationDictionary.index.duplicateNumbersContactsIndex
 			case .duplicatesEmails:
 				return C.key.notificationDictionary.index.duplicateEmailContactsIndex
+			case .photosSizeCheckerType:
+				return C.key.notificationDictionary.index.photoProcessingIndex
+			case .videosSizeCheckerType:
+				return C.key.notificationDictionary.index.videoProcessingIndex
 			case .none:
 				return ""
 		}
@@ -160,6 +171,8 @@ enum SingleContentSearchNotificationType {
 			case .duplicatesEmails:
 				return C.key.notificationDictionary.state.duplicateEmailContactsState
 			case .none:
+				return ""
+			default:
 				return ""
 		}
 	}
@@ -204,6 +217,10 @@ enum SingleContentSearchNotificationType {
 				return .singleSearchDuplicatesNumbersContactsScan
 			case .duplicatesEmails:
 				return .singleSearchDupliatesEmailsContactsScan
+			case .photosSizeCheckerType:
+				return .singleOperationPhotoFilesSizeScan
+			case .videosSizeCheckerType:
+				return .singleOperationVideoFilesSizeScan
 			case .none:
 				return Notification.Name("")
 		}
@@ -247,6 +264,8 @@ enum SingleContentSearchNotificationType {
 			case .duplicatesEmails:
 				return .duplicatedEmails
 			case .none:
+				return .none
+			default:
 				return .none
 		}
 	}

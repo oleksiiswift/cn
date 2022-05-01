@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SwiftMessages
 
 enum Theme: Int {
     case light
@@ -498,4 +499,81 @@ enum Theme: Int {
 				return UIColor().colorFromHexString("3677FF")
 		}
 	}
+	
+	var circleStarterGradientColor: UIColor {
+		switch self {
+			case .light:
+				return UIColor().colorFromHexString("FF845A")
+			case .dark:
+				return UIColor().colorFromHexString("FF845A")
+		}
+	}
+	
+	var circleEndingGradientColor: UIColor {
+		switch self {
+			case .light:
+				return UIColor().colorFromHexString("E74BCD")
+			case .dark:
+				return UIColor().colorFromHexString("E74BCD")
+		}
+	}
+
+	var titleCircleGradientTitleColorSet: [CGColor] {
+		switch self {
+			case .light:
+				return [UIColor().colorFromHexString("FF845A").cgColor, UIColor().colorFromHexString("E74BCD").cgColor]
+			case .dark:
+				return [UIColor().colorFromHexString("FF845A").cgColor, UIColor().colorFromHexString("E74BCD").cgColor]
+		}
+	}
+	
+	var deepCleanAcentColor: UIColor {
+		switch self {
+			case .light:
+				return UIColor().colorFromHexString("E74BCD")
+			case .dark:
+				return UIColor().colorFromHexString("E74BCD")
+		}
+	}
+	
+	
+	var photoGradientStarterColor: UIColor {
+		switch self {
+			case .light:
+				return UIColor().colorFromHexString("FF91A5")
+			case .dark:
+				return UIColor().colorFromHexString("FF91A5")
+		}
+	}
+	
+	
+	var photoGradeintEndingColor: UIColor {
+		switch self {
+			case .light:
+				return UIColor().colorFromHexString("F69352")
+			case .dark:
+				return UIColor().colorFromHexString("F69352")
+		}
+	}
+	
+	
+	var videGradietnStarterColor: UIColor {
+		switch self {
+			case .light:
+				return UIColor().colorFromHexString("8DB1FF")
+			case .dark:
+				return UIColor().colorFromHexString("8DB1FF")
+		}
+	}
+	
+	
+	var videoGradientEndingColor: UIColor {
+		switch self {
+			case .light:
+				return UIColor().colorFromHexString("55BFF5")
+			case .dark:
+				return UIColor().colorFromHexString("55BFF5")
+		}
+	}
 }
+

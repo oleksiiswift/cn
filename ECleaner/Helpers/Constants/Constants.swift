@@ -84,6 +84,9 @@ class Constants {
                 static let deepCleanDuplicatedContactsScan = "deepCleanDuplicatedContactsScan"
                 static let deepCleanDuplicatedPhoneNumbersScan = "deepCleanDuplicatedPhoneNumbersScan"
                 static let deepCleanDupLicatedMailsScan = "deepCleanDupLicatedEmaailScan"
+				
+				static let deepCleanPhotoFilesSizeScan = "deepCleanPhotoFilesSizeScan"
+				static let deepCleanVideoFilesSizeScan = "deepCleanVideoFilesSizeScan"
             }
             
                 /// `single Search update progress notification name`
@@ -108,6 +111,9 @@ class Constants {
 				static let singleSimilarVideoPHAssetScan = "singleSimilarVideoPHAssetScan"
 				static let singleScreenRecordingsVideoPHAssetScan = "singleScreenRecordingsVideoPHAssetScan"
 				static let singleRecentlyDeleteVideoPHAssetScan = "singleRecentlyDeleteVideoPHAssetScan"
+				
+				static let singleOperationPhotoFilesSizeScan = "singleOperationPhotoFilesSizeScan"
+				static let singleOperationVideoFilesSizeScan = "singleOperationVideoFilesSizeScan"
             }
             
             /// `contacts notification`
@@ -133,6 +139,8 @@ class Constants {
 			static let compressVideoQueue = "com.video.compressVideo_queue"
 			static let compressAudieQueue = "com.audio.compressAudio_queue"
 			static let animatedProgressQueue = "com.progressAlert.progressBar_queue"
+			static let getPhotoFileSize = "com.photo.getFileSize_queue"
+			static let getVideoFileSize = "com.video.getFileSize_queue"
 		}
 		
 		struct operation {
@@ -143,7 +151,7 @@ class Constants {
 				static let deepClean = "deepCleanSearchOperationQueuer"
 				static let smartClean = "smartCleanSearchOperationQueuer"
 				static let cleaningProcess = "cleaningProcessOprationQueuer"
-				static let utils = "utilsBackgroudSpaceCalculated"
+				static let utils = "backgroundUtitlityQueuer"
                 static let preetchPHasssetQueue = "prefetchPhassetsImagesOperationQueuer"
 				static let techUseQueue = "technicalUseProcessingOperationQueuer"
 			}
@@ -197,6 +205,9 @@ class Constants {
                 static let prefetchPHAssetsOperation = "prefetchPHassetsOperation"
 					/// `find duplicated assets and indexes`
 				static let analizeDuplicatedPHAssetsIndexPathsSearch = "analizeDuplicatedPHAssetsIndexPathsSearch"
+				
+				static let phassetsEstimatedSizeOperation = "phassetsEstimatedSizeOperation"
+				static let avassetEstimatedSizeOperation = "avassetEstimatedSizeOperation"
 			}
 		}
         
@@ -230,6 +241,9 @@ class Constants {
                 static let duplicateNamesContactsIndex = "duplicateNamesContactsProcessingIndex"
                 static let duplicateNumbersContactsIndex = "duplicateNumbersContactsProcessingIndex"
                 static let duplicateEmailContactsIndex = "duplicateEmailContactsProcessingIndex"
+				
+				static let photoProcessingIndex = "photoProcessingIndex"
+				static let videoProcessingIndex = "videoProcessingIndex"
             }
             
                 /// `TOTAL COUNT`
@@ -253,6 +267,9 @@ class Constants {
                 static let duplicateNamesContactsCount = "duplicateNamesContactsCount"
                 static let duplicateNumbersContactsCount = "duplicateNumbersContactsCount"
                 static let duplicateEmailsContactsCount = "duplicateEmailsContactsCount"
+				
+				static let photoProcessingCount = "photoProcessingCount"
+				static let videoProcessingCount = "videoProcessingCount"
             }
 				/// `STATE`
 			struct state {
@@ -275,6 +292,11 @@ class Constants {
 				static let duplicateNamesContactsState = "duplicateNamesContactsProcessingState"
 				static let duplicateNumbersContactsState = "duplicateNumbersContactsProcessingState"
 				static let duplicateEmailContactsState = "duplicateEmailContactsProcessingState"
+			}
+			
+			struct value {
+				static let photoFilesSizeValue = "photoFilesSizeValue"
+				static let videoFileSizeValue = "videoFileSizeValue"
 			}
 			
             

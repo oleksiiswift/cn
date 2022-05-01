@@ -123,7 +123,7 @@ extension SimpleAssetsListViewController {
 				}
 			}
 		}
-		self.photoManager.serviceUtilsCalculatedOperationsQueuer.addOperation(deleteOperation)
+		self.photoManager.serviceUtilityOperationsQueuer.addOperation(deleteOperation)
 	}
 }
 

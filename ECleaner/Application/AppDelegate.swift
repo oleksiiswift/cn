@@ -18,6 +18,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		
 		developmentSettings()
 		
+//		NotificationCenter.default.addObserver(forName: nil, object: nil, queue: nil) { notification in
+//			debugPrint(notification)
+//		}
+		
         return true
     }
 
@@ -46,6 +50,9 @@ extension AppDelegate {
 		U.setUpperDefaultValue()
 		U.setLowerDafaultValue()
 		
+		S.phassetVideoFilesSizes = nil
+		S.phassetPhotoFilesSizes = nil
+		
 		if !CompressionSettingsConfiguretion.isDefaultConfigurationIsSet {
 			CompressionSettingsConfiguretion.setDefaultConfiguration()
 		}
@@ -53,6 +60,6 @@ extension AppDelegate {
 	
 	private func developmentSettings() {
 		
-		S.premium.allowAdvertisementBanner = !S.premium.allowAdvertisementBanner
+		S.premium.allowAdvertisementBanner = false
 	}
 }

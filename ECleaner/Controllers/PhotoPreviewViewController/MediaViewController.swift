@@ -254,7 +254,7 @@ extension MediaViewController {
 				ErrorHandler.shared.showDeleteAlertError(selectedPHAsset.mediaType == .video ? .errorDeleteVideo : .errorDeletePhoto)
 			}
 		})
-		self.photoManager.serviceUtilsCalculatedOperationsQueuer.addOperation(deletePHAssetOperation)
+		self.photoManager.serviceUtilityOperationsQueuer.addOperation(deletePHAssetOperation)
 	}
 	
 	private func updateCollection(with removablePHAsset: PHAsset, at indexPath: IndexPath) {

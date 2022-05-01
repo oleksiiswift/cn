@@ -27,6 +27,7 @@ enum ProgressAlertType {
 	case selectingContacts
 	case selectingPhotos
 	case selectingVideos
+	case prepareDeepClean
 	
 	var progressTitle: String {
 		switch self {
@@ -48,6 +49,8 @@ enum ProgressAlertType {
 				return "select photo, wait"
 			case .selectingVideos:
 				return "select videio, wait"
+			case .prepareDeepClean:
+				return "prepare searching"
 		}
 	}
 	
@@ -67,6 +70,8 @@ enum ProgressAlertType {
 				return false
 			case .selectingContacts, .selectingVideos, .selectingPhotos:
 				return false
+			case .prepareDeepClean:
+				return false
 		}
 	}
 	
@@ -77,6 +82,8 @@ enum ProgressAlertType {
 			case .deleteVideos, .deletePhotos, .compressing, .selectingVideos:
 				return self.contentType.screenAcentTintColor
 			case .selectingContacts:
+				return self.contentType.screenAcentTintColor
+			case .prepareDeepClean:
 				return self.contentType.screenAcentTintColor
 		}
 	}
@@ -100,6 +107,8 @@ enum ProgressAlertType {
 			case .selectingVideos:
 				return .userVideo
 			case .selectingPhotos:
+				return .userPhoto
+			case .prepareDeepClean:
 				return .userPhoto
 		}
 	}

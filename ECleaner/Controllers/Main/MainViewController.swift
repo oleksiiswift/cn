@@ -11,7 +11,7 @@ import SwiftMessages
 import Contacts
 
 class MainViewController: UIViewController {
-  
+	
     @IBOutlet weak var navigationBar: StartingNavigationBar!
     @IBOutlet weak var bottomButtonBarView: BottomButtonBarView!
     @IBOutlet weak var scrollView: UIScrollView!
@@ -34,6 +34,9 @@ class MainViewController: UIViewController {
     private var contentCount: [MediaContentType : Int] = [:]
     private var diskSpaceForStartingScreen: [MediaContentType : Int64] = [:]
 	
+	var refreshControl: UIRefreshControl!
+	var openForUpdate: Bool = false
+	
     override func viewDidLoad() {
         super.viewDidLoad()
 		
@@ -49,15 +52,21 @@ class MainViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+		
+		self.addSizeCalcuateObeserver()
         setupNavigation()
         updateContactsCount()
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+		self.updateInformation(.userPhoto)
+		self.updateInformation(.userVideo)
     }
 	
+	override func viewWillDisappear(_ animated: Bool) {
+		super.viewWillDisappear(animated)
+		
+		self.removeSizeCalculateObserver()
+		self.checkProgressStatus()
+	}
+		
 	private func initializeSingleCleanModel() {
 		 
 		var objects: [PhotoMediaType : SingleCleanStateModel] = [:]
@@ -98,7 +107,18 @@ extension MainViewController {
                 return
         }
     }
-    
+	
+	private func checkProgressStatus() {
+		
+		if diskSpaceForStartingScreen[.userPhoto] == nil {
+			self.setProgressSize(for: .userPhoto, progress: 0)
+		}
+		
+		if diskSpaceForStartingScreen[.userVideo] == nil {
+			self.setProgressSize(for: .userVideo, progress: 0)
+		}
+	}
+	    
     private func updateInformation(_ contentType: MediaContentType) {
 		U.UI {
 			let contentCount = self.contentCount[contentType]
@@ -111,6 +131,44 @@ extension MainViewController {
     }
     
     private func updateCircleProgress() {}
+	
+	@objc func updateFilesSizeObserver(_ notification: Notification) {
+		
+		switch notification.name {
+			case .singleOperationPhotoFilesSizeScan:
+				self.setupUpdateSizeValues(from: .photosSizeCheckerType, userInfo: notification.userInfo)
+			case .singleOperationVideoFilesSizeScan:
+				self.setupUpdateSizeValues(from: .videosSizeCheckerType, userInfo: notification.userInfo)
+			default:
+				return
+		}
+	}
+	
+	private func setupUpdateSizeValues(from type: SingleContentSearchNotificationType, userInfo: [AnyHashable: Any]?) {
+		
+		guard let userInfo = userInfo,
+			  let totalProcessing = userInfo[type.dictionaryCountName] as? Int,
+			  let currentProcessingIndex = userInfo[type.dictioanartyIndexName] as? Int else { return }
+		
+		let progress = CGFloat(currentProcessingIndex) / CGFloat(totalProcessing)
+		
+		switch type {
+			case .photosSizeCheckerType:
+				self.setProgressSize(for: .userPhoto, progress: progress)
+			case .videosSizeCheckerType:
+				self.setProgressSize(for: .userVideo, progress: progress)
+			default:
+				return
+		}
+	}
+	
+	private func setProgressSize(for type: MediaContentType, progress: CGFloat) {
+		U.UI {
+			if let cell = self.mediaCollectionView.cellForItem(at: type.mainScreenIndexPath) as? MediaTypeCollectionViewCell {
+				cell.setProgress(progress)
+			}
+		}
+	}
 }
 
 //      MARK: - updating elements -
@@ -199,7 +257,7 @@ extension MainViewController {
     private func openDeepCleanController() {
         let storyboard = UIStoryboard(name: C.identifiers.storyboards.deep, bundle: nil)
         let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.deepClean) as! DeepCleaningViewController
-    
+		viewController.updateMediaStoreDelegate = self
         viewController.scansOptions = [.similarPhotos,
 									   .duplicatedPhotos,
 									   .singleScreenShots,
@@ -247,6 +305,15 @@ extension MainViewController {
     }
 }
 
+extension MainViewController: UpdateMediaStoreSizeDelegate {
+	
+	func didStartUpdatingMediaSpace(photo: Int64?, video: Int64?) {
+		
+		photo == nil ? self.photoMenager.startPhotosizeCher() : ()
+		video == nil ? self.photoMenager.startVideSizeCher() : ()
+	}
+}
+
 extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -291,7 +358,7 @@ extension MainViewController {
         
         let mediaContentType = getMainScreenCellType(by: indexPath)
         let diskInUse = diskSpaceForStartingScreen[getMainScreenCellType(by: indexPath)]
-        cell.configureCell(mediaType: mediaContentType, contentCount: contentCount[mediaContentType], diskSpace: diskInUse)
+		cell.configureCell(mediaType: mediaContentType, contentCount: contentCount[mediaContentType], diskSpace: diskInUse)
     }
     
     private func getMainScreenCellType(by indexPath: IndexPath) -> MediaContentType {
@@ -319,6 +386,7 @@ extension MainViewController: BottomActionButtonDelegate, StartingNavigationBarD
     }
     
     func didTapActionButton() {
+		self.photoMenager.stopEstimatedSizeProcessingOperations()
         self.openDeepCleanController()
     }
 }
@@ -338,6 +406,16 @@ extension MainViewController: UpdateColorsDelegate {
 		U.notificationCenter.addObserver(self, selector: #selector(removeStoreObserver), name: .removeContactsStoreObserver, object: nil)
 		U.notificationCenter.addObserver(self, selector: #selector(addStoreObserver), name: .addContactsStoreObserver, object: nil)
     }
+	
+	private func addSizeCalcuateObeserver() {
+		U.notificationCenter.addObserver(self, selector: #selector(updateFilesSizeObserver(_:)), name: .singleOperationPhotoFilesSizeScan, object: nil)
+		U.notificationCenter.addObserver(self, selector: #selector(updateFilesSizeObserver(_:)), name: .singleOperationVideoFilesSizeScan, object: nil)
+	}
+	
+	private func removeSizeCalculateObserver() {
+		U.notificationCenter.removeObserver(self, name: .singleOperationPhotoFilesSizeScan, object: nil)
+		U.notificationCenter.removeObserver(self, name: .singleOperationVideoFilesSizeScan, object: nil)
+	}
 	
 	@objc func removeStoreObserver() {
 		U.notificationCenter.removeObserver(self, name: .CNContactStoreDidChange, object: nil)
@@ -556,6 +634,14 @@ extension MainViewController: UpdateColorsDelegate {
 		circleTotalSpaceView.titleLabelsPercentPosition = .centeredRightAlign
 		circleTotalSpaceView.backgroundShadowColor = theme.bottomShadowColor
 		circleTotalSpaceView.lineCap = .round
+		circleTotalSpaceView.spaceDegree = 12.0
+		circleTotalSpaceView.progressShapeStart = 0.0
+		circleTotalSpaceView.progressShapeEnd = 1.0
+		
+		let startPoint = CGPoint(x: 0.5, y: 0.5)
+		let endPoint = CGPoint(x: 0.5, y: 1.0)
+		circleTotalSpaceView.gradientSetup(startPoint: startPoint, endPoint: endPoint, gradientType: .conic)
+		
         circleTotalSpaceView.clockwise = true
 		circleTotalSpaceView.startColor = theme.circleProgresStartingGradient
 		circleTotalSpaceView.endColor = theme.circleProgresEndingGradient
@@ -565,4 +651,32 @@ extension MainViewController: UpdateColorsDelegate {
 }
 
 
-
+extension MainViewController {
+	
+	private func setupRefreshControll() {
+		
+		refreshControl = UIRefreshControl()
+		refreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
+		scrollView.refreshControl = refreshControl
+	}
+	
+	@objc func refresh() {
+			
+		guard  self.openForUpdate else {
+			self.refreshControl.endRefreshing()
+			return
+		}
+		self.contentCount = [:]
+		self.diskSpaceForStartingScreen = [:]
+		self.mediaCollectionView.reloadDataWitoutAnimation()
+		U.delay(1) {
+			self.photoMenager.stopEstimatedSizeProcessingOperations()
+			U.delay(1) {
+				self.photoMenager.getPhotoLibraryContentAndCalculateSpace()
+			}
+		}
+		U.delay(1) {
+			self.refreshControl.endRefreshing()
+		}
+	}
+}
