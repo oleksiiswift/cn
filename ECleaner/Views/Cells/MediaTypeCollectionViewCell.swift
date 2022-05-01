@@ -7,6 +7,13 @@
 
 import UIKit
 
+enum FilesScanStatus {
+	case prepare
+	case scan
+	case result
+	case none
+}
+
 class MediaTypeCollectionViewCell: UICollectionViewCell {
 
     @IBOutlet weak var mainView: ShadowView!
@@ -63,11 +70,11 @@ extension MediaTypeCollectionViewCell: Themeble {
         mainView.setCorner(12)
     }
     
-    public func configureCell(mediaType: MediaContentType, contentCount: Int?, diskSpace: Int64?) {
+	public func configureCell(mediaType: MediaContentType, contentCount: Int?, diskSpace: Int64?, status: FilesScanStatus) {
         
         switch mediaType {
             case .userPhoto:
-                self.handleIndicator(diskSpace)
+				self.handleIndicator(state: status, space: diskSpace, progress: nil)
                 mediaContentView.imageView.image = I.mainStaticItems.photo
                 mediaContentTitleTextLabel.text = "PHOTOS_TITLE".localized()
 
@@ -77,7 +84,7 @@ extension MediaTypeCollectionViewCell: Themeble {
                     mediaContentSubTitleTextLabel.text = contentCount == nil ? "" : "NO CONTENT"
                 }
             case .userVideo:
-                self.handleIndicator(diskSpace)
+				self.handleIndicator(state: status, space: diskSpace, progress: nil)
                 mediaContentView.imageView.image = I.mainStaticItems.video
                 mediaContentTitleTextLabel.text = "VIDEOS_TITLE".localized()
                 
@@ -88,7 +95,7 @@ extension MediaTypeCollectionViewCell: Themeble {
                 }
                 
             case .userContacts:
-                self.handleIndicator(0)
+				self.handleIndicator(state: .none, space: nil, progress: nil)
                 mediaContentView.imageView.image = I.mainStaticItems.contacts
                 mediaContentTitleTextLabel.text = "CONTACTS_TITLE".localized()
         
@@ -102,16 +109,26 @@ extension MediaTypeCollectionViewCell: Themeble {
         }
     }
     
-    private func handleIndicator(_ space: Int64?) {
-        if space == nil {
-            showActivityIndicator()
-        } else if space == 0 {
-            hideActivityIndicatorAndAddSpace()
-        } else {
-            hideActivityIndicatorAndShowData()
-            mediaSpaceTitleTextLabel.text = String("\(U.getSpaceFromInt(space ?? 0))")
-        }
-    }
+	public func handleIndicator(state: FilesScanStatus, space: Int64?, progress: CGFloat?) {
+		switch state {
+		case .prepare:
+			showActivityIndicator()
+		case .scan:
+			hideActivityIndicatorAndShowProgress()
+			if let progress = progress {
+				mediaSpaceTitleTextLabel.text = String("\(progress.rounded()) %")
+			}
+		case .result:
+			if space == 0 || space == nil {
+				hideActivityIndicatorAndAddSpace()
+			} else {
+				hideActivityIndicatorAndShowData()
+				mediaSpaceTitleTextLabel.text = String("\(U.getSpaceFromInt(space ?? 0))")
+			}
+		case .none:
+			hideActivityIndicatorAndAddSpace()
+		}
+	}
 	
 	public func setProgress(_ progress: CGFloat) {
 		
@@ -164,6 +181,12 @@ extension MediaTypeCollectionViewCell: Themeble {
         diskSpaceImageView.isHidden = false
         mediaSpaceTitleTextLabel.isHidden = false
     }
+	
+	private func hideActivityIndicatorAndShowProgress() {
+		loadingActivityIndicatorView.removeFromSuperview()
+		diskSpaceImageView.isHidden = false
+		mediaSpaceTitleTextLabel.isHidden = false
+	}
     
     private func addDimmerSpaceClearView() {
         let spaceView = UIView()
@@ -199,17 +222,17 @@ extension MediaTypeCollectionViewCell: Themeble {
 		
 		switch Screen.size {
 			case .small:
-				mediaContentTitleTextLabel.font = .systemFont(ofSize: 12, weight: .bold)
-				mediaContentSubTitleTextLabel.font = .systemFont(ofSize: 10, weight: .medium)
-				mediaSpaceTitleTextLabel.font = .systemFont(ofSize: 10, weight: .medium)
+				mediaContentTitleTextLabel.font = .systemFont(ofSize: 12, weight: .bold).monospacedDigitFont
+				mediaContentSubTitleTextLabel.font = .systemFont(ofSize: 10, weight: .medium).monospacedDigitFont
+				mediaSpaceTitleTextLabel.font = .systemFont(ofSize: 10, weight: .medium).monospacedDigitFont
 			case .medium:
-				mediaContentTitleTextLabel.font = .systemFont(ofSize: 17, weight: .bold)
-				mediaContentSubTitleTextLabel.font = .systemFont(ofSize: 13, weight: .medium)
-				mediaSpaceTitleTextLabel.font = .systemFont(ofSize: 13, weight: .medium)
+				mediaContentTitleTextLabel.font = .systemFont(ofSize: 17, weight: .bold).monospacedDigitFont
+				mediaContentSubTitleTextLabel.font = .systemFont(ofSize: 13, weight: .medium).monospacedDigitFont
+				mediaSpaceTitleTextLabel.font = .systemFont(ofSize: 13, weight: .medium).monospacedDigitFont
 			default:
-				mediaContentTitleTextLabel.font = .systemFont(ofSize: 18, weight: .bold)
-				mediaContentSubTitleTextLabel.font = .systemFont(ofSize: 14, weight: .medium)
-				mediaSpaceTitleTextLabel.font = .systemFont(ofSize: 14, weight: .medium)
+				mediaContentTitleTextLabel.font = .systemFont(ofSize: 18, weight: .bold).monospacedDigitFont
+				mediaContentSubTitleTextLabel.font = .systemFont(ofSize: 14, weight: .medium).monospacedDigitFont
+				mediaSpaceTitleTextLabel.font = .systemFont(ofSize: 14, weight: .medium).monospacedDigitFont
 		}
 	}
     

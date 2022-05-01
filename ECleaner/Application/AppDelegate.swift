@@ -50,6 +50,9 @@ extension AppDelegate {
 		U.setUpperDefaultValue()
 		U.setLowerDafaultValue()
 		
+		S.phassetVideoFilesSizes = nil
+		S.phassetPhotoFilesSizes = nil
+		
 		if !CompressionSettingsConfiguretion.isDefaultConfigurationIsSet {
 			CompressionSettingsConfiguretion.setDefaultConfiguration()
 		}

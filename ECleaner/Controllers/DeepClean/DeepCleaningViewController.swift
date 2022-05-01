@@ -136,13 +136,13 @@ class DeepCleaningViewController: UIViewController {
 extension DeepCleaningViewController {
      
 	 private func prepareStartDeepCleanProcessing() {
-		  
+		  self.progressAlert.showSimpleProgressAlerControllerBar(of: .prepareDeepClean, from: self, delegate: nil)
 		  U.delay(3) {
 			   self.photoManager.getPhotoAssetsCount(from: self.lowerBoundDate, to: self.upperBoundDate) { allAssetsCount in
 					self.totalFilesOnDevice = allAssetsCount
 					
 					self.photoManager.getPartitionalMediaAssetsCount(from: self.lowerBoundDate, to: self.upperBoundDate) { assetGroupPartitionCount in
-						 
+						 self.progressAlert.closeProgressAnimatedController()
 						 self.setProcessingActionButton(.didCleaning)
 						 self.totalPartitinAssetsCount = assetGroupPartitionCount
 						 self.futuredCleaningSpaceUsage = 0
@@ -173,14 +173,16 @@ extension DeepCleaningViewController {
 		  deepCleanManager.cancelAllOperation()
 		  deepCleaningState = .canclel
 		  P.showIndicator()
-		  U.delay(2) {
+		  U.delay(0.5) {
 			   self.mediaStoreModel.resetAllValues()
 			   self.resetProgress()
 			   self.resetAllValues()
 			   self.tableView.reloadData()
 			   self.setProcessingActionButton(.redyForStartingCleaning)
-			   self.showBottomButtonBar()
-			   P.hideIndicator()
+			   U.delay(1) {
+					P.hideIndicator()
+					self.showBottomButtonBar()
+			   }
 		  }
 	 }
 	 
@@ -1060,7 +1062,6 @@ extension DeepCleaningViewController: BottomActionButtonDelegate {
 			   prepareStartDeepCleanProcessing()
 		  } else  if deepCleaningState == .didCleaning {
 			   self.showStopDeepCleanScanAlert()
-			   
 		  } else if deepCleaningState == .willAvailibleDelete {
 			   self.hideBottomButtonBar()
 			   U.delay(1) {

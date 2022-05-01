@@ -66,7 +66,7 @@ class PhotoManager {
 																			maxConcurrentOperationCount: 10,
 																			qualityOfService: .background)
 	public let serviceUtilityOperationsQueuer = OperationProcessingQueuer(name: Constants.key.operation.queue.utils,
-																				  maxConcurrentOperationCount: 10,
+																				  maxConcurrentOperationCount: 5,
 																		  qualityOfService: .userInteractive)
     public let prefetchOperationQueue = OperationProcessingQueuer(name: C.key.operation.queue.preetchPHasssetQueue,
 																  maxConcurrentOperationCount: 5,
@@ -203,12 +203,6 @@ extension PhotoManager {
 		self.serviceUtilityOperationsQueuer.addOperation(getPhotoLibraryPHAssetsEstimatedSizeOperation)
 		self.serviceUtilityOperationsQueuer.addOperation(getPhotoLibrararyAVAssetsEstimatedSizeOperation)
 		
-	
-//		self.prefetchOperationQueue.addOperation(getCalculatedPHAssetsEstimatedSizeOperation)
-//		self.prefetchOperationQueue.addOperation(getCalculatedAVAssetsEstimatedSizeOperation)
-//		self.prefetchOperationQueue.addOperation(getCalculateTotalPHAssetsCountOperation)
-//		self.prefetchOperationQueue.addOperation(getCalculateTotalAVAssetsCountOperation)
-//		self.prefetchOperationQueue.addOperation(lowerUpperDateOperation)
 //
 //		if !serviceUtilsCalculatedOperationsQueuer.operations.contains(where: {$0.name == getLargeVideosOperation.name}) {
 //			serviceUtilsCalculatedOperationsQueuer.addOperation(getLargeVideosOperation)
@@ -255,7 +249,8 @@ extension PhotoManager {
 			
 			let options = PHImageRequestOptions()
 			options.isSynchronous = false
-			options.deliveryMode = .highQualityFormat
+			options.deliveryMode = .fastFormat
+		
 			
 			self.fetchManager.fetchPhotolibraryContent(by: .photo) { result in
 				
@@ -291,7 +286,7 @@ extension PhotoManager {
 									estimatedComplitionHandler(photoLibrararyPhotosSize, index, result.count)
 								}
 								currentProcessingIndex += 1
-								
+								debugPrint("index -> \(index), totalPhotoSize: \(U.getSpaceFromInt(photoLibrararyPhotosSize))")
 								if currentProcessingIndex == result.count {
 									debugPrint("time -> \(timer.stop()), totalPhotoSize: \(U.getSpaceFromInt(photoLibrararyPhotosSize))")
 									completionHandler(photoLibrararyPhotosSize)
@@ -361,8 +356,9 @@ extension PhotoManager {
 							}
 							currentProcessingIndex += 1
 							
+								debugPrint("index -> \(index), totalVideoSize: \(U.getSpaceFromInt(photoLibrararyVideosSize))")
 							if currentProcessingIndex == result.count {
-								debugPrint("time -> \(timer.stop()), totalVideoSize: \(U.getSpaceFromInt(photoLibrararyVideosSize))")
+								debugPrint("index -> \(index), totalVideoSize: \(U.getSpaceFromInt(photoLibrararyVideosSize))")
 								completionHandler(photoLibrararyVideosSize)
 							}
 						}

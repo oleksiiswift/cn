@@ -96,11 +96,11 @@ extension DeepCleanInfoTableViewCell: Themeble {
 		infoTotalFilesTitleLabel.text = "FILES".uppercased()
 		totalSpaceTitleLabel.text = "Memmory".uppercased()
 		
-		infoTitleTextLabel.font = U.UIHelper.AppDefaultFontSize.deepCleanInfoHelperTitleFont
-		totalSpaceTextLabel.font = U.UIHelper.AppDefaultFontSize.deepCleanInfoHelperTitleFont
-		infoTotalFilesTextLabel.font = U.UIHelper.AppDefaultFontSize.deepCleanInfoHelperTitleFont
-		infoTotalFilesTitleLabel.font = U.UIHelper.AppDefaultFontSize.deepCleanInfoHelperSubtitleFont
-		totalSpaceTitleLabel.font = U.UIHelper.AppDefaultFontSize.deepCleanInfoHelperSubtitleFont
+		infoTitleTextLabel.font = U.UIHelper.AppDefaultFontSize.deepCleanInfoHelperTitleFont.monospacedDigitFont
+		totalSpaceTextLabel.font = U.UIHelper.AppDefaultFontSize.deepCleanInfoHelperTitleFont.monospacedDigitFont
+		infoTotalFilesTextLabel.font = U.UIHelper.AppDefaultFontSize.deepCleanInfoHelperTitleFont.monospacedDigitFont
+		infoTotalFilesTitleLabel.font = U.UIHelper.AppDefaultFontSize.deepCleanInfoHelperSubtitleFont.monospacedDigitFont
+		totalSpaceTitleLabel.font = U.UIHelper.AppDefaultFontSize.deepCleanInfoHelperSubtitleFont.monospacedDigitFont
     }
     
     func updateColors() {

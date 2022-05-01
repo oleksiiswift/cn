@@ -526,5 +526,14 @@ enum Theme: Int {
 				return [UIColor().colorFromHexString("FF845A").cgColor, UIColor().colorFromHexString("E74BCD").cgColor]
 		}
 	}
+	
+	var deepCleanAcentColor: UIColor {
+		switch self {
+			case .light:
+				return UIColor().colorFromHexString("E74BCD")
+			case .dark:
+				return UIColor().colorFromHexString("E74BCD")
+		}
+	}
 }
 

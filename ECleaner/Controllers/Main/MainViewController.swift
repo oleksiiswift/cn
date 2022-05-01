@@ -56,14 +56,15 @@ class MainViewController: UIViewController {
 		self.addSizeCalcuateObeserver()
         setupNavigation()
         updateContactsCount()
+		self.updateInformation(.userPhoto)
+		self.updateInformation(.userVideo)
     }
 	
 	override func viewWillDisappear(_ animated: Bool) {
 		super.viewWillDisappear(animated)
 		
 		self.removeSizeCalculateObserver()
-		self.setProgressSize(for: .userPhoto, progress: 0)
-		self.setProgressSize(for: .userVideo, progress: 0)
+		self.checkProgressStatus()
 	}
 		
 	private func initializeSingleCleanModel() {
@@ -106,14 +107,25 @@ extension MainViewController {
                 return
         }
     }
-    
+	
+	private func checkProgressStatus() {
+		
+		if diskSpaceForStartingScreen[.userPhoto] == nil {
+			self.setProgressSize(for: .userPhoto, progress: 0, state: .none)
+		}
+		
+		if diskSpaceForStartingScreen[.userVideo] == nil {
+			self.setProgressSize(for: .userVideo, progress: 0, state: .none)
+		}
+	}
+	    
     private func updateInformation(_ contentType: MediaContentType) {
 		U.UI {
 			let contentCount = self.contentCount[contentType]
 			let diskUsage = SettingsManager.getDiskSpaceFiles(of: contentType)
 			self.diskSpaceForStartingScreen[contentType] = diskUsage
 			if let cell = self.mediaCollectionView.cellForItem(at: contentType.mainScreenIndexPath) as? MediaTypeCollectionViewCell {
-				cell.configureCell(mediaType: contentType, contentCount: contentCount, diskSpace: diskUsage)
+				cell.configureCell(mediaType: contentType, contentCount: contentCount, diskSpace: diskUsage, status: .result)
 			}
 		}
     }
@@ -138,22 +150,23 @@ extension MainViewController {
 			  let totalProcessing = userInfo[type.dictionaryCountName] as? Int,
 			  let currentProcessingIndex = userInfo[type.dictioanartyIndexName] as? Int else { return }
 		
-		let progress = CGFloat(currentProcessingIndex) / CGFloat(totalProcessing)
+		let progress = CGFloat(currentProcessingIndex) / CGFloat(totalProcessing) * 100
 		
 		switch type {
 			case .photosSizeCheckerType:
-				self.setProgressSize(for: .userPhoto, progress: progress)
+				self.setProgressSize(for: .userPhoto, progress: progress, state: .scan)
 			case .videosSizeCheckerType:
-				self.setProgressSize(for: .userVideo, progress: progress)
+				self.setProgressSize(for: .userVideo, progress: progress, state: .scan)
 			default:
 				return
 		}
 	}
 	
-	private func setProgressSize(for type: MediaContentType, progress: CGFloat) {
+	private func setProgressSize(for type: MediaContentType, progress: CGFloat, state: FilesScanStatus) {
 		U.UI {
 			if let cell = self.mediaCollectionView.cellForItem(at: type.mainScreenIndexPath) as? MediaTypeCollectionViewCell {
 				cell.setProgress(progress)
+				cell.handleIndicator(state: state, space: nil, progress: progress)
 			}
 		}
 	}
@@ -169,7 +182,7 @@ extension MainViewController: UpdateContentDataBaseListener {
 				self.diskSpaceForStartingScreen[mediaType] = calculatedSpace
 			}
 			if let cell = self.mediaCollectionView.cellForItem(at: mediaType.mainScreenIndexPath) as? MediaTypeCollectionViewCell {
-				cell.configureCell(mediaType: mediaType, contentCount: itemsCount, diskSpace: calculatedSpace)
+				cell.configureCell(mediaType: mediaType, contentCount: itemsCount, diskSpace: calculatedSpace, status: .result)
 			}
 		}
     }
@@ -337,7 +350,7 @@ extension MainViewController {
         
         let mediaContentType = getMainScreenCellType(by: indexPath)
         let diskInUse = diskSpaceForStartingScreen[getMainScreenCellType(by: indexPath)]
-        cell.configureCell(mediaType: mediaContentType, contentCount: contentCount[mediaContentType], diskSpace: diskInUse)
+		cell.configureCell(mediaType: mediaContentType, contentCount: contentCount[mediaContentType], diskSpace: diskInUse, status: .prepare)
     }
     
     private func getMainScreenCellType(by indexPath: IndexPath) -> MediaContentType {
