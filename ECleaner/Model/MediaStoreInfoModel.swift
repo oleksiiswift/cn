@@ -37,6 +37,12 @@ class MediaStoreInfoModel {
 			value.processingCurrentIndex = 0
 		}
 	}
+	
+	public func saveValues() {
+		for (_, value) in objects {
+			value.saveTotalSizeProcessing()
+		}
+	}
 }
 
 class MediaInfoContainerModel {

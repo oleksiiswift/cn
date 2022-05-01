@@ -7,13 +7,6 @@
 
 import UIKit
 
-enum FilesScanStatus {
-	case prepare
-	case scan
-	case result
-	case none
-}
-
 class MediaTypeCollectionViewCell: UICollectionViewCell {
 
     @IBOutlet weak var mainView: ShadowView!
@@ -25,10 +18,10 @@ class MediaTypeCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var diskSpaceImageView: UIImageView!
 	@IBOutlet weak var mainStackView: UIStackView!
     @IBOutlet weak var contentViewHeightConstraint: NSLayoutConstraint!
-	@IBOutlet weak var horizontalProgressBar: HorizontalProgressBar!
 	
 	private lazy var loadingActivityIndicatorView = UIActivityIndicatorView()
-
+	private lazy var circleprogress = CircleProgressView()
+	
 	private var photoManager = PhotoManager.shared
     public var mediaTypeCell: MediaContentType = .none
 	
@@ -53,9 +46,6 @@ class MediaTypeCollectionViewCell: UICollectionViewCell {
         setupUI()
         updateColors()
         handleContentSize()
-		horizontalProgressBar.isHidden = true
-		horizontalProgressBar.progress = 0
-		horizontalProgressBar.setNeedsDisplay()
 		setupProgressBar()
     }
 }
@@ -66,15 +56,16 @@ extension MediaTypeCollectionViewCell: Themeble {
         
         loadingActivityIndicatorView.color = .red
         loadingActivityIndicatorView.tag = 666
-		horizontalProgressBar.direction = .vertical
         mainView.setCorner(12)
     }
     
-	public func configureCell(mediaType: MediaContentType, contentCount: Int?, diskSpace: Int64?, status: FilesScanStatus) {
+	public func configureCell(mediaType: MediaContentType, contentCount: Int?, diskSpace: Int64?) {
         
+		self.mediaTypeCell = mediaType
+		
         switch mediaType {
             case .userPhoto:
-				self.handleIndicator(state: status, space: diskSpace, progress: nil)
+				self.handleIndicator(diskSpace)
                 mediaContentView.imageView.image = I.mainStaticItems.photo
                 mediaContentTitleTextLabel.text = "PHOTOS_TITLE".localized()
 
@@ -84,7 +75,7 @@ extension MediaTypeCollectionViewCell: Themeble {
                     mediaContentSubTitleTextLabel.text = contentCount == nil ? "" : "NO CONTENT"
                 }
             case .userVideo:
-				self.handleIndicator(state: status, space: diskSpace, progress: nil)
+				self.handleIndicator(diskSpace)
                 mediaContentView.imageView.image = I.mainStaticItems.video
                 mediaContentTitleTextLabel.text = "VIDEOS_TITLE".localized()
                 
@@ -95,7 +86,7 @@ extension MediaTypeCollectionViewCell: Themeble {
                 }
                 
             case .userContacts:
-				self.handleIndicator(state: .none, space: nil, progress: nil)
+				self.handleIndicator(0)
                 mediaContentView.imageView.image = I.mainStaticItems.contacts
                 mediaContentTitleTextLabel.text = "CONTACTS_TITLE".localized()
         
@@ -107,40 +98,49 @@ extension MediaTypeCollectionViewCell: Themeble {
             case .none:
                 debugPrint("none")
         }
+		
+		circleprogress.startColor = mediaTypeCell.screeAcentGradientUICoror.first!
+		circleprogress.endColor = mediaTypeCell.screeAcentGradientUICoror.last!
     }
     
-	public func handleIndicator(state: FilesScanStatus, space: Int64?, progress: CGFloat?) {
-		switch state {
-		case .prepare:
+	private func handleIndicator(_ space: Int64?) {
+		if space == nil {
 			showActivityIndicator()
-		case .scan:
-			hideActivityIndicatorAndShowProgress()
-			if let progress = progress {
-				mediaSpaceTitleTextLabel.text = String("\(progress.rounded()) %")
-			}
-		case .result:
-			if space == 0 || space == nil {
-				hideActivityIndicatorAndAddSpace()
-			} else {
-				hideActivityIndicatorAndShowData()
-				mediaSpaceTitleTextLabel.text = String("\(U.getSpaceFromInt(space ?? 0))")
-			}
-		case .none:
+		} else if space == 0 {
 			hideActivityIndicatorAndAddSpace()
+		} else {
+			hideActivityIndicatorAndShowData()
+			mediaSpaceTitleTextLabel.text = String("\(U.getSpaceFromInt(space ?? 0))")
 		}
 	}
 	
 	public func setProgress(_ progress: CGFloat) {
-		
-//		horizontalProgressBar.isHidden = progress == 0 || progress > 0.95
-//		horizontalProgressBar.state = progress != 0 || progress < 0.95 ? .progress : .sleeping
-//		self.horizontalProgressBar.progress = progress
-//		self.horizontalProgressBar.layoutIfNeeded()
+		U.animate(1) {
+			self.circleprogress.isHidden = !(0.1...0.99).contains(progress)
+		}
+		UIView.performWithoutAnimation {
+			self.circleprogress.setProgress(progress: progress, animated: false)
+			self.circleprogress.layoutIfNeeded()
+		}
 	}
 	
 	private func setupProgressBar() {
-		self.horizontalProgressBar.setCorner(12)
-//		self.horizontalProgressBar.alpha = 
+		
+		mainView.addSubview(circleprogress)
+		circleprogress.translatesAutoresizingMaskIntoConstraints = false
+		circleprogress.leadingAnchor.constraint(equalTo: mediaContentView.leadingAnchor, constant: -3).isActive = true
+		circleprogress.trailingAnchor.constraint(equalTo: mediaContentView.trailingAnchor, constant: 3).isActive = true
+		circleprogress.topAnchor.constraint(equalTo: mediaContentView.topAnchor, constant: -3).isActive = true
+		circleprogress.bottomAnchor.constraint(equalTo: mediaContentView.bottomAnchor, constant: 3).isActive = true
+		
+		circleprogress.isHidden = true
+		circleprogress.disableBackgrounShadow = true
+		circleprogress.lineWidth = 2
+		circleprogress.backgroundShapeColor = .clear
+		circleprogress.startColor = mediaTypeCell.screeAcentGradientUICoror.first!
+		circleprogress.endColor = mediaTypeCell.screeAcentGradientUICoror.last!
+		circleprogress.percentLabel.isHidden = true
+		circleprogress.alpha = 0.7
 	}
     
     private func showActivityIndicator() {
@@ -242,6 +242,5 @@ extension MediaTypeCollectionViewCell: Themeble {
         mediaContentTitleTextLabel.textColor = theme.titleTextColor
         mediaContentSubTitleTextLabel.textColor = theme.subTitleTextColor
         mediaSpaceTitleTextLabel .textColor = theme.titleTextColor
-		horizontalProgressBar.progressColor = theme.progressBackgroundColor
     }
 }

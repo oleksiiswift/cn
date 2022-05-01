@@ -29,6 +29,7 @@ class DeepCleaningViewController: UIViewController {
      
      /// protocols and delegates
      weak var selectableAssetsDelegate: DeepCleanSelectableAssetsDelegate?
+	 var updateMediaStoreDelegate: UpdateMediaStoreSizeDelegate?
      
      /// properties
 	 private var isDeepCleanSearchingProcessRunning: Bool = false {
@@ -300,11 +301,14 @@ extension DeepCleaningViewController {
 			   U.UI {
 					if isCancelled {
 						 self.removeObservers()
-						 self.cleanAndResetAllValues()
+						 U.delay(1) {
+							  self.cleanAndResetAllValues()
+						 }
 					} else {
 						 self.setProcessingActionButton(.willAvailibleDelete)
 						 self.handleButtonStateActive()
 						 U.application.isIdleTimerDisabled = true
+						 self.mediaStoreModel.saveValues()
 					}
 			   }
 			   debugPrint("!!!! deep clean complete ->>> \(timer.stop())")
@@ -330,7 +334,9 @@ extension DeepCleaningViewController {
 			   self.deepCleanModel.objects[contentType]?.checkForCleanState()
 			   self.updateCellInfoCount(by: mediaType, contentType: contentType)
 			   self.updateTotalFilesTitleChecked()
-			   Vibration.success.vibrate()
+			   if !group.isEmpty {
+					Vibration.success.vibrate()
+			   }
 		  }
 	 }
      
@@ -343,7 +349,9 @@ extension DeepCleaningViewController {
 			   self.deepCleanModel.objects[contentType]?.checkForCleanState()
 			   self.updateCellInfoCount(by: .userContacts, contentType: contentType)
 			   self.updateTotalFilesTitleChecked()
-			   Vibration.success.vibrate()
+			   if !group.isEmpty {
+					Vibration.success.vibrate()
+			   }
 		  }
 	 }
      
@@ -520,10 +528,6 @@ extension DeepCleaningViewController {
 		  
 		  self.mediaStoreModel.objects[type.contentTypeRawValue]?.processingCurrentIndex = currentProcessingIndex
 		  self.mediaStoreModel.objects[type.contentTypeRawValue]?.sizeProcessingCount += processingValue
-		  
-//		  if totalProcessing == currentProcessingIndex {
-//			   self.mediaStoreModel.objects[type.contentTypeRawValue]?.saveTotalSizeProcessing()
-//		  }
 		  
 		  U.UI {
 			   if let cell = self.tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? DeepCleanInfoTableViewCell {
@@ -1166,9 +1170,11 @@ extension DeepCleaningViewController: NavigationBarDelegate {
      func didTapLeftBarButton(_ sender: UIButton) {
 		  if handleSearchingResults {
 			   A.showQuiteDeepCleanResults {
+					self.updateMediaStoreDelegate?.didStartUpdatingMediaSpace(photo: S.phassetPhotoFilesSizes, video: S.phassetVideoFilesSizes)
 					self.navigationController?.popViewController(animated: true)
 			   }
 		  } else {
+			   self.updateMediaStoreDelegate?.didStartUpdatingMediaSpace(photo: S.phassetPhotoFilesSizes, video: S.phassetVideoFilesSizes)
 			   self.navigationController?.popViewController(animated: true)
 		  }
      }

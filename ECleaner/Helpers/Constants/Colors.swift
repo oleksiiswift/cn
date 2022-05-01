@@ -535,5 +535,45 @@ enum Theme: Int {
 				return UIColor().colorFromHexString("E74BCD")
 		}
 	}
+	
+	
+	var photoGradientStarterColor: UIColor {
+		switch self {
+			case .light:
+				return UIColor().colorFromHexString("FF91A5")
+			case .dark:
+				return UIColor().colorFromHexString("FF91A5")
+		}
+	}
+	
+	
+	var photoGradeintEndingColor: UIColor {
+		switch self {
+			case .light:
+				return UIColor().colorFromHexString("F69352")
+			case .dark:
+				return UIColor().colorFromHexString("F69352")
+		}
+	}
+	
+	
+	var videGradietnStarterColor: UIColor {
+		switch self {
+			case .light:
+				return UIColor().colorFromHexString("8DB1FF")
+			case .dark:
+				return UIColor().colorFromHexString("8DB1FF")
+		}
+	}
+	
+	
+	var videoGradientEndingColor: UIColor {
+		switch self {
+			case .light:
+				return UIColor().colorFromHexString("55BFF5")
+			case .dark:
+				return UIColor().colorFromHexString("55BFF5")
+		}
+	}
 }
 

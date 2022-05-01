@@ -150,24 +150,8 @@ extension PhotoManager {
 		let lowerUpperDateOperation = self.fetchManager.getLowerUppedDateFromPhasset()
 		
 			/// `calculate all sizes phassets`
-			
-		let getPhotoLibraryPHAssetsEstimatedSizeOperation = self.getPhotoLibraryPHAssetsEstimatedSizeOperation { photosEstimatedSize, currentIndex, totalFilesCount in
-			ProgressSearchNotificationManager.instance.sendSingleFilesCheckerNotification(notificationtype: .photosSizeCheckerType,
-																						  currentIndex: currentIndex,
-																						  totalFiles: totalFilesCount)
-		} completionHandler: { photosCollectionSize in
-			S.phassetPhotoFilesSizes = photosCollectionSize
-			self.getTotalPHAssetSaved()
-		}
-		
-		let getPhotoLibrararyAVAssetsEstimatedSizeOperation = self.getPhotoLibraryAVAssetsEstimatedSizeOperation { videoEsimatedSize, currentIndex, totalFilesCount in
-			ProgressSearchNotificationManager.instance.sendSingleFilesCheckerNotification(notificationtype: .videosSizeCheckerType,
-																						  currentIndex: currentIndex,
-																						  totalFiles: totalFilesCount)
-		} completionHandler: { videosCollectionSize in
-			S.phassetVideoFilesSizes = videosCollectionSize
-			self.getTotalPHAssetSaved()
-		}
+		self.startPhotosizeCher()
+		self.startVideSizeCher()
 
 		let getCalculateTotalAVAssetsCountOperation = self.getCalculateTotalVideoPhassetOperation { totalVideoCount in
 			UpdateContentDataBaseMediator.instance.updateContentStoreCount(mediaType: .userVideo, itemsCount: totalVideoCount, calculatedSpace: nil)
@@ -176,49 +160,37 @@ extension PhotoManager {
 		let getCalculateTotalPHAssetsCountOperation = self.getCalculateTotalPhotoPhassetOperation { totalPhotoCount in
 			UpdateContentDataBaseMediator.instance.updateContentStoreCount(mediaType: .userPhoto, itemsCount: totalPhotoCount, calculatedSpace: nil)
 		}
-
-			/// `calculate and ger large videos from photo library`
-		let _ = self.getLargevideoContentOperation(cleanProcessingType: .background) { assets, _ in
-			UpdateContentDataBaseMediator.instance.getLargeVideosAssets(assets)
-		}
-				
-		let _ = self.getScreenRecordsVideosOperation(cleanProcessingType: .background) { screenRecordsAssets, _ in
-			UpdateContentDataBaseMediator.instance.getScreenRecordsVideosAssets(screenRecordsAssets)
-			
-		}
-		
-		let _ = self.getScreenShotsOperation(cleanProcessingType: .background) { assets, _ in
-			UpdateContentDataBaseMediator.instance.getScreenshots(assets)
-		}
-		
-		let _ = self.getLivePhotosOperation(cleanProcessingType: .background) { assets, _ in
-			UpdateContentDataBaseMediator.instance.getLivePhotosAssets(assets)
-		}
 	
 			/// `add operation phasset`
 		
 		self.prefetchOperationQueue.addOperation(lowerUpperDateOperation)
 		self.prefetchOperationQueue.addOperation(getCalculateTotalPHAssetsCountOperation)
 		self.prefetchOperationQueue.addOperation(getCalculateTotalAVAssetsCountOperation)
+	}
+	
+	public func startPhotosizeCher() {
+		let getPhotoLibraryPHAssetsEstimatedSizeOperation = self.getPhotoLibraryPHAssetsEstimatedSizeOperation { photosEstimatedSize, currentIndex, totalFilesCount in
+			ProgressSearchNotificationManager.instance.sendSingleFilesCheckerNotification(notificationtype: .photosSizeCheckerType,
+																						  currentIndex: currentIndex,
+																						  totalFiles: totalFilesCount)
+		} completionHandler: { photosCollectionSize in
+			S.phassetPhotoFilesSizes = photosCollectionSize
+			self.getTotalPHAssetSaved()
+		}
 		self.serviceUtilityOperationsQueuer.addOperation(getPhotoLibraryPHAssetsEstimatedSizeOperation)
-		self.serviceUtilityOperationsQueuer.addOperation(getPhotoLibrararyAVAssetsEstimatedSizeOperation)
+	}
+	
+	public func startVideSizeCher() {
+		let getPhotoLibrararyAVAssetsEstimatedSizeOperation = self.getPhotoLibraryAVAssetsEstimatedSizeOperation { videoEsimatedSize, currentIndex, totalFilesCount in
+			ProgressSearchNotificationManager.instance.sendSingleFilesCheckerNotification(notificationtype: .videosSizeCheckerType,
+																						  currentIndex: currentIndex,
+																						  totalFiles: totalFilesCount)
+		} completionHandler: { videosCollectionSize in
+			S.phassetVideoFilesSizes = videosCollectionSize
+			self.getTotalPHAssetSaved()
+		}
 		
-//
-//		if !serviceUtilsCalculatedOperationsQueuer.operations.contains(where: {$0.name == getLargeVideosOperation.name}) {
-//			serviceUtilsCalculatedOperationsQueuer.addOperation(getLargeVideosOperation)
-//		}
-//
-//		if !serviceUtilsCalculatedOperationsQueuer.operations.contains(where: {$0.name == getScreenRecordingsOperation.name}) {
-//			serviceUtilsCalculatedOperationsQueuer.addOperation(getScreenRecordingsOperation)
-//		}
-//
-//		if !serviceUtilsCalculatedOperationsQueuer.operations.contains(where: {$0.name == getScreenShorsOperation.name}) {
-//			serviceUtilsCalculatedOperationsQueuer.addOperation(getScreenShorsOperation)
-//		}
-//
-//		if !serviceUtilsCalculatedOperationsQueuer.operations.contains(where: {$0.name == getLivePhotoOperation.name}) {
-//			serviceUtilsCalculatedOperationsQueuer.addOperation(getLivePhotoOperation)
-//		}
+		self.serviceUtilityOperationsQueuer.addOperation(getPhotoLibrararyAVAssetsEstimatedSizeOperation)
 	}
 	
 	public func stopEstimatedSizeProcessingOperations() {
