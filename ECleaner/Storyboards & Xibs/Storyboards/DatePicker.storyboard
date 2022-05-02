@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19455" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="3Qs-rr-bpc">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="3Qs-rr-bpc">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19454"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -65,15 +65,15 @@
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="bOf-pv-Bbw">
                                                 <rect key="frame" x="0.0" y="0.0" width="414" height="150"/>
                                                 <subviews>
-                                                    <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="mw5-KH-vvC">
-                                                        <rect key="frame" x="0.0" y="0.0" width="414" height="0.0"/>
-                                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                    </view>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="U2z-lp-v2M">
                                                         <rect key="frame" x="0.0" y="0.0" width="414" height="75"/>
                                                         <subviews>
                                                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="checkBackground" translatesAutoresizingMaskIntoConstraints="NO" id="Lv4-NL-LeA">
                                                                 <rect key="frame" x="156" y="17.5" width="40" height="40"/>
+                                                                <constraints>
+                                                                    <constraint firstAttribute="width" constant="40" id="G0O-1R-sAQ"/>
+                                                                    <constraint firstAttribute="width" secondItem="Lv4-NL-LeA" secondAttribute="height" multiplier="1:1" id="bfK-mD-VcA"/>
+                                                                </constraints>
                                                             </imageView>
                                                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="check" translatesAutoresizingMaskIntoConstraints="NO" id="8cL-Pk-ILa">
                                                                 <rect key="frame" x="165.5" y="30" width="21" height="15"/>
@@ -160,15 +160,21 @@
                         <outlet property="autoDatePickImageView" destination="8cL-Pk-ILa" id="TUg-AC-A8t"/>
                         <outlet property="autoDatePickTextLabel" destination="BAK-Nx-Q9j" id="1CY-ZC-nCZ"/>
                         <outlet property="autoDatePickView" destination="U2z-lp-v2M" id="sWf-Xm-9Ha"/>
+                        <outlet property="autoDatePickerButtonWidthConstraint" destination="G0O-1R-sAQ" id="EnT-SN-BnT"/>
+                        <outlet property="bottomBarContainerView" destination="ZvS-ih-Vgi" id="VaY-AZ-P4r"/>
                         <outlet property="bottomButtonView" destination="8xq-X7-KND" id="vHz-hV-kfE"/>
+                        <outlet property="bottomButtonsHeghtConstraint" destination="XOH-Mz-OMV" id="JtF-SX-qpj"/>
+                        <outlet property="bottomButtonsTopConstraint" destination="hwc-ac-QVa" id="CCy-Id-hJq"/>
                         <outlet property="customNavBar" destination="y79-R1-NIG" id="c9r-jr-Kgt"/>
+                        <outlet property="customNavigationBarHeightConstraint" destination="bKY-iU-sv9" id="KGz-Qt-wwY"/>
                         <outlet property="mainContainerView" destination="AaZ-Qi-Xe2" id="bNH-C9-5sv"/>
                         <outlet property="mainContainerViewHeightConstraint" destination="8MR-dW-VFb" id="MIE-kr-7se"/>
                         <outlet property="monthDatePicker" destination="it5-se-s3G" id="ivk-V6-9fW"/>
                         <outlet property="pickerContainerView" destination="pb8-In-ZYb" id="QrA-DC-zqH"/>
                         <outlet property="pickerSpacerShadowView" destination="JIl-FT-eky" id="cv0-an-zqd"/>
-                        <outlet property="spaceStackEmptyView" destination="mw5-KH-vvC" id="98d-0T-If2"/>
                         <outlet property="yearDatePicker" destination="Usu-Xa-CzE" id="MPT-ms-HJu"/>
+                        <outletCollection property="pickerComponentsCollection" destination="it5-se-s3G" collectionClass="NSMutableArray" id="R53-Mt-jUn"/>
+                        <outletCollection property="pickerComponentsCollection" destination="Usu-Xa-CzE" collectionClass="NSMutableArray" id="I6e-Wv-Qtb"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="C7l-ZL-kri" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

@@ -1215,36 +1215,40 @@ extension MediaContentViewController: Themeble {
     }
     	
 	private func setupShowDatePickerSelectorController(segue: UIStoryboardSegue, selectedType: PickerDateSelectType) {
-		 
-		 guard let segue = segue as? SwiftMessagesSegue else { return }
-		 
-		 segue.configure(layout: .bottomMessage)
-		 segue.dimMode = .gray(interactive: false)
-		 segue.interactiveHide = false
-		 segue.messageView.configureNoDropShadow()
-		 segue.messageView.backgroundHeight = Device.isSafeAreaiPhone ? 458 : 438
-		 
-		 if let dateSelectedController = segue.destination as? DateSelectorViewController {
-			  dateSelectedController.dateSelectedType = selectedType
-			  dateSelectedController.setPicker(selectedType.rawValue)
-			  dateSelectedController.selectedDateCompletion = { selectedDate in
-				   switch selectedType {
-						case .lowerDateSelectable:
-						   if self.lowerBoundDate != selectedDate {
-							   self.lowerBoundDate = selectedDate
-							   self.desintagrateSearchingResults()
-						   }
-						case .upperDateSelectable:
-						   if self.upperBoundDate != selectedDate {
-							 self.upperBoundDate = selectedDate
-							   self.desintagrateSearchingResults()
-						   }
-						default:
-							 return
-				   }
-				   self.dateSelectPickerView.setupDisplaysDate(lowerDate: self.lowerBoundDate, upperdDate: self.upperBoundDate)
-			  }
-		 }
+		
+		guard let segue = segue as? SwiftMessagesSegue else { return }
+		
+		segue.configure(layout: .bottomMessage)
+		segue.dimMode = .gray(interactive: true)
+		segue.interactiveHide = true
+		segue.messageView.configureNoDropShadow()
+		
+		let height = selectedType == .lowerDateSelectable ? U.UIHelper.AppDimensions.DateSelectController.datePickerContainerHeightLower :
+		U.UIHelper.AppDimensions.DateSelectController.datePickerContainerHeightUper
+		
+		segue.messageView.backgroundHeight = height
+		
+		if let dateSelectedController = segue.destination as? DateSelectorViewController {
+			dateSelectedController.dateSelectedType = selectedType
+			dateSelectedController.setPicker(selectedType.rawValue)
+			dateSelectedController.selectedDateCompletion = { selectedDate in
+				switch selectedType {
+					case .lowerDateSelectable:
+						if self.lowerBoundDate != selectedDate {
+							self.lowerBoundDate = selectedDate
+							self.desintagrateSearchingResults()
+						}
+					case .upperDateSelectable:
+						if self.upperBoundDate != selectedDate {
+							self.upperBoundDate = selectedDate
+							self.desintagrateSearchingResults()
+						}
+					default:
+						return
+				}
+				self.dateSelectPickerView.setupDisplaysDate(lowerDate: self.lowerBoundDate, upperdDate: self.upperBoundDate)
+			}
+		}
 	}
 }
 

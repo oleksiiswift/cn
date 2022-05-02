@@ -35,6 +35,7 @@ class Images {
         struct selectItems {
             static let roundedCheckMark = UIImage(named: "roundedCheckmark")!
             static let circleMark = UIImage(named: "circle")!
+			static let checkBox = UIImage(named: "check")!
         }
         
         struct defaultItems {
@@ -127,7 +128,6 @@ class Images {
     
     struct systemElementsItems {
         static let crissCross = UIImage(systemName: "xmark.circle.fill")
-        static let checkBox = UIImage(named: "check")!
         static let checkBoxIsChecked = UIImage(systemName: "checkmark.square")
         static let circleBox = UIImage(systemName: "circle")
         static let circleCheckBox = UIImage(systemName: "checkmark.circle.fill")

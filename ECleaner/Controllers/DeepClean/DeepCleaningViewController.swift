@@ -882,10 +882,14 @@ extension DeepCleaningViewController {
           guard let segue = segue as? SwiftMessagesSegue else { return }
           
           segue.configure(layout: .bottomMessage)
-          segue.dimMode = .gray(interactive: false)
-          segue.interactiveHide = false
-          segue.messageView.configureNoDropShadow()
-          segue.messageView.backgroundHeight = Device.isSafeAreaiPhone ? 458 : 438
+		  segue.dimMode = .gray(interactive: true)
+		  segue.interactiveHide = true
+		  segue.messageView.configureNoDropShadow()
+		  
+		  let height = selectedType == .lowerDateSelectable ? U.UIHelper.AppDimensions.DateSelectController.datePickerContainerHeightLower :
+		  U.UIHelper.AppDimensions.DateSelectController.datePickerContainerHeightUper
+		  
+		  segue.messageView.backgroundHeight = height
 		  
 		  if let dateSelectedController = segue.destination as? DateSelectorViewController {
 			   dateSelectedController.dateSelectedType = selectedType
