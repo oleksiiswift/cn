@@ -154,7 +154,7 @@ class NavigationBar: UIView {
         leftBarButtonItem.tintColor = buttonsTintColor
         rightBarButtonItem.tintColor = buttonsTintColor
         titleTextLabel.textColor = title
-        titleTextLabel.font = .systemFont(ofSize: 17, weight: .bold)
+		titleTextLabel.font = U.UIHelper.AppDefaultFontSize.NavigationBar.navigationBarTitleFont
     }
     
     private func actionButtonsSetup() {

@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SwiftMessages
 
 enum PickerDateSelectType {
 	case lowerDateSelectable
@@ -34,16 +35,15 @@ enum PickerDateSelectType {
 	}
 }
 
-
 class DateSelectorViewController: UIViewController {
     
     @IBOutlet weak var mainContainerView: UIView!
 	@IBOutlet weak var pickerContainerView: UIView!
+	@IBOutlet weak var bottomBarContainerView: UIView!
 	@IBOutlet weak var monthDatePicker: SegmentDatePicker!
 	@IBOutlet weak var yearDatePicker: SegmentDatePicker!
 	@IBOutlet weak var pickerSpacerShadowView: UIView!
     @IBOutlet weak var customNavBar: StartingNavigationBar!
-	@IBOutlet weak var spaceStackEmptyView: UIView!
 	@IBOutlet weak var autoDatePickView: UIView!
     @IBOutlet weak var autoDatePickButton: UIButton!
     @IBOutlet weak var autoDatePickBackgroundImageView: UIImageView!
@@ -51,7 +51,13 @@ class DateSelectorViewController: UIViewController {
     @IBOutlet weak var autoDatePickTextLabel: UILabel!
 	@IBOutlet weak var bottomButtonView: BottomButtonBarView!
     @IBOutlet weak var mainContainerViewHeightConstraint: NSLayoutConstraint!
+	@IBOutlet weak var customNavigationBarHeightConstraint: NSLayoutConstraint!
+	@IBOutlet weak var bottomButtonsHeghtConstraint: NSLayoutConstraint!
+	@IBOutlet weak var bottomButtonsTopConstraint: NSLayoutConstraint!
+	@IBOutlet weak var autoDatePickerButtonWidthConstraint: NSLayoutConstraint!
+	@IBOutlet var pickerComponentsCollection: [SegmentDatePicker]!
 	
+	private var dissmissGestureRecognizer = UIPanGestureRecognizer()
 	private var defaultCalendar = Calendar(identifier: .gregorian)
 	public var dateSelectedType: PickerDateSelectType = .none
 	
@@ -68,6 +74,7 @@ class DateSelectorViewController: UIViewController {
         setupUI()
 		setupPickerSpacerView()
         updateColors()
+		setupGestureRecognizers()
     }
     
     override func viewDidLayoutSubviews() {
@@ -242,50 +249,65 @@ extension DateSelectorViewController: BottomActionButtonDelegate {
 extension DateSelectorViewController: Themeble {
 
     private func setupUI() {
-        
-        mainContainerView.cornerSelectRadiusView(corners: [.topLeft, .topRight], radius: 20)
-        
-        let containerHeight: CGFloat = Device.isSafeAreaiPhone ? 458 : 438
-        self.view.frame = CGRect(x: 0, y: 0, width: U.screenWidth, height: containerHeight)
-        mainContainerViewHeightConstraint.constant = containerHeight
-        
-		bottomButtonView.title("SUBMIT".localized())
+			
+		var containerHeight: CGFloat {
+			switch dateSelectedType {
+				case .lowerDateSelectable:
+					return U.UIHelper.AppDimensions.DateSelectController.datePickerContainerHeightLower
+				case .upperDateSelectable:
+					return U.UIHelper.AppDimensions.DateSelectController.datePickerContainerHeightUper
+				default:
+					return .zero
+			}
+		}
 		
-		autoDatePickView.isHidden = self.dateSelectedType != .lowerDateSelectable
-		spaceStackEmptyView.isHidden = self.dateSelectedType == .lowerDateSelectable
+		switch dateSelectedType {
+			case .lowerDateSelectable:
+				autoDatePickView.isHidden = false
+				bottomButtonsTopConstraint.constant = 0
+				bottomButtonsHeghtConstraint.constant = U.UIHelper.AppDimensions.DateSelectController.fullDatePickerContainerHeight
+			case .upperDateSelectable:
+				bottomButtonsTopConstraint.constant = U.UIHelper.AppDimensions.DateSelectController.bottomContainerSpacerHeight
+				bottomButtonsHeghtConstraint.constant = U.UIHelper.AppDimensions.DateSelectController.cutDatePickerContainerHeight
+				autoDatePickView.isHidden = true
+			default:
+				return
+		}
+		customNavigationBarHeightConstraint.constant = U.UIHelper.AppDimensions.NavigationBar.navigationBarHeight
+		
+		self.view.frame = CGRect(x: 0, y: 0, width: U.screenWidth, height: containerHeight)
+		mainContainerView.cornerSelectRadiusView(corners: [.topLeft, .topRight], radius: 20)
+        mainContainerViewHeightConstraint.constant = containerHeight
 	
+		let autoDateSelectSize = U.UIHelper.AppDimensions.NavigationBar.navigationBarButtonSize - 10
+		autoDatePickerButtonWidthConstraint.constant = autoDateSelectSize
+	
+		bottomButtonView.title("SUBMIT".localized())
         autoDatePickTextLabel.text = "SINCE_THE_LAST_CLEANING".localized()
-		autoDatePickTextLabel.font = .systemFont(ofSize: 14, weight: .bold)
-        autoDatePickImageView.image = I.systemElementsItems.checkBox
-        
-        autoDatePickBackgroundImageView.layer.applySketchShadow(color: UIColor().colorFromHexString("D8DFEB"), alpha: 1.0, x: 6, y: 6, blur: 10, spread: 0)
-        
-        autoDatePickImageView.isHidden = true
+		autoDatePickTextLabel.font = U.UIHelper.AppDefaultFontSize.PickerController.buttonSubTitleFontSize
+		
+		let checkMarkImage = I.systemItems.selectItems.checkBox.renderScalePreservingAspectRatio(from: CGSize(width: autoDateSelectSize / 2, height: autoDateSelectSize / 2))
+        autoDatePickImageView.image = checkMarkImage
+		autoDatePickImageView.isHidden = true
+		autoDatePickBackgroundImageView.layer.applySketchShadow(color: UIColor().colorFromHexString("D8DFEB"), alpha: 1.0, x: 6, y: 6, blur: 10, spread: 0)
     }
 	
 	private func setupDatePickers(with date: Date) {
 		
-		self.yearDatePicker.delegate = self
-		self.yearDatePicker.calendarIdentifier = defaultCalendar.identifier
-		self.yearDatePicker.font = .systemFont(ofSize: 26, weight: .black)
-		self.yearDatePicker.disabledFont = .systemFont(ofSize: 26, weight: .black)
-		self.yearDatePicker.pickerLocale = Locale(identifier: "en_US")
 		self.yearDatePicker.datePickerType = .year
-		self.yearDatePicker.reloadAllComponents()
-		self.yearDatePicker.maximumDate = Date()
-		self.yearDatePicker.selectebleLowerPeriodBound = self.dateSelectedType == .lowerDateSelectable
-		self.yearDatePicker.setCurrentDate(date, animated: false)
-		
-		self.monthDatePicker.delegate = self
-		self.monthDatePicker.calendarIdentifier = defaultCalendar.identifier
-		self.monthDatePicker.font = .systemFont(ofSize: 26, weight: .black)
-		self.monthDatePicker.disabledFont = .systemFont(ofSize: 26, weight: .black)
-		self.monthDatePicker.pickerLocale = Locale(identifier: "en_US")
 		self.monthDatePicker.datePickerType = .month
-		self.monthDatePicker.maximumDate = Date()
-		self.monthDatePicker.selectebleLowerPeriodBound = self.dateSelectedType == .lowerDateSelectable
-		self.monthDatePicker.reloadAllComponents()
-		self.monthDatePicker.setCurrentDate(date, animated: false)
+		
+		pickerComponentsCollection.forEach {
+			$0.delegate = self
+			$0.calendarIdentifier = defaultCalendar.identifier
+			$0.font = U.UIHelper.AppDefaultFontSize.PickerController.pickerFontSize
+			$0.disabledFont = U.UIHelper.AppDefaultFontSize.PickerController.pickerFontSize
+			$0.pickerLocale = Locale(identifier: "en_US")
+			$0.maximumDate = Date()
+			$0.selectebleLowerPeriodBound = self.dateSelectedType == .lowerDateSelectable
+			$0.setCurrentDate(date, animated: false)
+			$0.reloadAllComponents()
+		}
 	}
     
 	private func setupPickerSpacerView() {
@@ -355,7 +377,17 @@ extension DateSelectorViewController: Themeble {
 			}
 		}
 		
-		customNavBar.setUpNavigation(title: navigationText, leftImage: nil, rightImage: I.systemItems.navigationBarItems.dissmiss)
+		customNavBar.setUpNavigation(title: navigationText.uppercased(), rightImage: I.systemItems.navigationBarItems.dissmiss, targetImageScaleFactor: 0.4)
+		customNavBar.topShevronEnable = true
+	}
+	
+	private func setupGestureRecognizers() {
+		
+		let animator = TopBottomAnimation(style: .bottom)
+		dissmissGestureRecognizer = animator.panGestureRecognizer
+		dissmissGestureRecognizer.cancelsTouchesInView = false
+		animator.panGestureRecognizer.delegate = self
+		self.view.addGestureRecognizer(dissmissGestureRecognizer)
 	}
 	
 	func setupObserversAndDelegate() {
@@ -380,4 +412,44 @@ extension DateSelectorViewController: Themeble {
 		self.monthDatePicker.textColor = theme.titleTextColor
 		self.yearDatePicker.textColor = theme.titleTextColor
     }
+}
+
+extension DateSelectorViewController: UIGestureRecognizerDelegate {
+	
+	func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldBeRequiredToFailBy otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+		return gestureRecognizer is UISwipeGestureRecognizer && otherGestureRecognizer is UIPanGestureRecognizer
+	}
+	
+	func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+		if gestureRecognizer == dissmissGestureRecognizer {
+			let pickerPoint = gestureRecognizer.location(in: self.pickerContainerView)
+			let bottomContainerPoint = gestureRecognizer.location(in: self.bottomBarContainerView)
+			
+			if self.pickerContainerView.bounds.contains(pickerPoint) {
+				return false
+			} else if self.bottomBarContainerView.bounds.contains(bottomContainerPoint) {
+				return false
+			}
+		}
+		return true
+	}
+	
+	func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+		
+		if gestureRecognizer == dissmissGestureRecognizer {
+			let pickerPoint = gestureRecognizer.location(in: self.pickerContainerView)
+			let bottomContainerPoint = gestureRecognizer.location(in: self.bottomBarContainerView)
+			
+			if self.pickerContainerView.bounds.contains(pickerPoint) {
+				return true
+			} else if self.bottomBarContainerView.bounds.contains(bottomContainerPoint) {
+				return true
+			}
+		}
+		return true
+	}
+	
+	func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+		return true
+	}
 }

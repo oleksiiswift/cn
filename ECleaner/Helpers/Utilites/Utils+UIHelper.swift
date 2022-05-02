@@ -12,13 +12,15 @@ extension Utils {
 	
 	struct UIHelper {
 		
+		private static let screenSize = Screen.size
+		
 		struct AppDimensions {
 			
 			static var bottomBarDefaultHeight: CGFloat {
 				if Device.isSafeAreaiPhone {
 					return 70 + U.bottomSafeAreaHeight
 				} else {
-					switch Screen.size {
+					switch screenSize {
 						case .small:
 							return 70
 						case .medium, .plus:
@@ -30,7 +32,7 @@ extension Utils {
 			}
 			
 			static var bottomBarButtonDefaultHeight: CGFloat {
-				switch Screen.size {
+				switch screenSize {
 					case .small:
 						return 50
 					default:
@@ -39,7 +41,7 @@ extension Utils {
 			}
 			
 			static var heightOfRowOfMediaContentType: CGFloat {
-				switch Screen.size {
+				switch screenSize {
 					case .small:
 						return 85
 					case .medium, .plus:
@@ -50,7 +52,7 @@ extension Utils {
 			}
 			
 			static var mediaContentTypeCellIEdgeInset: UIEdgeInsets {
-				switch Screen.size {
+				switch screenSize {
 					case .small:
 						return UIEdgeInsets(top: -20, left: 0, bottom: -20, right: 0)
 					default:
@@ -60,7 +62,7 @@ extension Utils {
 			}
 			
 			static var heightOfTopHelperCellBanner: CGFloat {
-				switch Screen.size {
+				switch screenSize {
 					case .small:
 						return 140
 					default:
@@ -69,7 +71,7 @@ extension Utils {
 			}
 			
 			static var heightOfBottomHelperCellBanner: CGFloat {
-				switch Screen.size {
+				switch screenSize {
 					case .small:
 						return 140
 					default:
@@ -78,7 +80,7 @@ extension Utils {
 			}
 			
 			static var dateSelectableHeight: CGFloat {
-				switch Screen.size {
+				switch screenSize {
 					case .small:
 						return 60
 					case .medium:
@@ -89,7 +91,7 @@ extension Utils {
 			}
 			
 			static var mediaContentTypeTopInset: CGFloat {
-				switch Screen.size {
+				switch screenSize {
 					case .small:
 						return 5
 					case .medium:
@@ -100,7 +102,7 @@ extension Utils {
 			}
 			
 			static var circleProgressInfoDimension: CGFloat {
-				switch Screen.size {
+				switch screenSize {
 					case .small:
 						return 65
 					case .medium:
@@ -119,7 +121,7 @@ extension Utils {
 			}
 			
 			static var circleProgressInfoLineWidth: CGFloat {
-				switch Screen.size {
+				switch screenSize {
 					case .small:
 						return 10
 					case .medium:
@@ -136,12 +138,181 @@ extension Utils {
 						return 14
 				}
 			}
+			
+			struct DateSelectController {
+				
+				static var datePickerContainerHeightLower: CGFloat {
+					switch screenSize {
+						case .small:
+							return 420
+						case .medium:
+							return 460
+						case .plus:
+							return 470
+						case .large:
+							return 485
+						case .modern:
+							return 485
+						case .max:
+							return 485
+						case .madMax:
+							return 485
+					}
+				}
+				
+				static var datePickerContainerHeightUper: CGFloat {
+					switch screenSize {
+						case .small:
+							return 360
+						case .medium:
+							return 400
+						case .plus:
+							return 410
+						case .large:
+							return 423
+						case .modern:
+							return 423
+						case .max:
+							return 423
+						case .madMax:
+							return 423
+					}
+				}
+				
+				static var fullDatePickerContainerHeight: CGFloat {
+					switch screenSize {
+						case .small:
+							return 150
+						case .medium:
+							return 160
+						case .plus:
+							return 170
+						case .large:
+							return 170
+						case .modern:
+							return 170
+						case .max:
+							return 170
+						case .madMax:
+							return 170
+					}
+				}
+				
+				static var cutDatePickerContainerHeight: CGFloat {
+					switch screenSize {
+						case .small:
+							return 70
+						case .medium:
+							return 75
+						case .plus:
+							return 75
+						case .large:
+							return 75
+						case .modern:
+							return 75
+						case .max:
+							return 75
+						case .madMax:
+							return 75
+					}
+				}
+				
+				static var bottomContainerSpacerHeight: CGFloat {
+					switch screenSize {
+						case .small:
+							return 20
+						case .medium:
+							return 25
+						case .plus:
+							return 25
+						case .large:
+							return 20
+						case .modern:
+							return 20
+						case .max:
+							return 20
+						case .madMax:
+							return 20
+					}
+				}
+			}
+			
+			struct NavigationBar {
+				
+					///`CUSTOM NAVIGATION BAR`
+				static var navigationBarHeight: CGFloat {
+					switch screenSize {
+						case .small:
+							return 60
+						default:
+							return 80
+					}
+				}
+				
+				static var navigationBarButtonSize: CGFloat {
+					switch screenSize {
+						case .small:
+							return 40
+						case .medium:
+							return 45
+						default:
+							return 50
+					}
+				}
+			}
 		}
 		
 		struct AppDefaultFontSize {
 			
+			struct NavigationBar {
+				
+				static var navigationBarTitleFont: UIFont {
+					switch screenSize {
+						case .small:
+							return .systemFont(ofSize: 14, weight: .bold)
+						case .medium:
+							return .systemFont(ofSize: 16, weight: .bold)
+						default:
+							return .systemFont(ofSize: 17, weight: .bold)
+					}
+				}
+			}
+			
+			struct PickerController {
+				
+				static var pickerFontSize: UIFont {
+					switch screenSize {
+						case .small:
+							return .systemFont(ofSize: 20, weight: .black)
+						case .medium:
+							return .systemFont(ofSize: 24, weight: .black)
+						case .plus:
+							return .systemFont(ofSize: 26, weight: .black)
+						case .large:
+							return .systemFont(ofSize: 26, weight: .black)
+						case .modern:
+							return .systemFont(ofSize: 26, weight: .black)
+						case .max:
+							return .systemFont(ofSize: 26, weight: .black)
+						case .madMax:
+							return .systemFont(ofSize: 26, weight: .black)
+					}
+				}
+				
+				static var buttonSubTitleFontSize: UIFont {
+					switch screenSize {
+						case .small:
+							return .systemFont(ofSize: 14, weight: .bold)
+						case .medium:
+							return .systemFont(ofSize: 15.8, weight: .bold)
+						default:
+							return .systemFont(ofSize: 16.8, weight: .bold)
+					}
+				}
+			}
+			
 			static var bottomBarButtonTitleFont: UIFont {
-				switch Screen.size {
+				switch screenSize {
 					case .small:
 						return .systemFont(ofSize: 14, weight: .bold)
 					case .medium:
@@ -152,7 +323,7 @@ extension Utils {
 			}
 			
 			static var deepCleanCircleProgressPercentLabelFont: UIFont {
-				switch Screen.size {
+				switch screenSize {
 					case .small:
 						return .systemFont(ofSize: 10, weight: .bold)
 					case .medium:
@@ -171,7 +342,7 @@ extension Utils {
 			}
 			
 			static var deepCleanInfoHelperTitleFont: UIFont {
-				switch Screen.size {
+				switch screenSize {
 					case .small:
 						return .systemFont(ofSize: 12, weight: .bold)
 					case .medium:
@@ -190,7 +361,7 @@ extension Utils {
 			}
 			
 			static var deepCleanInfoHelperSubtitleFont: UIFont {
-				switch Screen.size {
+				switch screenSize {
 					case .small:
 						return .systemFont(ofSize: 11, weight: .medium)
 					case .medium:
@@ -209,7 +380,7 @@ extension Utils {
 			}
 			
 			static var deepClentSectionHeaderTitleFont: UIFont {
-				switch Screen.size {
+				switch screenSize {
 					 case .small:
 						  return .systemFont(ofSize: 12, weight: .bold)
 					 case .medium:

@@ -454,6 +454,14 @@ enum Theme: Int {
 		}
 	}
 	
+	var topShevronBackgroundColor: UIColor {
+		switch self {
+			case .light:
+				return UIColor().colorFromHexString("8E96A7")
+			case .dark:
+				return UIColor().colorFromHexString("8E96A7")
+		}
+	}
 
     var customRedColor: UIColor {
         switch self {
