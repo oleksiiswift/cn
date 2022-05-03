@@ -690,7 +690,7 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
           tableView.register(UINib(nibName: C.identifiers.xibs.contentTypeCell, bundle: nil), forCellReuseIdentifier: C.identifiers.cells.contentTypeCell)
           tableView.register(UINib(nibName: C.identifiers.xibs.cleanInfoCell, bundle: nil), forCellReuseIdentifier: C.identifiers.cells.cleanInfoCell)
           tableView.separatorStyle = .none
-		  tableView.contentInset.top = U.UIHelper.AppDimensions.mediaContentTypeTopInset
+		  tableView.contentInset.top = U.UIHelper.AppDimensions.ContenTypeCells.deepCleanMediaContentTypeTopInset
           tableView.contentInset.bottom = 50
      }
      
@@ -762,7 +762,7 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
      }
      
      func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-		  return indexPath.section == 0 ? U.UIHelper.AppDimensions.heightOfTopHelperCellBanner : U.UIHelper.AppDimensions.heightOfRowOfMediaContentType
+		  return indexPath.section == 0 ? U.UIHelper.AppDimensions.ContenTypeCells.heightOfTopHelperCellBanner : U.UIHelper.AppDimensions.ContenTypeCells.heightOfRowOfMediaContentType
      }
      
      func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {

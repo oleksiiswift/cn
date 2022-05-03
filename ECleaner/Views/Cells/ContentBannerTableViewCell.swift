@@ -1,0 +1,127 @@
+//
+//  ContentBannerTableViewCell.swift
+//  ECleaner
+//
+//  Created by alexey sorochan on 02.05.2022.
+//
+
+import UIKit
+
+class ContentBannerTableViewCell: UITableViewCell {
+	
+	@IBOutlet weak var reuseShadowView: ReuseShadowView!
+	@IBOutlet weak var baseView: UIView!
+	@IBOutlet weak var reuseShadeoRoundedView: ReuseShadowRoundedView!
+	@IBOutlet weak var titleContainerStackView: UIStackView!
+	@IBOutlet weak var descriptionContainerStackView: UIStackView!
+	@IBOutlet weak var titleTextLabel: UILabel!
+	@IBOutlet weak var subtitleTextLabel: UILabel!
+	@IBOutlet weak var descriptionTitleTextLabel: UILabel!
+	@IBOutlet weak var descriptionSubtitleTextLabel: UILabel!
+	@IBOutlet var descriptionTextLabelsCollection: [UILabel]!
+	@IBOutlet weak var reuseShadowViewWidthConstraint: NSLayoutConstraint!
+	@IBOutlet weak var helperImageViewHeightConstraint: NSLayoutConstraint!
+	@IBOutlet weak var helperImageViewWidthConstraint: NSLayoutConstraint!
+	@IBOutlet weak var helperImageViewTrailingConstraint: NSLayoutConstraint!
+	@IBOutlet weak var helperImageView: UIImageView!
+
+	override func awakeFromNib() {
+        super.awakeFromNib()
+		
+		setupUI()
+		updateColors()
+    }
+}
+
+extension ContentBannerTableViewCell {
+	
+	public func configure(by content: PhotoMediaType) {
+		
+		let info = content.bannerInfo.info[content]!
+		/// `title labels`
+		let gradientColors = info.gradientColors.compactMap({$0.cgColor})
+
+		let gradientLayer = U.UIHelper.Manager.getGradientLayer(bounds: descriptionSubtitleTextLabel.bounds,
+																colors: gradientColors,
+																startPoint: .topLeft, endPoint: .bottomRight)
+		let gradientColor = U.UIHelper.Manager.gradientColor(bounds: descriptionSubtitleTextLabel.bounds, gradientLayer: gradientLayer)
+		let firstSubtitleAttributes: [NSAttributedString.Key : Any] = [.font: U.UIHelper.AppDefaultFontSize.ContentBunnerFontSize.descriptionFirstSubtitleFont,
+																	   .foregroundColor: gradientColor!]
+		let secondSubtitleAttributes: [NSAttributedString.Key : Any] = [.font: U.UIHelper.AppDefaultFontSize.ContentBunnerFontSize.descriptionSecondSubtitleFont,
+																		.foregroundColor: gradientColor!]
+		let attributedString = NSMutableAttributedString(string: info.descriptionFirstPartSubtitle, attributes: firstSubtitleAttributes)
+		attributedString.append(NSAttributedString(string: " ", attributes: secondSubtitleAttributes))
+		attributedString.append(NSAttributedString(string: info.descriptionSecondPartSubtitle, attributes: secondSubtitleAttributes))
+		
+		descriptionSubtitleTextLabel.attributedText = attributedString
+		
+		let gradientLayerTitle = U.UIHelper.Manager.getGradientLayer(bounds: descriptionTitleTextLabel.bounds,
+																colors: gradientColors,
+																startPoint: .topLeft, endPoint: .bottomRight)
+		let gradientTitleColor = U.UIHelper.Manager.gradientColor(bounds: descriptionTitleTextLabel.bounds, gradientLayer: gradientLayerTitle)
+		descriptionTitleTextLabel.textColor = gradientTitleColor
+		titleTextLabel.text = info.title
+		subtitleTextLabel.text = info.subtitle
+		descriptionTitleTextLabel.text = info.descriptionTitle
+		descriptionTextLabelsCollection.forEach {
+			$0.layer.applySketchShadow(color: theme.bottomShadowColor, alpha: 0.6, x: 6, y: 6, blur: 12, spread: 0)
+		}
+		
+		/// `rounded view`
+		
+		let roundedViewSize = U.UIHelper.AppDimensions.HelperBanner.roundedImageViewSize
+		reuseShadowViewWidthConstraint.constant = roundedViewSize
+		let defaultSize = CGSize(width: roundedViewSize * 0.4, height: roundedViewSize * 0.4)
+		let imageSize = info.infoImage.getPreservingAspectRationScaleImageSize(from: defaultSize)
+		reuseShadeoRoundedView.layoutIfNeeded()
+		reuseShadeoRoundedView.setImageWithCustomBackground(image: info.infoImage,
+															tineColor: theme.activeTitleTextColor,
+															size: imageSize,
+															colors: info.gradientColors)
+		helperImageView.image = info.helperImage
+		helperImageView.contentMode = .scaleToFill
+		
+		switch content {
+			case .compress:
+				setHelperImageSize(from: U.UIHelper.AppDimensions.HelperBanner.cornerHelperImageSize, of: info.helperImage)
+				helperImageViewTrailingConstraint.constant = 0
+			case .backup:
+				setHelperImageSize(from: U.UIHelper.AppDimensions.HelperBanner.offsetHelperImageSize, of: info.helperImage)
+				helperImageViewTrailingConstraint.constant = 15
+			default:
+				return
+		}
+	}
+	
+	private func setHelperImageSize(from target: CGFloat, of image: UIImage) {
+		
+		let targetSize = CGSize(width: target, height: target)
+		let helperImageSize = image.getPreservingAspectRationScaleImageSize(from: targetSize)
+		helperImageViewWidthConstraint.constant = helperImageSize.width
+		helperImageViewHeightConstraint.constant = helperImageSize.height
+	}
+}
+
+extension ContentBannerTableViewCell: Themeble {
+	
+	private func setupUI() {
+		
+		selectionStyle = .none
+		baseView.setCorner(14)
+		titleTextLabel.textAlignment = .left
+		subtitleTextLabel.textAlignment = .left
+		descriptionTitleTextLabel.textAlignment = .right
+		descriptionSubtitleTextLabel.textAlignment = .right
+		titleTextLabel.font = U.UIHelper.AppDefaultFontSize.ContentBunnerFontSize.titleFont
+		subtitleTextLabel.font = U.UIHelper.AppDefaultFontSize.ContentBunnerFontSize.titleSubtitleFont
+		descriptionTitleTextLabel.font = U.UIHelper.AppDefaultFontSize.ContentBunnerFontSize.descriptionTitleFont
+	}
+
+	func updateColors() {
+		
+		baseView.backgroundColor = .clear
+		reuseShadeoRoundedView.setShadowColor(for: theme.topShadowColor, and: theme.bottomShadowColor)
+		titleTextLabel.textColor = theme.titleTextColor
+		subtitleTextLabel.textColor = theme.subTitleTextColor
+	}
+}

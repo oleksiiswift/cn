@@ -368,6 +368,7 @@ class Constants {
 			static let helperBannerCell = "HelperBannerTableViewCell"
 			static let compressionCell = "CompressionSettingsTableViewCell"
 			static let videoPreviewCell = "VideoPreviewTableViewCell"
+			static let contentBannerCell = "ContentBannerTableViewCell"
         }
         
         struct views {
@@ -392,6 +393,7 @@ class Constants {
 			static let bannerCell = "HelperBannerTableViewCell"
 			static let compressionCell = "CompressionSettingsTableViewCell"
 			static let videoPreivew = "VideoPreviewTableViewCell"
+			static let contentBannerCell = "ContentBannerTableViewCell"
             /// `views`
             static let groupHeader = "GroupedAssetsReusableHeaderView"
             static let groupFooter = "GroupedAssetsReusableFooterView"

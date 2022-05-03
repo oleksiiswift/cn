@@ -40,16 +40,7 @@ extension Utils {
 				}
 			}
 			
-			static var heightOfRowOfMediaContentType: CGFloat {
-				switch screenSize {
-					case .small:
-						return 85
-					case .medium, .plus:
-						return 90
-					case .large, .modern, .max, .madMax:
-						return 100
-				}
-			}
+		
 			
 			static var mediaContentTypeCellIEdgeInset: UIEdgeInsets {
 				switch screenSize {
@@ -61,24 +52,6 @@ extension Utils {
 				}
 			}
 			
-			static var heightOfTopHelperCellBanner: CGFloat {
-				switch screenSize {
-					case .small:
-						return 140
-					default:
-						return 151
-				}
-			}
-			
-			static var heightOfBottomHelperCellBanner: CGFloat {
-				switch screenSize {
-					case .small:
-						return 140
-					default:
-						return 151
-				}
-			}
-			
 			static var dateSelectableHeight: CGFloat {
 				switch screenSize {
 					case .small:
@@ -87,17 +60,6 @@ extension Utils {
 						return 75
 					default:
 						return 85
-				}
-			}
-			
-			static var mediaContentTypeTopInset: CGFloat {
-				switch screenSize {
-					case .small:
-						return 5
-					case .medium:
-						return 10
-					default:
-						return 15
 				}
 			}
 			
@@ -136,6 +98,97 @@ extension Utils {
 						return 14
 					case .madMax:
 						return 14
+				}
+			}
+			
+			struct ContenTypeCells {
+				
+				static var heightOfRowOfMediaContentType: CGFloat {
+					switch screenSize {
+						case .small:
+							return 85
+						case .medium, .plus:
+							return 90
+						case .large, .modern, .max, .madMax:
+							return 100
+					}
+				}
+				
+				static var heightOfRowOfCuttedMediaContentType: CGFloat {
+					switch screenSize {
+						case .small:
+							return 85
+						case .medium, .plus, .large:
+							return 90
+						case .modern, .max, .madMax:
+							return 100
+					}
+				}
+
+				/// deep clean progress bar
+				static var heightOfTopHelperCellBanner: CGFloat {
+					switch screenSize {
+						case .small:
+							return 140
+						default:
+							return 151
+					}
+				}
+			
+				static var heightOfBottomHelperCellBanner: CGFloat {
+					switch screenSize {
+						case .small:
+							return 150
+						case .medium, .plus:
+							return 160
+						case .large:
+							return 170
+						case .modern, .max, .madMax:
+							return 180
+					}
+				}
+				
+				static var deepCleanMediaContentTypeTopInset: CGFloat {
+					switch screenSize {
+						case .small:
+							return 5
+						case .medium:
+							return 10
+						default:
+							return 15
+					}
+				}
+				
+				static var mediaContentTypeTopInset: CGFloat {
+					switch screenSize {
+						case .small:
+							return 20
+						case .medium:
+							return 30
+						case .plus:
+							return 50
+						case .large, .modern, .max, .madMax:
+							return 40
+					}
+				}
+				
+				static var mediaContentCutTypeInset: CGFloat {
+					switch screenSize {
+						case .small, .medium, .plus:
+							return 20
+						case .large:
+							return 20
+						case .modern:
+							return 20
+						case .max:
+							return 20
+						case .madMax:
+							return 20
+					}
+				}
+				
+				static var mediaContentBottomInset: CGFloat {
+					return Device.isSafeAreaiPhone ? 40 : 20
 				}
 			}
 			
@@ -252,10 +305,58 @@ extension Utils {
 				static var navigationBarButtonSize: CGFloat {
 					switch screenSize {
 						case .small:
+							return 50
+						case .medium:
+							return 55
+						default:
+							return 50
+					}
+				}
+			}
+			
+			struct HelperBanner {
+				
+				static var cornerHelperImageSize: CGFloat {
+					switch screenSize {
+						case .small:
+							return 55
+						case .medium:
+							return 60
+						case .large, .plus, .modern:
+							return 65
+						default:
+							return 70
+					}
+				}
+				
+				static var offsetHelperImageSize: CGFloat {
+					switch screenSize {
+						case .small:
+							return 60
+						case .medium:
+							return 70
+						case .large, .plus, .modern:
+							return 75
+						default:
+							return 80
+					}
+				}
+				
+				static var roundedImageViewSize: CGFloat {
+					switch screenSize {
+						case .small:
 							return 40
 						case .medium:
 							return 45
-						default:
+						case .plus:
+							return 45
+						case .large:
+							return 45
+						case .modern:
+							return 50
+						case .max:
+							return 50
+						case .madMax:
 							return 50
 					}
 				}
@@ -307,6 +408,64 @@ extension Utils {
 							return .systemFont(ofSize: 15.8, weight: .bold)
 						default:
 							return .systemFont(ofSize: 16.8, weight: .bold)
+					}
+				}
+			}
+			
+			struct ContentBunnerFontSize {
+				
+				static var titleFont: UIFont {
+					switch screenSize {
+						case .small:
+							return .systemFont(ofSize: 12, weight: .bold)
+						case .medium:
+							return .systemFont(ofSize: 14, weight: .bold)
+						case .plus, .large, .modern, .max, .madMax:
+							return .systemFont(ofSize: 16, weight: .bold)
+					}
+				}
+				
+				static var titleSubtitleFont: UIFont {
+					switch screenSize {
+						case .small:
+							return .systemFont(ofSize: 10, weight: .medium)
+						case .medium:
+							return .systemFont(ofSize: 12, weight: .medium)
+						case .plus, .large, .modern, .max, .madMax:
+							return .systemFont(ofSize: 14, weight: .medium)
+					}
+				}
+				
+				static var descriptionTitleFont: UIFont {
+					switch screenSize {
+						case .small:
+							return .systemFont(ofSize: 12, weight: .medium)
+						case .medium:
+							return .systemFont(ofSize: 14, weight: .medium)
+						case .plus, .large, .modern, .max, .madMax:
+							return .systemFont(ofSize: 16, weight: .medium)
+					}
+				}
+				
+				static var descriptionFirstSubtitleFont: UIFont {
+					switch screenSize {
+						case .small:
+							return .systemFont(ofSize: 20, weight: .heavy)
+						case .medium:
+							return .systemFont(ofSize: 22, weight: .heavy)
+						case .plus, .large, .modern, .max, .madMax:
+							return .systemFont(ofSize: 24, weight: .heavy)
+					}
+				}
+				
+				static var descriptionSecondSubtitleFont: UIFont {
+					switch screenSize {
+						case .small:
+							return .systemFont(ofSize: 24, weight: .heavy)
+						case .medium:
+							return .systemFont(ofSize: 26, weight: .heavy)
+						case .plus, .large, .modern, .max, .madMax:
+							return .systemFont(ofSize: 29, weight: .heavy)
 					}
 				}
 			}
@@ -429,7 +588,7 @@ extension Utils {
 				  return UIColor(patternImage: image!)
 			}
 			
-			static func getGradientLayer(bounds : CGRect, colors: [CGColor]) -> CAGradientLayer{
+			static func getGradientLayer(bounds : CGRect, colors: [CGColor]) -> CAGradientLayer {
 				let gradient = CAGradientLayer()
 				gradient.frame = bounds
 				gradient.colors = colors
@@ -438,6 +597,18 @@ extension Utils {
 				gradient.endPoint = CGPoint(x: 0.0, y: 1.0)
 				return gradient
 			}
+			
+			static func getGradientLayer(bounds: CGRect, colors: [CGColor], startPoint: CAGradientPoint, endPoint: CAGradientPoint) -> CAGradientLayer {
+				let gradient = CAGradientLayer()
+				gradient.frame = bounds
+				gradient.colors = colors
+				gradient.type = .axial
+				gradient.startPoint = startPoint.point
+				gradient.endPoint = endPoint.point
+				return gradient
+			}
 		}
 	}
 }
+
+

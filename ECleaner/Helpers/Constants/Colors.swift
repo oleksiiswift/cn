@@ -361,6 +361,15 @@ enum Theme: Int {
                 return UIColor().colorFromHexString("FFFFFF")
         }
     }
+	
+	var contentTypeTintColor: UIColor {
+		switch self {
+			case .light:
+				return UIColor().colorFromHexString("FFFFFF")
+			case .dark:
+				return UIColor().colorFromHexString("FFFFFF")
+		}
+	}
     
 //    MARK: - title and subtitle colors -
     
@@ -574,6 +583,14 @@ enum Theme: Int {
 		}
 	}
 	
+	var contactsGradientStarterColor: UIColor {
+		switch self {
+			case .light:
+				return UIColor().colorFromHexString("23AEA0")
+			case .dark:
+				return UIColor().colorFromHexString("23AEA0")
+		}
+	}
 	
 	var videoGradientEndingColor: UIColor {
 		switch self {
@@ -581,6 +598,68 @@ enum Theme: Int {
 				return UIColor().colorFromHexString("55BFF5")
 			case .dark:
 				return UIColor().colorFromHexString("55BFF5")
+		}
+	}
+	
+	var contactsGradientEndingColor: UIColor {
+		switch self {
+			case .light:
+				return UIColor().colorFromHexString("6DACD7")
+			case .dark:
+				return UIColor().colorFromHexString("6DACD7")
+		}
+	}
+	
+	var photoGradient: [UIColor] {
+		switch self {
+			case .light:
+				return [photoGradientStarterColor, photoGradeintEndingColor]
+			case .dark:
+				return [photoGradientStarterColor, photoGradeintEndingColor]
+		}
+	}
+	
+	var videoGradient: [UIColor] {
+		switch self {
+			case .light:
+				return [videGradietnStarterColor, videoGradientEndingColor]
+			case .dark:
+				return [videGradietnStarterColor, videoGradientEndingColor]
+		}
+	}
+	
+	var contactsGradient: [UIColor] {
+		switch self {
+			case .light:
+				return [contactsGradientStarterColor, contactsGradientEndingColor]
+			case .dark:
+				return [contactsGradientStarterColor, contactsGradientEndingColor]
+		}
+	}
+	
+	var compressionGradient: [UIColor] {
+		switch self {
+			case .light:
+				let startColor = UIColor().colorFromHexString("3023AE")
+				let endColor = UIColor ().colorFromHexString("C86DD7")
+				return [startColor, endColor]
+			case .dark:
+				let startColor = UIColor().colorFromHexString("3023AE")
+				let endColor = UIColor ().colorFromHexString("C86DD7")
+				return [startColor, endColor]
+		}
+	}
+	
+	var backupGradient: [UIColor] {
+		switch self {
+			case .light:
+				let startColor = UIColor().colorFromHexString("23AEA0")
+				let endColor = UIColor ().colorFromHexString("6DACD7")
+				return [startColor, endColor]
+			case .dark:
+				let startColor = UIColor().colorFromHexString("23AEA0")
+				let endColor = UIColor ().colorFromHexString("6DACD7")
+				return [startColor, endColor]
 		}
 	}
 }

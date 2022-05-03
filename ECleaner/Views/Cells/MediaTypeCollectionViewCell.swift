@@ -101,6 +101,9 @@ extension MediaTypeCollectionViewCell: Themeble {
 		
 		circleprogress.startColor = mediaTypeCell.screeAcentGradientUICoror.first!
 		circleprogress.endColor = mediaTypeCell.screeAcentGradientUICoror.last!
+		circleprogress.gradientSetup(startPoint: CAGradientPoint.topLeft.point,
+									 endPoint: CAGradientPoint.bottomRight.point,
+									 gradientType: .axial)
     }
     
 	private func handleIndicator(_ space: Int64?) {
