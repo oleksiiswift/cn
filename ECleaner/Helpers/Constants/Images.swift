@@ -77,6 +77,7 @@ class Images {
             static let processingThumb = UIImage(named: "contactsProcessingEmptyItem")!
             static let unavailibleThumb = UIImage(named: "contactsThumbUnselect")!
 			static let backupContacts = UIImage(named: "backupContactsItem")!
+			static let bannerHelperImage = UIImage(named: "cloudSyncConatactItem")!
         }
         
         struct photo {
@@ -93,6 +94,7 @@ class Images {
 			static let unselected = UIImage(named: "unselectedRoundedItem")!
 			static let selected = UIImage(named: "selectedRoundedItem")!
 			static let reset = UIImage(named: "resetBackwardItem")!
+			static let bannerHelperImage = UIImage(named: "compressZipItem")!
         }
     }
 	

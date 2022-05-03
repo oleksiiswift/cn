@@ -12,25 +12,26 @@ class ReuseShadowRoundedView: UIView {
     private let topLayer = CALayer()
     private let bottomLayer = CALayer()
     private let imageView = UIImageView()
+	private let helperImageView = UIImageView()
     
     public var topShadowColor: UIColor = .red
     public var bottomShadowColor: UIColor = .black
     public var templateTintColor: UIColor = .orange
     
     private var activityIndicatorView = UIActivityIndicatorView()
-
+	
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        setupImageView()
         setupShadowViews()
         setupView()
     }
     
     public func setImage(_ image: UIImage? = nil) {
         imageView.image = image
+		setupImageView()
     }
-    
+	
     public func setShadowColor(for topShadow: UIColor, and bottomShadow: UIColor) {
         topShadowColor = topShadow
         bottomShadowColor = bottomShadow
@@ -73,7 +74,26 @@ class ReuseShadowRoundedView: UIView {
     public func setTintColor(_ tintColor: UIColor) {
         imageView.tintColor = tintColor
     }
-
+	
+	public func setImageWithCustomBackground(image: UIImage, tineColor: UIColor, size: CGSize, colors: [UIColor]) {
+		
+		helperImageView.image = image
+		helperImageView.tintColor = tineColor
+		helperImageView.contentMode = .scaleToFill
+		self.addSubview(helperImageView)
+		helperImageView.translatesAutoresizingMaskIntoConstraints = false
+		helperImageView.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
+		helperImageView.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
+		helperImageView.heightAnchor.constraint(equalToConstant: size.width).isActive = true
+		helperImageView.widthAnchor.constraint(equalToConstant: size.height).isActive = true
+		
+		let gradientColors = colors.compactMap({$0.cgColor})
+		let gradientBaseView = UIView(frame: CGRect(x: 0, y: 0, width: self.frame.size.width, height: self.frame.size.height))
+		gradientBaseView.rounded()
+		self.insertSubview(gradientBaseView, belowSubview: helperImageView)
+		gradientBaseView.layerGradient(startPoint: .topLeft, endPoint: .bottomRight, colors: gradientColors , type: .axial)
+	}
+	
     private func setupImageView() {
         
         imageView.frame = CGRect(x: 0, y: 0, width: self.frame.width, height: self.frame.height)
