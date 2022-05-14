@@ -279,7 +279,7 @@ extension DateSelectorViewController: Themeble {
 		mainContainerView.cornerSelectRadiusView(corners: [.topLeft, .topRight], radius: 20)
         mainContainerViewHeightConstraint.constant = containerHeight
 	
-		let autoDateSelectSize = U.UIHelper.AppDimensions.NavigationBar.navigationBarButtonSize - 10
+		let autoDateSelectSize = U.UIHelper.AppDimensions.NavigationBar.startingNavigationBarButtonSize - 10
 		autoDatePickerButtonWidthConstraint.constant = autoDateSelectSize
 	
 		bottomButtonView.title("SUBMIT".localized())

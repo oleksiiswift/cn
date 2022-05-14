@@ -142,6 +142,7 @@
                         <outlet property="bottomMenuHeightConstraint" destination="Drw-r8-NaI" id="zUh-lr-Grf"/>
                         <outlet property="collectionView" destination="qrX-u6-Im9" id="DvB-dn-Ev9"/>
                         <outlet property="navigationBar" destination="DJk-mj-GNF" id="gCm-BN-JZ0"/>
+                        <outlet property="navigationBarHeightConstraint" destination="2DQ-dB-3zP" id="EeN-mK-Abe"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="eh2-31-QPm" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

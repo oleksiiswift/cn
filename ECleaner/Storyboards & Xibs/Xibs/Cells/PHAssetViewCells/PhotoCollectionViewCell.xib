@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19519"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -36,10 +36,10 @@
                                 </constraints>
                             </imageView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="t63-kq-mOP">
-                                <rect key="frame" x="12" y="199" width="36" height="20"/>
+                                <rect key="frame" x="12" y="204" width="30" height="15"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NkM-6d-qED">
-                                        <rect key="frame" x="0.0" y="0.0" width="36" height="20"/>
+                                        <rect key="frame" x="5" y="3" width="20" height="9"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="10"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -47,12 +47,12 @@
                                 </subviews>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <constraints>
-                                    <constraint firstAttribute="trailing" secondItem="NkM-6d-qED" secondAttribute="trailing" id="Fof-Ta-0Op"/>
-                                    <constraint firstAttribute="height" constant="20" id="Jkl-T6-Ogb"/>
-                                    <constraint firstItem="NkM-6d-qED" firstAttribute="leading" secondItem="t63-kq-mOP" secondAttribute="leading" id="Uhv-6t-RSW"/>
-                                    <constraint firstItem="NkM-6d-qED" firstAttribute="top" secondItem="t63-kq-mOP" secondAttribute="top" id="ZV1-B9-eGp"/>
-                                    <constraint firstAttribute="bottom" secondItem="NkM-6d-qED" secondAttribute="bottom" id="kfk-oY-HsK"/>
-                                    <constraint firstAttribute="width" constant="36" id="m9b-Mw-ImL"/>
+                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="15" id="7Vx-5v-tdo"/>
+                                    <constraint firstAttribute="trailing" secondItem="NkM-6d-qED" secondAttribute="trailing" constant="5" id="Fof-Ta-0Op"/>
+                                    <constraint firstItem="NkM-6d-qED" firstAttribute="leading" secondItem="t63-kq-mOP" secondAttribute="leading" constant="5" id="Uhv-6t-RSW"/>
+                                    <constraint firstItem="NkM-6d-qED" firstAttribute="top" secondItem="t63-kq-mOP" secondAttribute="top" constant="3" id="ZV1-B9-eGp"/>
+                                    <constraint firstAttribute="bottom" secondItem="NkM-6d-qED" secondAttribute="bottom" constant="3" id="kfk-oY-HsK"/>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="30" id="m9b-Mw-ImL"/>
                                 </constraints>
                             </view>
                             <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="foM-CQ-sAx">
@@ -189,7 +189,7 @@
                 <outlet property="videoAssetDurationTextLabel" destination="NkM-6d-qED" id="QgV-NN-Dhb"/>
                 <outlet property="videoAssetDurationView" destination="t63-kq-mOP" id="uoZ-OH-TCT"/>
             </connections>
-            <point key="canvasLocation" x="281.15942028985512" y="176.45089285714286"/>
+            <point key="canvasLocation" x="122" y="170"/>
         </collectionViewCell>
     </objects>
     <resources>

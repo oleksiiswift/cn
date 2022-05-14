@@ -15,6 +15,7 @@ class SimpleAssetsListViewController: UIViewController {
 	@IBOutlet weak var collectionView: UICollectionView!
 	@IBOutlet weak var bottomButtonView: BottomButtonBarView!
 	@IBOutlet weak var bottomMenuHeightConstraint: NSLayoutConstraint!
+	@IBOutlet weak var navigationBarHeightConstraint: NSLayoutConstraint!
 	
 	private let flowLayout = SimpleColumnFlowLayout(cellsPerRow: 3,
 													minimumInterSpacing: 0,
@@ -311,7 +312,7 @@ extension SimpleAssetsListViewController {
 		guard !isDeepCleaningSelectableFlow else { return }
 		
 		if let selectedItems = collectionView.indexPathsForSelectedItems {
-			bottomMenuHeightConstraint.constant = selectedItems.count > 0 ? (bottomMenuHeight + U.bottomSafeAreaHeight - 5) : 0
+			bottomMenuHeightConstraint.constant = selectedItems.count > 0 ? U.UIHelper.AppDimensions.bottomBarDefaultHeight : 0
 			
 			switch mediaType {
 				case .singleRecentlyDeletedPhotos, .singleRecentlyDeletedVideos:
@@ -320,8 +321,8 @@ extension SimpleAssetsListViewController {
 					bottomButtonView.title("delete selected (\(selectedItems.count))")
 			}
 			
-			self.collectionView.contentInset.bottom = selectedItems.count > 0 ? 70 + U.bottomSafeAreaHeight : 5
-			U.animate(0.5) {
+			U.animate(0.35) {
+				self.collectionView.contentInset.bottom = selectedItems.count > 0 ? U.UIHelper.AppDimensions.bottomBarDefaultHeight + 10 + U.bottomSafeAreaHeight : 5
 				self.collectionView.layoutIfNeeded()
 				self.view.layoutIfNeeded()
 			}
@@ -419,6 +420,7 @@ extension SimpleAssetsListViewController {
 	func setupUI() {
 		
 		bottomMenuHeightConstraint.constant = 0
+		navigationBarHeightConstraint.constant = U.UIHelper.AppDimensions.NavigationBar.navigationBarHeight
 		
 		switch mediaType {
 			case .singleRecentlyDeletedPhotos, .singleRecentlyDeletedVideos:
@@ -457,6 +459,13 @@ extension SimpleAssetsListViewController: UICollectionViewDelegate, UICollection
 		switch mediaType {
 			case .singleLargeVideos:
 				flowLayout.isSquare = true
+				flowLayout.cellsPerRow = 2
+			case .singleScreenRecordings:
+				flowLayout.itemHieght = U.UIHelper.AppDimensions.CollectionItemSize.singleCollectionScreenRecordingItemSize
+			case .singleScreenShots:
+				flowLayout.itemHieght = U.UIHelper.AppDimensions.CollectionItemSize.singleCollectionScreenShotsItemSize
+			case .singleLivePhotos:
+				flowLayout.itemHieght = U.UIHelper.AppDimensions.CollectionItemSize.singleCollectionLivePhotoItemSize
 			default:
 				flowLayout.itemHieght = ((U.screenWidth - 30) / 3) / U.ratio
 		}
@@ -468,6 +477,7 @@ extension SimpleAssetsListViewController: UICollectionViewDelegate, UICollection
 		self.collectionView.allowsMultipleSelection = true
 		self.collectionView.contentInset.top = 20
 		self.collectionView.reloadData()
+		self.collectionView.alwaysBounceVertical = true
 	}
 	
 	private func configure(_ cell: PhotoCollectionViewCell, at indexPath: IndexPath) {
@@ -477,6 +487,7 @@ extension SimpleAssetsListViewController: UICollectionViewDelegate, UICollection
 		cell.tag = indexPath.section * 1000 + indexPath.row
 		cell.cellMediaType = self.mediaType
 		cell.cellContentType = self.contentType
+		cell.selectButtonSetup(by: self.mediaType)
 			/// config thumbnail according screen type
 		let asset = assetCollection[indexPath.row]
 		

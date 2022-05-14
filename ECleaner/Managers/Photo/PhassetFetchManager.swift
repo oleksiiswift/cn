@@ -340,7 +340,9 @@ extension PHAssetFetchManager {
 		let dateCalculatedOperation = ConcurrentProcessOperation { _ in
 			
 			U.GLB(qos: .background, {
-
+				
+				let timer = ParkBenchTimer()
+				
 				var lowerDateValue: Date {
 					return S.lowerBoundSavedDate
 				}
@@ -353,19 +355,21 @@ extension PHAssetFetchManager {
 				fetchOption.sortDescriptors = [NSSortDescriptor(key: SortingDesriptionKey.creationDate.value, ascending: false)]
 				fetchOption.predicate = NSPredicate(format: SDKey.allMediaType.value, PHAssetMediaType.image.rawValue, PHAssetMediaType.video.rawValue)
 				let assets = PHAsset.fetchAssets(with: fetchOption)
-
+				
+				var phassets: [PHAsset] = []
 				assets.enumerateObjects { object, index, stopped in
-					
+					phassets.append(object)
 					if let date = object.creationDate {
 						if date.isLessThanDate(dateToCompare: lowerDateValue) {
 							S.lowerBoundSavedDate = date
 						}
-						
+
 						if date.isGreaterThanDate(dateToCompare: upperDateValue) {
 							S.upperBoundSavedDate = date
 						}
 					}
 				}
+				debugPrint("**->>> timer lower data -> \(timer.stop())")
 			})
 			
 		}

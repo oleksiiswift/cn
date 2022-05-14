@@ -418,6 +418,33 @@ enum PhotoMediaType: String {
 		info[.backup] = syncContactsBannerInfo
 		return ContentBannerInfoModel(info: info)
 	}
+	
+	var representedCollectionFlowLayoutType: CollectionFlowLayoutType {
+		switch self {
+			case .similarPhotos:
+				return .grouped
+			case .duplicatedPhotos:
+				return .grouped
+			case .singleScreenShots:
+				return .portrait
+			case .singleLivePhotos:
+				return .portrait
+			case .similarLivePhotos:
+				return .grouped
+			case .similarSelfies:
+				return .portrait
+			case .singleLargeVideos:
+				return .square
+			case .duplicatedVideos:
+				return .grouped
+			case .similarVideos:
+				return .grouped
+			case .compress:
+				return .square
+			default:
+				return .square
+		}
+	}
 }
 
 

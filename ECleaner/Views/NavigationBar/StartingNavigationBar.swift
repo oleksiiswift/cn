@@ -29,7 +29,7 @@ class StartingNavigationBar: UIView {
 		}
 	}
 	
-	public var buttonSize = U.UIHelper.AppDimensions.NavigationBar.navigationBarButtonSize {
+	public var buttonSize = U.UIHelper.AppDimensions.NavigationBar.startingNavigationBarButtonSize {
 		didSet {
 			self.setButtonsSize(buttonSize)
 		}

@@ -502,7 +502,9 @@ extension DeepCleaningViewController {
                 let totalProcessingAssetsCount = userInfo[type.dictionaryCountName] as? Int,
                 let index = userInfo[type.dictionaryIndexName] as? Int else { return }
 		  self.calculateProgressPercentage(total: totalProcessingAssetsCount, current: index) { progress in
-			   self.deepCleanProgressStatusUpdate(type, status: status, currentProgress: progress)
+			   U.UI {
+					self.deepCleanProgressStatusUpdate(type, status: status, currentProgress: progress)					
+			   }
 		  }
      }
 	 
@@ -548,8 +550,9 @@ extension DeepCleaningViewController {
 	 
 	 private func deepCleanProgressStatusUpdate(_ notificationType: DeepCleanNotificationType, status: ProcessingProgressOperationState, currentProgress: CGFloat) {
 		  
+		  
 		  let mediaType: PhotoMediaType = notificationType.mediaTypeRawValue
-	 
+		  
 		  self.deepCleanModel.objects[mediaType]?.cleanState = status
 		  self.deepCleanModel.objects[mediaType]?.deepCleanProgress = currentProgress
 		  
@@ -574,12 +577,7 @@ extension DeepCleaningViewController {
 	 }
 	 
      private func calculateProgressPercentage(total: Int, current: Int, completion: @escaping (CGFloat) -> Void) {
-		  U.GLB(qos: .background) {
-			   let totalPercent = CGFloat(Double(current) / Double(total)) * 100
-			   U.UI {
-					completion(totalPercent)
-			   }
-		  }
+			   completion(CGFloat(Double(current) / Double(total)) * 100)
      }
 }
 
@@ -691,7 +689,11 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
           tableView.register(UINib(nibName: C.identifiers.xibs.cleanInfoCell, bundle: nil), forCellReuseIdentifier: C.identifiers.cells.cleanInfoCell)
           tableView.separatorStyle = .none
 		  tableView.contentInset.top = U.UIHelper.AppDimensions.ContenTypeCells.deepCleanMediaContentTypeTopInset
-          tableView.contentInset.bottom = 50
+		  tableView.contentInset.bottom = U.UIHelper.AppDimensions.bottomBarDefaultHeight - 20
+		  UIView.performWithoutAnimation {
+			   tableView.layoutIfNeeded()
+			   self.view.layoutIfNeeded()
+		  }
      }
      
 	 private func configure(_ cell: ContentTypeTableViewCell, at indexPath: IndexPath, currentProgress: CGFloat? = nil) {
@@ -1036,23 +1038,27 @@ extension DeepCleaningViewController {
 	 
 	 private func showBottomButtonBar() {
 		  bottomContainerHeightConstraint.constant = U.UIHelper.AppDimensions.bottomBarDefaultHeight
-		  self.tableView.contentInset.bottom = 50
-		  self.tableView.layoutIfNeeded()
-		  self.view.layoutIfNeeded()
+		  U.animate(0.35) {
+			   self.tableView.contentInset.bottom =  U.UIHelper.AppDimensions.bottomBarDefaultHeight - 20
+			   self.tableView.layoutIfNeeded()
+			   self.view.layoutIfNeeded()
+		  }
 	 }
 	 
 	 private func hideBottomButtonBar() {
 		  bottomContainerHeightConstraint.constant = 0
-		  self.tableView.contentInset.bottom = 10
-		  self.tableView.layoutIfNeeded()
-		  self.view.layoutIfNeeded()
+		  U.animate(0.35) {
+			   self.tableView.contentInset.bottom = 0
+			   self.tableView.layoutIfNeeded()
+			   self.view.layoutIfNeeded()
+		  }
 	 }
 	 
 	 private func handleButtonStateActive() {
 		  
 		  let selectedAssetsCount = deepCleanModel.objects.values.flatMap({$0.selectedAssetsCollectionID}).count
 		  bottomContainerHeightConstraint.constant = selectedAssetsCount > 0 ? U.UIHelper.AppDimensions.bottomBarDefaultHeight : 0
-		  self.tableView.contentInset.bottom = selectedAssetsCount > 0 ? 40 : 25
+		  self.tableView.contentInset.bottom = selectedAssetsCount > 0 ? U.UIHelper.AppDimensions.bottomBarDefaultHeight - 20 : 0
 		  
 		  U.animate(0.5) {
 			   self.tableView.layoutIfNeeded()

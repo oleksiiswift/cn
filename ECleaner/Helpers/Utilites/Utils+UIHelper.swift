@@ -16,6 +16,45 @@ extension Utils {
 		
 		struct AppDimensions {
 			
+			struct CollectionItemSize {
+				
+				static var singleCollectionScreenRecordingItemSize: CGFloat {
+					switch screenSize {
+						case .small:
+							return  ((U.screenWidth - 30) / 3) / U.ratio
+						default:
+							return  ((U.screenWidth - 30) / 3) / U.ratio
+					}
+				}
+				
+				static var singleCollectionScreenShotsItemSize: CGFloat {
+					switch screenSize {
+						case .small:
+							return  ((U.screenWidth - 30) / 3) / U.ratio
+						default:
+							return  ((U.screenWidth - 30) / 3) / U.ratio
+					}
+				}
+				
+				static var singleCollectionLivePhotoItemSize: CGFloat {
+					switch screenSize {
+						case .small:
+							return  ((U.screenWidth - 30) / 4) / U.ratio
+						default:
+							return  ((U.screenWidth - 30) / 3) / U.ratio
+					}
+				}
+				
+				static var cellSelectRectangleSize: CGFloat {
+					switch screenSize {
+						case .small:
+							return 25
+						default:
+							return 40
+					}
+				}
+			}
+			
 			static var bottomBarDefaultHeight: CGFloat {
 				if Device.isSafeAreaiPhone {
 					return 70 + U.bottomSafeAreaHeight
@@ -39,8 +78,6 @@ extension Utils {
 						return 60
 				}
 			}
-			
-		
 			
 			static var mediaContentTypeCellIEdgeInset: UIEdgeInsets {
 				switch screenSize {
@@ -302,12 +339,23 @@ extension Utils {
 					}
 				}
 				
+				static var startingNavigationBarButtonSize: CGFloat {
+					switch screenSize {
+						case .small:
+							return 40
+						case .medium:
+							return 55
+						default:
+							return 50
+					}
+				}
+				
 				static var navigationBarButtonSize: CGFloat {
 					switch screenSize {
 						case .small:
-							return 50
+							return 45
 						case .medium:
-							return 55
+							return 50
 						default:
 							return 50
 					}
@@ -375,6 +423,17 @@ extension Utils {
 							return .systemFont(ofSize: 16, weight: .bold)
 						default:
 							return .systemFont(ofSize: 17, weight: .bold)
+					}
+				}
+				
+				static var navigationBarButtonItemsFont: UIFont {
+					switch screenSize {
+						case .small:
+							return .systemFont(ofSize: 14, weight: .medium)
+						case .medium:
+							return .systemFont(ofSize: 16, weight: .medium)
+						default:
+							return .systemFont(ofSize: 17, weight: .medium)
 					}
 				}
 			}
@@ -548,6 +607,59 @@ extension Utils {
 						  return .systemFont(ofSize: 15, weight: .bold)
 					 case .large, .modern, .max, .madMax:
 						  return .systemFont(ofSize: 16, weight: .bold)
+				}
+			}
+			
+			struct CollectionView {
+				
+				 static public func getVideoDurationFontSize(of collectionType: CollectionFlowLayoutType) -> UIFont {
+					
+					switch collectionType {
+						case .carousel:
+							return self.carouselDuratationLabelFont
+						case .square:
+							return self.squareDuarationLabelFont
+						default:
+							return .systemFont(ofSize: 10, weight: .bold)
+					}
+				}
+				
+				static private var carouselDuratationLabelFont: UIFont {
+					switch screenSize {
+						case .small:
+							return .systemFont(ofSize: 6, weight: .medium) //<- current tested device
+						case .medium:
+							return .systemFont(ofSize: 7, weight: .bold)
+						case .plus:
+							return .systemFont(ofSize: 8, weight: .bold)
+						case .large:
+							return .systemFont(ofSize: 9, weight: .bold)
+						case .modern:
+							return .systemFont(ofSize: 9, weight: .bold)
+						case .max:
+							return .systemFont(ofSize: 9, weight: .bold)
+						case .madMax:
+							return .systemFont(ofSize: 9, weight: .bold)
+					}
+				}
+				
+				static private var squareDuarationLabelFont: UIFont {
+					switch screenSize {
+						case .small:
+							return .systemFont(ofSize: 8, weight: .medium)
+						case .medium:
+							return .systemFont(ofSize: 6, weight: .medium)
+						case .plus:
+							return .systemFont(ofSize: 6, weight: .medium)
+						case .large:
+							return .systemFont(ofSize: 6, weight: .medium)
+						case .modern:
+							return .systemFont(ofSize: 6, weight: .medium)
+						case .max:
+							return .systemFont(ofSize: 6, weight: .medium)
+						case .madMax:
+							return .systemFont(ofSize: 6, weight: .medium)
+					}
 				}
 			}
 		}

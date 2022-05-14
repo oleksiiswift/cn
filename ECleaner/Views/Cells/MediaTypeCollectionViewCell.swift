@@ -65,7 +65,13 @@ extension MediaTypeCollectionViewCell: Themeble {
 		
         switch mediaType {
             case .userPhoto:
-				self.handleIndicator(diskSpace)
+				if diskSpace != nil {
+					self.handleIndicator(diskSpace)
+				} else if S.phassetPhotoFilesSizes != nil {
+					self.handleIndicator(S.phassetPhotoFilesSizes)
+				} else {
+					self.handleIndicator(nil)
+				}
                 mediaContentView.imageView.image = I.mainStaticItems.photo
                 mediaContentTitleTextLabel.text = "PHOTOS_TITLE".localized()
 
@@ -75,7 +81,13 @@ extension MediaTypeCollectionViewCell: Themeble {
                     mediaContentSubTitleTextLabel.text = contentCount == nil ? "" : "NO CONTENT"
                 }
             case .userVideo:
-				self.handleIndicator(diskSpace)
+				if diskSpace != nil {
+					self.handleIndicator(diskSpace)
+				} else if S.phassetVideoFilesSizes != nil {
+					self.handleIndicator(S.phassetVideoFilesSizes)
+				} else {
+					self.handleIndicator(nil)
+				}
                 mediaContentView.imageView.image = I.mainStaticItems.video
                 mediaContentTitleTextLabel.text = "VIDEOS_TITLE".localized()
                 
@@ -119,12 +131,12 @@ extension MediaTypeCollectionViewCell: Themeble {
 	
 	public func setProgress(_ progress: CGFloat) {
 		U.animate(1) {
-			self.circleprogress.isHidden = !(0.1...0.99).contains(progress)
+			self.circleprogress.isHidden = !(0.01...0.89).contains(progress)
 		}
-		UIView.performWithoutAnimation {
+
+		guard self.circleprogress.progress < progress else { return }
 			self.circleprogress.setProgress(progress: progress, animated: false)
 			self.circleprogress.layoutIfNeeded()
-		}
 	}
 	
 	private func setupProgressBar() {
@@ -177,12 +189,14 @@ extension MediaTypeCollectionViewCell: Themeble {
         diskSpaceImageView.isHidden = true
         mediaSpaceTitleTextLabel.isHidden = true
         addDimmerSpaceClearView()
+		circleprogress.isHidden = true
     }
     
     private func hideActivityIndicatorAndShowData() {
         loadingActivityIndicatorView.removeFromSuperview()
         diskSpaceImageView.isHidden = false
         mediaSpaceTitleTextLabel.isHidden = false
+		circleprogress.isHidden = true
     }
 	
 	private func hideActivityIndicatorAndShowProgress() {

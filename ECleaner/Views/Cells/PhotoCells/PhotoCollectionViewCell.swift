@@ -8,6 +8,8 @@
 import UIKit
 import Photos
 
+
+
 protocol PhotoCollectionViewCellDelegate {
 	func didShowFullScreenPHasset(at cell: PhotoCollectionViewCell)
 	func didSelect(cell: PhotoCollectionViewCell)
@@ -27,9 +29,10 @@ class PhotoCollectionViewCell: UICollectionViewCell {
 	@IBOutlet weak var buttonView: UIButton!
 	@IBOutlet weak var bestView: UIView!
     @IBOutlet weak var bestLabel: UILabel!
+	
     @IBOutlet weak var videoAssetDurationView: UIView!
-    
     @IBOutlet weak var videoAssetDurationTextLabel: UILabel!
+	
 	@IBOutlet weak var playPhassetImageView: UIImageView!
 	@IBOutlet weak var selectCellButtonWidthConstraint: NSLayoutConstraint!
     @IBOutlet weak var selectCellButtonHeightConstraint: NSLayoutConstraint!
@@ -38,10 +41,11 @@ class PhotoCollectionViewCell: UICollectionViewCell {
 	@IBOutlet weak var reuseTrailingConstraint: NSLayoutConstraint!
 	@IBOutlet weak var reuseBottomConstraint: NSLayoutConstraint!
 	
+	private var selectButtonSize = U.UIHelper.AppDimensions.CollectionItemSize.cellSelectRectangleSize
+	public var collectionFlowLayoutType: CollectionFlowLayoutType = .square
     public var indexPath: IndexPath?
     public var cellMediaType: PhotoMediaType = .none
 	public var cellContentType: MediaContentType = .none
-	
 	private var imageManager: PHCachingImageManager?
 	private var imageRequestID: PHImageRequestID?
     
@@ -61,7 +65,6 @@ class PhotoCollectionViewCell: UICollectionViewCell {
 		}
 	}
 	
-
     override func awakeFromNib() {
         super.awakeFromNib()
 
@@ -115,9 +118,6 @@ extension PhotoCollectionViewCell: Themeble {
         switch contentType {
 			case .duplicatedVideos, .similarVideos, .similarPhotos, .duplicatedPhotos, .similarSelfies:
                 if indexPath?.row != 0 {
-                    selectCellButtonWidthConstraint.constant = 40
-                    selectCellButtonHeightConstraint.constant = 40
-                    buttonView.layoutIfNeeded()
 					setBestView(availible: false)
 					setSelectable(availible: true)
 				} else {
@@ -126,14 +126,13 @@ extension PhotoCollectionViewCell: Themeble {
 					setupBestView()
 				}
 			case .compress:
-				selectCellButtonWidthConstraint.constant = 0
-				selectCellButtonHeightConstraint.constant = 0
 				setBestView(availible: false)
 				setSelectable(availible: isBatchSelect)
             default:
                 setBestView(availible: false)
 				setSelectable(availible: true)
         }
+		buttonView.layoutIfNeeded()
     }
     
     func updateColors() {
@@ -144,8 +143,8 @@ extension PhotoCollectionViewCell: Themeble {
 		bestLabel.textColor  = theme.activeTitleTextColor
         videoAssetDurationView.backgroundColor = theme.subTitleTextColor
 		videoAssetDurationTextLabel.textColor = theme.activeTitleTextColor
-		videoAssetDurationTextLabel.font = .systemFont(ofSize: 10, weight: .bold)
-		
+		videoAssetDurationTextLabel.font = U.UIHelper.AppDefaultFontSize.CollectionView.getVideoDurationFontSize(of: self.collectionFlowLayoutType)
+
 		circleSelectThumbView.backgroundColor = theme.cellBackGroundColor
 		bulbview.backgroundColor = cellContentType.screenAcentTintColor
     }
@@ -175,22 +174,30 @@ extension PhotoCollectionViewCell: Themeble {
                 if asset.mediaType == .video {
                     let duration = CMTime(seconds: asset.duration, preferredTimescale: 1000000)
                     videoAssetDurationTextLabel.text = duration.durationText
+					setDurationView(isAvailible: true)
 					playPhassetImageView.isHidden = false
                 }
 			case .duplicatedPhotos, .similarPhotos, .similarSelfies, .similarLivePhotos:
-                videoAssetDurationView.isHidden = true
+                setDurationView(isAvailible: false)
 				playPhassetImageView.isHidden = true
 			case .singleScreenRecordings, .singleRecentlyDeletedVideos, .singleLargeVideos, .compress:
                 if asset.mediaType == .video {
                     let duration = CMTime(seconds: asset.duration, preferredTimescale: 1000000)
+					setDurationView(isAvailible: true)
                     videoAssetDurationTextLabel.text = duration.durationText
 					playPhassetImageView.isHidden = false
                 }
             default:
-                videoAssetDurationView.isHidden = true
+                setDurationView(isAvailible: false)
 				playPhassetImageView.isHidden = true
         }
     }
+	
+	private func setDurationView(isAvailible: Bool) {
+		
+		videoAssetDurationTextLabel.isHidden = !isAvailible
+		videoAssetDurationView.isHidden = !isAvailible
+	}
 	
 	public func unload() {
 		photoThumbnailImageView.image = nil
@@ -212,7 +219,7 @@ extension PhotoCollectionViewCell: Themeble {
 	}
 	
 	public func setupBestView() {
-		
+			
 		let bestViewGradientMask: CAGradientLayer = CAGradientLayer()
 		bestViewGradientMask.frame = CGRect(x: 0, y: 0, width: bestView.frame.width, height: bestView.frame.height)
 		bestViewGradientMask.colors = self.cellContentType.screeAcentGradientColorSet
@@ -224,6 +231,8 @@ extension PhotoCollectionViewCell: Themeble {
 	
 	public func setSelectable(availible: Bool = true) {
 		selectableView.isHidden = !availible
+		selectCellButtonWidthConstraint.constant = availible ? selectButtonSize : 0
+		selectCellButtonHeightConstraint.constant = availible ? selectButtonSize : 0
 	}
 }
 
