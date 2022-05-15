@@ -17,9 +17,9 @@ class NavigationBar: UIView {
     @IBOutlet weak var rightButtonTrailingConstraint: NSLayoutConstraint!
     @IBOutlet weak var rightButtonWidthConstraint: NSLayoutConstraint!
     @IBOutlet weak var leftButtonWidthConstraint: NSLayoutConstraint!
-    
+	
     var delegate: NavigationBarDelegate?
-    
+
     public var setIsDropShadow: Bool = true
     
     override func awakeFromNib() {
@@ -58,15 +58,31 @@ class NavigationBar: UIView {
         leftBarButtonItem.backgroundColor = .clear
         rightBarButtonItem.backgroundColor = .clear
         
-        rightBarButtonItem.titleLabel?.font = .systemFont(ofSize: 17, weight: .medium)
-        leftBarButtonItem.titleLabel?.font = .systemFont(ofSize: 17, weight: .medium)
+		rightBarButtonItem.titleLabel?.font = U.UIHelper.AppDefaultFontSize.NavigationBar.navigationBarButtonItemsFont.monospacedDigitFont
+		leftBarButtonItem.titleLabel?.font = U.UIHelper.AppDefaultFontSize.NavigationBar.navigationBarButtonItemsFont.monospacedDigitFont
     }
-    
+
     public func setupNavigation(title: String?, leftBarButtonImage: UIImage?, rightBarButtonImage: UIImage?, contentType: MediaContentType, leftButtonTitle: String? = nil, rightButtonTitle: String? = nil) {
         
         self.setAccentColorFor(buttonsTintColor: contentType.screenAcentTintColor, title: theme.tintColor)
         setDropShadow(visible: setIsDropShadow)
-        
+		
+		var leftTargetSize: CGSize {
+			if let leftBarButtonImage = leftBarButtonImage {
+				return self.getProportionalSize(of: leftBarButtonImage, targetImageScaleFactor: 0.4)
+			} else {
+				return .zero
+			}
+		}
+		
+		var rigthTargetSize: CGSize {
+			if let rightBarButtonImage = rightBarButtonImage {
+				return self.getProportionalSize(of: rightBarButtonImage, targetImageScaleFactor: 0.5)
+			} else {
+				return .zero
+			}
+		}
+		
         if let title = title {
             titleTextLabel.text = title
             titleTextLabel.isHidden = false
@@ -77,7 +93,7 @@ class NavigationBar: UIView {
         if let leftBarButtonImage = leftBarButtonImage {
             leftButtonLeadingConstraint.constant = 5
             leftBarButtonItem.setTitle(nil, for: .normal)
-            leftBarButtonItem.setImage(leftBarButtonImage, for: .normal)
+			leftBarButtonItem.addCenterImage(image: leftBarButtonImage, imageWidth: leftTargetSize.width, imageHeight: leftTargetSize.height)
             leftBarButtonItem.isHidden = false
 			leftBarButtonItem.contentHorizontalAlignment = .center
         } else if let leftTitle = leftButtonTitle {
@@ -94,11 +110,11 @@ class NavigationBar: UIView {
             rightButtonWidthConstraint.constant = 50
             rightButtonTrailingConstraint.constant = 10
             rightBarButtonItem.setTitle(nil, for: .normal)
-            rightBarButtonItem.setImage(rightBarButtonImage, for: .normal)
+			rightBarButtonItem.addCenterImage(image: rightBarButtonImage, imageWidth: rigthTargetSize.width, imageHeight: rigthTargetSize.height)
             rightBarButtonItem.isHidden = false
 			rightBarButtonItem.contentHorizontalAlignment = .center
         } else if let rightTitle = rightButtonTitle {
-            rightButtonWidthConstraint.constant = 100
+			rightButtonWidthConstraint.constant = Screen.size == .small ? 80 : 100
             rightButtonTrailingConstraint.constant = 20
             rightBarButtonItem.setImage(nil, for: .normal)
             rightBarButtonItem.setTitleWithoutAnimation(title: rightTitle)
@@ -107,9 +123,9 @@ class NavigationBar: UIView {
         } else {
             rightBarButtonItem.isHidden = true
         }
-        
-        leftBarButtonItem.layoutIfNeeded()
-        rightBarButtonItem.layoutIfNeeded()
+		
+			leftBarButtonItem.layoutIfNeeded()
+			rightBarButtonItem.layoutIfNeeded()
     }
     
     public func setDropShadow(visible: Bool) {
@@ -125,28 +141,36 @@ class NavigationBar: UIView {
     
     public func changeHotRightTitle(newTitle: String) {
         rightBarButtonItem.setImage(nil, for: .normal)
-//        rightBarButtonItem.sizeToFit()
         rightBarButtonItem.setTitleWithoutAnimation(title: newTitle)
     }
 	
 	public func changeHotLeftTitleWithImage(newTitle: String, image: UIImage) {
 		
+		let imageSize = self.getProportionalSize(of: image, targetImageScaleFactor: 0.4)
+		
 		if newTitle.isEmpty {
 			leftButtonLeadingConstraint.constant = 5
-			leftBarButtonItem.setImage(image, for: .normal)
+			leftBarButtonItem.addCenterImage(image: image, imageWidth: imageSize.width, imageHeight: imageSize.height)
 			leftBarButtonItem.setTitleWithoutAnimation(title: "")
 		} else {
-			leftBarButtonItem.setImage(image, for: .normal)
+			leftBarButtonItem.addLeftImage(image: image, size: imageSize, spacing: 0.3)
 			leftBarButtonItem.setTitleWithoutAnimation(title: newTitle)
-			leftButtonLeadingConstraint.constant = 15
+			leftButtonLeadingConstraint.constant = 17
 		}
 		leftBarButtonItem.layoutIfNeeded()
 	}
 	
 	public func changeHotRightButton(with newImage: UIImage) {
 		U.UI {
-			self.rightBarButtonItem.addCenterImage(image: newImage, imageWidth: 24, imageHeight: 24)
+			let imageSize = self.getProportionalSize(of: newImage)
+			self.rightBarButtonItem.addCenterImage(image: newImage, imageWidth: imageSize.height, imageHeight: imageSize.height)
 		}
+	}
+	
+	private func getProportionalSize(of image: UIImage, targetImageScaleFactor: CGFloat = 0.5) -> CGSize {
+		let buttonSize = U.UIHelper.AppDimensions.NavigationBar.navigationBarButtonSize
+		let targetSize: CGSize = CGSize(width: buttonSize * targetImageScaleFactor, height: buttonSize * targetImageScaleFactor)
+		return image.getPreservingAspectRationScaleImageSize(from: targetSize)
 	}
 
     private func setAccentColorFor(buttonsTintColor: UIColor, title: UIColor) {

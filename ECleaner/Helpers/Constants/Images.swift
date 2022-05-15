@@ -119,9 +119,6 @@ class Images {
 		static let templatePause = UIImage(named: "tePauseItem")!
 	}
 
-    
-//  TODO: Check all images!!!!
-    #warning("check all images -> ")
     struct navigationItems {
     
         static let elipseBurger = UIImage(systemName: "ellipsis.circle.fill")

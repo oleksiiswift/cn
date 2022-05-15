@@ -20,30 +20,42 @@ extension UIButton {
     }
     
 	func addLeftImageWithFixLeft(spacing: CGFloat, size: CGSize, image: UIImage, tintColor: UIColor? = nil) {
+		self.setImage(nil, for: .normal)
 		removePreviousImage()
+		removeCenterImage()
         addImageWithFix(spacing: spacing, isLeft: true, imageWidth: size.width, imageHeight: size.height, image: image, tintColor: tintColor)
     }
     
 	func addRighttImageWithFixRight(spacing: CGFloat, size: CGSize, image: UIImage, tintColor: UIColor? = nil) {
+		self.setImage(nil, for: .normal)
 		removePreviousImage()
+		removeCenterImage()
         addImageWithFix(spacing: spacing, isLeft: false, imageWidth: size.width, imageHeight: size.height, image: image, tintColor: tintColor)
     }
 
 	func addLeftImage(image: UIImage, size: CGSize, spacing: CGFloat, tintColor: UIColor? = nil) {
+		removePreviousImage()
+		removeCenterImage()
         addImage(image: image, imageWidth: size.width, imageHeight: size.height, spacing: spacing, isLeft: true, tintColor: tintColor)
     }
     
     
 	func addRightImage(image: UIImage, size: CGSize, spacing: CGFloat, tintColor: UIColor? = nil) {
+		removePreviousImage()
+		removeCenterImage()
         addImage(image: image, imageWidth: size.width, imageHeight: size.height, spacing: spacing, isLeft: false, tintColor: tintColor)
     }
     
 	func addCenterImage(image: UIImage, imageWidth: CGFloat, imageHeight: CGFloat, spacing: CGFloat = 0, tintColor: UIColor? = nil) {
         
 		self.setImage(nil, for: .normal)
-		if let imageView = self.subviews.first(where: {$0.tag == 100500}) as? UIImageView {
-			imageView.removeFromSuperview()
+
+		for subview in self.subviews {
+			if let view = subview as? UIImageView {
+				view.removeFromSuperview()
+			}
 		}
+		
 		
         let imageView = UIImageView(image: image)
 		imageView.tag = 100500
@@ -59,6 +71,7 @@ extension UIButton {
         imageView.heightAnchor.constraint(equalToConstant: imageHeight).isActive = true
         imageView.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
         imageView.centerXAnchor.constraint(equalTo: self.centerXAnchor, constant: spacing).isActive = true
+		imageView.layoutIfNeeded()
     }
 
     
@@ -119,7 +132,7 @@ extension UIButton {
         }
     }
 	
-	private func removePreviousImage() {
+	public func removePreviousImage() {
 		
 		if let imageView = self.subviews.first(where: {$0.tag == 66613}) as? UIImageView {
 			imageView.removeFromSuperview()
