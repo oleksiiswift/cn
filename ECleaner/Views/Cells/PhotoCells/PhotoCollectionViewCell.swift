@@ -40,9 +40,12 @@ class PhotoCollectionViewCell: UICollectionViewCell {
 	@IBOutlet weak var reuseLeadingConstraint: NSLayoutConstraint!
 	@IBOutlet weak var reuseTrailingConstraint: NSLayoutConstraint!
 	@IBOutlet weak var reuseBottomConstraint: NSLayoutConstraint!
+	@IBOutlet weak var videoDurationViewWidthConstraint: NSLayoutConstraint!
+
+	@IBOutlet var thumnailViewOffsetConstraint: [NSLayoutConstraint]!
 	
 	private var selectButtonSize = U.UIHelper.AppDimensions.CollectionItemSize.cellSelectRectangleSize
-	public var collectionFlowLayoutType: CollectionFlowLayoutType = .square
+	public var collectionType: CollectionType = .none
     public var indexPath: IndexPath?
     public var cellMediaType: PhotoMediaType = .none
 	public var cellContentType: MediaContentType = .none
@@ -99,6 +102,7 @@ extension PhotoCollectionViewCell: Themeble {
 		
         photoCheckmarkImageView.image = I.systemElementsItems.circleBox
         videoAssetDurationView.setCorner(6)
+		setupThumbnailLayoutOffset()
 		
 		switch cellMediaType {
 			case .similarPhotos, .duplicatedPhotos, .duplicatedVideos, .similarVideos, .similarSelfies:
@@ -110,9 +114,46 @@ extension PhotoCollectionViewCell: Themeble {
 				reuseShadowView.layoutIfNeeded()
 				reuseShadowView.layoutSubviews()
 			default:
-				return
+				debugPrint("")
 		}
     }
+	
+	private func setupThumbnailLayoutOffset() {
+		
+		switch collectionType {
+			case .grouped:
+				indexPath?.row == 0 ? defaultSettingsForThumnail() : getOffset()
+			case .carousel:
+				getOffset()
+			default:
+				defaultSettingsForThumnail()
+		}
+	}
+	
+	private func getOffset() {
+		
+		switch Screen.size {
+			case .small:
+				self.setThumnailViewOffcet(4)
+			case .medium:
+				self.setThumnailViewOffcet(5)
+			case .plus:
+				self.setThumnailViewOffcet(6)
+			default:
+				self.defaultSettingsForThumnail()
+		}
+	}
+	
+	private func defaultSettingsForThumnail() {
+		self.setThumnailViewOffcet(7)
+	}
+	
+	private func setThumnailViewOffcet(_ offset: CGFloat) {
+		
+		self.thumnailViewOffsetConstraint.forEach {
+			$0.constant = offset
+		}
+	}
 	
 	public func selectButtonSetup(by contentType: PhotoMediaType, isBatchSelect: Bool = false) {
         switch contentType {
@@ -143,8 +184,11 @@ extension PhotoCollectionViewCell: Themeble {
 		bestLabel.textColor  = theme.activeTitleTextColor
         videoAssetDurationView.backgroundColor = theme.subTitleTextColor
 		videoAssetDurationTextLabel.textColor = theme.activeTitleTextColor
-		videoAssetDurationTextLabel.font = U.UIHelper.AppDefaultFontSize.CollectionView.getVideoDurationFontSize(of: self.collectionFlowLayoutType)
-
+		videoAssetDurationTextLabel.font = .systemFont(ofSize: 10, weight: .bold)
+		videoAssetDurationTextLabel.adjustsFontSizeToFitWidth = true
+		videoAssetDurationTextLabel.minimumScaleFactor = 0.2
+		videoAssetDurationTextLabel.textAlignment = .center
+		videoAssetDurationTextLabel.baselineAdjustment = .alignCenters
 		circleSelectThumbView.backgroundColor = theme.cellBackGroundColor
 		bulbview.backgroundColor = cellContentType.screenAcentTintColor
     }
@@ -175,21 +219,21 @@ extension PhotoCollectionViewCell: Themeble {
                     let duration = CMTime(seconds: asset.duration, preferredTimescale: 1000000)
                     videoAssetDurationTextLabel.text = duration.durationText
 					setDurationView(isAvailible: true)
-					playPhassetImageView.isHidden = false
+					setPlayButtonView(isAvailible: true)
                 }
 			case .duplicatedPhotos, .similarPhotos, .similarSelfies, .similarLivePhotos:
                 setDurationView(isAvailible: false)
-				playPhassetImageView.isHidden = true
+				setPlayButtonView(isAvailible: false)
 			case .singleScreenRecordings, .singleRecentlyDeletedVideos, .singleLargeVideos, .compress:
                 if asset.mediaType == .video {
                     let duration = CMTime(seconds: asset.duration, preferredTimescale: 1000000)
 					setDurationView(isAvailible: true)
                     videoAssetDurationTextLabel.text = duration.durationText
-					playPhassetImageView.isHidden = false
+					setPlayButtonView(isAvailible: true)
                 }
             default:
                 setDurationView(isAvailible: false)
-				playPhassetImageView.isHidden = true
+				setPlayButtonView(isAvailible: false)
         }
     }
 	
@@ -197,22 +241,37 @@ extension PhotoCollectionViewCell: Themeble {
 		
 		videoAssetDurationTextLabel.isHidden = !isAvailible
 		videoAssetDurationView.isHidden = !isAvailible
+		baseView.layoutIfNeeded()
+		
+		videoDurationViewWidthConstraint.constant = {
+			let containerWidth = baseView.frame.width
+			if isAvailible {
+				switch collectionType {
+					case .carousel:
+						return containerWidth / 2.5
+					case .grouped:
+						return containerWidth / (indexPath?.row == 0 ? 3 : 2)
+					case .single:
+						switch self.cellMediaType {
+							case .singleScreenRecordings:
+								return containerWidth / 2.4
+							case .singleLargeVideos:
+								return containerWidth / 4
+							default:
+								return containerWidth / 4
+						}
+					default:
+						return 0
+				}
+			} else {
+				return 0
+			}
+		}()
 	}
 	
-	public func unload() {
-		photoThumbnailImageView.image = nil
-		
-		if imageRequestID != nil && imageManager != nil {
-			imageManager!.cancelImageRequest(imageRequestID!)
-		}
-
-		imageRequestID = nil
-		imageManager = nil
+	private func setPlayButtonView(isAvailible: Bool) {
+		playPhassetImageView.isHidden = !isAvailible
 	}
-
-    public func checkIsSelected() {
-		self.photoCheckmarkImageView.image = self.isSelected ? cellContentType.selectableAssetsCheckMark : nil
-    }
 	
 	public func setBestView(availible: Bool = false) {
 		bestView.isHidden = !availible
@@ -234,5 +293,20 @@ extension PhotoCollectionViewCell: Themeble {
 		selectCellButtonWidthConstraint.constant = availible ? selectButtonSize : 0
 		selectCellButtonHeightConstraint.constant = availible ? selectButtonSize : 0
 	}
+	
+	public func unload() {
+		photoThumbnailImageView.image = nil
+		
+		if imageRequestID != nil && imageManager != nil {
+			imageManager!.cancelImageRequest(imageRequestID!)
+		}
+
+		imageRequestID = nil
+		imageManager = nil
+	}
+
+    public func checkIsSelected() {
+		self.photoCheckmarkImageView.image = self.isSelected ? cellContentType.selectableAssetsCheckMark : nil
+    }
 }
 

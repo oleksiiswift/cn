@@ -114,7 +114,7 @@ class NavigationBar: UIView {
             rightBarButtonItem.isHidden = false
 			rightBarButtonItem.contentHorizontalAlignment = .center
         } else if let rightTitle = rightButtonTitle {
-			rightButtonWidthConstraint.constant = 80
+			rightButtonWidthConstraint.constant = Screen.size == .small ? 80 : 100
             rightButtonTrailingConstraint.constant = 20
             rightBarButtonItem.setImage(nil, for: .normal)
             rightBarButtonItem.setTitleWithoutAnimation(title: rightTitle)

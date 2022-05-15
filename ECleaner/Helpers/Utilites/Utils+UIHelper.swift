@@ -22,6 +22,8 @@ extension Utils {
 					switch screenSize {
 						case .small:
 							return  ((U.screenWidth - 30) / 3) / U.ratio
+						case .medium:
+							return ((U.screenWidth - 30) / 3.2) / U.ratio
 						default:
 							return  ((U.screenWidth - 30) / 3) / U.ratio
 					}
@@ -31,6 +33,8 @@ extension Utils {
 					switch screenSize {
 						case .small:
 							return  ((U.screenWidth - 30) / 3) / U.ratio
+						case .medium:
+							return ((U.screenWidth - 30) / 3.2) / U.ratio
 						default:
 							return  ((U.screenWidth - 30) / 3) / U.ratio
 					}
@@ -49,8 +53,10 @@ extension Utils {
 					switch screenSize {
 						case .small:
 							return 25
+						case .medium:
+							return 30
 						default:
-							return 40
+							return 35
 					}
 				}
 			}
@@ -611,54 +617,17 @@ extension Utils {
 			}
 			
 			struct CollectionView {
-				
-				 static public func getVideoDurationFontSize(of collectionType: CollectionFlowLayoutType) -> UIFont {
-					
+			
+				static public func getVideoDurationFontSize(of collectionType: CollectionType) -> UIFont {
 					switch collectionType {
-						case .carousel:
-							return self.carouselDuratationLabelFont
-						case .square:
-							return self.squareDuarationLabelFont
-						default:
+						case .grouped:
 							return .systemFont(ofSize: 10, weight: .bold)
-					}
-				}
-				
-				static private var carouselDuratationLabelFont: UIFont {
-					switch screenSize {
-						case .small:
-							return .systemFont(ofSize: 6, weight: .medium) //<- current tested device
-						case .medium:
-							return .systemFont(ofSize: 7, weight: .bold)
-						case .plus:
+						case .single:
+							return .systemFont(ofSize: 9, weight: .bold)
+						case .carousel:
 							return .systemFont(ofSize: 8, weight: .bold)
-						case .large:
-							return .systemFont(ofSize: 9, weight: .bold)
-						case .modern:
-							return .systemFont(ofSize: 9, weight: .bold)
-						case .max:
-							return .systemFont(ofSize: 9, weight: .bold)
-						case .madMax:
-							return .systemFont(ofSize: 9, weight: .bold)
-					}
-				}
-				
-				static private var squareDuarationLabelFont: UIFont {
-					switch screenSize {
-						case .small:
-							return .systemFont(ofSize: 8, weight: .medium)
-						case .medium:
-							return .systemFont(ofSize: 6, weight: .medium)
-						case .plus:
-							return .systemFont(ofSize: 6, weight: .medium)
-						case .large:
-							return .systemFont(ofSize: 6, weight: .medium)
-						case .modern:
-							return .systemFont(ofSize: 6, weight: .medium)
-						case .max:
-							return .systemFont(ofSize: 6, weight: .medium)
-						case .madMax:
-							return .systemFont(ofSize: 6, weight: .medium)
+						case .none:
+							return .systemFont(ofSize: 10, weight: .bold)
 					}
 				}
 			}

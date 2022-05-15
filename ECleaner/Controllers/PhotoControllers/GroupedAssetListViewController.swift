@@ -22,6 +22,7 @@ class GroupedAssetListViewController: UIViewController {
 	@IBOutlet weak var bottomMenuHeightConstraint: NSLayoutConstraint!
 	@IBOutlet weak var photoContentContainerView: UIView!
 		
+	private var collectionType: CollectionType = .grouped
 	var scrollView = UIScrollView()
 	let collectionViewFlowLayout = SNCollectionViewLayout()
 	
@@ -130,7 +131,7 @@ extension GroupedAssetListViewController {
 		let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.media) as! MediaViewController
 		viewController.isDeepCleaningSelectableFlow = self.isDeepCleaningSelectableFlow
 		viewController.previuousSelectedIndexPaths = selectedIndexPath
-		viewController.collectionType = .grouped
+		viewController.collectionType = self.collectionType
 		viewController.focusedIndexPath = indexPath
 		viewController.assetGroups = self.assetGroups
 		viewController.contentType = self.contentType
@@ -586,7 +587,7 @@ extension GroupedAssetListViewController {
 	private func configure(_ cell: PhotoCollectionViewCell, at indexPath: IndexPath) {
 		
 		let asset = assetGroups[indexPath.section].assets[indexPath.row]
-		
+		cell.collectionType = self.collectionType
 		cell.delegate = self
 		cell.indexPath = indexPath
 		cell.tag = indexPath.section * 1000 + indexPath.row
@@ -924,7 +925,6 @@ extension GroupedAssetListViewController {
 		}
 	}
 }
-
 
 extension GroupedAssetListViewController {
 	

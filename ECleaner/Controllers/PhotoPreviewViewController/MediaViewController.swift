@@ -11,6 +11,7 @@ import Photos
 enum CollectionType {
 	case grouped
 	case single
+	case carousel
 	case none
 }
 
@@ -20,6 +21,8 @@ class MediaViewController: UIViewController {
 	@IBOutlet weak var collectionView: UICollectionView!
 	@IBOutlet weak var previewCollectionView: UICollectionView!
 	
+	private let layoutCollectionType: CollectionType = .carousel
+	public var collectionType: CollectionType = .none
 	private let carouselCollectionFlowLayout = CarouselFlowLayout()
 	private let previewColletionFlowLayput = PreviewCarouselFlowLayout()
 	
@@ -50,7 +53,6 @@ class MediaViewController: UIViewController {
 	private var photoManager = PhotoManager.shared
 	private var prefetchCacheImageManager = PhotoManager.shared.prefetchManager
 	
-	public var collectionType: CollectionType = .none
 	public var assetCollection: [PHAsset] = []
 	public var assetGroups: [PhassetGroup] = []
 	public var mediaType: PhotoMediaType = .none
@@ -193,7 +195,7 @@ extension MediaViewController {
 				if !isDeepCleaningSelectableFlow {
 					return deleteMenuCollection
 				}
-			case .none:
+			default:
 				return UIMenu()
 		}
 		return UIMenu()
@@ -314,7 +316,7 @@ extension MediaViewController {
 				} else {
 					self.handleSelectAssetsNavigationCount()
 				}
-			case .none:
+			default:
 				return
 		}
 	}
@@ -373,11 +375,12 @@ extension MediaViewController  {
 					return assetGroups[indexPath.section].assets[indexPath.row]
 				case .single:
 					return assetCollection[indexPath.row]
-				case .none:
+				default:
 					return assetCollection[indexPath.row]
 			}
 		}
 		
+		cell.collectionType = self.layoutCollectionType // use for lyaput size
 		cell.delegate = self
 		cell.indexPath = indexPath
 		cell.tag = indexPath.section * 1000 + indexPath.row
@@ -438,7 +441,7 @@ extension MediaViewController: UICollectionViewDelegate, UICollectionViewDataSou
 				return assetGroups[section].assets.count
 			case .single:
 				return assetCollection.count
-			case .none:
+			default:
 				return 0
 		}
 	}
@@ -484,7 +487,7 @@ extension MediaViewController: UICollectionViewDelegate, UICollectionViewDataSou
 					if indexPath.row == 0 {
 						return nil
 					}
-				case .none:
+				default:
 					return nil
 			}
 		} else {

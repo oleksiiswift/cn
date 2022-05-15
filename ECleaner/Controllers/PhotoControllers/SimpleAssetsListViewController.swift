@@ -21,6 +21,7 @@ class SimpleAssetsListViewController: UIViewController {
 													minimumInterSpacing: 0,
 													minimumLineSpacing: 0,
 													inset: UIEdgeInsets(top: 10, left: 4, bottom: 0, right: 4))
+	private let collectionType: CollectionType = .single
 	var scrollView = UIScrollView()
 	
 	var selectedAssetsDelegate: DeepCleanSelectableAssetsDelegate?
@@ -153,7 +154,7 @@ extension SimpleAssetsListViewController {
 
     private func createCellContextMenu(for asset: PHAsset, at indexPath: IndexPath) -> UIMenu {
         
-        let fullScreenPreviewAction = UIAction(title: "full screen preview", image: I.systemItems.defaultItems.arrowUP) { _ in
+		let fullScreenPreviewAction = UIAction(title: "full screen preview", image: I.systemItems.defaultItems.arrowUP) { _ in
 			self.showFullScreenAssetPreviewAndFocus(at: indexPath)
         }
         
@@ -387,7 +388,7 @@ extension SimpleAssetsListViewController {
 		let storyboard = UIStoryboard(name: C.identifiers.storyboards.preview, bundle: nil)
 		let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.media) as! MediaViewController
 		viewController.isDeepCleaningSelectableFlow = self.isDeepCleaningSelectableFlow
-		viewController.collectionType = .single
+		viewController.collectionType = self.collectionType
 		viewController.contentType = self.contentType
 		viewController.mediaType = self.mediaType
 		viewController.focusedIndexPath = indexPath
@@ -481,7 +482,8 @@ extension SimpleAssetsListViewController: UICollectionViewDelegate, UICollection
 	}
 	
 	private func configure(_ cell: PhotoCollectionViewCell, at indexPath: IndexPath) {
-
+		
+		cell.collectionType = self.collectionType
 		cell.delegate = self
 		cell.indexPath = indexPath
 		cell.tag = indexPath.section * 1000 + indexPath.row
