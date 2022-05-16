@@ -147,12 +147,7 @@ extension PhotoManager {
 	
 	public func getPhotoLibraryContentAndCalculateSpace() {
 		
-			/// `calculate all sizes phassets`
-		self.startPartitionalSizeCheck()
-		
 		let lowerUpperDateOperation = self.fetchManager.getLowerUppedDateFromPhasset()
-		
-
 		let getCalculateTotalAVAssetsCountOperation = self.getCalculateTotalVideoPhassetOperation { totalVideoCount in
 			UpdateContentDataBaseMediator.instance.updateContentStoreCount(mediaType: .userVideo, itemsCount: totalVideoCount, calculatedSpace: nil)
 		}
@@ -160,10 +155,11 @@ extension PhotoManager {
 		let getCalculateTotalPHAssetsCountOperation = self.getCalculateTotalPhotoPhassetOperation { totalPhotoCount in
 			UpdateContentDataBaseMediator.instance.updateContentStoreCount(mediaType: .userPhoto, itemsCount: totalPhotoCount, calculatedSpace: nil)
 		}
-//
 //			/// `add operation phasset`
 		self.prefetchOperationQueue.addOperation(getCalculateTotalPHAssetsCountOperation)
 		self.prefetchOperationQueue.addOperation(getCalculateTotalAVAssetsCountOperation)
+			/// `calculate all sizes phassets`
+		self.startPartitionalSizeCheck()
 		self.prefetchOperationQueue.addOperation(lowerUpperDateOperation)
 	}
 	
