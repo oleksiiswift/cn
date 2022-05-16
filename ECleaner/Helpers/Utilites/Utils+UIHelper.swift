@@ -110,11 +110,7 @@ extension Utils {
 				switch screenSize {
 					case .small:
 						return 65
-					case .medium:
-						return 75
-					case .plus:
-						return 75
-					case .large:
+					case .medium, .plus, .large:
 						return 75
 					case .modern:
 						return 85
@@ -129,11 +125,7 @@ extension Utils {
 				switch screenSize {
 					case .small:
 						return 10
-					case .medium:
-						return 12
-					case .plus:
-						return 12
-					case .large:
+					case .medium, .plus, .large:
 						return 12
 					case .modern:
 						return 14
@@ -141,6 +133,21 @@ extension Utils {
 						return 14
 					case .madMax:
 						return 14
+				}
+			}
+			
+			struct DropDounMenu {
+				
+				static var menuWidth: CGFloat {
+					let defaultValue = U.screenWidth / 3
+					switch screenSize {
+						case .small:
+							return defaultValue - 30
+						case .medium:
+							return defaultValue - 30
+						default:
+							return defaultValue - 100
+					}
 				}
 			}
 			
@@ -245,11 +252,7 @@ extension Utils {
 							return 460
 						case .plus:
 							return 470
-						case .large:
-							return 485
-						case .modern:
-							return 485
-						case .max:
+						case .large, .modern, .max:
 							return 485
 						case .madMax:
 							return 485
@@ -264,11 +267,7 @@ extension Utils {
 							return 400
 						case .plus:
 							return 410
-						case .large:
-							return 423
-						case .modern:
-							return 423
-						case .max:
+						case .large, .modern, .max:
 							return 423
 						case .madMax:
 							return 423
@@ -281,15 +280,7 @@ extension Utils {
 							return 150
 						case .medium:
 							return 160
-						case .plus:
-							return 170
-						case .large:
-							return 170
-						case .modern:
-							return 170
-						case .max:
-							return 170
-						case .madMax:
+						case .plus, .large, .modern, .max, .madMax:
 							return 170
 					}
 				}
@@ -298,17 +289,7 @@ extension Utils {
 					switch screenSize {
 						case .small:
 							return 70
-						case .medium:
-							return 75
-						case .plus:
-							return 75
-						case .large:
-							return 75
-						case .modern:
-							return 75
-						case .max:
-							return 75
-						case .madMax:
+						default:
 							return 75
 					}
 				}
@@ -444,6 +425,20 @@ extension Utils {
 				}
 			}
 			
+			struct DropDownMenu {
+				
+				static var dropDounTitleLabelFont: UIFont {
+					switch screenSize {
+						case .small:
+							return .systemFont(ofSize: 11, weight: .regular)
+						case .medium:
+							return .systemFont(ofSize: 12, weight: .regular)
+						case .plus, .large, .modern, .max, .madMax:
+							return .systemFont(ofSize: 14, weight: .regular)
+					}
+				}
+			}
+			
 			struct PickerController {
 				
 				static var pickerFontSize: UIFont {
@@ -476,7 +471,7 @@ extension Utils {
 					}
 				}
 			}
-			
+		
 			struct ContentBunnerFontSize {
 				
 				static var titleFont: UIFont {
@@ -617,7 +612,27 @@ extension Utils {
 			}
 			
 			struct CollectionView {
-			
+				
+				static var grouppedHeaderTitleFont: UIFont {
+					switch screenSize {
+						case .small:
+							return .systemFont(ofSize: 10, weight: .bold)
+						case .medium, .plus, .large:
+							return .systemFont(ofSize: 12, weight: .bold)
+						case .modern, .max, .madMax:
+							return .systemFont(ofSize: 14, weight: .bold)
+					}
+				}
+				
+				static var grouppedHeaderButtonFont: UIFont {
+					switch screenSize {
+						case .small:
+							return .systemFont(ofSize: 10, weight: .bold)
+						default:
+							return .systemFont(ofSize: 12, weight: .bold)
+					}
+				}
+				
 				static public func getVideoDurationFontSize(of collectionType: CollectionType) -> UIFont {
 					switch collectionType {
 						case .grouped:

@@ -22,7 +22,7 @@ class ShadowButtonWithImage: UIButton {
 	public var shadowBlurValue: CGFloat = 10
 	
 	public var buttonImageSize: CGSize = CGSize(width: 20, height: 24)
-	public var helperRightSpacing: CGFloat = 10
+	public var helperRightSpacing: CGFloat = 5
 	public var contentType: MediaContentType = .none
 	
 	override func layoutSubviews() {
@@ -85,10 +85,17 @@ class ShadowButtonWithImage: UIButton {
 	
 	public func setMainButton(text: String, image: UIImage) {
 		
-		buttonImageView.image = image
-		self.titleLabel?.font = .systemFont(ofSize: 12, weight: .medium)
+		buttonImageView.image = image	
 		self.setTitle(text, for: .normal)
 		self.sizeToFit()
+	}
+	
+	public func setButtonFont(_ uiFont: UIFont?) {
+		if let font = uiFont {
+			self.titleLabel?.font = font
+		} else {
+			self.titleLabel?.font = .systemFont(ofSize: 12, weight: .medium)
+		}
 	}
 	
 	

@@ -22,6 +22,7 @@ class GroupedAssetListViewController: UIViewController {
 	@IBOutlet weak var bottomMenuHeightConstraint: NSLayoutConstraint!
 	@IBOutlet weak var photoContentContainerView: UIView!
 		
+	@IBOutlet weak var navigationBarHeightConstraint: NSLayoutConstraint!
 	private var collectionType: CollectionType = .grouped
 	var scrollView = UIScrollView()
 	let collectionViewFlowLayout = SNCollectionViewLayout()
@@ -964,15 +965,14 @@ extension GroupedAssetListViewController {
 				return
 			}
 			
-			let calculatedBottomMenuHeight: CGFloat = bottomMenuHeight + U.bottomSafeAreaHeight - 5
-			
 				/// `bottom menu`
-			bottomMenuHeightConstraint.constant = !selectedAssets.isEmpty ? (calculatedBottomMenuHeight) : 0
+			bottomMenuHeightConstraint.constant = !selectedAssets.isEmpty ? U.UIHelper.AppDimensions.bottomBarDefaultHeight  : 0
 			
 			bottomButtonBarView.title("delete selected (\(selectedAssets.count))")
 			
-			self.collectionView.contentInset.bottom = !selectedAssets.isEmpty ? 20 : 10
 			U.animate(0.5) {
+				self.collectionView.contentInset.bottom = !self.selectedAssets.isEmpty ? U.UIHelper.AppDimensions.bottomBarDefaultHeight + 10 + U.bottomSafeAreaHeight : 5
+			
 				self.photoContentContainerView.layoutIfNeeded()
 				self.view.layoutIfNeeded()
 			}
@@ -1148,6 +1148,8 @@ extension GroupedAssetListViewController {
 	}
 	
 	private func setupNavigation() {
+		
+		navigationBarHeightConstraint.constant = U.UIHelper.AppDimensions.NavigationBar.navigationBarHeight
 		
 		navigationBar.setupNavigation(title: self.mediaType.mediaTypeName,
 									  leftBarButtonImage: I.systemItems.navigationBarItems.back,
