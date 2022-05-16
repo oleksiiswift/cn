@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19519"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="collection view cell content view" minToolsVersion="11.0"/>
@@ -109,8 +109,11 @@
                     <navigationItem key="navigationItem" id="hpm-wu-bs6"/>
                     <nil key="simulatedTopBarMetrics"/>
                     <connections>
+                        <outlet property="botoomCarouselCollectionViewConstrainstain" destination="Clx-sk-4c0" id="7Oz-H8-1PS"/>
+                        <outlet property="carouselCllectionViewHeightConstraint" destination="l06-ek-e8w" id="v8P-rv-4r7"/>
                         <outlet property="collectionView" destination="cYn-uQ-3Hh" id="GS7-bh-sfk"/>
                         <outlet property="navigationBar" destination="Eh9-pi-ulJ" id="Aun-4d-4NM"/>
+                        <outlet property="navigationBarHeightConstraint" destination="g1R-5Y-AK7" id="h6a-hH-fpP"/>
                         <outlet property="previewCollectionView" destination="UGF-bn-6Qm" id="3kD-c9-wVJ"/>
                     </connections>
                 </viewController>
@@ -140,7 +143,6 @@
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="sfg-2J-LKQ" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="DaJ-3F-Ivw">
-                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>

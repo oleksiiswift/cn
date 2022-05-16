@@ -59,6 +59,61 @@ extension Utils {
 							return 35
 					}
 				}
+				
+				static var carouseCollectionViewItemSize: CGSize {
+					switch screenSize {
+						case .small:
+							return CGSize(width: 90, height: 90)
+						default:
+							return CGSize(width: 100, height: 100)
+					}
+				}
+				
+				static var carouselCollectionViewLineInset: CGFloat {
+					switch screenSize {
+						case .small:
+							return 20
+						default:
+							return 10
+					}
+				}
+				
+				static var bottomCarouselViewCollectionInset: CGFloat {
+					return Device.isSafeAreaiPhone ? U.bottomSafeAreaHeight : 0
+				}
+				
+				static var carouselCollectionViewHeght: CGFloat {
+					switch screenSize {
+						case .small:
+							return 100
+						default:
+							return 120
+					}
+				}
+				
+				static var carouselSpacingMode: CarouselFlowLayoutSpacingMode {
+					switch screenSize {
+						case .small:
+							return CarouselFlowLayoutSpacingMode.fixed(spacing: 0)
+						case .medium:
+							return CarouselFlowLayoutSpacingMode.fixed(spacing: 3)
+						default:
+							return CarouselFlowLayoutSpacingMode.fixed(spacing: 5)
+					}
+				}
+				
+				static var previewCollectionViewItemInset: CGFloat {
+					switch screenSize {
+						case .small:
+							return 20
+						case .medium:
+							return 25
+						case .plus:
+							return 30
+						default:
+							return 50
+					}
+				}
 			}
 			
 			static var bottomBarDefaultHeight: CGFloat {

@@ -20,6 +20,9 @@ class MediaViewController: UIViewController {
 	@IBOutlet weak var navigationBar: NavigationBar!
 	@IBOutlet weak var collectionView: UICollectionView!
 	@IBOutlet weak var previewCollectionView: UICollectionView!
+	@IBOutlet weak var botoomCarouselCollectionViewConstrainstain: NSLayoutConstraint!
+	@IBOutlet weak var carouselCllectionViewHeightConstraint: NSLayoutConstraint!
+	@IBOutlet weak var navigationBarHeightConstraint: NSLayoutConstraint!
 	
 	private let layoutCollectionType: CollectionType = .carousel
 	public var collectionType: CollectionType = .none
@@ -340,11 +343,14 @@ extension MediaViewController  {
 		self.previewCollectionView.showsVerticalScrollIndicator = false
 		self.previewCollectionView.showsHorizontalScrollIndicator = false
 		self.previewCollectionView.contentInset = .zero
-		
-		self.previewColletionFlowLayput.itemSize = CGSize(width: U.screenWidth, height: self.previewCollectionView.frame.height - 100)
+		self.previewCollectionView.layoutIfNeeded()
+	
+		let itemInset = U.UIHelper.AppDimensions.CollectionItemSize.previewCollectionViewItemInset
+		let itemSize = CGSize(width: U.screenWidth, height: self.previewCollectionView.frame.height - itemInset)
+		self.previewColletionFlowLayput.itemSize = itemSize
 		self.previewColletionFlowLayput.scrollDirection = .horizontal
 		self.previewColletionFlowLayput.minimumInteritemSpacing = 40
-		self.previewColletionFlowLayput.minimumLineSpacing = 150
+		self.previewColletionFlowLayput.minimumLineSpacing = 20
 		self.previewColletionFlowLayput.headerReferenceSize = .zero
 		
 		self.previewCollectionView.collectionViewLayout = previewColletionFlowLayput
@@ -356,11 +362,12 @@ extension MediaViewController  {
 		self.collectionView.showsHorizontalScrollIndicator = false
 		self.collectionView.contentInset = .zero
 		
-		self.carouselCollectionFlowLayout.itemSize = CGSize(width: 100, height: 100)
+		self.carouselCollectionFlowLayout.spacingMode = U.UIHelper.AppDimensions.CollectionItemSize.carouselSpacingMode
+		self.carouselCollectionFlowLayout.itemSize = U.UIHelper.AppDimensions.CollectionItemSize.carouseCollectionViewItemSize
 		self.carouselCollectionFlowLayout.scrollDirection = .horizontal
 		self.carouselCollectionFlowLayout.sectionInset = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
 		self.carouselCollectionFlowLayout.minimumInteritemSpacing = 10
-		self.carouselCollectionFlowLayout.minimumLineSpacing = 10
+		self.carouselCollectionFlowLayout.minimumLineSpacing = 0
 		self.carouselCollectionFlowLayout.headerReferenceSize = .zero
 		self.collectionView.collectionViewLayout = carouselCollectionFlowLayout
 		self.collectionView.allowsMultipleSelection = true
@@ -380,7 +387,7 @@ extension MediaViewController  {
 			}
 		}
 		
-		cell.collectionType = self.layoutCollectionType // use for lyaput size
+		cell.collectionType = self.layoutCollectionType // use for layout size
 		cell.delegate = self
 		cell.indexPath = indexPath
 		cell.tag = indexPath.section * 1000 + indexPath.row
@@ -636,7 +643,13 @@ extension MediaViewController: UIScrollViewDelegate {
 //		MARK: - setup ui -
 extension MediaViewController {
 	
-	private func setupUI() {}
+	private func setupUI() {
+		
+		navigationBarHeightConstraint.constant = U.UIHelper.AppDimensions.NavigationBar.navigationBarHeight
+		carouselCllectionViewHeightConstraint.constant = U.UIHelper.AppDimensions.CollectionItemSize.carouselCollectionViewHeght
+		botoomCarouselCollectionViewConstrainstain.constant = U.UIHelper.AppDimensions.CollectionItemSize.bottomCarouselViewCollectionInset
+		
+	}
 	
 	private func setupNavigationBar() {
 		
