@@ -52,6 +52,12 @@ class PhotoCollectionViewCell: UICollectionViewCell {
 	private var imageManager: PHCachingImageManager?
 	private var imageRequestID: PHImageRequestID?
     
+	public var carouselCollectionCellIsPlaying: Bool = false {
+		didSet {
+			setPlayDisplayDidPlaying()
+		}
+	}
+	
     var delegate: PhotoCollectionViewCellDelegate?
 	var requestedAssetIdentifier: NSNumber?
         
@@ -80,6 +86,23 @@ class PhotoCollectionViewCell: UICollectionViewCell {
     @IBAction func didTapSetSelectedCellActionButton(_ sender: Any) {
 		delegate?.didSelect(cell: self)
     }
+}
+
+extension PhotoCollectionViewCell {
+	
+	private func setPlayDisplayDidPlaying() {
+		
+		guard self.cellContentType == .userVideo else { return }
+		playPhassetImageView.animateButtonTransform()
+		
+		UIView.animate(withDuration: 2, delay: 0) {
+			self.playPhassetImageView.image = self.carouselCollectionCellIsPlaying ? I.player.templatePause : I.player.templatePlay
+		} completion: { _ in
+			U.delay(self.carouselCollectionCellIsPlaying ? 1 : 0) {
+				self.playPhassetImageView.isHidden = self.carouselCollectionCellIsPlaying
+			}
+		}
+	}
 }
 
 extension PhotoCollectionViewCell: Themeble {
@@ -180,6 +203,7 @@ extension PhotoCollectionViewCell: Themeble {
 	
 		baseView.backgroundColor = theme.backgroundColor
         photoCheckmarkImageView.tintColor = theme.accentBackgroundColor
+		playPhassetImageView.tintColor = theme.backgroundColor
 	
 		bestLabel.textColor  = theme.activeTitleTextColor
         videoAssetDurationView.backgroundColor = theme.subTitleTextColor
@@ -211,7 +235,8 @@ extension PhotoCollectionViewCell: Themeble {
 			}
 		})
 				
-		playPhassetImageView.image = I.systemItems.defaultItems.onViewPlayButton
+		playPhassetImageView.image = I.player.templatePlay
+		playPhassetImageView.alpha = 0.8
                 
         switch cellMediaType {
 			case .duplicatedVideos, .similarVideos:

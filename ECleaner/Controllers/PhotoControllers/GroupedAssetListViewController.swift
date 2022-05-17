@@ -359,9 +359,7 @@ extension GroupedAssetListViewController: GroupSelectableAssetsDelegate {
 			didTapBackSingleCleanActionButton()
 		} else {
 			self.collectionView.reloadDataWitoutAnimation()
-			if !selectedIndexPath.isEmpty {
 				self.handleSelected(for: selectedIndexPath) {}
-			}
 		}
 	}
 }
