@@ -343,10 +343,11 @@ extension MediaViewController  {
 		self.previewCollectionView.showsVerticalScrollIndicator = false
 		self.previewCollectionView.showsHorizontalScrollIndicator = false
 		self.previewCollectionView.contentInset = .zero
-		self.previewCollectionView.layoutIfNeeded()
-	
+
+		let collectionViewHeight = U.screenWidth - U.bottomSafeAreaHeight + U.bottomSafeAreaHeight + navigationBarHeightConstraint.constant + carouselCllectionViewHeightConstraint.constant
 		let itemInset = U.UIHelper.AppDimensions.CollectionItemSize.previewCollectionViewItemInset
-		let itemSize = CGSize(width: U.screenWidth, height: self.previewCollectionView.frame.height - itemInset)
+		let itemSize = CGSize(width: U.screenWidth, height: collectionViewHeight - itemInset)
+		
 		self.previewColletionFlowLayput.itemSize = itemSize
 		self.previewColletionFlowLayput.scrollDirection = .horizontal
 		self.previewColletionFlowLayput.minimumInteritemSpacing = 40

@@ -79,6 +79,10 @@ class Utils {
     static public var bottomSafeAreaHeight: CGFloat {
         return UIApplication.shared.windows.first?.safeAreaInsets.bottom ?? 0
     }
+	
+	static public var topSafeAreaHeight: CGFloat {
+		return UIApplication.shared.windows.first?.safeAreaInsets.top ?? 0
+	}
     
     static let isSimulator = UIDevice.isSimulator
     
