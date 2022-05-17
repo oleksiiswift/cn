@@ -60,6 +60,13 @@ class PhotoManager {
 		return options
 	}()
 	
+	public lazy var requestAVOptions: PHVideoRequestOptions = {
+		let options = PHVideoRequestOptions()
+		options.isNetworkAccessAllowed = true
+		options.deliveryMode = .fastFormat
+		return options
+	}()
+	
 	private var progressSearchNotificationManager = ProgressSearchNotificationManager.instance
 
 	public let phassetProcessingOperationQueuer = OperationProcessingQueuer(name: Constants.key.operation.queue.phassets,
@@ -281,7 +288,6 @@ extension PhotoManager {
 									estimatedComplitionHandler(photoLibrararyPhotosSize, index, result.count)
 								}
 								currentProcessingIndex += 1
-								debugPrint("index -> \(index), totalPhotoSize: \(U.getSpaceFromInt(photoLibrararyPhotosSize))")
 								if currentProcessingIndex == result.count {
 									debugPrint("time -> \(timer.stop()), totalPhotoSize: \(U.getSpaceFromInt(photoLibrararyPhotosSize))")
 									completionHandler(photoLibrararyPhotosSize)
@@ -363,7 +369,6 @@ extension PhotoManager {
 								
 								currentProcessingIndex += 1
 								
-								debugPrint("index -> \(index), totalVideoSize: \(U.getSpaceFromInt(photoLibrararyVideosSize))")
 								if currentProcessingIndex == result.count {
 									debugPrint("timer -> \(timer.stop()), totalVideoSize: \(U.getSpaceFromInt(photoLibrararyVideosSize))")
 									completionHandler(photoLibrararyVideosSize)

@@ -8,6 +8,10 @@
 import UIKit
 import Photos
 
+protocol PreviewCollectionCellDelegate {
+	func currentPlaingIndexPath(_ indexPath: IndexPath?, isPlaying: Bool)
+}
+
 class PhotoPreviewCollectionViewCell: UICollectionViewCell {
 	
 	@IBOutlet weak var baseView: UIView!
@@ -23,6 +27,10 @@ class PhotoPreviewCollectionViewCell: UICollectionViewCell {
 	@IBOutlet weak var photoImageView: UIImageView!
 	@IBOutlet weak var remoteControlContainerView: UIView!
 	@IBOutlet weak var remoteControllHeightConstraint: NSLayoutConstraint!
+	
+	private lazy var activityIndicator = UIActivityIndicatorView()
+	
+	public var delegate: PreviewCollectionCellDelegate?
 	
 	private var currentPHAsset: PHAsset?
 	public var indexPath: IndexPath?
@@ -69,8 +77,9 @@ class PhotoPreviewCollectionViewCell: UICollectionViewCell {
 
 	@IBAction func didTapPlayCurrentMediaItemActionButton(_ sender: Any) {
 		
-		playCurrentItemButton.animateButtonTransform()
-		self.didPlayCurrenMediaItem()
+		self.didPlayCurrenMediaItem { successfully in
+			successfully ? self.playCurrentItemButton.animateButtonTransform() : ()
+		}
 	}
 }
 
@@ -109,13 +118,16 @@ extension PhotoPreviewCollectionViewCell {
 	}
 	
 	private func loadAVASSetPreview(for phasset: PHAsset, imageManager: PHCachingImageManager) {
-		
+		loadActivityIndicator()
 		resetSliderDurationValues()
 		updateSliderDurationOriginValue()
 		
-		imageManager.requestAVAsset(forVideo: phasset, options: nil) { videoAVAsset, _, _ in
+		let options = PhotoManager.shared.requestAVOptions
+		
+		imageManager.requestAVAsset(forVideo: phasset, options: options) { videoAVAsset, _, _ in
 			if let videoAVAsset = videoAVAsset {
 				U.UI {
+					debugPrint(videoAVAsset.metadata)
 					self.playerItem = AVPlayerItem(asset: videoAVAsset)
 					self.phassetMediaPlayer = AVPlayer(playerItem: self.playerItem)
 					let playerVideoLayer = AVPlayerLayer(player: self.phassetMediaPlayer)
@@ -127,6 +139,7 @@ extension PhotoPreviewCollectionViewCell {
 					self.updateSliderDurationOriginValue()
 					self.timeObserverSetup()
 					self.setupPlayerObservers()
+					self.deinitActivityIndicator()
 				}
 			} else {
 				debugPrint("error loading phasset")
@@ -154,25 +167,57 @@ extension PhotoPreviewCollectionViewCell {
 		remoteControllHeightConstraint.constant = isActive ? 80 : 0
 		isActive ? videoPreviewView.layoutIfNeeded() : ()
 	}
+	
+	private func loadActivityIndicator() {
+		
+		activityIndicator.tintColor = .white
+		activityIndicator.frame = CGRect(x: 0, y: 0, width: 10, height: 10)
+		videoPreviewView.addSubview(activityIndicator)
+		activityIndicator.translatesAutoresizingMaskIntoConstraints = false
+		activityIndicator.centerXAnchor.constraint(equalTo: videoPreviewView.centerXAnchor).isActive = true
+		activityIndicator.centerYAnchor.constraint(equalTo: videoPreviewView.centerYAnchor).isActive = true
+		activityIndicator.widthAnchor.constraint(equalToConstant: 10).isActive = true
+		activityIndicator.heightAnchor.constraint(equalToConstant: 10).isActive = true
+		activityIndicator.startAnimating()
+	}
+	
+	private func deinitActivityIndicator() {
+		activityIndicator.stopAnimating()
+		activityIndicator.removeFromSuperview()
+	}
 }
 
 extension PhotoPreviewCollectionViewCell {
 	
-	private func didPlayCurrenMediaItem() {
+	public func didPlayCurrenMediaItem(_ completionHandler: @escaping (_ successfully: Bool) -> Void) {
 		
 		if isPlaying {
 			self.phassetMediaPlayer.pause()
 			self.isPlaying = false
 			self.handlePlayerButton()
+			self.delegate?.currentPlaingIndexPath(indexPath, isPlaying: false)
+			completionHandler(true)
 		} else {
 			if let _ = self.phassetMediaPlayer.currentItem {
 				self.phassetMediaPlayer.play()
 				self.isPlaying = true
 				self.handlePlayerButton()
+				self.delegate?.currentPlaingIndexPath(self.indexPath, isPlaying: true)
+				completionHandler(true)
 			} else {
 				debugPrint("erroor")
+				completionHandler(false)
 			}
 		}
+	}
+	
+	public func setStopPlayCurrentMediaItem() {
+		
+		guard isPlaying else { return }
+		self.phassetMediaPlayer.pause()
+		self.isPlaying = false
+		self.handlePlayerButton()
+		self.delegate?.currentPlaingIndexPath(self.indexPath, isPlaying: false)
 	}
 	
 	private func handlePlayerButton() {
@@ -309,6 +354,7 @@ extension PhotoPreviewCollectionViewCell {
 			if finished {
 				self.isPlaying = false
 				self.handlePlayerButton()
+				self.delegate?.currentPlaingIndexPath(self.indexPath, isPlaying: false)
 			}
 		}
 	}
@@ -370,6 +416,40 @@ extension PhotoPreviewCollectionViewCell {
 		let timeLeftInterval = duration - currentTime
 		self.videoDurationLeftTextLabel.text = timeLeftInterval.durationText
 		self.currentTimePositionTextLabel.text = currentTime.durationText
+	}
+}
+
+extension PhotoPreviewCollectionViewCell {
+	
+	private func setAnimateLagePlayButton() {
+		
+		let animatedImageView = UIImageView(frame: .zero)
+		animatedImageView.tintColor = .white
+		animatedImageView.alpha = 0.8
+		animatedImageView.contentMode = .scaleToFill
+		videoPreviewView.addSubview(animatedImageView)
+		animatedImageView.translatesAutoresizingMaskIntoConstraints = false
+		
+		animatedImageView.centerXAnchor.constraint(equalTo: videoPreviewView.centerXAnchor).isActive = true
+		animatedImageView.centerYAnchor.constraint(equalTo: videoPreviewView.centerYAnchor).isActive = true
+		animatedImageView.widthAnchor.constraint(equalToConstant: 40).isActive = true
+		animatedImageView.heightAnchor.constraint(equalToConstant: 50).isActive = true
+	
+		let image = self.isPlaying ? I.player.templatePause : I.player.templatePlay
+		
+		animatedImageView.image = image
+		
+		UIView.animate(withDuration: 0.2) {
+			animatedImageView.transform = CGAffineTransform(scaleX: 0.7, y: 0.7)
+		} completion: { _ in
+			UIView.animate(withDuration: 0.2) {
+				animatedImageView.transform = CGAffineTransform.identity
+			} completion: { _ in
+				U.delay(0.2) {
+					animatedImageView.removeFromSuperview()
+				}
+			}
+		}
 	}
 }
 
@@ -448,7 +528,9 @@ extension PhotoPreviewCollectionViewCell {
 	}
 	
 	@objc func handlePlayPauseCenterVideoPreviewTap() {
-		self.didPlayCurrenMediaItem()
+		self.didPlayCurrenMediaItem { successfully in
+			successfully ? self.setAnimateLagePlayButton() : ()
+		}
 	}
 }
 
