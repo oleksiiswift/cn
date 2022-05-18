@@ -34,7 +34,7 @@ class ReuseShadowView: UIView {
     private func setupViews() {
 
         self.backgroundColor = .clear
-
+	
         self.layer.setShadowAndCustomCorners(backgroundColor: cellBackgroundColor,
 											 shadow: cellShadowColor,
 											 alpha: 1, x: viewShadowOffsetOriginX,
@@ -53,6 +53,10 @@ class ReuseShadowView: UIView {
 														   blur: topBlurValue,
 														   corners: [],
 														   radius: cornerRadius)
+		
+		for (index, view) in self.subviews.enumerated() {
+			view.tag = index
+		}
     }
 }
 

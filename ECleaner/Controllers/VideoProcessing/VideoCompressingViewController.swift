@@ -230,7 +230,7 @@ extension VideoCompressingViewController {
 															  .custom(fps: self.customFPS,
 																	  bitrate: self.customBitrate, scale: self.customScale)],
 													  headerTitle: "compression settings",
-													  headerHeight: 40)
+													  headerHeight: 15)
 		
 		let sections: [CompressingSection] = [previewSectionCell, settingsSectionsCell]
 		self.compressionSettingsViewModel = CompressingSettingsViewModel(sections: sections, phasset: phasset)
@@ -259,10 +259,13 @@ extension VideoCompressingViewController {
 		self.tableView.allowsMultipleSelection = false
 		
 		let bottomInset = U.UIHelper.AppDimensions.ContenTypeCells.mediaContentBottomInset + U.UIHelper.AppDimensions.bottomBarDefaultHeight
-		self.tableView.contentInset.top = 0
+		self.tableView.contentInset.top = 10
 		self.tableView.contentInset.bottom = bottomInset
+		if #available(iOS 15.0, *) {
+			tableView.sectionHeaderTopPadding = 0
+		}
 		
-		let view = UIView(frame: CGRect(origin: .zero, size: CGSize(width: U.screenWidth, height: 20)))
+		let view = UIView(frame: CGRect(origin: .zero, size: CGSize(width: U.screenWidth, height: 0)))
 		view.backgroundColor = .clear
 		self.tableView.tableHeaderView = view
 	}
