@@ -142,9 +142,9 @@ class PhotoManager {
 		}
 	}
 	
-	public func saveVideoAsset(from url: URL, completionHandler: @escaping (_ isSaved: Bool) -> Void) {
-		self.fetchManager.saveAVAsset(with: url) { isSaved, _ in
-			completionHandler(isSaved)
+	public func saveVideoAsset(from url: URL, completionHandler: @escaping (_ identifier: String? ,_ isSaved: Bool) -> Void) {
+		self.fetchManager.saveAVAsset(with: url) { identifier, completed, error in
+			completionHandler(identifier, completed)
 		}
 	}
 }

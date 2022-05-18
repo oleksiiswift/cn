@@ -52,6 +52,7 @@ extension AppDelegate {
 		
 		S.phassetVideoFilesSizes = nil
 		S.phassetPhotoFilesSizes = nil
+		S.lastSavedLocalIdenifier = nil
 		
 		if !CompressionSettingsConfiguretion.isDefaultConfigurationIsSet {
 			CompressionSettingsConfiguretion.setDefaultConfiguration()

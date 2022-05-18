@@ -55,6 +55,10 @@ class Constants {
 			static let lastSelectedCompressionModel = "selectedCompressionModel"
 			static let originalResolutionIsOnUse = "originalResolutionIsOnUse"
 		}
+		
+		struct localIdentifiers {
+			static let lastSavedNewLocalIdentifier = "lastSavedLocalIdentifier"
+		}
         
         struct notification {
             

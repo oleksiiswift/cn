@@ -113,7 +113,6 @@ extension PhotoCollectionViewCell: Themeble {
 		self.contentView.setCorner(8)
 		
 		bestView.setCorner(11)
-		bestLabel.text = "best".uppercased()
 		bestLabel.font = .systemFont(ofSize: 10, weight: .bold)
 		
         baseView.setCorner(14)
@@ -178,7 +177,7 @@ extension PhotoCollectionViewCell: Themeble {
 		}
 	}
 	
-	public func selectButtonSetup(by contentType: PhotoMediaType, isBatchSelect: Bool = false) {
+	public func selectButtonSetup(by contentType: PhotoMediaType, isBatchSelect: Bool = false, isNewConpress: Bool = false) {
         switch contentType {
 			case .duplicatedVideos, .similarVideos, .similarPhotos, .duplicatedPhotos, .similarSelfies:
                 if indexPath?.row != 0 {
@@ -191,6 +190,7 @@ extension PhotoCollectionViewCell: Themeble {
 				}
 			case .compress:
 				setBestView(availible: false)
+				setBestViewForNewPHasset(availible: isNewConpress)
 				setSelectable(availible: isBatchSelect)
             default:
                 setBestView(availible: false)
@@ -224,7 +224,6 @@ extension PhotoCollectionViewCell: Themeble {
 		
 		let options = PhotoManager.shared.requestOptions
 		
-				
 		imageRequestID = imageManager.requestImage(for: asset, targetSize: size, contentMode: .aspectFill, options: options, resultHandler: { image, info in
 			
 			if let index = self.indexPath, self.tag == index.section * 1000 + index.row {
@@ -235,7 +234,7 @@ extension PhotoCollectionViewCell: Themeble {
 				self.photoThumbnailImageView.image = nil
 			}
 		})
-				
+		
 		playPhassetImageView.image = I.player.templatePlay
 		playPhassetImageView.alpha = 0.8
                 
@@ -300,6 +299,13 @@ extension PhotoCollectionViewCell: Themeble {
 	}
 	
 	public func setBestView(availible: Bool = false) {
+		bestLabel.text = "best".uppercased()
+		bestView.isHidden = !availible
+	}
+	
+	private func setBestViewForNewPHasset(availible: Bool = false) {
+		bestLabel.text = "new".uppercased()
+		availible ? setupBestView() : ()
 		bestView.isHidden = !availible
 	}
 	

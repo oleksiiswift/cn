@@ -130,23 +130,26 @@ extension VideoCompressingViewController {
 		
 		asset.getPhassetURL { responseURL in
 			
-			guard let url = responseURL else { return }
-			
-			self.progressAlert.showCompressingProgressAlertController(from: self, delegate: self)
-			
-			self.compressingManager.compressVideo(from: url, quality: compressingModel) { result in
+			if let url = responseURL {
 				
-				self.progressAlert.closeProgressAnimatedController()
-				U.delay(1) {
-					switch result {
-						case .success(let compressedVideoURL):
-							self.compressVideoResultCompleted(with: compressedVideoURL)
-						case .failure(let errorHandler):
-							errorHandler.showErrorAlert {
-								self.navigationController?.popViewController(animated: true)
-							}
+				self.progressAlert.showCompressingProgressAlertController(from: self, delegate: self)
+				
+				self.compressingManager.compressVideo(from: url, quality: compressingModel) { result in
+					
+					self.progressAlert.closeProgressAnimatedController()
+					U.delay(1) {
+						switch result {
+							case .success(let compressedVideoURL):
+								self.compressVideoResultCompleted(with: compressedVideoURL)
+							case .failure(let errorHandler):
+								errorHandler.showErrorAlert {
+									self.navigationController?.popViewController(animated: true)
+								}
+						}
 					}
 				}
+			} else {
+				ErrorHandler.shared.showCompressionErrorFor(.cantLoadFile) {}
 			}
 		}
 	}
@@ -172,8 +175,9 @@ extension VideoCompressingViewController {
 	
 	private func savedVideo(with url: URL) {
 		
-		self.photoManager.saveVideoAsset(from: url) { isSaved in
-			if isSaved {
+		self.photoManager.saveVideoAsset(from: url) { identifier, isSaved in
+			if isSaved, let identifier = identifier {
+				S.lastSavedLocalIdenifier = identifier
 				self.showPHAssetCollectionController()
 			} else {
 				ErrorHandler.shared.showCompressionErrorFor(.errorSavedFile, completion: {})

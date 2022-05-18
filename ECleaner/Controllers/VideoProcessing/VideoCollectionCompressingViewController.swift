@@ -55,6 +55,12 @@ class VideoCollectionCompressingViewController: UIViewController {
 		
 		updateCachedAssets()
 	}
+	
+	override func viewWillDisappear(_ animated: Bool) {
+		super.viewWillDisappear(animated)
+		
+		S.lastSavedLocalIdenifier = nil
+	}
 }
 
 extension VideoCollectionCompressingViewController {
@@ -104,13 +110,13 @@ extension VideoCollectionCompressingViewController {
 	
 	private func configure(cell: PhotoCollectionViewCell, at indexPath: IndexPath) {
 		
-		cell.selectButtonSetup(by: self.mediaType)
+		let videoPHAsset = self.assetCollection[indexPath.row]
+		cell.selectButtonSetup(by: self.mediaType, isNewConpress: videoPHAsset.localIdentifier == S.lastSavedLocalIdenifier)
 		cell.indexPath = indexPath
 		cell.tag = indexPath.section * 1000 + indexPath.row
 		cell.cellMediaType = self.mediaType
 		cell.cellContentType = self.contentType
 		cell.collectionType = .single
-		let videoPHAsset = self.assetCollection[indexPath.row]
 		
 		if self.thumbnailSize.equalTo(CGSize.zero) {
 			self.thumbnailSize = self.collectionView.collectionViewLayout.layoutAttributesForItem(at: indexPath)!.size.toPixel()
