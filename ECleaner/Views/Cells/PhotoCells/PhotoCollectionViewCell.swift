@@ -223,6 +223,7 @@ extension PhotoCollectionViewCell: Themeble {
 		self.imageManager = imageManager
 		
 		let options = PhotoManager.shared.requestOptions
+		
 				
 		imageRequestID = imageManager.requestImage(for: asset, targetSize: size, contentMode: .aspectFill, options: options, resultHandler: { image, info in
 			

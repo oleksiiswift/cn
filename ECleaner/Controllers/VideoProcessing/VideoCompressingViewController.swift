@@ -15,6 +15,7 @@ class VideoCompressingViewController: UIViewController {
 	@IBOutlet weak var bottomButtonBarView: BottomButtonBarView!
 	@IBOutlet weak var bottomButtonViewHeightConstraint: NSLayoutConstraint!
 	
+	@IBOutlet weak var navigationBarHeightConstraint: NSLayoutConstraint!
 	public var processingPHAsset: PHAsset?
 	public let contentType: MediaContentType = .none
 	public let mediaType: PhotoMediaType = .none
@@ -257,9 +258,9 @@ extension VideoCompressingViewController {
 		self.tableView.separatorStyle = .none
 		self.tableView.allowsMultipleSelection = false
 		
+		let bottomInset = U.UIHelper.AppDimensions.ContenTypeCells.mediaContentBottomInset + U.UIHelper.AppDimensions.bottomBarDefaultHeight
 		self.tableView.contentInset.top = 0
-		self.tableView.contentInset.bottom = 85
-		
+		self.tableView.contentInset.bottom = bottomInset
 		
 		let view = UIView(frame: CGRect(origin: .zero, size: CGSize(width: U.screenWidth, height: 20)))
 		view.backgroundColor = .clear
@@ -340,7 +341,8 @@ extension VideoCompressingViewController: Themeble {
 		bottomButtonBarView.title("compress")
 		bottomButtonBarView.setImage(I.systemItems.defaultItems.compress, with: CGSize(width: 24, height: 22))
 		
-		self.bottomButtonViewHeightConstraint.constant = 75 + U.bottomSafeAreaHeight
+		navigationBarHeightConstraint.constant = U.UIHelper.AppDimensions.NavigationBar.navigationBarHeight
+		self.bottomButtonViewHeightConstraint.constant = U.UIHelper.AppDimensions.bottomBarDefaultHeight
 	}
 	
 	private func setupNavigation() {

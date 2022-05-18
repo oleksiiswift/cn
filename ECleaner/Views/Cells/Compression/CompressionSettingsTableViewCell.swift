@@ -15,6 +15,7 @@ class CompressionSettingsTableViewCell: UITableViewCell {
 	@IBOutlet weak var titleTextLabel: UILabel!
 	@IBOutlet weak var subtitleTetLabel: UILabel!
 	
+	@IBOutlet weak var reuseShadowRoundedViewHeightConstraint: NSLayoutConstraint!
 	override func prepareForReuse() {
 		super.prepareForReuse()
 		
@@ -27,7 +28,7 @@ class CompressionSettingsTableViewCell: UITableViewCell {
 		self.setupUI()
 		self.updateColors()
     }
-
+	
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
 
@@ -57,8 +58,10 @@ extension CompressionSettingsTableViewCell: Themeble {
 		self.selectionStyle = .none
 		self.baseView.setCorner(14)
 		
-		self.titleTextLabel.font = .systemFont(ofSize: 18, weight: .bold)
-		self.subtitleTetLabel.font = .systemFont(ofSize: 14, weight: .medium)
+		self.titleTextLabel.font = U.UIHelper.AppDefaultFontSize.ContentTypeCell.titleFont
+		self.subtitleTetLabel.font = U.UIHelper.AppDefaultFontSize.ContentTypeCell.subTitleFont
+		
+		self.reuseShadowRoundedViewHeightConstraint.constant = U.UIHelper.AppDimensions.ContenTypeCells.radioButtonSize
 		
 		reuseShadowView.topShadowOffsetOriginY = -2
 		reuseShadowView.topShadowOffsetOriginX = -2
@@ -68,6 +71,7 @@ extension CompressionSettingsTableViewCell: Themeble {
 		reuseShadowView.shadowBlurValue = 5
 		
 		reuseShadowView.layoutIfNeeded()
+		reuseShadowRoundedView.layoutIfNeeded()
 	}
 	
 	private func setPrepareForReuse() {

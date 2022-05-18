@@ -295,6 +295,17 @@ extension Utils {
 				static var mediaContentBottomInset: CGFloat {
 					return Device.isSafeAreaiPhone ? 40 : 20
 				}
+				
+				static var radioButtonSize: CGFloat {
+					switch screenSize {
+						case .small:
+							return 20
+						case .medium, .plus:
+							return 25
+						case .large, .modern, .max, .madMax:
+							return 33
+					}
+				}
 			}
 			
 			struct DateSelectController {
@@ -698,6 +709,31 @@ extension Utils {
 							return .systemFont(ofSize: 8, weight: .bold)
 						case .none:
 							return .systemFont(ofSize: 10, weight: .bold)
+					}
+				}
+			}
+			
+			struct ContentTypeCell {
+				
+				static var titleFont: UIFont {
+					switch screenSize {
+						case .small:
+							return .systemFont(ofSize: 14, weight: .bold).monospacedDigitFont
+						case .medium, .plus, .large:
+							return .systemFont(ofSize: 16, weight: .bold).monospacedDigitFont
+						case .modern, .max, .madMax:
+							return .systemFont(ofSize: 18, weight: .bold).monospacedDigitFont
+					}
+				}
+				
+				static var subTitleFont: UIFont {
+					switch screenSize {
+						case .small:
+							return .systemFont(ofSize: 12, weight: .medium).monospacedDigitFont
+						case .medium, .plus, .large:
+							return .systemFont(ofSize: 13, weight: .medium).monospacedDigitFont
+						case .modern, .max, .madMax:
+							return .systemFont(ofSize: 14, weight: .medium).monospacedDigitFont
 					}
 				}
 			}

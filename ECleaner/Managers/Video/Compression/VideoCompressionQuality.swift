@@ -65,18 +65,20 @@ enum VideoCompressionQuality: Equatable {
 	var portraitHeightForRow: CGFloat {
 		switch self {
 			case .videoPreview:
-				return U.screenHeight / 2
+//				return self.getHeighPortraitPreviewSize()
+				return UITableView.automaticDimension
 			default:
-				return 100
+				return U.UIHelper.AppDimensions.ContenTypeCells.heightOfRowOfMediaContentType
 		}
 	}
 	
 	var heightForRow: CGFloat {
 		switch self {
 			case .videoPreview:
-				return 370
+//				return self.getHeightOfLandscapePreviewSize()
+				return UITableView.automaticDimension
 			default:
-				return 100
+				return U.UIHelper.AppDimensions.ContenTypeCells.heightOfRowOfMediaContentType
 		}
 	}
 	
@@ -112,6 +114,25 @@ enum VideoCompressionQuality: Equatable {
 				}
 			default:
 				return .videoPreview
+		}
+	}
+	
+	private func getHeighPortraitPreviewSize() -> CGFloat {
+		switch Screen.size {
+			case .small:
+				return U.screenHeight / 1.5
+			default:
+				return U.screenHeight / 2
+				
+		}
+	}
+	
+	private func getHeightOfLandscapePreviewSize() -> CGFloat {
+		switch Screen.size {
+			case .small:
+				return 400
+			default:
+				return 400
 		}
 	}
 }

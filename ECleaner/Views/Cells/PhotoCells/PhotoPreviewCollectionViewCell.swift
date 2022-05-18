@@ -425,29 +425,28 @@ extension PhotoPreviewCollectionViewCell {
 		
 		let animatedImageView = UIImageView(frame: .zero)
 		animatedImageView.tintColor = .white
-		animatedImageView.alpha = 0.8
+		animatedImageView.alpha = 0.1
 		animatedImageView.contentMode = .scaleToFill
 		videoPreviewView.addSubview(animatedImageView)
 		animatedImageView.translatesAutoresizingMaskIntoConstraints = false
 		
 		animatedImageView.centerXAnchor.constraint(equalTo: videoPreviewView.centerXAnchor).isActive = true
 		animatedImageView.centerYAnchor.constraint(equalTo: videoPreviewView.centerYAnchor).isActive = true
-		animatedImageView.widthAnchor.constraint(equalToConstant: 40).isActive = true
-		animatedImageView.heightAnchor.constraint(equalToConstant: 50).isActive = true
+		animatedImageView.widthAnchor.constraint(equalToConstant: 150).isActive = true
+		animatedImageView.heightAnchor.constraint(equalToConstant: 170).isActive = true
 	
 		let image = self.isPlaying ? I.player.templatePause : I.player.templatePlay
 		
 		animatedImageView.image = image
 		
 		UIView.animate(withDuration: 0.2) {
-			animatedImageView.transform = CGAffineTransform(scaleX: 0.7, y: 0.7)
+			animatedImageView.transform = CGAffineTransform(scaleX: 0.2, y: 0.2)
+			animatedImageView.alpha = 0.6
 		} completion: { _ in
-			UIView.animate(withDuration: 0.2) {
-				animatedImageView.transform = CGAffineTransform.identity
-			} completion: { _ in
-				U.delay(0.2) {
+			U.delay(0.3) {
+				UIView.animate(withDuration: 0.2) {
 					animatedImageView.removeFromSuperview()
-				}
+				} completion: { _ in }
 			}
 		}
 	}

@@ -228,19 +228,12 @@ extension ContentTypeTableViewCell: Themeble {
 		baseView.setCorner(14)
 		rightArrowImageView.image = I.systemItems.navigationBarItems.forward
 		
-		switch Screen.size {
-				
-			case .small:
-				contentTypeTextLabel.font = .systemFont(ofSize: 14, weight: .bold).monospacedDigitFont
-				contentSubtitleTextLabel.font = .systemFont(ofSize: 12, weight: .medium).monospacedDigitFont
-				reuseShadowHeightConstraint.constant = 30
-			case .medium, .plus, .large:
-				contentTypeTextLabel.font = .systemFont(ofSize: 16, weight: .bold).monospacedDigitFont
-				contentSubtitleTextLabel.font = .systemFont(ofSize: 13, weight: .medium).monospacedDigitFont
-			case .modern, .max, .madMax:
-				contentTypeTextLabel.font = .systemFont(ofSize: 18, weight: .bold).monospacedDigitFont
-				contentSubtitleTextLabel.font = .systemFont(ofSize: 14, weight: .medium).monospacedDigitFont
+		if Screen.size == .small {
+			reuseShadowHeightConstraint.constant = 30
 		}
+
+		contentTypeTextLabel.font = U.UIHelper.AppDefaultFontSize.ContentTypeCell.titleFont
+		contentSubtitleTextLabel.font = U.UIHelper.AppDefaultFontSize.ContentTypeCell.subTitleFont
 	}
 	
 	func updateColors() {

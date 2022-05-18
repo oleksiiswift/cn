@@ -64,7 +64,6 @@ extension CompressingSettingsDataSource: UITableViewDelegate, UITableViewDataSou
 	
 	func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
 		if indexPath.section == 0 {
-			
 			return nil
 		}
 		return indexPath
@@ -75,9 +74,7 @@ extension CompressingSettingsDataSource: UITableViewDelegate, UITableViewDataSou
 			delegate?.setCompressionSettingsForValue(with: model)
 	}
 	
-	func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
-
-	}
+	func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {}
 	
 	func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
 		return self.compressionSettinsViewModel.getHeightForRow(at: indexPath)

@@ -25,7 +25,6 @@
                                 <rect key="frame" x="0.0" y="44" width="414" height="70"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="70" id="3us-4k-aKT"/>
                                     <constraint firstAttribute="height" constant="70" id="zkw-6G-c82"/>
                                 </constraints>
                             </view>
@@ -57,6 +56,7 @@
                     <connections>
                         <outlet property="bottomButtonBarView" destination="Csv-w1-iqI" id="nEX-Hx-4OI"/>
                         <outlet property="bottomButtonViewHeightConstraint" destination="DNt-Qc-Ax0" id="g0R-yz-mOo"/>
+                        <outlet property="navigationBarHeightConstraint" destination="zkw-6G-c82" id="QWl-LU-1VE"/>
                         <outlet property="navigationBarView" destination="ixU-uj-gJS" id="qpU-oF-DJt"/>
                         <outlet property="tableView" destination="R3P-fQ-KC3" id="AVX-SI-IqV"/>
                         <segue destination="EW2-Ql-oz0" kind="custom" identifier="ShowCustomCompressionSegue" customClass="ShowVideoCompressionCustomSettingsSelectorViewControllerSegue" customModule="ECleaner" customModuleProvider="target" id="GkY-gV-EA9"/>

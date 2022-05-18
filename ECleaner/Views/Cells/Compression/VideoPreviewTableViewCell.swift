@@ -17,6 +17,21 @@ class VideoPreviewTableViewCell: UITableViewCell {
 	@IBOutlet weak var sliderView: SliderView!
 	@IBOutlet weak var playPauseButton: UIButton!
 	
+	@IBOutlet weak var videoPreviewHeightConstraint: NSLayoutConstraint!
+	@IBOutlet weak var videoPreviewWidthConstraint: NSLayoutConstraint!
+	
+	private lazy var activityIndicator = UIActivityIndicatorView()
+	private var playPauseButtonSize: CGFloat {
+		switch Screen.size {
+			case .small, .medium:
+				return 15
+			case .plus, .large:
+				return 20
+			case .modern, .max, .madMax:
+				return 25
+		}
+	}
+	
 	private var asset: PHAsset?
 	private var imageManager: PHCachingImageManager?
 	
@@ -61,16 +76,19 @@ extension VideoPreviewTableViewCell {
 	
 	public func configurePreview(from phasset: PHAsset, imageManager: PHCachingImageManager, size: CGSize) {
 		
+		videoPreviewHeightConstraint.constant = self.calculatePreviewViewHeight(from: phasset)
+		
+		self.loadActivityIndicator()
 		self.asset = phasset
-		imageManager.requestAVAsset(forVideo: phasset, options: nil) { videoAVAsset, _, _ in
+		let options = PhotoManager.shared.requestAVOptions
+		
+		imageManager.requestAVAsset(forVideo: phasset, options: options) { videoAVAsset, _, _ in
 			if let videoAVAsset = videoAVAsset {
 				U.UI {
 					self.sliderView.minDuration = videoAVAsset.duration.seconds
 					self.sliderView.maxDuration = videoAVAsset.duration.seconds
 					self.sliderView.assetPreview.maxDuration = videoAVAsset.duration.seconds
 					self.sliderView.asset = videoAVAsset
-					
-					
 					self.playerItem = AVPlayerItem(asset: videoAVAsset)
 					self.player = AVPlayer(playerItem: self.playerItem)
 					let playerVideoLayer = AVPlayerLayer(player: self.player)
@@ -78,6 +96,7 @@ extension VideoPreviewTableViewCell {
 					playerVideoLayer.videoGravity = .resizeAspect
 					playerVideoLayer.backgroundColor = UIColor.black.cgColor
 					self.videoPreview.layer.addSublayer(playerVideoLayer)
+					self.deinitActivityIndicator()
 					self.timeObserverSetup()
 					self.setupPlayerObservers()
 				}
@@ -107,12 +126,12 @@ extension VideoPreviewTableViewCell {
 		playPauseButton.animateButtonTransform()
 		
 		if isPlaying {
-			playPauseButton.addCenterImage(image: I.player.templatePause, imageWidth: 40, imageHeight: 40)
+			playPauseButton.addCenterImage(image: I.player.templatePause, imageWidth: playPauseButtonSize, imageHeight: playPauseButtonSize)
 			U.delay(1) {
 				self.playPauseButton.removeCenterImage()
 			}
 		} else {
-			playPauseButton.addCenterImage(image: I.player.templatePlay, imageWidth: 40, imageHeight: 40)
+			playPauseButton.addCenterImage(image: I.player.templatePlay, imageWidth: playPauseButtonSize, imageHeight: playPauseButtonSize)
 		}
 	}
 	
@@ -200,6 +219,27 @@ extension VideoPreviewTableViewCell: SliderViewDelegate {
 
 extension VideoPreviewTableViewCell {
 	
+	private func loadActivityIndicator() {
+		
+		activityIndicator.tintColor = .white
+		activityIndicator.frame = CGRect(x: 0, y: 0, width: 10, height: 10)
+		videoPreview.addSubview(activityIndicator)
+		activityIndicator.translatesAutoresizingMaskIntoConstraints = false
+		activityIndicator.centerXAnchor.constraint(equalTo: videoPreview.centerXAnchor).isActive = true
+		activityIndicator.centerYAnchor.constraint(equalTo: videoPreview.centerYAnchor).isActive = true
+		activityIndicator.widthAnchor.constraint(equalToConstant: 10).isActive = true
+		activityIndicator.heightAnchor.constraint(equalToConstant: 10).isActive = true
+		activityIndicator.startAnimating()
+	}
+	
+	private func deinitActivityIndicator() {
+		activityIndicator.stopAnimating()
+		activityIndicator.removeFromSuperview()
+	}
+}
+
+extension VideoPreviewTableViewCell {
+	
 	private func getOriginDurationValue() -> CMTime {
 		if let currentItem = self.player.currentItem {
 			return currentItem.duration
@@ -208,6 +248,14 @@ extension VideoPreviewTableViewCell {
 		} else {
 			return .zero
 		}
+	}
+	
+	private func calculatePreviewViewHeight(from phasset: PHAsset) -> CGFloat {
+		
+		let containerWidth = self.contentView.frame.width + 20
+		let ratio = CGFloat(phasset.pixelHeight) / CGFloat(phasset.pixelWidth)
+		let height = containerWidth * ratio
+		return height / (phasset.isPortrait ? 2 : 1)
 	}
 }
 
@@ -223,7 +271,7 @@ extension VideoPreviewTableViewCell: Themeble {
 		videoPreview.setCorner(6)
 		sliderShadowView.cornerRadius = 8
 		playPauseButton.alpha = 0.8
-		playPauseButton.addCenterImage(image: I.player.templatePlay, imageWidth: 40, imageHeight: 40)
+		playPauseButton.addCenterImage(image: I.player.templatePlay, imageWidth: playPauseButtonSize, imageHeight: playPauseButtonSize)
 	}
 	
 	private func setupDelegate() {

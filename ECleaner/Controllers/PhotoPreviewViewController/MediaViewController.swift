@@ -370,7 +370,8 @@ extension MediaViewController  {
 		self.previewCollectionView.showsHorizontalScrollIndicator = false
 		self.previewCollectionView.contentInset = .zero
 
-		let collectionViewHeight = U.screenWidth - U.bottomSafeAreaHeight + U.bottomSafeAreaHeight + navigationBarHeightConstraint.constant + carouselCllectionViewHeightConstraint.constant
+		let heightOffset = U.bottomSafeAreaHeight + U.bottomSafeAreaHeight + navigationBarHeightConstraint.constant + carouselCllectionViewHeightConstraint.constant
+		let collectionViewHeight = U.screenHeight - heightOffset
 		let itemInset = U.UIHelper.AppDimensions.CollectionItemSize.previewCollectionViewItemInset
 		let itemSize = CGSize(width: U.screenWidth, height: collectionViewHeight - itemInset)
 		

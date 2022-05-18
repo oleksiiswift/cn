@@ -14,6 +14,7 @@ class VideoCollectionCompressingViewController: UIViewController {
 	@IBOutlet weak var collectionView: UICollectionView!
 	@IBOutlet weak var bottomButtonView: BottomButtonBarView!
 	@IBOutlet weak var bottomMenuHeightConstraint: NSLayoutConstraint!
+	@IBOutlet weak var navigationControllerHeightConstraint: NSLayoutConstraint!
 	
 	var scrollView = UIScrollView()
 	
@@ -108,7 +109,7 @@ extension VideoCollectionCompressingViewController {
 		cell.tag = indexPath.section * 1000 + indexPath.row
 		cell.cellMediaType = self.mediaType
 		cell.cellContentType = self.contentType
-		
+		cell.collectionType = .single
 		let videoPHAsset = self.assetCollection[indexPath.row]
 		
 		if self.thumbnailSize.equalTo(CGSize.zero) {
@@ -303,6 +304,7 @@ extension VideoCollectionCompressingViewController {
 	
 	private func setupUI() {
 		
+		self.navigationControllerHeightConstraint.constant = U.UIHelper.AppDimensions.NavigationBar.navigationBarHeight
 		self.bottomMenuHeightConstraint.constant = 0
 		self.bottomButtonView.setImage(I.systemItems.defaultItems.compress, with: CGSize(width: 24, height: 22))
 	}
