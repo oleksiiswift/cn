@@ -58,8 +58,9 @@ class NavigationBar: UIView {
         leftBarButtonItem.backgroundColor = .clear
         rightBarButtonItem.backgroundColor = .clear
         
-		rightBarButtonItem.titleLabel?.font = U.UIHelper.AppDefaultFontSize.NavigationBar.navigationBarButtonItemsFont.monospacedDigitFont
-		leftBarButtonItem.titleLabel?.font = U.UIHelper.AppDefaultFontSize.NavigationBar.navigationBarButtonItemsFont.monospacedDigitFont
+		rightBarButtonItem.titleLabel?.font = FontManager.navigationBarFont(of: .barButtonTitle)
+		
+		leftBarButtonItem.titleLabel?.font = FontManager.navigationBarFont(of: .barButtonTitle)
     }
 
     public func setupNavigation(title: String?, leftBarButtonImage: UIImage?, rightBarButtonImage: UIImage?, contentType: MediaContentType, leftButtonTitle: String? = nil, rightButtonTitle: String? = nil) {
@@ -178,7 +179,7 @@ class NavigationBar: UIView {
         leftBarButtonItem.tintColor = buttonsTintColor
         rightBarButtonItem.tintColor = buttonsTintColor
         titleTextLabel.textColor = title
-		titleTextLabel.font = U.UIHelper.AppDefaultFontSize.NavigationBar.navigationBarTitleFont
+		titleTextLabel.font = FontManager.navigationBarFont(of: .title)
     }
     
     private func actionButtonsSetup() {

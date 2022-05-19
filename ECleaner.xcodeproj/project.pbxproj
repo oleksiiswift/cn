@@ -217,6 +217,17 @@
 		979BDF1B280AF75E00B49ABB /* URL+FileSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 979BDF1A280AF75E00B49ABB /* URL+FileSize.swift */; };
 		97A05B742743D4B600968459 /* SearchBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A05B732743D4B600968459 /* SearchBarView.swift */; };
 		97A05B762743D4C200968459 /* SearchBarView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 97A05B752743D4C200968459 /* SearchBarView.xib */; };
+		97A17F502836363D00591409 /* FontManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A17F4F2836363D00591409 /* FontManager.swift */; };
+		97A17F5528363A4900591409 /* FontManager+ModalSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A17F5428363A4900591409 /* FontManager+ModalSettings.swift */; };
+		97A17F5728365A4F00591409 /* FontManager+NavigationSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A17F5628365A4F00591409 /* FontManager+NavigationSettings.swift */; };
+		97A17F59283662A700591409 /* FontManager+DromDownMenuFontType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A17F58283662A700591409 /* FontManager+DromDownMenuFontType.swift */; };
+		97A17F5B283662DD00591409 /* FontManager+DefaultFonts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A17F5A283662DD00591409 /* FontManager+DefaultFonts.swift */; };
+		97A17F5D2836679400591409 /* FontManager+ContentType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A17F5C2836679400591409 /* FontManager+ContentType.swift */; };
+		97A17F5F28366A3C00591409 /* FontManager+CollectionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A17F5E28366A3C00591409 /* FontManager+CollectionType.swift */; };
+		97A17F6128366E2300591409 /* FontManager+Picker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A17F6028366E2300591409 /* FontManager+Picker.swift */; };
+		97A17F6328366EF300591409 /* FontManager+Banner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A17F6228366EF300591409 /* FontManager+Banner.swift */; };
+		97A17F652836701300591409 /* FontManager+BottomButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A17F642836701300591409 /* FontManager+BottomButton.swift */; };
+		97A17F672836710200591409 /* FontManager+DeepClean.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A17F662836710200591409 /* FontManager+DeepClean.swift */; };
 		97A39FDC27649DF4007CB482 /* SegmentDatePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A39FDB27649DF4007CB482 /* SegmentDatePicker.swift */; };
 		97A39FDE27649F0C007CB482 /* UIView+RecurciveSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A39FDD27649F0C007CB482 /* UIView+RecurciveSearch.swift */; };
 		97A39FE127649FE0007CB482 /* SegmentDatePicker+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A39FE027649FE0007CB482 /* SegmentDatePicker+Extension.swift */; };
@@ -523,6 +534,17 @@
 		979BDF1A280AF75E00B49ABB /* URL+FileSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL+FileSize.swift"; sourceTree = "<group>"; };
 		97A05B732743D4B600968459 /* SearchBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBarView.swift; sourceTree = "<group>"; };
 		97A05B752743D4C200968459 /* SearchBarView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SearchBarView.xib; sourceTree = "<group>"; };
+		97A17F4F2836363D00591409 /* FontManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontManager.swift; sourceTree = "<group>"; };
+		97A17F5428363A4900591409 /* FontManager+ModalSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FontManager+ModalSettings.swift"; sourceTree = "<group>"; };
+		97A17F5628365A4F00591409 /* FontManager+NavigationSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FontManager+NavigationSettings.swift"; sourceTree = "<group>"; };
+		97A17F58283662A700591409 /* FontManager+DromDownMenuFontType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FontManager+DromDownMenuFontType.swift"; sourceTree = "<group>"; };
+		97A17F5A283662DD00591409 /* FontManager+DefaultFonts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FontManager+DefaultFonts.swift"; sourceTree = "<group>"; };
+		97A17F5C2836679400591409 /* FontManager+ContentType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FontManager+ContentType.swift"; sourceTree = "<group>"; };
+		97A17F5E28366A3C00591409 /* FontManager+CollectionType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FontManager+CollectionType.swift"; sourceTree = "<group>"; };
+		97A17F6028366E2300591409 /* FontManager+Picker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FontManager+Picker.swift"; sourceTree = "<group>"; };
+		97A17F6228366EF300591409 /* FontManager+Banner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FontManager+Banner.swift"; sourceTree = "<group>"; };
+		97A17F642836701300591409 /* FontManager+BottomButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FontManager+BottomButton.swift"; sourceTree = "<group>"; };
+		97A17F662836710200591409 /* FontManager+DeepClean.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FontManager+DeepClean.swift"; sourceTree = "<group>"; };
 		97A39FDB27649DF4007CB482 /* SegmentDatePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentDatePicker.swift; sourceTree = "<group>"; };
 		97A39FDD27649F0C007CB482 /* UIView+RecurciveSearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+RecurciveSearch.swift"; sourceTree = "<group>"; };
 		97A39FE027649FE0007CB482 /* SegmentDatePicker+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SegmentDatePicker+Extension.swift"; sourceTree = "<group>"; };
@@ -1022,6 +1044,7 @@
 		04E5835E267A3E7D00EDC3A3 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				97A17F512836369300591409 /* FontManager */,
 				049CC22826831D540002F988 /* Constants */,
 				4F56072327205ADC00CA19E9 /* CustomCircular */,
 				0447A68C26B2A9170074919B /* Operation */,
@@ -1645,6 +1668,24 @@
 			path = URL;
 			sourceTree = "<group>";
 		};
+		97A17F512836369300591409 /* FontManager */ = {
+			isa = PBXGroup;
+			children = (
+				97A17F4F2836363D00591409 /* FontManager.swift */,
+				97A17F662836710200591409 /* FontManager+DeepClean.swift */,
+				97A17F642836701300591409 /* FontManager+BottomButton.swift */,
+				97A17F6028366E2300591409 /* FontManager+Picker.swift */,
+				97A17F5E28366A3C00591409 /* FontManager+CollectionType.swift */,
+				97A17F5628365A4F00591409 /* FontManager+NavigationSettings.swift */,
+				97A17F5428363A4900591409 /* FontManager+ModalSettings.swift */,
+				97A17F58283662A700591409 /* FontManager+DromDownMenuFontType.swift */,
+				97A17F5A283662DD00591409 /* FontManager+DefaultFonts.swift */,
+				97A17F5C2836679400591409 /* FontManager+ContentType.swift */,
+				97A17F6228366EF300591409 /* FontManager+Banner.swift */,
+			);
+			path = FontManager;
+			sourceTree = "<group>";
+		};
 		97A39FDF27649F7C007CB482 /* DatePicker */ = {
 			isa = PBXGroup;
 			children = (
@@ -2161,6 +2202,8 @@
 				979487BD27B6A9D800135D47 /* CleanProcessingType.swift in Sources */,
 				97FC78A12688E5E8000D7F26 /* PhotoCollectionViewCell.swift in Sources */,
 				975AF4392728300E00744E3B /* Arrray+Rearranged.swift in Sources */,
+				97A17F5F28366A3C00591409 /* FontManager+CollectionType.swift in Sources */,
+				97A17F5D2836679400591409 /* FontManager+ContentType.swift in Sources */,
 				97D2BED2275A4227002082EB /* ContactsGroupModel.swift in Sources */,
 				0405AA5B269D9BD6004AC07A /* PreviewAVController.swift in Sources */,
 				97C1C71427F5A95800E262FA /* GradientSlider.swift in Sources */,
@@ -2204,6 +2247,9 @@
 				978FEF12274BB73700ADE1D9 /* AlertType.swift in Sources */,
 				97C44FBD274EF959001B61AB /* ContactsContainerType.swift in Sources */,
 				97B01A7F2747CB8C00DDE03C /* ExportContactsViewController.swift in Sources */,
+				97A17F5528363A4900591409 /* FontManager+ModalSettings.swift in Sources */,
+				97A17F59283662A700591409 /* FontManager+DromDownMenuFontType.swift in Sources */,
+				97A17F6328366EF300591409 /* FontManager+Banner.swift in Sources */,
 				97238A072689BD8000C523DC /* PhotoMediaType.swift in Sources */,
 				9701D27427BE50CC0078E39F /* VideoSpaceSelectorViewController.swift in Sources */,
 				9701D27227BE4C910078E39F /* AudioToolBoxVibration.swift in Sources */,
@@ -2233,6 +2279,7 @@
 				04CFFFEC2684725F000CA850 /* Device+DiskSpace.swift in Sources */,
 				97CE4499273D305900DF6114 /* NavigationBar.swift in Sources */,
 				4F56074527205AF300CA19E9 /* GreenLightStyle.swift in Sources */,
+				97A17F652836701300591409 /* FontManager+BottomButton.swift in Sources */,
 				97DC111427A2BA6C00D10FE4 /* MediaViewController.swift in Sources */,
 				972AAACD27F7524A00F3A1D2 /* UIView+AnimateButtonsAndViews.swift in Sources */,
 				97CC2F3C26873A7D0072EF8C /* DateSelectorViewController.swift in Sources */,
@@ -2261,6 +2308,7 @@
 				978FEF1A274C1C5400ADE1D9 /* UIAlertController+Colors.swift in Sources */,
 				9789D18A27F48C660035539C /* CollectionShadowView.swift in Sources */,
 				9701D26027BD26750078E39F /* SettingsViewModel.swift in Sources */,
+				97A17F6128366E2300591409 /* FontManager+Picker.swift in Sources */,
 				970D778F275B9D170048F41D /* DeepCleanNotificationType.swift in Sources */,
 				97C70B52277634280033F466 /* ShadowButtonWithImage.swift in Sources */,
 				04649B35268C52B100336FE4 /* GroupedAssetsReusableFooterView.swift in Sources */,
@@ -2319,6 +2367,7 @@
 				4F56073C27205AF300CA19E9 /* CircularProgressView.swift in Sources */,
 				97A39FE32764A025007CB482 /* SegmentDatePickerType.swift in Sources */,
 				97238A132689EF6E00C523DC /* Presenter.swift in Sources */,
+				97A17F502836363D00591409 /* FontManager.swift in Sources */,
 				97FC7894268882C9000D7F26 /* Date+DateFormatter.swift in Sources */,
 				04649B3C268C98A900336FE4 /* UIButton+RemoveAnimation.swift in Sources */,
 				9785E54727DD6E61000B360C /* UINavigationController+Completion.swift in Sources */,
@@ -2338,6 +2387,7 @@
 				97A39FE127649FE0007CB482 /* SegmentDatePicker+Extension.swift in Sources */,
 				049CC21B268225E60002F988 /* SettingsManager.swift in Sources */,
 				972A29F52805733800D6F54A /* CompressingSettingsViewModel.swift in Sources */,
+				97A17F672836710200591409 /* FontManager+DeepClean.swift in Sources */,
 				977FE23727306355004DE4C3 /* ContactsGroupViewController.swift in Sources */,
 				970D7784275B66CE0048F41D /* PhotoManager.swift in Sources */,
 				975AF43B2728306C00744E3B /* ContactListDataSource.swift in Sources */,
@@ -2361,12 +2411,14 @@
 				97B01A732746DF6300DDE03C /* EmptyContactListDataSource.swift in Sources */,
 				049CC23A2683761B0002F988 /* String+ConvertInteger.swift in Sources */,
 				04649B3E268DDDE700336FE4 /* UICollectionView+SelectAll.swift in Sources */,
+				97A17F5728365A4F00591409 /* FontManager+NavigationSettings.swift in Sources */,
 				976D8E39280468A3005004F4 /* VideoCompressionConfig.swift in Sources */,
 				04E5836F267A47FB00EDC3A3 /* Utils.swift in Sources */,
 				971AD5E927EAB72900811A3A /* ZoomTransitionController.swift in Sources */,
 				4F56073F27205AF300CA19E9 /* GradientArcView.swift in Sources */,
 				047DE61926AAA53100733CD5 /* DeepCleanInfoTableViewCell.swift in Sources */,
 				97B53A08281831D70054B826 /* Utils+UIHelper.swift in Sources */,
+				97A17F5B283662DD00591409 /* FontManager+DefaultFonts.swift in Sources */,
 				9710285428038274003CBF7E /* VideoCompressingViewController.swift in Sources */,
 				04E58371267A4A0A00EDC3A3 /* UIDevice+Model.swift in Sources */,
 				04CFFFFB2685E546000CA850 /* UIView+SelectedCornerRadius.swift in Sources */,

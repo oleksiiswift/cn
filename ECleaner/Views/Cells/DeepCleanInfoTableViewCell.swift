@@ -89,18 +89,18 @@ extension DeepCleanInfoTableViewCell: Themeble {
 		circleProgressView.lineCap = .round
 		circleProgressView.clockwise = true
 		circleProgressView.percentLabelFormat = "%.f%%"
-		circleProgressView.percentLabel.font = U.UIHelper.AppDefaultFontSize.deepCleanCircleProgressPercentLabelFont
+		circleProgressView.percentLabel.font = FontManager.deepCleanScreenFont(of: .progress)
 		circleProgressView.lineWidth = U.UIHelper.AppDimensions.circleProgressInfoLineWidth
 		
 		infoTitleTextLabel.text = "All Data Analized"
 		infoTotalFilesTitleLabel.text = "FILES".uppercased()
 		totalSpaceTitleLabel.text = "Memmory".uppercased()
 		
-		infoTitleTextLabel.font = U.UIHelper.AppDefaultFontSize.deepCleanInfoHelperTitleFont.monospacedDigitFont
-		totalSpaceTextLabel.font = U.UIHelper.AppDefaultFontSize.deepCleanInfoHelperTitleFont.monospacedDigitFont
-		infoTotalFilesTextLabel.font = U.UIHelper.AppDefaultFontSize.deepCleanInfoHelperTitleFont.monospacedDigitFont
-		infoTotalFilesTitleLabel.font = U.UIHelper.AppDefaultFontSize.deepCleanInfoHelperSubtitleFont.monospacedDigitFont
-		totalSpaceTitleLabel.font = U.UIHelper.AppDefaultFontSize.deepCleanInfoHelperSubtitleFont.monospacedDigitFont
+		infoTitleTextLabel.font = 		FontManager.deepCleanScreenFont(of: .title).monospacedDigitFont
+		totalSpaceTextLabel.font = 		FontManager.deepCleanScreenFont(of: .title).monospacedDigitFont
+		infoTotalFilesTextLabel.font = 	FontManager.deepCleanScreenFont(of: .title).monospacedDigitFont
+		infoTotalFilesTitleLabel.font = FontManager.deepCleanScreenFont(of: .subtitle).monospacedDigitFont
+		totalSpaceTitleLabel.font = 	FontManager.deepCleanScreenFont(of: .subtitle)
     }
     
     func updateColors() {

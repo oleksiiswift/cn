@@ -462,278 +462,51 @@ extension Utils {
 					}
 				}
 			}
-		}
-		
-		struct AppDefaultFontSize {
 			
-			struct NavigationBar {
+			struct ModalControllerSettings {
 				
-				static var navigationBarTitleFont: UIFont {
+				static var mainContainerHeight: CGFloat {
 					switch screenSize {
 						case .small:
-							return .systemFont(ofSize: 14, weight: .bold)
+							return U.screenHeight - (U.topSafeAreaHeight + 20)
 						case .medium:
-							return .systemFont(ofSize: 16, weight: .bold)
-						default:
-							return .systemFont(ofSize: 17, weight: .bold)
-					}
-				}
-				
-				static var navigationBarButtonItemsFont: UIFont {
-					switch screenSize {
-						case .small:
-							return .systemFont(ofSize: 14, weight: .medium)
-						case .medium:
-							return .systemFont(ofSize: 16, weight: .medium)
-						default:
-							return .systemFont(ofSize: 17, weight: .medium)
-					}
-				}
-			}
-			
-			struct DropDownMenu {
-				
-				static var dropDounTitleLabelFont: UIFont {
-					switch screenSize {
-						case .small:
-							return .systemFont(ofSize: 11, weight: .regular)
-						case .medium:
-							return .systemFont(ofSize: 12, weight: .regular)
-						case .plus, .large, .modern, .max, .madMax:
-							return .systemFont(ofSize: 14, weight: .regular)
-					}
-				}
-			}
-			
-			struct PickerController {
-				
-				static var pickerFontSize: UIFont {
-					switch screenSize {
-						case .small:
-							return .systemFont(ofSize: 20, weight: .black)
-						case .medium:
-							return .systemFont(ofSize: 24, weight: .black)
+							return U.screenHeight - (U.topSafeAreaHeight + 60)
 						case .plus:
-							return .systemFont(ofSize: 26, weight: .black)
+							return U.screenHeight - (U.topSafeAreaHeight + 100)
 						case .large:
-							return .systemFont(ofSize: 26, weight: .black)
+							return U.screenHeight - (U.topSafeAreaHeight + 120)
 						case .modern:
-							return .systemFont(ofSize: 26, weight: .black)
+							return U.screenHeight - (U.topSafeAreaHeight + 150)
 						case .max:
-							return .systemFont(ofSize: 26, weight: .black)
+							return U.screenHeight - (U.topSafeAreaHeight + 180)
 						case .madMax:
-							return .systemFont(ofSize: 26, weight: .black)
+							return U.screenHeight - (U.topSafeAreaHeight + 200)
 					}
 				}
 				
-				static var buttonSubTitleFontSize: UIFont {
+				static var bottomButtonSpaceValue: CGFloat {
 					switch screenSize {
 						case .small:
-							return .systemFont(ofSize: 14, weight: .bold)
-						case .medium:
-							return .systemFont(ofSize: 15.8, weight: .bold)
+							return 5
+						case .medium, .plus:
+							return 5
+						case .large:
+							return 5
+						case .modern:
+							return 5
+						case .max:
+							return 5
+						case .madMax:
+							return 5
+					}
+				}
+				
+				static var segmentControlWidth: CGFloat {
+					switch screenSize {
+						case .small:
+							return 100
 						default:
-							return .systemFont(ofSize: 16.8, weight: .bold)
-					}
-				}
-			}
-		
-			struct ContentBunnerFontSize {
-				
-				static var titleFont: UIFont {
-					switch screenSize {
-						case .small:
-							return .systemFont(ofSize: 12, weight: .bold)
-						case .medium:
-							return .systemFont(ofSize: 14, weight: .bold)
-						case .plus, .large, .modern, .max, .madMax:
-							return .systemFont(ofSize: 16, weight: .bold)
-					}
-				}
-				
-				static var titleSubtitleFont: UIFont {
-					switch screenSize {
-						case .small:
-							return .systemFont(ofSize: 10, weight: .medium)
-						case .medium:
-							return .systemFont(ofSize: 12, weight: .medium)
-						case .plus, .large, .modern, .max, .madMax:
-							return .systemFont(ofSize: 14, weight: .medium)
-					}
-				}
-				
-				static var descriptionTitleFont: UIFont {
-					switch screenSize {
-						case .small:
-							return .systemFont(ofSize: 12, weight: .medium)
-						case .medium:
-							return .systemFont(ofSize: 14, weight: .medium)
-						case .plus, .large, .modern, .max, .madMax:
-							return .systemFont(ofSize: 16, weight: .medium)
-					}
-				}
-				
-				static var descriptionFirstSubtitleFont: UIFont {
-					switch screenSize {
-						case .small:
-							return .systemFont(ofSize: 20, weight: .heavy)
-						case .medium:
-							return .systemFont(ofSize: 22, weight: .heavy)
-						case .plus, .large, .modern, .max, .madMax:
-							return .systemFont(ofSize: 24, weight: .heavy)
-					}
-				}
-				
-				static var descriptionSecondSubtitleFont: UIFont {
-					switch screenSize {
-						case .small:
-							return .systemFont(ofSize: 24, weight: .heavy)
-						case .medium:
-							return .systemFont(ofSize: 26, weight: .heavy)
-						case .plus, .large, .modern, .max, .madMax:
-							return .systemFont(ofSize: 29, weight: .heavy)
-					}
-				}
-			}
-			
-			static var bottomBarButtonTitleFont: UIFont {
-				switch screenSize {
-					case .small:
-						return .systemFont(ofSize: 14, weight: .bold)
-					case .medium:
-						return .systemFont(ofSize: 15.8, weight: .bold)
-					default:
-						return .systemFont(ofSize: 16.8, weight: .bold)
-				}
-			}
-			
-			static var deepCleanCircleProgressPercentLabelFont: UIFont {
-				switch screenSize {
-					case .small:
-						return .systemFont(ofSize: 10, weight: .bold)
-					case .medium:
-						return .systemFont(ofSize: 11, weight: .bold)
-					case .plus:
-						return .systemFont(ofSize: 12, weight: .bold)
-					case .large:
-						return .systemFont(ofSize: 13, weight: .bold)
-					case .modern:
-						return .systemFont(ofSize: 14, weight: .bold)
-					case .max:
-						return .systemFont(ofSize: 15, weight: .bold)
-					case .madMax:
-						return .systemFont(ofSize: 15, weight: .bold)
-				}
-			}
-			
-			static var deepCleanInfoHelperTitleFont: UIFont {
-				switch screenSize {
-					case .small:
-						return .systemFont(ofSize: 12, weight: .bold)
-					case .medium:
-						return .systemFont(ofSize: 14, weight: .bold)
-					case .plus:
-						return .systemFont(ofSize: 16, weight: .bold)
-					case .large:
-						return .systemFont(ofSize: 15, weight: .bold)
-					case .modern:
-						return .systemFont(ofSize: 16, weight: .bold)
-					case .max:
-						return .systemFont(ofSize: 17, weight: .bold)
-					case .madMax:
-						return .systemFont(ofSize: 18, weight: .bold)
-				}
-			}
-			
-			static var deepCleanInfoHelperSubtitleFont: UIFont {
-				switch screenSize {
-					case .small:
-						return .systemFont(ofSize: 11, weight: .medium)
-					case .medium:
-						return .systemFont(ofSize: 12, weight: .medium)
-					case .plus:
-						return .systemFont(ofSize: 12, weight: .medium)
-					case .large:
-						return .systemFont(ofSize: 14, weight: .medium)
-					case .modern:
-						return .systemFont(ofSize: 14, weight: .medium)
-					case .max:
-						return .systemFont(ofSize: 14, weight: .medium)
-					case .madMax:
-						return .systemFont(ofSize: 15, weight: .medium)
-				}
-			}
-			
-			static var deepClentSectionHeaderTitleFont: UIFont {
-				switch screenSize {
-					 case .small:
-						  return .systemFont(ofSize: 12, weight: .bold)
-					 case .medium:
-						  return .systemFont(ofSize: 14, weight: .bold)
-					 case .plus:
-						  return .systemFont(ofSize: 15, weight: .bold)
-					 case .large, .modern, .max, .madMax:
-						  return .systemFont(ofSize: 16, weight: .bold)
-				}
-			}
-			
-			struct CollectionView {
-				
-				static var grouppedHeaderTitleFont: UIFont {
-					switch screenSize {
-						case .small:
-							return .systemFont(ofSize: 10, weight: .bold)
-						case .medium, .plus, .large:
-							return .systemFont(ofSize: 12, weight: .bold)
-						case .modern, .max, .madMax:
-							return .systemFont(ofSize: 14, weight: .bold)
-					}
-				}
-				
-				static var grouppedHeaderButtonFont: UIFont {
-					switch screenSize {
-						case .small:
-							return .systemFont(ofSize: 10, weight: .bold)
-						default:
-							return .systemFont(ofSize: 12, weight: .bold)
-					}
-				}
-				
-				static public func getVideoDurationFontSize(of collectionType: CollectionType) -> UIFont {
-					switch collectionType {
-						case .grouped:
-							return .systemFont(ofSize: 10, weight: .bold)
-						case .single:
-							return .systemFont(ofSize: 9, weight: .bold)
-						case .carousel:
-							return .systemFont(ofSize: 8, weight: .bold)
-						case .none:
-							return .systemFont(ofSize: 10, weight: .bold)
-					}
-				}
-			}
-			
-			struct ContentTypeCell {
-				
-				static var titleFont: UIFont {
-					switch screenSize {
-						case .small:
-							return .systemFont(ofSize: 14, weight: .bold).monospacedDigitFont
-						case .medium, .plus, .large:
-							return .systemFont(ofSize: 16, weight: .bold).monospacedDigitFont
-						case .modern, .max, .madMax:
-							return .systemFont(ofSize: 18, weight: .bold).monospacedDigitFont
-					}
-				}
-				
-				static var subTitleFont: UIFont {
-					switch screenSize {
-						case .small:
-							return .systemFont(ofSize: 12, weight: .medium).monospacedDigitFont
-						case .medium, .plus, .large:
-							return .systemFont(ofSize: 13, weight: .medium).monospacedDigitFont
-						case .modern, .max, .madMax:
-							return .systemFont(ofSize: 14, weight: .medium).monospacedDigitFont
+							return 120
 					}
 				}
 			}
@@ -764,9 +537,8 @@ extension Utils {
 			static let toolBarHeight: CGFloat = 44.0
 		}
 		
-		
 		struct Manager {
-			
+		
 			static func gradientColor(bounds: CGRect, gradientLayer :CAGradientLayer) -> UIColor? {
 				  UIGraphicsBeginImageContext(gradientLayer.bounds.size)
 				  gradientLayer.render(in: UIGraphicsGetCurrentContext()!)
@@ -797,5 +569,6 @@ extension Utils {
 		}
 	}
 }
+
 
 

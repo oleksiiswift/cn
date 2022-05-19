@@ -262,9 +262,8 @@ extension VideoCompressingViewController {
 		self.tableView.separatorStyle = .none
 		self.tableView.allowsMultipleSelection = false
 		
-		let bottomInset = U.UIHelper.AppDimensions.ContenTypeCells.mediaContentBottomInset + U.UIHelper.AppDimensions.bottomBarDefaultHeight
 		self.tableView.contentInset.top = 10
-		self.tableView.contentInset.bottom = bottomInset
+		self.tableView.contentInset.bottom = U.UIHelper.AppDimensions.bottomBarDefaultHeight
 		if #available(iOS 15.0, *) {
 			tableView.sectionHeaderTopPadding = 0
 		}
