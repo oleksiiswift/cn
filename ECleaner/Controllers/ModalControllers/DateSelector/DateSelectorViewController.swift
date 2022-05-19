@@ -284,7 +284,7 @@ extension DateSelectorViewController: Themeble {
 	
 		bottomButtonView.title("SUBMIT".localized())
         autoDatePickTextLabel.text = "SINCE_THE_LAST_CLEANING".localized()
-		autoDatePickTextLabel.font = U.UIHelper.AppDefaultFontSize.PickerController.buttonSubTitleFontSize
+		autoDatePickTextLabel.font = FontManager.pickerFont(of: .subtitle)
 		
 		let checkMarkImage = I.systemItems.selectItems.checkBox.renderScalePreservingAspectRatio(from: CGSize(width: autoDateSelectSize / 2, height: autoDateSelectSize / 2))
         autoDatePickImageView.image = checkMarkImage
@@ -300,8 +300,8 @@ extension DateSelectorViewController: Themeble {
 		pickerComponentsCollection.forEach {
 			$0.delegate = self
 			$0.calendarIdentifier = defaultCalendar.identifier
-			$0.font = U.UIHelper.AppDefaultFontSize.PickerController.pickerFontSize
-			$0.disabledFont = U.UIHelper.AppDefaultFontSize.PickerController.pickerFontSize
+			$0.font = FontManager.pickerFont(of: .title)
+			$0.disabledFont = FontManager.pickerFont(of: .title)
 			$0.pickerLocale = Locale(identifier: "en_US")
 			$0.maximumDate = Date()
 			$0.selectebleLowerPeriodBound = self.dateSelectedType == .lowerDateSelectable

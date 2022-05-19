@@ -232,8 +232,8 @@ extension ContentTypeTableViewCell: Themeble {
 			reuseShadowHeightConstraint.constant = 30
 		}
 
-		contentTypeTextLabel.font = U.UIHelper.AppDefaultFontSize.ContentTypeCell.titleFont
-		contentSubtitleTextLabel.font = U.UIHelper.AppDefaultFontSize.ContentTypeCell.subTitleFont
+		contentTypeTextLabel.font = FontManager.contentTypeFont(of: .title)
+		contentSubtitleTextLabel.font = FontManager.contentTypeFont(of: .subtitle)
 	}
 	
 	func updateColors() {
