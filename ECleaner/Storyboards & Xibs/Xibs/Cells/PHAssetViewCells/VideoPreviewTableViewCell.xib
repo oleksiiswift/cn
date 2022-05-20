@@ -44,6 +44,7 @@
                             <constraint firstAttribute="trailing" secondItem="1oT-Fo-g4s" secondAttribute="trailing" id="IX5-3K-g0y"/>
                             <constraint firstItem="1oT-Fo-g4s" firstAttribute="leading" secondItem="ggy-th-MzC" secondAttribute="leading" id="Kkx-0G-qJy"/>
                             <constraint firstAttribute="trailing" secondItem="duw-yg-npa" secondAttribute="trailing" constant="10" id="Ols-YL-6UJ"/>
+                            <constraint firstAttribute="height" constant="330" id="YFU-yU-yuI"/>
                             <constraint firstItem="duw-yg-npa" firstAttribute="top" secondItem="ggy-th-MzC" secondAttribute="top" constant="10" id="m7L-fm-AZp"/>
                             <constraint firstItem="duw-yg-npa" firstAttribute="leading" secondItem="ggy-th-MzC" secondAttribute="leading" constant="10" id="sRc-K7-eSv"/>
                             <constraint firstAttribute="bottom" secondItem="1oT-Fo-g4s" secondAttribute="bottom" id="y6a-Qe-p5L"/>
@@ -92,6 +93,7 @@
             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <connections>
                 <outlet property="baseView" destination="ggy-th-MzC" id="Od6-ah-yCR"/>
+                <outlet property="bseViewHeightConstraint" destination="YFU-yU-yuI" id="EP6-Q7-cYn"/>
                 <outlet property="playPauseButton" destination="1oT-Fo-g4s" id="zOz-M8-GHL"/>
                 <outlet property="previewContainerBotoomContainer" destination="seo-4s-Nho" id="0EL-Yh-xmN"/>
                 <outlet property="sliderShadowView" destination="kva-8M-EAe" id="Trh-J9-bse"/>

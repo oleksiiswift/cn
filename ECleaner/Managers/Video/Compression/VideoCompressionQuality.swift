@@ -65,7 +65,6 @@ enum VideoCompressionQuality: Equatable {
 	var portraitHeightForRow: CGFloat {
 		switch self {
 			case .videoPreview:
-//				return self.getHeighPortraitPreviewSize()
 				return UITableView.automaticDimension
 			default:
 				return U.UIHelper.AppDimensions.ContenTypeCells.heightOfRowOfMediaContentType
@@ -75,7 +74,6 @@ enum VideoCompressionQuality: Equatable {
 	var heightForRow: CGFloat {
 		switch self {
 			case .videoPreview:
-//				return self.getHeightOfLandscapePreviewSize()
 				return UITableView.automaticDimension
 			default:
 				return U.UIHelper.AppDimensions.ContenTypeCells.heightOfRowOfMediaContentType
@@ -133,6 +131,70 @@ enum VideoCompressionQuality: Equatable {
 				return 400
 			default:
 				return 400
+		}
+	}
+	
+	public func getCustomCongfiguration() -> VideoCompressionConfig {
+		return CompressionSettingsConfiguretion.getSavedConfiguration()
+	}
+	
+	public func getVideoResolution(from size: CGSize?) -> VideoResolution {
+		
+		guard let size = size else {
+			return .origin
+		}
+		
+		switch size.videoResolutionSize() {
+			case .origin:
+				return .origin
+			case .width:
+				if let resolution = VideoResolution.allCases.first(where: {$0.resolutionSize.width == size.width}) {
+					return resolution
+				} else {
+					return .origin
+				}
+			case .height:
+				if let resolution = VideoResolution.allCases.first(where: {$0.resolutionSize.height == size.height}) {
+					return resolution
+				} else {
+					return .origin
+				}
+		}
+	}
+	
+	public func getFPS(from fps: Float) -> FPS {
+		
+		if let fps = FPS.allCases.first(where: {$0.rawValue == fps}) {
+			return fps
+		} else {
+			return FPS.fps24
+		}
+	}
+}
+
+enum VideoCGSize {
+	case origin
+	case width
+	case height
+}
+
+extension CGSize {
+	
+	 func videoResolutionSize() -> VideoCGSize {
+		
+		let originSize = CGSize(width: -1, height: -1)
+		let widthSize = CGSize(width: self.width, height: -1)
+		let heightSize = CGSize(width: -1, height: self.height)
+		
+		switch self {
+			case originSize:
+				return .origin
+			case widthSize:
+				return .width
+			case heightSize:
+				return .height
+			default:
+				return .origin
 		}
 	}
 }

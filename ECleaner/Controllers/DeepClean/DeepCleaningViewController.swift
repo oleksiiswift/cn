@@ -1039,7 +1039,7 @@ extension DeepCleaningViewController {
 	 private func showBottomButtonBar() {
 		  bottomContainerHeightConstraint.constant = U.UIHelper.AppDimensions.bottomBarDefaultHeight
 		  U.animate(0.35) {
-			   self.tableView.contentInset.bottom =  U.UIHelper.AppDimensions.bottomBarDefaultHeight - 20
+			   self.tableView.contentInset.bottom =  U.UIHelper.AppDimensions.bottomBarDefaultHeight - 30
 			   self.tableView.layoutIfNeeded()
 			   self.view.layoutIfNeeded()
 		  }

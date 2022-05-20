@@ -41,6 +41,7 @@ class VideoCompressingViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 		
+		setupCustomConfiguration()
 		setupViewModel()
 		setupUI()
 		tableViewSetup()
@@ -263,7 +264,7 @@ extension VideoCompressingViewController {
 		self.tableView.allowsMultipleSelection = false
 		
 		self.tableView.contentInset.top = 10
-		self.tableView.contentInset.bottom = U.UIHelper.AppDimensions.bottomBarDefaultHeight
+		self.tableView.contentInset.bottom = U.UIHelper.AppDimensions.bottomBarDefaultHeight + (Device.isSafeAreaDevice ? 0 : 10)
 		if #available(iOS 15.0, *) {
 			tableView.sectionHeaderTopPadding = 0
 		}
@@ -335,6 +336,12 @@ extension VideoCompressingViewController {
 			customSettingViewController.selectVideoCompressingConfig = { config in
 				self.compressionConfiguration = config
 				self.currentCompressionModel = .custom(fps: 0, bitrate: 0, scale: .zero)
+				let indexPath = IndexPath(row: 3, section: 1)
+				if let cell = self.tableView.cellForRow(at: indexPath) as? CompressionSettingsTableViewCell {
+					if let model = self.currentCompressionModel {
+						cell.compressionConfigureCell(with: model, phasset: self.processingPHAsset)
+					}
+				}
 			}
 		}
 	}
@@ -356,7 +363,6 @@ extension VideoCompressingViewController: Themeble {
 		navigationBarView.setupNavigation(title: "compressing video",
 										  leftBarButtonImage: I.systemItems.navigationBarItems.back,
 										  rightBarButtonImage: nil, contentType: .none, leftButtonTitle: nil, rightButtonTitle: nil)
-		
 	}
 	
 	private func delegateSetup() {

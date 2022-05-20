@@ -18,6 +18,7 @@ class VideoPreviewTableViewCell: UITableViewCell {
 	@IBOutlet weak var videoPreviewHeightConstraint: NSLayoutConstraint!
 	@IBOutlet weak var videoPreviewWidthConstraint: NSLayoutConstraint!
 	@IBOutlet weak var previewContainerBotoomContainer: NSLayoutConstraint!
+	@IBOutlet weak var bseViewHeightConstraint: NSLayoutConstraint!
 	
 	@IBOutlet weak var videoPreviewContaierBottomConstaint: NSLayoutConstraint!
 	private lazy var activityIndicator = UIActivityIndicatorView()
@@ -256,7 +257,7 @@ extension VideoPreviewTableViewCell {
 	}
 	
 	private func calculatePreviewViewHeight(from phasset: PHAsset) -> CGFloat {
-		let containerWidth = self.videoPreview.frame.width
+		let containerWidth = U.screenWidth - 60
 		let ratio = CGFloat(phasset.pixelHeight) / CGFloat(phasset.pixelWidth)
 		let height = containerWidth * ratio
 		return height / (phasset.isPortrait ? 2 : 1)
@@ -266,6 +267,8 @@ extension VideoPreviewTableViewCell {
 		
 		self.contentView.layoutIfNeeded()
 		videoPreviewHeightConstraint.constant = self.calculatePreviewViewHeight(from: phasset)
+		videoPreview.layoutIfNeeded()
+		baseView.layoutIfNeeded()
 		self.contentView.layoutIfNeeded()
 		
 		let shadowView = ReuseShadowView()

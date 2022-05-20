@@ -88,7 +88,7 @@ extension VideoCompressionManager {
 //		MARK: - calculate -
 extension VideoCompressionManager {
 	
-	private func calculateSize(with quality: VideoCompressionQuality, originalSize: CGSize) -> CGSize {
+	public func calculateSize(with quality: VideoCompressionQuality, originalSize: CGSize) -> CGSize {
 		
 		var treshold: CGFloat = -1
 		

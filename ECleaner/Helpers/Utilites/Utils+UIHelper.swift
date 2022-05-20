@@ -118,7 +118,7 @@ extension Utils {
 			
 			static var bottomBarDefaultHeight: CGFloat {
 				if Device.isSafeAreaiPhone {
-					return 70 + U.bottomSafeAreaHeight
+					return 60 + U.bottomSafeAreaHeight
 				} else {
 					switch screenSize {
 						case .small:

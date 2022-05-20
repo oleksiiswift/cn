@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Photos
 
 class CompressionSettingsTableViewCell: UITableViewCell {
 	
@@ -14,8 +15,10 @@ class CompressionSettingsTableViewCell: UITableViewCell {
 	@IBOutlet weak var baseView: UIView!
 	@IBOutlet weak var titleTextLabel: UILabel!
 	@IBOutlet weak var subtitleTetLabel: UILabel!
-	
 	@IBOutlet weak var reuseShadowRoundedViewHeightConstraint: NSLayoutConstraint!
+	
+	private var videoManager = VideoCompressionManager.insstance
+	
 	override func prepareForReuse() {
 		super.prepareForReuse()
 		
@@ -38,10 +41,26 @@ class CompressionSettingsTableViewCell: UITableViewCell {
 
 extension CompressionSettingsTableViewCell {
 	
-	public func compressionConfigureCell(with model: ComprssionModel) {
+	public func compressionConfigureCell(with model: ComprssionModel, phasset: PHAsset?) {
 	
 		titleTextLabel.text = model.compressionTitle
-		subtitleTetLabel.text = model.compressionSubtitle
+
+		if let phasset = phasset {
+			if model == .custom(fps: 0, bitrate: 0, scale: .zero) {
+				let configuration = model.getCustomCongfiguration()
+				let resolution = model.getVideoResolution(from: configuration.scaleResolution)
+				let fps = model.getFPS(from: configuration.fps)
+				let originResolutionStringText = "\(Int(phasset.pixelWidth)) x \(Int(phasset.pixelHeight))"
+				let customResolutionStingText = resolution == .origin ? originResolutionStringText : resolution.resolutionInfo
+				subtitleTetLabel.text = "\(customResolutionStingText), \(fps.name)"
+			} else {
+				let size = videoManager.calculateSize(with: model, originalSize: CGSize(width: phasset.pixelWidth, height: phasset.pixelHeight))
+				let originResolutionStringText = "\(Int(size.width)) x \(Int(size.height))"
+				subtitleTetLabel.text = "\(originResolutionStringText), \(Int(model.preSavedValues.fps)) FPS"
+			}
+		} else {
+			subtitleTetLabel.text = model.compressionSubtitle
+		}
 	}
 	
 	private func checkSelectedCell() {

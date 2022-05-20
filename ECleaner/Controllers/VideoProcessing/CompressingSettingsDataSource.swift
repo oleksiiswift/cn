@@ -18,9 +18,9 @@ class CompressingSettingsDataSource: NSObject {
 		self.compressionSettinsViewModel = compressionSettinsViewModel
 	}
 	
-	private func cellConfigure(cell: CompressionSettingsTableViewCell, at indexPath: IndexPath) {
+	private func cellConfigure(cell: CompressionSettingsTableViewCell, at indexPath: IndexPath, phasset: PHAsset?) {
 		let compressionModel = compressionSettinsViewModel.getSettingsModel(at: indexPath)
-		cell.compressionConfigureCell(with: compressionModel)
+		cell.compressionConfigureCell(with: compressionModel, phasset: phasset)
 	}
 	
 	private func configureVideoPreview(cell: VideoPreviewTableViewCell, at indexPath: IndexPath, with phasset: PHAsset? ) {
@@ -49,7 +49,8 @@ extension CompressingSettingsDataSource: UITableViewDelegate, UITableViewDataSou
 				return cell
 			default:
 				let cell = tableView.dequeueReusableCell(withIdentifier: C.identifiers.cells.compressionCell, for: indexPath) as! CompressionSettingsTableViewCell
-				self.cellConfigure(cell: cell, at: indexPath)
+				let phasset = compressionSettinsViewModel.getCompressingPHAsset()
+				self.cellConfigure(cell: cell, at: indexPath, phasset: phasset)
 				return cell
 		}
 	}
