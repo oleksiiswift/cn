@@ -78,7 +78,7 @@ class StartingNavigationBar: UIView {
         rightBarButton.layer.cornerRadius = 10
 		
 		titleLabel.textColor = theme.titleTextColor
-		titleLabel.font = U.UIHelper.AppDefaultFontSize.NavigationBar.navigationBarTitleFont
+		titleLabel.font = FontManager.navigationBarFont(of: .title)
 		
 		leftShadowView.topShadowOffsetOriginX = -2
 		leftShadowView.topShadowOffsetOriginY = -5

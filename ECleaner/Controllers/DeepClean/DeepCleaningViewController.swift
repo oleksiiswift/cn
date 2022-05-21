@@ -771,7 +771,7 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
           
           let view = UIView(frame: CGRect(x: 0, y: 0, width: U.screenWidth, height: 30))
           let sectionTitleTextLabel = UILabel()
-		  sectionTitleTextLabel.font = U.UIHelper.AppDefaultFontSize.deepClentSectionHeaderTitleFont
+		  sectionTitleTextLabel.font = FontManager.deepCleanScreenFont(of: .headerTitle)
           sectionTitleTextLabel.textColor = theme.titleTextColor
           
           view.addSubview(sectionTitleTextLabel)
@@ -1039,7 +1039,7 @@ extension DeepCleaningViewController {
 	 private func showBottomButtonBar() {
 		  bottomContainerHeightConstraint.constant = U.UIHelper.AppDimensions.bottomBarDefaultHeight
 		  U.animate(0.35) {
-			   self.tableView.contentInset.bottom =  U.UIHelper.AppDimensions.bottomBarDefaultHeight - 20
+			   self.tableView.contentInset.bottom =  U.UIHelper.AppDimensions.bottomBarDefaultHeight - 30
 			   self.tableView.layoutIfNeeded()
 			   self.view.layoutIfNeeded()
 		  }

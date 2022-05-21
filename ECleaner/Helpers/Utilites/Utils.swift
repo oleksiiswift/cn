@@ -277,6 +277,13 @@ internal extension Bundle {
     }
 }
 
+extension Utils {
+
+	static func getReadableResulotion(from size: CGSize) -> String {
+		return "\(Int(size.width.rounded())) x \(Int(size.height.rounded()))"
+	}
+}
+
 
 class Hello: NSObject {
     

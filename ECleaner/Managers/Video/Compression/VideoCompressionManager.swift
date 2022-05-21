@@ -88,7 +88,7 @@ extension VideoCompressionManager {
 //		MARK: - calculate -
 extension VideoCompressionManager {
 	
-	private func calculateSize(with quality: VideoCompressionQuality, originalSize: CGSize) -> CGSize {
+	public func calculateSize(with quality: VideoCompressionQuality, originalSize: CGSize) -> CGSize {
 		
 		var treshold: CGFloat = -1
 		
@@ -145,6 +145,20 @@ extension VideoCompressionManager {
 		}
 	}
 	
+	public func calculateFutureConvertedSize(from scale: CGSize, originalSize: CGSize) -> CGSize {
+		
+		let isPortrait = originalSize.height > originalSize.width
+		var targetWidth: Int = Int(scale.width)
+		var targetHeight: Int = Int(scale.height)
+		
+		if !isPortrait {
+			targetHeight = Int(scale.width * originalSize.height / originalSize.width)
+		} else {
+			targetWidth = Int(scale.height * originalSize.width / originalSize.height)
+		}
+		return CGSize(width: targetWidth, height: targetHeight)
+	}
+
 	private func calculateBitrate(with quality: VideoCompressionQuality, originBitrate: Int) -> Int {
 		
 		var targetBitrate = quality.preSavedValues.bitrate
@@ -468,3 +482,4 @@ extension VideoCompressionManager {
 		}
 	}
 }
+

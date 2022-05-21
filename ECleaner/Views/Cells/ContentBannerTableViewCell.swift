@@ -45,9 +45,9 @@ extension ContentBannerTableViewCell {
 																colors: gradientColors,
 																startPoint: .topLeft, endPoint: .bottomRight)
 		let gradientColor = U.UIHelper.Manager.gradientColor(bounds: descriptionSubtitleTextLabel.bounds, gradientLayer: gradientLayer)
-		let firstSubtitleAttributes: [NSAttributedString.Key : Any] = [.font: U.UIHelper.AppDefaultFontSize.ContentBunnerFontSize.descriptionFirstSubtitleFont,
+		let firstSubtitleAttributes: [NSAttributedString.Key : Any] = [.font: FontManager.bannerFont(of: .descriptionFirstTitle),
 																	   .foregroundColor: gradientColor!]
-		let secondSubtitleAttributes: [NSAttributedString.Key : Any] = [.font: U.UIHelper.AppDefaultFontSize.ContentBunnerFontSize.descriptionSecondSubtitleFont,
+		let secondSubtitleAttributes: [NSAttributedString.Key : Any] = [.font: FontManager.bannerFont(of: .descriptionSecontTitle),
 																		.foregroundColor: gradientColor!]
 		let attributedString = NSMutableAttributedString(string: info.descriptionFirstPartSubtitle, attributes: firstSubtitleAttributes)
 		attributedString.append(NSAttributedString(string: " ", attributes: secondSubtitleAttributes))
@@ -112,9 +112,9 @@ extension ContentBannerTableViewCell: Themeble {
 		subtitleTextLabel.textAlignment = .left
 		descriptionTitleTextLabel.textAlignment = .right
 		descriptionSubtitleTextLabel.textAlignment = .right
-		titleTextLabel.font = U.UIHelper.AppDefaultFontSize.ContentBunnerFontSize.titleFont
-		subtitleTextLabel.font = U.UIHelper.AppDefaultFontSize.ContentBunnerFontSize.titleSubtitleFont
-		descriptionTitleTextLabel.font = U.UIHelper.AppDefaultFontSize.ContentBunnerFontSize.descriptionTitleFont
+		titleTextLabel.font = FontManager.bannerFont(of: .title)
+		subtitleTextLabel.font = FontManager.bannerFont(of: .subititle)
+		descriptionTitleTextLabel.font = FontManager.bannerFont(of: .descriptionTitle)
 	}
 
 	func updateColors() {

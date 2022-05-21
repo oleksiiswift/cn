@@ -25,7 +25,6 @@
                                 <rect key="frame" x="0.0" y="44" width="414" height="70"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="70" id="3us-4k-aKT"/>
                                     <constraint firstAttribute="height" constant="70" id="zkw-6G-c82"/>
                                 </constraints>
                             </view>
@@ -57,6 +56,7 @@
                     <connections>
                         <outlet property="bottomButtonBarView" destination="Csv-w1-iqI" id="nEX-Hx-4OI"/>
                         <outlet property="bottomButtonViewHeightConstraint" destination="DNt-Qc-Ax0" id="g0R-yz-mOo"/>
+                        <outlet property="navigationBarHeightConstraint" destination="zkw-6G-c82" id="QWl-LU-1VE"/>
                         <outlet property="navigationBarView" destination="ixU-uj-gJS" id="qpU-oF-DJt"/>
                         <outlet property="tableView" destination="R3P-fQ-KC3" id="AVX-SI-IqV"/>
                         <segue destination="EW2-Ql-oz0" kind="custom" identifier="ShowCustomCompressionSegue" customClass="ShowVideoCompressionCustomSettingsSelectorViewControllerSegue" customModule="ECleaner" customModuleProvider="target" id="GkY-gV-EA9"/>
@@ -137,7 +137,7 @@
                                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vLV-tR-Ssk">
                                                                         <rect key="frame" x="0.0" y="0.0" width="414" height="35.5"/>
                                                                         <subviews>
-                                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="W7J-N7-FeY">
+                                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="tailTruncation" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="W7J-N7-FeY">
                                                                                 <rect key="frame" x="157" y="7.5" width="102" height="20.5"/>
                                                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                                                 <nil key="textColor"/>
@@ -155,7 +155,7 @@
                                                                                     <action selector="didTapResolutionTitleActionButton:" destination="EW2-Ql-oz0" eventType="touchUpInside" id="zWx-T7-7NW"/>
                                                                                 </connections>
                                                                             </button>
-                                                                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="cjN-Ri-PWL" customClass="CustomSegmentedControl" customModule="ECleaner" customModuleProvider="target">
+                                                                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="cjN-Ri-PWL" customClass="CustomSegmentedControl" customModule="ECleaner" customModuleProvider="target">
                                                                                 <rect key="frame" x="274" y="7" width="120" height="22"/>
                                                                                 <constraints>
                                                                                     <constraint firstAttribute="height" constant="21" id="OFZ-3G-c7G"/>
@@ -175,7 +175,7 @@
                                                                             <constraint firstItem="cCR-YT-sLn" firstAttribute="leading" secondItem="vLV-tR-Ssk" secondAttribute="leading" constant="20" id="3xX-Ra-roC"/>
                                                                             <constraint firstItem="W7J-N7-FeY" firstAttribute="leading" secondItem="vLV-tR-Ssk" secondAttribute="centerX" constant="-50" id="TJN-aO-HEJ"/>
                                                                             <constraint firstItem="W7J-N7-FeY" firstAttribute="centerY" secondItem="vLV-tR-Ssk" secondAttribute="centerY" id="aJ6-EF-Fnx"/>
-                                                                            <constraint firstItem="cjN-Ri-PWL" firstAttribute="centerY" secondItem="vLV-tR-Ssk" secondAttribute="centerY" id="b5X-rn-Zm3"/>
+                                                                            <constraint firstItem="cjN-Ri-PWL" firstAttribute="centerY" secondItem="vLV-tR-Ssk" secondAttribute="centerY" constant="-2" id="b5X-rn-Zm3"/>
                                                                             <constraint firstAttribute="trailing" secondItem="cjN-Ri-PWL" secondAttribute="trailing" constant="20" id="hKK-m1-Wku"/>
                                                                             <constraint firstItem="cjN-Ri-PWL" firstAttribute="leading" secondItem="W7J-N7-FeY" secondAttribute="trailing" constant="15" id="lkc-Tl-hao"/>
                                                                             <constraint firstItem="cCR-YT-sLn" firstAttribute="centerY" secondItem="vLV-tR-Ssk" secondAttribute="centerY" id="tIp-1Q-W89"/>
@@ -533,7 +533,7 @@
                                         <rect key="frame" x="0.0" y="492" width="414" height="68"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="68" id="B6U-qI-apX"/>
+                                            <constraint firstAttribute="height" constant="80" id="efy-cN-q62"/>
                                         </constraints>
                                     </view>
                                 </subviews>
@@ -547,7 +547,7 @@
                                     <constraint firstItem="vC0-Yb-chn" firstAttribute="top" secondItem="lrF-s2-LI1" secondAttribute="top" id="Zzb-97-TJq"/>
                                     <constraint firstItem="0L3-9m-fWl" firstAttribute="leading" secondItem="lrF-s2-LI1" secondAttribute="leading" id="guY-Xl-L14"/>
                                     <constraint firstAttribute="trailing" secondItem="0L3-9m-fWl" secondAttribute="trailing" id="oU6-Lj-rWV"/>
-                                    <constraint firstAttribute="bottom" secondItem="0L3-9m-fWl" secondAttribute="bottom" constant="40" id="onK-ZL-zAr"/>
+                                    <constraint firstAttribute="bottom" secondItem="0L3-9m-fWl" secondAttribute="bottom" id="qXP-3Q-LC4"/>
                                     <constraint firstAttribute="height" constant="600" id="uwh-jI-MfS"/>
                                     <constraint firstAttribute="trailing" secondItem="zTz-sI-Le5" secondAttribute="trailing" id="vNv-vg-zyC"/>
                                 </constraints>
@@ -573,6 +573,8 @@
                         <outlet property="bitrateTextLabel" destination="RUo-vq-27t" id="r5o-e4-W8q"/>
                         <outlet property="bitrateTitleButton" destination="6x5-na-B9I" id="bW2-MD-BTM"/>
                         <outlet property="bitrateView" destination="xCl-cQ-f7b" id="PFn-0P-NSZ"/>
+                        <outlet property="bottomButtonHeightConstraint" destination="efy-cN-q62" id="n4V-Id-Wu7"/>
+                        <outlet property="bottomButtonTopConstraint" destination="MOj-7E-6n0" id="unf-JS-d37"/>
                         <outlet property="bottomButtonView" destination="0L3-9m-fWl" id="ukE-3U-zBo"/>
                         <outlet property="controllerTitleTextLabel" destination="ts8-mT-DJt" id="dd2-2P-ehz"/>
                         <outlet property="fpsSliderContainerView" destination="V3i-w8-J2N" id="9T2-iA-sH4"/>
@@ -590,6 +592,7 @@
                         <outlet property="resetButtonShadowView" destination="qmC-gX-uYZ" id="yc7-SZ-yDk"/>
                         <outlet property="resetToDafaultButton" destination="Va2-V0-NZr" id="Ydk-Tu-g8M"/>
                         <outlet property="resolutionSegmentControll" destination="cjN-Ri-PWL" id="A8f-ZI-SWq"/>
+                        <outlet property="resolutionSegmentControllWidthConstraint" destination="SGc-xE-3jQ" id="jry-rW-IKk"/>
                         <outlet property="resolutionSizeTextLabel" destination="W7J-N7-FeY" id="X9S-2s-Lsd"/>
                         <outlet property="resolutionTitleButton" destination="cCR-YT-sLn" id="c13-EQ-XGw"/>
                         <outlet property="segmentContainerView" destination="vLV-tR-Ssk" id="EzG-48-TUZ"/>

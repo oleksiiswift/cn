@@ -521,18 +521,20 @@ extension PHAssetFetchManager {
 //		MARK: - UTILS -
 extension PHAssetFetchManager {
 	
-	public func saveAVAsset(with url: URL, completionHandler: @escaping ((Bool,Error?) -> Void)) {
-		
+	public func saveAVAsset(with url: URL, completionHandler: @escaping ((_ identifier: String?,_ completed: Bool,_ error: Error?) -> Void)) {
+		var localIdentifier: String?
 		PHPhotoLibrary.shared().performChanges({
 			let request = PHAssetCreationRequest.forAsset()
+			localIdentifier = request.placeholderForCreatedAsset?.localIdentifier
 			request.addResource(with: .video, fileURL: url, options: nil)
 		}) { result, error in
 			DispatchQueue.main.async {
 				if let error = error {
 					debugPrint(error.localizedDescription)
-					completionHandler(false, error)
+					completionHandler(nil, false, error)
 				} else {
-					completionHandler(true, nil)
+					debugPrint(result)
+					completionHandler(localIdentifier, true, nil)
 				}
 			}
 		}

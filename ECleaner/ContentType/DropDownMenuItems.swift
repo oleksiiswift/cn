@@ -19,7 +19,7 @@ enum DropDownMenuItems {
 struct DropDownOptionsMenuItem {
     var titleMenu: String
     var itemThumbnail : UIImage?
-	var titleFont: UIFont = U.UIHelper.AppDefaultFontSize.DropDownMenu.dropDounTitleLabelFont
+	var titleFont: UIFont = FontManager.drooDownMenuFont(of: .title)
     var isSelected: Bool
     var menuItem: DropDownMenuItems
 }
