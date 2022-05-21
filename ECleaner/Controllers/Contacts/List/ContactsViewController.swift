@@ -577,14 +577,16 @@ extension ContactsViewController: BottomActionButtonDelegate {
 extension ContactsViewController {
     
     private func setActiveSearchBar(setActive: Bool) {
+		
+		self.searchBarTopConstraint.constant = setActive ? 5 : U.UIHelper.AppDimensions.NavigationBar.navigationBarHeight
         self.searchBarView.searchBarIsActive = setActive
-        self.searchBarView.setShowCancelButton(setActive, animated: true)
-        searchBarTopConstraint.constant = setActive ? 0 : 60
+		self.searchBarView.setShowCancelButton(setActive, animated: true)
         contactListDataSource.searchBarIsFirstResponder = setActive
-        U.animate(0.3) {
+		U.animate(0.3) {
+			self.view.layoutIfNeeded()
+			self.searchBarView.layoutIfNeeded()
             self.navigationBar.containerView.alpha = setActive ? 0 : 1
             self.navigationBar.layoutIfNeeded()
-            self.view.layoutIfNeeded()
         }
     }
 	
@@ -607,12 +609,12 @@ extension ContactsViewController {
     
     @objc func contentDidBeginDraging() {
         
-        guard searchBarTopConstraint.constant != 60 else { return }
+        guard searchBarTopConstraint.constant != U.UIHelper.AppDimensions.NavigationBar.navigationBarHeight else { return }
         
         if searchBarView.searchBar.text == "" {
             setActiveSearchBar(setActive: false)
         } else {
-            searchBarTopConstraint.constant = 60
+            searchBarTopConstraint.constant = U.UIHelper.AppDimensions.NavigationBar.navigationBarHeight
             U.animate(0.3) {
                 self.navigationBar.containerView.alpha = 1
                 self.navigationBar.layoutIfNeeded()
@@ -879,7 +881,7 @@ extension ContactsViewController: Themeble {
     
     private func smoothReloadData() {
         
-        UIView.transition(with: self.tableView, duration: 0.35, options: .transitionCrossDissolve) {
+        UIView.transition(with: self.tableView, duration: 0.25, options: .transitionCrossDissolve) {
             self.tableView.reloadData()
         } completion: { _ in
             debugPrint("data source reloaded")
@@ -887,7 +889,7 @@ extension ContactsViewController: Themeble {
     }
     
     private func smoothReloadData(at indexPaths: [IndexPath]) {
-        UIView.transition(with: self.tableView, duration: 0.35, options: .transitionCrossDissolve) {
+        UIView.transition(with: self.tableView, duration: 0.25, options: .transitionCrossDissolve) {
             self.tableView.reloadRows(at: indexPaths, with: .none)
         } completion: { _ in
             debugPrint("data source reloaded")

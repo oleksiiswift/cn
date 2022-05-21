@@ -59,7 +59,7 @@ class BottomDoubleButtonBarView: UIView {
         contantView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         
         self.backgroundColor = .clear
-        
+		self.setButtonHeight(U.UIHelper.AppDimensions.bottomBarButtonDefaultHeight)
         leftActionBottomButton.configureAppearance(buttonColor: self.leftButtonColor, tintColor: self.leftButtonTintColor)
         rightActionBottomButton.configureAppearance(buttonColor: self.rightButtonColor, tintColor: self.rightButtonTintColor)
     }
@@ -74,6 +74,10 @@ class BottomDoubleButtonBarView: UIView {
         leftActionBottomButton.addTarget(self, action: #selector(didTapLeftButton), for: .touchUpInside)
         rightActionBottomButton.addTarget(self, action: #selector(didTapRightButton), for: .touchUpInside)
     }
+	
+	public func setButtonHeight(_ height: CGFloat) {
+		buttonsStackHeightConstraint.constant = height
+	}
     
     public func setLeftButtonTitle(_ title: String) {
         leftActionBottomButton.setTitle(title)
@@ -116,7 +120,7 @@ class BottomSmallerBarButtonItem: UIButton {
     private func configure() {
         
         self.setCorner(14)
-        self.titleLabel?.font = .systemFont(ofSize: 16.8, weight: .bold)
+        self.titleLabel?.font = FontManager.bottomButtonFont(of: .title)
     }
     
     public func configureAppearance(buttonColor: UIColor, tintColor: UIColor) {

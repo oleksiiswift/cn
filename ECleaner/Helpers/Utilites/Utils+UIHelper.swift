@@ -463,6 +463,69 @@ extension Utils {
 				}
 			}
 			
+		
+			
+			struct Contacts {
+				
+				struct Collection {
+					
+					static var contactsCellHeight: CGFloat {
+						switch screenSize {
+							case .small:
+								return 70
+							default:
+								return 80
+						}
+					}
+					
+					static var headerHeight: CGFloat {
+						switch screenSize {
+							case .small:
+								return 25
+							default:
+								return 40
+						}
+					}
+					
+					static var helperImageViewWidth: CGFloat {
+						switch screenSize {
+							case .small:
+								return 28
+							case .medium, .plus, .large:
+								return 30
+							case .modern, .max, .madMax:
+								return 33
+						}
+					}
+					
+					static var selectableGoupAssetViewWidth: CGFloat {
+						switch screenSize {
+							case .small:
+								return 18
+							case .medium, .plus, .large:
+								return 23
+							case .modern, .max, .madMax:
+								return 25
+						}
+					}
+				}
+				
+				
+				struct SearchBar {
+					
+					static var cancelButtonWidth: CGFloat {
+						switch screenSize {
+							case .small:
+								return 70
+							case .medium:
+								return 70
+							case .plus, .large, .modern, .max, .madMax:
+								return 90
+						}
+					}
+				}
+			}
+			
 			struct ModalControllerSettings {
 				
 				static var mainContainerHeight: CGFloat {

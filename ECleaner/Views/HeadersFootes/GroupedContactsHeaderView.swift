@@ -42,15 +42,15 @@ class GroupedContactsHeaderView: UITableViewHeaderFooterView {
     
     public func configure(_ title: String, index: Int) {
         
-        headerTitleTextLabel.text = title
+		headerTitleTextLabel.text = title.containsAlphabets ? title : title.removeWhitespace()
         self.index = index
     }
     
     private func configureView() {
         deleteButton.setImage(I.personalisation.contacts.deleteContact, for: .normal)
         mergeButton.didset(righty: I.personalisation.contacts.mergeContact, with: "MERGE")
-        mergeButton.titleLabel!.font = .systemFont(ofSize: 12, weight: .heavy)
-        headerTitleTextLabel.font = .systemFont(ofSize: 14, weight: .heavy)
+		mergeButton.titleLabel!.font = FontManager.contactsFont(of: .headerButonFont)
+		headerTitleTextLabel.font = FontManager.contactsFont(of: .headetTitle)
     }
     
     private func updadeColors() {

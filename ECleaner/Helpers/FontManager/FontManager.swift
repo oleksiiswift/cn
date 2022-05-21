@@ -109,4 +109,23 @@ class FontManager {
 				return DeepClean.deepClentSectionHeaderTitleFont
 		}
 	}
+	
+	static func contactsFont(of type: ContactsCleanFontType) -> UIFont {
+		switch type {
+			case .cellTitle:
+				return Contacts.cellTitleFont
+			case .cellSubtitle:
+				return Contacts.cellSubtitleFont
+			case .cellGroupCellHeaderTitle:
+				return Contacts.cellGroupCellHeaderTitleFont
+			case .headetTitle:
+				return Contacts.headerTitleFont
+			case .missingTitle:
+				return Contacts.missingTitleFont
+			case .missongSubtitle:
+				return Contacts.missingSubTitleFont
+			case .headerButonFont:
+				return Contacts.headerButtonFont
+		}
+	}
 }
