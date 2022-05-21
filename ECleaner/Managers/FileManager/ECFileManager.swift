@@ -161,6 +161,22 @@ class ECFileManager {
             }
         }
     }
+	
+	func copyFileTemoDdirectory(from url: URL, with name: String,_ completion: @escaping (URL?) -> Void) {
+
+		if let tempURL = getDirectoryURL(.temp)?.appendingPathComponent(name) {
+			do {
+				if fileManager.fileExists(atPath: tempURL.path) {
+					try fileManager.removeItem(at: tempURL)
+				}
+				try fileManager.copyItem(at: url, to: tempURL)
+				completion(tempURL)
+			} catch {
+				completion(nil)
+				debugPrint(error.localizedDescription)
+			}
+		}
+	}
 }
 
 extension ECFileManager {

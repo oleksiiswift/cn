@@ -85,14 +85,18 @@ class VideoCompressionCustomSettingsViewController: UIViewController {
 	
 	private var videoResolutionValue: VideoResolution = .res1080p {
 		didSet {
+			guard let asset = asset else {
+				return
+			}
+			let origin = CGSize(width: asset.pixelWidth, height: asset.pixelHeight)
+			let size = asset.isPortrait ? videoResolutionValue.resolutionSizePortrait : videoResolutionValue.resolutionSize
+			
 			if videoResolutionValue == .origin {
-				if let asset = asset {
 					resolutionSizeTextLabel.text = "\(asset.pixelWidth) x \(asset.pixelHeight)"
-				} else {
-					resolutionSizeTextLabel.text = videoResolutionValue.resolutionInfo
-				}
 			} else {
-				resolutionSizeTextLabel.text = videoResolutionValue.resolutionInfo
+				let calculatedSize = VideoCompressionManager.insstance.calculateFutureConvertedSize(from: size, originalSize: origin)
+				let readableResolution = U.getReadableResulotion(from: calculatedSize)
+				resolutionSizeTextLabel.text = readableResolution
 			}
 			handleValuesDidChange()
 		}
@@ -130,7 +134,8 @@ class VideoCompressionCustomSettingsViewController: UIViewController {
 	
     override func viewDidLoad() {
         super.viewDidLoad()
-
+		
+		/// ùi
         setupUI()
 		segmentControllSetup()
 		videoResolutionSliderSetupUI()
@@ -140,13 +145,17 @@ class VideoCompressionCustomSettingsViewController: UIViewController {
 		videoKeyFrameSliderSetupUI()
 		audioBitrateSliderSetupUI()
 		audioSampleRateSliderSetupUI()
-		setupSlidersTarget()
 		stupGesturerecognizers()
 		setupSliders()
-		loadPreSavedConfiguration(CompressionSettingsConfiguretion.getSavedConfiguration())
-		updateColors()
+		
+		setupSlidersTarget()
 		setupDelegate()
+		
+		loadPreSavedConfiguration(CompressionSettingsConfiguretion.getSavedConfiguration())
+		
 		handleValuesDidChange()
+		updateColors()
+		
     }
 	
 	override func viewDidLayoutSubviews() {
@@ -228,7 +237,7 @@ extension VideoCompressionCustomSettingsViewController {
 		if !self.isResolutionChangeAvailible {
 			resoultion = VideoResolution.origin.resolutionSize
 		} else if asset.isPortrait {
-			resoultion = CGSize(width: -1, height: resoultion.height)
+			resoultion = CGSize(width: -1, height: resoultion.width)
 		} else {
 			resoultion = CGSize(width: resoultion.width, height: -1)
 		}
@@ -339,25 +348,32 @@ extension VideoCompressionCustomSettingsViewController {
 	
 	private func setResolutionSlider(value: CGSize) {
 		
-		let heightResolution = VideoResolution.allCases.first(where: {$0.resolutionSize.height == value.height})
-		let widthResolution = VideoResolution.allCases.first(where: {$0.resolutionSize.width == value.width})
-		let valuesArray: [VideoResolution] = Array(VideoResolution.allCases.reversed()).dropLast()
+		guard let asset = self.asset else { return }
 		
-		if heightResolution == .origin && widthResolution == .origin {
-			resolutionStepSlider.index = UInt(valuesArray.count - 1)
+		let isPortrait = asset.isPortrait
+		let videoResolutionSliderValues: [VideoResolution] = Array(VideoResolution.allCases.reversed()).dropLast()
+		let portraitResolution = VideoResolution.allCases.first(where: {$0.resolutionSizePortrait.height == value.height})
+		let landscapeResolution = VideoResolution.allCases.first(where: {$0.resolutionSize.width == value.width})
+		
+		if value.videoResolutionSize() == .origin {
+			resolutionStepSlider.index = UInt(videoResolutionSliderValues.count - 1)
 			videoResolutionValue = .origin
-		} else if let heightSavedValue = heightResolution {
-			videoResolutionValue = heightSavedValue
-			if let index = valuesArray.firstIndex(of: heightSavedValue) {
-				resolutionStepSlider.index = UInt(index)
+		}
+		
+		if isPortrait {
+			if let portraitResolution = portraitResolution {
+				videoResolutionValue = portraitResolution
 			}
-		} else if let widthSavedValue = widthResolution {
-			videoResolutionValue = widthSavedValue
-			if let index = valuesArray.firstIndex(of: widthSavedValue) {
-				resolutionStepSlider.index = UInt(index)
+		} else {
+			if let landscapeResolution = landscapeResolution {
+				videoResolutionValue = landscapeResolution
 			}
 		}
 		
+		if let index = videoResolutionSliderValues.firstIndex(of: videoResolutionValue) {
+			resolutionStepSlider.index = UInt(index)
+		}
+				
 		isResolutionChangeAvailible = videoResolutionValue != .origin
 		setMenualResolutionSegment(isOn: isResolutionChangeAvailible)
 	}

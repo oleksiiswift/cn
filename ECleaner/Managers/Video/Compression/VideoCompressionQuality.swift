@@ -138,28 +138,22 @@ enum VideoCompressionQuality: Equatable {
 		return CompressionSettingsConfiguretion.getSavedConfiguration()
 	}
 	
-	public func getVideoResolution(from size: CGSize?) -> VideoResolution {
+	public func getVideoResolution(from size: CGSize?, isPortrait: Bool) -> VideoResolution {
 		
 		guard let size = size else {
 			return .origin
 		}
 		
-		switch size.videoResolutionSize() {
-			case .origin:
-				return .origin
-			case .width:
-				if let resolution = VideoResolution.allCases.first(where: {$0.resolutionSize.width == size.width}) {
-					return resolution
-				} else {
-					return .origin
-				}
-			case .height:
-				if let resolution = VideoResolution.allCases.first(where: {$0.resolutionSize.height == size.height}) {
-					return resolution
-				} else {
-					return .origin
-				}
+		if isPortrait {
+			if let resolution = VideoResolution.allCases.first(where: {$0.resolutionSizePortrait.height == size.height}) {
+				return resolution
+			}
+		} else {
+			if let resolution = VideoResolution.allCases.first(where: {$0.resolutionSize.width == size.width}) {
+				return resolution
+			}
 		}
+		return .origin
 	}
 	
 	public func getFPS(from fps: Float) -> FPS {

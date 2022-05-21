@@ -135,7 +135,16 @@ extension VideoCollectionCompressingViewController {
 	}
 	
 	private func createCellContextMenu(for asset: PHAsset, at indexPath: IndexPath) -> UIMenu {
-		return UIMenu()
+		
+		let shareVideoActionImage = I.systemItems.defaultItems.share
+		let shareAction = UIAction(title: "Share", image: shareVideoActionImage) { _ in
+			self.share(phasset: asset)
+		}
+		return UIMenu(title: "", children: [shareAction])
+	}
+	
+	private func share(phasset: PHAsset) {
+		ShareManager.shared.shareVideoFile(from: phasset) {}
 	}
 }
 

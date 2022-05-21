@@ -1744,3 +1744,35 @@ extension PhotoManager {
         return CGSize(width: imageWidth * scale, height: imageHeight * scale)
     }
 }
+
+extension PhotoManager {
+	
+	public func getPhassetShareUrl(_ asset: PHAsset, completionHandler: @escaping (_ sharedURL: URL?,_ name: String?) -> Void) {
+
+		let fileManager = ECFileManager()
+		let options = PHVideoRequestOptions()
+		options.isNetworkAccessAllowed = true
+		options.deliveryMode = .highQualityFormat
+		
+		let resource = PHAssetResource.assetResources(for: asset).first!
+		let name = resource.originalFilename
+
+		self.imageManager.requestAVAsset(forVideo: asset, options: options) { avasset, mix, info in
+			if let avasset = avasset as? AVURLAsset{
+				fileManager.copyFileTemoDdirectory(from: avasset.url, with: name) { url in
+					if let url = url {
+						if fileManager.isFileExiest(at: url) {
+							completionHandler(url, name)
+						} else {
+							completionHandler(nil, nil)
+						}
+					} else {
+						completionHandler(nil, nil)
+					}
+				}
+			} else {
+				completionHandler(nil, nil)
+			}
+		}
+	}
+}

@@ -48,14 +48,20 @@ extension CompressionSettingsTableViewCell {
 		if let phasset = phasset {
 			if model == .custom(fps: 0, bitrate: 0, scale: .zero) {
 				let configuration = model.getCustomCongfiguration()
-				let resolution = model.getVideoResolution(from: configuration.scaleResolution)
+				let resolution = model.getVideoResolution(from: configuration.scaleResolution, isPortrait: phasset.isPortrait)
 				let fps = model.getFPS(from: configuration.fps)
-				let originResolutionStringText = "\(Int(phasset.pixelWidth)) x \(Int(phasset.pixelHeight))"
-				let customResolutionStingText = resolution == .origin ? originResolutionStringText : resolution.resolutionInfo
-				subtitleTetLabel.text = "\(customResolutionStingText), \(fps.name)"
+		
+				let origin = CGSize(width: CGFloat(phasset.pixelWidth), height: CGFloat(phasset.pixelHeight))
+				let size = videoManager.calculateFutureConvertedSize(from: phasset.isPortrait ? resolution.resolutionSizePortrait : resolution.resolutionSize , originalSize: origin)
+
+				let originResolutionStringText = U.getReadableResulotion(from: size)
+				subtitleTetLabel.text = "\(originResolutionStringText), \(fps.name)"
 			} else {
-				let size = videoManager.calculateSize(with: model, originalSize: CGSize(width: phasset.pixelWidth, height: phasset.pixelHeight))
-				let originResolutionStringText = "\(Int(size.width)) x \(Int(size.height))"
+				let origin = CGSize(width: phasset.pixelWidth, height: phasset.pixelHeight)
+				let size = videoManager.calculateSize(with: model, originalSize: origin)
+				let calculatedFutureSize = VideoCompressionManager.insstance.calculateFutureConvertedSize(from: size, originalSize: origin)
+				let readableSize = U.getReadableResulotion(from: calculatedFutureSize)
+				let originResolutionStringText = readableSize
 				subtitleTetLabel.text = "\(originResolutionStringText), \(Int(model.preSavedValues.fps)) FPS"
 			}
 		} else {
