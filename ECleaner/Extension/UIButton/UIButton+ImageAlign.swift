@@ -151,5 +151,14 @@ extension UIButton {
 			imageView.removeFromSuperview()
 		}
 	}
+	
+	public func removeButtonImages() {
+		self.setImage(nil, for: .normal)
+		self.subviews.forEach {
+			if let _ = $0 as? UIImageView {
+				$0.removeFromSuperview()
+			}
+		}
+	}
 }
 

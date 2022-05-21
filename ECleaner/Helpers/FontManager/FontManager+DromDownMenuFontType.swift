@@ -19,9 +19,9 @@ extension FontManager {
 		static var titleFont: UIFont {
 			switch screenSize {
 				case .small:
-					return .systemFont(ofSize: 11, weight: .regular)
+					return .systemFont(ofSize: 14, weight: .regular)
 				case .medium:
-					return .systemFont(ofSize: 12, weight: .regular)
+					return .systemFont(ofSize: 14, weight: .regular)
 				case .plus, .large, .modern, .max, .madMax:
 					return .systemFont(ofSize: 14, weight: .regular)
 			}

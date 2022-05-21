@@ -135,14 +135,15 @@ class NavigationBar: UIView {
     }
     
     public func changeHotLeftTitle(newTitle: String) {
-        leftBarButtonItem.setImage(nil, for: .normal)
-        leftBarButtonItem.sizeToFit()
-        leftBarButtonItem.setTitleWithoutAnimation(title: newTitle)
+		leftBarButtonItem.removeButtonImages()
+		leftButtonLeadingConstraint.constant = 17
+		leftBarButtonItem.setTitleWithoutAnimation(title: newTitle)
     }
     
     public func changeHotRightTitle(newTitle: String) {
-        rightBarButtonItem.setImage(nil, for: .normal)
-        rightBarButtonItem.setTitleWithoutAnimation(title: newTitle)
+		rightBarButtonItem.removeButtonImages()
+		rightButtonTrailingConstraint.constant = 17
+		rightBarButtonItem.setTitleWithoutAnimation(title: newTitle)
     }
 	
 	public func changeHotLeftTitleWithImage(newTitle: String, image: UIImage) {
@@ -162,9 +163,16 @@ class NavigationBar: UIView {
 	}
 	
 	public func changeHotRightButton(with newImage: UIImage) {
-		U.UI {
+		DispatchQueue.main.async {
 			let imageSize = self.getProportionalSize(of: newImage)
 			self.rightBarButtonItem.addCenterImage(image: newImage, imageWidth: imageSize.height, imageHeight: imageSize.height)
+		}
+	}
+	
+	public func changeHotLeftButton(with newImage: UIImage) {
+		DispatchQueue.main.async {
+			let imageSize = self.getProportionalSize(of: newImage)
+			self.leftBarButtonItem.addCenterImage(image: newImage, imageWidth: imageSize.height, imageHeight: imageSize.height)
 		}
 	}
 	

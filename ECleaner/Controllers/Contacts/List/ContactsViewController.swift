@@ -278,14 +278,14 @@ extension ContactsViewController {
 extension ContactsViewController {
 	
 	private func handleBottomButtonChangeAppearence(disableAnimation: Bool = false) {
-		
-		let calculatedBottomButtonHeight: CGFloat = bottomButtonHeight + U.bottomSafeAreaHeight
+	
+		let bottomButtonMenyHeight: CGFloat = U.UIHelper.AppDimensions.bottomBarDefaultHeight
 		
 		switch contentType {
 			case .allContacts:
-				handleAllContactsBottomButton(disableAnimation: disableAnimation, with: calculatedBottomButtonHeight)
+				handleAllContactsBottomButton(disableAnimation: disableAnimation, with: bottomButtonMenyHeight)
 			case .emptyContacts:
-				handleEmptyContactsBottomButton(disableAnimation: disableAnimation, with: calculatedBottomButtonHeight)
+				handleEmptyContactsBottomButton(disableAnimation: disableAnimation, with: bottomButtonMenyHeight)
 			default:
 				return
 		}
@@ -306,12 +306,12 @@ extension ContactsViewController {
 		
 		if disableAnimation {
 			self.bottomDoubleButtonView.layoutIfNeeded()
-			self.tableView.contentInset.bottom = self.selectedItems() != 0 ? height :  34
+			self.tableView.contentInset.bottom = self.selectedItems() != 0 ? height + 10 :  34
 		} else {
 			U.animate(0.5) {
 				self.view.layoutIfNeeded()
 				self.bottomDoubleButtonView.layoutIfNeeded()
-				self.tableView.contentInset.bottom = self.selectedItems() != 0 ? height :  34
+				self.tableView.contentInset.bottom = self.selectedItems() != 0 ? height + 10 :  34
 			}
 		}
 	}
@@ -809,13 +809,8 @@ extension ContactsViewController: Themeble {
         
         if isEditing {
             let rightNavigationTitle: String = isSelectedAllItems ? "deselect all" : "select all"
-            
-            navigationBar.setupNavigation(title: mediaType.navigationTitle,
-                                          leftBarButtonImage: nil,
-                                          rightBarButtonImage: nil,
-										  contentType: .userContacts,
-                                          leftButtonTitle: "cancel",
-                                          rightButtonTitle: rightNavigationTitle)
+			self.navigationBar.changeHotLeftTitle(newTitle: "cancel")
+			self.navigationBar.changeHotRightTitle(newTitle: rightNavigationTitle)
         } else {
             setupNavigation()
         }

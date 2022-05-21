@@ -114,9 +114,9 @@ class SearchBarView: UIView {
         
         cancelButton.isEnabled = showCancelButton
         cancelButton.alpha = showCancelButton ? 1.0 : 0
-        
+		#warning("set for small screen other 90")
         leadingButtonConstraint.constant = showCancelButton ? 10 : 20
-        trailingButtonConstraint.constant = showCancelButton ? 0 : -90
+		trailingButtonConstraint.constant = showCancelButton ? 0 : -90
         
         if animated {
             U.animate(0.3) {
