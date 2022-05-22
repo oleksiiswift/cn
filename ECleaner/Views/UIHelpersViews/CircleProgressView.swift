@@ -124,7 +124,7 @@ class CircleProgressView: UIView {
     }
 
     /// `Space value`
-    public var spaceDegree: CGFloat = 12.0 {
+	public var spaceDegree: CGFloat = 0.0 {
         didSet {
             layoutSubviews()
             updateShapes()
@@ -235,6 +235,24 @@ class CircleProgressView: UIView {
 		}
 	}
 	
+	public var disableBackgrounShadow: Bool = false {
+		didSet {
+			layoutSubviews()
+		}
+	}
+	
+	public var progressShapeStart: CGFloat = 0.0 {
+		didSet {
+			updateShapes()
+		}
+	}
+	
+	public var progressShapeEnd: CGFloat = 0.1 {
+		didSet {
+			updateShapes()
+		}
+	}
+	
     /// Duration for a complete animation from 0.0 to 1.0.
     open var completeDuration: Double = 2.0
 
@@ -252,7 +270,7 @@ class CircleProgressView: UIView {
 		gradientLayer.endPoint = CGPoint(x: 0.5, y: 1.0)
         return gradientLayer
     }()
-
+	
     // MARK: - Init
 
     public required init?(coder aDecoder: NSCoder) {
@@ -274,8 +292,10 @@ class CircleProgressView: UIView {
 
         progressShape = CAShapeLayer()
         progressShape.fillColor   = nil
-        progressShape.strokeStart = 0.0
-        progressShape.strokeEnd   = 0.1
+//        progressShape.strokeStart = 0.0
+//        progressShape.strokeEnd   = 0.1
+		progressShape.strokeStart = self.progressShapeStart
+		progressShape.strokeEnd = self.progressShapeEnd
 
         layer.addSublayer(progressShape)
         layer.addSublayer(gradientLayer)
@@ -295,6 +315,18 @@ class CircleProgressView: UIView {
 		
 		updateLabels()
     }
+	
+	public func gradientSetup(startPoint: CGPoint, endPoint: CGPoint, gradientType: CAGradientLayerType) {
+		
+		self.gradientLayer.startPoint = startPoint
+		self.gradientLayer.endPoint = endPoint
+		self.gradientLayer.type = gradientType
+	}
+	
+	private func updatProgressShape() {
+		progressShape.strokeStart = self.progressShapeStart
+		progressShape.strokeEnd = self.progressShapeEnd
+	}
 	
 	public func updateLabels() {
 		// heigt of percent and title label is fix
@@ -404,13 +436,24 @@ class CircleProgressView: UIView {
 		backgroundShape.path = pathForShape(rect: rect, degree: backgrounSpaceDegree).cgPath
 		progressShape.path   = pathForShape(rect: rect, degree: spaceDegree).cgPath
         gradientLayer.frame = bounds
+		
+//		let colors = [UIColor().colorFromHexString("FF0018"),
+//					  UIColor().colorFromHexString("FFA52C"),
+//					  UIColor().colorFromHexString("FFFF41"),
+//					  UIColor().colorFromHexString("008018"),
+//					  UIColor().colorFromHexString("0000F9"),
+//					  UIColor().colorFromHexString("86007D")]
+//					gradientLayer.colors = colors.map({$0.cgColor})
+		
         gradientLayer.colors = [startColor, endColor].map { $0.cgColor }
 		
-		layer.masksToBounds = false
-		layer.shadowOffset = backgroundShadowOffcet
-		layer.shadowColor = backgroundShadowColor.cgColor
-		layer.shadowRadius = 14
-		layer.shadowOpacity = backgroundShadwoOppacity
+		if !disableBackgrounShadow {
+			layer.masksToBounds = false
+			layer.shadowOffset = backgroundShadowOffcet
+			layer.shadowColor = backgroundShadowColor.cgColor
+			layer.shadowRadius = 14
+			layer.shadowOpacity = backgroundShadwoOppacity
+		}
 
         let path = progressShape.path
         if let mask = progressShape {
@@ -536,7 +579,7 @@ class MMTGradientArcView: UIView {
     
     override func draw(_ rect: CGRect) {
         
-        let gradations = 360 //My School Number
+        let gradations = 360
         
         var startColorR:CGFloat = 0
         var startColorG:CGFloat = 0

@@ -58,8 +58,10 @@ class BottomButtonBarView: UIView {
         self.addSubview(self.containerView)
         containerView.frame = self.bounds
         containerView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+		
+		self.setButtonHeight(U.UIHelper.AppDimensions.bottomBarButtonDefaultHeight)
         
-        self.backgroundColor = .clear
+		self.backgroundColor = .clear
 		self.activityIndicatorView.color = activityIndicatorColor
 		self.activityIndicatorView.isHidden = true
 		
@@ -146,8 +148,8 @@ class BottomBarButtonItem: UIButton {
 	
 	public var imageSpacing: CGFloat = 26
 	public var imageSize: CGSize = CGSize(width: 18, height: 22)
-	public var font: UIFont = .systemFont(ofSize: 16.8, weight: .bold)
-	
+	public var font: UIFont = FontManager.bottomButtonFont(of: .title)
+
 	override func layoutSubviews() {
 		super.layoutSubviews()
 		

@@ -11,6 +11,7 @@ import Photos
 enum CollectionType {
 	case grouped
 	case single
+	case carousel
 	case none
 }
 
@@ -19,7 +20,12 @@ class MediaViewController: UIViewController {
 	@IBOutlet weak var navigationBar: NavigationBar!
 	@IBOutlet weak var collectionView: UICollectionView!
 	@IBOutlet weak var previewCollectionView: UICollectionView!
+	@IBOutlet weak var botoomCarouselCollectionViewConstrainstain: NSLayoutConstraint!
+	@IBOutlet weak var carouselCllectionViewHeightConstraint: NSLayoutConstraint!
+	@IBOutlet weak var navigationBarHeightConstraint: NSLayoutConstraint!
 	
+	private let layoutCollectionType: CollectionType = .carousel
+	public var collectionType: CollectionType = .none
 	private let carouselCollectionFlowLayout = CarouselFlowLayout()
 	private let previewColletionFlowLayput = PreviewCarouselFlowLayout()
 	
@@ -32,6 +38,7 @@ class MediaViewController: UIViewController {
 
 	var scrollView = UIScrollView()
 	private var shouldTrackScrolling = true
+	private var currentActivePlayIndexPath: IndexPath?
 	
 	private var visibleCell: PhotoCollectionViewCell? {
 		return previewCollectionView.visibleCells.first as? PhotoCollectionViewCell
@@ -50,7 +57,6 @@ class MediaViewController: UIViewController {
 	private var photoManager = PhotoManager.shared
 	private var prefetchCacheImageManager = PhotoManager.shared.prefetchManager
 	
-	public var collectionType: CollectionType = .none
 	public var assetCollection: [PHAsset] = []
 	public var assetGroups: [PhassetGroup] = []
 	public var mediaType: PhotoMediaType = .none
@@ -85,7 +91,25 @@ extension MediaViewController {
 			self.handleSelectedItems(previouslySelectedIndexPaths: selectedIndexPaths)
 		}
 	}
+	
+	private func didTapHandlePlayItem(at indexPath: IndexPath) {
+		
+		let centerPoint = CGPoint(x: self.collectionView.contentOffset.x + self.collectionView.frame.width / 2,
+								  y: self.collectionView.frame.height / 2)
+		guard let centerIndexPath = self.collectionView.indexPathForItem(at: centerPoint), centerIndexPath == indexPath else {return }
+		
+			///  handle collection preview
+		if let cell = self.previewCollectionView.cellForItem(at: indexPath) as? PhotoPreviewCollectionViewCell {
+			cell.didPlayCurrenMediaItem { successfully in
+				guard successfully else { return }
+				if let collectionCell = self.collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell {
+					collectionCell.carouselCollectionCellIsPlaying = cell.isPlaying
+				}
+			}
+		}
+	}
 }
+
 
 //		MARK: - select delegate -
 extension MediaViewController: PhotoCollectionViewCellDelegate {
@@ -193,7 +217,7 @@ extension MediaViewController {
 				if !isDeepCleaningSelectableFlow {
 					return deleteMenuCollection
 				}
-			case .none:
+			default:
 				return UIMenu()
 		}
 		return UIMenu()
@@ -213,13 +237,20 @@ extension MediaViewController {
 		
 		self.collectionView.performBatchUpdates {
 			self.collectionView.moveItem(at: indexPath, to: bestPHAssetIndexPath)
+			self.collectionView.scrollToItem(at: bestPHAssetIndexPath, at: [.centeredVertically, .centeredHorizontally], animated: true)
 		} completion: { _ in
-			self.collectionView.reloadDataWithotAnimationKeepSelect(at: [bestPHAssetIndexPath, IndexPath(row: 1, section: indexPath.section)])
-			self.handleSelectAssetsNavigationCount()
+			U.delay(0.3) {
+				self.collectionView.reloadDataWithotAnimationKeepSelect(at: [bestPHAssetIndexPath, IndexPath(row: 1, section: indexPath.section)])
+				self.handleSelectAssetsNavigationCount()
+			}
 		}
 		self.previewCollectionView.performBatchUpdates {
 			self.previewCollectionView.moveItem(at: indexPath, to: bestPHAssetIndexPath)
-		} completion: { _ in }
+		} completion: { _ in
+			U.delay(0.3) {
+				self.previewCollectionView.scrollToItem(at: bestPHAssetIndexPath, at: [.centeredVertically, .centeredHorizontally], animated: true)
+			}
+		}
 	}
 }
 
@@ -254,7 +285,7 @@ extension MediaViewController {
 				ErrorHandler.shared.showDeleteAlertError(selectedPHAsset.mediaType == .video ? .errorDeleteVideo : .errorDeletePhoto)
 			}
 		})
-		self.photoManager.serviceUtilsCalculatedOperationsQueuer.addOperation(deletePHAssetOperation)
+		self.photoManager.serviceUtilityOperationsQueuer.addOperation(deletePHAssetOperation)
 	}
 	
 	private func updateCollection(with removablePHAsset: PHAsset, at indexPath: IndexPath) {
@@ -314,7 +345,7 @@ extension MediaViewController {
 				} else {
 					self.handleSelectAssetsNavigationCount()
 				}
-			case .none:
+			default:
 				return
 		}
 	}
@@ -338,11 +369,16 @@ extension MediaViewController  {
 		self.previewCollectionView.showsVerticalScrollIndicator = false
 		self.previewCollectionView.showsHorizontalScrollIndicator = false
 		self.previewCollectionView.contentInset = .zero
+
+		let heightOffset = U.bottomSafeAreaHeight + U.bottomSafeAreaHeight + navigationBarHeightConstraint.constant + carouselCllectionViewHeightConstraint.constant
+		let collectionViewHeight = U.screenHeight - heightOffset
+		let itemInset = U.UIHelper.AppDimensions.CollectionItemSize.previewCollectionViewItemInset
+		let itemSize = CGSize(width: U.screenWidth, height: collectionViewHeight - itemInset)
 		
-		self.previewColletionFlowLayput.itemSize = CGSize(width: U.screenWidth, height: self.previewCollectionView.frame.height - 100)
+		self.previewColletionFlowLayput.itemSize = itemSize
 		self.previewColletionFlowLayput.scrollDirection = .horizontal
 		self.previewColletionFlowLayput.minimumInteritemSpacing = 40
-		self.previewColletionFlowLayput.minimumLineSpacing = 150
+		self.previewColletionFlowLayput.minimumLineSpacing = 20
 		self.previewColletionFlowLayput.headerReferenceSize = .zero
 		
 		self.previewCollectionView.collectionViewLayout = previewColletionFlowLayput
@@ -354,11 +390,12 @@ extension MediaViewController  {
 		self.collectionView.showsHorizontalScrollIndicator = false
 		self.collectionView.contentInset = .zero
 		
-		self.carouselCollectionFlowLayout.itemSize = CGSize(width: 100, height: 100)
+		self.carouselCollectionFlowLayout.spacingMode = U.UIHelper.AppDimensions.CollectionItemSize.carouselSpacingMode
+		self.carouselCollectionFlowLayout.itemSize = U.UIHelper.AppDimensions.CollectionItemSize.carouseCollectionViewItemSize
 		self.carouselCollectionFlowLayout.scrollDirection = .horizontal
 		self.carouselCollectionFlowLayout.sectionInset = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
 		self.carouselCollectionFlowLayout.minimumInteritemSpacing = 10
-		self.carouselCollectionFlowLayout.minimumLineSpacing = 10
+		self.carouselCollectionFlowLayout.minimumLineSpacing = 0
 		self.carouselCollectionFlowLayout.headerReferenceSize = .zero
 		self.collectionView.collectionViewLayout = carouselCollectionFlowLayout
 		self.collectionView.allowsMultipleSelection = true
@@ -373,11 +410,12 @@ extension MediaViewController  {
 					return assetGroups[indexPath.section].assets[indexPath.row]
 				case .single:
 					return assetCollection[indexPath.row]
-				case .none:
+				default:
 					return assetCollection[indexPath.row]
 			}
 		}
 		
+		cell.collectionType = self.layoutCollectionType // use for layout size
 		cell.delegate = self
 		cell.indexPath = indexPath
 		cell.tag = indexPath.section * 1000 + indexPath.row
@@ -411,6 +449,8 @@ extension MediaViewController  {
 					return PHAsset()
 			}
 		}
+		
+		cell.delegate = self
 		cell.indexPath = indexPath
 		cell.tag = indexPath.section * 1000 + indexPath.row
 		cell.cellMediaType = self.mediaType
@@ -438,7 +478,7 @@ extension MediaViewController: UICollectionViewDelegate, UICollectionViewDataSou
 				return assetGroups[section].assets.count
 			case .single:
 				return assetCollection.count
-			case .none:
+			default:
 				return 0
 		}
 	}
@@ -457,6 +497,7 @@ extension MediaViewController: UICollectionViewDelegate, UICollectionViewDataSou
 	}
 	
 	func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
+		self.didTapHandlePlayItem(at: indexPath)
 		return false
 	}
 	
@@ -484,7 +525,7 @@ extension MediaViewController: UICollectionViewDelegate, UICollectionViewDataSou
 					if indexPath.row == 0 {
 						return nil
 					}
-				case .none:
+				default:
 					return nil
 			}
 		} else {
@@ -569,7 +610,7 @@ extension MediaViewController {
 	
 	private func handleTrackCollection(from: UICollectionView, to: UICollectionView) {
 		let centerPoint = CGPoint(x: from.contentOffset.x + (from.frame.width / 2), y: from.frame.height / 2)
-		
+
 		if shouldTrackScrolling {
 			if let indexPath = from.indexPathForItem(at: centerPoint) {
 				shouldTrackScrolling = false
@@ -590,6 +631,39 @@ extension MediaViewController {
 			cell.checkIsSelected()
 		}
 	}
+	
+	private func handleActivePlayerIndexPath() {
+		
+		guard self.contentType == .userVideo else { return }
+		
+		let visibleCellsIndexPaths = self.previewCollectionView.indexPathsForVisibleItems
+		
+		guard let currentPlayIndexPath = self.currentActivePlayIndexPath, !visibleCellsIndexPaths.contains(currentPlayIndexPath) else { return }
+		
+		if let cell = self.previewCollectionView.cellForItem(at: currentPlayIndexPath) as? PhotoPreviewCollectionViewCell {
+			if cell.isPlaying {
+				cell.setStopPlayCurrentMediaItem()
+			}
+		}
+		
+		if let cell = self.collectionView.cellForItem(at: currentPlayIndexPath) as? PhotoCollectionViewCell {
+			if cell.carouselCollectionCellIsPlaying {
+				cell.carouselCollectionCellIsPlaying = false
+			}
+		}
+	}
+}
+
+extension MediaViewController: PreviewCollectionCellDelegate {
+	
+	func currentPlaingIndexPath(_ indexPath: IndexPath?, isPlaying: Bool) {
+		
+		self.currentActivePlayIndexPath = indexPath
+		
+		if let indexPath = indexPath, let cell = self.collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell {
+			cell.carouselCollectionCellIsPlaying = isPlaying
+		}
+	}
 }
 
 //		MARK: - scroll view carousel delegate -
@@ -601,9 +675,7 @@ extension MediaViewController: UIScrollViewDelegate {
 //		}
 	}
 
-	public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-
-	}
+	public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {}
 
 	public func scrollViewDidScroll(_ scrollView: UIScrollView) {
 		if scrollView === previewCollectionView {
@@ -614,26 +686,28 @@ extension MediaViewController: UIScrollViewDelegate {
 			handleTrackCollection(from: collectionView, to: previewCollectionView)
 		}
 	}
-
-	public func scrollViewWillBeginDecelerating(_ scrollView: UIScrollView) {
-
-	}
+	
+	public func scrollViewWillBeginDecelerating(_ scrollView: UIScrollView) {}
+	
 
 	public func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
 		shouldTrackScrolling = true
 	}
 
 	public func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-//		if let indexPath = visibleCellIndex {
-//			handleDecelerateScrollCollection(at: indexPath)
-//		}
+		self.handleActivePlayerIndexPath()
 	}
 }
 
 //		MARK: - setup ui -
 extension MediaViewController {
 	
-	private func setupUI() {}
+	private func setupUI() {
+		
+		navigationBarHeightConstraint.constant = U.UIHelper.AppDimensions.NavigationBar.navigationBarHeight
+		carouselCllectionViewHeightConstraint.constant = U.UIHelper.AppDimensions.CollectionItemSize.carouselCollectionViewHeght
+		botoomCarouselCollectionViewConstrainstain.constant = U.UIHelper.AppDimensions.CollectionItemSize.bottomCarouselViewCollectionInset
+	}
 	
 	private func setupNavigationBar() {
 		

@@ -65,18 +65,18 @@ enum VideoCompressionQuality: Equatable {
 	var portraitHeightForRow: CGFloat {
 		switch self {
 			case .videoPreview:
-				return U.screenHeight / 2
+				return UITableView.automaticDimension
 			default:
-				return 100
+				return U.UIHelper.AppDimensions.ContenTypeCells.heightOfRowOfMediaContentType
 		}
 	}
 	
 	var heightForRow: CGFloat {
 		switch self {
 			case .videoPreview:
-				return 370
+				return UITableView.automaticDimension
 			default:
-				return 100
+				return U.UIHelper.AppDimensions.ContenTypeCells.heightOfRowOfMediaContentType
 		}
 	}
 	
@@ -112,6 +112,83 @@ enum VideoCompressionQuality: Equatable {
 				}
 			default:
 				return .videoPreview
+		}
+	}
+	
+	private func getHeighPortraitPreviewSize() -> CGFloat {
+		switch Screen.size {
+			case .small:
+				return U.screenHeight / 1.5
+			default:
+				return U.screenHeight / 2
+				
+		}
+	}
+	
+	private func getHeightOfLandscapePreviewSize() -> CGFloat {
+		switch Screen.size {
+			case .small:
+				return 400
+			default:
+				return 400
+		}
+	}
+	
+	public func getCustomCongfiguration() -> VideoCompressionConfig {
+		return CompressionSettingsConfiguretion.getSavedConfiguration()
+	}
+	
+	public func getVideoResolution(from size: CGSize?, isPortrait: Bool) -> VideoResolution {
+		
+		guard let size = size else {
+			return .origin
+		}
+		
+		if isPortrait {
+			if let resolution = VideoResolution.allCases.first(where: {$0.resolutionSizePortrait.height == size.height}) {
+				return resolution
+			}
+		} else {
+			if let resolution = VideoResolution.allCases.first(where: {$0.resolutionSize.width == size.width}) {
+				return resolution
+			}
+		}
+		return .origin
+	}
+	
+	public func getFPS(from fps: Float) -> FPS {
+		
+		if let fps = FPS.allCases.first(where: {$0.rawValue == fps}) {
+			return fps
+		} else {
+			return FPS.fps24
+		}
+	}
+}
+
+enum VideoCGSize {
+	case origin
+	case width
+	case height
+}
+
+extension CGSize {
+	
+	 func videoResolutionSize() -> VideoCGSize {
+		
+		let originSize = CGSize(width: -1, height: -1)
+		let widthSize = CGSize(width: self.width, height: -1)
+		let heightSize = CGSize(width: -1, height: self.height)
+		
+		switch self {
+			case originSize:
+				return .origin
+			case widthSize:
+				return .width
+			case heightSize:
+				return .height
+			default:
+				return .origin
 		}
 	}
 }

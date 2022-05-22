@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
-    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <device id="retina6_1" orientation="portrait" appearance="dark"/>
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
@@ -142,6 +142,7 @@
                         <outlet property="bottomMenuHeightConstraint" destination="Drw-r8-NaI" id="zUh-lr-Grf"/>
                         <outlet property="collectionView" destination="qrX-u6-Im9" id="DvB-dn-Ev9"/>
                         <outlet property="navigationBar" destination="DJk-mj-GNF" id="gCm-BN-JZ0"/>
+                        <outlet property="navigationBarHeightConstraint" destination="2DQ-dB-3zP" id="EeN-mK-Abe"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="eh2-31-QPm" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -223,6 +224,7 @@
                         <outlet property="bottomMenuHeightConstraint" destination="zyu-XX-Vdc" id="bX9-bS-oVc"/>
                         <outlet property="collectionView" destination="sWN-49-wwQ" id="q5J-n0-Lri"/>
                         <outlet property="navigationBar" destination="0Ye-p0-IJP" id="FSj-GA-m61"/>
+                        <outlet property="navigationBarHeightConstraint" destination="xJY-iJ-ryb" id="BeY-Nk-jX7"/>
                         <outlet property="photoContentContainerView" destination="T18-Zm-Mxt" id="93R-oS-ZNB"/>
                     </connections>
                 </viewController>
@@ -322,6 +324,7 @@
                         <outlet property="bottomMenuHeightConstraint" destination="GJX-AH-0lz" id="DGQ-zr-fuf"/>
                         <outlet property="collectionView" destination="i7X-lQ-P9l" id="1e9-ph-38J"/>
                         <outlet property="navigationBar" destination="wDP-0E-wnz" id="EWY-XF-TMA"/>
+                        <outlet property="navigationControllerHeightConstraint" destination="7gS-hF-Pe0" id="kKM-9m-J3y"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="D4M-RM-XHx" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

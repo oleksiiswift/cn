@@ -15,6 +15,7 @@ class VideoCompressingViewController: UIViewController {
 	@IBOutlet weak var bottomButtonBarView: BottomButtonBarView!
 	@IBOutlet weak var bottomButtonViewHeightConstraint: NSLayoutConstraint!
 	
+	@IBOutlet weak var navigationBarHeightConstraint: NSLayoutConstraint!
 	public var processingPHAsset: PHAsset?
 	public let contentType: MediaContentType = .none
 	public let mediaType: PhotoMediaType = .none
@@ -40,6 +41,7 @@ class VideoCompressingViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 		
+		setupCustomConfiguration()
 		setupViewModel()
 		setupUI()
 		tableViewSetup()
@@ -129,23 +131,26 @@ extension VideoCompressingViewController {
 		
 		asset.getPhassetURL { responseURL in
 			
-			guard let url = responseURL else { return }
-			
-			self.progressAlert.showCompressingProgressAlertController(from: self, delegate: self)
-			
-			self.compressingManager.compressVideo(from: url, quality: compressingModel) { result in
+			if let url = responseURL {
 				
-				self.progressAlert.closeProgressAnimatedController()
-				U.delay(1) {
-					switch result {
-						case .success(let compressedVideoURL):
-							self.compressVideoResultCompleted(with: compressedVideoURL)
-						case .failure(let errorHandler):
-							errorHandler.showErrorAlert {
-								self.navigationController?.popViewController(animated: true)
-							}
+				self.progressAlert.showCompressingProgressAlertController(from: self, delegate: self)
+				
+				self.compressingManager.compressVideo(from: url, quality: compressingModel) { result in
+					
+					self.progressAlert.closeProgressAnimatedController()
+					U.delay(1) {
+						switch result {
+							case .success(let compressedVideoURL):
+								self.compressVideoResultCompleted(with: compressedVideoURL)
+							case .failure(let errorHandler):
+								errorHandler.showErrorAlert {
+									self.navigationController?.popViewController(animated: true)
+								}
+						}
 					}
 				}
+			} else {
+				ErrorHandler.shared.showCompressionErrorFor(.cantLoadFile) {}
 			}
 		}
 	}
@@ -171,8 +176,9 @@ extension VideoCompressingViewController {
 	
 	private func savedVideo(with url: URL) {
 		
-		self.photoManager.saveVideoAsset(from: url) { isSaved in
-			if isSaved {
+		self.photoManager.saveVideoAsset(from: url) { identifier, isSaved in
+			if isSaved, let identifier = identifier {
+				S.lastSavedLocalIdenifier = identifier
 				self.showPHAssetCollectionController()
 			} else {
 				ErrorHandler.shared.showCompressionErrorFor(.errorSavedFile, completion: {})
@@ -229,7 +235,7 @@ extension VideoCompressingViewController {
 															  .custom(fps: self.customFPS,
 																	  bitrate: self.customBitrate, scale: self.customScale)],
 													  headerTitle: "compression settings",
-													  headerHeight: 40)
+													  headerHeight: 15)
 		
 		let sections: [CompressingSection] = [previewSectionCell, settingsSectionsCell]
 		self.compressionSettingsViewModel = CompressingSettingsViewModel(sections: sections, phasset: phasset)
@@ -257,11 +263,13 @@ extension VideoCompressingViewController {
 		self.tableView.separatorStyle = .none
 		self.tableView.allowsMultipleSelection = false
 		
-		self.tableView.contentInset.top = 0
-		self.tableView.contentInset.bottom = 85
+		self.tableView.contentInset.top = 10
+		self.tableView.contentInset.bottom = U.UIHelper.AppDimensions.bottomBarDefaultHeight //+ (Device.isSafeAreaDevice ? 0 : 10)
+		if #available(iOS 15.0, *) {
+			tableView.sectionHeaderTopPadding = 0
+		}
 		
-		
-		let view = UIView(frame: CGRect(origin: .zero, size: CGSize(width: U.screenWidth, height: 20)))
+		let view = UIView(frame: CGRect(origin: .zero, size: CGSize(width: U.screenWidth, height: 0)))
 		view.backgroundColor = .clear
 		self.tableView.tableHeaderView = view
 	}
@@ -328,6 +336,12 @@ extension VideoCompressingViewController {
 			customSettingViewController.selectVideoCompressingConfig = { config in
 				self.compressionConfiguration = config
 				self.currentCompressionModel = .custom(fps: 0, bitrate: 0, scale: .zero)
+				let indexPath = IndexPath(row: 3, section: 1)
+				if let cell = self.tableView.cellForRow(at: indexPath) as? CompressionSettingsTableViewCell {
+					if let model = self.currentCompressionModel {
+						cell.compressionConfigureCell(with: model, phasset: self.processingPHAsset)
+					}
+				}
 			}
 		}
 	}
@@ -340,7 +354,8 @@ extension VideoCompressingViewController: Themeble {
 		bottomButtonBarView.title("compress")
 		bottomButtonBarView.setImage(I.systemItems.defaultItems.compress, with: CGSize(width: 24, height: 22))
 		
-		self.bottomButtonViewHeightConstraint.constant = 75 + U.bottomSafeAreaHeight
+		navigationBarHeightConstraint.constant = U.UIHelper.AppDimensions.NavigationBar.navigationBarHeight
+		self.bottomButtonViewHeightConstraint.constant = U.UIHelper.AppDimensions.bottomBarDefaultHeight
 	}
 	
 	private func setupNavigation() {
@@ -348,7 +363,6 @@ extension VideoCompressingViewController: Themeble {
 		navigationBarView.setupNavigation(title: "compressing video",
 										  leftBarButtonImage: I.systemItems.navigationBarItems.back,
 										  rightBarButtonImage: nil, contentType: .none, leftButtonTitle: nil, rightButtonTitle: nil)
-		
 	}
 	
 	private func delegateSetup() {

@@ -14,6 +14,7 @@ class VideoCollectionCompressingViewController: UIViewController {
 	@IBOutlet weak var collectionView: UICollectionView!
 	@IBOutlet weak var bottomButtonView: BottomButtonBarView!
 	@IBOutlet weak var bottomMenuHeightConstraint: NSLayoutConstraint!
+	@IBOutlet weak var navigationControllerHeightConstraint: NSLayoutConstraint!
 	
 	var scrollView = UIScrollView()
 	
@@ -53,6 +54,12 @@ class VideoCollectionCompressingViewController: UIViewController {
 		super.viewWillAppear(animated)
 		
 		updateCachedAssets()
+	}
+	
+	override func viewWillDisappear(_ animated: Bool) {
+		super.viewWillDisappear(animated)
+		
+		S.lastSavedLocalIdenifier = nil
 	}
 }
 
@@ -103,13 +110,13 @@ extension VideoCollectionCompressingViewController {
 	
 	private func configure(cell: PhotoCollectionViewCell, at indexPath: IndexPath) {
 		
-		cell.selectButtonSetup(by: self.mediaType)
+		let videoPHAsset = self.assetCollection[indexPath.row]
+		cell.selectButtonSetup(by: self.mediaType, isNewConpress: videoPHAsset.localIdentifier == S.lastSavedLocalIdenifier)
 		cell.indexPath = indexPath
 		cell.tag = indexPath.section * 1000 + indexPath.row
 		cell.cellMediaType = self.mediaType
 		cell.cellContentType = self.contentType
-		
-		let videoPHAsset = self.assetCollection[indexPath.row]
+		cell.collectionType = .single
 		
 		if self.thumbnailSize.equalTo(CGSize.zero) {
 			self.thumbnailSize = self.collectionView.collectionViewLayout.layoutAttributesForItem(at: indexPath)!.size.toPixel()
@@ -128,7 +135,16 @@ extension VideoCollectionCompressingViewController {
 	}
 	
 	private func createCellContextMenu(for asset: PHAsset, at indexPath: IndexPath) -> UIMenu {
-		return UIMenu()
+		
+		let shareVideoActionImage = I.systemItems.defaultItems.share
+		let shareAction = UIAction(title: "Share", image: shareVideoActionImage) { _ in
+			self.share(phasset: asset)
+		}
+		return UIMenu(title: "", children: [shareAction])
+	}
+	
+	private func share(phasset: PHAsset) {
+		ShareManager.shared.shareVideoFile(from: phasset) {}
 	}
 }
 
@@ -303,6 +319,7 @@ extension VideoCollectionCompressingViewController {
 	
 	private func setupUI() {
 		
+		self.navigationControllerHeightConstraint.constant = U.UIHelper.AppDimensions.NavigationBar.navigationBarHeight
 		self.bottomMenuHeightConstraint.constant = 0
 		self.bottomButtonView.setImage(I.systemItems.defaultItems.compress, with: CGSize(width: 24, height: 22))
 	}

@@ -22,6 +22,8 @@ class GroupedAssetListViewController: UIViewController {
 	@IBOutlet weak var bottomMenuHeightConstraint: NSLayoutConstraint!
 	@IBOutlet weak var photoContentContainerView: UIView!
 		
+	@IBOutlet weak var navigationBarHeightConstraint: NSLayoutConstraint!
+	private var collectionType: CollectionType = .grouped
 	var scrollView = UIScrollView()
 	let collectionViewFlowLayout = SNCollectionViewLayout()
 	
@@ -130,7 +132,7 @@ extension GroupedAssetListViewController {
 		let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.media) as! MediaViewController
 		viewController.isDeepCleaningSelectableFlow = self.isDeepCleaningSelectableFlow
 		viewController.previuousSelectedIndexPaths = selectedIndexPath
-		viewController.collectionType = .grouped
+		viewController.collectionType = self.collectionType
 		viewController.focusedIndexPath = indexPath
 		viewController.assetGroups = self.assetGroups
 		viewController.contentType = self.contentType
@@ -357,9 +359,7 @@ extension GroupedAssetListViewController: GroupSelectableAssetsDelegate {
 			didTapBackSingleCleanActionButton()
 		} else {
 			self.collectionView.reloadDataWitoutAnimation()
-			if !selectedIndexPath.isEmpty {
 				self.handleSelected(for: selectedIndexPath) {}
-			}
 		}
 	}
 }
@@ -586,7 +586,7 @@ extension GroupedAssetListViewController {
 	private func configure(_ cell: PhotoCollectionViewCell, at indexPath: IndexPath) {
 		
 		let asset = assetGroups[indexPath.section].assets[indexPath.row]
-		
+		cell.collectionType = self.collectionType
 		cell.delegate = self
 		cell.indexPath = indexPath
 		cell.tag = indexPath.section * 1000 + indexPath.row
@@ -925,7 +925,6 @@ extension GroupedAssetListViewController {
 	}
 }
 
-
 extension GroupedAssetListViewController {
 	
 	private func createCellContextMenu(for asset: PHAsset, at indexPath: IndexPath) -> UIMenu {
@@ -964,15 +963,14 @@ extension GroupedAssetListViewController {
 				return
 			}
 			
-			let calculatedBottomMenuHeight: CGFloat = bottomMenuHeight + U.bottomSafeAreaHeight - 5
-			
 				/// `bottom menu`
-			bottomMenuHeightConstraint.constant = !selectedAssets.isEmpty ? (calculatedBottomMenuHeight) : 0
+			bottomMenuHeightConstraint.constant = !selectedAssets.isEmpty ? U.UIHelper.AppDimensions.bottomBarDefaultHeight  : 0
 			
 			bottomButtonBarView.title("delete selected (\(selectedAssets.count))")
 			
-			self.collectionView.contentInset.bottom = !selectedAssets.isEmpty ? 20 : 10
 			U.animate(0.5) {
+				self.collectionView.contentInset.bottom = !self.selectedAssets.isEmpty ? U.UIHelper.AppDimensions.bottomBarDefaultHeight + 10 + U.bottomSafeAreaHeight : 5
+			
 				self.photoContentContainerView.layoutIfNeeded()
 				self.view.layoutIfNeeded()
 			}
@@ -1148,6 +1146,8 @@ extension GroupedAssetListViewController {
 	}
 	
 	private func setupNavigation() {
+		
+		navigationBarHeightConstraint.constant = U.UIHelper.AppDimensions.NavigationBar.navigationBarHeight
 		
 		navigationBar.setupNavigation(title: self.mediaType.mediaTypeName,
 									  leftBarButtonImage: I.systemItems.navigationBarItems.back,

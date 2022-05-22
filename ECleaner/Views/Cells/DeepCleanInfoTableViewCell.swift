@@ -9,87 +9,121 @@ import UIKit
 
 class DeepCleanInfoTableViewCell: UITableViewCell {
     
-    @IBOutlet weak var infoTotalFilesTextLabel: UILabel!
+	@IBOutlet weak var infoTitleTextLabel: UILabel!
+	@IBOutlet weak var infoTotalFilesTextLabel: UILabel!
     @IBOutlet weak var infoTotalFilesTitleLabel: UILabel!
-    
     @IBOutlet weak var totalSpaceTextLabel: UILabel!
     @IBOutlet weak var totalSpaceTitleLabel: UILabel!
-    
     @IBOutlet weak var progressContainerView: UIView!
-    
-    var progressRing: CircularProgressBar!
+	@IBOutlet weak var progressContainerViewHeighConstraint: NSLayoutConstraint!
+	@IBOutlet weak var containerLeadingContstraint: NSLayoutConstraint!
+	@IBOutlet weak var circleProgressView: CircleProgressView!
+	@IBOutlet var titleLabelCollection: [UILabel]!
+		
+	private var containerLeading: CGFloat {
+		switch Screen.size {
+			case .small:
+				return 20
+			case .medium, .plus, .large:
+				return 35
+			case .modern:
+				return 40
+			case .max:
+				return 40
+			case .madMax:
+				return 40
+		}
+	}
+	
+	override func prepareForReuse() {
+		super.prepareForReuse()
+		
+		circleProgressView.setProgress(progress: 0.0, animated: false)
+	}
     
     override func awakeFromNib() {
         super.awakeFromNib()
         
-		totalSpaceTextLabel.isHidden = true
-		totalSpaceTitleLabel.isHidden = true
         setupUI()
         updateColors()
+		circleProgressView.setProgress(progress: 0.0, animated: false)
     }
 }
 
 extension DeepCleanInfoTableViewCell {
     
     func setProgress(files count: Int) {
-        
-		let totalCheckedFilesFont: UIFont = .systemFont(ofSize: 18, weight: .bold)
-        let totalCheckedFilesColor: UIColor = theme.titleTextColor
-        
-        let totalFilesAttributes = [NSAttributedString.Key.font: totalCheckedFilesFont, NSAttributedString.Key.foregroundColor: totalCheckedFilesColor]
-        
-        let textTitle = NSMutableAttributedString(string: String(count), attributes: totalFilesAttributes)
-        
-        infoTotalFilesTextLabel.attributedText = textTitle
-		totalSpaceTitleLabel.text = "after clean".localized().uppercased()
-        infoTotalFilesTitleLabel.text = "FILES".localized()
+	
+        infoTotalFilesTextLabel.text = String(count)
     }
-    
-	func setRoundedProgress(value: CGFloat, futuredCleaningSpace: Int64?) {
-        progressRing.progress = value
+	
+	func setMemmoryChecker(bytes value: Int64) {
 		
-		if let futuredCleaningSpace = futuredCleaningSpace {
-			let stringSpace = U.getSpaceFromInt(futuredCleaningSpace)
-			totalSpaceTextLabel.text = stringSpace
+		if value == 0 {
+			totalSpaceTextLabel.text = "0 MB"
 		} else {
-			totalSpaceTextLabel.text = "0"
+			totalSpaceTextLabel.setTitleWithoutAnimation(title: U.getSpaceFromInt(value))
 		}
+	}
+	
+	func setRoundedProgress(value: CGFloat) {
+		circleProgressView.setProgress(progress: value / 100, animated: false)
     }
 }
 
 extension DeepCleanInfoTableViewCell: Themeble {
     
     func setupUI() {
+		
+		containerLeadingContstraint.constant = containerLeading
+		progressContainerViewHeighConstraint.constant = U.UIHelper.AppDimensions.circleProgressInfoDimension
+		
+		let startPoint = CGPoint(x: 0.0, y: 0.0)
+		let endPoint = CGPoint(x: 1.0, y: 0.0)
+		circleProgressView.gradientSetup(startPoint: startPoint, endPoint: endPoint, gradientType: .axial)
 
-        let xPosition = progressContainerView.center.x
-        let yPosition = progressContainerView.center.y
-        let position = CGPoint(x: xPosition, y: yPosition)
-        
-        progressRing = CircularProgressBar(radius: 33,
-                                           position: position,
-                                           innerTrackColor: UIColor().colorFromHexString("FF845A"),//theme.titleTextColor,
-                                           outerTrackColor: theme.progressBackgroundColor,
-                                           lineWidth: 13)
-        
-        progressRing.progressLabel.textColor = UIColor().colorFromHexString("FF845A")//theme.titleTextColor
-		progressRing.progressLabel.font = .systemFont(ofSize: 16, weight: .bold)
-        progressRing.progressLabel.translatesAutoresizingMaskIntoConstraints = false
-        progressRing.progressLabel.frame = CGRect(origin: .zero, size: CGSize(width: 50, height: 30))
-        progressRing.progressLabel.center = position
-        progressRing.progressLabel.textAlignment = .center
-        
-        progressContainerView.layer.addSublayer(progressRing)
-        
-		infoTotalFilesTitleLabel.font = .systemFont(ofSize: 14, weight: .medium)
-		totalSpaceTextLabel.font = .systemFont(ofSize: 18, weight: .bold)
-		totalSpaceTitleLabel.font = .systemFont(ofSize: 14, weight: .medium)
+		circleProgressView.disableBackgrounShadow = false
+		circleProgressView.titleLabelTextAligement = .center
+		circleProgressView.orientation = .bottom
+		circleProgressView.titleLabelsPercentPosition = .centered
+		circleProgressView.lineCap = .round
+		circleProgressView.clockwise = true
+		circleProgressView.percentLabelFormat = "%.f%%"
+		circleProgressView.percentLabel.font = FontManager.deepCleanScreenFont(of: .progress)
+		circleProgressView.lineWidth = U.UIHelper.AppDimensions.circleProgressInfoLineWidth
+		
+		infoTitleTextLabel.text = "All Data Analized"
+		infoTotalFilesTitleLabel.text = "FILES".uppercased()
+		totalSpaceTitleLabel.text = "Memmory".uppercased()
+		
+		infoTitleTextLabel.font = 		FontManager.deepCleanScreenFont(of: .title).monospacedDigitFont
+		totalSpaceTextLabel.font = 		FontManager.deepCleanScreenFont(of: .title).monospacedDigitFont
+		infoTotalFilesTextLabel.font = 	FontManager.deepCleanScreenFont(of: .title).monospacedDigitFont
+		infoTotalFilesTitleLabel.font = FontManager.deepCleanScreenFont(of: .subtitle).monospacedDigitFont
+		totalSpaceTitleLabel.font = 	FontManager.deepCleanScreenFont(of: .subtitle)
     }
     
     func updateColors() {
-        
+		
+		titleLabelCollection.forEach {
+			$0.textAlignment = .center
+		}
+		
+		infoTitleTextLabel.textColor = theme.titleTextColor
         infoTotalFilesTextLabel.textColor = theme.titleTextColor
         infoTotalFilesTitleLabel.textColor = theme.subTitleTextColor
         totalSpaceTextLabel.textColor = theme.titleTextColor
         totalSpaceTitleLabel.textColor = theme.subTitleTextColor
+						
+		circleProgressView.progressShapeColor = theme.tintColor
+		circleProgressView.backgroundShapeColor = theme.topShadowColor.withAlphaComponent(0.2)
+		circleProgressView.startColor = theme.circleStarterGradientColor
+		circleProgressView.endColor = theme.circleEndingGradientColor
+		circleProgressView.backgroundShadowColor = theme.bottomShadowColor
+		
+		let titleLabelBounds = circleProgressView.percentLabel.bounds
+		let titleGradient = U.UIHelper.Manager.getGradientLayer(bounds: titleLabelBounds, colors: theme.titleCircleGradientTitleColorSet)
+		let color = U.UIHelper.Manager.gradientColor(bounds: titleLabelBounds, gradientLayer: titleGradient)
+		circleProgressView.percentColor = color ?? theme.titleTextColor
     }
 }

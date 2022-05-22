@@ -222,7 +222,7 @@
                         <outlet property="mediaCollectionView" destination="Dg3-qT-o61" id="p6Y-t8-dtI"/>
                         <outlet property="navigationBar" destination="o3N-4y-HyM" id="uvu-lf-Okl"/>
                         <outlet property="navigationBarHeightConstraint" destination="wTo-aQ-Ok7" id="DsS-ZJ-h3F"/>
-                        <outlet property="scrollView" destination="7Yr-dc-Kkh" id="StV-gn-MkC"/>
+                        <outlet property="scrollView" destination="7Yr-dc-Kkh" id="drn-jI-Loa"/>
                         <outlet property="sectionHeaderTextLabel" destination="gca-7p-eY1" id="MUx-tc-F7G"/>
                     </connections>
                 </viewController>

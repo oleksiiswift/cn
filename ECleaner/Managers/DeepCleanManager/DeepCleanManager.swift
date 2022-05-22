@@ -202,7 +202,7 @@ class DeepCleanManager {
     }
 	
 	public func cancelAllOperation() {
-		photoManager.serviceUtilsCalculatedOperationsQueuer.cancelAll()
+		photoManager.serviceUtilityOperationsQueuer.cancelAll()
 		deepCleanOperationQueue.cancelAll()
 		contactManager.contactsProcessingOperationQueuer.cancelAll()
 	}

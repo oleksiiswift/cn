@@ -393,16 +393,34 @@ enum PhotoMediaType: String {
         }
     }
 	
-	public func getHelperBanner() -> UIImage {
-		switch self {
-			case .compress:
-				return I.personalisation.video.videoCompress
-			case .backup:
-				return I.personalisation.contacts.backupContacts
-			default:
-				return UIImage()
-		}
+	var bannerInfo: ContentBannerInfoModel {
+		
+		var info: [PhotoMediaType: BannerInfo] = [:]
+		
+		let compressionBannerInfo: BannerInfo = BannerInfo(infoImage: I.systemItems.defaultItems.compress,
+														   title: "Compress Videos",
+														   subtitle: "Optimaze your Iphone data",
+														   descriptionTitle: "Compression Level",
+														   descriptitionFirstPartSubtitle: "50x",
+														   descriptionSecondPartSubtitle: "Ultra",
+														   helperImage: I.personalisation.video.bannerHelperImage,
+														   gradientColors: ThemeManager.theme.compressionGradient)
+		
+		let syncContactsBannerInfo: BannerInfo = BannerInfo(infoImage: I.systemItems.defaultItems.compress,
+															title: "Sync Contacts",
+															subtitle: "Optimaze your Iphone data",
+															descriptionTitle: "Save Your Contacts",
+															descriptitionFirstPartSubtitle: "With",
+															descriptionSecondPartSubtitle: "Back-Up",
+															helperImage: I.personalisation.contacts.bannerHelperImage,
+															gradientColors: ThemeManager.theme.backupGradient)
+		info[.compress] = compressionBannerInfo
+		info[.backup] = syncContactsBannerInfo
+		return ContentBannerInfoModel(info: info)
 	}
 }
+
+
+
 
 

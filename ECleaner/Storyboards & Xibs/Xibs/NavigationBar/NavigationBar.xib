@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19162" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19144"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -40,7 +40,7 @@
                     <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                 </button>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Title" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SbH-cJ-wAs">
-                    <rect key="frame" x="191" y="20.5" width="32.5" height="19"/>
+                    <rect key="frame" x="192" y="20.5" width="30" height="19"/>
                     <fontDescription key="fontDescription" name="Roboto-Bold" family="Roboto" pointSize="16"/>
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
@@ -60,12 +60,10 @@
             <constraints>
                 <constraint firstItem="YxE-95-yZz" firstAttribute="leading" secondItem="EFo-4y-Iu0" secondAttribute="leading" constant="5" id="Gp0-z5-cVj"/>
                 <constraint firstItem="SbH-cJ-wAs" firstAttribute="centerX" secondItem="EFo-4y-Iu0" secondAttribute="centerX" id="H2s-Uy-dGl"/>
-                <constraint firstItem="ebL-5N-jGx" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="SbH-cJ-wAs" secondAttribute="trailing" constant="10" id="S0t-fk-XCA"/>
                 <constraint firstItem="YxE-95-yZz" firstAttribute="centerY" secondItem="SbH-cJ-wAs" secondAttribute="centerY" id="Voj-nd-kbB"/>
                 <constraint firstItem="vgk-wa-kAz" firstAttribute="trailing" secondItem="ebL-5N-jGx" secondAttribute="trailing" constant="5" id="oDM-pC-Oob"/>
                 <constraint firstItem="SbH-cJ-wAs" firstAttribute="centerY" secondItem="EFo-4y-Iu0" secondAttribute="centerY" id="oSY-IL-d6P"/>
                 <constraint firstItem="ebL-5N-jGx" firstAttribute="centerY" secondItem="SbH-cJ-wAs" secondAttribute="centerY" id="sK2-7W-K0Z"/>
-                <constraint firstItem="SbH-cJ-wAs" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="YxE-95-yZz" secondAttribute="trailing" constant="10" id="uW8-VT-8nj"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <point key="canvasLocation" x="180" y="-144"/>
