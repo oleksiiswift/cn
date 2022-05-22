@@ -148,10 +148,10 @@ extension ShareManager {
 	public func shareVideoFile(from phasset: PHAsset, completionHandler: @escaping (() -> Void)) {
 		
 		P.showIndicator()
-		photoManager.getPhassetShareUrl(phasset) { sharedURL, name in
-			P.hideIndicator()
-			if let sharedURL = sharedURL, let name = name {
-				U.delay(1) {
+		U.delay(1) {
+			self.photoManager.getPhassetShareUrl(phasset) { sharedURL, name in
+				P.hideIndicator()
+				if let sharedURL = sharedURL, let name = name {
 					self.shareVideoFrom(url: sharedURL, name: name) {}
 				}
 			}

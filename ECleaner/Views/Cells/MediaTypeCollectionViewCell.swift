@@ -131,7 +131,7 @@ extension MediaTypeCollectionViewCell: Themeble {
 	
 	public func setProgress(_ progress: CGFloat) {
 		U.animate(1) {
-			self.circleprogress.isHidden = !(0.01...0.89).contains(progress)
+			self.circleprogress.isHidden = !(0.01...0.99).contains(progress)
 		}
 
 		guard self.circleprogress.progress < progress else { return }

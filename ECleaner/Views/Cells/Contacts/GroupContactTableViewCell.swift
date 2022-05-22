@@ -22,13 +22,13 @@ class GroupContactTableViewCell: UITableViewCell {
     @IBOutlet weak var contactTitleTextLabel: UILabel!
     @IBOutlet weak var contactSubtitleTextLabel: UILabel!
     @IBOutlet weak var selectableButton: UIButton!
-    
     @IBOutlet weak var topBaseViewConstraint: NSLayoutConstraint!
     @IBOutlet weak var bottomBaseViewConstraint: NSLayoutConstraint!
-    
     @IBOutlet weak var selectableContactImageView: UIImageView!
-    
-    private var customSeparator = UIView()
+	@IBOutlet weak var selectableContactImageViewWidthConstraint: NSLayoutConstraint!
+	@IBOutlet weak var shadowRoundedViewHeightConstraint: NSLayoutConstraint!
+	
+	private var customSeparator = UIView()
     private let helperSeparatorView = UIView()
 
     private var isFirstRowInSection: Bool = false
@@ -133,8 +133,10 @@ extension GroupContactTableViewCell: Themeble {
     private func setupUI() {
         
         selectionStyle = .none
-        contactTitleTextLabel.font = .systemFont(ofSize: 16, weight: .bold)
-        contactSubtitleTextLabel.font = .systemFont(ofSize: 14, weight: .bold)
+		contactTitleTextLabel.font = FontManager.contactsFont(of: .cellTitle)
+		contactSubtitleTextLabel.font = FontManager.contactsFont(of: .cellSubtitle)
+		shadowRoundedViewHeightConstraint.constant = U.UIHelper.AppDimensions.Contacts.Collection.helperImageViewWidth
+		selectableContactImageViewWidthConstraint.constant = U.UIHelper.AppDimensions.Contacts.Collection.selectableGoupAssetViewWidth
     }
     
     func updateColors() {

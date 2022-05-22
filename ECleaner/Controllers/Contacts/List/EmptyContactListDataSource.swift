@@ -74,12 +74,16 @@ extension EmptyContactListDataSource: UITableViewDelegate, UITableViewDataSource
         header.contentView.backgroundColor = ThemeManager.theme.backgroundColor
         header.contentView.alpha = 0.8
         header.textLabel?.textColor = ThemeManager.theme.sectionTitleTextColor
-        header.textLabel?.font = .systemFont(ofSize: 18, weight: .bold)
+		header.textLabel?.font = FontManager.contactsFont(of: .headetTitle)
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 40
+		return U.UIHelper.AppDimensions.Contacts.Collection.headerHeight
     }
+	
+	func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+		return U.UIHelper.AppDimensions.Contacts.Collection.contactsCellHeight
+	}
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)

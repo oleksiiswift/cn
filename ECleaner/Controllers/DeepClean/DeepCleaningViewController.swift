@@ -171,6 +171,7 @@ extension DeepCleaningViewController {
 	 
 	 private func stopAllCleaningOperation() {
 		  
+		  self.removeObservers()
 		  deepCleanManager.cancelAllOperation()
 		  deepCleaningState = .canclel
 		  P.showIndicator()
@@ -179,10 +180,15 @@ extension DeepCleaningViewController {
 			   self.resetProgress()
 			   self.resetAllValues()
 			   self.tableView.reloadData()
-			   self.setProcessingActionButton(.redyForStartingCleaning)
 			   U.delay(1) {
 					P.hideIndicator()
 					self.showBottomButtonBar()
+					U.delay(2) {
+						 self.setupObservers()
+						 U.delay(1) {
+							  self.setProcessingActionButton(.redyForStartingCleaning)
+						 }
+					}
 			   }
 		  }
 	 }
@@ -209,12 +215,14 @@ extension DeepCleaningViewController {
 	 }
 	 
 	 private func resetAllValues() {
-		  totalFilesOnDevice = 0
-		  totalFilesChecked = 0
-		  totalPartitinAssetsCount = [:]
-		  totalDeepCleanProgress.progressForMediaType = [:]
-		  deepCleanModel.objects = [:]
-		  initializeDeepCleanModel()
+		  DispatchQueue.main.async {
+			   self.totalFilesOnDevice = 0
+			   self.totalFilesChecked = 0
+			   self.totalPartitinAssetsCount = [:]
+			   self.totalDeepCleanProgress.progressForMediaType = [:]
+			   self.deepCleanModel.objects = [:]
+			   self.initializeDeepCleanModel()
+		  }
 	 }
 	 
      private func startDeepCleanScan() {
@@ -327,20 +335,25 @@ extension DeepCleaningViewController {
 	 /// `for photos and video`
 	 private func updateAssetsProcessingOfType(group: [PhassetGroup], mediaType: MediaContentType, contentType: PhotoMediaType) {
 		  
-		  self.deepCleanModel.objects[contentType]?.deepCleanProgress = 100.0
-		  self.deepCleanModel.objects[contentType]?.mediaFlowGroup = group
-		  self.totalDeepCleanProgress.progressForMediaType[contentType] = 100.0
-		  U.delay(0.5) {
-			   self.deepCleanModel.objects[contentType]?.checkForCleanState()
-			   self.updateCellInfoCount(by: mediaType, contentType: contentType)
-			   self.updateTotalFilesTitleChecked()
-			   if !group.isEmpty {
-					Vibration.success.vibrate()
+		  guard deepCleaningState != .canclel else { return }
+		  DispatchQueue.main.async {
+			   self.deepCleanModel.objects[contentType]?.deepCleanProgress = 100.0
+			   self.deepCleanModel.objects[contentType]?.mediaFlowGroup = group
+			   self.totalDeepCleanProgress.progressForMediaType[contentType] = 100.0
+			   U.delay(0.5) {
+					self.deepCleanModel.objects[contentType]?.checkForCleanState()
+					self.updateCellInfoCount(by: mediaType, contentType: contentType)
+					self.updateTotalFilesTitleChecked()
+					if !group.isEmpty {
+						 Vibration.success.vibrate()
+					}
 			   }
 		  }
 	 }
      
 	 private func updateContactsProcessing(group: [ContactsGroup], contentType: PhotoMediaType) {
+		  
+		  guard deepCleaningState != .canclel else { return }
 		  
 		  self.deepCleanModel.objects[contentType]?.deepCleanProgress = 100.0
 		  self.deepCleanModel.objects[contentType]?.contactsFlowGroup = group
@@ -450,6 +463,7 @@ extension DeepCleaningViewController {
 	 @objc func flowRoatingHandleNotification(_ notification: Notification) {
 		  
 		  guard deepCleaningState == .didCleaning else { return }
+		  
 		  switch notification.name {
 			   case .deepCleanSimilarPhotoPhassetScan:
 					self.recieveNotification(by: .similarPhoto,
@@ -550,6 +564,7 @@ extension DeepCleaningViewController {
 	 
 	 private func deepCleanProgressStatusUpdate(_ notificationType: DeepCleanNotificationType, status: ProcessingProgressOperationState, currentProgress: CGFloat) {
 		  
+		  guard deepCleaningState == .didCleaning else { return }
 		  
 		  let mediaType: PhotoMediaType = notificationType.mediaTypeRawValue
 		  

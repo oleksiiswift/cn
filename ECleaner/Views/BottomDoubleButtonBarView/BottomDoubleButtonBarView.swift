@@ -16,8 +16,8 @@ protocol BottomDoubleActionButtonDelegate: AnyObject {
 class BottomDoubleButtonBarView: UIView {
 
     @IBOutlet var contantView: UIView!
-    @IBOutlet weak var leftActionBottomButton: BottomSmallerBarButtonItem!
-    @IBOutlet weak var rightActionBottomButton: BottomSmallerBarButtonItem!
+    @IBOutlet weak var leftActionBottomButton: BottomPrimaryBarButtonItem!
+    @IBOutlet weak var rightActionBottomButton: BottomPrimaryBarButtonItem!
     @IBOutlet weak var buttonsStackHeightConstraint: NSLayoutConstraint!
     
     var delegate: BottomDoubleActionButtonDelegate?
@@ -59,7 +59,7 @@ class BottomDoubleButtonBarView: UIView {
         contantView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         
         self.backgroundColor = .clear
-        
+		self.setButtonHeight(U.UIHelper.AppDimensions.bottomBarButtonDefaultHeight)
         leftActionBottomButton.configureAppearance(buttonColor: self.leftButtonColor, tintColor: self.leftButtonTintColor)
         rightActionBottomButton.configureAppearance(buttonColor: self.rightButtonColor, tintColor: self.rightButtonTintColor)
     }
@@ -74,6 +74,10 @@ class BottomDoubleButtonBarView: UIView {
         leftActionBottomButton.addTarget(self, action: #selector(didTapLeftButton), for: .touchUpInside)
         rightActionBottomButton.addTarget(self, action: #selector(didTapRightButton), for: .touchUpInside)
     }
+	
+	public func setButtonHeight(_ height: CGFloat) {
+		buttonsStackHeightConstraint.constant = height
+	}
     
     public func setLeftButtonTitle(_ title: String) {
         leftActionBottomButton.setTitle(title)
@@ -102,10 +106,10 @@ class BottomDoubleButtonBarView: UIView {
     }
 }
 
-class BottomSmallerBarButtonItem: UIButton {
+class BottomPrimaryBarButtonItem: UIButton {
     
-    public var imageSpacing: CGFloat = 10
-    public var imageSize: CGSize = CGSize(width: 18, height: 22)
+	public var imageSpacing: CGFloat = U.UIHelper.AppDimensions.bottomPrimaryButtonImageSpacing
+//    public var imageSize: CGSize = CGSize(width: 18, height: 22)
     
     override func layoutSubviews() {
         super.layoutSubviews()
@@ -116,7 +120,7 @@ class BottomSmallerBarButtonItem: UIButton {
     private func configure() {
         
         self.setCorner(14)
-        self.titleLabel?.font = .systemFont(ofSize: 16.8, weight: .bold)
+        self.titleLabel?.font = FontManager.bottomButtonFont(of: .title)
     }
     
     public func configureAppearance(buttonColor: UIColor, tintColor: UIColor) {
@@ -129,6 +133,10 @@ class BottomSmallerBarButtonItem: UIButton {
     }
     
     public func setButtonImage(image: UIImage) {
+		let size = U.UIHelper.AppDimensions.bottomBarPrimaaryButtonImageSize
+		let imageSize = image.getPreservingAspectRationScaleImageSize(from: CGSize(width: size, height: size))
+		
+		
         self.addLeftImage(image: image, size: imageSize, spacing: imageSpacing)
     }
 }

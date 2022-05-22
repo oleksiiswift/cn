@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19162" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19144"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -25,7 +25,7 @@
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3X1-ra-xpO">
                         <rect key="frame" x="20" y="0.0" width="456" height="130"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pC7-l2-Sjg">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text=" " textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pC7-l2-Sjg">
                                 <rect key="frame" x="73" y="30" width="363" height="20.5"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -40,7 +40,7 @@
                                     <constraint firstAttribute="height" constant="33" id="xmE-ml-o9Z"/>
                                 </constraints>
                             </view>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="W2j-FK-GyH">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text=" " textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="W2j-FK-GyH">
                                 <rect key="frame" x="20" y="76.5" width="416" height="20.5"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -54,7 +54,7 @@
                                         <rect key="frame" x="23" y="12" width="25" height="25"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="25" id="DaI-y9-UZo"/>
-                                            <constraint firstAttribute="height" constant="25" id="cJX-60-dyR"/>
+                                            <constraint firstAttribute="width" secondItem="AB8-OE-K6K" secondAttribute="height" multiplier="1:1" id="hiG-g1-lCx"/>
                                         </constraints>
                                     </imageView>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5o2-To-zhM">
@@ -116,7 +116,9 @@
                 <outlet property="sectionShadowView" destination="B9G-3u-IT5" id="nzp-hg-6be"/>
                 <outlet property="selectableButton" destination="5o2-To-zhM" id="Hj1-8m-dW1"/>
                 <outlet property="selectableContactImageView" destination="AB8-OE-K6K" id="Nyu-Jt-NCZ"/>
+                <outlet property="selectableContactImageViewWidthConstraint" destination="DaI-y9-UZo" id="yr4-Wj-RKH"/>
                 <outlet property="shadowRoundedReuseView" destination="Srh-c6-OGa" id="giU-8I-gom"/>
+                <outlet property="shadowRoundedViewHeightConstraint" destination="xmE-ml-o9Z" id="0VB-6o-tBV"/>
                 <outlet property="topBaseViewConstraint" destination="AGE-4h-HeO" id="X9o-sS-nMJ"/>
             </connections>
             <point key="canvasLocation" x="260.86956521739131" y="128.57142857142856"/>

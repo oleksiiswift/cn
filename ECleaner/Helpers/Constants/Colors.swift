@@ -134,7 +134,7 @@ enum Theme: Int {
     var alertProgressBackgroundColor: UIColor {
         switch self {
             case .light:
-                return UIColor().colorFromHexString("586778")
+				return UIColor().colorFromHexString("586778").withAlphaComponent(0.4)
             case .dark :
                 return UIColor().colorFromHexString("586778")
         }
@@ -143,7 +143,7 @@ enum Theme: Int {
     var alertProgressBorderColor: UIColor {
         switch self {
             case .light:
-                return UIColor().colorFromHexString("373E44")
+				return UIColor().colorFromHexString("373E44").withAlphaComponent(0.4)
             case .dark :
                 return UIColor().colorFromHexString("373E44")
         }

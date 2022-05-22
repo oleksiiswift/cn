@@ -227,11 +227,9 @@ extension ContentTypeTableViewCell: Themeble {
 		rightArrowImageView.isHidden = true
 		baseView.setCorner(14)
 		rightArrowImageView.image = I.systemItems.navigationBarItems.forward
-		
-		if Screen.size == .small {
-			reuseShadowHeightConstraint.constant = 30
-		}
-
+		reuseShadowHeightConstraint.constant = U.UIHelper.AppDimensions.ContenTypeCells.helperImageViewWidth
+		reuseShadowRoundedView.layoutIfNeeded()
+		reuseShadowRoundedView.updateImagesLayout()
 		contentTypeTextLabel.font = FontManager.contentTypeFont(of: .title)
 		contentSubtitleTextLabel.font = FontManager.contentTypeFont(of: .subtitle)
 	}

@@ -43,6 +43,9 @@ extension AppDelegate {
         
 		PhotoManager.shared.checkPhotoLibraryAccess()
         ContactsManager.shared.checkStatus { _ in }
+		ECFileManager().deleteAllFiles(at: AppDirectories.temp) {
+			debugPrint("deleted all files from temp")
+		}
     }
 
     private func setDefaults() {

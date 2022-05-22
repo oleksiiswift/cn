@@ -109,4 +109,36 @@ class FontManager {
 				return DeepClean.deepClentSectionHeaderTitleFont
 		}
 	}
+	
+	static func contactsFont(of type: ContactsCleanFontType) -> UIFont {
+		switch type {
+			case .cellTitle:
+				return Contacts.cellTitleFont
+			case .cellSubtitle:
+				return Contacts.cellSubtitleFont
+			case .cellGroupCellHeaderTitle:
+				return Contacts.cellGroupCellHeaderTitleFont
+			case .headetTitle:
+				return Contacts.headerTitleFont
+			case .missingTitle:
+				return Contacts.missingTitleFont
+			case .missongSubtitle:
+				return Contacts.missingSubTitleFont
+			case .headerButonFont:
+				return Contacts.headerButtonFont
+			case .searchBarFont:
+				return Contacts.searchBarFont
+			case .cancelButtonTitle:
+				return Contacts.cancelButtonFont
+		}
+	}
+	
+	static func exportModalFont(of type: ExportScreenFontType) -> UIFont {
+		switch type {
+			case .title:
+				return ExportModal.navigationTitleFont
+			case .buttons:
+				return ExportModal.buttonTitle
+		}
+	}
 }

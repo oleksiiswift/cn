@@ -132,5 +132,7 @@ class Images {
         static let circleCheckBox = UIImage(systemName: "checkmark.circle.fill")
         static let tileView = UIImage(systemName: "square.grid.2x2.fill")
         static let sliderView = UIImage(named: "sliderItem")
+		static let trashBtn = UIImage(systemName: "trash")
+		static let share = UIImage(systemName: "square.and.arrow.up")
     }
 }

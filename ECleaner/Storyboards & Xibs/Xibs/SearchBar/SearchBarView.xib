@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19519"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -13,10 +13,14 @@
             <connections>
                 <outlet property="baseView" destination="SbQ-Mo-v6Q" id="Ecy-sy-4Vk"/>
                 <outlet property="cancelButton" destination="q38-1d-CVD" id="tdx-3x-mrL"/>
+                <outlet property="cancelButtonHeightConstraint" destination="I89-CS-Arp" id="pIl-bd-xgD"/>
+                <outlet property="cancelButtonWidthConstraint" destination="btI-Pe-mxP" id="pad-x0-Bfd"/>
                 <outlet property="containerView" destination="iN0-l3-epB" id="6va-WP-oqv"/>
                 <outlet property="leadingButtonConstraint" destination="Vin-xI-mAu" id="07U-DF-amw"/>
                 <outlet property="reuseShadowView" destination="baR-sB-1S1" id="qP9-3p-gft"/>
                 <outlet property="searchBar" destination="7aE-ny-h8e" id="usQ-Lc-glN"/>
+                <outlet property="searchBarBottomConstraint" destination="Ol1-xx-ujS" id="SQs-vl-vLl"/>
+                <outlet property="searchBarLeadingConstraint" destination="J7Y-C1-GUp" id="KBT-DJ-EhR"/>
                 <outlet property="trailingButtonConstraint" destination="t0c-0i-XPL" id="577-LK-NIp"/>
             </connections>
         </placeholder>
@@ -34,6 +38,9 @@
                     <subviews>
                         <searchBar contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="7aE-ny-h8e">
                             <rect key="frame" x="0.0" y="0.0" width="294" height="40"/>
+                            <constraints>
+                                <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="100" id="MDr-IT-J8f"/>
+                            </constraints>
                             <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="search" smartDashesType="no"/>
                         </searchBar>
                     </subviews>
@@ -48,6 +55,7 @@
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="q38-1d-CVD">
                     <rect key="frame" x="324" y="5" width="90" height="40"/>
                     <constraints>
+                        <constraint firstAttribute="height" constant="40" id="I89-CS-Arp"/>
                         <constraint firstAttribute="width" constant="90" id="btI-Pe-mxP"/>
                     </constraints>
                     <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>

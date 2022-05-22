@@ -146,8 +146,8 @@ class ProgressAlertController: Themeble {
     func updateColors() {
         
         alertController.view.tintColor = theme.titleTextColor
-        self.progressBar.borderColor = theme.alertProgressBorderColor
-        self.progressBar.mainBackgroundColor = theme.alertProgressBackgroundColor
+		self.progressBar.borderColor = theme.separatorMainColor//theme.alertProgressBorderColor
+		self.progressBar.mainBackgroundColor = theme.cellBackGroundColor//theme.alertProgressBackgroundColor
         self.progressBar.progressColor = progressBarTintColor
         self.progressBar.updateColors()
     }

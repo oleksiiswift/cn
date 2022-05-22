@@ -17,8 +17,11 @@ class ContactTableViewCell: UITableViewCell {
     @IBOutlet weak var shadowRoundedReuseView: ReuseShadowRoundedView!
     @IBOutlet weak var topBaseViewConstraint: NSLayoutConstraint!
     @IBOutlet weak var bottomBaseViewConstraint: NSLayoutConstraint!
-    
-    private var contact: CNContact?
+	@IBOutlet weak var shadowRoundedViewHeightConstraint: NSLayoutConstraint!
+	
+	@IBOutlet weak var shadowRoundedViewSpaceInsetTrailingConstraint: NSLayoutConstraint!
+	
+	private var contact: CNContact?
     
     public var contactEditingMode: Bool = false
     
@@ -63,11 +66,17 @@ extension ContactTableViewCell {
 	
 	public func checkForContactsImageDataAndSelectableMode(for contact: CNContact) {
 		
-		if contactEditingMode {
-			self.handleSelectedContact()
-		} else {
-			self.handleContactImageData(contact)
-		}
+		let defaultImageSize = U.UIHelper.AppDimensions.Contacts.Collection.helperImageViewWidth
+		let editingImageSize = U.UIHelper.AppDimensions.Contacts.Collection.selectHelperImageViewWidth
+		let dif = defaultImageSize - editingImageSize
+		let const: CGFloat = U.UIHelper.AppDimensions.Contacts.Collection.helperImageTrailingOffset
+		shadowRoundedViewSpaceInsetTrailingConstraint.constant = contactEditingMode ? const + dif : const
+		
+		self.shadowRoundedViewHeightConstraint.constant = contactEditingMode ? editingImageSize : defaultImageSize
+		self.shadowRoundedReuseView.layoutIfNeeded()
+		self.shadowRoundedReuseView.updateImagesLayout()
+		
+		contactEditingMode ? self.handleSelectedContact() : self.handleContactImageData(contact)
 	}
     
     private func setupAllContactCell(_ contact: CNContact) {
@@ -100,23 +109,23 @@ extension ContactTableViewCell {
                 
                 contactTitleTextLabel.text = "-"
                 contactSubtitleTextLabel.isHidden = true
-                contactTitleTextLabel.font = .italicSystemFont(ofSize: 16, weight: .regular)
+				contactTitleTextLabel.font = FontManager.contactsFont(of: .missingTitle)
                 contactTitleTextLabel.textColor = theme.subTitleTextColor
             case .onlyEmail:
                 contactTitleTextLabel.text = "-"
                 contactTitleTextLabel.textColor = theme.titleTextColor
-                contactTitleTextLabel.font = .systemFont(ofSize: 16, weight: .bold)
+				contactTitleTextLabel.font = FontManager.contactsFont(of: .cellTitle)
                 
                 contactSubtitleTextLabel.text = textData
                 contactSubtitleTextLabel.textColor = theme.subTitleTextColor
-                contactSubtitleTextLabel.font = .italicSystemFont(ofSize: 14, weight: .regular)
+				contactSubtitleTextLabel.font = FontManager.contactsFont(of: .missongSubtitle)
                 contactSubtitleTextLabel.isHidden = false
                 
             default:
                 contactTitleTextLabel.text = textData
                 contactSubtitleTextLabel.isHidden = true
                 contactTitleTextLabel.textColor = theme.titleTextColor
-                contactTitleTextLabel.font = .systemFont(ofSize: 16, weight: .bold)
+				contactTitleTextLabel.font = FontManager.contactsFont(of: .cellTitle)
         }
     }
 
@@ -128,11 +137,11 @@ extension ContactTableViewCell {
         
         if contactFullName != nil {
             contactTitleTextLabel.text = contactFullName
-            contactTitleTextLabel.font = .systemFont(ofSize: 16, weight: .bold)
+			contactTitleTextLabel.font = FontManager.contactsFont(of: .cellTitle)
             contactTitleTextLabel.textColor = theme.titleTextColor
             
             if numbers.isEmpty {
-                contactSubtitleTextLabel.font = .italicSystemFont(ofSize: 14, weight: .regular)
+				contactSubtitleTextLabel.font = FontManager.contactsFont(of: .missongSubtitle)
                 contactSubtitleTextLabel.textColor = theme.subTitleTextColor
                 if emails.isEmpty {
                     contactSubtitleTextLabel.text = "number missing"
@@ -142,23 +151,23 @@ extension ContactTableViewCell {
             }
         } else if numbers.count != 0 {
             contactTitleTextLabel.text = "name missing"
-            contactTitleTextLabel.font = .italicSystemFont(ofSize: 16, weight: .regular)
+			contactTitleTextLabel.font = FontManager.contactsFont(of: .missingTitle)
             contactTitleTextLabel.textColor = theme.subTitleTextColor
             
             contactSubtitleTextLabel.text = numbers.joined(separator: numbers.count > 1 ? ", " : "")
-            contactSubtitleTextLabel.font = .systemFont(ofSize: 14, weight: .bold)
+			contactSubtitleTextLabel.font = FontManager.contactsFont(of: .cellSubtitle)
             contactSubtitleTextLabel.textColor = theme.titleTextColor
         } else if emails.count != 0 {
             contactTitleTextLabel.text = emails.joined(separator: numbers.count > 1 ? ", " : "")
-            contactTitleTextLabel.font = .systemFont(ofSize: 16, weight: .bold)
+			contactTitleTextLabel.font = FontManager.contactsFont(of: .cellTitle)
             contactTitleTextLabel.textColor = theme.titleTextColor
             
             contactSubtitleTextLabel.text = "all data missing"
-            contactSubtitleTextLabel.font = .italicSystemFont(ofSize: 14, weight: .regular)
+			contactSubtitleTextLabel.font = FontManager.contactsFont(of: .missongSubtitle)
             contactSubtitleTextLabel.textColor = theme.subTitleTextColor
         } else {
             contactSubtitleTextLabel.isHidden = true
-            contactTitleTextLabel.font = .italicSystemFont(ofSize: 14, weight: .regular)
+			contactTitleTextLabel.font = FontManager.contactsFont(of: .missingTitle)
             contactTitleTextLabel.text = "all data missing"
             contactTitleTextLabel.textColor = theme.subTitleTextColor
         }
@@ -175,8 +184,10 @@ extension ContactTableViewCell {
 	
 	private func handleContactImageData(_ contact: CNContact) {
 		
-		if let imageData = contact.thumbnailImageData, let image = UIImage(data: imageData) {
-			shadowRoundedReuseView.setImage(image)
+		if contact.imageDataAvailable {
+			if let imageData = contact.thumbnailImageData, let image = UIImage(data: imageData) {
+				shadowRoundedReuseView.setImage(image)
+			}
 		} else {
 			shadowRoundedReuseView.setImage(I.personalisation.contacts.contactPhoto)
 		}
@@ -187,6 +198,10 @@ extension ContactTableViewCell: Themeble {
     
     private func setupUI() {
         
+		shadowRoundedViewHeightConstraint.constant = U.UIHelper.AppDimensions.Contacts.Collection.helperImageViewWidth
+		shadowRoundedReuseView.layoutIfNeeded()
+		shadowRoundedReuseView.updateImagesLayout()
+		
         reuseShadowView.topShadowOffsetOriginY = -2
         reuseShadowView.topShadowOffsetOriginX = -2
         reuseShadowView.viewShadowOffsetOriginX = 6
@@ -206,7 +221,7 @@ extension ContactTableViewCell: Themeble {
     }
     
     private func superPrepareForReuse() {
-        
+	
         accessoryType = .none
         contactTitleTextLabel.text = nil
         contactSubtitleTextLabel.text = nil

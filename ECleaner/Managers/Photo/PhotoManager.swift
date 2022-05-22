@@ -278,8 +278,6 @@ extension PhotoManager {
 									}
 								}
 								autoreleasepool {
-									
-									
 //									if let data = data {
 //										let fileSize = Int64(bitPattern: UInt64(data.count))
 //										photoLibrararyPhotosSize += fileSize
@@ -439,6 +437,9 @@ extension PhotoManager {
 		self.clearAVAssetRequests()
 		self.clearPHAssetRequests()
 	}
+
+	
+	
 	
 	public func getPHAssetFileSizeFromData(_ asset: PHAsset, completionHandler: @escaping (_ fileSize: Int64) -> Void) {
 		
@@ -515,8 +516,14 @@ extension PhotoManager {
 							return
 						}
 						
-						if videoContent[videosPosition - 1].imageSize > SettingsManager.largeVideoLowerSize {
+						let fileSize = videoContent[videosPosition - 1].imageSize
+					
+						if fileSize > SettingsManager.largeVideoLowerSize {
 							videos.append(videoContent[videosPosition - 1])
+						}
+						
+						if cleanProcessingType == .deepCleen {
+							self.sendFileSizeNotification(type: .videoFilesSize, totalFiles: videoContent.count, currentIndex: videosPosition, fileSize: fileSize)
 						}
 						self.sendNotification(processing: cleanProcessingType, deepCleanType: .largeVideo, singleCleanType: .largeVideo, status: .progress, totalItems: videoContent.count, currentIndex: videosPosition)
 					}
@@ -656,14 +663,6 @@ extension PhotoManager {
 							return
 						}
 						
-						if cleanProcessingType == .deepCleen {
-							let op = ConcurrentProcessOperation { filesCheckerOperation in
-								self.getAVAssetFileSizeFromData(videoCollection[index - 1]) { fileSize in
-									self.sendFileSizeNotification(type: .videoFilesSize, totalFiles: videoCollection.count, currentIndex: index, fileSize: fileSize)
-								}
-							}
-							self.serviceUtilityOperationsQueuer.addOperation(op)
-						}
 
 						let image = self.fetchManager.getThumbnail(from: videoCollection[index - 1], size: CGSize(width: 150, height: 150))
 						if let data = image.jpegData(compressionQuality: 0.8) {
@@ -1030,9 +1029,10 @@ extension PhotoManager {
 						
 						if cleanProcessingType == .deepCleen {
 							let op = ConcurrentProcessOperation { filesCheckerOperation in
-								self.getPHAssetFileSizeFromData(photosInGallery[index - 1]) { fileSize in
+								let fileSize = photosInGallery[index - 1].imageSize
+//								self.getPHAssetFileSizeFromData(photosInGallery[index - 1]) { fileSize in
 									self.sendFileSizeNotification(type: .photoFilesSize, totalFiles: photosInGallery.count, currentIndex: index, fileSize: fileSize)
-								}
+//								}
 							}
 							self.serviceUtilityOperationsQueuer.addOperation(op)
 						}

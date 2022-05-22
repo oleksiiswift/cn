@@ -198,6 +198,9 @@
 		9787576F281C768E00CE27A9 /* AVUrlAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9787576E281C768E00CE27A9 /* AVUrlAsset.swift */; };
 		9789D18827F48C400035539C /* PreviewCollectionShadowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9789D18727F48C400035539C /* PreviewCollectionShadowView.swift */; };
 		9789D18A27F48C660035539C /* CollectionShadowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9789D18927F48C660035539C /* CollectionShadowView.swift */; };
+		978D8C2C28397D7000F65D79 /* FontManager+Contacts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978D8C2B28397D7000F65D79 /* FontManager+Contacts.swift */; };
+		978D8C2E283A7C3300F65D79 /* FontManager+Export.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978D8C2D283A7C3300F65D79 /* FontManager+Export.swift */; };
+		978D8C30283AB59C00F65D79 /* ImagePreviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978D8C2F283AB59C00F65D79 /* ImagePreviewViewController.swift */; };
 		978FEF12274BB73700ADE1D9 /* AlertType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978FEF11274BB73700ADE1D9 /* AlertType.swift */; };
 		978FEF14274BC21A00ADE1D9 /* ProgressAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978FEF13274BC21A00ADE1D9 /* ProgressAlertController.swift */; };
 		978FEF1A274C1C5400ADE1D9 /* UIAlertController+Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978FEF19274C1C5400ADE1D9 /* UIAlertController+Colors.swift */; };
@@ -515,6 +518,9 @@
 		9787576E281C768E00CE27A9 /* AVUrlAsset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVUrlAsset.swift; sourceTree = "<group>"; };
 		9789D18727F48C400035539C /* PreviewCollectionShadowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewCollectionShadowView.swift; sourceTree = "<group>"; };
 		9789D18927F48C660035539C /* CollectionShadowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionShadowView.swift; sourceTree = "<group>"; };
+		978D8C2B28397D7000F65D79 /* FontManager+Contacts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FontManager+Contacts.swift"; sourceTree = "<group>"; };
+		978D8C2D283A7C3300F65D79 /* FontManager+Export.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FontManager+Export.swift"; sourceTree = "<group>"; };
+		978D8C2F283AB59C00F65D79 /* ImagePreviewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePreviewViewController.swift; sourceTree = "<group>"; };
 		978FEF11274BB73700ADE1D9 /* AlertType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertType.swift; sourceTree = "<group>"; };
 		978FEF13274BC21A00ADE1D9 /* ProgressAlertController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressAlertController.swift; sourceTree = "<group>"; };
 		978FEF19274C1C5400ADE1D9 /* UIAlertController+Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIAlertController+Colors.swift"; sourceTree = "<group>"; };
@@ -923,6 +929,7 @@
 				979998D82747F4CC00175DE5 /* Preview */,
 				97A867A827E761E500891297 /* LargeVideoInspector */,
 				9793300A28153E7200DCFECD /* CompressionInfo */,
+				978D8C2F283AB59C00F65D79 /* ImagePreviewViewController.swift */,
 			);
 			path = ModalControllers;
 			sourceTree = "<group>";
@@ -1673,6 +1680,7 @@
 			children = (
 				97A17F4F2836363D00591409 /* FontManager.swift */,
 				97A17F662836710200591409 /* FontManager+DeepClean.swift */,
+				978D8C2B28397D7000F65D79 /* FontManager+Contacts.swift */,
 				97A17F642836701300591409 /* FontManager+BottomButton.swift */,
 				97A17F6028366E2300591409 /* FontManager+Picker.swift */,
 				97A17F5E28366A3C00591409 /* FontManager+CollectionType.swift */,
@@ -1682,6 +1690,7 @@
 				97A17F5A283662DD00591409 /* FontManager+DefaultFonts.swift */,
 				97A17F5C2836679400591409 /* FontManager+ContentType.swift */,
 				97A17F6228366EF300591409 /* FontManager+Banner.swift */,
+				978D8C2D283A7C3300F65D79 /* FontManager+Export.swift */,
 			);
 			path = FontManager;
 			sourceTree = "<group>";
@@ -2294,6 +2303,7 @@
 				97708662276A283A003D0416 /* CommonOperationSearchType.swift in Sources */,
 				4F56074227205AF300CA19E9 /* WindowBuilder.swift in Sources */,
 				970D778D275B9C9E0048F41D /* SingleContentSearchNotificationType.swift in Sources */,
+				978D8C2E283A7C3300F65D79 /* FontManager+Export.swift in Sources */,
 				97AC5DC02767C55100C20F73 /* Date+LocalizedDescription.swift in Sources */,
 				97E54A86268BB16A00C7FD54 /* SNCollectionViewLayout.swift in Sources */,
 				044A6FBD270F1B9B00CF0D17 /* Sequence+GetSum.swift in Sources */,
@@ -2305,6 +2315,7 @@
 				97B288AB281DC17C0020A235 /* MediaStoreInfoModel.swift in Sources */,
 				04E09472267A06B500A69956 /* SceneDelegate.swift in Sources */,
 				97CC2F3E268743A80072EF8C /* SegueManager.swift in Sources */,
+				978D8C2C28397D7000F65D79 /* FontManager+Contacts.swift in Sources */,
 				978FEF1A274C1C5400ADE1D9 /* UIAlertController+Colors.swift in Sources */,
 				9789D18A27F48C660035539C /* CollectionShadowView.swift in Sources */,
 				9701D26027BD26750078E39F /* SettingsViewModel.swift in Sources */,
@@ -2410,6 +2421,7 @@
 				04EE29FB269891F30013837D /* PHasset+Thumbnail.swift in Sources */,
 				97B01A732746DF6300DDE03C /* EmptyContactListDataSource.swift in Sources */,
 				049CC23A2683761B0002F988 /* String+ConvertInteger.swift in Sources */,
+				978D8C30283AB59C00F65D79 /* ImagePreviewViewController.swift in Sources */,
 				04649B3E268DDDE700336FE4 /* UICollectionView+SelectAll.swift in Sources */,
 				97A17F5728365A4F00591409 /* FontManager+NavigationSettings.swift in Sources */,
 				976D8E39280468A3005004F4 /* VideoCompressionConfig.swift in Sources */,

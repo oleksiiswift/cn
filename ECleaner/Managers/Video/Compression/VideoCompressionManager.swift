@@ -151,6 +151,10 @@ extension VideoCompressionManager {
 		var targetWidth: Int = Int(scale.width)
 		var targetHeight: Int = Int(scale.height)
 		
+		if scale == CGSize(width: -1, height: -1) {
+			return originalSize
+		}
+		
 		if !isPortrait {
 			targetHeight = Int(scale.width * originalSize.height / originalSize.width)
 		} else {
