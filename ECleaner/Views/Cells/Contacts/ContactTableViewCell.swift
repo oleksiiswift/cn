@@ -18,6 +18,9 @@ class ContactTableViewCell: UITableViewCell {
     @IBOutlet weak var topBaseViewConstraint: NSLayoutConstraint!
     @IBOutlet weak var bottomBaseViewConstraint: NSLayoutConstraint!
 	@IBOutlet weak var shadowRoundedViewHeightConstraint: NSLayoutConstraint!
+	
+	@IBOutlet weak var shadowRoundedViewSpaceInsetTrailingConstraint: NSLayoutConstraint!
+	
 	private var contact: CNContact?
     
     public var contactEditingMode: Bool = false
@@ -63,11 +66,17 @@ extension ContactTableViewCell {
 	
 	public func checkForContactsImageDataAndSelectableMode(for contact: CNContact) {
 		
-		if contactEditingMode {
-			self.handleSelectedContact()
-		} else {
-			self.handleContactImageData(contact)
-		}
+		let defaultImageSize = U.UIHelper.AppDimensions.Contacts.Collection.helperImageViewWidth
+		let editingImageSize = U.UIHelper.AppDimensions.Contacts.Collection.selectHelperImageViewWidth
+		let dif = defaultImageSize - editingImageSize
+		let const: CGFloat = U.UIHelper.AppDimensions.Contacts.Collection.helperImageTrailingOffset
+		shadowRoundedViewSpaceInsetTrailingConstraint.constant = contactEditingMode ? const + dif : const
+		
+		self.shadowRoundedViewHeightConstraint.constant = contactEditingMode ? editingImageSize : defaultImageSize
+		self.shadowRoundedReuseView.layoutIfNeeded()
+		self.shadowRoundedReuseView.updateImagesLayout()
+		
+		contactEditingMode ? self.handleSelectedContact() : self.handleContactImageData(contact)
 	}
     
     private func setupAllContactCell(_ contact: CNContact) {
@@ -175,8 +184,10 @@ extension ContactTableViewCell {
 	
 	private func handleContactImageData(_ contact: CNContact) {
 		
-		if let imageData = contact.thumbnailImageData, let image = UIImage(data: imageData) {
-			shadowRoundedReuseView.setImage(image)
+		if contact.imageDataAvailable {
+			if let imageData = contact.thumbnailImageData, let image = UIImage(data: imageData) {
+				shadowRoundedReuseView.setImage(image)
+			}
 		} else {
 			shadowRoundedReuseView.setImage(I.personalisation.contacts.contactPhoto)
 		}
@@ -189,6 +200,8 @@ extension ContactTableViewCell: Themeble {
         
 		shadowRoundedViewHeightConstraint.constant = U.UIHelper.AppDimensions.Contacts.Collection.helperImageViewWidth
 		shadowRoundedReuseView.layoutIfNeeded()
+		shadowRoundedReuseView.updateImagesLayout()
+		
         reuseShadowView.topShadowOffsetOriginY = -2
         reuseShadowView.topShadowOffsetOriginX = -2
         reuseShadowView.viewShadowOffsetOriginX = 6
@@ -208,7 +221,7 @@ extension ContactTableViewCell: Themeble {
     }
     
     private func superPrepareForReuse() {
-        
+	
         accessoryType = .none
         contactTitleTextLabel.text = nil
         contactSubtitleTextLabel.text = nil

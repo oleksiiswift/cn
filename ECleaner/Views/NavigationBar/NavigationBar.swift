@@ -124,7 +124,6 @@ class NavigationBar: UIView {
         } else {
             rightBarButtonItem.isHidden = true
         }
-		
 			leftBarButtonItem.layoutIfNeeded()
 			rightBarButtonItem.layoutIfNeeded()
     }

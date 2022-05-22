@@ -15,6 +15,8 @@ enum ContactsCleanFontType {
 	case cellGroupCellHeaderTitle
 	case headetTitle
 	case headerButonFont
+	case searchBarFont
+	case cancelButtonTitle
 }
 
 extension FontManager {
@@ -94,6 +96,19 @@ extension FontManager {
 				default:
 					return .systemFont(ofSize: 12, weight: .bold)
 			}
+		}
+		
+		static var searchBarFont: UIFont {
+			switch screenSize {
+				case .small:
+					return .systemFont(ofSize: 12, weight: .medium)
+				default:
+					return .systemFont(ofSize: 14, weight: .medium)
+			}
+		}
+		
+		static var cancelButtonFont: UIFont {
+			return FontManager.navigationBarFont(of: .barButtonTitle)
 		}
 	}
 }

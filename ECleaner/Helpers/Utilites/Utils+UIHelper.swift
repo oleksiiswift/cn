@@ -140,6 +140,28 @@ extension Utils {
 				}
 			}
 			
+			static var bottomBarPrimaaryButtonImageSize: CGFloat {
+				switch screenSize {
+					case .small:
+						return 15
+					case .medium, .plus:
+						return 16
+					default:
+						return 18
+				}
+			}
+			
+			static var bottomPrimaryButtonImageSpacing: CGFloat {
+				switch screenSize {
+					case .small:
+						return 10
+					case .medium, .plus:
+						return 10
+					default:
+						return 10
+				}
+			}
+			
 			static var mediaContentTypeCellIEdgeInset: UIEdgeInsets {
 				switch screenSize {
 					case .small:
@@ -306,6 +328,17 @@ extension Utils {
 							return 33
 					}
 				}
+				
+				static var helperImageViewWidth: CGFloat {
+					switch screenSize {
+						case .small:
+							return 28
+						case .medium, .plus, .large:
+							return 30
+						case .modern, .max, .madMax:
+							return 33
+					}
+				}
 			}
 			
 			struct DateSelectController {
@@ -463,8 +496,6 @@ extension Utils {
 				}
 			}
 			
-		
-			
 			struct Contacts {
 				
 				struct Collection {
@@ -498,6 +529,17 @@ extension Utils {
 						}
 					}
 					
+					static var selectHelperImageViewWidth: CGFloat {
+						switch screenSize {
+							case .small:
+								return 20
+							case .medium, .plus, .large:
+								return 25
+							case .modern, .max, .madMax:
+								return 28
+						}
+					}
+					
 					static var selectableGoupAssetViewWidth: CGFloat {
 						switch screenSize {
 							case .small:
@@ -508,8 +550,11 @@ extension Utils {
 								return 25
 						}
 					}
+					
+					static var helperImageTrailingOffset: CGFloat {
+						return 20
+					}
 				}
-				
 				
 				struct SearchBar {
 					
@@ -521,6 +566,72 @@ extension Utils {
 								return 70
 							case .plus, .large, .modern, .max, .madMax:
 								return 90
+						}
+					}
+					
+					static var searchBarTopInset: CGFloat {
+						switch screenSize {
+							case .small:
+								return 50
+							default:
+								return 60
+						}
+					}
+					
+					static var searchBarContainerHeight: CGFloat {
+						switch screenSize {
+							case .small:
+								return 55
+							default:
+								return 60
+						}
+					}
+					
+					static var searchBarHeight: CGFloat {
+						switch screenSize {
+							case .small:
+								return 35
+							default:
+								return 40
+						}
+					}
+					
+					static var searchBarBottomInset: CGFloat {
+						switch screenSize {
+							case .small:
+								return 15
+							default:
+								return 15
+						}
+					}
+				}
+				
+				struct ExportModalController {
+					
+					static var controllerHeight: CGFloat {
+						if Device.isSafeAreaiPhone {
+							return U.screenHeight / 2
+						}
+						switch screenSize {
+							case .small:
+								return U.screenHeight / 1.8
+							default:
+								return U.screenHeight / 2
+						}
+					}
+					
+					static var bottomButtonViewHeight: CGFloat {
+						if Device.isSafeAreaiPhone {
+							return 90 + U.bottomSafeAreaHeight
+						} else {
+							switch screenSize {
+								case .small:
+									return 75
+								case .medium, .plus:
+									return 90
+								default:
+									return 100 + U.bottomSafeAreaHeight
+							}
 						}
 					}
 				}
@@ -628,6 +739,21 @@ extension Utils {
 				gradient.startPoint = startPoint.point
 				gradient.endPoint = endPoint.point
 				return gradient
+			}
+			
+			static func viewByClassName(view: UIView, className: String) -> UIView? {
+				let name = NSStringFromClass(type(of: view))
+				if name == className {
+					return view
+				}
+				else {
+					for subview in view.subviews {
+						if let view = viewByClassName(view: subview, className: className) {
+							return view
+						}
+					}
+				}
+				return nil
 			}
 		}
 	}

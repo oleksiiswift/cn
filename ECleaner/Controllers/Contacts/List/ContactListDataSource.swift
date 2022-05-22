@@ -8,23 +8,28 @@
 import UIKit
 import Contacts
 
+protocol ContactDataSourceDelegate {
+	func shareContact(at indexPath: IndexPath)
+	func deleteContact(at indexPath: IndexPath)
+}
+
 class ContactListDataSource: NSObject {
     
     public var contactListViewModel: ContactListViewModel
     
     public var isContactAvailable: ((Bool) -> (Void)) = {_ in}
     public var didSelectContact: ((ContactListViewModel) -> Void) = {_ in}
+	public var delegate: ContactDataSourceDelegate?
 
     public var contactContentIsEditing: Bool = false
     public var searchBarIsFirstResponder: Bool = false
     
     public var contentType: PhotoMediaType = .none
-    
+	    
     init(contactListViewModel: ContactListViewModel, contentType: PhotoMediaType) {
         
         self.contactListViewModel = contactListViewModel
         self.contentType = contentType
-        
     }
 }
 
@@ -117,6 +122,63 @@ extension ContactListDataSource: UITableViewDelegate, UITableViewDataSource {
 			return nil
 		}
 	}
+	
+	func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+				
+		guard !contactContentIsEditing, let contact = contactListViewModel.getContactOnRow(at: indexPath) else { return  nil}
+		let identifier = IndexPath(row: indexPath.row, section: indexPath.section) as NSCopying
+		let image = self.handleContactImageData(contact)
+		
+		return UIContextMenuConfiguration(identifier: identifier) {
+			return ImagePreviewViewController(item: image)
+		} actionProvider: { _ in
+			return self.createCellContextMenu(for: contact, at: indexPath)
+		}
+	}
+	
+	func tableView(_ tableView: UITableView, willDisplayContextMenu configuration: UIContextMenuConfiguration, animator: UIContextMenuInteractionAnimating?) {
+		DispatchQueue.main.async {
+			if let window = U.application.windows.first {
+				if let view = U.UIHelper.Manager.viewByClassName(view: window, className: "_UICutoutShadowView") {
+					view.isHidden = true
+				}
+				if let view = U.UIHelper.Manager.viewByClassName(view: window, className: "_UIPortalView") {
+					view.rounded()
+				}
+				if let view = U.UIHelper.Manager.viewByClassName(view: window, className: "_UIPlatterTransformView") {
+					view.rounded()
+				}
+				if let view = U.UIHelper.Manager.viewByClassName(view: window, className: "_UIPlatterClippingView") {
+					view.rounded()
+				}
+				if let view = U.UIHelper.Manager.viewByClassName(view: window, className: "_UIPlatterTransformView") {
+					view.rounded()
+				}
+			}
+		}
+	}
+}
+
+extension ContactListDataSource {
+
+	func tableView(_ tableView: UITableView, previewForHighlightingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview? {
+		
+		guard let indexPath = configuration.identifier as? IndexPath, let cell = tableView.cellForRow(at: indexPath) as? ContactTableViewCell else { return nil }
+		
+		let params = UIPreviewParameters()
+		params.backgroundColor = .clear
+		let targetPrteview = UITargetedPreview(view: cell.shadowRoundedReuseView.imageView, parameters: params)
+		
+		return targetPrteview
+	}
+	
+	func tableView(_ tableView: UITableView, previewForDismissingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview? {
+		
+		guard let indexPath = configuration.identifier as? IndexPath, let cell = tableView.cellForRow(at: indexPath) as? ContactTableViewCell  else { return nil }
+		let targetPrteview = UITargetedPreview(view: cell.shadowRoundedReuseView.imageView)
+		targetPrteview.parameters.backgroundColor = .clear
+		return targetPrteview
+	}
 }
 
 extension ContactListDataSource: UIScrollViewDelegate {
@@ -134,3 +196,34 @@ extension ContactListDataSource: UIScrollViewDelegate {
         U.notificationCenter.post(name: .scrollViewDidScroll, object: nil, userInfo: userInfo)
     }
 }
+
+extension ContactListDataSource {
+	
+	private func handleContactImageData(_ contact: CNContact) -> UIImage {
+		
+		if contact.imageDataAvailable {
+			if let imageData = contact.thumbnailImageData, let image = UIImage(data: imageData) {
+				return image
+			}
+		}
+		return I.personalisation.contacts.unavailibleThumb
+	}
+
+	private func createCellContextMenu(for contactac: CNContact, at indexPath: IndexPath) -> UIMenu {
+		
+		let shareActionImage = I.systemElementsItems.share
+		let deleteActionImage = I.systemElementsItems.trashBtn
+		let shareAction = UIAction(title: "Share", image: shareActionImage) { _ in
+			self.delegate?.shareContact(at: indexPath)
+		}
+		
+		let deleteAction = UIAction(title: "Delete", image: deleteActionImage, attributes: .destructive) {_ in
+			self.delegate?.deleteContact(at: indexPath)
+		}
+		
+		return UIMenu(title: "", children: [shareAction, deleteAction])
+	}
+}
+
+
+

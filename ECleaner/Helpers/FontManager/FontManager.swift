@@ -126,6 +126,19 @@ class FontManager {
 				return Contacts.missingSubTitleFont
 			case .headerButonFont:
 				return Contacts.headerButtonFont
+			case .searchBarFont:
+				return Contacts.searchBarFont
+			case .cancelButtonTitle:
+				return Contacts.cancelButtonFont
+		}
+	}
+	
+	static func exportModalFont(of type: ExportScreenFontType) -> UIFont {
+		switch type {
+			case .title:
+				return ExportModal.navigationTitleFont
+			case .buttons:
+				return ExportModal.buttonTitle
 		}
 	}
 }

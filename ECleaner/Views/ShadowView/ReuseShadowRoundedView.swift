@@ -11,7 +11,7 @@ class ReuseShadowRoundedView: UIView {
     
     private let topLayer = CALayer()
     private let bottomLayer = CALayer()
-    private let imageView = UIImageView()
+    public let imageView = UIImageView()
 	private let helperImageView = UIImageView()
     
     public var topShadowColor: UIColor = .red
@@ -26,7 +26,7 @@ class ReuseShadowRoundedView: UIView {
         setupShadowViews()
         setupView()
     }
-    
+	
     public func setImage(_ image: UIImage? = nil) {
         imageView.image = image
 		setupImageView()
@@ -38,7 +38,7 @@ class ReuseShadowRoundedView: UIView {
     }
     
     private func setupView() {
-        
+		self.imageView.backgroundColor = .clear
         self.backgroundColor = .clear
         activityIndicatorView.backgroundColor = .clear
         activityIndicatorView.color = theme.backgroundColor
@@ -101,6 +101,14 @@ class ReuseShadowRoundedView: UIView {
         imageView.contentMode = .scaleToFill
         self.addSubview(imageView)
     }
+	
+	public func updateImagesLayout() {
+		
+		imageView.setNeedsUpdateConstraints()
+		helperImageView.setNeedsUpdateConstraints()
+		imageView.layoutIfNeeded()
+		helperImageView.layoutIfNeeded()
+	}
     
     private func setupShadowViews() {
         

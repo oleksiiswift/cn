@@ -31,14 +31,14 @@
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="Zcu-VL-ZLb">
                                         <rect key="frame" x="0.0" y="9.5" width="374" height="41"/>
                                         <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="n1u-i6-xtA">
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text=" " textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="n1u-i6-xtA">
                                                 <rect key="frame" x="0.0" y="0.0" width="374" height="20.5"/>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="I8z-ds-RqL">
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text=" " textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="I8z-ds-RqL">
                                                 <rect key="frame" x="0.0" y="20.5" width="374" height="20.5"/>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -99,6 +99,7 @@
                 <outlet property="reuseShadowView" destination="L9p-Bo-91J" id="ZJt-2O-rfA"/>
                 <outlet property="shadowRoundedReuseView" destination="P74-6f-l9L" id="bah-pI-xOS"/>
                 <outlet property="shadowRoundedViewHeightConstraint" destination="mDb-4H-utQ" id="SkF-3m-k0Y"/>
+                <outlet property="shadowRoundedViewSpaceInsetTrailingConstraint" destination="Jbj-X6-Uv3" id="9vA-iK-gzV"/>
                 <outlet property="topBaseViewConstraint" destination="M08-5C-c3g" id="idR-Nv-9ML"/>
             </connections>
             <point key="canvasLocation" x="268.84057971014494" y="116.18303571428571"/>

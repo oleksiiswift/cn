@@ -14,11 +14,13 @@ class SearchBarView: UIView {
     @IBOutlet weak var baseView: UIView!
     @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var cancelButton: UIButton!
-    @IBOutlet weak var trailingButtonConstraint: NSLayoutConstraint!
+	@IBOutlet weak var cancelButtonHeightConstraint: NSLayoutConstraint!
+	@IBOutlet weak var trailingButtonConstraint: NSLayoutConstraint!
     @IBOutlet weak var leadingButtonConstraint: NSLayoutConstraint!
 	@IBOutlet weak var cancelButtonWidthConstraint: NSLayoutConstraint!
 	@IBOutlet weak var searchBarLeadingConstraint: NSLayoutConstraint!
 	
+	@IBOutlet weak var searchBarBottomConstraint: NSLayoutConstraint!
 	private var shadowView = UIView()
     private var helperExtraView = UIView()
     
@@ -54,6 +56,9 @@ class SearchBarView: UIView {
     
     private func configure() {
         
+		cancelButtonHeightConstraint.constant = U.UIHelper.AppDimensions.Contacts.SearchBar.searchBarHeight
+		searchBarBottomConstraint.constant = U.UIHelper.AppDimensions.Contacts.SearchBar.searchBarBottomInset
+		
         self.addSubview(containerView)
         containerView.frame = self.bounds
 		containerView.translatesAutoresizingMaskIntoConstraints = false
@@ -69,11 +74,13 @@ class SearchBarView: UIView {
         
         /// setup shadow
         let halfSize = self.frame.height / 2
+		self.layoutIfNeeded()
         shadowView.frame = CGRect(x: 0, y: halfSize, width: U.screenWidth, height: halfSize)
         
         self.insertSubview(shadowView, at: 0)
-        shadowView.layer.setShadow(color: theme.bottomShadowColor, alpha: 1, x: 2, y: 2, blur: 10, spread: 0)
-        
+	
+        shadowView.layer.setShadow(color: theme.bottomShadowColor, alpha: 1, x: 3, y: 0, blur: 10, spread: 0)
+		
         let baseBackgroundImage: UIImageView = UIImageView(image: I.systemItems.backroundStaticItems.spreadBackground)
         
         baseBackgroundImage.setCorner(14)
@@ -104,7 +111,7 @@ class SearchBarView: UIView {
         
         cancelButton.setTitle("cancel", for: .normal)
         cancelButton.setTitleColor(theme.contactsTintColor, for: .normal)
-        cancelButton.titleLabel?.font = .systemFont(ofSize: 17, weight: .medium)
+		cancelButton.titleLabel?.font = FontManager.contactsFont(of: .cancelButtonTitle)
         cancelButton.addTarget(self, action: #selector(didTapCancelButton), for: .touchUpInside)
 		cancelButtonWidthConstraint.constant = U.UIHelper.AppDimensions.Contacts.SearchBar.cancelButtonWidth
     }
@@ -114,7 +121,6 @@ class SearchBarView: UIView {
         searchBar.endEditing(true)
         setShowCancelButton(false, animated: true)
         U.notificationCenter.post(name: .searchBarDidCancel, object: nil)
-		
     }
     
     public func setShowCancelButton(_ showCancelButton: Bool, animated: Bool) {
@@ -174,7 +180,7 @@ class SearchBarView: UIView {
             
             textField.backgroundColor = .clear
             textField.textColor = theme.titleTextColor.withAlphaComponent(0.7)
-            textField.font = .systemFont(ofSize: 14, weight: .medium)
+			textField.font = FontManager.contactsFont(of: .searchBarFont)
             
             if let leftView = textField.leftView as? UIImageView {
                 

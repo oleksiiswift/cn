@@ -16,8 +16,8 @@ protocol BottomDoubleActionButtonDelegate: AnyObject {
 class BottomDoubleButtonBarView: UIView {
 
     @IBOutlet var contantView: UIView!
-    @IBOutlet weak var leftActionBottomButton: BottomSmallerBarButtonItem!
-    @IBOutlet weak var rightActionBottomButton: BottomSmallerBarButtonItem!
+    @IBOutlet weak var leftActionBottomButton: BottomPrimaryBarButtonItem!
+    @IBOutlet weak var rightActionBottomButton: BottomPrimaryBarButtonItem!
     @IBOutlet weak var buttonsStackHeightConstraint: NSLayoutConstraint!
     
     var delegate: BottomDoubleActionButtonDelegate?
@@ -106,10 +106,10 @@ class BottomDoubleButtonBarView: UIView {
     }
 }
 
-class BottomSmallerBarButtonItem: UIButton {
+class BottomPrimaryBarButtonItem: UIButton {
     
-    public var imageSpacing: CGFloat = 10
-    public var imageSize: CGSize = CGSize(width: 18, height: 22)
+	public var imageSpacing: CGFloat = U.UIHelper.AppDimensions.bottomPrimaryButtonImageSpacing
+//    public var imageSize: CGSize = CGSize(width: 18, height: 22)
     
     override func layoutSubviews() {
         super.layoutSubviews()
@@ -133,6 +133,10 @@ class BottomSmallerBarButtonItem: UIButton {
     }
     
     public func setButtonImage(image: UIImage) {
+		let size = U.UIHelper.AppDimensions.bottomBarPrimaaryButtonImageSize
+		let imageSize = image.getPreservingAspectRationScaleImageSize(from: CGSize(width: size, height: size))
+		
+		
         self.addLeftImage(image: image, size: imageSize, spacing: imageSpacing)
     }
 }
