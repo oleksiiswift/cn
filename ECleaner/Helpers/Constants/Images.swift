@@ -35,6 +35,7 @@ class Images {
         struct selectItems {
             static let roundedCheckMark = UIImage(named: "roundedCheckmark")!
             static let circleMark = UIImage(named: "circle")!
+			static let checkBox = UIImage(named: "check")!
         }
         
         struct defaultItems {
@@ -76,6 +77,7 @@ class Images {
             static let processingThumb = UIImage(named: "contactsProcessingEmptyItem")!
             static let unavailibleThumb = UIImage(named: "contactsThumbUnselect")!
 			static let backupContacts = UIImage(named: "backupContactsItem")!
+			static let bannerHelperImage = UIImage(named: "cloudSyncConatactItem")!
         }
         
         struct photo {
@@ -92,6 +94,7 @@ class Images {
 			static let unselected = UIImage(named: "unselectedRoundedItem")!
 			static let selected = UIImage(named: "selectedRoundedItem")!
 			static let reset = UIImage(named: "resetBackwardItem")!
+			static let bannerHelperImage = UIImage(named: "compressZipItem")!
         }
     }
 	
@@ -116,9 +119,6 @@ class Images {
 		static let templatePause = UIImage(named: "tePauseItem")!
 	}
 
-    
-//  TODO: Check all images!!!!
-    #warning("check all images -> ")
     struct navigationItems {
     
         static let elipseBurger = UIImage(systemName: "ellipsis.circle.fill")
@@ -127,11 +127,12 @@ class Images {
     
     struct systemElementsItems {
         static let crissCross = UIImage(systemName: "xmark.circle.fill")
-        static let checkBox = UIImage(named: "check")!
         static let checkBoxIsChecked = UIImage(systemName: "checkmark.square")
         static let circleBox = UIImage(systemName: "circle")
         static let circleCheckBox = UIImage(systemName: "checkmark.circle.fill")
         static let tileView = UIImage(systemName: "square.grid.2x2.fill")
         static let sliderView = UIImage(named: "sliderItem")
+		static let trashBtn = UIImage(systemName: "trash")
+		static let share = UIImage(systemName: "square.and.arrow.up")
     }
 }

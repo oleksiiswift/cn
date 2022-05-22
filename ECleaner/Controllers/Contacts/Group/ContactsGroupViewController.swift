@@ -38,7 +38,6 @@ class ContactsGroupViewController: UIViewController {
 	private var isMergeContactsProcessing: Bool = true
 	private var previouslySelectedIndexPaths: [IndexPath] = []
     public var navigationTitle: String?
-    private var bottomButtonHeight: CGFloat = 70
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -299,7 +298,7 @@ extension ContactsGroupViewController {
 			return
 		}
 		
-		let calculatedBottomButtonHeight: CGFloat = bottomButtonHeight + U.bottomSafeAreaHeight
+		let calculatedBottomButtonHeight: CGFloat = U.UIHelper.AppDimensions.bottomBarDefaultHeight
 		bottomButtonHeightConstraint.constant = !self.contactGroupListDataSource.selectedSections.isEmpty ? calculatedBottomButtonHeight : 0
 		
 		let buttonTitle: String = "merge selected".uppercased() + " (\(self.contactGroupListDataSource.selectedSections.count))"
@@ -307,13 +306,15 @@ extension ContactsGroupViewController {
 		
 		if disableAnimation {
 			self.bottomButtonBarView.layoutIfNeeded()
-			self.tableView.contentInset.bottom = !self.contactGroupListDataSource.selectedSections.isEmpty ? calculatedBottomButtonHeight :  34
+			self.tableView.contentInset.bottom = !self.contactGroupListDataSource.selectedSections.isEmpty ? calculatedBottomButtonHeight - 70:  U.bottomSafeAreaHeight - 90
 		} else {
 			U.animate(0.5) {
 				self.bottomButtonBarView.layoutIfNeeded()
+				self.tableView.contentInset.bottom = !self.contactGroupListDataSource.selectedSections.isEmpty ? calculatedBottomButtonHeight - 70 :  U.bottomSafeAreaHeight - 90
 			}
-			self.tableView.contentInset.bottom = !self.contactGroupListDataSource.selectedSections.isEmpty ? calculatedBottomButtonHeight :  34
 		}
+		self.tableView.layoutIfNeeded()
+		self.view.layoutIfNeeded()
 	}
 	
 	private func handleSelectedAssetsNavigationCount() {

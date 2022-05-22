@@ -148,7 +148,7 @@ class BottomBarButtonItem: UIButton {
 	
 	public var imageSpacing: CGFloat = 26
 	public var imageSize: CGSize = CGSize(width: 18, height: 22)
-	public var font: UIFont = U.UIHelper.AppDefaultFontSize.bottomBarButtonTitleFont
+	public var font: UIFont = FontManager.bottomButtonFont(of: .title)
 
 	override func layoutSubviews() {
 		super.layoutSubviews()

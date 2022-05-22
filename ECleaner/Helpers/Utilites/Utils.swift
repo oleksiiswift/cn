@@ -79,6 +79,10 @@ class Utils {
     static public var bottomSafeAreaHeight: CGFloat {
         return UIApplication.shared.windows.first?.safeAreaInsets.bottom ?? 0
     }
+	
+	static public var topSafeAreaHeight: CGFloat {
+		return UIApplication.shared.windows.first?.safeAreaInsets.top ?? 0
+	}
     
     static let isSimulator = UIDevice.isSimulator
     
@@ -271,6 +275,13 @@ internal extension Bundle {
         }
         return ""
     }
+}
+
+extension Utils {
+
+	static func getReadableResulotion(from size: CGSize) -> String {
+		return "\(Int(size.width.rounded())) x \(Int(size.height.rounded()))"
+	}
 }
 
 

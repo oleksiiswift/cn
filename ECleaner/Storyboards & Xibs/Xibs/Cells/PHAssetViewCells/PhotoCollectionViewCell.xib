@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19519"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -29,17 +29,17 @@
                                 <rect key="frame" x="7" y="7" width="228" height="217"/>
                             </imageView>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="BYc-LT-Vun">
-                                <rect key="frame" x="112.5" y="104.5" width="17" height="22"/>
+                                <rect key="frame" x="112.5" y="107" width="17" height="17"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="17" id="Eut-0E-cdw"/>
-                                    <constraint firstAttribute="height" constant="22" id="s9G-UQ-mcw"/>
+                                    <constraint firstAttribute="height" constant="17" id="s9G-UQ-mcw"/>
                                 </constraints>
                             </imageView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="t63-kq-mOP">
-                                <rect key="frame" x="12" y="199" width="36" height="20"/>
+                                <rect key="frame" x="12" y="201" width="36" height="18"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NkM-6d-qED">
-                                        <rect key="frame" x="0.0" y="0.0" width="36" height="20"/>
+                                        <rect key="frame" x="5" y="3" width="26" height="11"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="10"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -47,11 +47,11 @@
                                 </subviews>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <constraints>
-                                    <constraint firstAttribute="trailing" secondItem="NkM-6d-qED" secondAttribute="trailing" id="Fof-Ta-0Op"/>
-                                    <constraint firstAttribute="height" constant="20" id="Jkl-T6-Ogb"/>
-                                    <constraint firstItem="NkM-6d-qED" firstAttribute="leading" secondItem="t63-kq-mOP" secondAttribute="leading" id="Uhv-6t-RSW"/>
-                                    <constraint firstItem="NkM-6d-qED" firstAttribute="top" secondItem="t63-kq-mOP" secondAttribute="top" id="ZV1-B9-eGp"/>
-                                    <constraint firstAttribute="bottom" secondItem="NkM-6d-qED" secondAttribute="bottom" id="kfk-oY-HsK"/>
+                                    <constraint firstAttribute="height" constant="18" id="7Vx-5v-tdo"/>
+                                    <constraint firstAttribute="trailing" secondItem="NkM-6d-qED" secondAttribute="trailing" constant="5" id="Fof-Ta-0Op"/>
+                                    <constraint firstItem="NkM-6d-qED" firstAttribute="leading" secondItem="t63-kq-mOP" secondAttribute="leading" constant="5" id="Uhv-6t-RSW"/>
+                                    <constraint firstItem="NkM-6d-qED" firstAttribute="top" secondItem="t63-kq-mOP" secondAttribute="top" constant="3" id="ZV1-B9-eGp"/>
+                                    <constraint firstAttribute="bottom" secondItem="NkM-6d-qED" secondAttribute="bottom" constant="4" id="kfk-oY-HsK"/>
                                     <constraint firstAttribute="width" constant="36" id="m9b-Mw-ImL"/>
                                 </constraints>
                             </view>
@@ -188,8 +188,13 @@
                 <outlet property="selectableView" destination="AXa-27-ZoL" id="42l-F0-tDk"/>
                 <outlet property="videoAssetDurationTextLabel" destination="NkM-6d-qED" id="QgV-NN-Dhb"/>
                 <outlet property="videoAssetDurationView" destination="t63-kq-mOP" id="uoZ-OH-TCT"/>
+                <outlet property="videoDurationViewWidthConstraint" destination="m9b-Mw-ImL" id="ISI-cY-aEi"/>
+                <outletCollection property="thumnailViewOffsetConstraint" destination="XHf-Ld-F8r" collectionClass="NSMutableArray" id="D7G-vI-uCm"/>
+                <outletCollection property="thumnailViewOffsetConstraint" destination="aoq-It-rVb" collectionClass="NSMutableArray" id="u2b-9P-YC8"/>
+                <outletCollection property="thumnailViewOffsetConstraint" destination="iJs-M1-6oA" collectionClass="NSMutableArray" id="oEh-zM-k1S"/>
+                <outletCollection property="thumnailViewOffsetConstraint" destination="wcp-6W-D1M" collectionClass="NSMutableArray" id="oed-PU-WmH"/>
             </connections>
-            <point key="canvasLocation" x="281.15942028985512" y="176.45089285714286"/>
+            <point key="canvasLocation" x="121.73913043478262" y="169.75446428571428"/>
         </collectionViewCell>
     </objects>
     <resources>

@@ -35,10 +35,10 @@ class ContactsViewController: UIViewController {
 	
 	public var selectedContactsDelegate: DeepCleanSelectableAssetsDelegate?
 	
-    private var bottomButtonHeight: CGFloat = 70
     public var contactContentIsEditing: Bool = false
 	public var isDeepCleaningSelectableFlow: Bool = false
 	
+	private var searchBarIsHiden: Bool = true
     private var isSelectedAllItems: Bool {
         switch contentType {
             case .allContacts:
@@ -278,14 +278,14 @@ extension ContactsViewController {
 extension ContactsViewController {
 	
 	private func handleBottomButtonChangeAppearence(disableAnimation: Bool = false) {
-		
-		let calculatedBottomButtonHeight: CGFloat = bottomButtonHeight + U.bottomSafeAreaHeight
+	
+		let bottomButtonMenyHeight: CGFloat = U.UIHelper.AppDimensions.bottomBarDefaultHeight
 		
 		switch contentType {
 			case .allContacts:
-				handleAllContactsBottomButton(disableAnimation: disableAnimation, with: calculatedBottomButtonHeight)
+				handleAllContactsBottomButton(disableAnimation: disableAnimation, with: bottomButtonMenyHeight)
 			case .emptyContacts:
-				handleEmptyContactsBottomButton(disableAnimation: disableAnimation, with: calculatedBottomButtonHeight)
+				handleEmptyContactsBottomButton(disableAnimation: disableAnimation, with: bottomButtonMenyHeight)
 			default:
 				return
 		}
@@ -305,13 +305,13 @@ extension ContactsViewController {
 		bottomDoubleButtonView.setRightButtonTitle(rightButtonTitle)
 		
 		if disableAnimation {
+			self.tableView.contentInset.bottom = self.selectedItems() != 0 ? height + 10 :  10
 			self.bottomDoubleButtonView.layoutIfNeeded()
-			self.tableView.contentInset.bottom = self.selectedItems() != 0 ? height :  34
 		} else {
 			U.animate(0.5) {
-				self.view.layoutIfNeeded()
 				self.bottomDoubleButtonView.layoutIfNeeded()
-				self.tableView.contentInset.bottom = self.selectedItems() != 0 ? height :  34
+				self.tableView.contentInset.bottom = self.selectedItems() != 0 ? height + 10 :  10
+				self.view.layoutIfNeeded()
 			}
 		}
 	}
@@ -434,6 +434,16 @@ extension ContactsViewController {
 		}
 	}
 	
+	private func deleteSingleContact(at indexPath: IndexPath) {
+		A.showDeleteContactsAlerts(for: .one) {
+			P.showIndicator()
+			U.delay(0.33) {
+				self.contactManager.contactsProcessingOperationQueuer.cancelAll()
+				self.deleteSelectedContacts(at: [indexPath])
+			}
+		}
+	}
+	
 	private func deleteSelectedContacts(at indexPaths: [IndexPath]) {
 	
 		var removableContacts: [CNContact] = []
@@ -469,25 +479,33 @@ extension ContactsViewController {
 	private func reloadContactsAfterRefactor(of deletedContacts: [CNContact], from updatableIndexPath: [IndexPath]) {
 		
 		P.showIndicator()
-		self.handleEdit()
-		self.resetSearchBarState()
-		self.setActiveSearchBar(setActive: false)
-		
+		contactContentIsEditing ? self.handleEdit() : ()
+		if self.searchBarView.searchBarIsActive {
+			self.resetSearchBarState()
+			self.setActiveSearchBar(setActive: false)
+		}
+	
 		self.contactStoreDidChange = true
 		
 		if contentType == .allContacts {
-			self.contactManager.getAllContacts { allContacts in
-				U.UI {
-					if allContacts.count != 0 {
-						self.setupViewModel(contacts: allContacts)
-						self.tableView.delegate = self.contactListDataSource
-						self.tableView.dataSource = self.contactListDataSource
-						self.tableView.reloadData()
-						P.hideIndicator()
-						self.handleBottomButtonChangeAppearence()
-					} else {
-						P.hideIndicator()
-						self.closeController()
+			self.tableView.performBatchUpdates {
+				self.contactManager.getAllContacts { allContacts in
+					U.UI {
+						if allContacts.count != 0 {
+							defer {
+								self.smoothReloadData(with: 0.25)
+							}
+							
+							self.setupViewModel(contacts: allContacts, reloadData: false)
+							self.tableView.delegate = self.contactListDataSource
+							self.tableView.dataSource = self.contactListDataSource
+							
+							P.hideIndicator()
+							self.handleBottomButtonChangeAppearence()
+						} else {
+							P.hideIndicator()
+							self.closeController()
+						}
 					}
 				}
 			}
@@ -552,6 +570,15 @@ extension ContactsViewController {
             }
         }
     }
+	
+	private func shareSingleContact(at indexPath: IndexPath) {
+		let contacts = contactListViewModel.getContacts(at: [indexPath])
+		shareManager.shareContacts(contacts, of: .vcf) { fileCreated in
+			if !fileCreated {
+				ErrorHandler.shared.showLoadAlertError(.errorCreateExportFile)
+			}
+		}
+	}
 }
 
 	//		MARK: - bottom action button/buttons -
@@ -577,14 +604,16 @@ extension ContactsViewController: BottomActionButtonDelegate {
 extension ContactsViewController {
     
     private func setActiveSearchBar(setActive: Bool) {
+		
+		self.searchBarTopConstraint.constant = setActive ? 5 : U.UIHelper.AppDimensions.Contacts.SearchBar.searchBarTopInset
         self.searchBarView.searchBarIsActive = setActive
-        self.searchBarView.setShowCancelButton(setActive, animated: true)
-        searchBarTopConstraint.constant = setActive ? 0 : 60
+		self.searchBarView.setShowCancelButton(setActive, animated: true)
         contactListDataSource.searchBarIsFirstResponder = setActive
-        U.animate(0.3) {
+		U.animate(0.3) {
+			self.view.layoutIfNeeded()
+			self.searchBarView.layoutIfNeeded()
             self.navigationBar.containerView.alpha = setActive ? 0 : 1
             self.navigationBar.layoutIfNeeded()
-            self.view.layoutIfNeeded()
         }
     }
 	
@@ -596,8 +625,13 @@ extension ContactsViewController {
 	
 	@objc func resetSearchBarState() {
 		U.UI {
-			self.contactListViewModel.searchContact.value = ""
-			self.searchBarView.searchBar.text = ""
+			if self.contactListViewModel.searchContact.value != "" {
+				self.contactListViewModel.searchContact.value = ""
+			}
+			
+			if self.searchBarView.searchBar.text != "" {
+				self.searchBarView.searchBar.text = ""
+			}
 			self.contactListViewModel.updateSearchState()
 			self.setActiveSearchBar(setActive: false)
 			self.handleBottomButtonChangeAppearence()
@@ -607,12 +641,12 @@ extension ContactsViewController {
     
     @objc func contentDidBeginDraging() {
         
-        guard searchBarTopConstraint.constant != 60 else { return }
+		guard searchBarTopConstraint.constant != U.UIHelper.AppDimensions.Contacts.SearchBar.searchBarTopInset else { return }
         
         if searchBarView.searchBar.text == "" {
             setActiveSearchBar(setActive: false)
         } else {
-            searchBarTopConstraint.constant = 60
+			searchBarTopConstraint.constant = U.UIHelper.AppDimensions.Contacts.SearchBar.searchBarTopInset
             U.animate(0.3) {
                 self.navigationBar.containerView.alpha = 1
                 self.navigationBar.layoutIfNeeded()
@@ -764,6 +798,17 @@ extension ContactsViewController: SelectDropDownMenuDelegate {
 	}
 }
 
+extension ContactsViewController: ContactDataSourceDelegate {
+	
+	func shareContact(at indexPath: IndexPath) {
+		self.shareSingleContact(at: indexPath)
+	}
+	
+	func deleteContact(at indexPath: IndexPath) {
+		self.deleteSingleContact(at: indexPath)
+	}
+}
+
 extension ContactsViewController: Themeble {
     
     private func setupNavigation() {
@@ -772,6 +817,7 @@ extension ContactsViewController: Themeble {
         
         if contentType == .allContacts {
             navigationBar.setIsDropShadow = false
+			self.searchBarIsHiden = false
             navigationBar.setupNavigation(title: contentType.mediaTypeName,
                                           leftBarButtonImage: I.systemItems.navigationBarItems.back,
                                           rightBarButtonImage: I.systemItems.navigationBarItems.burgerDots,
@@ -779,7 +825,7 @@ extension ContactsViewController: Themeble {
                                           leftButtonTitle: nil,
                                           rightButtonTitle: nil)
         } else if contentType == .emptyContacts {
-            setSearchBarIsHiden()
+			self.searchBarIsHiden = true
             navigationBar.setupNavigation(title: contentType.mediaTypeName,
                                           leftBarButtonImage: I.systemItems.navigationBarItems.back,
                                           rightBarButtonImage: nil,
@@ -791,7 +837,7 @@ extension ContactsViewController: Themeble {
 	private func setupForDeepCleanNavigation() {
 		
 		let rightNavigationTitle: String = isSelectedAllItems ? "deselect all" : "select all"
-		setSearchBarIsHiden()
+		self.searchBarIsHiden = true
 		navigationBar.setupNavigation(title: contentType.mediaTypeName,
 									  leftBarButtonImage: I.systemItems.navigationBarItems.back,
 									  rightBarButtonImage: nil,
@@ -799,30 +845,28 @@ extension ContactsViewController: Themeble {
 									  leftButtonTitle: nil, rightButtonTitle: rightNavigationTitle)
 	}
     
-    private func setSearchBarIsHiden() {
-        
-        searchBarHeightConstraint.constant = 0
-        searchBarView.isHidden = true
-    }
-    
     private func setNavigationEditMode(isEditing: Bool) {
         
         if isEditing {
             let rightNavigationTitle: String = isSelectedAllItems ? "deselect all" : "select all"
-            
-            navigationBar.setupNavigation(title: mediaType.navigationTitle,
-                                          leftBarButtonImage: nil,
-                                          rightBarButtonImage: nil,
-										  contentType: .userContacts,
-                                          leftButtonTitle: "cancel",
-                                          rightButtonTitle: rightNavigationTitle)
+			self.navigationBar.changeHotLeftTitle(newTitle: "cancel")
+			self.navigationBar.changeHotRightTitle(newTitle: rightNavigationTitle)
         } else {
             setupNavigation()
         }
     }
     
     private func setupUI() {
-        
+         
+		if #available(iOS 15.0, *) {
+			tableView.sectionHeaderTopPadding = 0
+		}
+		
+		searchBarHeightConstraint.constant = self.searchBarIsHiden ? 10 : U.UIHelper.AppDimensions.Contacts.SearchBar.searchBarContainerHeight
+		searchBarView.isHidden = self.searchBarIsHiden
+		
+		searchBarTopConstraint.constant = U.UIHelper.AppDimensions.Contacts.SearchBar.searchBarTopInset
+		
         bottomDoubleButtonView.setLeftButtonImage(I.systemItems.defaultItems.buttonShare)
         bottomDoubleButtonView.setRightButtonImage(I.systemItems.defaultItems.delete)
         bottomDoubleButtonView.setLeftButtonTitle("share")
@@ -830,13 +874,13 @@ extension ContactsViewController: Themeble {
         bottomButtonView.setImage(I.systemItems.defaultItems.delete)
     }
     
-    private func setupViewModel(contacts: [CNContact]) {
+	private func setupViewModel(contacts: [CNContact], reloadData: Bool = true) {
         self.contactListViewModel = ContactListViewModel(contacts: contacts)
         self.contactListDataSource = ContactListDataSource(contactListViewModel: self.contactListViewModel, contentType: self.contentType)
-        
+		self.contactListDataSource.delegate = self
         self.contactListViewModel.isSearchEnabled.bindAndFire { _ in
             _ = self.contactListViewModel.contactsArray
-            self.smoothReloadData()
+			reloadData ? self.smoothReloadData() : ()
         }
     }
     
@@ -882,9 +926,9 @@ extension ContactsViewController: Themeble {
         tableView.tableHeaderView = view
     }
     
-    private func smoothReloadData() {
+	private func smoothReloadData(with duration: Double = 0.25) {
         
-        UIView.transition(with: self.tableView, duration: 0.35, options: .transitionCrossDissolve) {
+		UIView.transition(with: self.tableView, duration: duration, options: .transitionCrossDissolve) {
             self.tableView.reloadData()
         } completion: { _ in
             debugPrint("data source reloaded")
@@ -892,7 +936,7 @@ extension ContactsViewController: Themeble {
     }
     
     private func smoothReloadData(at indexPaths: [IndexPath]) {
-        UIView.transition(with: self.tableView, duration: 0.35, options: .transitionCrossDissolve) {
+		UIView.transition(with: self.tableView, duration: 0.75, options: .transitionCrossDissolve) {
             self.tableView.reloadRows(at: indexPaths, with: .none)
         } completion: { _ in
             debugPrint("data source reloaded")
@@ -925,7 +969,7 @@ extension ContactsViewController: Themeble {
         
         segue.configure(layout: .bottomMessage)
         segue.dimMode = .gray(interactive: true)
-        segue.interactiveHide = false
+        segue.interactiveHide = true
         segue.messageView.setupForShadow(shadowColor: theme.bottomShadowColor, cornerRadius: 14, shadowOffcet: CGSize(width: 6, height: 6), shadowOpacity: 10, shadowRadius: 14)
         segue.messageView.configureNoDropShadow()
         

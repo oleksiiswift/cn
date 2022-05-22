@@ -7,12 +7,10 @@
 
 import UIKit
 
-
 public enum CarouselFlowLayoutSpacingMode {
 	case fixed(spacing: CGFloat)
 	case overlap(visibleOffset: CGFloat)
 }
-
 
 open class CarouselFlowLayout: UICollectionViewFlowLayout {
 	
@@ -24,10 +22,11 @@ open class CarouselFlowLayout: UICollectionViewFlowLayout {
 		}
 	}
 	
-	@IBInspectable open var sideItemScale: CGFloat = 0.95
+	@IBInspectable open var sideItemScale: CGFloat = 0.85
 	@IBInspectable open var sideItemAlpha: CGFloat = 1.0
 	@IBInspectable open var sideItemShift: CGFloat = 1.0
-	open var spacingMode = CarouselFlowLayoutSpacingMode.fixed(spacing: 5)
+	
+	open var spacingMode = CarouselFlowLayoutSpacingMode.fixed(spacing: 0)
 	
 	fileprivate var state = LayoutState(size: CGSize.zero, direction: .horizontal)
 	
@@ -58,9 +57,7 @@ open class CarouselFlowLayout: UICollectionViewFlowLayout {
 		let yInset = (collectionSize.height - self.itemSize.height) / 2
 		let xInset = (collectionSize.width - self.itemSize.width) / 2
 		self.sectionInset = UIEdgeInsets.init(top: yInset, left: xInset, bottom: yInset, right: xInset)
-		
-//		self.sectionInset = UIEdgeInsets.init(top: 0, left: 50, bottom: 0, right: 50)
-		
+			
 		let side = isHorizontal ? self.itemSize.width : self.itemSize.height
 		let scaledItemOffset =  (side - side*self.sideItemScale) / 2
 		switch self.spacingMode {

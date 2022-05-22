@@ -18,9 +18,9 @@ class CompressingSettingsDataSource: NSObject {
 		self.compressionSettinsViewModel = compressionSettinsViewModel
 	}
 	
-	private func cellConfigure(cell: CompressionSettingsTableViewCell, at indexPath: IndexPath) {
+	private func cellConfigure(cell: CompressionSettingsTableViewCell, at indexPath: IndexPath, phasset: PHAsset?) {
 		let compressionModel = compressionSettinsViewModel.getSettingsModel(at: indexPath)
-		cell.compressionConfigureCell(with: compressionModel)
+		cell.compressionConfigureCell(with: compressionModel, phasset: phasset)
 	}
 	
 	private func configureVideoPreview(cell: VideoPreviewTableViewCell, at indexPath: IndexPath, with phasset: PHAsset? ) {
@@ -49,7 +49,8 @@ extension CompressingSettingsDataSource: UITableViewDelegate, UITableViewDataSou
 				return cell
 			default:
 				let cell = tableView.dequeueReusableCell(withIdentifier: C.identifiers.cells.compressionCell, for: indexPath) as! CompressionSettingsTableViewCell
-				self.cellConfigure(cell: cell, at: indexPath)
+				let phasset = compressionSettinsViewModel.getCompressingPHAsset()
+				self.cellConfigure(cell: cell, at: indexPath, phasset: phasset)
 				return cell
 		}
 	}
@@ -64,7 +65,6 @@ extension CompressingSettingsDataSource: UITableViewDelegate, UITableViewDataSou
 	
 	func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
 		if indexPath.section == 0 {
-			
 			return nil
 		}
 		return indexPath
@@ -75,9 +75,7 @@ extension CompressingSettingsDataSource: UITableViewDelegate, UITableViewDataSou
 			delegate?.setCompressionSettingsForValue(with: model)
 	}
 	
-	func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
-
-	}
+	func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {}
 	
 	func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
 		return self.compressionSettinsViewModel.getHeightForRow(at: indexPath)

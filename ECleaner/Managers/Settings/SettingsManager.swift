@@ -92,6 +92,14 @@ class SettingsManager {
         }
     }
 	
+	static var lastSavedLocalIdenifier: String? {
+		get {
+			return U.userDefaults.string(forKey: C.key.localIdentifiers.lastSavedNewLocalIdentifier)
+		} set {
+			U.userDefaults.set(newValue, forKey: C.key.localIdentifiers.lastSavedNewLocalIdentifier)
+		}
+	}
+	
 	static var largeVideoLowerSize: Int64 {
 		get {
 			if let fileSize = U.userDefaults.value(forKey: C.key.settings.largeVideoLowerSize) as? Int64 {

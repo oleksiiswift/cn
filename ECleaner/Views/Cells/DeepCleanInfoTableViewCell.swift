@@ -46,7 +46,6 @@ class DeepCleanInfoTableViewCell: UITableViewCell {
         
         setupUI()
         updateColors()
-		
 		circleProgressView.setProgress(progress: 0.0, animated: false)
     }
 }
@@ -54,18 +53,20 @@ class DeepCleanInfoTableViewCell: UITableViewCell {
 extension DeepCleanInfoTableViewCell {
     
     func setProgress(files count: Int) {
-        
+	
         infoTotalFilesTextLabel.text = String(count)
     }
 	
-	func setRoundedProgress(value: CGFloat, futuredCleaningSpace: Int64?) {
-
-		if let futuredCleaningSpace = futuredCleaningSpace {
-			let stringSpace = U.getSpaceFromInt(futuredCleaningSpace)
-			totalSpaceTextLabel.text = stringSpace
+	func setMemmoryChecker(bytes value: Int64) {
+		
+		if value == 0 {
+			totalSpaceTextLabel.text = "0 MB"
 		} else {
-			totalSpaceTextLabel.text = "0"
+			totalSpaceTextLabel.setTitleWithoutAnimation(title: U.getSpaceFromInt(value))
 		}
+	}
+	
+	func setRoundedProgress(value: CGFloat) {
 		circleProgressView.setProgress(progress: value / 100, animated: false)
     }
 }
@@ -88,18 +89,18 @@ extension DeepCleanInfoTableViewCell: Themeble {
 		circleProgressView.lineCap = .round
 		circleProgressView.clockwise = true
 		circleProgressView.percentLabelFormat = "%.f%%"
-		circleProgressView.percentLabel.font = U.UIHelper.AppDefaultFontSize.deepCleanCircleProgressPercentLabelFont
+		circleProgressView.percentLabel.font = FontManager.deepCleanScreenFont(of: .progress)
 		circleProgressView.lineWidth = U.UIHelper.AppDimensions.circleProgressInfoLineWidth
 		
 		infoTitleTextLabel.text = "All Data Analized"
 		infoTotalFilesTitleLabel.text = "FILES".uppercased()
 		totalSpaceTitleLabel.text = "Memmory".uppercased()
 		
-		infoTitleTextLabel.font = U.UIHelper.AppDefaultFontSize.deepCleanInfoHelperTitleFont
-		totalSpaceTextLabel.font = U.UIHelper.AppDefaultFontSize.deepCleanInfoHelperTitleFont
-		infoTotalFilesTextLabel.font = U.UIHelper.AppDefaultFontSize.deepCleanInfoHelperTitleFont
-		infoTotalFilesTitleLabel.font = U.UIHelper.AppDefaultFontSize.deepCleanInfoHelperSubtitleFont
-		totalSpaceTitleLabel.font = U.UIHelper.AppDefaultFontSize.deepCleanInfoHelperSubtitleFont
+		infoTitleTextLabel.font = 		FontManager.deepCleanScreenFont(of: .title).monospacedDigitFont
+		totalSpaceTextLabel.font = 		FontManager.deepCleanScreenFont(of: .title).monospacedDigitFont
+		infoTotalFilesTextLabel.font = 	FontManager.deepCleanScreenFont(of: .title).monospacedDigitFont
+		infoTotalFilesTitleLabel.font = FontManager.deepCleanScreenFont(of: .subtitle).monospacedDigitFont
+		totalSpaceTitleLabel.font = 	FontManager.deepCleanScreenFont(of: .subtitle)
     }
     
     func updateColors() {

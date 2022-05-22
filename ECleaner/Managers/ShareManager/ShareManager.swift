@@ -8,6 +8,7 @@
 import Foundation
 import MessageUI
 import Contacts
+import Photos
 
 class ShareManager {
     
@@ -18,6 +19,7 @@ class ShareManager {
     
     private var fileManager = ECFileManager()
     private var contactsExportManager = ContactsExportManager.shared
+	private var photoManager = PhotoManager.shared
 }
 
 extension ShareManager {
@@ -134,6 +136,42 @@ extension ShareManager {
 		}
 		
 		U.UI {
+			if let topController = topController() {
+				topController.present(activityViewController, animated: true, completion: nil)
+			}
+		}
+	}
+}
+
+extension ShareManager {
+	
+	public func shareVideoFile(from phasset: PHAsset, completionHandler: @escaping (() -> Void)) {
+		
+		P.showIndicator()
+		U.delay(1) {
+			self.photoManager.getPhassetShareUrl(phasset) { sharedURL, name in
+				P.hideIndicator()
+				if let sharedURL = sharedURL, let name = name {
+					self.shareVideoFrom(url: sharedURL, name: name) {}
+				}
+			}
+		}
+	}
+	
+	private func shareVideoFrom(url: URL, name: String, completionHandler: @escaping (() -> Void)) {
+	
+		DispatchQueue.main.async {
+			let activityViewController = UIActivityViewController(activityItems: [url], applicationActivities: [])
+	
+			activityViewController.completionWithItemsHandler = { (_, _, _, _) -> Void in
+				completionHandler()
+			}
+			
+			activityViewController.excludedActivityTypes = [UIActivity.ActivityType.saveToCameraRoll]
+			if !MFMailComposeViewController.canSendMail() {
+				activityViewController.excludedActivityTypes = [UIActivity.ActivityType.mail]
+			}
+		
 			if let topController = topController() {
 				topController.present(activityViewController, animated: true, completion: nil)
 			}

@@ -34,7 +34,7 @@ class MediaContentViewController: UIViewController {
     private var contactsManager = ContactsManager.shared
 	private var smartCleanManager = SmartCleanManager()
 
-	public let phassetProcessingOperationQueuer = OperationProcessingQueuer(name: Constants.key.operation.queue.phassets, maxConcurrentOperationCount: 5, qualityOfService: .background)
+	public let phassetProcessingOperationQueuer = OperationProcessingQueuer(name: Constants.key.operation.queue.phassets, maxConcurrentOperationCount: 5, qualityOfService: .userInitiated)
 	public let contactsProcessingOperationQueuer = ContactsManager.shared.contactsProcessingOperationQueuer
     
     private var lowerBoundDate: Date {
@@ -1051,13 +1051,14 @@ extension MediaContentViewController: UITableViewDelegate, UITableViewDataSource
 		self.tableView.dataSource = self
 		self.tableView.separatorStyle = .none
 		self.tableView.register(UINib(nibName: C.identifiers.xibs.contentTypeCell, bundle: nil), forCellReuseIdentifier: C.identifiers.cells.contentTypeCell)
-		self.tableView.register(UINib(nibName: C.identifiers.xibs.bannerCell, bundle: nil), forCellReuseIdentifier: C.identifiers.cells.helperBannerCell)
+		self.tableView.register(UINib(nibName: C.identifiers.xibs.contentBannerCell, bundle: nil), forCellReuseIdentifier: C.identifiers.cells.contentBannerCell)
+		
 		if mediaContentType == .userContacts {
-			tableView.contentInset.top = 20
+			self.tableView.contentInset.top = U.UIHelper.AppDimensions.ContenTypeCells.mediaContentCutTypeInset
 		} else {
-			tableView.contentInset.top = 50
-			tableView.contentInset.bottom = 40
+			self.tableView.contentInset.top = U.UIHelper.AppDimensions.ContenTypeCells.mediaContentTypeTopInset
 		}
+		self.tableView.contentInset.bottom = U.UIHelper.AppDimensions.ContenTypeCells.mediaContentBottomInset
 	}
 	
 	func configure(_ cell: ContentTypeTableViewCell, at indexPath: IndexPath) {
@@ -1066,11 +1067,11 @@ extension MediaContentViewController: UITableViewDelegate, UITableViewDataSource
 		cell.singleCleanCellConfigure(with: singleModel, mediaType: photoMediaType, indexPath: indexPath)
 	}
 	
-	func configureHelper(cell: HelperBannerTableViewCell, at indexPath: IndexPath) {
-		let  photoMediaType: PhotoMediaType = .getSingleSearchMediaContentType(from: indexPath, type: mediaContentType)
-		cell.cellConfigure(with: photoMediaType.getHelperBanner())
+	func configureBannerContent(cell: ContentBannerTableViewCell, at indexPath: IndexPath) {
+		let mediaType: PhotoMediaType = .getSingleSearchMediaContentType(from: indexPath, type: mediaContentType)
+		cell.configure(by: mediaType)
 	}
-		
+	
 	func numberOfSections(in tableView: UITableView) -> Int {
 		return mediaContentType.numberOfSection
 	}
@@ -1097,8 +1098,8 @@ extension MediaContentViewController {
 	private func setupCellFor(rowAt indexPath: IndexPath) -> UITableViewCell {
 		switch indexPath.section {
 			case 1:
-				let cell = tableView.dequeueReusableCell(withIdentifier: C.identifiers.cells.helperBannerCell, for: indexPath) as! HelperBannerTableViewCell
-				self.configureHelper(cell: cell, at: indexPath)
+				let cell = tableView.dequeueReusableCell(withIdentifier: C.identifiers.cells.contentBannerCell, for: indexPath) as! ContentBannerTableViewCell
+				self.configureBannerContent(cell: cell, at: indexPath)
 				return cell
 			default:
 				let cell = tableView.dequeueReusableCell(withIdentifier: C.identifiers.cells.contentTypeCell, for: indexPath) as! ContentTypeTableViewCell
@@ -1215,36 +1216,40 @@ extension MediaContentViewController: Themeble {
     }
     	
 	private func setupShowDatePickerSelectorController(segue: UIStoryboardSegue, selectedType: PickerDateSelectType) {
-		 
-		 guard let segue = segue as? SwiftMessagesSegue else { return }
-		 
-		 segue.configure(layout: .bottomMessage)
-		 segue.dimMode = .gray(interactive: false)
-		 segue.interactiveHide = false
-		 segue.messageView.configureNoDropShadow()
-		 segue.messageView.backgroundHeight = Device.isSafeAreaiPhone ? 458 : 438
-		 
-		 if let dateSelectedController = segue.destination as? DateSelectorViewController {
-			  dateSelectedController.dateSelectedType = selectedType
-			  dateSelectedController.setPicker(selectedType.rawValue)
-			  dateSelectedController.selectedDateCompletion = { selectedDate in
-				   switch selectedType {
-						case .lowerDateSelectable:
-						   if self.lowerBoundDate != selectedDate {
-							   self.lowerBoundDate = selectedDate
-							   self.desintagrateSearchingResults()
-						   }
-						case .upperDateSelectable:
-						   if self.upperBoundDate != selectedDate {
-							 self.upperBoundDate = selectedDate
-							   self.desintagrateSearchingResults()
-						   }
-						default:
-							 return
-				   }
-				   self.dateSelectPickerView.setupDisplaysDate(lowerDate: self.lowerBoundDate, upperdDate: self.upperBoundDate)
-			  }
-		 }
+		
+		guard let segue = segue as? SwiftMessagesSegue else { return }
+		
+		segue.configure(layout: .bottomMessage)
+		segue.dimMode = .gray(interactive: true)
+		segue.interactiveHide = true
+		segue.messageView.configureNoDropShadow()
+		
+		let height = selectedType == .lowerDateSelectable ? U.UIHelper.AppDimensions.DateSelectController.datePickerContainerHeightLower :
+		U.UIHelper.AppDimensions.DateSelectController.datePickerContainerHeightUper
+		
+		segue.messageView.backgroundHeight = height
+		
+		if let dateSelectedController = segue.destination as? DateSelectorViewController {
+			dateSelectedController.dateSelectedType = selectedType
+			dateSelectedController.setPicker(selectedType.rawValue)
+			dateSelectedController.selectedDateCompletion = { selectedDate in
+				switch selectedType {
+					case .lowerDateSelectable:
+						if self.lowerBoundDate != selectedDate {
+							self.lowerBoundDate = selectedDate
+							self.desintagrateSearchingResults()
+						}
+					case .upperDateSelectable:
+						if self.upperBoundDate != selectedDate {
+							self.upperBoundDate = selectedDate
+							self.desintagrateSearchingResults()
+						}
+					default:
+						return
+				}
+				self.dateSelectPickerView.setupDisplaysDate(lowerDate: self.lowerBoundDate, upperdDate: self.upperBoundDate)
+			}
+		}
 	}
 }
 

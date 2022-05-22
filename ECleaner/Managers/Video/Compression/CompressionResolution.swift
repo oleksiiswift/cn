@@ -97,6 +97,26 @@ enum VideoResolution: CaseIterable {
 		}
 	}
 	
+	public var resolutionSizePortrait: CGSize {
+		switch self {
+			case .origin:
+				return CGSize(width: -1, height: -1)
+			case .res1080p:
+				return CGSize(width: 1080, height: 1920)
+			case .res720p:
+				return CGSize(width: 720, height: 1280)
+			case .res540p:
+				return CGSize(width: 540, height: 960)
+			case .res480p:
+				return CGSize(width: 480, height: 852)
+			case .res360p:
+				return CGSize(width: 360, height: 640)
+			case .res240p:
+				return CGSize(width: 240, height: 426)
+		}
+	}
+	
+	
 	public var resolutionDescription: String {
 		switch self {
 			case .origin:
@@ -132,6 +152,25 @@ enum VideoResolution: CaseIterable {
 				return "640 x 360"
 			case .res240p:
 				return "426 x 240"
+		}
+	}
+	
+	public var resolutionInfoPortrait: String {
+		switch self {
+			case .origin:
+				return "origin resolution"
+			case .res1080p:
+				return "1080 x 1920"
+			case .res720p:
+				return "720 x 1280"
+			case .res540p:
+				return "540 x 960"
+			case .res480p:
+				return "480 x 852"
+			case .res360p:
+				return "360 x 640"
+			case .res240p:
+				return "240 x 426"
 		}
 	}
 }

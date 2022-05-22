@@ -12,13 +12,115 @@ extension Utils {
 	
 	struct UIHelper {
 		
+		private static let screenSize = Screen.size
+		
 		struct AppDimensions {
+			
+			struct CollectionItemSize {
+				
+				static var singleCollectionScreenRecordingItemSize: CGFloat {
+					switch screenSize {
+						case .small:
+							return  ((U.screenWidth - 30) / 3) / U.ratio
+						case .medium:
+							return ((U.screenWidth - 30) / 3.2) / U.ratio
+						default:
+							return  ((U.screenWidth - 30) / 3) / U.ratio
+					}
+				}
+				
+				static var singleCollectionScreenShotsItemSize: CGFloat {
+					switch screenSize {
+						case .small:
+							return  ((U.screenWidth - 30) / 3) / U.ratio
+						case .medium:
+							return ((U.screenWidth - 30) / 3.2) / U.ratio
+						default:
+							return  ((U.screenWidth - 30) / 3) / U.ratio
+					}
+				}
+				
+				static var singleCollectionLivePhotoItemSize: CGFloat {
+					switch screenSize {
+						case .small:
+							return  ((U.screenWidth - 30) / 4) / U.ratio
+						default:
+							return  ((U.screenWidth - 30) / 3) / U.ratio
+					}
+				}
+				
+				static var cellSelectRectangleSize: CGFloat {
+					switch screenSize {
+						case .small:
+							return 25
+						case .medium:
+							return 30
+						default:
+							return 35
+					}
+				}
+				
+				static var carouseCollectionViewItemSize: CGSize {
+					switch screenSize {
+						case .small:
+							return CGSize(width: 90, height: 90)
+						default:
+							return CGSize(width: 100, height: 100)
+					}
+				}
+				
+				static var carouselCollectionViewLineInset: CGFloat {
+					switch screenSize {
+						case .small:
+							return 20
+						default:
+							return 10
+					}
+				}
+				
+				static var bottomCarouselViewCollectionInset: CGFloat {
+					return Device.isSafeAreaiPhone ? U.bottomSafeAreaHeight : 0
+				}
+				
+				static var carouselCollectionViewHeght: CGFloat {
+					switch screenSize {
+						case .small:
+							return 100
+						default:
+							return 120
+					}
+				}
+				
+				static var carouselSpacingMode: CarouselFlowLayoutSpacingMode {
+					switch screenSize {
+						case .small:
+							return CarouselFlowLayoutSpacingMode.fixed(spacing: 0)
+						case .medium:
+							return CarouselFlowLayoutSpacingMode.fixed(spacing: 3)
+						default:
+							return CarouselFlowLayoutSpacingMode.fixed(spacing: 5)
+					}
+				}
+				
+				static var previewCollectionViewItemInset: CGFloat {
+					switch screenSize {
+						case .small:
+							return 20
+						case .medium:
+							return 25
+						case .plus:
+							return 30
+						default:
+							return 50
+					}
+				}
+			}
 			
 			static var bottomBarDefaultHeight: CGFloat {
 				if Device.isSafeAreaiPhone {
-					return 70 + U.bottomSafeAreaHeight
+					return 60 + U.bottomSafeAreaHeight
 				} else {
-					switch Screen.size {
+					switch screenSize {
 						case .small:
 							return 70
 						case .medium, .plus:
@@ -30,7 +132,7 @@ extension Utils {
 			}
 			
 			static var bottomBarButtonDefaultHeight: CGFloat {
-				switch Screen.size {
+				switch screenSize {
 					case .small:
 						return 50
 					default:
@@ -38,19 +140,30 @@ extension Utils {
 				}
 			}
 			
-			static var heightOfRowOfMediaContentType: CGFloat {
-				switch Screen.size {
+			static var bottomBarPrimaaryButtonImageSize: CGFloat {
+				switch screenSize {
 					case .small:
-						return 85
+						return 15
 					case .medium, .plus:
-						return 90
-					case .large, .modern, .max, .madMax:
-						return 100
+						return 16
+					default:
+						return 18
+				}
+			}
+			
+			static var bottomPrimaryButtonImageSpacing: CGFloat {
+				switch screenSize {
+					case .small:
+						return 10
+					case .medium, .plus:
+						return 10
+					default:
+						return 10
 				}
 			}
 			
 			static var mediaContentTypeCellIEdgeInset: UIEdgeInsets {
-				switch Screen.size {
+				switch screenSize {
 					case .small:
 						return UIEdgeInsets(top: -20, left: 0, bottom: -20, right: 0)
 					default:
@@ -59,26 +172,8 @@ extension Utils {
 				}
 			}
 			
-			static var heightOfTopHelperCellBanner: CGFloat {
-				switch Screen.size {
-					case .small:
-						return 140
-					default:
-						return 151
-				}
-			}
-			
-			static var heightOfBottomHelperCellBanner: CGFloat {
-				switch Screen.size {
-					case .small:
-						return 140
-					default:
-						return 151
-				}
-			}
-			
 			static var dateSelectableHeight: CGFloat {
-				switch Screen.size {
+				switch screenSize {
 					case .small:
 						return 60
 					case .medium:
@@ -88,26 +183,11 @@ extension Utils {
 				}
 			}
 			
-			static var mediaContentTypeTopInset: CGFloat {
-				switch Screen.size {
-					case .small:
-						return 5
-					case .medium:
-						return 10
-					default:
-						return 15
-				}
-			}
-			
 			static var circleProgressInfoDimension: CGFloat {
-				switch Screen.size {
+				switch screenSize {
 					case .small:
 						return 65
-					case .medium:
-						return 75
-					case .plus:
-						return 75
-					case .large:
+					case .medium, .plus, .large:
 						return 75
 					case .modern:
 						return 85
@@ -119,14 +199,10 @@ extension Utils {
 			}
 			
 			static var circleProgressInfoLineWidth: CGFloat {
-				switch Screen.size {
+				switch screenSize {
 					case .small:
 						return 10
-					case .medium:
-						return 12
-					case .plus:
-						return 12
-					case .large:
+					case .medium, .plus, .large:
 						return 12
 					case .modern:
 						return 14
@@ -136,88 +212,476 @@ extension Utils {
 						return 14
 				}
 			}
-		}
-		
-		struct AppDefaultFontSize {
 			
-			static var bottomBarButtonTitleFont: UIFont {
-				switch Screen.size {
-					case .small:
-						return .systemFont(ofSize: 14, weight: .bold)
-					case .medium:
-						return .systemFont(ofSize: 15.8, weight: .bold)
-					default:
-						return .systemFont(ofSize: 16.8, weight: .bold)
+			struct DropDounMenu {
+				
+				static var menuWidth: CGFloat {
+					let defaultValue = U.screenWidth / 3
+					switch screenSize {
+						case .small:
+							return defaultValue - 30
+						case .medium:
+							return defaultValue - 30
+						default:
+							return defaultValue - 100
+					}
 				}
 			}
 			
-			static var deepCleanCircleProgressPercentLabelFont: UIFont {
-				switch Screen.size {
-					case .small:
-						return .systemFont(ofSize: 10, weight: .bold)
-					case .medium:
-						return .systemFont(ofSize: 11, weight: .bold)
-					case .plus:
-						return .systemFont(ofSize: 12, weight: .bold)
-					case .large:
-						return .systemFont(ofSize: 13, weight: .bold)
-					case .modern:
-						return .systemFont(ofSize: 14, weight: .bold)
-					case .max:
-						return .systemFont(ofSize: 15, weight: .bold)
-					case .madMax:
-						return .systemFont(ofSize: 15, weight: .bold)
+			struct ContenTypeCells {
+				
+				static var heightOfRowOfMediaContentType: CGFloat {
+					switch screenSize {
+						case .small:
+							return 85
+						case .medium, .plus:
+							return 90
+						case .large, .modern, .max, .madMax:
+							return 100
+					}
+				}
+				
+				static var heightOfRowOfCuttedMediaContentType: CGFloat {
+					switch screenSize {
+						case .small:
+							return 85
+						case .medium, .plus, .large:
+							return 90
+						case .modern, .max, .madMax:
+							return 100
+					}
+				}
+
+				/// deep clean progress bar
+				static var heightOfTopHelperCellBanner: CGFloat {
+					switch screenSize {
+						case .small:
+							return 140
+						default:
+							return 151
+					}
+				}
+			
+				static var heightOfBottomHelperCellBanner: CGFloat {
+					switch screenSize {
+						case .small:
+							return 150
+						case .medium, .plus:
+							return 160
+						case .large:
+							return 170
+						case .modern, .max, .madMax:
+							return 180
+					}
+				}
+				
+				static var deepCleanMediaContentTypeTopInset: CGFloat {
+					switch screenSize {
+						case .small:
+							return 5
+						case .medium:
+							return 10
+						default:
+							return 15
+					}
+				}
+				
+				static var mediaContentTypeTopInset: CGFloat {
+					switch screenSize {
+						case .small:
+							return 20
+						case .medium:
+							return 30
+						case .plus:
+							return 50
+						case .large, .modern, .max, .madMax:
+							return 40
+					}
+				}
+				
+				static var mediaContentCutTypeInset: CGFloat {
+					switch screenSize {
+						case .small, .medium, .plus:
+							return 20
+						case .large:
+							return 20
+						case .modern:
+							return 20
+						case .max:
+							return 20
+						case .madMax:
+							return 20
+					}
+				}
+				
+				static var mediaContentBottomInset: CGFloat {
+					return Device.isSafeAreaiPhone ? 40 : 20
+				}
+				
+				static var radioButtonSize: CGFloat {
+					switch screenSize {
+						case .small:
+							return 20
+						case .medium, .plus:
+							return 25
+						case .large, .modern, .max, .madMax:
+							return 33
+					}
+				}
+				
+				static var helperImageViewWidth: CGFloat {
+					switch screenSize {
+						case .small:
+							return 28
+						case .medium, .plus, .large:
+							return 30
+						case .modern, .max, .madMax:
+							return 33
+					}
 				}
 			}
 			
-			static var deepCleanInfoHelperTitleFont: UIFont {
-				switch Screen.size {
-					case .small:
-						return .systemFont(ofSize: 12, weight: .bold)
-					case .medium:
-						return .systemFont(ofSize: 14, weight: .bold)
-					case .plus:
-						return .systemFont(ofSize: 16, weight: .bold)
-					case .large:
-						return .systemFont(ofSize: 15, weight: .bold)
-					case .modern:
-						return .systemFont(ofSize: 16, weight: .bold)
-					case .max:
-						return .systemFont(ofSize: 17, weight: .bold)
-					case .madMax:
-						return .systemFont(ofSize: 18, weight: .bold)
+			struct DateSelectController {
+				
+				static var datePickerContainerHeightLower: CGFloat {
+					switch screenSize {
+						case .small:
+							return 420
+						case .medium:
+							return 460
+						case .plus:
+							return 470
+						case .large, .modern, .max:
+							return 485
+						case .madMax:
+							return 485
+					}
+				}
+				
+				static var datePickerContainerHeightUper: CGFloat {
+					switch screenSize {
+						case .small:
+							return 360
+						case .medium:
+							return 400
+						case .plus:
+							return 410
+						case .large, .modern, .max:
+							return 423
+						case .madMax:
+							return 423
+					}
+				}
+				
+				static var fullDatePickerContainerHeight: CGFloat {
+					switch screenSize {
+						case .small:
+							return 150
+						case .medium:
+							return 160
+						case .plus, .large, .modern, .max, .madMax:
+							return 170
+					}
+				}
+				
+				static var cutDatePickerContainerHeight: CGFloat {
+					switch screenSize {
+						case .small:
+							return 70
+						default:
+							return 75
+					}
+				}
+				
+				static var bottomContainerSpacerHeight: CGFloat {
+					switch screenSize {
+						case .small:
+							return 20
+						case .medium:
+							return 25
+						case .plus:
+							return 25
+						case .large:
+							return 20
+						case .modern:
+							return 20
+						case .max:
+							return 20
+						case .madMax:
+							return 20
+					}
 				}
 			}
 			
-			static var deepCleanInfoHelperSubtitleFont: UIFont {
-				switch Screen.size {
-					case .small:
-						return .systemFont(ofSize: 11, weight: .medium)
-					case .medium:
-						return .systemFont(ofSize: 12, weight: .medium)
-					case .plus:
-						return .systemFont(ofSize: 12, weight: .medium)
-					case .large:
-						return .systemFont(ofSize: 14, weight: .medium)
-					case .modern:
-						return .systemFont(ofSize: 14, weight: .medium)
-					case .max:
-						return .systemFont(ofSize: 14, weight: .medium)
-					case .madMax:
-						return .systemFont(ofSize: 15, weight: .medium)
+			struct NavigationBar {
+				
+					///`CUSTOM NAVIGATION BAR`
+				static var navigationBarHeight: CGFloat {
+					switch screenSize {
+						case .small:
+							return 60
+						default:
+							return 80
+					}
+				}
+				
+				static var startingNavigationBarButtonSize: CGFloat {
+					switch screenSize {
+						case .small:
+							return 40
+						case .medium:
+							return 55
+						default:
+							return 50
+					}
+				}
+				
+				static var navigationBarButtonSize: CGFloat {
+					switch screenSize {
+						case .small:
+							return 45
+						case .medium:
+							return 50
+						default:
+							return 50
+					}
 				}
 			}
 			
-			static var deepClentSectionHeaderTitleFont: UIFont {
-				switch Screen.size {
-					 case .small:
-						  return .systemFont(ofSize: 12, weight: .bold)
-					 case .medium:
-						  return .systemFont(ofSize: 14, weight: .bold)
-					 case .plus:
-						  return .systemFont(ofSize: 15, weight: .bold)
-					 case .large, .modern, .max, .madMax:
-						  return .systemFont(ofSize: 16, weight: .bold)
+			struct HelperBanner {
+				
+				static var cornerHelperImageSize: CGFloat {
+					switch screenSize {
+						case .small:
+							return 55
+						case .medium:
+							return 60
+						case .large, .plus, .modern:
+							return 65
+						default:
+							return 70
+					}
+				}
+				
+				static var offsetHelperImageSize: CGFloat {
+					switch screenSize {
+						case .small:
+							return 60
+						case .medium:
+							return 70
+						case .large, .plus, .modern:
+							return 75
+						default:
+							return 80
+					}
+				}
+				
+				static var roundedImageViewSize: CGFloat {
+					switch screenSize {
+						case .small:
+							return 40
+						case .medium:
+							return 45
+						case .plus:
+							return 45
+						case .large:
+							return 45
+						case .modern:
+							return 50
+						case .max:
+							return 50
+						case .madMax:
+							return 50
+					}
+				}
+			}
+			
+			struct Contacts {
+				
+				struct Collection {
+					
+					static var contactsCellHeight: CGFloat {
+						switch screenSize {
+							case .small:
+								return 70
+							default:
+								return 80
+						}
+					}
+					
+					static var headerHeight: CGFloat {
+						switch screenSize {
+							case .small:
+								return 25
+							default:
+								return 40
+						}
+					}
+					
+					static var helperImageViewWidth: CGFloat {
+						switch screenSize {
+							case .small:
+								return 28
+							case .medium, .plus, .large:
+								return 30
+							case .modern, .max, .madMax:
+								return 33
+						}
+					}
+					
+					static var selectHelperImageViewWidth: CGFloat {
+						switch screenSize {
+							case .small:
+								return 20
+							case .medium, .plus, .large:
+								return 25
+							case .modern, .max, .madMax:
+								return 28
+						}
+					}
+					
+					static var selectableGoupAssetViewWidth: CGFloat {
+						switch screenSize {
+							case .small:
+								return 18
+							case .medium, .plus, .large:
+								return 23
+							case .modern, .max, .madMax:
+								return 25
+						}
+					}
+					
+					static var helperImageTrailingOffset: CGFloat {
+						return 20
+					}
+				}
+				
+				struct SearchBar {
+					
+					static var cancelButtonWidth: CGFloat {
+						switch screenSize {
+							case .small:
+								return 70
+							case .medium:
+								return 70
+							case .plus, .large, .modern, .max, .madMax:
+								return 90
+						}
+					}
+					
+					static var searchBarTopInset: CGFloat {
+						switch screenSize {
+							case .small:
+								return 50
+							default:
+								return 60
+						}
+					}
+					
+					static var searchBarContainerHeight: CGFloat {
+						switch screenSize {
+							case .small:
+								return 55
+							default:
+								return 60
+						}
+					}
+					
+					static var searchBarHeight: CGFloat {
+						switch screenSize {
+							case .small:
+								return 35
+							default:
+								return 40
+						}
+					}
+					
+					static var searchBarBottomInset: CGFloat {
+						switch screenSize {
+							case .small:
+								return 15
+							default:
+								return 15
+						}
+					}
+				}
+				
+				struct ExportModalController {
+					
+					static var controllerHeight: CGFloat {
+						if Device.isSafeAreaiPhone {
+							return U.screenHeight / 2
+						}
+						switch screenSize {
+							case .small:
+								return U.screenHeight / 1.8
+							default:
+								return U.screenHeight / 2
+						}
+					}
+					
+					static var bottomButtonViewHeight: CGFloat {
+						if Device.isSafeAreaiPhone {
+							return 90 + U.bottomSafeAreaHeight
+						} else {
+							switch screenSize {
+								case .small:
+									return 75
+								case .medium, .plus:
+									return 90
+								default:
+									return 100 + U.bottomSafeAreaHeight
+							}
+						}
+					}
+				}
+			}
+			
+			struct ModalControllerSettings {
+				
+				static var mainContainerHeight: CGFloat {
+					switch screenSize {
+						case .small:
+							return U.screenHeight - (U.topSafeAreaHeight + 20)
+						case .medium:
+							return U.screenHeight - (U.topSafeAreaHeight + 60)
+						case .plus:
+							return U.screenHeight - (U.topSafeAreaHeight + 100)
+						case .large:
+							return U.screenHeight - (U.topSafeAreaHeight + 120)
+						case .modern:
+							return U.screenHeight - (U.topSafeAreaHeight + 150)
+						case .max:
+							return U.screenHeight - (U.topSafeAreaHeight + 180)
+						case .madMax:
+							return U.screenHeight - (U.topSafeAreaHeight + 200)
+					}
+				}
+				
+				static var bottomButtonSpaceValue: CGFloat {
+					switch screenSize {
+						case .small:
+							return 5
+						case .medium, .plus:
+							return 5
+						case .large:
+							return 5
+						case .modern:
+							return 5
+						case .max:
+							return 5
+						case .madMax:
+							return 5
+					}
+				}
+				
+				static var segmentControlWidth: CGFloat {
+					switch screenSize {
+						case .small:
+							return 100
+						default:
+							return 120
+					}
 				}
 			}
 		}
@@ -247,9 +711,8 @@ extension Utils {
 			static let toolBarHeight: CGFloat = 44.0
 		}
 		
-		
 		struct Manager {
-			
+		
 			static func gradientColor(bounds: CGRect, gradientLayer :CAGradientLayer) -> UIColor? {
 				  UIGraphicsBeginImageContext(gradientLayer.bounds.size)
 				  gradientLayer.render(in: UIGraphicsGetCurrentContext()!)
@@ -258,7 +721,7 @@ extension Utils {
 				  return UIColor(patternImage: image!)
 			}
 			
-			static func getGradientLayer(bounds : CGRect, colors: [CGColor]) -> CAGradientLayer{
+			static func getGradientLayer(bounds : CGRect, colors: [CGColor]) -> CAGradientLayer {
 				let gradient = CAGradientLayer()
 				gradient.frame = bounds
 				gradient.colors = colors
@@ -267,6 +730,34 @@ extension Utils {
 				gradient.endPoint = CGPoint(x: 0.0, y: 1.0)
 				return gradient
 			}
+			
+			static func getGradientLayer(bounds: CGRect, colors: [CGColor], startPoint: CAGradientPoint, endPoint: CAGradientPoint) -> CAGradientLayer {
+				let gradient = CAGradientLayer()
+				gradient.frame = bounds
+				gradient.colors = colors
+				gradient.type = .axial
+				gradient.startPoint = startPoint.point
+				gradient.endPoint = endPoint.point
+				return gradient
+			}
+			
+			static func viewByClassName(view: UIView, className: String) -> UIView? {
+				let name = NSStringFromClass(type(of: view))
+				if name == className {
+					return view
+				}
+				else {
+					for subview in view.subviews {
+						if let view = viewByClassName(view: subview, className: className) {
+							return view
+						}
+					}
+				}
+				return nil
+			}
 		}
 	}
 }
+
+
+

@@ -18,6 +18,7 @@ class ContentTypeTableViewCell: UITableViewCell {
     @IBOutlet weak var contentSubtitleTextLabel: UILabel!
     @IBOutlet weak var horizontalProgressView: HorizontalProgressBar!
 	@IBOutlet weak var reuseShadowHeightConstraint: NSLayoutConstraint!
+	
 	override func prepareForReuse() {
         super.prepareForReuse()
         
@@ -226,20 +227,11 @@ extension ContentTypeTableViewCell: Themeble {
 		rightArrowImageView.isHidden = true
 		baseView.setCorner(14)
 		rightArrowImageView.image = I.systemItems.navigationBarItems.forward
-		
-		switch Screen.size {
-				
-			case .small:
-				contentTypeTextLabel.font = .systemFont(ofSize: 14, weight: .bold)
-				contentSubtitleTextLabel.font = .systemFont(ofSize: 12, weight: .medium)
-				reuseShadowHeightConstraint.constant = 30
-			case .medium, .plus, .large:
-				contentTypeTextLabel.font = .systemFont(ofSize: 16, weight: .bold)
-				contentSubtitleTextLabel.font = .systemFont(ofSize: 13, weight: .medium)
-			case .modern, .max, .madMax:
-				contentTypeTextLabel.font = .systemFont(ofSize: 18, weight: .bold)
-				contentSubtitleTextLabel.font = .systemFont(ofSize: 14, weight: .medium)
-		}
+		reuseShadowHeightConstraint.constant = U.UIHelper.AppDimensions.ContenTypeCells.helperImageViewWidth
+		reuseShadowRoundedView.layoutIfNeeded()
+		reuseShadowRoundedView.updateImagesLayout()
+		contentTypeTextLabel.font = FontManager.contentTypeFont(of: .title)
+		contentSubtitleTextLabel.font = FontManager.contentTypeFont(of: .subtitle)
 	}
 	
 	func updateColors() {
@@ -277,3 +269,5 @@ extension ContentTypeTableViewCell {
 		self.contentSubtitleTextLabel.isHidden = true
 	}
 }
+
+

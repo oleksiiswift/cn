@@ -51,8 +51,9 @@ extension GroupedAssetsReusableHeaderView: Themeble {
 		deleteSelectedButton.contentType = mediaContentType
 		selectAllButton.contentType = mediaContentType
 		deleteSelectedButton.setMainButton(text: deletedText, image: image)
-				
-		currentAssetsDate.font = .systemFont(ofSize: 14, weight: .bold)
+		
+		deleteSelectedButton.setButtonFont(FontManager.collectionElementsFont(of: .buttons))
+		currentAssetsDate.font = FontManager.collectionElementsFont(of: .title)
 		currentAssetsDate.textColor = theme.helperTitleTextColor
 	}
 	

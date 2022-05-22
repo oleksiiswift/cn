@@ -17,10 +17,23 @@ class StartingNavigationBar: UIView {
 	@IBOutlet weak var leftShadowView: ReuseShadowView!
 	@IBOutlet weak var rightShadowView: ReuseShadowView!
 	
+	@IBOutlet weak var topShevronView: UIView!
 	@IBOutlet weak var leftButtonSizeHeightConstraint: NSLayoutConstraint!
 	@IBOutlet weak var rightButtonHeightConstraint: NSLayoutConstraint!
 	
 	var delegate: StartingNavigationBarDelegate?
+	
+	var topShevronEnable: Bool = false {
+		didSet {
+			shevronSetup()
+		}
+	}
+	
+	public var buttonSize = U.UIHelper.AppDimensions.NavigationBar.startingNavigationBarButtonSize {
+		didSet {
+			self.setButtonsSize(buttonSize)
+		}
+	}
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -48,6 +61,7 @@ class StartingNavigationBar: UIView {
    
     private func configure() {
         
+		topShevronView.isHidden = !topShevronEnable
         containerView.backgroundColor = .clear
         backgroundColor = .clear
         addSubview(self.containerView)
@@ -64,16 +78,44 @@ class StartingNavigationBar: UIView {
         rightBarButton.layer.cornerRadius = 10
 		
 		titleLabel.textColor = theme.titleTextColor
+		titleLabel.font = FontManager.navigationBarFont(of: .title)
 		
 		leftShadowView.topShadowOffsetOriginX = -2
 		leftShadowView.topShadowOffsetOriginY = -5
 		
 		rightShadowView.topShadowOffsetOriginY = -2
 		rightShadowView.topShadowOffsetOriginX = -5
-    }
+		
+		setButtonsSize(buttonSize)
+	}
+	
+	private func shevronSetup() {
+		
+		topShevronView.isHidden = !topShevronEnable
+		topShevronView.setCorner(3)
+		topShevronView.backgroundColor = theme.topShevronBackgroundColor
+	}
     
-    public func setUpNavigation(title: String?, leftImage: UIImage?, rightImage: UIImage?) {
-        
+	public func setUpNavigation(title: String?, leftImage: UIImage? = nil, rightImage: UIImage? = nil, targetImageScaleFactor: CGFloat = 0.5) {
+		
+		let targetSize: CGSize = CGSize(width: buttonSize * targetImageScaleFactor, height: buttonSize * targetImageScaleFactor)
+		
+		var leftImageSize: CGSize {
+			if let leftImage = leftImage {
+				return leftImage.getPreservingAspectRationScaleImageSize(from: targetSize)
+			} else {
+				return .zero
+			}
+		}
+		
+		var rightImageSzie: CGSize {
+			if let rightImage = rightImage {
+				return rightImage.getPreservingAspectRationScaleImageSize(from: targetSize)
+			} else {
+				return .zero
+			}
+		}
+
         if let title = title {
             titleLabel.isHidden = false
             titleLabel.text = title
@@ -84,7 +126,7 @@ class StartingNavigationBar: UIView {
         if let rightImage = rightImage {
 			rightShadowView.isHidden = false
             rightBarButton.isHidden = false
-            rightBarButton.setImage(rightImage, for: .normal)
+			rightBarButton.addCenterImage(image: rightImage, imageWidth: rightImageSzie.width, imageHeight: rightImageSzie.height)
         } else {
             rightBarButton.isHidden = true
 			rightShadowView.isHidden = true
@@ -93,7 +135,7 @@ class StartingNavigationBar: UIView {
         if let leftImage = leftImage {
 			leftShadowView.isHidden = false
             leftBarButton.isHidden = false
-            leftBarButton.setImage(leftImage, for: .normal)
+			leftBarButton.addCenterImage(image: leftImage, imageWidth: leftImageSize.width, imageHeight: leftImageSize.height)
         } else {
             leftBarButton.isHidden = true
 			leftShadowView.isHidden = true

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19519"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -18,16 +18,16 @@
                 <rect key="frame" x="0.0" y="0.0" width="319" height="450"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="n5b-zV-NIG" customClass="ReuseShadowView" customModule="ECleaner" customModuleProvider="target">
-                        <rect key="frame" x="20" y="20" width="279" height="330"/>
-                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                    </view>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ggy-th-MzC">
                         <rect key="frame" x="20" y="20" width="279" height="330"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="duw-yg-npa">
                                 <rect key="frame" x="10" y="10" width="259" height="310"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="310" id="6Ks-XG-UKz"/>
+                                    <constraint firstAttribute="width" constant="259" id="9Su-Id-t5O"/>
+                                </constraints>
                             </view>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1oT-Fo-g4s">
                                 <rect key="frame" x="0.0" y="0.0" width="279" height="330"/>
@@ -44,6 +44,7 @@
                             <constraint firstAttribute="trailing" secondItem="1oT-Fo-g4s" secondAttribute="trailing" id="IX5-3K-g0y"/>
                             <constraint firstItem="1oT-Fo-g4s" firstAttribute="leading" secondItem="ggy-th-MzC" secondAttribute="leading" id="Kkx-0G-qJy"/>
                             <constraint firstAttribute="trailing" secondItem="duw-yg-npa" secondAttribute="trailing" constant="10" id="Ols-YL-6UJ"/>
+                            <constraint firstAttribute="height" constant="330" id="YFU-yU-yuI"/>
                             <constraint firstItem="duw-yg-npa" firstAttribute="top" secondItem="ggy-th-MzC" secondAttribute="top" constant="10" id="m7L-fm-AZp"/>
                             <constraint firstItem="duw-yg-npa" firstAttribute="leading" secondItem="ggy-th-MzC" secondAttribute="leading" constant="10" id="sRc-K7-eSv"/>
                             <constraint firstAttribute="bottom" secondItem="1oT-Fo-g4s" secondAttribute="bottom" id="y6a-Qe-p5L"/>
@@ -75,20 +76,16 @@
                 </subviews>
                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                 <constraints>
-                    <constraint firstItem="n5b-zV-NIG" firstAttribute="leading" secondItem="ggy-th-MzC" secondAttribute="leading" id="2mr-0N-Hhk"/>
-                    <constraint firstItem="n5b-zV-NIG" firstAttribute="trailing" secondItem="ggy-th-MzC" secondAttribute="trailing" id="5h3-GE-UYe"/>
                     <constraint firstItem="ggy-th-MzC" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="20" id="EWx-FO-BfJ"/>
                     <constraint firstItem="ggy-th-MzC" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="20" id="SlV-wX-mpC"/>
-                    <constraint firstItem="n5b-zV-NIG" firstAttribute="top" secondItem="ggy-th-MzC" secondAttribute="top" id="axX-Eh-LRH"/>
                     <constraint firstItem="kva-8M-EAe" firstAttribute="bottom" secondItem="xOA-g0-ljV" secondAttribute="bottom" id="cM9-fn-5rl"/>
-                    <constraint firstItem="n5b-zV-NIG" firstAttribute="bottom" secondItem="ggy-th-MzC" secondAttribute="bottom" id="fa6-iT-Fno"/>
+                    <constraint firstItem="kva-8M-EAe" firstAttribute="top" secondItem="ggy-th-MzC" secondAttribute="bottom" constant="20" id="hbP-5j-U23"/>
                     <constraint firstItem="kva-8M-EAe" firstAttribute="trailing" secondItem="xOA-g0-ljV" secondAttribute="trailing" id="hj6-GN-94t"/>
                     <constraint firstAttribute="trailing" secondItem="ggy-th-MzC" secondAttribute="trailing" constant="20" id="kiU-0m-HQI"/>
                     <constraint firstItem="kva-8M-EAe" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="20" id="mfP-yD-6ta"/>
                     <constraint firstItem="kva-8M-EAe" firstAttribute="top" secondItem="xOA-g0-ljV" secondAttribute="top" id="pNE-IX-iWJ"/>
                     <constraint firstAttribute="bottom" secondItem="kva-8M-EAe" secondAttribute="bottom" constant="20" id="seo-4s-Nho"/>
                     <constraint firstItem="kva-8M-EAe" firstAttribute="leading" secondItem="xOA-g0-ljV" secondAttribute="leading" id="t8e-ck-GJy"/>
-                    <constraint firstItem="xOA-g0-ljV" firstAttribute="top" secondItem="n5b-zV-NIG" secondAttribute="bottom" constant="20" id="wZ3-Ra-5sB"/>
                     <constraint firstAttribute="trailing" secondItem="kva-8M-EAe" secondAttribute="trailing" constant="20" id="wvG-sI-qzR"/>
                 </constraints>
             </tableViewCellContentView>
@@ -96,11 +93,15 @@
             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <connections>
                 <outlet property="baseView" destination="ggy-th-MzC" id="Od6-ah-yCR"/>
+                <outlet property="bseViewHeightConstraint" destination="YFU-yU-yuI" id="EP6-Q7-cYn"/>
                 <outlet property="playPauseButton" destination="1oT-Fo-g4s" id="zOz-M8-GHL"/>
-                <outlet property="reuseShadowView" destination="n5b-zV-NIG" id="kDt-9L-dG9"/>
+                <outlet property="previewContainerBotoomContainer" destination="seo-4s-Nho" id="0EL-Yh-xmN"/>
                 <outlet property="sliderShadowView" destination="kva-8M-EAe" id="Trh-J9-bse"/>
                 <outlet property="sliderView" destination="ndh-x5-8tY" id="FdF-XH-gtU"/>
                 <outlet property="videoPreview" destination="duw-yg-npa" id="TkR-qR-c1t"/>
+                <outlet property="videoPreviewContaierBottomConstaint" destination="hbP-5j-U23" id="rhB-df-fWb"/>
+                <outlet property="videoPreviewHeightConstraint" destination="6Ks-XG-UKz" id="uIw-en-Ule"/>
+                <outlet property="videoPreviewWidthConstraint" destination="9Su-Id-t5O" id="Pnm-ix-dkI"/>
             </connections>
             <point key="canvasLocation" x="-26.811594202898554" y="109.15178571428571"/>
         </tableViewCell>

@@ -48,6 +48,7 @@ class PhotoManager {
 		return instance
 	}()
 	
+	private var imageManager = PHImageManager()
 	private var fetchManager = PHAssetFetchManager.shared
 	public var prefetchManager = PHCachingImageManager()
 	public lazy var requestOptions: PHImageRequestOptions = {
@@ -59,16 +60,32 @@ class PhotoManager {
 		return options
 	}()
 	
+	public lazy var requestAVOptions: PHVideoRequestOptions = {
+		let options = PHVideoRequestOptions()
+		options.isNetworkAccessAllowed = true
+		options.deliveryMode = .fastFormat
+		return options
+	}()
+	
 	private var progressSearchNotificationManager = ProgressSearchNotificationManager.instance
 
-	public let phassetProcessingOperationQueuer = OperationProcessingQueuer(name: Constants.key.operation.queue.phassets, maxConcurrentOperationCount: 10, qualityOfService: .background)
-	public let serviceUtilsCalculatedOperationsQueuer = OperationProcessingQueuer(name: Constants.key.operation.queue.utils, maxConcurrentOperationCount: 10, qualityOfService: .background)
-    public let prefetchOperationQueue = OperationProcessingQueuer(name: C.key.operation.queue.deepClean, maxConcurrentOperationCount: 5, qualityOfService: .background)
+	public let phassetProcessingOperationQueuer = OperationProcessingQueuer(name: Constants.key.operation.queue.phassets,
+																			maxConcurrentOperationCount: 10,
+																			qualityOfService: .background)
+	public let serviceUtilityOperationsQueuer = OperationProcessingQueuer(name: Constants.key.operation.queue.utils,
+																				  maxConcurrentOperationCount: 5,
+																		  qualityOfService: .userInteractive)
+    public let prefetchOperationQueue = OperationProcessingQueuer(name: C.key.operation.queue.preetchPHasssetQueue,
+																  maxConcurrentOperationCount: 5,
+																  qualityOfService: .background)
 	
 	var assetCollection: PHAssetCollection?
 	
 	private static let lowerDateValue: Date = S.defaultLowerDateValue
 	private static let upperDateValue: Date = S.defaultUpperDateValue
+
+	private var activePHAssetRequests: [String: PHImageRequestID] = [:]
+	private var activeAVAssetRequests: [String: PHImageRequestID] = [:]
 	
 //		    MARK: - authentification -
 	private func photoLibraryRequestAuth(completion: @escaping (_ status: Bool) -> Void ) {
@@ -125,9 +142,9 @@ class PhotoManager {
 		}
 	}
 	
-	public func saveVideoAsset(from url: URL, completionHandler: @escaping (_ isSaved: Bool) -> Void) {
-		self.fetchManager.saveAVAsset(with: url) { isSaved, _ in
-			completionHandler(isSaved)
+	public func saveVideoAsset(from url: URL, completionHandler: @escaping (_ identifier: String? ,_ isSaved: Bool) -> Void) {
+		self.fetchManager.saveAVAsset(with: url) { identifier, completed, error in
+			completionHandler(identifier, completed)
 		}
 	}
 }
@@ -138,76 +155,336 @@ extension PhotoManager {
 	public func getPhotoLibraryContentAndCalculateSpace() {
 		
 		let lowerUpperDateOperation = self.fetchManager.getLowerUppedDateFromPhasset()
-		serviceUtilsCalculatedOperationsQueuer.addOperation(lowerUpperDateOperation)
-			/// `calculate all sizes phassets`
-		let calculatedAllDiskSpaceOperation = self.fetchManager.getCalculatePHAssetSizesSingleOperation { photoSpace, videoSpace, allAssetsSpace in
-			S.phassetPhotoFilesSizes = photoSpace
-			S.phassetVideoFilesSizes = videoSpace
-			S.phassetFilesSize = allAssetsSpace
-		}
-	
-			/// `calculate and ger large videos from photo library`
-		let getLargeVideosOperation = self.getLargevideoContentOperation(cleanProcessingType: .background) { assets, _ in
-			UpdateContentDataBaseMediator.instance.getLargeVideosAssets(assets)
-		}
-		
-		let getRecentlyDeletedPhassetOperation = self.fetchManager.recentlyDeletdSortedAlbumsFetchOperation { photosAssets, videoAssets in
-			UpdateContentDataBaseMediator.instance.getRecentlyDeletedPhotosAssets(photosAssets)
-			UpdateContentDataBaseMediator.instance.getRecentlyDeletedVideosAssets(videoAssets)
-		}
-		
-		let getCalculateTotalVideoPhassetOperation = self.getCalculateTotalVideoPhassetOperation { totalVideoCount in
+		let getCalculateTotalAVAssetsCountOperation = self.getCalculateTotalVideoPhassetOperation { totalVideoCount in
 			UpdateContentDataBaseMediator.instance.updateContentStoreCount(mediaType: .userVideo, itemsCount: totalVideoCount, calculatedSpace: nil)
 		}
-		
-		let getCalculatedTotalPhotoPhassetOperation = self.getCalculateTotalPhotoPhassetOperation { totalPhotoCount in
+
+		let getCalculateTotalPHAssetsCountOperation = self.getCalculateTotalPhotoPhassetOperation { totalPhotoCount in
 			UpdateContentDataBaseMediator.instance.updateContentStoreCount(mediaType: .userPhoto, itemsCount: totalPhotoCount, calculatedSpace: nil)
 		}
-		
-		let getScreenRecordingsOperation = self.getScreenRecordsVideosOperation(cleanProcessingType: .background) { screenRecordsAssets, _ in
-			UpdateContentDataBaseMediator.instance.getScreenRecordsVideosAssets(screenRecordsAssets)
-			
-		}
-		
-		let getScreenShorsOperation = self.getScreenShotsOperation(cleanProcessingType: .background) { assets, _ in
-			UpdateContentDataBaseMediator.instance.getScreenshots(assets)
-		}
-		
-		let getLivePhotoOperation = self.getLivePhotosOperation(cleanProcessingType: .background) { assets, _ in
-			UpdateContentDataBaseMediator.instance.getLivePhotosAssets(assets)
-		}
+//			/// `add operation phasset`
+		self.prefetchOperationQueue.addOperation(getCalculateTotalPHAssetsCountOperation)
+		self.prefetchOperationQueue.addOperation(getCalculateTotalAVAssetsCountOperation)
+			/// `calculate all sizes phassets`
+		self.startPartitionalSizeCheck()
+		self.prefetchOperationQueue.addOperation(lowerUpperDateOperation)
+	}
 	
-			/// `add operation phasset`
-		if !serviceUtilsCalculatedOperationsQueuer.operations.contains(where: {$0.name == calculatedAllDiskSpaceOperation.name}) {
-			serviceUtilsCalculatedOperationsQueuer.addOperation(calculatedAllDiskSpaceOperation)
+	public func startPhotosizeCher() {
+		let getPhotoLibraryPHAssetsEstimatedSizeOperation = self.getPhotoLibraryPHAssetsEstimatedSizeOperation { photosEstimatedSize, currentIndex, totalFilesCount in
+			ProgressSearchNotificationManager.instance.sendSingleFilesCheckerNotification(notificationtype: .photosSizeCheckerType,
+																						  currentIndex: currentIndex,
+																						  totalFiles: totalFilesCount)
+		} completionHandler: { photosCollectionSize in
+			U.delay(3) {
+				S.phassetPhotoFilesSizes = photosCollectionSize
+				self.getTotalPHAssetSaved()
+			}
+		}
+		self.serviceUtilityOperationsQueuer.addOperation(getPhotoLibraryPHAssetsEstimatedSizeOperation)
+	}
+	
+	public func startVideSizeCher() {
+		let getPhotoLibrararyAVAssetsEstimatedSizeOperation = self.getPhotoLibraryAVAssetsEstimatedSizeOperation { videoEsimatedSize, currentIndex, totalFilesCount in
+			ProgressSearchNotificationManager.instance.sendSingleFilesCheckerNotification(notificationtype: .videosSizeCheckerType,
+																						  currentIndex: currentIndex,
+																						  totalFiles: totalFilesCount)
+		} completionHandler: { videosCollectionSize in
+			U.delay(3) {
+				S.phassetVideoFilesSizes = videosCollectionSize
+				self.getTotalPHAssetSaved()				
+			}
 		}
 		
-		if !serviceUtilsCalculatedOperationsQueuer.operations.contains(where: {$0.name == getLargeVideosOperation.name}) {
-			serviceUtilsCalculatedOperationsQueuer.addOperation(getLargeVideosOperation)
+		self.serviceUtilityOperationsQueuer.addOperation(getPhotoLibrararyAVAssetsEstimatedSizeOperation)
+	}
+	
+	public func startPartitionalSizeCheck() {
+		
+		let getPhotoLibraryPHAssetsEstimatedSizeOperation = self.getPhotoLibraryPHAssetsEstimatedSizeOperation { photosEstimatedSize, currentIndex, totalFilesCount in
+			ProgressSearchNotificationManager.instance.sendSingleFilesCheckerNotification(notificationtype: .photosSizeCheckerType,
+																						  currentIndex: currentIndex,
+																						  totalFiles: totalFilesCount)
+		} completionHandler: { photosCollectionSize in
+			S.phassetPhotoFilesSizes = photosCollectionSize
+			self.getTotalPHAssetSaved()
 		}
 		
-		if !serviceUtilsCalculatedOperationsQueuer.operations.contains(where: {$0.name == getRecentlyDeletedPhassetOperation.name}) {
-			serviceUtilsCalculatedOperationsQueuer.addOperation(getRecentlyDeletedPhassetOperation)
+		let getPhotoLibrararyAVAssetsEstimatedSizeOperation = self.getPhotoLibraryAVAssetsEstimatedSizeOperation { videoEsimatedSize, currentIndex, totalFilesCount in
+			ProgressSearchNotificationManager.instance.sendSingleFilesCheckerNotification(notificationtype: .videosSizeCheckerType,
+																						  currentIndex: currentIndex,
+																						  totalFiles: totalFilesCount)
+		} completionHandler: { videosCollectionSize in
+			S.phassetVideoFilesSizes = videosCollectionSize
+			self.getTotalPHAssetSaved()
 		}
+
+		self.serviceUtilityOperationsQueuer.addOperation(getPhotoLibraryPHAssetsEstimatedSizeOperation)
+		self.serviceUtilityOperationsQueuer.addOperation(getPhotoLibrararyAVAssetsEstimatedSizeOperation)
+	}
+	
+	public func stopEstimatedSizeProcessingOperations() {
 		
-		if !serviceUtilsCalculatedOperationsQueuer.operations.contains(where: {$0.name == getCalculateTotalVideoPhassetOperation.name}) {
-			serviceUtilsCalculatedOperationsQueuer.addOperation(getCalculateTotalVideoPhassetOperation)
+		let photoOperationName = C.key.operation.name.phassetsEstimatedSizeOperation
+		let videoOperationName = C.key.operation.name.avassetEstimatedSizeOperation
+	
+		self.serviceUtilityOperationsQueuer.cancelOperation(with: photoOperationName)
+		self.serviceUtilityOperationsQueuer.cancelOperation(with: videoOperationName)
+		self.cancelAllImageRquests()
+	}
+	
+	private func getTotalPHAssetSaved() {
+		
+		S.phassetFilesSize = (S.phassetPhotoFilesSizes ?? 0) + (S.phassetVideoFilesSizes ?? 0)
+	}
+}
+
+//		MARK: - PHOTO VIDEO SIZE OPERATION
+extension PhotoManager {
+	
+	public func getPhotoLibraryPHAssetsEstimatedSizeOperation(estimatedComplitionHandler: @escaping (_ photosEstimatedSize: Int64,_ currentIndex: Int,_ totalFilesCount: Int) -> Void, completionHandler: @escaping (_ photosCollectionSize: Int64) -> Void) -> ConcurrentProcessOperation {
+		
+		let photolibraryOperation = ConcurrentProcessOperation { operation in
+			let timer = ParkBenchTimer()
+			var photoLibrararyPhotosSize: Int64 = 0
+			var currentProcessingIndex = 0
+			
+			let options = PHImageRequestOptions()
+			options.isSynchronous = true
+			options.deliveryMode = .fastFormat
+//			options.isNetworkAccessAllowed = true
+		
+			self.fetchManager.fetchPhotolibraryContent(by: .photo) { result in
+				
+				if result.count > 0 {
+					result.enumerateObjects { object, index, stop in
+						autoreleasepool {
+							
+							if operation.isCancelled {
+								stop.pointee = true
+								self.cancelAllImageRquests()
+								completionHandler(0)
+							}
+							
+//							let requestID = self.imageManager.requestImageDataAndOrientation(for: object, options: options) { data, _, _, _ in
+								
+								if operation.isCancelled {
+									stop.pointee = true
+									self.cancelAllImageRquests()
+									completionHandler(0)
+								} else if !self.serviceUtilityOperationsQueuer.operations.contains(operation) {
+									if self.activePHAssetRequests.isEmpty {
+										return
+									}
+								}
+								autoreleasepool {
+//									if let data = data {
+//										let fileSize = Int64(bitPattern: UInt64(data.count))
+//										photoLibrararyPhotosSize += fileSize
+//										estimatedComplitionHandler(photoLibrararyPhotosSize, index, result.count)
+//									} else {
+										let fileSize = object.imageSize
+									debugPrint(fileSize, index)
+										photoLibrararyPhotosSize += fileSize
+										estimatedComplitionHandler(photoLibrararyPhotosSize, index, result.count)
+//									}
+									currentProcessingIndex += 1
+									if currentProcessingIndex == result.count {
+										debugPrint("time -> \(timer.stop()), totalPhotoSize: \(U.getSpaceFromInt(photoLibrararyPhotosSize))")
+										completionHandler(photoLibrararyPhotosSize)
+									} else if index == result.count {
+										debugPrint("time -> \(timer.stop()), totalPhotoSize: \(U.getSpaceFromInt(photoLibrararyPhotosSize))")
+										completionHandler(photoLibrararyPhotosSize)
+									}
+								}
+//							}
+							
+							if !operation.isCancelled {
+//								self.activePHAssetRequests[object.localIdentifier] = requestID
+							} else {
+								completionHandler(0)
+								return
+							}
+						}
+					}
+				} else {
+					debugPrint("timer: \(timer.stop())")
+					completionHandler(0)
+				}
+			}
 		}
-		
-		if !serviceUtilsCalculatedOperationsQueuer.operations.contains(where: {$0.name == getCalculatedTotalPhotoPhassetOperation.name}) {
-			serviceUtilsCalculatedOperationsQueuer.addOperation(getCalculatedTotalPhotoPhassetOperation)
+		photolibraryOperation.name = C.key.operation.name.phassetsEstimatedSizeOperation
+		return photolibraryOperation
+	}
+	
+	public func getPhotoLibraryAVAssetsEstimatedSizeOperation(estimatedComplition: @escaping (_ videoEsimatedSize: Int64,_ currentIndex: Int,_ totalFilesCount: Int) -> Void,
+															  completionHandler: @escaping (_ videosCollectionSize: Int64) -> Void) -> ConcurrentProcessOperation {
+		let photoLibraryOperation = ConcurrentProcessOperation { operation in
+			
+			let timer = ParkBenchTimer()
+			var photoLibrararyVideosSize: Int64 = 0
+			var currentProcessingIndex = 0
+			
+			let options = PHVideoRequestOptions()
+			options.deliveryMode = .highQualityFormat
+//			options.isNetworkAccessAllowed = true
+			
+			self.fetchManager.fetchPhotolibraryContent(by: .video) { result in
+				if result.count > 0 {
+					
+					result.enumerateObjects { object, index, stop in
+						
+						autoreleasepool {
+							
+							if operation.isCancelled {
+								self.cancelAllImageRquests()
+								completionHandler(0)
+								stop.pointee = true
+							}
+							
+//							let requestID = self.imageManager.requestAVAsset(forVideo: object, options: options) { avasset, _, _ in
+								if operation.isCancelled {
+									self.cancelAllImageRquests()
+									completionHandler(0)
+									stop.pointee = true
+								} else if !self.serviceUtilityOperationsQueuer.operations.contains(operation) {
+									if self.activeAVAssetRequests.isEmpty {
+										return
+									}
+								}
+								
+//								if let avasset = avasset as? AVURLAsset {
+//									if let data = try? Data(contentsOf: avasset.url, options: .mappedIfSafe) {
+//										let fileSize = Int64(bitPattern: UInt64(data.count))
+//										photoLibrararyVideosSize += fileSize
+//										estimatedComplition(fileSize, index, result.count)
+//									} else {
+//										debugPrint("size")
+//										let filetSize = object.imageSize
+//										photoLibrararyVideosSize += filetSize
+//										estimatedComplition(photoLibrararyVideosSize, index, result.count)
+//									}
+//								} else {
+									let filetSize = object.imageSize
+									debugPrint(filetSize, index)
+									photoLibrararyVideosSize += filetSize
+									estimatedComplition(photoLibrararyVideosSize, index, result.count)
+//								}
+								
+								currentProcessingIndex += 1
+								
+								if currentProcessingIndex == result.count {
+									debugPrint("timer -> \(timer.stop()), totalVideoSize: \(U.getSpaceFromInt(photoLibrararyVideosSize))")
+									completionHandler(photoLibrararyVideosSize)
+								} else if index == result.count {
+									debugPrint("timer -> \(timer.stop()), totalVideoSize: \(U.getSpaceFromInt(photoLibrararyVideosSize))")
+									completionHandler(photoLibrararyVideosSize)
+								}
+//							}
+							
+							if !operation.isCancelled {
+//								self.activeAVAssetRequests[object.localIdentifier] = requestID
+							} else {
+								completionHandler(0)
+								return
+							}
+						}
+					}
+				} else {
+					debugPrint("timer \(timer.stop())")
+					completionHandler(0)
+				}
+			}
 		}
+		photoLibraryOperation.name = C.key.operation.name.avassetEstimatedSizeOperation
+		return photoLibraryOperation
+	}
+	
+	private func cancelAllImageRquests() {
 		
-		if !serviceUtilsCalculatedOperationsQueuer.operations.contains(where: {$0.name == getScreenRecordingsOperation.name}) {
-			serviceUtilsCalculatedOperationsQueuer.addOperation(getScreenRecordingsOperation)
+		for requestID in self.activePHAssetRequests.values {
+			imageManager.cancelImageRequest(requestID)
 		}
+		self.activePHAssetRequests.removeAll()
 		
-		if !serviceUtilsCalculatedOperationsQueuer.operations.contains(where: {$0.name == getScreenShorsOperation.name}) {
-			serviceUtilsCalculatedOperationsQueuer.addOperation(getScreenShorsOperation)
+		for requestID in self.activeAVAssetRequests.values {
+			imageManager.cancelImageRequest(requestID)
 		}
+		self.activeAVAssetRequests.removeAll()
+	}
+	
+	private func didCancelPHAssetRequests() {
+		for requestID in self.activePHAssetRequests.values {
+			imageManager.cancelImageRequest(requestID)
+		}
+	}
+	
+	private func didCancelAVAssetRequests() {
+		for requestID in self.activeAVAssetRequests.values {
+			imageManager.cancelImageRequest(requestID)
+		}
+	}
+	
+	private func clearPHAssetRequests() {
+		self.activePHAssetRequests.removeAll()
+	}
+	
+	private func clearAVAssetRequests() {
+		self.activeAVAssetRequests.removeAll()
+	}
+	
+	public func clearRequestsAfterDeepCleanProcessing() {
+		self.clearAVAssetRequests()
+		self.clearPHAssetRequests()
+	}
+
+	
+	
+	
+	public func getPHAssetFileSizeFromData(_ asset: PHAsset, completionHandler: @escaping (_ fileSize: Int64) -> Void) {
 		
-		if !serviceUtilsCalculatedOperationsQueuer.operations.contains(where: {$0.name == getLivePhotoOperation.name}) {
-			serviceUtilsCalculatedOperationsQueuer.addOperation(getLivePhotoOperation)
+		let options = PHImageRequestOptions()
+		options.isSynchronous = false
+		options.deliveryMode = .highQualityFormat
+		options.isNetworkAccessAllowed = true
+		
+		let requestID = self.imageManager.requestImageDataAndOrientation(for: asset, options: options) { data, _, _, _ in
+			
+			if let data = data {
+				let fileSize = Int64(bitPattern: UInt64(data.count))
+				completionHandler(fileSize)
+			} else {
+				let fileSize = asset.imageSize
+				completionHandler(fileSize)
+			}
+		}
+		DispatchQueue.main.async {
+			self.activePHAssetRequests[asset.localIdentifier] = requestID
+		}
+	}
+	
+	public func getAVAssetFileSizeFromData(_ asset: PHAsset, completionHandler: @escaping (_ fileSize: Int64) -> Void)  {
+		
+		let options = PHVideoRequestOptions()
+		options.deliveryMode = .highQualityFormat
+		options.isNetworkAccessAllowed = true
+		
+		let requestID = self.imageManager.requestAVAsset(forVideo: asset, options: options) { avasset, _, _ in
+			if let avasset = avasset as? AVURLAsset {
+				if let data = try? Data(contentsOf: avasset.url, options: .mappedIfSafe) {
+					let fileSize = Int64(bitPattern: UInt64(data.count))
+					completionHandler(fileSize)
+				} else {
+					let fileSize = asset.imageSize
+					completionHandler(fileSize)
+				}
+			} else {
+				let fileSize = asset.imageSize
+				completionHandler(fileSize)
+			}
+		}
+		DispatchQueue.main.async {
+			self.activeAVAssetRequests[asset.localIdentifier] = requestID
 		}
 	}
 }
@@ -239,8 +516,14 @@ extension PhotoManager {
 							return
 						}
 						
-						if videoContent[videosPosition - 1].imageSize > SettingsManager.largeVideoLowerSize {
+						let fileSize = videoContent[videosPosition - 1].imageSize
+					
+						if fileSize > SettingsManager.largeVideoLowerSize {
 							videos.append(videoContent[videosPosition - 1])
+						}
+						
+						if cleanProcessingType == .deepCleen {
+							self.sendFileSizeNotification(type: .videoFilesSize, totalFiles: videoContent.count, currentIndex: videosPosition, fileSize: fileSize)
 						}
 						self.sendNotification(processing: cleanProcessingType, deepCleanType: .largeVideo, singleCleanType: .largeVideo, status: .progress, totalItems: videoContent.count, currentIndex: videosPosition)
 					}
@@ -376,8 +659,10 @@ extension PhotoManager {
 						if operation.isCancelled {
 							self.sendEmptyNotification(processing: cleanProcessingType, deepCleanType: .duplicateVideo, singleCleanType: .duplicatedVideo)
 							completionHandler([], operation.isCancelled)
+							self.didCancelAVAssetRequests()
 							return
 						}
+						
 
 						let image = self.fetchManager.getThumbnail(from: videoCollection[index - 1], size: CGSize(width: 150, height: 150))
 						if let data = image.jpegData(compressionQuality: 0.8) {
@@ -403,6 +688,7 @@ extension PhotoManager {
 						if operation.isCancelled {
 							self.sendEmptyNotification(processing: cleanProcessingType, deepCleanType: .duplicateVideo, singleCleanType: .duplicatedVideo)
 							completionHandler([], operation.isCancelled)
+							self.didCancelAVAssetRequests()
 							return
 						}
 						
@@ -428,6 +714,7 @@ extension PhotoManager {
 								if operation.isCancelled {
 									self.sendEmptyNotification(processing: cleanProcessingType, deepCleanType: .duplicateVideo, singleCleanType: .duplicatedVideo)
 									completionHandler([], operation.isCancelled)
+									self.didCancelAVAssetRequests()
 									return
 								}
 								
@@ -734,10 +1021,21 @@ extension PhotoManager {
 						if operation.isCancelled {
 							self.sendEmptyNotification(processing: cleanProcessingType, deepCleanType: .similarPhoto, singleCleanType: .similarPhoto)
 							completionHandler([], operation.isCancelled)
+							self.didCancelPHAssetRequests()
 							return
 						}
 
 						self.sendNotification(processing: cleanProcessingType, deepCleanType: .similarPhoto, singleCleanType: .similarPhoto, status: .analyzing, totalItems: 0, currentIndex: 0)
+						
+						if cleanProcessingType == .deepCleen {
+							let op = ConcurrentProcessOperation { filesCheckerOperation in
+								let fileSize = photosInGallery[index - 1].imageSize
+//								self.getPHAssetFileSizeFromData(photosInGallery[index - 1]) { fileSize in
+									self.sendFileSizeNotification(type: .photoFilesSize, totalFiles: photosInGallery.count, currentIndex: index, fileSize: fileSize)
+//								}
+							}
+							self.serviceUtilityOperationsQueuer.addOperation(op)
+						}
 						
 						similarPhotos.append((asset: photosInGallery[index - 1],
 											  date: Int64(photosInGallery[index - 1].creationDate!.timeIntervalSince1970),
@@ -753,6 +1051,7 @@ extension PhotoManager {
 						if operation.isCancelled {
 							self.sendEmptyNotification(processing: cleanProcessingType, deepCleanType: .similarPhoto, singleCleanType: .similarPhoto)
 							completionHandler([], operation.isCancelled)
+							self.didCancelPHAssetRequests()
 							return
 						}
 						
@@ -869,19 +1168,6 @@ extension PhotoManager {
 						/// adding notification to handle progress similar photos processing
 					self.sendNotification(processing: cleanProcessingType, deepCleanType: .duplicatePhoto, singleCleanType: .duplicatedPhoto, status: .analyzing, totalItems: 0, currentIndex: 0)
 										
-//					let rawTuples: [OSTuple<NSString, NSData>] = assets.enumerated().map { (index, asset) -> OSTuple<NSString, NSData> in
-//						let imageData = asset.thumbnailSync?.pngData()
-//						debugPrint("$$ \(index)")
-//						if operation.isCancelled {
-//							self.sendEmptyNotification(processing: cleanProcessingType, deepCleanType: .duplicatePhoto, singleCleanType: .duplicatedPhoto)
-//							completionHandler([], operation.isCancelled)
-//
-//							return OSTuple<NSString, NSData>.init(first: "\(index)" as NSString, andSecond: imageData as NSData?)
-//						}
-//						self.sendNotification(processing: cleanProcessingType, deepCleanType: .duplicatePhoto, singleCleanType: .duplicatedPhoto, status: .progress, totalItems: assets.count, currentIndex: index)
-//						return OSTuple<NSString, NSData>.init(first: "\(index)" as NSString, andSecond: imageData as NSData?)
-//					}
-					
 					var rawTuples: [OSTuple<NSString, NSData>] = []
 
 					for (index, asset) in assets.enumerated() {
@@ -1128,12 +1414,6 @@ extension PhotoManager {
 			
 			var phassetGroup: [PhassetGroup] = []
 		
-//			let rawTuples: [OSTuple<NSString, NSData>] = assets.enumerated().map { (index, asset) -> OSTuple<NSString, NSData> in
-//				let imageData = asset.thumbnailSync?.pngData()
-//				self.sendNotification(processing: cleanProcessingType, deepCleanType: .similarVideo, singleCleanType: .similarVideo, status: .progress, totalItems: assets.count, currentIndex: index)
-//				return OSTuple<NSString, NSData>.init(first: "\(index)" as NSString, andSecond: imageData as NSData?)
-//			}
-			
 			var rawTuples: [OSTuple<NSString, NSData>] = []
 			
 			for (index, asset) in assets.enumerated() {
@@ -1149,7 +1429,6 @@ extension PhotoManager {
 				self.sendNotification(processing: cleanProcessingType, deepCleanType: .similarVideo, singleCleanType: .similarVideo, status: .progress, totalItems: assets.count, currentIndex: index)
 				rawTuples.append(OSTuple<NSString, NSData>.init(first: "\(index)" as NSString, andSecond: imageData as NSData?))
 			}
-			
 			
 			let toCheckTuples = rawTuples.filter({ $0.second != nil })
 			
@@ -1229,6 +1508,17 @@ extension PhotoManager {
 			case .singleSearch:
 				self.progressSearchNotificationManager.sendSingleSearchProgressNotification(notificationtype: singleCleanType, status: status, totalProgressItems: totalItems, currentProgressItem: currentIndex)
 			case .background:
+				return
+		}
+	}
+	
+	private func sendFileSizeNotification(type: DeepCleanNotificationType, totalFiles: Int, currentIndex: Int, fileSize: Int64) {
+		switch type {
+			case .photoFilesSize:
+				self.progressSearchNotificationManager.sentSizeFilesCheckerNotification(notificationtype: .photoFilesSize, value: fileSize, currentIndex: currentIndex, totlelFiles: totalFiles)
+			case .videoFilesSize:
+				self.progressSearchNotificationManager.sentSizeFilesCheckerNotification(notificationtype: .videoFilesSize, value: fileSize, currentIndex: currentIndex, totlelFiles: totalFiles)
+			default:
 				return
 		}
 	}
@@ -1453,4 +1743,36 @@ extension PhotoManager {
         
         return CGSize(width: imageWidth * scale, height: imageHeight * scale)
     }
+}
+
+extension PhotoManager {
+	
+	public func getPhassetShareUrl(_ asset: PHAsset, completionHandler: @escaping (_ sharedURL: URL?,_ name: String?) -> Void) {
+
+		let fileManager = ECFileManager()
+		let options = PHVideoRequestOptions()
+		options.isNetworkAccessAllowed = true
+		options.deliveryMode = .highQualityFormat
+		
+		let resource = PHAssetResource.assetResources(for: asset).first!
+		let name = resource.originalFilename
+
+		self.imageManager.requestAVAsset(forVideo: asset, options: options) { avasset, mix, info in
+			if let avasset = avasset as? AVURLAsset{
+				fileManager.copyFileTemoDdirectory(from: avasset.url, with: name) { url in
+					if let url = url {
+						if fileManager.isFileExiest(at: url) {
+							completionHandler(url, name)
+						} else {
+							completionHandler(nil, nil)
+						}
+					} else {
+						completionHandler(nil, nil)
+					}
+				}
+			} else {
+				completionHandler(nil, nil)
+			}
+		}
+	}
 }

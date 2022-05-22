@@ -18,6 +18,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		
 		developmentSettings()
 		
+//		NotificationCenter.default.addObserver(forName: nil, object: nil, queue: nil) { notification in
+//			debugPrint(notification)
+//		}
+		
         return true
     }
 
@@ -39,12 +43,19 @@ extension AppDelegate {
         
 		PhotoManager.shared.checkPhotoLibraryAccess()
         ContactsManager.shared.checkStatus { _ in }
+		ECFileManager().deleteAllFiles(at: AppDirectories.temp) {
+			debugPrint("deleted all files from temp")
+		}
     }
 
     private func setDefaults() {
 	
 		U.setUpperDefaultValue()
 		U.setLowerDafaultValue()
+		
+		S.phassetVideoFilesSizes = nil
+		S.phassetPhotoFilesSizes = nil
+		S.lastSavedLocalIdenifier = nil
 		
 		if !CompressionSettingsConfiguretion.isDefaultConfigurationIsSet {
 			CompressionSettingsConfiguretion.setDefaultConfiguration()

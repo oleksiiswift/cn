@@ -24,6 +24,7 @@
                 <outlet property="rightButtonHeightConstraint" destination="34v-tj-ymw" id="Pi3-wd-VpN"/>
                 <outlet property="rightShadowView" destination="0Xa-N9-MwO" id="uFi-Gu-Drf"/>
                 <outlet property="titleLabel" destination="NlV-9o-emq" id="My8-x8-NfX"/>
+                <outlet property="topShevronView" destination="dwP-Fu-Cmu" id="wJy-WT-m37"/>
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
@@ -43,8 +44,6 @@
                         <constraint firstAttribute="width" secondItem="Lxw-5y-LbO" secondAttribute="height" id="sYF-Nr-18c"/>
                     </constraints>
                     <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                    <state key="normal" image="premium"/>
-                    <buttonConfiguration key="configuration" style="plain" image="premium"/>
                 </button>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Title" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NlV-9o-emq">
                     <rect key="frame" x="192" y="30.5" width="30" height="19"/>
@@ -64,9 +63,15 @@
                         <constraint firstAttribute="height" constant="50" id="34v-tj-ymw"/>
                     </constraints>
                     <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                    <state key="normal" image="settings"/>
-                    <buttonConfiguration key="configuration" style="plain" image="settings"/>
                 </button>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dwP-Fu-Cmu">
+                    <rect key="frame" x="179" y="0.0" width="56" height="6"/>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="6" id="ASS-kI-V1l"/>
+                        <constraint firstAttribute="width" constant="56" id="zpv-Ls-HuJ"/>
+                    </constraints>
+                </view>
             </subviews>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -79,6 +84,8 @@
                 <constraint firstItem="NlV-9o-emq" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="Lxw-5y-LbO" secondAttribute="trailing" constant="10" id="K77-IR-bLS"/>
                 <constraint firstItem="Lxw-5y-LbO" firstAttribute="centerY" secondItem="NlV-9o-emq" secondAttribute="centerY" id="KrG-j4-1tO"/>
                 <constraint firstItem="Lxw-5y-LbO" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="20" id="M6c-Td-ZSK"/>
+                <constraint firstItem="dwP-Fu-Cmu" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="MxL-lU-cZX"/>
+                <constraint firstItem="dwP-Fu-Cmu" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="NU6-qF-H7A"/>
                 <constraint firstItem="0Xa-N9-MwO" firstAttribute="bottom" secondItem="xTe-gy-rXY" secondAttribute="bottom" id="QCF-wQ-ZA6"/>
                 <constraint firstItem="0Xa-N9-MwO" firstAttribute="trailing" secondItem="xTe-gy-rXY" secondAttribute="trailing" id="RKw-5F-eIm"/>
                 <constraint firstItem="NlV-9o-emq" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="URm-pk-zwZ"/>
@@ -93,8 +100,6 @@
         </view>
     </objects>
     <resources>
-        <image name="premium" width="50" height="50"/>
-        <image name="settings" width="50" height="50"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

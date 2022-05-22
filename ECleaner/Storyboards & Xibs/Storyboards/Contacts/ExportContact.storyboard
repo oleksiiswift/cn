@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19455" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Y6W-OH-hqX">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Y6W-OH-hqX">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19454"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -114,11 +114,14 @@
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lRF-el-abE" customClass="BottomButtonBarView" customModule="ECleaner" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="272" width="414" height="109"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="109" id="VwW-Yo-Vwa"/>
+                                        </constraints>
                                     </view>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
-                                    <constraint firstItem="lRF-el-abE" firstAttribute="top" secondItem="xvt-M0-5kG" secondAttribute="bottom" constant="20" id="7ya-rX-MVV"/>
+                                    <constraint firstItem="lRF-el-abE" firstAttribute="top" relation="greaterThanOrEqual" secondItem="xvt-M0-5kG" secondAttribute="bottom" constant="20" id="7ya-rX-MVV"/>
                                     <constraint firstAttribute="trailing" secondItem="lRF-el-abE" secondAttribute="trailing" id="Am5-hY-slC"/>
                                     <constraint firstAttribute="height" constant="381" id="LA6-48-A7c"/>
                                     <constraint firstAttribute="trailing" secondItem="xvt-M0-5kG" secondAttribute="trailing" constant="20" id="MsO-px-5dX"/>
@@ -144,8 +147,10 @@
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <size key="freeformSize" width="414" height="381"/>
                     <connections>
+                        <outlet property="bottomButtonMenuHeightConstraint" destination="VwW-Yo-Vwa" id="39K-8s-chn"/>
                         <outlet property="bottomButtonView" destination="lRF-el-abE" id="iZJ-s9-NRF"/>
                         <outlet property="controllerTitleTextLabel" destination="DNG-NL-IkN" id="Ijw-Ew-YxK"/>
+                        <outlet property="exportButtonStackView" destination="xvt-M0-5kG" id="orr-fe-dop"/>
                         <outlet property="helperTopView" destination="7cS-81-2uO" id="Ha3-ly-DaD"/>
                         <outlet property="leftButton" destination="p9L-Z1-P4O" id="9BB-31-tle"/>
                         <outlet property="leftButtonView" destination="BpS-Yh-eBr" id="tOW-3o-ACV"/>

@@ -63,11 +63,11 @@ enum MediaContentType {
 		
 		switch self {
 			case .userPhoto:
-				return [theme.photoTopGradientColor, theme.photoBottomGradientColor]
+				return theme.photoGradient
 			case .userVideo:
-				return [theme.videoTopGradientColor, theme.videoBottomGradientColor]
+				return theme.videoGradient
 			case .userContacts:
-				return [theme.contactTopGradientColor, theme.contactBottomGradientColor]
+				return theme.contactsGradient
 			case .none:
 				return [UIColor.clear, UIColor.clear]
 		}
@@ -297,12 +297,16 @@ enum MediaContentType {
 	public func getRowHeight(for section: Int) -> CGFloat {
 		switch self {
 			case .userVideo, .userContacts:
-				return section == 1 ? 187 : 100
+				switch section {
+					case 1:
+						return U.UIHelper.AppDimensions.ContenTypeCells.heightOfBottomHelperCellBanner
+					default:
+						return U.UIHelper.AppDimensions.ContenTypeCells.heightOfRowOfMediaContentType
+				}
 			default:
-				return 100
+				return U.UIHelper.AppDimensions.ContenTypeCells.heightOfRowOfMediaContentType
 		}
 	}
-    
     
         /// ``DEEP CLEAN PROPERTIES``
     
