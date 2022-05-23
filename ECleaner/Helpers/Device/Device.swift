@@ -58,27 +58,15 @@ extension Device {
     }
     
     static public var totalDiskSpaceInGB: String {
-        var gbString = ByteCountFormatter.string(fromByteCount: totalDiskSpaceInBytes, countStyle: ByteCountFormatter.CountStyle.decimal)
-        gbString = gbString.replacingOccurrences(of: " GB", with: "").replacingOccurrences(of: ",", with: ".")
-        print("Gb string: \(gbString)")
-        return "\(Int(Double(gbString)!.rounded())) GB"
+		return U.getSpaceFromInt(self.totalDiskSpaceInBytes)
     }
-    
-    static public var usedIntDiskSpace: Double {
-        var gbString = ByteCountFormatter.string(fromByteCount: usedDiskSpaceInBytes, countStyle: ByteCountFormatter.CountStyle.decimal)
-        gbString = gbString.replacingOccurrences(of: " GB", with: "").replacingOccurrences(of: ",", with: ".")
-        return Double(gbString)!.rounded()
-    }
-    
-    
-    
+        
     static public var freeDiskSpaceInGB: String {
         return ByteCountFormatter.string(fromByteCount: freeDiskSpaceInBytes, countStyle: ByteCountFormatter.CountStyle.decimal)
-        
     }
     
     static public var usedDiskSpaceInGB: String {
-        return ByteCountFormatter.string(fromByteCount: usedDiskSpaceInBytes, countStyle: ByteCountFormatter.CountStyle.decimal)
+		return U.getSpaceFromInt(self.usedDiskSpaceInBytes)
     }
     
     static public var totalDiskSpaceInMB: String {
