@@ -6,30 +6,30 @@ PODS:
   - PhoneNumberKit/PhoneNumberKitCore (3.3.4)
   - PhoneNumberKit/UIKit (3.3.4):
     - PhoneNumberKit/PhoneNumberKitCore
-  - SnapKit (5.0.1)
   - SwiftMessages (9.0.6):
     - SwiftMessages/App (= 9.0.6)
   - SwiftMessages/App (9.0.6)
+  - SwiftyStoreKit (0.16.1)
 
 DEPENDENCIES:
   - CocoaImageHashing
   - PhoneNumberKit
-  - SnapKit (~> 5.0.0)
   - SwiftMessages
+  - SwiftyStoreKit
 
 SPEC REPOS:
   https://github.com/CocoaPods/Specs.git:
     - CocoaImageHashing
     - PhoneNumberKit
-    - SnapKit
     - SwiftMessages
+    - SwiftyStoreKit
 
 SPEC CHECKSUMS:
   CocoaImageHashing: 2c8efd6dd60f9030cd54086b34ffc48e927821c3
   PhoneNumberKit: 441e8b26ec88d598e3591de9061eff18f5dd12e8
-  SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
   SwiftMessages: f0c7ef4705a570ad6c5e208b611f4333e660ed92
+  SwiftyStoreKit: 6b9c08810269f030586dac1fae8e75871a82e84a
 
-PODFILE CHECKSUM: d635000e5f44e37fa9adf4f6a2aaf72ed52fd1e2
+PODFILE CHECKSUM: 2186404d9101b45e68a988a0ac149028dc234ece
 
 COCOAPODS: 1.11.2

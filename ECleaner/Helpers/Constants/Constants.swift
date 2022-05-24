@@ -10,7 +10,19 @@ import UIKit
 
 typealias C = Constants
 class Constants {
-    
+	
+	struct project {
+		static let appleID = ""
+		static let appID = ""
+		static let appStoreName = ""
+		static let storeSecretKey = "57832c2c61d74286a1f4e65063a5cdba"
+		static let appBundle = ""
+		static let mail = ""
+		static let telegram = ""
+		static let facebookURL = ""
+		static let facebookID = ""
+	}
+	
     struct gadAdvertisementKey {
         /**
          - parameter GADApplicationIdentifier use in info.plist file
@@ -29,6 +41,13 @@ class Constants {
 		struct advertisement {
 			static let bannerIsShow = "advertisementBannerDidShow"
 		}
+		
+		struct inApPurchse {
+			static let purchasePremium = "purchasePremium"
+			static let verificationPassed = "verificationPassed"
+			static let expireDate = "expireDate"
+			static let expiredSubscription = "expiredSubscription"
+		}
         
         struct settings {
             static let isDarkModeOn = "darkModeIsSetOn"
@@ -42,6 +61,7 @@ class Constants {
             static let photoSpace = "photoDiskSpace"
             static let videoSpace = "videoDiskSpace"
             static let allMediaSpace = "wholeAssetsDiskSpace"
+			
         }
 		
 		struct compressionSettings {
@@ -464,3 +484,12 @@ class Constants {
         }
     }
 }
+
+
+#warning("KEYS")
+//week_cleaner
+//month_cleaner
+//year_cleaner
+
+
+//lifetime_cleaner

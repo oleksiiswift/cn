@@ -16,7 +16,7 @@ class SettingsManager {
         return self.shared
     }
 	
-	struct premium {
+	struct inAppPurchase {
 		
 		 static var allowAdvertisementBanner: Bool {
 			get {
@@ -25,10 +25,32 @@ class SettingsManager {
 				U.userDefaults.set(newValue, forKey: C.key.advertisement.bannerIsShow)
 			}
 		}
+		
+		static var isVerificationPassed: Bool {
+			get {
+				return U.userDefaults.bool(forKey: C.key.inApPurchse.verificationPassed)
+			} set {
+				U.userDefaults.set(newValue, forKey: C.key.inApPurchse.verificationPassed)
+			}
+		}
+		
+		static var expiredSubscription: Bool {
+			get {
+				return U.userDefaults.bool(forKey: C.key.inApPurchse.expiredSubscription)
+			} set {
+				U.userDefaults.setValue(newValue, forKey: C.key.inApPurchse.expiredSubscription)
+			}
+		}
+		
+		static var expireDateSubscription: Date? {
+			get {
+				return U.userDefaults.object(forKey: C.key.inApPurchse.expireDate) as? Date
+			} set {
+				U.userDefaults.set(newValue, forKey: C.key.inApPurchse.expireDate)
+			}
+		}
 	}
 	
-
-    
     public var isDarkMode: Bool {
         get {
             U.userDefaults.bool(forKey: C.key.settings.isDarkModeOn)

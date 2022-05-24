@@ -229,7 +229,7 @@ extension DeepCleaningViewController {
           
           guard let options = scansOptions else { return }
 		  
-		  let timer = ParkBenchTimer()
+		  let timer = BenchTimer()
 	 
 		  isDeepCleanSearchingProcessRunning = !isDeepCleanSearchingProcessRunning
 		  U.application.isIdleTimerDisabled = true

@@ -245,7 +245,7 @@ extension PhotoManager {
 	public func getPhotoLibraryPHAssetsEstimatedSizeOperation(estimatedComplitionHandler: @escaping (_ photosEstimatedSize: Int64,_ currentIndex: Int,_ totalFilesCount: Int) -> Void, completionHandler: @escaping (_ photosCollectionSize: Int64) -> Void) -> ConcurrentProcessOperation {
 		
 		let photolibraryOperation = ConcurrentProcessOperation { operation in
-			let timer = ParkBenchTimer()
+			let timer = BenchTimer()
 			var photoLibrararyPhotosSize: Int64 = 0
 			var currentProcessingIndex = 0
 			
@@ -321,7 +321,7 @@ extension PhotoManager {
 															  completionHandler: @escaping (_ videosCollectionSize: Int64) -> Void) -> ConcurrentProcessOperation {
 		let photoLibraryOperation = ConcurrentProcessOperation { operation in
 			
-			let timer = ParkBenchTimer()
+			let timer = BenchTimer()
 			var photoLibrararyVideosSize: Int64 = 0
 			var currentProcessingIndex = 0
 			

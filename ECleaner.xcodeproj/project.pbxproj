@@ -140,7 +140,7 @@
 		971AD5E927EAB72900811A3A /* ZoomTransitionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971AD5E827EAB72900811A3A /* ZoomTransitionController.swift */; };
 		971AD5EC27EAC10800811A3A /* ZoomDismissalInteractionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971AD5EB27EAC10800811A3A /* ZoomDismissalInteractionController.swift */; };
 		971AD5EE27EAC13C00811A3A /* ZoomAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971AD5ED27EAC13C00811A3A /* ZoomAnimator.swift */; };
-		971F05152813EE56009B796C /* ParkBenchTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971F05142813EE56009B796C /* ParkBenchTimer.swift */; };
+		971F05152813EE56009B796C /* BenchTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971F05142813EE56009B796C /* BenchTimer.swift */; };
 		97238A072689BD8000C523DC /* PhotoMediaType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97238A062689BD8000C523DC /* PhotoMediaType.swift */; };
 		97238A092689D01E00C523DC /* GroupedAssetListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97238A082689D01E00C523DC /* GroupedAssetListViewController.swift */; };
 		97238A0B2689EDD200C523DC /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97238A0A2689EDD200C523DC /* Toast.swift */; };
@@ -257,6 +257,12 @@
 		97B53A06281803750054B826 /* String+Size.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B53A05281803750054B826 /* String+Size.swift */; };
 		97B53A08281831D70054B826 /* Utils+UIHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B53A07281831D70054B826 /* Utils+UIHelper.swift */; };
 		97B7D6252821DF25002039ED /* Gradient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B7D6242821DF25002039ED /* Gradient.swift */; };
+		97B8CFE4283C283B00F3E4E6 /* InAppSubscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B8CFE3283C283A00F3E4E6 /* InAppSubscription.swift */; };
+		97B8CFEB283CC4DE00F3E4E6 /* SubscriptionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B8CFEA283CC4DE00F3E4E6 /* SubscriptionManager.swift */; };
+		97B8CFED283CC54D00F3E4E6 /* Subscriptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B8CFEC283CC54D00F3E4E6 /* Subscriptions.swift */; };
+		97B8CFEF283CC5D000F3E4E6 /* SubscriptionErrorHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B8CFEE283CC5D000F3E4E6 /* SubscriptionErrorHandler.swift */; };
+		97B8CFF3283CE05600F3E4E6 /* SubscriptionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B8CFF2283CE05600F3E4E6 /* SubscriptionService.swift */; };
+		97B8CFF5283CF0A400F3E4E6 /* Subscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B8CFF4283CF0A400F3E4E6 /* Subscription.swift */; };
 		97C1C71427F5A95800E262FA /* GradientSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97C1C71327F5A95800E262FA /* GradientSlider.swift */; };
 		97C44FBB274EF93B001B61AB /* ContactasCleaningType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97C44FBA274EF93B001B61AB /* ContactasCleaningType.swift */; };
 		97C44FBD274EF959001B61AB /* ContactsContainerType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97C44FBC274EF959001B61AB /* ContactsContainerType.swift */; };
@@ -460,7 +466,7 @@
 		971AD5E827EAB72900811A3A /* ZoomTransitionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoomTransitionController.swift; sourceTree = "<group>"; };
 		971AD5EB27EAC10800811A3A /* ZoomDismissalInteractionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoomDismissalInteractionController.swift; sourceTree = "<group>"; };
 		971AD5ED27EAC13C00811A3A /* ZoomAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoomAnimator.swift; sourceTree = "<group>"; };
-		971F05142813EE56009B796C /* ParkBenchTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParkBenchTimer.swift; sourceTree = "<group>"; };
+		971F05142813EE56009B796C /* BenchTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BenchTimer.swift; sourceTree = "<group>"; };
 		97238A062689BD8000C523DC /* PhotoMediaType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoMediaType.swift; sourceTree = "<group>"; };
 		97238A082689D01E00C523DC /* GroupedAssetListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupedAssetListViewController.swift; sourceTree = "<group>"; };
 		97238A0A2689EDD200C523DC /* Toast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
@@ -577,6 +583,12 @@
 		97B53A05281803750054B826 /* String+Size.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Size.swift"; sourceTree = "<group>"; };
 		97B53A07281831D70054B826 /* Utils+UIHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Utils+UIHelper.swift"; sourceTree = "<group>"; };
 		97B7D6242821DF25002039ED /* Gradient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Gradient.swift; sourceTree = "<group>"; };
+		97B8CFE3283C283A00F3E4E6 /* InAppSubscription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppSubscription.swift; sourceTree = "<group>"; };
+		97B8CFEA283CC4DE00F3E4E6 /* SubscriptionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionManager.swift; sourceTree = "<group>"; };
+		97B8CFEC283CC54D00F3E4E6 /* Subscriptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Subscriptions.swift; sourceTree = "<group>"; };
+		97B8CFEE283CC5D000F3E4E6 /* SubscriptionErrorHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionErrorHandler.swift; sourceTree = "<group>"; };
+		97B8CFF2283CE05600F3E4E6 /* SubscriptionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionService.swift; sourceTree = "<group>"; };
+		97B8CFF4283CF0A400F3E4E6 /* Subscription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Subscription.swift; sourceTree = "<group>"; };
 		97C1C71327F5A95800E262FA /* GradientSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientSlider.swift; sourceTree = "<group>"; };
 		97C44FBA274EF93B001B61AB /* ContactasCleaningType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactasCleaningType.swift; sourceTree = "<group>"; };
 		97C44FBC274EF959001B61AB /* ContactsContainerType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsContainerType.swift; sourceTree = "<group>"; };
@@ -795,7 +807,6 @@
 			isa = PBXGroup;
 			children = (
 				04E5837D267B60F600EDC3A3 /* AlertManager.swift */,
-				9770C806274D18420046EF84 /* ErrorHandler */,
 				97AFE8F7278C5DEB0062E5D1 /* AlertHandler */,
 				97A57474280C7C8A00B76BD0 /* ProgressAlert */,
 				978FEF11274BB73700ADE1D9 /* AlertType.swift */,
@@ -1061,7 +1072,7 @@
 				979278672771241F0090F368 /* FileFormats */,
 				971AD5EA27EAB72D00811A3A /* TransitionController */,
 				972A2A172806255300D6F54A /* temp */,
-				971F05142813EE56009B796C /* ParkBenchTimer.swift */,
+				97B8CFF0283CC66900F3E4E6 /* Timer */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -1069,10 +1080,12 @@
 		04E5835F267A3EB600EDC3A3 /* Managers */ = {
 			isa = PBXGroup;
 			children = (
+				97B8CFE7283C28AC00F3E4E6 /* SubscriptionManager */,
 				97F8E64D2787047F00B01D6B /* DeepCleanManager */,
 				97A61EDF2726AB8B00F2E6DE /* Contacts */,
 				049CC21026821D560002F988 /* Photo */,
 				049CC21126821D5F0002F988 /* Alert */,
+				9770C806274D18420046EF84 /* ErrorHandler */,
 				049CC22B268321D30002F988 /* Settings */,
 				049CC2222683179E0002F988 /* ThemeManager */,
 				049CC22C268321DC0002F988 /* NotificationManager */,
@@ -1842,6 +1855,27 @@
 			path = AnimatedProgressView;
 			sourceTree = "<group>";
 		};
+		97B8CFE7283C28AC00F3E4E6 /* SubscriptionManager */ = {
+			isa = PBXGroup;
+			children = (
+				97B8CFEC283CC54D00F3E4E6 /* Subscriptions.swift */,
+				97B8CFEA283CC4DE00F3E4E6 /* SubscriptionManager.swift */,
+				97B8CFF4283CF0A400F3E4E6 /* Subscription.swift */,
+				97B8CFF2283CE05600F3E4E6 /* SubscriptionService.swift */,
+				97B8CFEE283CC5D000F3E4E6 /* SubscriptionErrorHandler.swift */,
+				97B8CFE3283C283A00F3E4E6 /* InAppSubscription.swift */,
+			);
+			path = SubscriptionManager;
+			sourceTree = "<group>";
+		};
+		97B8CFF0283CC66900F3E4E6 /* Timer */ = {
+			isa = PBXGroup;
+			children = (
+				971F05142813EE56009B796C /* BenchTimer.swift */,
+			);
+			path = Timer;
+			sourceTree = "<group>";
+		};
 		97C4217727FF4DDB00FF62D7 /* SmartCleanManager */ = {
 			isa = PBXGroup;
 			children = (
@@ -2185,6 +2219,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				97B8CFF3283CE05600F3E4E6 /* SubscriptionService.swift in Sources */,
 				972E02542741050D00C236C7 /* SingleContactsGroupOperationsListener.swift in Sources */,
 				970D7782275A9C400048F41D /* PHAssetGroupModel.swift in Sources */,
 				048D65C926B171E5004F0ADC /* PlainProgressview.swift in Sources */,
@@ -2220,6 +2255,7 @@
 				97DC110F27A172A800D10FE4 /* UICollectionView+IndexPath.swift in Sources */,
 				97CB3513273965BD005DA881 /* CAlayer+selectedCorners.swift in Sources */,
 				049CC23426833D320002F988 /* UIView+Radius.swift in Sources */,
+				97B8CFE4283C283B00F3E4E6 /* InAppSubscription.swift in Sources */,
 				97DC39AA273BE9C800D487BE /* GroupedContactsHeaderView.swift in Sources */,
 				97B01A59274582F900DDE03C /* BottomDoubleButtonBarView.swift in Sources */,
 				97A39FDC27649DF4007CB482 /* SegmentDatePicker.swift in Sources */,
@@ -2256,6 +2292,7 @@
 				978FEF12274BB73700ADE1D9 /* AlertType.swift in Sources */,
 				97C44FBD274EF959001B61AB /* ContactsContainerType.swift in Sources */,
 				97B01A7F2747CB8C00DDE03C /* ExportContactsViewController.swift in Sources */,
+				97B8CFED283CC54D00F3E4E6 /* Subscriptions.swift in Sources */,
 				97A17F5528363A4900591409 /* FontManager+ModalSettings.swift in Sources */,
 				97A17F59283662A700591409 /* FontManager+DromDownMenuFontType.swift in Sources */,
 				97A17F6328366EF300591409 /* FontManager+Banner.swift in Sources */,
@@ -2279,7 +2316,7 @@
 				97DA18F12797502B00427587 /* Thread+Extension.swift in Sources */,
 				04467CE0270D929D00DBBB39 /* HorizontalProgressBar.swift in Sources */,
 				97CE449D273D311400DF6114 /* NavigationBarDelegate.swift in Sources */,
-				971F05152813EE56009B796C /* ParkBenchTimer.swift in Sources */,
+				971F05152813EE56009B796C /* BenchTimer.swift in Sources */,
 				044281FE2692F9B800B6B47C /* SelectDropDownMenuDelegate.swift in Sources */,
 				97CB351E273A9746005DA881 /* TableView+IndexPath.swift in Sources */,
 				4F56073E27205AF300CA19E9 /* ProgressView.swift in Sources */,
@@ -2397,6 +2434,8 @@
 				9701D25E27BD265C0078E39F /* SettingsSection.swift in Sources */,
 				97A39FE127649FE0007CB482 /* SegmentDatePicker+Extension.swift in Sources */,
 				049CC21B268225E60002F988 /* SettingsManager.swift in Sources */,
+				97B8CFEF283CC5D000F3E4E6 /* SubscriptionErrorHandler.swift in Sources */,
+				97B8CFF5283CF0A400F3E4E6 /* Subscription.swift in Sources */,
 				972A29F52805733800D6F54A /* CompressingSettingsViewModel.swift in Sources */,
 				97A17F672836710200591409 /* FontManager+DeepClean.swift in Sources */,
 				977FE23727306355004DE4C3 /* ContactsGroupViewController.swift in Sources */,
@@ -2439,6 +2478,7 @@
 				972A29F2280572FC00D6F54A /* CompressingSection.swift in Sources */,
 				9745CC1B280765DA00335C04 /* VideoCompressionCustomSettingsViewController.swift in Sources */,
 				9701D27027BD39540078E39F /* SettingsDataSource.swift in Sources */,
+				97B8CFEB283CC4DE00F3E4E6 /* SubscriptionManager.swift in Sources */,
 				4F56074A27205AF300CA19E9 /* ColorUtil.swift in Sources */,
 				04CFFFEF268479CE000CA850 /* CircleProgressView.swift in Sources */,
 				4F56074627205AF300CA19E9 /* BlueIndicatorStyle.swift in Sources */,

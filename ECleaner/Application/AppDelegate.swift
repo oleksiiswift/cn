@@ -21,7 +21,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //		NotificationCenter.default.addObserver(forName: nil, object: nil, queue: nil) { notification in
 //			debugPrint(notification)
 //		}
-		
+	
+		U.delay(10) {
+			SubscriptionManager.instance.purchasePremium(of: .week, with: .sandbox)
+		}
         return true
     }
 
@@ -41,6 +44,7 @@ extension AppDelegate {
     
     private func configureApplication(with launchOptions: [UIApplication.LaunchOptionsKey: Any]?) {
         
+		SubscriptionManager.instance.initialize()
 		PhotoManager.shared.checkPhotoLibraryAccess()
         ContactsManager.shared.checkStatus { _ in }
 		ECFileManager().deleteAllFiles(at: AppDirectories.temp) {
@@ -64,6 +68,6 @@ extension AppDelegate {
 	
 	private func developmentSettings() {
 		
-		S.premium.allowAdvertisementBanner = false
+		S.inAppPurchase.allowAdvertisementBanner = false
 	}
 }
