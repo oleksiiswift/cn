@@ -341,7 +341,7 @@ extension PHAssetFetchManager {
 			
 			U.GLB(qos: .background, {
 				
-				let timer = ParkBenchTimer()
+				let timer = BenchTimer()
 				
 				var lowerDateValue: Date {
 					return S.lowerBoundSavedDate

@@ -19,7 +19,9 @@ target 'ECleaner' do
 	
 	# - ui elements -
 	pod 'SwiftMessages' # use for modal present screens and pop up
-	# - use for testing or thms -
+	
+	# - swifty store kit for ios 13 and 14
+	pod 'SwiftyStoreKit'
 	
 	# - temporary disabled or not in use -
 	
@@ -28,9 +30,7 @@ target 'ECleaner' do
 	#pod 'SwiftyContacts'
 	#pod 'SwiftyUserDefaults'
 	
-#  pod 'cisua'
-#  pod 'SwiftyStoreKit'
 #  pod 'Google-Mobile-Ads-SDK'
 
-	pod 'SnapKit', '~> 5.0.0'
+#	pod 'SnapKit', '~> 5.0.0'
 end
