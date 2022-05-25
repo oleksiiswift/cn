@@ -16,6 +16,42 @@ extension Utils {
 		
 		struct AppDimensions {
 			
+			struct Permissions {
+				
+				static private var heightOfPermissionRow: CGFloat {
+					switch screenSize {
+							
+						case .small:
+							return 160
+						case .medium, .plus:
+							return 180
+						case .large, .modern, .max, .madMax:
+							return 200
+							
+					}
+				}
+				
+				static private var heighOfContinueButton: CGFloat {
+					switch screenSize {
+						case .small:
+							return 85
+						case .medium, .plus:
+							return 90
+						case .large, .modern, .max, .madMax:
+							return 100
+					}
+				}
+				
+				public static func getHeightOfRow(at permissionType: Permission.PermissionType) -> CGFloat {
+					switch permissionType {
+						case .appUsage:
+							return heighOfContinueButton
+						default:
+							return heightOfPermissionRow
+					}
+				}
+			}
+			
 			struct CollectionItemSize {
 				
 				static var singleCollectionScreenRecordingItemSize: CGFloat {

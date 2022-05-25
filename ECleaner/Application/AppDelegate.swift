@@ -15,28 +15,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         configureApplication(with: launchOptions)
         setDefaults()
-		
 		developmentSettings()
 		
 //		NotificationCenter.default.addObserver(forName: nil, object: nil, queue: nil) { notification in
 //			debugPrint(notification)
 //		}
 	
-		U.delay(10) {
-			SubscriptionManager.instance.purchasePremium(of: .week, with: .sandbox)
-		}
         return true
     }
 
     // MARK: UISceneSession Lifecycle
 
     func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
-
+		debugPrint(connectingSceneSession)
         return UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
     }
 
     func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {
- 
+		debugPrint(sceneSessions)
     }
 }
 
@@ -51,6 +47,9 @@ extension AppDelegate {
 			debugPrint("deleted all files from temp")
 		}
     }
+}
+
+extension AppDelegate {
 
     private func setDefaults() {
 	

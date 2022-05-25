@@ -136,3 +136,21 @@ class Images {
 		static let share = UIImage(systemName: "square.and.arrow.up")
     }
 }
+
+extension Images {
+	
+	public func getPermissionImage(for permission: Permission.PermissionType) -> UIImage {
+		switch permission {
+			case .notification:
+				return UIImage(systemName: "square.and.arrow.up")!
+			case .photolibrary:
+				return UIImage(systemName: "square.and.arrow.up")!
+			case .contacts:
+				return UIImage(systemName: "square.and.arrow.up")!
+			case .tracking:
+				return UIImage(systemName: "square.and.arrow.up")!
+			default:
+				return UIImage()
+		}
+	}
+}

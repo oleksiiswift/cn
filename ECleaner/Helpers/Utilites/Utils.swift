@@ -24,6 +24,10 @@ class Utils {
     static let device: UIDevice = .current
     
     static let appDelegate: AppDelegate = application.delegate as! AppDelegate
+	
+	static let scene = UIApplication.shared.connectedScenes.first
+	
+	static let sceneDelegate: SceneDelegate = scene!.delegate as! SceneDelegate
     
     static let locale: Locale = .current
     

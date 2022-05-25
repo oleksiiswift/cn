@@ -358,6 +358,7 @@ class Constants {
             static let exportContacts = "ExportContact"
 			static let settings = "Settings"
 			static let videoProcessing = "VideoProcessing"
+			static let permissions = "Permissions"
         }
         
         struct viewControllers {
@@ -377,6 +378,7 @@ class Constants {
             static let expordContacts = "ExportContactsViewController"
 			static let settings = "SettingsViewController"
 			static let customCompression = "VideoCompressionCustomSettingsViewController"
+			static let permissions = "PermissionsViewController" 
         }
         
         struct cells {
@@ -393,6 +395,9 @@ class Constants {
 			static let compressionCell = "CompressionSettingsTableViewCell"
 			static let videoPreviewCell = "VideoPreviewTableViewCell"
 			static let contentBannerCell = "ContentBannerTableViewCell"
+			static let permissionCell = "PermissionTableViewCell"
+			static let permissionBannerCell = "PermissionBannerTableViewCell"
+			static let permissionContinueCell = "PermissionContinueTableViewCell"
         }
         
         struct views {
@@ -418,6 +423,9 @@ class Constants {
 			static let compressionCell = "CompressionSettingsTableViewCell"
 			static let videoPreivew = "VideoPreviewTableViewCell"
 			static let contentBannerCell = "ContentBannerTableViewCell"
+			static let permissionCell = "PermissionTableViewCell"
+			static let permissionBannerCell = "PermissionBannerTableViewCell"
+			static let permissionContinueCell = "PermissionContinueTableViewCell"
             /// `views`
             static let groupHeader = "GroupedAssetsReusableHeaderView"
             static let groupFooter = "GroupedAssetsReusableFooterView"

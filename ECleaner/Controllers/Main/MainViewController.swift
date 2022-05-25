@@ -282,7 +282,9 @@ extension MainViewController {
 		self.navigationController?.pushViewController(viewController, animated: true)
 	}
     
-    private func openSubscriptionController() {}
+    private func openSubscriptionController() {
+		UIPresenter.showViewController(of: .permission, scenePresenter: true)	
+	}
 }
 
 extension MainViewController {
