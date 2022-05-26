@@ -51,6 +51,17 @@ class SettingsManager {
 		}
 	}
 	
+	struct permissions {
+		
+		static var permisssionDidShow: Bool {
+			get {
+				return U.userDefaults.bool(forKey: C.key.permissions.permissionDidShow)
+			} set {
+				U.userDefaults.bool(forKey: C.key.permissions.permissionDidShow)
+			}
+		}
+	}
+	
     public var isDarkMode: Bool {
         get {
             U.userDefaults.bool(forKey: C.key.settings.isDarkModeOn)

@@ -100,3 +100,20 @@ extension UINavigationBar: UpdateColorsDelegate {
 }
 
 
+extension ThemeManager {
+	
+	public func getPermissionAccentColor(from permission: Permission.PermissionType) -> [UIColor] {
+		switch permission {
+			case .notification:
+				return Self.theme.permissionNotificationAccentColors
+			case .photolibrary:
+				return Self.theme.permissionPhotoLibraryAccentColors
+			case .contacts:
+				return Self.theme.permissionContantsAccentColors
+			case .tracking:
+				return Self.theme.permissionTrackingAccentColors
+			default:
+				return [UIColor()]
+		}
+	}
+}

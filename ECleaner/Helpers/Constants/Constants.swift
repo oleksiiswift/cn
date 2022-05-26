@@ -48,6 +48,10 @@ class Constants {
 			static let expireDate = "expireDate"
 			static let expiredSubscription = "expiredSubscription"
 		}
+		
+		struct permissions {
+			static let permissionDidShow = "permissionWindowDidShow"
+		}
         
         struct settings {
             static let isDarkModeOn = "darkModeIsSetOn"

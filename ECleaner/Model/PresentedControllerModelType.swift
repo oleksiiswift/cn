@@ -24,15 +24,7 @@ enum PresentedControllerType {
 				return C.identifiers.viewControllers.permissions
 		}
 	}
-	
-	var presentationWindow: UIWindow? {
-		switch self {
-
-			case .permission:
-				return U.sceneDelegate.permissionWindow
-		}
-	}
-	
+		
 	var presentController: UIViewController {
 		switch self {
 			case .permission:

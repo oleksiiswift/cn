@@ -40,3 +40,17 @@ class ContactsPermissions: Permission {
 	}	
 }
 
+class BlankPermission: Permission {
+	
+	public override var permissionType: Permission.PermissionType {
+		return .blank
+	}
+	
+	public override var status: Permission.Status {
+		return .authorized
+	}
+	
+	public override func requestForPermission(completionHandler: @escaping (Bool, Error?) -> Void) {
+		completionHandler(true, nil)
+	}	
+}

@@ -25,15 +25,18 @@ class PermissionsDataSource: NSObject {
 extension PermissionsDataSource {
 	
 	private func permissionConfigure(cell: PermissionTableViewCell, at indexPath: IndexPath) {
-		
+		let permission = self.permissionViewModel.getPermission(at: indexPath)
+		cell.configure(with: permission)
 	}
 	
 	private func permissionBannerConfigure(cell: PermissionBannerTableViewCell, at indexPath: IndexPath) {
+		cell.configureCell()
 		
 	}
 	
 	private func permissionContinueConfigure(cell: PermissionContinueTableViewCell, at indexPath: IndexPath) {
-		
+		cell.setupUI()
+		cell.updateColors()
 	}
 }
 
@@ -50,7 +53,7 @@ extension PermissionsDataSource: UITableViewDelegate, UITableViewDataSource {
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		switch indexPath.section {
 			case 0:
-				let cell = tableView.dequeueReusableCell(withIdentifier: C.identifiers.cells.helperBannerCell, for: indexPath) as! PermissionBannerTableViewCell
+				let cell = tableView.dequeueReusableCell(withIdentifier: C.identifiers.cells.permissionBannerCell, for: indexPath) as! PermissionBannerTableViewCell
 				self.permissionBannerConfigure(cell: cell, at: indexPath)
 				return cell
 			case 1:
@@ -66,6 +69,6 @@ extension PermissionsDataSource: UITableViewDelegate, UITableViewDataSource {
 	
 	func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
 		let type = permissionViewModel.getPermission(at: indexPath)
-		return U.UIHelper.AppDimensions.Permissions.getHeightOfRow(at: type)
+		return U.UIHelper.AppDimensions.Permissions.getHeightOfRow(at: type.permissionType)
 	}
 }

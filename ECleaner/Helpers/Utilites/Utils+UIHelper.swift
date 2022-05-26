@@ -22,11 +22,11 @@ extension Utils {
 					switch screenSize {
 							
 						case .small:
-							return 160
+							return 140
 						case .medium, .plus:
-							return 180
+							return 140
 						case .large, .modern, .max, .madMax:
-							return 200
+							return 160
 							
 					}
 				}
@@ -46,6 +46,8 @@ extension Utils {
 					switch permissionType {
 						case .appUsage:
 							return heighOfContinueButton
+						case .blank:
+							return UITableView.automaticDimension
 						default:
 							return heightOfPermissionRow
 					}

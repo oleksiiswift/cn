@@ -1052,11 +1052,11 @@
 				047DE61626AAA36C00733CD5 /* Main */,
 				047DE61526AAA34800733CD5 /* PhotoControllers */,
 				974EEA3726A74239000A0326 /* PhotoPreviewViewController */,
-				04B20F03269C4F9A00C6BC14 /* ModalControllers */,
 				975AF43C2728307300744E3B /* Contacts */,
 				040E288926A98B150019F372 /* DeepClean */,
 				9701D26427BD2ED60078E39F /* Settings */,
 				9710285528038278003CBF7E /* VideoProcessing */,
+				04B20F03269C4F9A00C6BC14 /* ModalControllers */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";

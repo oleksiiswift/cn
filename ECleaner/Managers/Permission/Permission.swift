@@ -38,12 +38,20 @@ class Permission {
 		preconditionFailure()
 	}
 	
+	public var permissionAccentColors: [UIColor] {
+		return self.permissionType.permissionAccentColors
+	}
+	
 	public var permissionImage: UIImage {
 		return self.permissionType.permissionImage
 	}
 	
 	public var permissionName: String {
 		return self.permissionType.permissionName
+	}
+	
+	public var permissionDescription: String {
+		return self.permissionType.permissionDescription
 	}
 	
 	public var authorized: Bool {
@@ -62,6 +70,29 @@ class Permission {
 		return self.status == .notSupported
 	}
 	
+	public var buttonTitle: String {
+		switch self.status {
+			case .authorized:
+				return "allowed"
+			case .notDetermined:
+				return "continue"
+			default:
+				return "denied"
+		}
+	}
+	
+	public var buttonTitleColor: UIColor {
+		switch self.status {
+			case .authorized:
+				return ThemeManager.theme.subTitleTextColor
+			case .notDetermined:
+				return ThemeManager.theme.titleTextColor
+			default:
+				return .red
+				
+		}
+	}
+	
 	enum Status {
 		case authorized
 		case denied
@@ -76,7 +107,7 @@ class Permission {
 		case tracking
 		
 		case appUsage
-		case helperUsage
+		case blank
 		
 		public var permissionName: String {
 			return L.getTitle(for: self)
@@ -88,6 +119,10 @@ class Permission {
 		
 		public var permissionImage: UIImage {
 			return Images().getPermissionImage(for: self)
+		}
+		
+		public var permissionAccentColors: [UIColor] {
+			return ThemeManager().getPermissionAccentColor(from: self)
 		}
 	}
 }

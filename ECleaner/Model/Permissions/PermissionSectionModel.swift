@@ -9,9 +9,9 @@ import Foundation
 
 struct PermissionSectionModel {
 	
-	let cells: [Permission.PermissionType]
+	let cells: [Permission]
 	
-	init(cells: [Permission.PermissionType]) {
+	init(cells: [Permission]) {
 		self.cells = cells
 	}
 }

@@ -19,36 +19,12 @@ class UIPresenter {
 		 
 		 switch presentedType {
 			 case .permission:
-				 debugPrint("viewcontroler")
-				 debugPrint("if scene preenter hide navigation settings -> ")
+				 
+				 U.sceneDelegate.permissionWindow = UIWindow(windowScene: scene)
+				 U.sceneDelegate.permissionWindow?.windowLevel = .statusBar - 1
+				 U.sceneDelegate.permissionWindow?.rootViewController = navigationController
+				 U.sceneDelegate.permissionWindow?.makeKeyAndVisible()
 		 }
-		 
-		 self.present(type: presentedType,
-					  viewController: viewController,
-					  rootViewController: navigationController,
-					  scene: scene,
-					  scenePresenter: scenePresenter)
-	}
-	
-	private static func present(type: PresentedControllerType, viewController: UIViewController, rootViewController: UINavigationController, scene: UIWindowScene, scenePresenter: Bool = true) {
-		DispatchQueue.main.async {
-			
-			if let window = UIWindowScene.focused.map(UIWindow.init(windowScene:)) {
-				window.rootViewController = viewController
-				window.makeKeyAndVisible()
-			}
-			
-//			var window = type.presentationWindow
-//			window = UIWindow(windowScene: scene)
-//			window!.windowLevel = .statusBar + 1
-//			window!.rootViewController = rootViewController
-//			window!.makeKeyAndVisible()
-//			U.delay(1) {
-//				debugPrint(window!.frame)
-//				debugPrint(scene)
-//			}
-			
-		}
 	}
 }
 

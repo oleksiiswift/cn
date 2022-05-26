@@ -12,12 +12,14 @@ var currentScene: UIScene?
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
+	var permissionWindow: UIWindow?
 	
-	public var permissionWindow: UIWindow?
-
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
 		guard let scene = (scene as? UIWindowScene) else { return }
 		currentScene = scene
+		
+		handleStartupRouting()
+		
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
@@ -42,8 +44,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneDidEnterBackground(_ scene: UIScene) {
 
     }
-	
-	
-	
 }
 
+extension SceneDelegate {
+	
+	
+	private func handleStartupRouting() {
+		
+		if !SettingsManager.permissions.permisssionDidShow {
+			UIPresenter.showViewController(of: .permission)
+		}
+	}
+}

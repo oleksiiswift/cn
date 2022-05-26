@@ -139,18 +139,20 @@ class Images {
 
 extension Images {
 	
+	
+	
 	public func getPermissionImage(for permission: Permission.PermissionType) -> UIImage {
 		switch permission {
 			case .notification:
-				return UIImage(systemName: "square.and.arrow.up")!
+				return UIImage(systemName: "app.badge.fill")!
 			case .photolibrary:
-				return UIImage(systemName: "square.and.arrow.up")!
+				return UIImage(systemName: "circle.hexagonpath.fill")!
 			case .contacts:
-				return UIImage(systemName: "square.and.arrow.up")!
+				return UIImage(systemName: "person.crop.square")!
 			case .tracking:
-				return UIImage(systemName: "square.and.arrow.up")!
+				return UIImage(systemName: "app.connected.to.app.below.fill")!
 			default:
-				return UIImage()
+				return UIImage(systemName: "rectangle.and.hand.point.up.left.fill")!
 		}
 	}
 }

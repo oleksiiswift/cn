@@ -664,3 +664,29 @@ enum Theme: Int {
 	}
 }
 
+extension Theme {
+	
+	var permissionNotificationAccentColors: [UIColor] {
+		let startColor = UIColor().colorFromHexString("FF543E")
+		let endColor = UIColor ().colorFromHexString("F99C90")
+		return [startColor, endColor]
+	}
+	
+	var permissionPhotoLibraryAccentColors: [UIColor] {
+		let startColor = UIColor().colorFromHexString("AEA1CE")
+		let endColor = UIColor ().colorFromHexString("82BFE6")
+		return [startColor, endColor]
+	}
+	
+	var permissionContantsAccentColors: [UIColor] {
+		let startColor = UIColor().colorFromHexString("C5BFB9")
+		let endColor = UIColor ().colorFromHexString("E5E3DE")
+		return [startColor, endColor]
+	}
+	
+	var permissionTrackingAccentColors: [UIColor] {
+		let startColor = UIColor().colorFromHexString("FFA600")
+		let endColor = UIColor ().colorFromHexString("FFCE72")
+		return [startColor, endColor]
+	}
+}
