@@ -12,7 +12,7 @@ class ReuseShadowRoundedView: UIView {
     private let topLayer = CALayer()
     private let bottomLayer = CALayer()
     public let imageView = UIImageView()
-	private let helperImageView = UIImageView()
+	public let helperImageView = UIImageView()
     
     public var topShadowColor: UIColor = .red
     public var bottomShadowColor: UIColor = .black

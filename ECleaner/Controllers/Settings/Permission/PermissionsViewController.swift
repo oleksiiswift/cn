@@ -16,7 +16,7 @@ class PermissionsViewController: UIViewController {
 	private var permissionViewModel: PermissionViewModel!
 	private var permissionDataSource: PermissionsDataSource!
 	
-	public var navigationControllerIsVisible: Bool = false
+	public var fromRootViewController: Bool = true
 		
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,21 +27,56 @@ class PermissionsViewController: UIViewController {
 		setupNavigation()
 		updateColors()
 		setupDelegate()
+		setupObservers()
     }
-	
-	override func viewDidAppear(_ animated: Bool) {
-		super.viewDidAppear(animated)
-	}
-	
-	override func viewDidDisappear(_ animated: Bool) {
-		super.viewDidDisappear(animated)
-	}
 }
 
-extension PermissionsViewController: PermissionsActionsDelegate {
+extension PermissionsViewController {
 	
-	func permissionSwitchDidChange(at cell: Permission.PermissionType, isActive: Bool) {
-		debugPrint("changeSwitch to \(isActive) at type \(cell)")
+	private func handleContineButton() {
+		
+		if #available(iOS 14.5, *) {
+			if AppTrackerPermissions().notDetermined {
+				A.showApptrackerPerformAlert(at: self) {
+					AppTrackerPermissions().requestForPermission { _, _ in }
+				}
+			} else {
+				self.handleAtLeastOnePermission()
+			}
+		} else {
+			self.handleAtLeastOnePermission()
+		}
+	}
+	
+	private func handleAtLeastOnePermission() {
+		
+		if PhotoLibraryPermissions().notDetermined && ContactsPermissions().notDetermined || PhotoLibraryPermissions().denied && ContactsPermissions().denied {
+			A.showAtLeastOneMediaPermissionAlert(at: self)
+		} else {
+			self.dismiss(animated: true) {
+				U.sceneDelegate.permissionWindow = nil
+			}
+		}
+	}
+	
+	private func handlePermissionChange(at cell: PermissionTableViewCell, with permission: Permission) {
+
+		switch permission.status {
+			case .authorized, .denied:
+				A.showDeniedAlert(permission, at: self)
+			case .notDetermined:
+				permission.requestForPermission { granted, error in
+					cell.setButtonState(for: permission)
+				}
+			case .notSupported:
+				return
+		}
+	}
+	
+	@objc func applicationDidBecomeActive() {
+		UIView.performWithoutAnimation {
+			self.tableView.reloadData()
+		}
 	}
 }
 
@@ -68,8 +103,19 @@ extension PermissionsViewController {
 		}
 		let blankModel = PermissionSectionModel(cells: blankPermission)
 		let sectionModel = PermissionSectionModel(cells: permissionSections)
-		self.permissionViewModel = PermissionViewModel(sections: [blankModel,sectionModel, blankModel])
+		
+		let permissionModel = fromRootViewController ? PermissionViewModel(sections: [blankModel,sectionModel, blankModel]) : PermissionViewModel(sections: [sectionModel])
+		self.permissionViewModel = permissionModel
 		self.permissionDataSource = PermissionsDataSource(permissionViewModel: self.permissionViewModel)
+		self.permissionDataSource.fromRootViewController = self.fromRootViewController
+		
+		self.permissionDataSource.permissionActionDidChange = { cell, permission in
+			self.handlePermissionChange(at: cell, with: permission)
+		}
+		
+		self.permissionDataSource.handleContinueButton = {
+			self.handleContineButton()
+		}
 	}
 	
 	private func tableViewSetup() {
@@ -80,7 +126,7 @@ extension PermissionsViewController {
 		
 		self.tableView.delegate = permissionDataSource
 		self.tableView.dataSource = permissionDataSource
-		self.tableView.contentInset.top = 20
+		self.tableView.contentInset.top = 0
 		self.tableView.separatorStyle = .none
 		self.tableView.allowsSelection = false
 	}
@@ -96,13 +142,12 @@ extension PermissionsViewController: Themeble {
 	private func setupNavigation() {
 		
 		let navigationBarHeight = U.UIHelper.AppDimensions.NavigationBar.navigationBarHeight
-		navigationBarHeightConstraint.constant = navigationControllerIsVisible ? navigationBarHeight : 0
-		
+		navigationBarHeightConstraint.constant = !fromRootViewController ? navigationBarHeight : 0
 		
 		navigationBar.layoutIfNeeded()
 		self.view.layoutIfNeeded()
 		
-		if navigationControllerIsVisible {
+		if !fromRootViewController {
 			navigationBar.setupNavigation(title: "permissions",
 										  leftBarButtonImage: I.systemItems.navigationBarItems.back,
 										  rightBarButtonImage: nil,
@@ -115,15 +160,17 @@ extension PermissionsViewController: Themeble {
 	}
 	
 	private func setupDelegate() {
-		
 		navigationBar.delegate = self
-		permissionDataSource.delegate = self
+	}
+	
+	private func setupObservers() {
+		
+		NotificationCenter.default.addObserver(self, selector: #selector(self.applicationDidBecomeActive), name: UIApplication.didBecomeActiveNotification, object: nil)
 	}
 	
 	func updateColors() {
 		self.view.backgroundColor = theme.backgroundColor
 		self.tableView.backgroundColor = theme.backgroundColor
-		
 	}
 }
 

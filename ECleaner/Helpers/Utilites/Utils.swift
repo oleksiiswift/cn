@@ -129,7 +129,7 @@ extension Utils {
             completion()
         }
     }
-
+	
     /// main
     static func UI(_ block: @escaping () -> Void) {
         DispatchQueue.main.async(execute: block)
@@ -190,7 +190,11 @@ func getTheMostTopController(controller: UIViewController? = UIApplication.share
         while let presentedViewController = rootController.presentedViewController {
             return presentedViewController
         }
-    }
+	} else if let keyWindowContreoller = U.keyWindow?.rootViewController {
+		while let presentedViewController =  keyWindowContreoller.presentedViewController {
+			return presentedViewController
+		}
+	}
     return controller!
 }
 

@@ -41,11 +41,11 @@ extension AppDelegate {
     private func configureApplication(with launchOptions: [UIApplication.LaunchOptionsKey: Any]?) {
         
 		SubscriptionManager.instance.initialize()
-		PhotoManager.shared.checkPhotoLibraryAccess()
-        ContactsManager.shared.checkStatus { _ in }
 		ECFileManager().deleteAllFiles(at: AppDirectories.temp) {
 			debugPrint("deleted all files from temp")
 		}
+		
+		PermissionManager.shared.checkForStartingPemissions()
     }
 }
 

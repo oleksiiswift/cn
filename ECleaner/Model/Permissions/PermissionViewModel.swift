@@ -30,6 +30,6 @@ class PermissionViewModel {
 	
 	public func getHeightForRow(at indexPath: IndexPath) -> CGFloat {
 		let permission = self.getPermission(at: indexPath)
-		return U.UIHelper.AppDimensions.Permissions.getHeightOfRow(at: permission.permissionType)
+		return AppDimensions.PermissionsCell.getHeightOfRow(at: permission.permissionType)
 	}
 }

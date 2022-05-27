@@ -139,20 +139,31 @@ class Images {
 
 extension Images {
 	
-	
-	
 	public func getPermissionImage(for permission: Permission.PermissionType) -> UIImage {
 		switch permission {
 			case .notification:
 				return UIImage(systemName: "app.badge.fill")!
 			case .photolibrary:
-				return UIImage(systemName: "circle.hexagonpath.fill")!
+				if #available(iOS 15.0, *) {
+					return UIImage(systemName: "circle.hexagonpath.fill")!
+				} else {
+					return UIImage(systemName: "photo.fill")!
+				}
 			case .contacts:
 				return UIImage(systemName: "person.crop.square")!
 			case .tracking:
-				return UIImage(systemName: "app.connected.to.app.below.fill")!
+				if #available(iOS 15.0, *) {
+					return UIImage(systemName: "app.connected.to.app.below.fill")!
+				} else {
+					return UIImage(systemName: "point.fill.topleft.down.curvedto.point.fill.bottomright.up")!
+				}
 			default:
-				return UIImage(systemName: "rectangle.and.hand.point.up.left.fill")!
+				if #available(iOS 15.0, *) {
+					return UIImage(systemName: "hand.raised.fill")!
+//					return UIImage(systemName: "rectangle.and.hand.point.up.left.fill")!
+				} else {
+					return UIImage(systemName: "hand.raised.fill")!
+				}
 		}
 	}
 }

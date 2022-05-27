@@ -126,3 +126,38 @@ class Permission {
 		}
 	}
 }
+
+class PermissionManager {
+	
+	static let shared: PermissionManager = {
+		let instance = PermissionManager()
+		return instance
+	}()
+	
+	
+	public func checkForStartingPemissions() {
+		
+		guard SettingsManager.permissions.permisssionDidShow else { return }
+		
+//					PhotoManager.shared.checkPhotoLibraryAccess()
+			//        ContactsManager.shared.checkStatus { _ in }
+		
+		PhotoLibraryPermissions().requestForPermission { status, error in
+			debugPrint(status)
+		}
+		
+		ContactsPermissions().requestForPermission { status, error in
+			debugPrint(status)
+		}
+	}
+}
+
+extension PermissionManager {
+	
+
+}
+
+
+
+
+

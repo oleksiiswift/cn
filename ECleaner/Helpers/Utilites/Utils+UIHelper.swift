@@ -16,43 +16,7 @@ extension Utils {
 		
 		struct AppDimensions {
 			
-			struct Permissions {
-				
-				static private var heightOfPermissionRow: CGFloat {
-					switch screenSize {
-							
-						case .small:
-							return 140
-						case .medium, .plus:
-							return 140
-						case .large, .modern, .max, .madMax:
-							return 160
-							
-					}
-				}
-				
-				static private var heighOfContinueButton: CGFloat {
-					switch screenSize {
-						case .small:
-							return 85
-						case .medium, .plus:
-							return 90
-						case .large, .modern, .max, .madMax:
-							return 100
-					}
-				}
-				
-				public static func getHeightOfRow(at permissionType: Permission.PermissionType) -> CGFloat {
-					switch permissionType {
-						case .appUsage:
-							return heighOfContinueButton
-						case .blank:
-							return UITableView.automaticDimension
-						default:
-							return heightOfPermissionRow
-					}
-				}
-			}
+			
 			
 			struct CollectionItemSize {
 				

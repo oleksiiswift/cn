@@ -30,20 +30,20 @@
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="50" id="Buo-aI-dM6"/>
-                                    <constraint firstAttribute="height" constant="50" id="nVt-cq-vAi"/>
+                                    <constraint firstAttribute="width" secondItem="Hnm-A9-Wj3" secondAttribute="height" multiplier="1:1" id="cL3-JW-AdA"/>
                                 </constraints>
                             </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="t8g-HM-NgN">
-                                <rect key="frame" x="90" y="15" width="283" height="30"/>
+                                <rect key="frame" x="90" y="17.5" width="41.5" height="25"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="30" id="XO9-VE-TUJ"/>
+                                    <constraint firstAttribute="height" constant="25" id="XO9-VE-TUJ"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tV8-7c-TDB">
-                                <rect key="frame" x="90" y="50" width="283" height="20.5"/>
+                                <rect key="frame" x="90" y="47.5" width="263" height="20.5"/>
                                 <constraints>
                                     <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="20.5" id="P1h-91-674"/>
                                 </constraints>
@@ -69,16 +69,15 @@
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="t8g-HM-NgN" firstAttribute="trailing" secondItem="c1g-zD-gK3" secondAttribute="leading" id="AZH-gr-qjg"/>
+                            <constraint firstItem="bKx-l1-Cd8" firstAttribute="top" secondItem="kUa-nK-N8S" secondAttribute="top" constant="35" id="9HC-59-Kp9"/>
+                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="164" id="FD5-S8-5vM"/>
                             <constraint firstItem="t8g-HM-NgN" firstAttribute="leading" secondItem="Hnm-A9-Wj3" secondAttribute="trailing" constant="20" id="FK1-sG-NAD"/>
                             <constraint firstItem="tV8-7c-TDB" firstAttribute="top" secondItem="t8g-HM-NgN" secondAttribute="bottom" constant="5" id="JY2-cX-zpv"/>
                             <constraint firstItem="c1g-zD-gK3" firstAttribute="leading" secondItem="bKx-l1-Cd8" secondAttribute="leading" id="Qdg-iF-hlh"/>
                             <constraint firstItem="tV8-7c-TDB" firstAttribute="leading" secondItem="t8g-HM-NgN" secondAttribute="leading" id="ZTE-2S-lZZ"/>
                             <constraint firstAttribute="trailing" secondItem="bKx-l1-Cd8" secondAttribute="trailing" constant="20" id="bYS-6b-Lfk"/>
-                            <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="tV8-7c-TDB" secondAttribute="bottom" constant="15" id="cIo-Se-e0X"/>
-                            <constraint firstItem="tV8-7c-TDB" firstAttribute="trailing" secondItem="t8g-HM-NgN" secondAttribute="trailing" id="hfS-ia-ncq"/>
                             <constraint firstItem="Hnm-A9-Wj3" firstAttribute="top" secondItem="kUa-nK-N8S" secondAttribute="top" constant="30" id="mPr-bn-g4E"/>
-                            <constraint firstItem="bKx-l1-Cd8" firstAttribute="centerY" secondItem="Hnm-A9-Wj3" secondAttribute="centerY" id="rPL-93-HqH"/>
+                            <constraint firstAttribute="trailing" secondItem="tV8-7c-TDB" secondAttribute="trailing" constant="120" id="mja-ZH-THx"/>
                             <constraint firstItem="c1g-zD-gK3" firstAttribute="top" secondItem="bKx-l1-Cd8" secondAttribute="top" id="s52-VW-nmY"/>
                             <constraint firstItem="c1g-zD-gK3" firstAttribute="bottom" secondItem="bKx-l1-Cd8" secondAttribute="bottom" id="s98-H7-8wd"/>
                             <constraint firstItem="t8g-HM-NgN" firstAttribute="centerY" secondItem="Hnm-A9-Wj3" secondAttribute="top" id="sEf-M2-DM8"/>
@@ -106,10 +105,11 @@
                 <outlet property="baseView" destination="kUa-nK-N8S" id="os6-Vg-g9f"/>
                 <outlet property="permissionButton" destination="c1g-zD-gK3" id="uhI-dP-IpQ"/>
                 <outlet property="reuseRoundedShadowView" destination="Hnm-A9-Wj3" id="aCO-dM-vvN"/>
-                <outlet property="reuseShadowbuttonView" destination="bKx-l1-Cd8" id="Goq-af-L2B"/>
+                <outlet property="roundedShadowViewWidthConstraint" destination="Buo-aI-dM6" id="0nF-SI-w1m"/>
                 <outlet property="shadowButtonView" destination="bKx-l1-Cd8" id="mbF-yr-RAv"/>
-                <outlet property="subtitle" destination="tV8-7c-TDB" id="Uzd-mQ-nwe"/>
-                <outlet property="title" destination="t8g-HM-NgN" id="2gn-Fv-1QY"/>
+                <outlet property="shadowButtonWidthConstraint" destination="wqb-mw-GZg" id="lkG-Vn-nMb"/>
+                <outlet property="subtitleTextLabel" destination="tV8-7c-TDB" id="rsr-Ch-Luc"/>
+                <outlet property="titleTextLabel" destination="t8g-HM-NgN" id="ENQ-QW-dvO"/>
             </connections>
             <point key="canvasLocation" x="71.739130434782609" y="28.125"/>
         </tableViewCell>

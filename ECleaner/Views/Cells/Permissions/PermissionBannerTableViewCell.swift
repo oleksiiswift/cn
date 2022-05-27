@@ -10,7 +10,6 @@ import UIKit
 class PermissionBannerTableViewCell: UITableViewCell {
 	
 	@IBOutlet weak var titleTextLabel: UILabel!
-	
 	@IBOutlet weak var subtitleTextLabel: UILabel!
 	
     override func awakeFromNib() {
@@ -29,14 +28,11 @@ extension PermissionBannerTableViewCell: Themeble {
 		subtitleTextLabel.text = "These are the permissions the app requires to work properly. Please see description for each permission."
 	}
 	
-	
 	private func setupUI() {
 		selectionStyle = .none
-		titleTextLabel.font = .systemFont(ofSize: 28, weight: .black)
-		subtitleTextLabel.font = .systemFont(ofSize: 16, weight: .bold)
+		titleTextLabel.font = FontManager.permissionFont(of: .mainTitle)
+		subtitleTextLabel.font = FontManager.permissionFont(of: .mainSubtitle)
 		subtitleTextLabel.textAlignment = .natural
-		
-		
 	}
 	
 	func updateColors() {

@@ -175,7 +175,11 @@ extension ContactsManager {
 		/// fetch all contacts
 	public func getAllContacts(_ completionHandler: @escaping ([CNContact]) -> Void) {
 		
-		guard isStoreOpen else { return }
+//		guard isStoreOpen else { return }
+		guard SettingsManager.permissions.permisssionDidShow else { return }
+		
+		#warning("PERMISSION BOOL VALUE")
+		return
 		
 		U.BG {
 			self.fetchContacts(keys: self.fetchingKeys) { result in

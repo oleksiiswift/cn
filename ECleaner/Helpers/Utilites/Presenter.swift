@@ -28,14 +28,12 @@ class UIPresenter {
 	}
 }
 
-
 extension UIWindowScene {
 	static var focused: UIWindowScene? {
 		return UIApplication.shared.connectedScenes
 			.first { $0.activationState == .foregroundActive && $0 is UIWindowScene } as? UIWindowScene
 	}
 }
-
 
 extension UIPresenter {
 	

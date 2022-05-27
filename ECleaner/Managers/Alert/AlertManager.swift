@@ -102,6 +102,40 @@ extension AlertManager {
     }
 }
 
+extension AlertManager {
+	
+	public static func showAtLeastOneMediaPermissionAlert(at viewController: UIViewController) {
+		let alertText = TempText.getAtLeastOnePermissionText()
+		self.showAlert(with: alertText, at: viewController) {}
+	}
+	
+	public static func showDeniedAlert(_ permission: Permission, at viewController: UIViewController) {
+		let alertText = TempText.getDeniedPermissionText()
+		self.showAlert(with: alertText, at: viewController) {
+			UIPresenter.openSettingPage()
+		}
+	}
+	
+	public static func showApptrackerPerformAlert(at viewController: UIViewController, completion: @escaping () -> Void) {
+		let alertText = TempText.getApptrackerPermissionText()
+		self.showAlert(with: alertText, at: viewController) {
+			completion()
+		}
+	}
+	
+	private static func showAlert(with text: AlertTextStrings, at viewController: UIViewController, completionHandler: @escaping () -> Void) {
+		
+		let alertController = UIAlertController(title: text.title, message: text.description, preferredStyle: .alert)
+		let cancelAction = UIAlertAction(title: text.cancel, style: .cancel)
+		let action = UIAlertAction(title: text.action, style: .default) { _ in
+			completionHandler()
+		}
+		alertController.addAction(action)
+		text.cancel != "" ?  alertController.addAction(cancelAction) : ()
+		viewController.present(alertController, animated: true, completion: nil)
+	}
+}
+
 //    MARK: - PHASSET ALERTS -
 extension AlertManager {
 	

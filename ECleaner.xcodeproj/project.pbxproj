@@ -181,6 +181,8 @@
 		97420C03283EC76400B0E134 /* PermissionBannerTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 97420C01283EC76400B0E134 /* PermissionBannerTableViewCell.xib */; };
 		97420C06283EC7A500B0E134 /* PermissionContinueTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97420C04283EC7A500B0E134 /* PermissionContinueTableViewCell.swift */; };
 		97420C07283EC7A500B0E134 /* PermissionContinueTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 97420C05283EC7A500B0E134 /* PermissionContinueTableViewCell.xib */; };
+		97420C0B2841186000B0E134 /* FontManager+Permission.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97420C0A2841186000B0E134 /* FontManager+Permission.swift */; };
+		97420C0D28411EA000B0E134 /* AppDimensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97420C0C28411EA000B0E134 /* AppDimensions.swift */; };
 		9745CC1B280765DA00335C04 /* VideoCompressionCustomSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9745CC1A280765D900335C04 /* VideoCompressionCustomSettingsViewController.swift */; };
 		975617D8273BC32A00E07A62 /* ReuseShadowRoundedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 975617D7273BC32A00E07A62 /* ReuseShadowRoundedView.swift */; };
 		975AF43127281DF700744E3B /* ContactListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 975AF43027281DF700744E3B /* ContactListViewModel.swift */; };
@@ -525,6 +527,8 @@
 		97420C01283EC76400B0E134 /* PermissionBannerTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PermissionBannerTableViewCell.xib; sourceTree = "<group>"; };
 		97420C04283EC7A500B0E134 /* PermissionContinueTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionContinueTableViewCell.swift; sourceTree = "<group>"; };
 		97420C05283EC7A500B0E134 /* PermissionContinueTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PermissionContinueTableViewCell.xib; sourceTree = "<group>"; };
+		97420C0A2841186000B0E134 /* FontManager+Permission.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FontManager+Permission.swift"; sourceTree = "<group>"; };
+		97420C0C28411EA000B0E134 /* AppDimensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDimensions.swift; sourceTree = "<group>"; };
 		9745CC1A280765D900335C04 /* VideoCompressionCustomSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoCompressionCustomSettingsViewController.swift; sourceTree = "<group>"; };
 		975617D7273BC32A00E07A62 /* ReuseShadowRoundedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReuseShadowRoundedView.swift; sourceTree = "<group>"; };
 		975AF43027281DF700744E3B /* ContactListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactListViewModel.swift; sourceTree = "<group>"; };
@@ -874,6 +878,7 @@
 				97238A122689EF6E00C523DC /* Presenter.swift */,
 				9701D27127BE4C910078E39F /* AudioToolBoxVibration.swift */,
 				97B7D6242821DF25002039ED /* Gradient.swift */,
+				97420C0E284125B600B0E134 /* AppDimensions */,
 			);
 			path = Utilites;
 			sourceTree = "<group>";
@@ -1672,6 +1677,14 @@
 			path = Permissions;
 			sourceTree = "<group>";
 		};
+		97420C0E284125B600B0E134 /* AppDimensions */ = {
+			isa = PBXGroup;
+			children = (
+				97420C0C28411EA000B0E134 /* AppDimensions.swift */,
+			);
+			path = AppDimensions;
+			sourceTree = "<group>";
+		};
 		974EEA3726A74239000A0326 /* PhotoPreviewViewController */ = {
 			isa = PBXGroup;
 			children = (
@@ -1850,6 +1863,7 @@
 			isa = PBXGroup;
 			children = (
 				97A17F4F2836363D00591409 /* FontManager.swift */,
+				97420C0A2841186000B0E134 /* FontManager+Permission.swift */,
 				97A17F662836710200591409 /* FontManager+DeepClean.swift */,
 				978D8C2B28397D7000F65D79 /* FontManager+Contacts.swift */,
 				97A17F642836701300591409 /* FontManager+BottomButton.swift */,
@@ -2430,6 +2444,7 @@
 				9790CDBE28074ADB005E9570 /* HandlerView.swift in Sources */,
 				9793300C2815DAA600DCFECD /* UIImage+Color.swift in Sources */,
 				9776F5792735937E009D806A /* InnerShadowLayer.swift in Sources */,
+				97420C0B2841186000B0E134 /* FontManager+Permission.swift in Sources */,
 				97D2BECC275A3D06002082EB /* CNContactVCard+ImageData.swift in Sources */,
 				975617D8273BC32A00E07A62 /* ReuseShadowRoundedView.swift in Sources */,
 				975AF43127281DF700744E3B /* ContactListViewModel.swift in Sources */,
@@ -2484,6 +2499,7 @@
 				044281FE2692F9B800B6B47C /* SelectDropDownMenuDelegate.swift in Sources */,
 				97CB351E273A9746005DA881 /* TableView+IndexPath.swift in Sources */,
 				4F56073E27205AF300CA19E9 /* ProgressView.swift in Sources */,
+				97420C0D28411EA000B0E134 /* AppDimensions.swift in Sources */,
 				04CACE1E26A7FF62006489FA /* CarouselItemView.swift in Sources */,
 				97CB3516273A9129005DA881 /* ContactTableViewCell.swift in Sources */,
 				04CFFFEC2684725F000CA850 /* Device+DiskSpace.swift in Sources */,

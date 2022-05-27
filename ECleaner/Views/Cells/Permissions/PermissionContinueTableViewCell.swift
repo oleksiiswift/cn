@@ -12,23 +12,28 @@ class PermissionContinueTableViewCell: UITableViewCell {
 	@IBOutlet weak var titleTextLabel: UILabel!
 	@IBOutlet weak var bottomButtonBarView: BottomButtonBarView!
 	
-    override func awakeFromNib() {
-        super.awakeFromNib()
+	public var delegate: PermissionsActionsDelegate?
+	
+	override func awakeFromNib() {
+		super.awakeFromNib()
 		
-		
-        
-    }
+		setContinueButton(availible: true)
+	}
 }
 
-
 extension PermissionContinueTableViewCell: Themeble {
+	
+	public func setContinueButton(availible: Bool) {
+		
+		bottomButtonBarView.actionButton.setbuttonAvailible(availible)
+	}
 	
 	public func setupUI() {
 		
 		selectionStyle = .none
 		titleTextLabel.text = "Permissions are necessary for the application to work and perform correctly."
 		
-		titleTextLabel.font = .systemFont(ofSize: 13, weight: .bold)
+		titleTextLabel.font = FontManager.permissionFont(of: .desctiption)
 		titleTextLabel.textAlignment = .natural
 		bottomButtonBarView.delegate = self
 		
@@ -37,8 +42,9 @@ extension PermissionContinueTableViewCell: Themeble {
 		let image = I().getPermissionImage(for: .blank)
 		bottomButtonBarView.setImage(image)
 		
+		let font = FontManager.bottomButtonFont(of: .title)
+		bottomButtonBarView.setFont(font)
 		if Screen.size == .small {
-			bottomButtonBarView.setFont(.systemFont(ofSize: 14, weight: .bold))
 			bottomButtonBarView.setButtonHeight(50)
 		}
 	}
@@ -52,13 +58,13 @@ extension PermissionContinueTableViewCell: Themeble {
 		bottomButtonBarView.configureShadow = true
 		bottomButtonBarView.addButtonShadow()
 		bottomButtonBarView.updateColorsSettings()
+		bottomButtonBarView.actionButton.animateShakeHello()
 	}
 }
 
 extension PermissionContinueTableViewCell: BottomActionButtonDelegate {
 	
-	
 	func didTapActionButton() {
-		
+		self.delegate?.didTapContinueButton()
 	}
 }
