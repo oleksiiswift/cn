@@ -185,11 +185,14 @@ extension SettingsViewController: SettingActionsDelegate {
 	}
 	
 	private func showPermissionController() {
-		debugPrint("showPermissionController")
+		let storyboard = UIStoryboard(name: C.identifiers.storyboards.permissions, bundle: nil)
+		let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.permissions) as! PermissionsViewController
+		viewController.fromRootViewController = false
+		self.navigationController?.pushViewController(viewController, animated: true)
 	}
 	
 	private func showRestorePurchaseAction() {
-		debugPrint("showRestorePurchaseAction")
+		SubscriptionManager.instance.restorePurchase()
 	}
 	
 	private func showSupportAction() {

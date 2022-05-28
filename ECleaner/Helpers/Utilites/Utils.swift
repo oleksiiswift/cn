@@ -24,6 +24,10 @@ class Utils {
     static let device: UIDevice = .current
     
     static let appDelegate: AppDelegate = application.delegate as! AppDelegate
+	
+	static let scene = UIApplication.shared.connectedScenes.first
+	
+	static let sceneDelegate: SceneDelegate = scene!.delegate as! SceneDelegate
     
     static let locale: Locale = .current
     
@@ -125,7 +129,7 @@ extension Utils {
             completion()
         }
     }
-
+	
     /// main
     static func UI(_ block: @escaping () -> Void) {
         DispatchQueue.main.async(execute: block)
@@ -186,7 +190,11 @@ func getTheMostTopController(controller: UIViewController? = UIApplication.share
         while let presentedViewController = rootController.presentedViewController {
             return presentedViewController
         }
-    }
+	} else if let keyWindowContreoller = U.keyWindow?.rootViewController {
+		while let presentedViewController =  keyWindowContreoller.presentedViewController {
+			return presentedViewController
+		}
+	}
     return controller!
 }
 

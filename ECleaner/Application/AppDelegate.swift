@@ -15,28 +15,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         configureApplication(with: launchOptions)
         setDefaults()
-		
 		developmentSettings()
+		setupObserver()
 		
 //		NotificationCenter.default.addObserver(forName: nil, object: nil, queue: nil) { notification in
 //			debugPrint(notification)
 //		}
 	
-		U.delay(10) {
-			SubscriptionManager.instance.purchasePremium(of: .week, with: .sandbox)
-		}
         return true
     }
 
     // MARK: UISceneSession Lifecycle
 
     func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
-
+		debugPrint(connectingSceneSession)
         return UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
     }
 
     func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {
- 
+		debugPrint(sceneSessions)
     }
 }
 
@@ -45,12 +42,15 @@ extension AppDelegate {
     private func configureApplication(with launchOptions: [UIApplication.LaunchOptionsKey: Any]?) {
         
 		SubscriptionManager.instance.initialize()
-		PhotoManager.shared.checkPhotoLibraryAccess()
-        ContactsManager.shared.checkStatus { _ in }
 		ECFileManager().deleteAllFiles(at: AppDirectories.temp) {
 			debugPrint("deleted all files from temp")
 		}
+		
+		PermissionManager.shared.checkForStartingPemissions()
     }
+}
+
+extension AppDelegate {
 
     private func setDefaults() {
 	
@@ -70,4 +70,18 @@ extension AppDelegate {
 		
 		S.inAppPurchase.allowAdvertisementBanner = false
 	}
+	
+	private func setupObserver() {
+		
+		NotificationCenter.default.addObserver(self, selector: #selector(checkPermissionStatus), name: UIApplication.didBecomeActiveNotification, object: nil)
+	}
+	
+	@objc func checkPermissionStatus() {
+		
+		guard SettingsManager.permissions.permisssionDidShow else { return }
+		
+		SettingsManager.permissions.photoPermissionSavedValue = PhotoLibraryPermissions().authorized
+		SettingsManager.permissions.contactsPermissionSavedValue = ContactsPermissions().authorized
+	}
 }
+

@@ -50,30 +50,11 @@ enum SettingsModel {
 	}
 	
 	var settingsImages: UIImage {
-		switch self {
-			case .premium:
-				return I.setting.premiumBanner
-			case .largeVideos:
-				return I.setting.largeVideo
-			case .dataStorage:
-				return I.setting.storage
-			case .permissions:
-				return I.setting.permission
-			case .restore:
-				return I.setting.restore
-			case .support:
-				return I.setting.support
-			case .share:
-				return I.setting.share
-			case .rate:
-				return I.setting.rate
-			case .privacypolicy:
-				return I.setting.privacy
-			case .termsOfUse:
-				return I.setting.terms
-			default:
-				return UIImage()
-		}
+		return Images().getSettingsImages(for: self)
+	}
+	
+	var gradientColorsForSettings: [UIColor] {
+		return ThemeManager.theme.getColorsGradient(for: self)
 	}
 	
 	var optionalBannerImage: UIImage {

@@ -51,6 +51,45 @@ class SettingsManager {
 		}
 	}
 	
+	struct permissions {
+		
+		static var permisssionDidShow: Bool {
+			get {
+				return U.userDefaults.bool(forKey: C.key.permissions.permissionDidShow)
+			} set {
+				U.userDefaults.set(newValue, forKey: C.key.permissions.permissionDidShow)
+			}
+		}
+		
+		static var photoPermissionSavedValue: Bool {
+			get {
+				return U.userDefaults.bool(forKey: C.key.permissions.settingsPhotoPermission)
+			} set {
+				if photoPermissionSavedValue != newValue {
+					let userInfo = [C.key.notificationDictionary.permission.photoPermission: PhotoLibraryPermissions()]
+					U.userDefaults.set(newValue, forKey: C.key.permissions.settingsPhotoPermission)
+					do {
+						U.notificationCenter.post(name: .permisionDidChange, object: nil, userInfo: userInfo)
+					}
+				}
+			}
+		}
+		
+		static var contactsPermissionSavedValue: Bool {
+			get {
+				return U.userDefaults.bool(forKey: C.key.permissions.settingsContactsPermission)
+			} set {
+				if contactsPermissionSavedValue != newValue {
+					let userInfo = [C.key.notificationDictionary.permission.contactsPermission: ContactsPermissions()]
+					U.userDefaults.set(newValue, forKey: C.key.permissions.settingsContactsPermission)
+					do {
+						U.notificationCenter.post(name: .permisionDidChange, object: nil, userInfo: userInfo)
+					}
+				}
+			}
+		}
+	}
+	
     public var isDarkMode: Bool {
         get {
             U.userDefaults.bool(forKey: C.key.settings.isDarkModeOn)

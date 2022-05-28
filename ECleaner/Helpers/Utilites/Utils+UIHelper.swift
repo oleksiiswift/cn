@@ -16,6 +16,8 @@ extension Utils {
 		
 		struct AppDimensions {
 			
+			
+			
 			struct CollectionItemSize {
 				
 				static var singleCollectionScreenRecordingItemSize: CGFloat {
@@ -754,6 +756,13 @@ extension Utils {
 					}
 				}
 				return nil
+			}
+			
+			func grayscaleImage(image: UIImage) -> UIImage {
+				let ciImage = CIImage(image: image)
+				let grayscale = ciImage!.applyingFilter("CIColorControls",
+														parameters: [ kCIInputSaturationKey: 0.0 ])
+				return UIImage(ciImage: grayscale)
 			}
 		}
 	}

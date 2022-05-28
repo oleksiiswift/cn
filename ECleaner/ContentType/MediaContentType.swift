@@ -26,6 +26,32 @@ enum MediaContentType {
                 return ""
         }
     }
+	
+	var mediaContentTypeName: String {
+		switch self {
+			case .userPhoto:
+				return "PHOTOS_TITLE".localized()
+			case .userVideo:
+				return "VIDEOS_TITLE".localized()
+			case .userContacts:
+				return "CONTACTS_TITLE".localized()
+			case .none:
+				return ""
+		}
+	}
+	
+	var mediaContenTypeImage: UIImage {
+		switch self {
+			case .userPhoto:
+				return I.mainStaticItems.photo
+			case .userVideo:
+				return I.mainStaticItems.video
+			case .userContacts:
+				return I.mainStaticItems.contacts
+			case .none:
+				return UIImage()
+		}
+	}
     
     var screenAcentTintColor: UIColor {
         

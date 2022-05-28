@@ -141,4 +141,21 @@ class FontManager {
 				return ExportModal.buttonTitle
 		}
 	}
+	
+	static func permissionFont(of type: PermissionFontType) -> UIFont {
+		switch type {
+			case .mainTitle:
+				return PermissionFont.mainTitleFont
+			case .mainSubtitle:
+				return PermissionFont.mainSubtitleFont
+			case .title:
+				return PermissionFont.titleFont
+			case .subtitle:
+				return PermissionFont.subtitleFont
+			case .permissionButton:
+				return PermissionFont.permissionButton
+			case .desctiption:
+				return PermissionFont.descriptioFont
+		}
+	}
 }

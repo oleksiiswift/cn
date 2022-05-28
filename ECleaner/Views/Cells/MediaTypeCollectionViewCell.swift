@@ -62,51 +62,60 @@ extension MediaTypeCollectionViewCell: Themeble {
 	public func configureCell(mediaType: MediaContentType, contentCount: Int?, diskSpace: Int64?) {
         
 		self.mediaTypeCell = mediaType
+		self.mediaContentTitleTextLabel.text = mediaType.mediaContentTypeName
 		
         switch mediaType {
             case .userPhoto:
-				if diskSpace != nil {
-					self.handleIndicator(diskSpace)
-				} else if S.phassetPhotoFilesSizes != nil {
-					self.handleIndicator(S.phassetPhotoFilesSizes)
+				if PhotoLibraryPermissions().status == .authorized {
+					if diskSpace != nil {
+						self.handleIndicator(diskSpace)
+					} else if S.phassetPhotoFilesSizes != nil {
+						self.handleIndicator(S.phassetPhotoFilesSizes)
+					} else {
+						self.handleIndicator(nil)
+					}
+					self.mediaContentView.imageView.image = mediaType.mediaContenTypeImage
+					
+					if let photosCount = contentCount {
+						self.mediaContentSubTitleTextLabel.text = String("\(photosCount) \("FILES".localized())")
+					} else {
+						self.mediaContentSubTitleTextLabel.text = contentCount == nil ? "" : "NO CONTENT"
+					}
 				} else {
-					self.handleIndicator(nil)
+					self.deniedModeForContect(type: mediaType)
 				}
-                mediaContentView.imageView.image = I.mainStaticItems.photo
-                mediaContentTitleTextLabel.text = "PHOTOS_TITLE".localized()
-
-                if let photosCount = contentCount {
-                    mediaContentSubTitleTextLabel.text = String("\(photosCount) \("FILES".localized())")
-                } else {
-                    mediaContentSubTitleTextLabel.text = contentCount == nil ? "" : "NO CONTENT"
-                }
             case .userVideo:
-				if diskSpace != nil {
-					self.handleIndicator(diskSpace)
-				} else if S.phassetVideoFilesSizes != nil {
-					self.handleIndicator(S.phassetVideoFilesSizes)
+				if PhotoLibraryPermissions().status == .authorized {
+					if diskSpace != nil {
+						self.handleIndicator(diskSpace)
+					} else if S.phassetVideoFilesSizes != nil {
+						self.handleIndicator(S.phassetVideoFilesSizes)
+					} else {
+						self.handleIndicator(nil)
+					}
+					self.mediaContentView.imageView.image = mediaType.mediaContenTypeImage
+					
+					if let videosCount = contentCount {
+						self.mediaContentSubTitleTextLabel.text = String("\(videosCount) \("FILES".localized())")
+					} else {
+						self.mediaContentSubTitleTextLabel.text = contentCount == nil ? "" : "NO CONTENT"
+					}
 				} else {
-					self.handleIndicator(nil)
+					self.deniedModeForContect(type: mediaType)
 				}
-                mediaContentView.imageView.image = I.mainStaticItems.video
-                mediaContentTitleTextLabel.text = "VIDEOS_TITLE".localized()
-                
-                if let videosCount = contentCount {
-                  mediaContentSubTitleTextLabel.text = String("\(videosCount) \("FILES".localized())")
-                } else {
-                    mediaContentSubTitleTextLabel.text = contentCount == nil ? "" : "NO CONTENT"
-                }
-                
             case .userContacts:
-				self.handleIndicator(0)
-                mediaContentView.imageView.image = I.mainStaticItems.contacts
-                mediaContentTitleTextLabel.text = "CONTACTS_TITLE".localized()
-        
-                if let contactsCount = contentCount {
-                    mediaContentSubTitleTextLabel.text = String("\(contactsCount) contacts")
-                } else {
-                    mediaContentSubTitleTextLabel.text = contentCount == nil ? "" : "NO CONTACTS"
-                }
+				if ContactsPermissions().status == .authorized {
+					self.handleIndicator(0)
+					self.mediaContentView.imageView.image = mediaType.mediaContenTypeImage
+					
+					if let contactsCount = contentCount {
+						self.mediaContentSubTitleTextLabel.text = String("\(contactsCount) contacts")
+					} else {
+						self.mediaContentSubTitleTextLabel.text = contentCount == nil ? "" : "NO CONTACTS"
+					}
+				} else {
+					self.deniedModeForContect(type: mediaType)
+				}
             case .none:
                 debugPrint("none")
         }
@@ -117,6 +126,15 @@ extension MediaTypeCollectionViewCell: Themeble {
 									 endPoint: CAGradientPoint.bottomRight.point,
 									 gradientType: .axial)
     }
+	
+	private func deniedModeForContect(type: MediaContentType) {
+		
+		self.handleIndicator(0)
+		
+		let image = U.UIHelper.Manager().grayscaleImage(image: type.mediaContenTypeImage)
+		self.self.mediaContentView.imageView.image = image
+		self.mediaContentSubTitleTextLabel.text = "denied"
+	}
     
 	private func handleIndicator(_ space: Int64?) {
 		if space == nil {

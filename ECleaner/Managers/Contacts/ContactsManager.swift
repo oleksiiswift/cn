@@ -50,6 +50,7 @@ class ContactsManager {
 	
 		/// `public external status check metods
 		/// check status and if restricted returned to settings or ask for permision
+	
 	public func checkStatus(completionHandler: @escaping ([String: [CNContact]]) -> ()) {
 		
 		switch CNContactStore.authorizationStatus(for: .contacts) {
@@ -64,23 +65,6 @@ class ContactsManager {
 			@unknown default:
 				A.showResrictedAlert(by: .contactsRestricted) {}
 		}
-	}
-	
-	private var isStoreOpen: Bool {
-		
-		switch CNContactStore.authorizationStatus(for: .contacts) {
-				
-			case .denied, .restricted:
-				return false
-			case .notDetermined:
-				self.requestAccesss { granted, error in }
-				return false
-			case .authorized:
-				return true
-			@unknown default:
-				A.showResrictedAlert(by: .contactsRestricted) {}
-		}
-		return false
 	}
 }
 
@@ -175,7 +159,8 @@ extension ContactsManager {
 		/// fetch all contacts
 	public func getAllContacts(_ completionHandler: @escaping ([CNContact]) -> Void) {
 		
-		guard isStoreOpen else { return }
+		guard SettingsManager.permissions.permisssionDidShow else { return }
+		 guard ContactsPermissions().authorized else { return }
 		
 		U.BG {
 			self.fetchContacts(keys: self.fetchingKeys) { result in
@@ -196,22 +181,22 @@ extension ContactsManager {
 		let predicate = CNContact.predicateForContacts(withIdentifiers: identifiers)
 		var contacts: [CNContact] = []
 		
-		if isStoreOpen {
-			let contactStore: CNContactStore = CNContactStore()
-			
-			do {
-				contacts = try contactStore.unifiedContacts(matching: predicate, keysToFetch: self.fetchingKeys)
-				if !contacts.isEmpty {
-					complationHandler(contacts)
-				}
-			} catch {
-				complationHandler([])
+		guard ContactsPermissions().authorized else { return }
+		let contactStore: CNContactStore = CNContactStore()
+		
+		do {
+			contacts = try contactStore.unifiedContacts(matching: predicate, keysToFetch: self.fetchingKeys)
+			if !contacts.isEmpty {
+				complationHandler(contacts)
 			}
+		} catch {
+			complationHandler([])
 		}
+		
 	}
 	
 	
-	private func contactsProcessingStore() {
+	public func contactsProcessingStore() {
 		
 		self.getAllContacts { contacts in
 			U.UI {

@@ -264,8 +264,13 @@ extension ContentTypeTableViewCell {
 		reuseShadowView.shadowBlurValue = 5
 		
 		self.contentTypeTextLabel.text = settings.settingsTitle
-		self.reuseShadowRoundedView.setImage(settings.settingsImages)
-		
+		let imageSizeWidth = reuseShadowRoundedView.frame.size.width / 1.8
+		let roundedShadowImageSize = CGSize(width: imageSizeWidth, height: imageSizeWidth)
+		reuseShadowRoundedView.setImageWithCustomBackground(image: settings.settingsImages,
+															tineColor: .white,
+															size: roundedShadowImageSize,
+															colors: settings.gradientColorsForSettings)
+		reuseShadowRoundedView.updateImagesLayout()
 		self.contentSubtitleTextLabel.isHidden = true
 	}
 }

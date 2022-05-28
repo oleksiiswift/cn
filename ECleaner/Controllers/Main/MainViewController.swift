@@ -27,10 +27,11 @@ class MainViewController: UIViewController {
 	@IBOutlet weak var bottomButtonHeightConstraint: NSLayoutConstraint!
 	
     private let baseCarouselLayout = BaseCarouselFlowLayout()
-        
+    
+	private var permissionManager = PermissionManager.shared
 	private var photoMenager = PhotoManager.shared
 	private var singleCleanModel: SingleCleanModel!
-    
+	
     private var contentCount: [MediaContentType : Int] = [:]
     private var diskSpaceForStartingScreen: [MediaContentType : Int64] = [:]
 	
@@ -58,6 +59,7 @@ class MainViewController: UIViewController {
         updateContactsCount()
 		self.updateInformation(.userPhoto)
 		self.updateInformation(.userVideo)
+		self.updateDeepCleanState()
     }
 	
 	override func viewWillDisappear(_ animated: Bool) {
@@ -129,6 +131,12 @@ extension MainViewController {
 			}
 		}
     }
+	
+	private func updateDeepCleanState() {
+		
+		let availible = PhotoLibraryPermissions().authorized && ContactsPermissions().authorized
+		bottomButtonBarView.alpha = availible ? 1.0 : 0.5
+	}
     
     private func updateCircleProgress() {}
 	
@@ -244,6 +252,22 @@ extension MainViewController: UpdateContentDataBaseListener {
 }
 
 extension MainViewController {
+	
+	private func checkForAccessPermission(of type: MediaContentType) {
+		
+		switch type {
+			case .userPhoto, .userVideo:
+				permissionManager.photolibraryPermissionAccess { status in
+					status == .authorized ? self.openMediaController(type: type) : ()
+				}
+			case .userContacts:
+				permissionManager.contactsPermissionAccess { status in
+					status == .authorized ? self.openMediaController(type: type) : ()
+				}
+			default:
+				return
+		}
+	}
     
     private func openMediaController(type: MediaContentType) {
         let storyboard = UIStoryboard(name: C.identifiers.storyboards.media, bundle: nil)
@@ -282,7 +306,9 @@ extension MainViewController {
 		self.navigationController?.pushViewController(viewController, animated: true)
 	}
     
-    private func openSubscriptionController() {}
+    private func openSubscriptionController() {
+		UIPresenter.showViewController(of: .permission, scenePresenter: true)	
+	}
 }
 
 extension MainViewController {
@@ -303,6 +329,42 @@ extension MainViewController {
             self.updateInformation(.userContacts)
         }
     }
+	
+	@objc func permissionDidChange(_ notification: Notification) {
+		
+		guard let userInfo = notification.userInfo  else { return }
+		
+		if let _ = userInfo[C.key.permissions.settingsPhotoPermission] as? PhotoLibraryPermissions {
+			U.UI {
+				let photoPath = MediaContentType.userPhoto.mainScreenIndexPath
+				let videoPath = MediaContentType.userVideo.mainScreenIndexPath
+				defer {
+					self.tryStartPhotoAccessProcess()
+				}
+				self.mediaCollectionView.reloadItems(at: [photoPath, videoPath])
+			}
+		} else if let _ = userInfo[C.key.permissions.settingsContactsPermission] as? ContactsPermissions {
+			U.UI {
+				let contactsPath = MediaContentType.userContacts.mainScreenIndexPath
+				defer {
+					self.tryStartContactsAccessProcess()
+				}
+				self.mediaCollectionView.reloadItems(at: [contactsPath])
+			}
+		}
+	}
+	
+	private func tryStartPhotoAccessProcess() {
+		
+		guard PhotoLibraryPermissions().authorized else { return }
+		 PhotoManager.shared.getPhotoLibraryContentAndCalculateSpace()
+	}
+	
+	private func tryStartContactsAccessProcess() {
+		
+		guard ContactsPermissions().authorized  else { return }
+		ContactsManager.shared.contactsProcessingStore()
+	}
 }
 
 extension MainViewController: UpdateMediaStoreSizeDelegate {
@@ -329,12 +391,12 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         switch indexPath.item {
             case 0:
-                self.openMediaController(type: .userPhoto)
+				self.checkForAccessPermission(of: .userPhoto)
             case 1:
-                self.openMediaController(type: .userVideo)
+				self.checkForAccessPermission(of: .userVideo)
             case 2:
 				ContactsManager.shared.setProcess(.search, state: .disable)
-                self.openMediaController(type: .userContacts)
+				self.checkForAccessPermission(of: .userContacts)
             default:
                 return
         }
@@ -386,6 +448,12 @@ extension MainViewController: BottomActionButtonDelegate, StartingNavigationBarD
     }
     
     func didTapActionButton() {
+		
+		guard PhotoLibraryPermissions().authorized && ContactsPermissions().authorized else {
+			A.showDeniedDeepClean(at: self)
+			return
+		}
+		
 		self.photoMenager.stopEstimatedSizeProcessingOperations()
         self.openDeepCleanController()
     }
@@ -405,6 +473,7 @@ extension MainViewController: UpdateColorsDelegate {
         U.notificationCenter.addObserver(self, selector: #selector(contactsStoreDidChange), name: .CNContactStoreDidChange, object: nil)
 		U.notificationCenter.addObserver(self, selector: #selector(removeStoreObserver), name: .removeContactsStoreObserver, object: nil)
 		U.notificationCenter.addObserver(self, selector: #selector(addStoreObserver), name: .addContactsStoreObserver, object: nil)
+		U.notificationCenter.addObserver(self, selector: #selector(permissionDidChange(_:)), name: .permisionDidChange, object: nil)
     }
 	
 	private func addSizeCalcuateObeserver() {
@@ -439,7 +508,6 @@ extension MainViewController: UpdateColorsDelegate {
         bottomButtonBarView.setImage(I.mainStaticItems.clean)
 		
 		sectionHeaderTextLabel.text = "Categories:"
-		
 		switch Screen.size {
 			case .small:
 				sectionHeaderTextLabel.font = .systemFont(ofSize: 12, weight: .heavy)

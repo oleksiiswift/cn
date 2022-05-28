@@ -40,6 +40,10 @@ class Subscription {
 	public func loadProducts() async throws -> [Product] {
 		let productsIDs: Set<String> = Set(Subscriptions.allCases.map({$0.rawValue}))
 		let products = try await self.getPurchaseProducts(from: productsIDs)
+		
+		for product in products {
+			debugPrint(product)
+		}
 		return products
 	}
 		
