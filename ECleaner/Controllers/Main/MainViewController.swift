@@ -307,7 +307,7 @@ extension MainViewController {
 	}
     
     private func openSubscriptionController() {
-		UIPresenter.showViewController(of: .permission, scenePresenter: true)	
+		
 	}
 }
 
