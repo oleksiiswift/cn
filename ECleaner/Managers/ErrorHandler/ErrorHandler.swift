@@ -298,6 +298,17 @@ extension ErrorHandler {
 		let alertTitle = errorTitle.fatalError.title
 		A.showAlert(alertTitle, message: fatalErrorForKey(errorType), actions: [], withCancel: false, style: .alert, completion: nil)
 	}
+	
+	public func showRestrictedErrorAlert(_ errortype: AccessRestrictedError, completionHandler: @escaping () -> Void) {
+		let permissionDeniedText = L.getDeniedPermissionText()
+		
+		let action = UIAlertAction(title: permissionDeniedText.action, style: .default) { _ in
+			UIPresenter.openSettingPage()
+		}
+		A.showAlert(errortype.title, message: errortype.errorRawValue, actions: [action], withCancel: true, style: .alert) {
+			completionHandler()
+		}
+	}
 }
 
 //	MARK: no foud searching data

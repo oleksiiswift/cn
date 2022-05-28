@@ -116,6 +116,13 @@ extension AlertManager {
 		}
 	}
 	
+	public static func showDeniedDeepClean(at viewController: UIViewController) {
+		let alertText = TempText.getDeniedDeepCleanPermission()
+		self.showAlert(with: alertText, at: viewController) {
+			UIPresenter.openSettingPage()
+		}
+	}
+	
 	public static func showApptrackerPerformAlert(at viewController: UIViewController, completion: @escaping () -> Void) {
 		let alertText = TempText.getApptrackerPermissionText()
 		self.showAlert(with: alertText, at: viewController) {

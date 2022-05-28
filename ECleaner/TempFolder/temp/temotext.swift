@@ -21,7 +21,7 @@ struct  TempText {
 			case .tracking:
 				return "Tracking"
 			default:
-				return ""
+				return "Photo library & contacts"
 		}
 	}
 	
@@ -38,7 +38,7 @@ struct  TempText {
 			case .tracking:
 				return "Allow to access app related data"
 			default:
-				return ""
+				return "Allow access to contacts and photo library"
 		}
 	}
 	
@@ -48,6 +48,12 @@ struct  TempText {
 								description: "Please, go to Settings and allow permission.",
 								action: "Settings",
 								cancel: "Cancel")
+	}
+	
+	static func getDeniedDeepCleanPermission() -> AlertTextStrings {
+		return AlertTextStrings(title: "Permission denied",
+								description: "Allow access to contacts and photo library to get deep clean feature",
+								action: "settings", cancel: "cancel")
 	}
 	
 	static func getApptrackerPermissionText() -> AlertTextStrings {

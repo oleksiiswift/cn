@@ -54,6 +54,7 @@ extension PermissionsViewController {
 			A.showAtLeastOneMediaPermissionAlert(at: self)
 		} else {
 			self.dismiss(animated: true) {
+				SettingsManager.permissions.permisssionDidShow = true
 				U.sceneDelegate.permissionWindow = nil
 			}
 		}

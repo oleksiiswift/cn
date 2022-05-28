@@ -35,6 +35,7 @@ class ContactsPermissions: Permission {
 		store.requestAccess(for: .contacts) { granted, error in
 			DispatchQueue.main.async {
 				completionHandler(granted, error)
+				SettingsManager.permissions.contactsPermissionSavedValue = granted
 			}
 		}
 	}	

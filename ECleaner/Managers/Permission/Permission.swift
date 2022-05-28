@@ -139,22 +139,46 @@ class PermissionManager {
 		
 		guard SettingsManager.permissions.permisssionDidShow else { return }
 		
-//					PhotoManager.shared.checkPhotoLibraryAccess()
-			//        ContactsManager.shared.checkStatus { _ in }
-		
-		PhotoLibraryPermissions().requestForPermission { status, error in
-			debugPrint(status)
-		}
-		
-		ContactsPermissions().requestForPermission { status, error in
-			debugPrint(status)
-		}
+		PhotoLibraryPermissions().authorized ? PhotoManager.shared.getPhotoLibraryContentAndCalculateSpace() : ()
+		ContactsPermissions().authorized ? ContactsManager.shared.contactsProcessingStore() : ()
 	}
 }
 
 extension PermissionManager {
 	
-
+	public func photolibraryPermissionAccess(_ completionHandler: @escaping (_ status: Permission.Status) -> Void) {
+		let status = PhotoLibraryPermissions().status
+		switch status {
+			case .authorized:
+				completionHandler(status)
+			case .denied:
+				ErrorHandler.shared.showRestrictedErrorAlert(.photoLibraryRestrictedError) {}
+			case .notDetermined:
+				PhotoLibraryPermissions().requestForPermission { accessGranted, error in
+					completionHandler(PhotoLibraryPermissions().status)
+				}
+			case .notSupported:
+				return
+		}
+	}
+	
+	public func contactsPermissionAccess(_ completionHandler: @escaping (_ status: Permission.Status) -> Void) {
+		let status = ContactsPermissions().status
+		switch status {
+			case .authorized:
+				completionHandler(status)
+			case .denied:
+				ErrorHandler.shared.showRestrictedErrorAlert(.contactsRestrictedError) {
+					completionHandler(status)
+				}
+			case .notDetermined:
+				ContactsPermissions().requestForPermission { acessGranted, error in
+					completionHandler(ContactsPermissions().status)
+				}
+			case .notSupported:
+				return
+		}
+	}
 }
 
 

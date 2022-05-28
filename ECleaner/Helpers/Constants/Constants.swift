@@ -51,6 +51,8 @@ class Constants {
 		
 		struct permissions {
 			static let permissionDidShow = "permissionWindowDidShow"
+			static let settingsPhotoPermission = "photoPermissionValue"
+			static let settingsContactsPermission = "contactePermissionValue"
 		}
         
         struct settings {
@@ -93,6 +95,8 @@ class Constants {
             static let contactsCountNotificationName = "contactsCountDidChange"
 			static let removeStoreObserver = "removeStoreObserver"
 			static let addStoreObserver = "addStoreObserver"
+			
+			static let permissionDidChange = "permissionDidChange"
             
                 /// `deep clean update progress notification name`
             struct deepClean {
@@ -247,6 +251,11 @@ class Constants {
          */
     
         struct notificationDictionary {
+			
+			struct permission {
+				static let photoPermission = "photoPermissionDidChangeNotificationDictionary"
+				static let contactsPermission = "contactsPermissionDidChangeNotificationDictionary"
+			}
             
                 /// `INDEXES`
             struct index {

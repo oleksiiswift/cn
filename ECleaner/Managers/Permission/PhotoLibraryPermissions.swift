@@ -35,6 +35,7 @@ class PhotoLibraryPermissions: Permission {
 		PHPhotoLibrary.requestAuthorization { status in
 			DispatchQueue.main.async {
 				completionHandler(status == .authorized, nil)
+				SettingsManager.permissions.photoPermissionSavedValue = status == .authorized
 			}
 		}
 	}	

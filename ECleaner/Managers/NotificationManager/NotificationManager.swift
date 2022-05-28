@@ -13,6 +13,8 @@ extension Notification.Name {
     static let colorDidChange = Notification.Name("colorDidChange")
         /// `premium`
     static let premiumDidChange = Notification.Name("premiumDidChange")
+		/// `permission`
+	static let permisionDidChange = Notification.Name(C.key.notification.permissionDidChange)
     
         /// `disk space`
     static let photoSpaceDidChange =         Notification.Name(C.key.notification.photoSpaceNotificationName)

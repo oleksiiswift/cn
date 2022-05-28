@@ -16,6 +16,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         configureApplication(with: launchOptions)
         setDefaults()
 		developmentSettings()
+		setupObserver()
 		
 //		NotificationCenter.default.addObserver(forName: nil, object: nil, queue: nil) { notification in
 //			debugPrint(notification)
@@ -69,4 +70,18 @@ extension AppDelegate {
 		
 		S.inAppPurchase.allowAdvertisementBanner = false
 	}
+	
+	private func setupObserver() {
+		
+		NotificationCenter.default.addObserver(self, selector: #selector(checkPermissionStatus), name: UIApplication.didBecomeActiveNotification, object: nil)
+	}
+	
+	@objc func checkPermissionStatus() {
+		
+		guard SettingsManager.permissions.permisssionDidShow else { return }
+		
+		SettingsManager.permissions.photoPermissionSavedValue = PhotoLibraryPermissions().authorized
+		SettingsManager.permissions.contactsPermissionSavedValue = ContactsPermissions().authorized
+	}
 }
+

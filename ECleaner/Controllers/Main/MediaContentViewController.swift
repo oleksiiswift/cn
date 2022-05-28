@@ -1109,6 +1109,18 @@ extension MediaContentViewController {
 	}
 	
 	private func didSelect(rowAt indexPath: IndexPath) {
+		
+		if self.mediaContentType == .userVideo || self.mediaContentType == .userPhoto {
+			
+			if !PhotoLibraryPermissions().authorized {
+				return
+			}
+		} else if self.mediaContentType == .userContacts {
+			if !ContactsPermissions().authorized {
+				return
+			}
+		}
+	
 		switch indexPath.section {
 			case 1:
 				switch self.mediaContentType {
