@@ -95,7 +95,7 @@ extension PermissionsViewController {
 		
 		let blankPermission = [BlankPermission()]
 
-		var permissionSections = [NotitificationsPermissions(),
+		var permissionSections = [NotificationsPermissions(),
 								  PhotoLibraryPermissions(),
 								  ContactsPermissions()]
 		
@@ -165,7 +165,7 @@ extension PermissionsViewController: Themeble {
 	}
 	
 	private func setupObservers() {
-		
+	
 		NotificationCenter.default.addObserver(self, selector: #selector(self.applicationDidBecomeActive), name: UIApplication.didBecomeActiveNotification, object: nil)
 	}
 	

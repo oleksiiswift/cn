@@ -206,3 +206,31 @@ extension Images {
 		}
 	}
 }
+
+extension Images {
+	
+	public static func getNotificationActionSystemImages(by action: NotificationAction) -> String {
+		switch action {
+			case .deepClean:
+				return "paintbrush"
+			case .similarPhotoClean:
+				return "camera.on.rectangle"
+			case .duplicatedPhotoClean:
+				return "photo.circle" // dup photo
+			case .similiarVideoClean:
+				return "video.square" // sim vid
+			case .duplicatedVideoClean:
+				return "film.circle" // dup vide
+			case .duplicatedContactsClean:
+				return "person.crop.rectangle.stack" // contacts
+			case .photoScan:
+				return "camera.on.rectangle"
+			case .videoScan:
+				return "video"
+			case .contactsScan:
+				return "person.text.rectangle"
+			default:
+				return "paintbrush"
+		}
+	}
+}

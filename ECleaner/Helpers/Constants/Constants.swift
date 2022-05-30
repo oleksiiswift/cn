@@ -42,6 +42,10 @@ class Constants {
 			static let bannerIsShow = "advertisementBannerDidShow"
 		}
 		
+		struct application {
+			static let applicationLastUsage = "applicationLastUsage"
+		}
+		
 		struct inApPurchse {
 			static let purchasePremium = "purchasePremium"
 			static let verificationPassed = "verificationPassed"
@@ -53,6 +57,17 @@ class Constants {
 			static let permissionDidShow = "permissionWindowDidShow"
 			static let settingsPhotoPermission = "photoPermissionValue"
 			static let settingsContactsPermission = "contactePermissionValue"
+			
+			struct rawValue {
+				static let notification = "com.cleaner.permission.notification"
+				static let photolibrary = "com.cleaner.permission.photolibrary"
+				static let contacts = "com.cleaner.permission.contacts"
+				static let tracking = "com.cleaner.permission.tracking"
+			}
+		}
+		
+		struct localUserNotification {
+			static let localNotificationRawValue = "localnotifactionRawValue"
 		}
         
         struct settings {
@@ -97,6 +112,7 @@ class Constants {
 			static let addStoreObserver = "addStoreObserver"
 			
 			static let permissionDidChange = "permissionDidChange"
+			static let forceStopProcessing = "forceStopProcessingStartHandleReciveRemoteCleanAction"
             
                 /// `deep clean update progress notification name`
             struct deepClean {
@@ -154,6 +170,46 @@ class Constants {
 			
 			/// `compression notification`
 			static let compressionDidStart = "CompressionVideoFileDidStartNotification"
+			
+			struct name {
+				static let photoClean = "didSendCleanPhotoContentNotification"
+				static let videoClean = "didSendCleanVideoContentNotification"
+				static let contactsClean = "didSendCleanContactsContentNotification"
+				static let deepClean = "didSendDeepCleanContentNotification"
+				static let clean = "didSendCleanContentnotification"
+			}
+			
+			struct identifier {
+				static let photoClean = "com.cleaner.photoClean"
+				static let videoClean = "con.cleaner.videoClean"
+				static let contactsClean = "com.cleaner.contactsClean"
+				static let deepClean = "com.cleaner.deepClean"
+				static let clean = "com.cleaner.clean"
+			}
+			
+			struct request {
+				static let photoClean = "com.cleaner.request.photoClean"
+				static let videoClean = "con.cleaner.request.videoClean"
+				static let contactsClean = "com.cleaner.request.contactsClean"
+				static let deepClean = "com.cleaner.requestdeepClean"
+				static let clean = "com.cleaner.requestClean"
+			}
+			
+			struct notificationAction {
+				static let decline = "com.cleaner.actions.declinenotificationAction"
+				static let similarPhotoCleanAction = "com.cleaner.action.similarPhotoCleanAction"
+				static let duplicatedPhotoCleanAction = "com.cleaner.action.duplicatedPhotoCleanAction"
+				static let similarVideCleanAction = "com.cleaner.action.similarVideoCleanAction"
+				static let duplicatedVideoCleanAction = "com.cleaner.action.duplicatedVideoCleanAction"
+				static let duplicatedContectsCleanAction = "com.cleaner.action.duplicatedContactsCleanActions"
+				static let deepClean = "com.cleaner.actions.deepCleanNotificationAction"
+			}
+			
+			struct shortCutAction {
+				static let photoScan = "com.cleaner.actions.photoScan"
+				static let videoScan = "com.cleaner.actions.videoScan"
+				static let contactsScan = "com.cleaner.actions.contactScan"
+			}
         }
 		
 		struct observers {

@@ -248,6 +248,41 @@ extension MediaContentViewController {
 	}
 }
 
+extension MediaContentViewController {
+	
+	public func handleShortcutProcessing(of processingType: RemoteCleanType) {
+		switch processingType {
+			case .similarPhotoClean:
+				let mediaType: PhotoMediaType = .similarPhotos
+				self.showMediaContent(by: .userPhoto, selected: mediaType.singleSearchIndexPath.row)
+			case .duplicatedPhotoClean:
+				let mediaType: PhotoMediaType = .duplicatedPhotos
+				self.showMediaContent(by: .userPhoto, selected: mediaType.singleSearchIndexPath.row)
+			case .similiarVideoClean:
+				let mediaType: PhotoMediaType = .similarVideos
+				self.showMediaContent(by: .userVideo, selected: mediaType.singleSearchIndexPath.row)
+			case .duplicatedVideoClean:
+				let mediaType: PhotoMediaType = .duplicatedVideos
+				self.showMediaContent(by: .userVideo, selected: mediaType.singleSearchIndexPath.row)
+			case .duplicatedContactsClean:
+				let mediaType: PhotoMediaType = .duplicatedContacts
+				self.showMediaContent(by: .userContacts, selected: mediaType.singleSearchIndexPath.row)
+			case .photoScan:
+				self.startSmartCleanProcessing()
+			case .videoScan:
+				self.startSmartCleanProcessing()
+			case .contactsScan:
+				self.searchingProcessingType = .smartGroupSearchProcess
+				self.updateContacts {
+					self.searchingProcessingType = .clearSearchingProcessingQueue
+					self.smartCleaningDidFinishWithResults = true
+				}
+			default:
+				return
+		}
+	}
+}
+
 //      MARK: - photo content -
 extension MediaContentViewController {
     
@@ -595,6 +630,18 @@ extension MediaContentViewController {
 	@objc func addStoreObserver() {
 		U.notificationCenter.addObserver(self, selector: #selector(handleChangeContactsContainers), name: .CNContactStoreDidChange, object: nil)
 	}
+	
+	@objc func handleStopAnyAnalizeProcessing() {
+		
+		switch self.searchingProcessingType {
+			case .smartGroupSearchProcess:
+					self.setCancelSmartSearchOperationQueue {}
+			case .singleSearchProcess:
+					self.setCancelActiveOperation {}
+			case .clearSearchingProcessingQueue:
+				return
+		}
+	}
 }
 
 extension MediaContentViewController {
@@ -641,10 +688,10 @@ extension MediaContentViewController {
 					
 				case .allContacts:
 					self.updateContactsSingleChanged(contacts: changedContacts, content: currentChangedMediaType)
-					self.updateContacts()
+					self.updateContacts {}
 				default:
 					self.updateGroupedContacts(contacts: changedContactsGroups, media: currentChangedMediaType)
-					self.updateContacts()
+					self.updateContacts {}
 			}
 		}
 	
@@ -664,7 +711,7 @@ extension MediaContentViewController {
 			guard storeDidChange else { return}
 			
 			self.updateGroupedContacts(contacts: changedContactsGroup, media: currentChangedMediaType)
-			self.updateContacts()
+			self.updateContacts {}
 		}
 
 		self.navigationController?.pushViewController(viewController, animated: true)
@@ -698,7 +745,7 @@ extension MediaContentViewController {
 			case .userVideo:
 				self.updateVideo()
 			case .userContacts:
-				self.updateContacts()
+				self.updateContacts {}
 			case .none:
 				debugPrint("")
 		}
@@ -730,9 +777,9 @@ extension MediaContentViewController {
 		phassetProcessingOperationQueuer.addOperation(largeVideosOperation)
 	}
 	
-	private func updateContacts() {
+	private func updateContacts(completionHandler: @escaping () -> Void) {
 		self.contactsManager.getUpdatingContactsAfterContainerDidChange(cleanProcessingType: .background) { _ in
-			
+			completionHandler()
 		} allContacts: { contacts in
 			self.updateContactsSingleChanged(contacts: contacts, content: .allContacts)
 		} emptyContacts: { emptyContactsGroup in
@@ -833,7 +880,7 @@ extension MediaContentViewController {
 		self.configure(cell, at: indexPath)
     }
     	
-	private func setCanselActiveOperation(completionHandler: @escaping () -> Void) {
+	private func setCancelActiveOperation(completionHandler: @escaping () -> Void) {
 		
 		self.searchingProcessingType = .clearSearchingProcessingQueue
 		
@@ -1017,7 +1064,7 @@ extension MediaContentViewController: NavigationBarDelegate {
 				}
 			case .singleSearchProcess:
 				A.showStopSingleSearchProcess {
-					self.setCanselActiveOperation {
+					self.setCancelActiveOperation {
 						self.navigationController?.popViewController(animated: true)
 					}
 				}
@@ -1030,14 +1077,22 @@ extension MediaContentViewController: NavigationBarDelegate {
 		
 		switch searchingProcessingType {
 			case .clearSearchingProcessingQueue:
-				startSmartCleanProcessing()
+				if self.mediaContentType == .userContacts {
+					self.searchingProcessingType = .smartGroupSearchProcess
+					self.updateContacts {
+						self.searchingProcessingType = .clearSearchingProcessingQueue
+						self.smartCleaningDidFinishWithResults = true
+					}
+				} else {
+					startSmartCleanProcessing()
+				}
 			case .smartGroupSearchProcess:
 				A.showStopSmartSingleSearchProcess {
 					self.setCancelSmartSearchOperationQueue() {}
 				}
 			case .singleSearchProcess:
 				A.showStopSingleSearchProcess {
-					self.setCanselActiveOperation() {}
+					self.setCancelActiveOperation() {}
 				}
 		}
 	}
@@ -1169,7 +1224,7 @@ extension MediaContentViewController: Themeble {
 		} else {
 			navigationBar.setupNavigation(title: mediaContentType.navigationTitle,
 										  leftBarButtonImage: I.systemItems.navigationBarItems.back,
-										  rightBarButtonImage: nil,
+										  rightBarButtonImage: I.systemItems.navigationBarItems.magic,
 										  contentType: mediaContentType,
 										  leftButtonTitle: nil,
 										  rightButtonTitle: nil)
@@ -1215,6 +1270,8 @@ extension MediaContentViewController: Themeble {
             case .none:
                 return
         }
+		
+		U.notificationCenter.addObserver(self, selector: #selector(handleStopAnyAnalizeProcessing), name: .incomingRemoteActionRecived, object: nil)
     }
     
     private func setupDateInterval() {

@@ -594,6 +594,12 @@ extension DeepCleaningViewController {
      private func calculateProgressPercentage(total: Int, current: Int, completion: @escaping (CGFloat) -> Void) {
 			   completion(CGFloat(Double(current) / Double(total)) * 100)
      }
+	 
+	 @objc func handleStopAnyAnalizeProcessing() {
+		  self.removeObservers()
+		  self.deepCleanManager.stopDeepCleanOperation()
+		  self.cleanAndResetAllValues()
+	 }
 }
 
 //      MARK: - show cleaning view controllers -
@@ -847,6 +853,7 @@ extension DeepCleaningViewController {
 		  
 		  U.notificationCenter.addObserver(self, selector: #selector(recievFilesSizeNotification(_:)), name: .deepCleanPhotoFilesScan, object: nil)
 		  U.notificationCenter.addObserver(self, selector: #selector(recievFilesSizeNotification(_:)), name: .deepCleanVideoFilesScan, object: nil)
+		  U.notificationCenter.addObserver(self, selector: #selector(handleStopAnyAnalizeProcessing), name: .incomingRemoteActionRecived, object: nil)
      }
 	 
 	 private func removeObservers() {

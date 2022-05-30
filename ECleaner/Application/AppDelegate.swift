@@ -10,18 +10,16 @@ import Contacts
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
-
+	
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
         configureApplication(with: launchOptions)
         setDefaults()
 		developmentSettings()
 		setupObserver()
-		
-//		NotificationCenter.default.addObserver(forName: nil, object: nil, queue: nil) { notification in
-//			debugPrint(notification)
-//		}
-	
+//		runDevelopmentElmtn()
+//		printAllNotifications()
+
         return true
     }
 
@@ -38,6 +36,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 }
 
 extension AppDelegate {
+	
+	func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+		print("Successfully registered for notifications!")
+	}
+
+	func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+		print("Failed to register for notifications: \(error.localizedDescription)")
+	}
+}
+
+
+extension AppDelegate {
     
     private func configureApplication(with launchOptions: [UIApplication.LaunchOptionsKey: Any]?) {
         
@@ -45,14 +55,18 @@ extension AppDelegate {
 		ECFileManager().deleteAllFiles(at: AppDirectories.temp) {
 			debugPrint("deleted all files from temp")
 		}
-		
 		PermissionManager.shared.checkForStartingPemissions()
+		UserNotificationService.sharedInstance.registerRemoteNotification()
     }
 }
 
 extension AppDelegate {
 
     private func setDefaults() {
+		
+		U.delay(10) {
+			SettingsManager.application.lastApplicationUsage = Date()
+		}
 	
 		U.setUpperDefaultValue()
 		U.setLowerDafaultValue()
@@ -82,6 +96,26 @@ extension AppDelegate {
 		
 		SettingsManager.permissions.photoPermissionSavedValue = PhotoLibraryPermissions().authorized
 		SettingsManager.permissions.contactsPermissionSavedValue = ContactsPermissions().authorized
+	}
+}
+
+extension AppDelegate {
+	
+	private func printAllNotifications() {
+		
+		NotificationCenter.default.addObserver(forName: nil, object: nil, queue: nil) { notification in
+			debugPrint(notification)
+		}
+	}
+		
+	private func runDevelopmentElmtn() {
+		
+		U.delay(10) {
+			UserNotificationService.sharedInstance.registerRemoteNotification()
+			U.delay(10) {
+				self.runDevelopmentElmtn()
+			}
+		}
 	}
 }
 

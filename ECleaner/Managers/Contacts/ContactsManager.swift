@@ -159,7 +159,6 @@ extension ContactsManager {
 		/// fetch all contacts
 	public func getAllContacts(_ completionHandler: @escaping ([CNContact]) -> Void) {
 		
-		guard SettingsManager.permissions.permisssionDidShow else { return }
 		 guard ContactsPermissions().authorized else { return }
 		
 		U.BG {
@@ -315,7 +314,7 @@ extension ContactsManager {
 														   duplicatedEmailGrops: @escaping ([ContactsGroup]) -> Void) {
 		
 		self.getAllContacts { contacts in
-			var numbersOfOperations = 4
+			var numbersOfOperations = 0
 				/// returned contacts all containers
 			allContacts(contacts)
 			
