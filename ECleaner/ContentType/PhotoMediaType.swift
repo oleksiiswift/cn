@@ -59,6 +59,10 @@ enum PhotoMediaType: String {
 				return .single
 			case .duplicatedVideos, .similarVideos:
 				return .grouped
+			case .allContacts, .emptyContacts:
+				return .single
+			case .duplicatedContacts, .duplicatedPhoneNumbers, .duplicatedEmails:
+				return .grouped
 			default:
 				return .none
 		}
