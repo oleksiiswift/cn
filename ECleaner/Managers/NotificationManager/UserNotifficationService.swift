@@ -32,7 +32,7 @@ extension UserNotificationService: UNUserNotificationCenterDelegate {
 		let lastUsageDay = SettingsManager.application.lastApplicationUsage.getDay()
 		let today = Date().getDay()
 		
-		if lastUsageDay != today {
+		if lastUsageDay == today {
 			return UNNotificationPresentationOptions(arrayLiteral: [.alert, .sound, .badge])
 		} else {
 			return []
@@ -43,7 +43,26 @@ extension UserNotificationService: UNUserNotificationCenterDelegate {
 		
 		DispatchQueue.main.async {
 			guard let _ = response.notification.request.content.userInfo as [AnyHashable: Any]? else { return }
-			self.remoteLauncher.startRemoteClean(of: response.localNotitficationAction)
+			
+			let responceAction = response.localNotitficationAction
+			
+			switch responceAction {
+				case .none:
+					switch response.localNotificationType {
+						case .deepClean:
+							self.remoteLauncher.startRemoteClean(of: .deepClean)
+						case .cleanPhotos:
+							self.remoteLauncher.startRemoteClean(of: .photoScan)
+						case .cleanVideo:
+							self.remoteLauncher.startRemoteClean(of: .videoScan)
+						case .cleanContacts:
+							self.remoteLauncher.startRemoteClean(of: .contactsScan)
+						default:
+							return
+					}
+				default:
+					self.remoteLauncher.startRemoteClean(of: responceAction)
+			}
 		}
 	}
 }
