@@ -55,13 +55,14 @@ class MainViewController: UIViewController {
         super.viewWillAppear(animated)
 		
 		self.addSizeCalcuateObeserver()
-        setupNavigation()
-        updateContactsCount()
+		self.setupNavigation()
+		self.updateContactsCount()
 		self.updateInformation(.userPhoto)
 		self.updateInformation(.userVideo)
 		self.updateDeepCleanState()
+		self.handleShortcutItem()
     }
-	
+
 	override func viewWillDisappear(_ animated: Bool) {
 		super.viewWillDisappear(animated)
 		
@@ -133,9 +134,10 @@ extension MainViewController {
     }
 	
 	private func updateDeepCleanState() {
-		
-		let availible = PhotoLibraryPermissions().authorized && ContactsPermissions().authorized
-		bottomButtonBarView.alpha = availible ? 1.0 : 0.5
+		DispatchQueue.main.async {
+			let availible = PhotoLibraryPermissions().authorized && ContactsPermissions().authorized
+			self.bottomButtonBarView.alpha = availible ? 1.0 : 0.5
+		}
 	}
     
     private func updateCircleProgress() {}
@@ -153,20 +155,22 @@ extension MainViewController {
 	}
 	
 	private func setupUpdateSizeValues(from type: SingleContentSearchNotificationType, userInfo: [AnyHashable: Any]?) {
-		
-		guard let userInfo = userInfo,
-			  let totalProcessing = userInfo[type.dictionaryCountName] as? Int,
-			  let currentProcessingIndex = userInfo[type.dictioanartyIndexName] as? Int else { return }
-		
-		let progress = CGFloat(currentProcessingIndex) / CGFloat(totalProcessing)
-		
-		switch type {
-			case .photosSizeCheckerType:
-				self.setProgressSize(for: .userPhoto, progress: progress)
-			case .videosSizeCheckerType:
-				self.setProgressSize(for: .userVideo, progress: progress)
-			default:
-				return
+		DispatchQueue.main.async {
+			
+			guard let userInfo = userInfo,
+				  let totalProcessing = userInfo[type.dictionaryCountName] as? Int,
+				  let currentProcessingIndex = userInfo[type.dictioanartyIndexName] as? Int else { return }
+			
+			let progress = CGFloat(currentProcessingIndex) / CGFloat(totalProcessing)
+			
+			switch type {
+				case .photosSizeCheckerType:
+					self.setProgressSize(for: .userPhoto, progress: progress)
+				case .videosSizeCheckerType:
+					self.setProgressSize(for: .userVideo, progress: progress)
+				default:
+					return
+			}
 		}
 	}
 	
@@ -253,32 +257,47 @@ extension MainViewController: UpdateContentDataBaseListener {
 
 extension MainViewController {
 	
-	private func checkForAccessPermission(of type: MediaContentType) {
+	private func checkForAccessPermission(of type: MediaContentType, animated: Bool = true, cleanType: RemoteCleanType = .none) {
 		
 		switch type {
 			case .userPhoto, .userVideo:
 				permissionManager.photolibraryPermissionAccess { status in
-					status == .authorized ? self.openMediaController(type: type) : ()
+					status == .authorized ? self.openMediaController(type: type, animated: animated, cleanType: cleanType) : ()
 				}
 			case .userContacts:
 				permissionManager.contactsPermissionAccess { status in
-					status == .authorized ? self.openMediaController(type: type) : ()
+					status == .authorized ? self.openMediaController(type: type, animated: animated, cleanType: cleanType) : ()
 				}
 			default:
 				return
 		}
 	}
+	
+	private func prepareDeepCleanController(animated: Bool = true) {
+		
+		guard PhotoLibraryPermissions().authorized && ContactsPermissions().authorized else {
+			A.showDeniedDeepClean(at: self)
+			return
+		}
+		
+		self.photoMenager.stopEstimatedSizeProcessingOperations()
+		self.openDeepCleanController(animated: animated)
+	}
     
-    private func openMediaController(type: MediaContentType) {
+	private func openMediaController(type: MediaContentType, animated: Bool = true, cleanType: RemoteCleanType) {
         let storyboard = UIStoryboard(name: C.identifiers.storyboards.media, bundle: nil)
         let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.content) as! MediaContentViewController
 		viewController.singleCleanModel = self.singleCleanModel
 		ContactsManager.shared.contactsProcessingOperationQueuer.cancelAll()
         viewController.mediaContentType = type
-        self.navigationController?.pushViewController(viewController, animated: true)
+		self.navigationController?.pushViewController(viewController: viewController, animated: true, completion: {
+			U.delay(0.5) {
+				viewController.handleShortcutProcessing(of: cleanType)
+			}
+		})
     }
-    
-    private func openDeepCleanController() {
+	
+	private func openDeepCleanController(animated: Bool = true) {
         let storyboard = UIStoryboard(name: C.identifiers.storyboards.deep, bundle: nil)
         let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.deepClean) as! DeepCleaningViewController
 		viewController.updateMediaStoreDelegate = self
@@ -296,7 +315,7 @@ extension MainViewController {
 									   .duplicatedPhoneNumbers,
 									   .duplicatedEmails
 		]
-        self.navigationController?.pushViewController(viewController, animated: true)
+        self.navigationController?.pushViewController(viewController, animated: animated)
     }
     
     private func openSettingsController() {
@@ -308,6 +327,15 @@ extension MainViewController {
     
     private func openSubscriptionController() {
 		
+	}
+	
+	@objc func shortCutItemStartCleanProcess(_ notification: Notification) {
+	}
+	
+	private func popTopMainViewController() {
+		if self != getTheMostTopController() {
+			self.navigationController?.popToRootViewController(animated: false)
+		}
 	}
 }
 
@@ -334,17 +362,15 @@ extension MainViewController {
 		
 		guard let userInfo = notification.userInfo  else { return }
 		
-		if let _ = userInfo[C.key.permissions.settingsPhotoPermission] as? PhotoLibraryPermissions {
-			U.UI {
+		DispatchQueue.main.async {
+			if let rawValue = userInfo[C.key.notificationDictionary.permission.photoPermission] as? String, rawValue == PhotoLibraryPermissions().permissionRawValue {
 				let photoPath = MediaContentType.userPhoto.mainScreenIndexPath
 				let videoPath = MediaContentType.userVideo.mainScreenIndexPath
 				defer {
 					self.tryStartPhotoAccessProcess()
 				}
 				self.mediaCollectionView.reloadItems(at: [photoPath, videoPath])
-			}
-		} else if let _ = userInfo[C.key.permissions.settingsContactsPermission] as? ContactsPermissions {
-			U.UI {
+			} else if let rawValue = userInfo[C.key.notificationDictionary.permission.contactsPermission] as? String, rawValue == ContactsPermissions().permissionRawValue {
 				let contactsPath = MediaContentType.userContacts.mainScreenIndexPath
 				defer {
 					self.tryStartContactsAccessProcess()
@@ -352,6 +378,7 @@ extension MainViewController {
 				self.mediaCollectionView.reloadItems(at: [contactsPath])
 			}
 		}
+		self.updateDeepCleanState()
 	}
 	
 	private func tryStartPhotoAccessProcess() {
@@ -373,6 +400,30 @@ extension MainViewController: UpdateMediaStoreSizeDelegate {
 		
 		photo == nil ? self.photoMenager.startPhotosizeCher() : ()
 		video == nil ? self.photoMenager.startVideSizeCher() : ()
+	}
+}
+
+extension MainViewController: RemoteLaunchServiceListener {
+
+	private func handleShortcutItem() {
+		
+		guard let shortcutItem = U.sceneDelegate.shortCutItem else { return }
+		U.delay(0.33) {
+			let _ = RemoteLaunchServiceMediator.sharedInstance.handleShortCutItem(shortcutItem: shortcutItem)
+		}
+		U.sceneDelegate.shortCutItem = nil
+	}
+	
+	func remoteProcessingClean(by cleanType: RemoteCleanType) {
+		
+		self.popTopMainViewController()
+		
+		switch cleanType {
+			case .deepClean:
+				self.prepareDeepCleanController(animated: false)
+			default:
+				self.checkForAccessPermission(of: cleanType.mediaType, animated: false, cleanType: cleanType)
+		}
 	}
 }
 
@@ -448,14 +499,7 @@ extension MainViewController: BottomActionButtonDelegate, StartingNavigationBarD
     }
     
     func didTapActionButton() {
-		
-		guard PhotoLibraryPermissions().authorized && ContactsPermissions().authorized else {
-			A.showDeniedDeepClean(at: self)
-			return
-		}
-		
-		self.photoMenager.stopEstimatedSizeProcessingOperations()
-        self.openDeepCleanController()
+		self.prepareDeepCleanController()
     }
 }
 
@@ -463,6 +507,7 @@ extension MainViewController: UpdateColorsDelegate {
     
     private func setupObserversAndDelegates() {
         UpdateContentDataBaseMediator.instance.setListener(listener: self)
+		RemoteLaunchServiceMediator.sharedInstance.setListener(listener: self)
         bottomButtonBarView.delegate = self
         navigationBar.delegate = self
         
@@ -474,6 +519,8 @@ extension MainViewController: UpdateColorsDelegate {
 		U.notificationCenter.addObserver(self, selector: #selector(removeStoreObserver), name: .removeContactsStoreObserver, object: nil)
 		U.notificationCenter.addObserver(self, selector: #selector(addStoreObserver), name: .addContactsStoreObserver, object: nil)
 		U.notificationCenter.addObserver(self, selector: #selector(permissionDidChange(_:)), name: .permisionDidChange, object: nil)
+		
+		U.notificationCenter.addObserver(self, selector: #selector(shortCutItemStartCleanProcess(_:)), name: .shortCutsItemsNavigationItemsNotification, object: nil)
     }
 	
 	private func addSizeCalcuateObeserver() {
@@ -716,7 +763,6 @@ extension MainViewController: UpdateColorsDelegate {
         circleTotalSpaceView.percentLabelFormat = "%.f%%"
     }
 }
-
 
 extension MainViewController {
 	

@@ -72,6 +72,26 @@ struct  TempText {
 	}
 }
 
+extension TempText {
+	
+	static func getNotificationBodyText(of type: UserNotificationType) -> notificationBodyStrings {
+		switch type {
+			case .cleanContacts:
+				return notificationBodyStrings(title: "Clean up your contacts 🤷🏻‍♂️",subtitle: "", body: "Anazlize and delete empty and duplicated contacts")
+			case .cleanPhotos:
+				return notificationBodyStrings(title: "Clean Up your Photos 📷", subtitle: "", body: "Analize photo data for similar and duplicateds")
+			case .cleanVideo:
+				return notificationBodyStrings(title: "Clean Up Your Videos 🎥", subtitle: "", body: "Analize video data for similar and duplicateds")
+			case .deepClean:
+				return notificationBodyStrings(title: "Free Up Storage With Deep Clean 🧹", subtitle: "", body: "Analize your photo and video, contacts")
+			case .clean:
+				return notificationBodyStrings(title: "Clean Up Storage ☁️", subtitle: "", body: "Delete Your duplicated and similar photos and videos. Clean contacts")
+			default:
+				return notificationBodyStrings(title: "", subtitle: "", body: "")
+		}
+	}
+}
+
 class AlertTextStrings {
 	
 	var title: String
@@ -87,5 +107,14 @@ class AlertTextStrings {
 	}
 }
 
-
-
+class notificationBodyStrings {
+	var title: String
+	var subtitle: String
+	var body: String
+	
+	init(title: String, subtitle: String, body: String) {
+		self.title = title
+		self.subtitle = subtitle
+		self.body = body
+	}
+}

@@ -13,8 +13,8 @@ class Permission {
 		return ContactsPermissions()
 	}
 	
-	public var notificationsPermissions: NotitificationsPermissions {
-		return NotitificationsPermissions()
+	public var notificationsPermissions: NotificationsPermissions {
+		return NotificationsPermissions()
 	}
 	
 	public var photoLibraryPermissions: PhotoLibraryPermissions {
@@ -32,6 +32,10 @@ class Permission {
 	
 	public var status: Status {
 		preconditionFailure()
+	}
+	
+	public var permissionRawValue: String {
+		return self.permissionType.permissionRawValue
 	}
 	
 	public func requestForPermission(completionHandler: @escaping (_ granted: Bool,_ error: Error?) -> Void) {
@@ -123,6 +127,23 @@ class Permission {
 		
 		public var permissionAccentColors: [UIColor] {
 			return ThemeManager().getPermissionAccentColor(from: self)
+		}
+		
+		public var permissionRawValue: String {
+			switch self {
+				case .notification:
+					return C.key.permissions.rawValue.notification
+				case .photolibrary:
+					return C.key.permissions.rawValue.photolibrary
+				case .contacts:
+					return C.key.permissions.rawValue.contacts
+				case .tracking:
+					return C.key.permissions.rawValue.tracking
+				case .appUsage:
+					return "appusage"
+				case .blank:
+					return "blank"
+			}
 		}
 	}
 }

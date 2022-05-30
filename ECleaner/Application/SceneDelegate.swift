@@ -14,27 +14,32 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
 	var permissionWindow: UIWindow?
 	
+	public var shortCutItem: UIApplicationShortcutItem?
+	
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
+		
 		guard let scene = (scene as? UIWindowScene) else { return }
 		currentScene = scene
-		
 		handleStartupRouting()
-		
+		handleConnectedScens(with: connectionOptions)
     }
+	
+	func windowScene(_ windowScene: UIWindowScene, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void) {
+		U.notificationCenter.post(name: .incomingRemoteActionRecived, object: nil, userInfo: nil)
+		let handled = RemoteLaunchServiceMediator.sharedInstance.handleShortCutItem(shortcutItem: shortcutItem)
+		completionHandler(handled)
+	}
 
     func sceneDidDisconnect(_ scene: UIScene) {
   
     }
 
     func sceneDidBecomeActive(_ scene: UIScene) {
-//		U.delay(1) {
-//			UIPresenter.showViewController(of: .permission, scenePresenter: true)			
-//		}
 
-    }
+	}
 
     func sceneWillResignActive(_ scene: UIScene) {
-
+		RemoteLaunchServiceMediator.sharedInstance.handlerRemoteShortcuts()
     }
 
     func sceneWillEnterForeground(_ scene: UIScene) {
@@ -48,6 +53,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 extension SceneDelegate {
 	
+	private func handleConnectedScens(with connectedOptions:  UIScene.ConnectionOptions) {
+				
+		if let shortcutItem = connectedOptions.shortcutItem {
+			self.shortCutItem = shortcutItem
+		} 
+	}
 	
 	private func handleStartupRouting() {
 		

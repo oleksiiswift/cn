@@ -6,8 +6,8 @@
 //
 
 import Foundation
-
-class NotitificationsPermissions: Permission {
+		
+class NotificationsPermissions: Permission {
 		
 	override var permissionType: Permission.PermissionType {
 		return .notification
@@ -33,8 +33,8 @@ class NotitificationsPermissions: Permission {
 	}
 	
 	public override func requestForPermission(completionHandler: @escaping (Bool, Error?) -> Void) {
-		let notiticationCenter = UNUserNotificationCenter.current()
-		notiticationCenter.requestAuthorization(options: [.badge, .alert, .sound]) { granted, error in
+		let noticationCenter = UNUserNotificationCenter.current()
+		noticationCenter.requestAuthorization(options: [.badge, .alert, .sound]) { granted, error in
 			DispatchQueue.main.async {
 				completionHandler(granted, error)
 			}
@@ -42,7 +42,7 @@ class NotitificationsPermissions: Permission {
 	}
 }
 
-extension NotitificationsPermissions {
+extension NotificationsPermissions {
 	
 	private func fetchAuthorizationStatus() -> UNAuthorizationStatus? {
 		var notificationSettings: UNNotificationSettings?
