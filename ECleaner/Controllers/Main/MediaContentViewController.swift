@@ -1027,7 +1027,7 @@ extension MediaContentViewController {
 			case .clearSearchingProcessingQueue:
 				self.navigationBar.changeHotRightButton(with: I.systemItems.navigationBarItems.magic)
 			case .singleSearchProcess:
-				self.navigationBar.changeHotRightButton(with: I.systemItems.navigationBarItems.stopMagic)
+				self.navigationBar.changeHotRightButton(with: I.systemItems.navigationBarItems.magic)
 			case .smartGroupSearchProcess:
 				self.navigationBar.changeHotRightButton(with: I.systemItems.navigationBarItems.stopMagic)
 		}
@@ -1092,8 +1092,27 @@ extension MediaContentViewController: NavigationBarDelegate {
 				}
 			case .singleSearchProcess:
 				A.showStopSingleSearchProcess {
-					self.setCancelActiveOperation() {}
+					self.setCancelActiveOperation() {
+						if self.mediaContentType == .userContacts {
+							self.searchingProcessingType = .smartGroupSearchProcess
+							self.updateContacts {
+								self.searchingProcessingType = .clearSearchingProcessingQueue
+								self.smartCleaningDidFinishWithResults = true
+							}
+						} else {
+							self.startSmartCleanProcessing()
+						}
+					}
 				}
+		}
+	}
+}
+
+extension MediaContentViewController: ContentTypeCellDelegate {
+	
+	func setCancelProcessOperaion(for cell: ContentTypeTableViewCell) {
+		self.setCancelActiveOperation {
+			debugPrint("canceld")
 		}
 	}
 }
@@ -1119,7 +1138,8 @@ extension MediaContentViewController: UITableViewDelegate, UITableViewDataSource
 	func configure(_ cell: ContentTypeTableViewCell, at indexPath: IndexPath) {
 		let photoMediaType: PhotoMediaType = .getSingleSearchMediaContentType(from: indexPath, type: mediaContentType)
 		let singleModel = self.singleCleanModel.objects[photoMediaType]!
-		cell.singleCleanCellConfigure(with: singleModel, mediaType: photoMediaType, indexPath: indexPath)
+		cell.singleCleanCellConfigure(with: singleModel, mediaType: photoMediaType, indexPath: indexPath, for: self.searchingProcessingType == .smartGroupSearchProcess)
+		cell.delegate = self
 	}
 	
 	func configureBannerContent(cell: ContentBannerTableViewCell, at indexPath: IndexPath) {
@@ -1188,7 +1208,11 @@ extension MediaContentViewController {
 				}
 			default:
 				if self.smartCleaningDidFinishWithResults {
-					self.showPrescanMediaContent(by: self.mediaContentType, selected: indexPath.row)
+					if self.mediaContentType == .userContacts {
+						self.showMediaContent(by: self.mediaContentType, selected: indexPath.row)
+					} else {
+						self.showPrescanMediaContent(by: self.mediaContentType, selected: indexPath.row)
+					}
 				} else {
 					self.showMediaContent(by: self.mediaContentType, selected: indexPath.row)
 				}

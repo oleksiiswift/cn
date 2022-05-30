@@ -80,6 +80,16 @@
                                     <constraint firstAttribute="height" constant="33" id="nNH-lr-1uA"/>
                                 </constraints>
                             </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Bg8-kt-390">
+                                <rect key="frame" x="377" y="0.0" width="80" height="89"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="80" id="SLk-wK-GJc"/>
+                                </constraints>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <connections>
+                                    <action selector="stopOperationActionButton:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="Fkq-21-Yjm"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
@@ -93,8 +103,11 @@
                             <constraint firstItem="AzT-RF-FAf" firstAttribute="top" secondItem="YPx-No-nMV" secondAttribute="top" id="TTv-BL-C4o"/>
                             <constraint firstAttribute="bottom" secondItem="AzT-RF-FAf" secondAttribute="bottom" id="arF-Y6-5rL"/>
                             <constraint firstItem="a7D-8P-t7B" firstAttribute="leading" secondItem="YPx-No-nMV" secondAttribute="leading" constant="20" id="cId-tJ-qbv"/>
+                            <constraint firstItem="Bg8-kt-390" firstAttribute="top" secondItem="YPx-No-nMV" secondAttribute="top" id="cMQ-4D-UhI"/>
                             <constraint firstItem="gCn-qZ-Nih" firstAttribute="height" secondItem="YPx-No-nMV" secondAttribute="height" id="i9f-ES-CAj"/>
                             <constraint firstItem="Hxb-wJ-Nlm" firstAttribute="centerY" secondItem="jod-pQ-R2a" secondAttribute="centerY" id="iFS-KU-0Bz"/>
+                            <constraint firstAttribute="trailing" secondItem="Bg8-kt-390" secondAttribute="trailing" id="may-O4-t1F"/>
+                            <constraint firstAttribute="bottom" secondItem="Bg8-kt-390" secondAttribute="bottom" id="opl-O3-g7c"/>
                         </constraints>
                     </view>
                 </subviews>
@@ -117,12 +130,13 @@
                 <outlet property="contentSubtitleTextLabel" destination="nOK-4Y-n1l" id="pvG-9m-LR1"/>
                 <outlet property="contentTypeTextLabel" destination="tma-fH-2HY" id="CaB-SW-CFp"/>
                 <outlet property="horizontalProgressView" destination="gCn-qZ-Nih" id="2qu-9X-In9"/>
+                <outlet property="operationActionButton" destination="Bg8-kt-390" id="nwo-o0-Dal"/>
                 <outlet property="reuseShadowHeightConstraint" destination="nNH-lr-1uA" id="t2y-Dn-1mo"/>
                 <outlet property="reuseShadowRoundedView" destination="a7D-8P-t7B" id="ib0-82-C2C"/>
                 <outlet property="reuseShadowView" destination="kmy-RS-29w" id="slY-M3-cY3"/>
                 <outlet property="rightArrowImageView" destination="Hxb-wJ-Nlm" id="Bka-ZC-xzX"/>
             </connections>
-            <point key="canvasLocation" x="149" y="-29"/>
+            <point key="canvasLocation" x="148.55072463768118" y="-29.129464285714285"/>
         </tableViewCell>
     </objects>
     <resources>
