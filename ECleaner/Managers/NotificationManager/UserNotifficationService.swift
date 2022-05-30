@@ -31,8 +31,7 @@ extension UserNotificationService: UNUserNotificationCenterDelegate {
 	func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification) async -> UNNotificationPresentationOptions {
 		let lastUsageDay = SettingsManager.application.lastApplicationUsage.getDay()
 		let today = Date().getDay()
-		#warning("handle day")
-		return UNNotificationPresentationOptions(arrayLiteral: [.alert, .sound, .badge])
+		
 		if lastUsageDay != today {
 			return UNNotificationPresentationOptions(arrayLiteral: [.alert, .sound, .badge])
 		} else {
@@ -44,7 +43,6 @@ extension UserNotificationService: UNUserNotificationCenterDelegate {
 		
 		DispatchQueue.main.async {
 			guard let _ = response.notification.request.content.userInfo as [AnyHashable: Any]? else { return }
-			
 			self.remoteLauncher.startRemoteClean(of: response.localNotitficationAction)
 		}
 	}
@@ -146,8 +144,8 @@ extension UserNotificationService {
 	}
 	
 	private func sendCleanNotification(of type: UserNotificationType, with triger: UNCalendarNotificationTrigger) {
-		#warning("REmoce")
-//		self.center.removeAllPendingNotificationRequests()
+		
+		self.center.removeAllPendingNotificationRequests()
 		
 		let userInfo: [AnyHashable: Any] = ["usernotifcationType": "hello"]
 		let content = UNMutableNotificationContent()
@@ -170,8 +168,7 @@ extension UserNotificationService {
 		
 		var dateComponents = DateComponents()
 		dateComponents.hour = Date().getHour()
-		#warning("handle minutes")
-		dateComponents.minute = Date().getMinute() + 20
+		dateComponents.minute = Date().getMinute()
 		
 		let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
 		

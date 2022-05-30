@@ -73,6 +73,7 @@ enum UserNotificationType: CaseIterable {
 
 typealias RemoteCleanType = NotificationAction
 enum NotificationAction: CaseIterable {
+	
 	case deepClean
 	case similarPhotoClean
 	case duplicatedPhotoClean
@@ -83,6 +84,19 @@ enum NotificationAction: CaseIterable {
 	case photoScan
 	case videoScan
 	case contactsScan
+	
+	var mediaType: MediaContentType {
+		switch self {
+			case .similarPhotoClean, .duplicatedPhotoClean, .photoScan:
+				return .userPhoto
+			case .similiarVideoClean, .duplicatedVideoClean, .videoScan:
+				return .userVideo
+			case .duplicatedContactsClean, .contactsScan:
+				return .userContacts
+			default:
+				return .none
+		}
+	}
 	
 	var identifier: String {
 		switch self {

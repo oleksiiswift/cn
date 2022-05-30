@@ -404,7 +404,7 @@ extension MainViewController: UpdateMediaStoreSizeDelegate {
 }
 
 extension MainViewController: RemoteLaunchServiceListener {
-	
+
 	private func handleShortcutItem() {
 		
 		guard let shortcutItem = U.sceneDelegate.shortCutItem else { return }
@@ -414,44 +414,16 @@ extension MainViewController: RemoteLaunchServiceListener {
 		U.sceneDelegate.shortCutItem = nil
 	}
 	
-	func similarPhotoScan() {
+	func remoteProcessingClean(by cleanType: RemoteCleanType) {
 		
-	}
-	
-	func similarVideoScan() {
-		
-	}
-	
-	func duplicatePhotoScan() {
-		
-	}
-	
-	func duplicateVideoScan() {
-		
-	}
-	
-	func duplicateContactsClean() {
-		
-	}
-	
-	func deepScan() {
 		self.popTopMainViewController()
-		self.prepareDeepCleanController(animated: false)
-	}
-	
-	func photoScan() {
-		self.popTopMainViewController()
-		self.checkForAccessPermission(of: .userPhoto, animated: false, cleanType: .photoScan)
-	}
-	
-	func videoScan() {
-		self.popTopMainViewController()
-		self.checkForAccessPermission(of: .userVideo, animated: false, cleanType: .videoScan)
-	}
-	
-	func contactsScan() {
-		self.popTopMainViewController()
-		self.checkForAccessPermission(of: .userContacts, animated: false, cleanType: .contactsScan)
+		
+		switch cleanType {
+			case .deepClean:
+				self.prepareDeepCleanController(animated: false)
+			default:
+				self.checkForAccessPermission(of: cleanType.mediaType, animated: false, cleanType: cleanType)
+		}
 	}
 }
 

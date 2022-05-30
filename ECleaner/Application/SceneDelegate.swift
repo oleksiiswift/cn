@@ -54,12 +54,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 extension SceneDelegate {
 	
 	private func handleConnectedScens(with connectedOptions:  UIScene.ConnectionOptions) {
-		
+				
 		if let shortcutItem = connectedOptions.shortcutItem {
 			self.shortCutItem = shortcutItem
-		} else if let notificationResponce = connectedOptions.notificationResponse {
-			
-		}
+		} 
 	}
 	
 	private func handleStartupRouting() {

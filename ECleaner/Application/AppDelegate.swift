@@ -17,7 +17,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setDefaults()
 		developmentSettings()
 		setupObserver()
-//		runDevelopmentElmtn()
+		runDevelopmentElmtn()
 //		printAllNotifications()
 
         return true
@@ -34,18 +34,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		debugPrint(sceneSessions)
     }
 }
-
-extension AppDelegate {
-	
-	func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-		print("Successfully registered for notifications!")
-	}
-
-	func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
-		print("Failed to register for notifications: \(error.localizedDescription)")
-	}
-}
-
 
 extension AppDelegate {
     
@@ -109,13 +97,7 @@ extension AppDelegate {
 	}
 		
 	private func runDevelopmentElmtn() {
-		
-		U.delay(10) {
-			UserNotificationService.sharedInstance.registerRemoteNotification()
-			U.delay(10) {
-				self.runDevelopmentElmtn()
-			}
-		}
+		debugPrint("hello there")
 	}
 }
 

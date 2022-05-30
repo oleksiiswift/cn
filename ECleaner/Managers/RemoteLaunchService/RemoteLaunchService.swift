@@ -7,16 +7,8 @@
 
 import Foundation
 
-@objc protocol RemoteLaunchServiceListener {
-	func deepScan()
-	@objc optional func similarPhotoScan()
-	@objc optional func similarVideoScan()
-	@objc optional func duplicatePhotoScan()
-	@objc optional func duplicateVideoScan()
-	@objc optional func duplicateContactsClean()
-	func photoScan()
-	func videoScan()
-	func contactsScan()
+protocol RemoteLaunchServiceListener {
+	func remoteProcessingClean(by cleanType: RemoteCleanType)
 }
 
 class RemoteLaunchServiceMediator {
@@ -39,26 +31,10 @@ class RemoteLaunchServiceMediator {
 		U.notificationCenter.post(name: .incomingRemoteActionRecived, object: nil, userInfo: nil)
 		
 		switch cleanType {
-			case .deepClean:
-				listener?.deepScan()
-			case .similarPhotoClean:
-				listener?.similarPhotoScan?()
-			case .duplicatedPhotoClean:
-				listener?.duplicateVideoScan?()
-			case .similiarVideoClean:
-				listener?.similarVideoScan?()
-			case .duplicatedVideoClean:
-				listener?.duplicateVideoScan?()
-			case .duplicatedContactsClean:
-				listener?.duplicateContactsClean?()
-			case .photoScan:
-				listener?.photoScan()
-			case .videoScan:
-				listener?.videoScan()
-			case .contactsScan:
-				listener?.contactsScan()
 			case .none:
 				return
+			default:
+				listener?.remoteProcessingClean(by: cleanType)
 		}
 	}
 }
@@ -87,18 +63,7 @@ extension RemoteLaunchServiceMediator {
 	public func handleShortCutItem(shortcutItem: UIApplicationShortcutItem) -> Bool {
 	
 		if let actionTypeValue = RemoteCleanType.allCases.first(where: {$0.identifier == shortcutItem.type})  {
-			switch actionTypeValue {
-				case .deepClean:
-					self.listener?.deepScan()
-				case .contactsScan:
-					self.listener?.contactsScan()
-				case .photoScan:
-					self.listener?.photoScan()
-				case .videoScan:
-					self.listener?.videoScan()
-				default:
-					debugPrint("")
-			}
+			listener?.remoteProcessingClean(by: actionTypeValue)
 		}
 		return true
 	}
