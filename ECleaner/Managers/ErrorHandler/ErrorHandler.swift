@@ -13,7 +13,85 @@ class ErrorHandler {
         let instance = ErrorHandler()
         return instance
     }()
+}
+
+//	MARK: - Permission Access Restricted Errors -
+extension ErrorHandler {
 	
+	enum AccessRestrictedError: Error {
+		case contactsRestrictedError
+		case photoLibraryRestrictedError
+		
+		var alertDescription: AlertDescription {
+			return LocalizationService.Alert.Permissions.restrictedPermissionDescription(for: self)
+		}
+	}
+
+	public func showRestrictedErrorAlert(_ errorType: AccessRestrictedError, at viewController: UIViewController, completionHandler: @escaping () -> Void) {
+		switch errorType {
+			case .contactsRestrictedError:
+				AlertManager.showPermissionAlert(of: .restrictedContacts, at: viewController)
+				completionHandler()
+			case .photoLibraryRestrictedError:
+				AlertManager.showPermissionAlert(of: .restrictedPhotoLibrary, at: viewController)
+				completionHandler()
+		}
+	}
+}
+
+//	MARK: - Empty Search Results Errors -
+extension ErrorHandler {
+	
+	enum EmptyResultsError: Error {
+		case photoLibrararyIsEmpty
+		case videoLibrararyIsEmpty
+		case similarPhotoIsEmpty
+		case duplicatedPhotoIsEmpty
+		case screenShotsIsEmpty
+		case similarSelfiesIsEmpty
+		case livePhotoIsEmpty
+		case similarLivePhotoIsEmpty
+		case largeVideoIsEmpty
+		case duplicatedVideoIsEmpty
+		case similarVideoIsEmpty
+		case screenRecordingIsEmpty
+		case contactsIsEmpty
+		case emptyContactsIsEmpty
+		case duplicatedNamesIsEmpty
+		case duplicatedNumbersIsEmpty
+		case duplicatedEmailsIsEmpty
+		case deepCleanResultsIsEmpty
+	}
+	
+	public func showEmptySearchResultsFor(_ error: EmptyResultsError, completionHandler: (() -> Void)? = nil) {
+		let errorDescription = LocalizationService.Errors.getEmptyErrorForKey(error)
+		AlertManager.presentErrorAlert(with: errorDescription) {
+			completionHandler?()
+		}
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+#warning("REFACTORING->>>> ")
+extension ErrorHandler {
+	
+
 	enum errorTitle: Error {
 		case error
 		case fatalError
@@ -49,28 +127,7 @@ class ErrorHandler {
         case errorCreateExportFile
     }
 	
-	enum AccessRestrictedError: Error {
-		case contactsRestrictedError
-		case photoLibraryRestrictedError
-		
-		var title: String {
-			switch self {
-				case .contactsRestrictedError:
-					return "permission denied"
-				case .photoLibraryRestrictedError:
-					return "permission denied"
-			}
-		}
-		
-		var errorRawValue: String {
-			switch self {
-				case .contactsRestrictedError:
-					return "\(U.appName) does not have access to contacts. Please, allow the application to access to your contacts."
-				case .photoLibraryRestrictedError:
-					return "\(U.appName) does not have access to photo library. Please, allow the application to access to your photo library."
-			}
-		}
-	}
+
 	
 
 	enum FatalError: Error {
@@ -152,31 +209,6 @@ class ErrorHandler {
 
 	}
 	
-	enum EmptyResultsError: Error {
-		case photoLibrararyIsEmpty
-		case similarPhotoIsEmpty
-		case duplicatedPhotoIsEmpty
-		case screenShotsIsEmpty
-		case similarSelfiesIsEmpty
-		case livePhotoIsEmpty
-		case similarLivePhotoIsEmpty
-		case recentlyDeletedPhotosIsEmpty
-		
-		case largeVideoIsEmpty
-		case duplicatedVideoIsEmpty
-		case similarVideoIsEmpty
-		case screenRecordingIsEmpty
-		case recentlyDeletedVideosIsEmpty
-		
-		case contactsIsEmpty
-		case emptyContactsIsEmpty
-		case duplicatedNamesIsEmpty
-		case duplicatedNumbersIsEmpty
-		case duplicatedEmailsIsEmpty
-		
-		case deepCleanResultsIsEmpty
-	}
-	
     private func deleteErrorForKey(_ error: DeleteError) -> String {
         switch error {
             case .errorDeleteContact:
@@ -216,62 +248,6 @@ class ErrorHandler {
 				return error.errorRawValue
 		}
 	}
-	
-	public func emptyResultsForKey(_ error: EmptyResultsError) -> String {
-		switch error {
-			case .photoLibrararyIsEmpty:
-				return "photo library is empty"
-			case .similarPhotoIsEmpty:
-				return "np similar photo"
-			case .duplicatedPhotoIsEmpty:
-				return "no duplicated photo"
-			case .screenShotsIsEmpty:
-				return "no screenshots"
-			case .similarSelfiesIsEmpty:
-				return "no similar selfies"
-			case .livePhotoIsEmpty:
-				return "no live photo"
-			case .similarLivePhotoIsEmpty:
-				return "no similar live photo found"
-			case .recentlyDeletedPhotosIsEmpty:
-				return "no recently deleted"
-			case .largeVideoIsEmpty:
-				return "no large files"
-			case .duplicatedVideoIsEmpty:
-				return "no duolicated video"
-			case .similarVideoIsEmpty:
-				return "np similar video"
-			case .screenRecordingIsEmpty:
-				return "no screen recordings"
-			case .recentlyDeletedVideosIsEmpty:
-				return "no recently deleted video"
-			case .contactsIsEmpty:
-				return "contacts book is empty"
-			case .emptyContactsIsEmpty:
-				return "no empty contacts"
-			case .duplicatedNamesIsEmpty:
-				return "no duplicated contacts found"
-			case .duplicatedNumbersIsEmpty:
-				return "no duplicated phone numbers found"
-			case .duplicatedEmailsIsEmpty:
-				return "no duplicated emails found"
-			case .deepCleanResultsIsEmpty:
-				return "deep clean search complete with empty results"
-		}
-	}
-	
-	public func emptyResultsTitle(for emptyKey: EmptyResultsError) -> String {
-		switch emptyKey {
-			case .deepCleanResultsIsEmpty:
-				return "search complete"
-			default:
-				return emptyResultsErrorTitle()
-		}
-	}
-	
-	public func emptyResultsErrorTitle() -> String {
-		return "Sorry, no content)"
-	}
 }
 
 extension ErrorHandler {
@@ -299,28 +275,10 @@ extension ErrorHandler {
 		A.showAlert(alertTitle, message: fatalErrorForKey(errorType), actions: [], withCancel: false, style: .alert, completion: nil)
 	}
 	
-	public func showRestrictedErrorAlert(_ errortype: AccessRestrictedError, completionHandler: @escaping () -> Void) {
-		let permissionDeniedText = L.getDeniedPermissionText()
-		
-		let action = UIAlertAction(title: permissionDeniedText.action, style: .default) { _ in
-			UIPresenter.openSettingPage()
-		}
-		A.showAlert(errortype.title, message: errortype.errorRawValue, actions: [action], withCancel: true, style: .alert) {
-			completionHandler()
-		}
-	}
+
 }
 
-//	MARK: no foud searching data
-extension ErrorHandler {
-	
-	public func showEmptySearchResultsFor(_ alertType: AlertType, completion: (() -> Void)? = nil) {
-		let alertAction = UIAlertAction(title: AlertHandler.AlertActionsButtons.ok.title, style: .default) { _ in
-			completion?()
-		}
-		A.showAlert(alertType.alertTitle, message: alertType.alertMessage, actions: [alertAction], withCancel: alertType.withCancel, style: .alert, completion: nil)
-	}
-}
+
 
 extension ErrorHandler {
 	
@@ -335,3 +293,4 @@ extension ErrorHandler {
 		A.showAlert(errorType.title, message: errorType.errorMessage, actions: actions, withCancel: errorType.withCancel, style: .alert) {}
 	}
 }
+

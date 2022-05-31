@@ -77,11 +77,11 @@ class Permission {
 	public var buttonTitle: String {
 		switch self.status {
 			case .authorized:
-				return "allowed"
+				return LocalizationService.Buttons.getButtonTitle(of: .allowed)
 			case .notDetermined:
-				return "continue"
+				return LocalizationService.Buttons.getButtonTitle(of: .continue)
 			default:
-				return "denied"
+				return LocalizationService.Buttons.getButtonTitle(of: .denied)
 		}
 	}
 	
@@ -93,10 +93,9 @@ class Permission {
 				return ThemeManager.theme.titleTextColor
 			default:
 				return .red
-				
 		}
 	}
-	
+
 	enum Status {
 		case authorized
 		case denied
@@ -109,16 +108,15 @@ class Permission {
 		case photolibrary
 		case contacts
 		case tracking
-		
 		case appUsage
 		case blank
 		
 		public var permissionName: String {
-			return L.getTitle(for: self)
+			return LocalizationService.PermissionStings.getTitle(for: self)
 		}
 		
 		public var permissionDescription: String {
-			return L.getDescription(for: self)
+			return LocalizationService.PermissionStings.getDescription(for: self)
 		}
 		
 		public var permissionImage: UIImage {
@@ -140,69 +138,11 @@ class Permission {
 				case .tracking:
 					return C.key.permissions.rawValue.tracking
 				case .appUsage:
-					return "appusage"
+					return C.key.permissions.rawValue.appUsage
 				case .blank:
-					return "blank"
+					return C.key.permissions.rawValue.blank
 			}
 		}
 	}
 }
-
-class PermissionManager {
-	
-	static let shared: PermissionManager = {
-		let instance = PermissionManager()
-		return instance
-	}()
-	
-	
-	public func checkForStartingPemissions() {
-		
-		guard SettingsManager.permissions.permisssionDidShow else { return }
-		
-		PhotoLibraryPermissions().authorized ? PhotoManager.shared.getPhotoLibraryContentAndCalculateSpace() : ()
-		ContactsPermissions().authorized ? ContactsManager.shared.contactsProcessingStore() : ()
-	}
-}
-
-extension PermissionManager {
-	
-	public func photolibraryPermissionAccess(_ completionHandler: @escaping (_ status: Permission.Status) -> Void) {
-		let status = PhotoLibraryPermissions().status
-		switch status {
-			case .authorized:
-				completionHandler(status)
-			case .denied:
-				ErrorHandler.shared.showRestrictedErrorAlert(.photoLibraryRestrictedError) {}
-			case .notDetermined:
-				PhotoLibraryPermissions().requestForPermission { accessGranted, error in
-					completionHandler(PhotoLibraryPermissions().status)
-				}
-			case .notSupported:
-				return
-		}
-	}
-	
-	public func contactsPermissionAccess(_ completionHandler: @escaping (_ status: Permission.Status) -> Void) {
-		let status = ContactsPermissions().status
-		switch status {
-			case .authorized:
-				completionHandler(status)
-			case .denied:
-				ErrorHandler.shared.showRestrictedErrorAlert(.contactsRestrictedError) {
-					completionHandler(status)
-				}
-			case .notDetermined:
-				ContactsPermissions().requestForPermission { acessGranted, error in
-					completionHandler(ContactsPermissions().status)
-				}
-			case .notSupported:
-				return
-		}
-	}
-}
-
-
-
-
 

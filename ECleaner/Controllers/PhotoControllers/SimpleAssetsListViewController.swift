@@ -274,15 +274,6 @@ extension SimpleAssetsListViewController {
 		}
 		self.handleActionButtons()
 	}
-	
-	private func didSelectAll() {
-		
-		guard isDeepCleaningSelectableFlow else { return }
-		
-		A.showSelectAllStarterAlert(for: mediaType) {
-			self.setCollection(selected: true)
-		}
-	}
 }
 
 //		MARK: - handle select ui elements (bottom buttons, navigation)

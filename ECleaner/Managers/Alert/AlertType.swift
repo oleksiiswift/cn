@@ -7,38 +7,13 @@
 
 import UIKit
 
-enum AlertType {
+
+
+
+
+enum AlertTypeOLD {
 	
-		/// `access module`
-	case contactsRestricted
-	case photoLibraryRestricted
 	
-	case allowNotification
-	case allowConstacStore
-	case allowPhotoLibrary
-		///  `empty search`
-	case photoLibraryIsEmpty
-	case similarPhotoIsEmpty
-	case duplicatedPhotoIsEmpty
-	case screenShotsIsEmpty
-	case similarSelfiesIsEmpty
-	case livePhotoIsEmpty
-	case similarLivePhotoIsEmpty
-	case recentlyDeletedPhotosIsEmpty
-	
-	case largeVideoIsEmpty
-	case duplicatedVideoIsEmpty
-	case similarVideoIsEmpty
-	case screenRecordingIsEmpty
-	case recentlyDeletedVideosIsEmpty
-	
-	case contactsIsEmpty
-	case emptyContactsIsEmpty
-	case duplicatedNamesIsEmpty
-	case duplicatedNumbersIsEmpty
-	case duplicatedEmailsIsEmpty
-	
-	case deepCleanSearchinResultsIsEmpty
 	
 		/// `permite delete`
     case allowDeleteSelectedPhotos
@@ -66,29 +41,13 @@ enum AlertType {
     case suxxessDeleteContacts
     case suxxessMergedContact
     case suxxessMergedContacts
-	
-	case compressionvideoFileComplete
-    
+	    
     case none
     
     /// alert title
     var alertTitle: String? {
         switch self {
-				
-//				MARK: access error
-			case .contactsRestricted:
-				return ErrorHandler.AccessRestrictedError.contactsRestrictedError.title
-				
-			case .photoLibraryRestricted:
-				return ErrorHandler.AccessRestrictedError.photoLibraryRestrictedError.title
-				
-					//				MARK: permition alert
-			case .allowNotification:
-				return AlertHandler.AllowAccessHandler.notification.title
-			case .allowConstacStore:
-				return AlertHandler.AllowAccessHandler.contactStore.title
-			case .allowPhotoLibrary:
-				return AlertHandler.AllowAccessHandler.photoLibrary.title
+			
 			case .photoLibraryIsEmpty:
 				return ErrorHandler.errorTitle.error.title
 
@@ -141,8 +100,6 @@ enum AlertType {
                 return "good need locale"
             case .suxxessMergedContact, .suxxessMergedContacts:
                 return "good merged locale"
-			case .compressionvideoFileComplete:
-				return "compression complete"
 			case .none:
 				return ""
 		}
@@ -152,19 +109,6 @@ enum AlertType {
     var alertMessage: String? {
         
         switch self {
-//				MARK: access error
-			case .contactsRestricted:
-				return ErrorHandler.AccessRestrictedError.contactsRestrictedError.errorRawValue
-			case .photoLibraryRestricted:
-				return ErrorHandler.AccessRestrictedError.photoLibraryRestrictedError.errorRawValue
-
-//				MARK: allow access for content
-			case .allowNotification:
-				return AlertHandler.AllowAccessHandler.notification.message
-			case .allowConstacStore:
-				return AlertHandler.AllowAccessHandler.contactStore.message
-			case .allowPhotoLibrary:
-				return AlertHandler.AllowAccessHandler.photoLibrary.message
 				
 //				MARK: no searching data
 			case .photoLibraryIsEmpty:
@@ -240,9 +184,6 @@ enum AlertType {
 				return "cintact suxx merged"
 			case .suxxessMergedContacts:
 				return "contacts suxx merged"
-			case .compressionvideoFileComplete:
-				return AlertHandler.getAlertMessage(for: self)
-//				MARK: cancel none
             case .withCancel:
                 return "cancel"
             case .none:
@@ -250,22 +191,7 @@ enum AlertType {
 		}
     }
 	
-	var alertConfrimButtonTitle: String {
-		
-		switch self {
-				
-			case .allowDeleteSelectedVideo:
-				return "delete video"
-			case .allowDeleteSelectedVideos:
-				return "delete videos"
-			case .allowDeleteSelectedPhotos:
-				return "delete photos"
-			case .allowDeleteSelectedPhoto:
-				return "delete photo"
-			default:
-				return "none"	
-		}
-	}
+
     
 //    /// alert or action sheet
     var alertStyle: UIAlertController.Style {
@@ -279,9 +205,6 @@ enum AlertType {
     
     var withCancel: Bool {
         switch self {
-				
-			case .contactsRestricted, .photoLibraryRestricted:
-				return true
 				
 			case .photoLibraryIsEmpty,
 					.similarPhotoIsEmpty,
@@ -304,7 +227,7 @@ enum AlertType {
 					.deepCleanSearchinResultsIsEmpty:
 				return false
 				
-            case .allowNotification, .allowConstacStore, .allowPhotoLibrary, .withCancel:
+            case .withCancel:
                 return true
 			case .allowDeleteSelectedPhotos, .allowDeleteSelectedPhoto, .allowDeleteSelectedVideos, .allowDeleteSelectedVideo:
 				return true
@@ -314,10 +237,41 @@ enum AlertType {
                 return true
             case .suxxessDeleteContact, .suxxessDeleteContacts, .suxxessMergedContact, .suxxessMergedContacts:
                 return false
-			case .compressionvideoFileComplete:
-				return true
+		
             case .none:
                 return false
         }
     }
 }
+
+
+enum AlertType {
+	
+	case compressionvideoFileComplete
+	
+	public var alertTitle: String {
+		return AlertHandler.getAlertTitle(for: self)
+	}
+	
+	public var alertMessage: String {
+		return AlertHandler.getAlertMessage(for: self)
+	}
+	
+	public var alertStyle: UIAlertController.Style {
+		switch self {
+			case .compressionvideoFileComplete:
+				return .actionSheet
+			default:
+				return .alert
+		}
+	}
+	
+	public var withCancel: Bool {
+		return AlertHandler.withCancelButton(for: self)
+	}
+}
+
+
+
+
+

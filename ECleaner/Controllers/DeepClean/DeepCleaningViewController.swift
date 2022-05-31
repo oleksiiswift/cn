@@ -323,7 +323,7 @@ extension DeepCleaningViewController {
 			   self.photoManager.clearRequestsAfterDeepCleanProcessing()
 		  } emptyResultsHandler: {
 			   U.delay(1) {
-					ErrorHandler.shared.showEmptySearchResultsFor(.deepCleanSearchinResultsIsEmpty) {
+					ErrorHandler.shared.showEmptySearchResultsFor(.deepCleanResultsIsEmpty) {
 						 self.navigationController?.popViewController(animated: true)
 					}
 			   }

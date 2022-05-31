@@ -123,13 +123,6 @@ extension ContactsGroupViewController {
 	private func handleStartingSelectableAssets() {
 		self.didSelectDeselecAllItems()
 	}
-	
-	private func showSelectStartingAllContactsAlert() {
-		
-		A.showSelectAllStarterAlert(for: self.contentType) {
-			self.handleStartingSelectableAssets()
-		}
-	}
 }
 
 //		MARK: - merge contacts -

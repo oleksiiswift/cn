@@ -63,6 +63,8 @@ class Constants {
 				static let photolibrary = "com.cleaner.permission.photolibrary"
 				static let contacts = "com.cleaner.permission.contacts"
 				static let tracking = "com.cleaner.permission.tracking"
+				static let appUsage = "com.cleaner.permission.appUsage"
+				static let blank = "com.cleaner.permission.blank"
 			}
 		}
 		

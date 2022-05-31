@@ -142,44 +142,24 @@ enum PhotoMediaType: String {
 		}
 	}
 	
-	var emptyContentAlertType: AlertType {
+	var emptyContentError: ErrorHandler.EmptyResultsError {
 		switch self {
-			case .similarPhotos:
-				return .similarPhotoIsEmpty
-			case .duplicatedPhotos:
-				return .duplicatedPhotoIsEmpty
-			case .singleScreenShots:
-				return .screenShotsIsEmpty
-			case .singleLivePhotos:
-				return .livePhotoIsEmpty
-			case .similarLivePhotos:
-				return .similarLivePhotoIsEmpty
-			case .similarSelfies:
-				return .similarSelfiesIsEmpty
-			case .singleRecentlyDeletedPhotos:
-				return .recentlyDeletedPhotosIsEmpty
-			case .singleLargeVideos:
-				return .largeVideoIsEmpty
-			case .duplicatedVideos:
-				return .duplicatedVideoIsEmpty
-			case .similarVideos:
-				return .similarVideoIsEmpty
-			case .singleScreenRecordings:
-				return .screenRecordingIsEmpty
-			case .singleRecentlyDeletedVideos:
-				return .recentlyDeletedVideosIsEmpty
-			case .allContacts:
-				return .contactsIsEmpty
-			case .emptyContacts:
-				return .emptyContactsIsEmpty
-			case .duplicatedContacts:
-				return .duplicatedNamesIsEmpty
-			case .duplicatedPhoneNumbers:
-				return .duplicatedNumbersIsEmpty
-			case .duplicatedEmails:
-				return .duplicatedEmailsIsEmpty
-			default:
-				return .none
+			case .similarPhotos: 			return .similarPhotoIsEmpty
+			case .duplicatedPhotos: 		return .duplicatedPhotoIsEmpty
+			case .singleScreenShots: 		return .screenShotsIsEmpty
+			case .singleLivePhotos: 		return .livePhotoIsEmpty
+			case .similarLivePhotos: 		return .similarLivePhotoIsEmpty
+			case .similarSelfies: 			return .similarSelfiesIsEmpty
+			case .singleLargeVideos: 		return .largeVideoIsEmpty
+			case .duplicatedVideos: 		return .duplicatedVideoIsEmpty
+			case .similarVideos: 			return .similarVideoIsEmpty
+			case .singleScreenRecordings: 	return .screenRecordingIsEmpty
+			case .allContacts: 				return .contactsIsEmpty
+			case .emptyContacts: 			return .emptyContactsIsEmpty
+			case .duplicatedContacts: 		return .duplicatedNamesIsEmpty
+			case .duplicatedPhoneNumbers: 	return .duplicatedNumbersIsEmpty
+			case .duplicatedEmails: 		return .duplicatedEmailsIsEmpty
+			default: 						return .photoLibrararyIsEmpty
 		}
 	}
 

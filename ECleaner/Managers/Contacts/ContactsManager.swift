@@ -34,38 +34,6 @@ class ContactsManager {
 		CNContactImageDataAvailableKey as CNKeyDescriptor,
 		CNContactImageDataKey as CNKeyDescriptor
 	]
-	
-//    MARK: - contacts store auth status -
-		/// auth for contacts data
-	private func checkContactStoreAuthStatus(completion: @escaping(_ grantAccess: Bool) -> Void) {
-		completion(CNContactStore.authorizationStatus(for: .contacts) == .authorized)
-	}
-	
-		/// request access for user contacts
-	private func requestAccesss(_ requestGranted: @escaping(Bool, Error?) -> ()) {
-		CNContactStore().requestAccess(for: .contacts) { grandted, error in
-			requestGranted(grandted, error)
-		}
-	}
-	
-		/// `public external status check metods
-		/// check status and if restricted returned to settings or ask for permision
-	
-	public func checkStatus(completionHandler: @escaping ([String: [CNContact]]) -> ()) {
-		
-		switch CNContactStore.authorizationStatus(for: .contacts) {
-			case .denied, .restricted:
-				A.showResrictedAlert(by: .contactsRestricted) {}
-			case .notDetermined:
-				self.requestAccesss { [unowned self] granted, error in
-					self.checkStatus(completionHandler: completionHandler)
-				}
-			case .authorized:
-				self.contactsProcessingStore()
-			@unknown default:
-				A.showResrictedAlert(by: .contactsRestricted) {}
-		}
-	}
 }
 
 //		MARK: - fetching contacts -
@@ -86,20 +54,6 @@ extension ContactsManager {
 			debugPrint(error.localizedDescription)
 			completionHandler(.failure(error))
 		}
-	}
-	
-		/// `all containers`
-	private func getContactsContainers() -> [CNContainer] {
-		
-		let contactStore = CNContactStore()
-		var contactsContainers: [CNContainer] = []
-		
-		do {
-			contactsContainers = try contactStore.containers(matching: nil)
-		} catch {
-			self.checkStatus { _ in }
-		}
-		return contactsContainers
 	}
 	
 		/// `sort contacts` by alphabetical results (helper private function)

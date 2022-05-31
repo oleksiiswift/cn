@@ -202,11 +202,6 @@ extension ContactsViewController {
 		self.handleEdit()
 		self.navigationBar.handleChangeRightButtonSelectState(selectAll: true)
 		self.setContactsSelect(true) {}
-		
-//		A.showSelectAllStarterAlert(for: self.contentType) {
-//			self.navigationBar.handleChangeRightButtonSelectState(selectAll: true)
-//			self.setContactsSelect(true) {}
-//		}
 	}
 	
 	public func handleContactsPreviousSelected(selectedContactsIDs: [String], contactsCollection: [CNContact], contactsGroupCollection: [ContactsGroup]) {

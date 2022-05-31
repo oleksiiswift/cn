@@ -26,33 +26,6 @@ struct AlertHandler {
 		}
 	}
 	
-	enum AllowAccessHandler {
-		case notification
-		case contactStore
-		case photoLibrary
-		
-		var title: String {
-			switch self {
-				case .notification:
-					return "permition request for notification"
-				case .contactStore:
-					return "permition request for contacts"
-				case .photoLibrary:
-					return "permition request for photolibrary"
-			}
-		}
-	
-		var message: String {
-			switch self {
-				case .notification:
-					return "allow notification"
-				case .contactStore:
-					return "allow contacts store"
-				case .photoLibrary:
-					return "allow access photolibrary"
-			}
-		}
-	}
 		
 	private static func deepCleanHandlerForKey(_ handler: DeepCleanStateHandler) -> String {
 		switch handler {
@@ -105,65 +78,18 @@ extension AlertHandler {
 	}
 }
 
+
+
+
+#warning("Refactoring")
+
 extension AlertHandler {
-	
-	public enum AlertActionsButtons {
-		case cancel
-		case ok
-		case settings
-		case delete
-		case merge
-		case stop
-		case exit
-		case selectAll
-		case share
-		case save
-		case deleteVideo
-		case deleteVideos
-		case deletePhoto
-		case deletePhotos
-	
-		var title: String {
-			switch self {
-				case .cancel:
-					return "cancel"
-				case .ok:
-					return "ok"
-				case .settings:
-					return "settings"
-				case .delete:
-					return "delete"
-				case .merge:
-					return "merge"
-				case .stop:
-					return "stop"
-				case .exit:
-					return "exit"
-				case .selectAll:
-					return "select all"
-				case .share:
-					return "share"
-				case .save:
-					return "save"
-				case .deleteVideo:
-					return "delete video"
-				case .deleteVideos:
-					return "delete videos"
-				case .deletePhoto:
-					return "delete photos"
-				case .deletePhotos:
-					return "delete photo"
-			}
-		}
-	}
 	
 	public static func getAlertTitle(for aletrType: AlertType) -> String {
 		
 		switch aletrType {
 			case .compressionvideoFileComplete:
-				return "compression complete"
-			default:
-				return ""
+				return L.AlertController.AlertTitle.compressionComplete
 		}
 	}
 	
@@ -171,9 +97,14 @@ extension AlertHandler {
 		
 		switch alertType {
 			case .compressionvideoFileComplete:
-				return "video file compression is suxxesfully competed. file size: "
-			default:
-				return ""
+				return Localization.AlertController.AlertMessage.compresssionComplete
+		}
+	}
+	
+	public static func withCancelButton(for alertType: AlertType) -> Bool {
+		switch alertType {
+			case .compressionvideoFileComplete:
+				return true
 		}
 	}
 }

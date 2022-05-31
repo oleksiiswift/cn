@@ -23,125 +23,8 @@ class AlertManager: NSObject {
             cancelCompletion?()
         }
     }
-    
-    /// default alert
-	static func showAlert(_ title: String? = nil, message: String? = nil, actions: [UIAlertAction] = [], withCancel: Bool = true, style: UIAlertController.Style, completion: (() -> Void)? = nil) {
-	
-		let alert = UIAlertController(title: title, message: message, preferredStyle: style)
-        
-		let cancelAction = UIAlertAction(title: AlertHandler.AlertActionsButtons.cancel.title, style: .cancel) { action in
-            completion?()
-        }
-        
-        if actions.isEmpty {
-			let alertAction = UIAlertAction(title: AlertHandler.AlertActionsButtons.ok.title, style: .default) { _ in
-                completion?()
-            }
-            alert.addAction(alertAction)
-        } else {
-            actions.forEach { (action) in
-                alert.addAction(action)
-            }
-        }
-        
-        if withCancel {
-            alert.addAction(cancelAction)
-        }
-		U.UI {
-			topController()?.present(alert, animated: true, completion: nil)			
-		}
-    }
-    
-    private static func showPermissionAlert(alerttype: AlertType, actions: [UIAlertAction], cancelAction: @escaping (_ isDennyAccess: Bool) -> Void) {
-        
-        let alertController = UIAlertController(title: alerttype.alertTitle, message: alerttype.alertMessage, preferredStyle: alerttype.alertStyle)
-        
-		let cancelAction = UIAlertAction(title: AlertHandler.AlertActionsButtons.cancel.title, style: .default) { (_) in
-            
-            cancelAction(false)
-        }
-        alertController.addAction(cancelAction)
-        actions.forEach { (action) in
-            alertController.addAction(action)
-        }
-        
-        U.UI {
-            topController()?.present(alertController, animated: true)
-        }
-    }
 }
 
-//	MARK: - ACCESS ARTS, PERMISSION, SETTINGS, RESTRICTED -
-extension AlertManager {
-	
-	static func showResrictedAlert(by type: AlertType, completionHandler: @escaping () -> Void) {
-		
-		let settingsAction = UIAlertAction(title: AlertHandler.AlertActionsButtons.settings.title, style: .default) { _ in
-			U.openSettings()
-		}
-		
-		self.showAlert(type: type, actions: [settingsAction]) {
-			completionHandler()
-		}
-	}
-	
-    
-    static func showOpenSettingsAlert(_ alertType: AlertType) {
-        
-		let settingsAction = UIAlertAction(title: AlertHandler.AlertActionsButtons.settings.title, style: .default, handler: openSetting(action:))
-        
-        showPermissionAlert(alerttype: alertType, actions: [settingsAction]) { isCancel in
-            debugPrint(isCancel)
-        }
-    }
-    
-    private static func openSetting(action: UIAlertAction) {
-        if let url = URL(string: UIApplication.openSettingsURLString) {
-            UIApplication.shared.open(url, options: [:], completionHandler: nil)
-        }
-    }
-}
-
-extension AlertManager {
-	
-	public static func showAtLeastOneMediaPermissionAlert(at viewController: UIViewController) {
-		let alertText = TempText.getAtLeastOnePermissionText()
-		self.showAlert(with: alertText, at: viewController) {}
-	}
-	
-	public static func showDeniedAlert(_ permission: Permission, at viewController: UIViewController) {
-		let alertText = TempText.getDeniedPermissionText()
-		self.showAlert(with: alertText, at: viewController) {
-			UIPresenter.openSettingPage()
-		}
-	}
-	
-	public static func showDeniedDeepClean(at viewController: UIViewController) {
-		let alertText = TempText.getDeniedDeepCleanPermission()
-		self.showAlert(with: alertText, at: viewController) {
-			UIPresenter.openSettingPage()
-		}
-	}
-	
-	public static func showApptrackerPerformAlert(at viewController: UIViewController, completion: @escaping () -> Void) {
-		let alertText = TempText.getApptrackerPermissionText()
-		self.showAlert(with: alertText, at: viewController) {
-			completion()
-		}
-	}
-	
-	private static func showAlert(with text: AlertTextStrings, at viewController: UIViewController, completionHandler: @escaping () -> Void) {
-		
-		let alertController = UIAlertController(title: text.title, message: text.description, preferredStyle: .alert)
-		let cancelAction = UIAlertAction(title: text.cancel, style: .cancel)
-		let action = UIAlertAction(title: text.action, style: .default) { _ in
-			completionHandler()
-		}
-		alertController.addAction(action)
-		text.cancel != "" ?  alertController.addAction(cancelAction) : ()
-		viewController.present(alertController, animated: true, completion: nil)
-	}
-}
 
 //    MARK: - PHASSET ALERTS -
 extension AlertManager {
@@ -225,13 +108,6 @@ extension AlertManager {
         
         showAlert(type: alertType, actions: [allowMergeContacts])
     }
-    
-    static func showEmptyContactsToPresent(of type: AlertType, completion: @escaping () -> Void) {
-        
-		ErrorHandler.shared.showEmptySearchResultsFor(type) {
-			completion()
-		}
-    }
 }
 
 //		MARK: - stop search alerts -
@@ -280,37 +156,91 @@ extension AlertManager {
 	}
 }
 
+
+
+
+
+extension AlertManager {
+
+		/// default alert
+		private static func showAlert(_ title: String? = nil, message: String? = nil, actions: [UIAlertAction] = [], withCancel: Bool = true, style: UIAlertController.Style, completion: (() -> Void)? = nil) {
+		
+			let alert = UIAlertController(title: title, message: message, preferredStyle: style)
+			
+			let cancelAction = UIAlertAction(title: LocalizationService.Buttons.getButtonTitle(of: .cancel), style: .cancel) { action in
+				completion?()
+			}
+			
+			if actions.isEmpty {
+				let alertAction = UIAlertAction(title: LocalizationService.Buttons.getButtonTitle(of: .ok), style: .default) { _ in
+					completion?()
+				}
+				alert.addAction(alertAction)
+			} else {
+				actions.forEach { (action) in
+					alert.addAction(action)
+				}
+			}
+			
+			if withCancel {
+				alert.addAction(cancelAction)
+			}
+			U.UI {
+				topController()?.present(alert, animated: true, completion: nil)
+			}
+		}
+}
+
+#warning("REFACTORING -> > > > > ")
+
+	//		MARK: handle error results, error for data
 extension AlertManager {
 	
-	public static func showSelectAllStarterAlert(for type: PhotoMediaType, completionHandler: @escaping () -> Void) {
+	public static func presentErrorAlert(with description: ErrorDescription, completionHandler: (() -> Void)? = nil) {
 		
-		let alertAction = UIAlertAction(title: AlertHandler.AlertActionsButtons.selectAll.title, style: .default) { _ in
-			completionHandler()
+		let alertController = UIAlertController(title: description.title, message: description.message, preferredStyle: .alert)
+		let alertAction = UIAlertAction(title: description.buttonTitle, style: .default) { _ in
+			completionHandler?()
 		}
-		
-		let alertMessage = AlertHandler.getSelectableAutimaticAletMessage(for: type)
-		
-		
-		showAlert("Select Items?", message: alertMessage, actions: [alertAction], withCancel: true, style: .alert, completion: nil)
+		alertController.addAction(alertAction)
+		DispatchQueue.main.async {
+			if let topController = getTheMostTopController() {
+				topController.present(alertController, animated: true)
+			}
+		}
+	}
+}
+
+//		MARK: compression action sheet
+extension AlertManager {
+	
+	public static func showCompressionVideoFileComplete(fileSize: String, shareCompletionHandler: @escaping () -> Void, savedInPhotoLibraryCompletionHandler: @escaping () -> Void) {
+		let alertType: AlertType = .compressionvideoFileComplete
+		let title = alertType.alertTitle
+		let message = alertType.alertMessage + fileSize
+		let shareAction = UIAlertAction(title: LocalizationService.Buttons.getButtonTitle(of: .share), style: .default) { _ in
+			shareCompletionHandler()
+		}
+		let saveAction = UIAlertAction(title: LocalizationService.Buttons.getButtonTitle(of: .save), style: .default) { _ in
+			savedInPhotoLibraryCompletionHandler()
+		}
+		self.presentDefaultAlert(title: title, message: message, actions: [shareAction, saveAction], style: alertType.alertStyle, withCancel: true)
 	}
 }
 
 extension AlertManager {
 	
-	public static func showCompressionVideoFileComplete(fileSize: String, shareCompletionHandler: @escaping () -> Void, savedInPhotoLibraryCompletionHandler: @escaping () -> Void) {
-		
-		let shareAction = UIAlertAction(title: AlertHandler.AlertActionsButtons.share.title,
-										style: .default) { _ in
-			shareCompletionHandler()
+	private static func presentDefaultAlert(title: String, message: String, actions: [UIAlertAction], style: UIAlertController.Style, withCancel: Bool) {
+		let alertController = UIAlertController(title: title, message: message, preferredStyle: style)
+		actions.forEach { action in
+			alertController.addAction(action)
 		}
-		let saveAction = UIAlertAction(title: AlertHandler.AlertActionsButtons.save.title,
-									   style: .default) { _ in
-			savedInPhotoLibraryCompletionHandler()
+		let cancelAction = UIAlertAction(title: LocalizationService.Buttons.getButtonTitle(of: .cancel), style: .cancel)
+		withCancel ? alertController.addAction(cancelAction) : ()
+		U.UI {
+			if let topController = getTheMostTopController() {
+				topController.present(alertController, animated: true, completion: nil)
+			}
 		}
-	
-		let type: AlertType = .compressionvideoFileComplete
-		let message = type.alertMessage! + fileSize
-		
-		showAlert(type.alertTitle, message: message, actions: [shareAction, saveAction], withCancel: type.withCancel, style: type.alertStyle) {}
 	}
 }

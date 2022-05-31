@@ -276,7 +276,7 @@ extension MainViewController {
 	private func prepareDeepCleanController(animated: Bool = true) {
 		
 		guard PhotoLibraryPermissions().authorized && ContactsPermissions().authorized else {
-			A.showDeniedDeepClean(at: self)
+			AlertManager.showPermissionAlert(of: .deniedDeepClean, at: self)
 			return
 		}
 		
@@ -325,12 +325,9 @@ extension MainViewController {
 		self.navigationController?.pushViewController(viewController, animated: true)
 	}
     
-    private func openSubscriptionController() {
-		
-	}
+    private func openSubscriptionController() {}
 	
-	@objc func shortCutItemStartCleanProcess(_ notification: Notification) {
-	}
+	@objc func shortCutItemStartCleanProcess(_ notification: Notification) {}
 	
 	private func popTopMainViewController() {
 		if self != getTheMostTopController() {

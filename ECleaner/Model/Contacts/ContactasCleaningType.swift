@@ -50,7 +50,7 @@ enum ContactasCleaningType {
         }
     }
     
-    var alertEmptyType: AlertType {
+	var emptyResultsError: ErrorHandler.EmptyResultsError {
         switch self {
             case .duplicatedPhoneNumnber:
 				return .duplicatedNumbersIsEmpty
@@ -59,7 +59,7 @@ enum ContactasCleaningType {
             case .duplicatedEmail:
 				return .duplicatedEmailsIsEmpty
             default:
-                return .none
+				return .contactsIsEmpty
         }
     }
     
