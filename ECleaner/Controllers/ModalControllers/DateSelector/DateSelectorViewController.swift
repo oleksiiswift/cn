@@ -282,8 +282,8 @@ extension DateSelectorViewController: Themeble {
 		let autoDateSelectSize = U.UIHelper.AppDimensions.NavigationBar.startingNavigationBarButtonSize - 10
 		autoDatePickerButtonWidthConstraint.constant = autoDateSelectSize
 	
-		bottomButtonView.title("SUBMIT".localized())
-        autoDatePickTextLabel.text = "SINCE_THE_LAST_CLEANING".localized()
+		bottomButtonView.title("SUBMIT")
+        autoDatePickTextLabel.text = "SINCE_THE_LAST_CLEANING"
 		autoDatePickTextLabel.font = FontManager.pickerFont(of: .subtitle)
 		
 		let checkMarkImage = I.systemItems.selectItems.checkBox.renderScalePreservingAspectRatio(from: CGSize(width: autoDateSelectSize / 2, height: autoDateSelectSize / 2))

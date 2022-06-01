@@ -419,7 +419,7 @@ extension ContactsViewController {
 		}
 		U.delay(0.33) {
 			P.hideIndicator()
-			A.showDeleteContactsAlerts(for: indexPaths.count > 1 ? .many : .one) {
+			AlertManager.showDeleteAlert(with: .userContacts, of: .getRaw(from: indexPaths.count)) {
 				P.showIndicator()
 				U.delay(0.33) {
 					self.contactManager.contactsProcessingOperationQueuer.cancelAll()
@@ -430,7 +430,7 @@ extension ContactsViewController {
 	}
 	
 	private func deleteSingleContact(at indexPath: IndexPath) {
-		A.showDeleteContactsAlerts(for: .one) {
+		AlertManager.showDeleteAlert(with: .userContacts, of: .one) {
 			P.showIndicator()
 			U.delay(0.33) {
 				self.contactManager.contactsProcessingOperationQueuer.cancelAll()
@@ -462,9 +462,9 @@ extension ContactsViewController {
 		} completionHandler: { errorsCount in
 			U.delay(0.5) {
 				if errorsCount != contacts.count {
-					A.showSuxxessfullDeleted(for: contacts.count > 1 ? .many : .one)
+					AlertManager.showDeleteAlert(with: .userContacts, of: .getRaw(from: contacts.count)) {}
 				} else {
-					ErrorHandler.shared.showDeleteAlertError(contacts.count - errorsCount > 1 ? .errorDeleteContacts : .errorDeleteContact)
+					ErrorHandler.shared.showDeleteAlertError(.errorDeleteContacts)
 				}
 				completion()
 			}

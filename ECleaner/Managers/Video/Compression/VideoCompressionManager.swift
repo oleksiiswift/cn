@@ -81,7 +81,7 @@ extension VideoCompressionManager {
 		if writer?.status == .writing {
 			writer?.cancelWriting()
 		}
-		ErrorHandler.shared.showCompressionErrorFor(.operationIsCanceled) {}
+		ErrorHandler.shared.showCompressionError(.operationIsCanceled)
 	}
 }
 

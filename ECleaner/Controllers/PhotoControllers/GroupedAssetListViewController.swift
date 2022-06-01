@@ -742,15 +742,15 @@ extension GroupedAssetListViewController {
 	
 	private func showDeleteConfirmAlert() {
 		
-		A.deletePHAssets(of: self.contentType, of: selectedAssets.count > 1 ? .many : .one) {
+		AlertManager.showDeleteAlert(with: self.contentType, of: .getRaw(from: selectedAssets.count)) {
 			self.deleteSelectedAssets()
 		}
 	}
 	
 	private func showDelecteConfirmAlert(for assets: [PHAsset], completionHandler: @escaping (Bool) -> Void) {
 		
-		let deletePhassetOperation = photoManager.deleteSelectedOperation(assets: assets) { suxxess in
-			if !suxxess {
+		let deletePhassetOperation = photoManager.deleteSelectedOperation(assets: assets) { success in
+			if !success {
 				U.delay(1) {
 					self.progressAlertController.closeProgressAnimatedController()
 					U.delay(1) {
@@ -758,11 +758,10 @@ extension GroupedAssetListViewController {
 					}
 				}
 			}
-			completionHandler(suxxess)
+			completionHandler(success)
 		}
-		
-		A.deletePHAssets(of: self.contentType, of: assets.count > 1 ? .many : .one) {
-			let type: ProgressAlertType = self.contentType == .userPhoto ? .deletePhotos : .deleteVideos
+		AlertManager.showDeleteAlert(with: self.contentType, of: .getRaw(from: assets.count)) {
+			let type: ProgressAlertType = .progressDeleteAlertType(self.contentType)
 			self.progressAlertController.showSimpleProgressAlerControllerBar(of: type, from: self)
 			U.delay(1) {
 				self.photoManager.phassetProcessingOperationQueuer.addOperation(deletePhassetOperation)
@@ -830,9 +829,9 @@ extension GroupedAssetListViewController {
 		
 		let phasset = self.assetGroups[indexPath.section].assets[indexPath.row]
 		
-		self.showDelecteConfirmAlert(for: [phasset]) { suxxess in
+		self.showDelecteConfirmAlert(for: [phasset]) { success in
 			U.UI {
-				if suxxess {
+				if success {
 					self.selectedAssets.removeAll(phasset)
 				
 					self.assetGroups[indexPath.section].assets.remove(at: indexPath.item)
@@ -883,9 +882,9 @@ extension GroupedAssetListViewController {
 			let phassets = selectedIndixes.map({changedGroupsPHAssets[$0]})
 			
 			if !phassets.isEmpty {
-				self.showDelecteConfirmAlert(for: phassets) { suxxess in
+				self.showDelecteConfirmAlert(for: phassets) { success in
 					
-					guard suxxess else {return }
+					guard success else {return }
 					
 					self.selectedAssets = self.selectedAssets.filter({!phassets.contains($0)})
 					

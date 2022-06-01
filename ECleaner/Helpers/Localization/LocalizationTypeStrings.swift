@@ -41,7 +41,7 @@ struct ErrorDescription {
 	init(title: String, message: String, buttonTitle: String) {
 		self.title = title
 		self.message = message
-		self.title = title
+		self.buttonTitle = title
 	}
 }
 

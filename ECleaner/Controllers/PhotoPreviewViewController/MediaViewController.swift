@@ -258,7 +258,7 @@ extension MediaViewController {
 	
 	private func showConfirmDeletePHAsset(at indexPath: IndexPath) {
 		
-		A.deletePHAssets(of: self.contentType, of: .one) {
+		AlertManager.showDeleteAlert(with: self.contentType, of: .one) {
 			self.deletePHAsset(at: indexPath)
 		}
 	}

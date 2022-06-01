@@ -163,8 +163,7 @@ extension DeepCleaningViewController {
 	 }
 
 	 private func showStopDeepCleanScanAlert() {
-		  
-		  A.showStopDeepCleanSearchProcess {
+		  SearchOperationStateHandler.alertHandler(for: .resetDeepCleanSearch) {
 			   self.stopAllCleaningOperation()
 		  }
 	 }
@@ -808,11 +807,11 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
                case 0:
                     view.frame = CGRect(x: 0, y: 0, width: U.screenWidth, height: 0)
                case 1:
-                    sectionTitleTextLabel.text = "PHOTOS_NAV_TITLE".localized()
+                    sectionTitleTextLabel.text = "PHOTOS_NAV_TITLE"
                case 2:
-                    sectionTitleTextLabel.text = "VIDEOS_NAV_TITLE".localized()
+                    sectionTitleTextLabel.text = "VIDEOS_NAV_TITLE"
                default:
-                    sectionTitleTextLabel.text = "CONTACTS_NAV_TITLE".localized()
+                    sectionTitleTextLabel.text = "CONTACTS_NAV_TITLE"
           }
           return view
      }
@@ -893,7 +892,7 @@ extension DeepCleaningViewController {
           self.navigationController?.navigationBar.isHidden = true
           
           navigationBar.setIsDropShadow = false
-          navigationBar.setupNavigation(title: "DEEP_CLEEN".localized(),
+          navigationBar.setupNavigation(title: "DEEP_CLEEN",
                                         leftBarButtonImage: I.systemItems.navigationBarItems.back,
                                         rightBarButtonImage: nil,
 										contentType: .none,
@@ -1116,7 +1115,11 @@ extension DeepCleaningViewController: BottomActionButtonDelegate {
 					self.progressAlert.closeForceController()
 					self.cleanAndResetAllValues()
 					U.delay(1) {
-						 AlertHandler.deepCleanCompleteStateHandler(for: errorsCount == 0 ? .deepCleanCompleteSuxxessfull : .deepCleanCompleteWithErrors)
+						 if errorsCount == 0 {
+							  DeepCleanCompleteStateHandler.alertHandler(for: .successfull)
+						 } else {
+							  ErrorHandler.shared.showDeepCleanErrorForkey(.error)
+						 }
 					}
 			   }
 		  } concelCompletionHandler: {
@@ -1124,7 +1127,7 @@ extension DeepCleaningViewController: BottomActionButtonDelegate {
 					self.progressAlert.closeForceController()
 					self.cleanAndResetAllValues()
 					U.delay(1) {
-						 AlertHandler.deepCleanCompleteStateHandler(for: .deepCleanCanceled)
+						 DeepCleanCompleteStateHandler.alertHandler(for: .canceled)
 					}
 			   }
 		  }
@@ -1201,7 +1204,7 @@ extension DeepCleaningViewController: NavigationBarDelegate {
      
      func didTapLeftBarButton(_ sender: UIButton) {
 		  if handleSearchingResults {
-			   A.showQuiteDeepCleanResults {
+			   SearchOperationStateHandler.alertHandler(for: .resetDeepCleanResults) {
 					self.updateMediaStoreDelegate?.didStartUpdatingMediaSpace(photo: S.phassetPhotoFilesSizes, video: S.phassetVideoFilesSizes)
 					self.navigationController?.popViewController(animated: true)
 			   }

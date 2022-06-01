@@ -174,7 +174,7 @@ extension VideoSpaceSelectorViewController {
 		self.view.frame = CGRect(x: 0, y: 0, width: U.screenWidth, height: containerHeight)
 		mainContainerViewHeightConstraint.constant = containerHeight
 		
-		bottomButtonView.title("SUBMIT".localized())
+		bottomButtonView.title("SUBMIT")
 	}
 	
 	private func stepSliderSetup() {

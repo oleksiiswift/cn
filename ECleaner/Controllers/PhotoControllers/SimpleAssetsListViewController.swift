@@ -82,8 +82,8 @@ extension SimpleAssetsListViewController {
 		
 		guard let selectedPHAssets = self.collectionView.indexPathsForSelectedItems else { return }
 		
-		A.deletePHAssets(of: self.contentType, of: selectedPHAssets.count > 1 ? .many : .one) {
-			let progress: ProgressAlertType = self.contentType == .userPhoto ? .deletePhotos : .deleteVideos
+		AlertManager.showDeleteAlert(with: self.contentType, of: .getRaw(from: selectedPHAssets.count)) {
+			let progress: ProgressAlertType = .progressDeleteAlertType(self.contentType)
 			self.progrssAlertController.showSimpleProgressAlerControllerBar(of: progress, from: self)
 			U.delay(1) {
 				self.deleteSelectedAssets()

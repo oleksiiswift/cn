@@ -220,7 +220,7 @@ extension VideoCompressionCustomSettingsViewController {
 	private func setCompressionConfiguration() {
 		
 		guard let asset = self.asset else {
-			ErrorHandler.shared.showCompressionErrorFor(.cantLoadFile) {
+			ErrorHandler.shared.showCompressionError(.cantLoadFile) {
 				self.dismiss(animated: true, completion: nil)
 			}
 			return

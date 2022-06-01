@@ -93,6 +93,87 @@ struct  LocalizationService {
 										cancel: Buttons.getButtonTitle(of: .cancel))
 			}
 		}
+		
+		struct DeleteAlerts {
+			
+			static func alertDescriptionFor(alert: AlertType) -> AlertDescription {
+				return AlertDescription(title: alert.alertTitle,
+										description: alert.alertMessage,
+										action: LocalizationService.Buttons.getButtonTitle(of: .delete),
+										cancel: LocalizationService.Buttons.getButtonTitle(of: .cancel))
+			}
+		}
+		
+		struct WorkWithMedia {
+			static func alertDescriptionFor(alert: AlertType) -> AlertDescription {
+				switch alert {
+					case .mergeContacts:
+						return AlertDescription(title: alert.alertTitle,
+												description: alert.alertMessage,
+												action: LocalizationService.Buttons.getButtonTitle(of: .merge),
+												cancel: LocalizationService.Buttons.getButtonTitle(of: .cancel))
+					case .mergeCompleted:
+						return AlertDescription(title: alert.alertTitle,
+												description: Localization.empty,
+												action: LocalizationService.Buttons.getButtonTitle(of: .ok),
+												cancel: Localization.empty)
+					case .deleteContactsCompleted:
+						return AlertDescription(title: alert.alertTitle,
+												description: alert.alertMessage,
+												action: LocalizationService.Buttons.getButtonTitle(of: .ok),
+												cancel: Localization.empty)
+					default:
+						return AlertDescription(title: "", description: "", action: "", cancel: "")
+				}
+			}
+		}
+		
+		struct DeepClean {
+			
+			static func deepCleanCompleted(for state: DeepCleanCompleteStateHandler) -> AlertDescription {
+				switch state {
+					case .successfull:
+						return AlertDescription(title: Localization.AlertController.AlertTitle.completeSuccessfully,
+												description: Localization.AlertController.AlertMessage.deepCleanComplete,
+												action: LocalizationService.Buttons.getButtonTitle(of: .ok),
+												cancel: Localization.empty)
+					case .canceled:
+						return AlertDescription(title: Localization.AlertController.AlertTitle.operationIsCancel,
+												description: Localization.AlertController.AlertMessage.deepCleanCancel,
+												action: LocalizationService.Buttons.getButtonTitle(of: .ok),
+												cancel: Localization.empty)
+				}
+			}
+		}
+		
+		struct CleanOperationState {
+			static func operationDescription(for state: SearchOperationStateHandler) -> AlertDescription {
+				switch state {
+					case .resetDeepCleanSearch:
+						return AlertDescription(title: Localization.AlertController.AlertTitle.stopSearch,
+												description: Localization.AlertController.AlertMessage.resetDeepCleanSearch,
+												action: LocalizationService.Buttons.getButtonTitle(of: .stop),
+												cancel: LocalizationService.Buttons.getButtonTitle(of: .cancel))
+					case .resetSingleCleanSearch:
+						return AlertDescription(title: Localization.AlertController.AlertTitle.stopSearch,
+												description: Localization.AlertController.AlertMessage.stopSearchingProcess, action: LocalizationService.Buttons.getButtonTitle(of: .stop),
+												cancel: LocalizationService.Buttons.getButtonTitle(of: .cancel))
+					case .resetSmartSingleCleanSearch:
+						return AlertDescription(title: Localization.AlertController.AlertTitle.stopSearch,
+												description: Localization.AlertController.AlertMessage.stopSearchingProcess, action: LocalizationService.Buttons.getButtonTitle(of: .stop),
+												cancel: LocalizationService.Buttons.getButtonTitle(of: .cancel))
+					case .resetDeepCleanDelete:
+						return AlertDescription(title: Localization.AlertController.AlertTitle.notice,
+												description: Localization.AlertController.AlertMessage.stopDeepCleanDeleteProcess, action: LocalizationService.Buttons.getButtonTitle(of: .stop),
+												cancel: LocalizationService.Buttons.getButtonTitle(of: .cancel))
+					case .resetDeepCleanResults:
+						return AlertDescription(title: Localization.AlertController.AlertTitle.notice,
+												description: Localization.AlertController.AlertMessage.resetResults,
+												action: LocalizationService.Buttons.getButtonTitle(of: .exit),
+												cancel: LocalizationService.Buttons.getButtonTitle(of: .cancel))
+				}
+			}
+		}
 	}
 	
 	struct Notification {
@@ -182,8 +263,97 @@ struct  LocalizationService {
 			}
 			return ErrorDescription(title: title, message: message, buttonTitle: buttonTitle)
 		}
+		
+		public static func getCompressionErrorDescriptionForKey(_ compressionError: ErrorHandler.CompressionError, error: Error?) -> ErrorDescription {
+			
+			let actionButtonTitle = LocalizationService.Buttons.getButtonTitle(of: .ok)
+			
+			var title: String {
+				switch compressionError {
+					case .operationIsCanceled, .resolutionIsBigger:
+						return ErrorHandler.errorTitle.attention.rawValue
+					default:
+						return ErrorHandler.errorTitle.error.rawValue
+				}
+			}
+			
+			var message: String {
+				switch compressionError {
+						
+					case .cantLoadFile:
+						return Localization.ErrorsHandler.CompressionError.cantLoadFile
+					case .compressionFailed:
+						if let error = error {
+							return Localization.ErrorsHandler.CompressionError.compressionFailed +  " \(error.localizedDescription)"
+						} else {
+							return Localization.ErrorsHandler.CompressionError.compressionFailed
+						}
+					case .resolutionIsBigger:
+						return Localization.ErrorsHandler.CompressionError.resolutionError
+					case .errorSavedFile:
+						return Localization.ErrorsHandler.CompressionError.savedError
+					case .noVideoFile:
+						return Localization.ErrorsHandler.CompressionError.noVideoFile
+					case .removeAudio:
+						return Localization.ErrorsHandler.CompressionError.audioError
+					case .operationIsCanceled:
+						return Localization.ErrorsHandler.CompressionError.isCanceled
+				}
+			}
+			return ErrorDescription(title: title, message: message, buttonTitle: actionButtonTitle)
+		}
+		
+		public static func getDeepCleanDescriptionForKey(_ error: ErrorHandler.DeepCleanProcessingError) -> ErrorDescription {
+			
+			let actionButtonTitle = LocalizationService.Buttons.getButtonTitle(of: .ok)
+			
+			var title: String {
+				switch error {
+					case .error:
+						return Localization.ErrorsHandler.Title.notice
+				}
+			}
+			
+			var message: String {
+				switch error {
+					case .error:
+						return Localization.ErrorsHandler.DeepCleanError.completeWithError
+				}
+			}
+			
+			return ErrorDescription(title: title, message: message, buttonTitle: actionButtonTitle)
+		}
+		
+		public static func deleteErrorDescription(_ error: ErrorHandler.DeleteError) -> ErrorDescription {
+			let actionButton = LocalizationService.Buttons.getButtonTitle(of: .ok)
+			let title = ErrorHandler.errorTitle.error.rawValue
+			let message = ErrorHandler.shared.deleteErrorForKey(error)
+			return ErrorDescription(title: title, message: message, buttonTitle: actionButton)
+		}
+		
+		public static func mergeErrorDescription(_ error: ErrorHandler.MeergeError) -> ErrorDescription {
+			let actionButton = LocalizationService.Buttons.getButtonTitle(of: .ok)
+			let title = ErrorHandler.errorTitle.attention.rawValue
+			let message = ErrorHandler.shared.mergeErrorForKey(error)
+			return ErrorDescription(title: title, message: message, buttonTitle: actionButton)
+		}
+		
+		public static func leadErrorDescription(_ error: ErrorHandler.LoadError) -> ErrorDescription {
+			let actionButton = LocalizationService.Buttons.getButtonTitle(of: .ok)
+			let title = ErrorHandler.errorTitle.error.rawValue
+			let message = ErrorHandler.shared.loadErrorForKey(error)
+			return ErrorDescription(title: title, message: message, buttonTitle: actionButton)
+		}
+		
+		public static func fatalErrorDescription(_ error: ErrorHandler.FatalError) -> ErrorDescription {
+			let actionButton = LocalizationService.Buttons.getButtonTitle(of: .ok)
+			let title = ErrorHandler.errorTitle.fatalError.rawValue
+			let message = ErrorHandler.shared.fatalErrorForKey(error)
+			return ErrorDescription(title: title, message: message, buttonTitle: actionButton)
+		}
 	}
 }
+
 
 
 

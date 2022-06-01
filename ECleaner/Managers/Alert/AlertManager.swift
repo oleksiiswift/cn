@@ -12,186 +12,112 @@ enum ElementhCount {
     case one
     case many
     case other
+	
+	static func getRaw(from int: Int) -> ElementhCount {
+		return int == 1 ? .one : .many
+	}
 }
 
 typealias A = AlertManager
-class AlertManager: NSObject {
-    
-    private static func showAlert(type: AlertType, actions: [UIAlertAction], cancelCompletion: (() -> Void)? = nil) {
-        
-		showAlert(type.alertTitle, message: type.alertMessage, actions: actions, withCancel: type.withCancel, style: type.alertStyle) {
-            cancelCompletion?()
-        }
-    }
-}
+class AlertManager: NSObject {}
 
-
-//    MARK: - PHASSET ALERTS -
+//		MARK: handle delete alert
 extension AlertManager {
 	
-	static func deletePHAssets(of type: MediaContentType, of elementsCount: ElementhCount, completionHandler: @escaping () -> Void) {
+	public static func showDeleteAlert(with media: MediaContentType, of elementsCount: ElementhCount, completionHandler: @escaping () -> Void) {
 		
-		switch type {
+		switch media {
 			case .userPhoto:
-				if elementsCount == .many {
-					self.showDeletePHAssetAlert(of: .allowDeleteSelectedPhotos) {
-						completionHandler()
-					}
-				} else {
-					self.showDeletePHAssetAlert(of: .allowDeleteSelectedPhoto) {
-						completionHandler()
-					}
+				switch elementsCount {
+					case .one:
+						self.presentDeleteAlert(of: .deletePhoto) {
+							completionHandler()
+						}
+					case .many:
+						self.presentDeleteAlert(of: .deletePhotos) {
+							completionHandler()
+						}
+					case .other:
+						return
 				}
 			case .userVideo:
-				if elementsCount == .many {
-					self.showDeletePHAssetAlert(of: .allowDeleteSelectedVideos) {
-						completionHandler()
-					}
-				} else {
-					self.showDeletePHAssetAlert(of: .allowDeleteSelectedVideo) {
-						completionHandler()
-					}
+				switch elementsCount {
+					case .one:
+						self.presentDeleteAlert(of: .deleteVideo) {
+							completionHandler()
+						}
+					case .many:
+						self.presentDeleteAlert(of: .deleteVideos) {
+							completionHandler()
+						}
+					case .other:
+						return
+				}
+			case .userContacts:
+				switch elementsCount {
+					case .one:
+						self.presentDeleteAlert(of: .deleteContact) {
+							completionHandler()
+						}
+					case .many:
+						self.presentDeleteAlert(of: .deleteContacts) {
+							completionHandler()
+						}
+					case .other:
+						return
 				}
 			default:
 				return
 		}
 	}
 	
-	private static func showDeletePHAssetAlert(of alertType: AlertType, completionHandler: @escaping () -> Void) {
+	private static func presentDeleteAlert(of alertType: AlertType, completionHandler: @escaping () -> Void) {
 		
-		let confirmDeleteAction = UIAlertAction(title: alertType.alertConfrimButtonTitle, style: .default) { _ in
+		let description = alertType.deleteAlertDesctiprtion
+		let confirmAction = UIAlertAction(title: description.action, style: .default) { _ in
+			completionHandler()
+		}
+		self.presentDefaultAlert(title: description.title, message: description.description, actions: [confirmAction], style: alertType.alertStyle, withCancel: alertType.withCancel)
+	}
+}
+
+
+extension AlertManager {
+	
+	public static func showDeepCleanProcessing(with state: DeepCleanCompleteStateHandler, completionHandler: (() -> Void)? = nil) {
+		let description = state.description
+		let action = UIAlertAction(title: description.action, style: .default) { _ in
+			completionHandler?()
+		}
+		self.presentDefaultAlert(title: description.title, message: description.description, actions: [action], style: .alert, withCancel: true)
+	}
+}
+
+extension AlertManager {
+	
+	public static func showOperationProcessing(with state: SearchOperationStateHandler, completionHandler: @escaping () -> Void) {
+		let description = state.description
+		
+		let action = UIAlertAction(title: description.action, style: .default) { _ in
 			completionHandler()
 		}
 		
-		showAlert(type: alertType, actions: [confirmDeleteAction])
+		self.presentDefaultAlert(title: description.title, message: description.description, actions: [action], style: .alert, withCancel: true)
 	}
 }
-
-//      MARK: - CONTACTS ALERT -
-extension AlertManager {
- 
-    /// `delete section`
-    static func showSuxxessfullDeleted(for contacts: ElementhCount, completion: (() -> Void)? = nil) {
-        
-        let alertType: AlertType = contacts == .many ? .suxxessDeleteContacts : .suxxessDeleteContact
-        showAlert(type: alertType, actions: []) {
-            completion?()
-        }
-    }
-    
-    static func showDeleteContactsAlerts(for contacts: ElementhCount, completion: @escaping () -> Void) {
-    
-        let alertType: AlertType = contacts == .one ? .deleteContact : .deleteContacts
-        
-		let allowDeleteAction = UIAlertAction(title: AlertHandler.AlertActionsButtons.delete.title, style: .default) { _ in
-            completion()
-        }
-        
-        showAlert(type: alertType, actions: [allowDeleteAction])
-    }
-    
-    /// `merge section`
-    static func showSuxxessFullMerged(for section: ElementhCount, completion: (() -> Void)? = nil) {
-        let alertType: AlertType = section == .many ? .suxxessMergedContacts : .suxxessMergedContact
-        showAlert(type: alertType, actions: []) {
-            completion?()
-        }
-    }
-    
-    static func showMergeContactsAlert(for sections: ElementhCount, comletion: @escaping () -> Void) {
-        
-        let alertType: AlertType = sections == .one ? .mergeContact : .mergeContacts
-        
-		let allowMergeContacts = UIAlertAction(title: AlertHandler.AlertActionsButtons.merge.title, style: .default) { _ in
-            comletion()
-        }
-        
-        showAlert(type: alertType, actions: [allowMergeContacts])
-    }
-}
-
-//		MARK: - stop search alerts -
-extension AlertManager {
-	
-	static func showStopDeepCleanSearchProcess(_ completion: @escaping () -> Void) {
-		
-		let stopDeepCleanAlertAction = UIAlertAction(title: AlertHandler.AlertActionsButtons.stop.title, style: .default) { _ in
-			completion()
-		}
-		
-		showAlert(type: .setBreakDeepCleanSearch, actions: [stopDeepCleanAlertAction], cancelCompletion: nil)
-	}
-	
-	static func showStopSingleSearchProcess(_ completion: @escaping () -> Void) {
-		
-		let stopSingleCleanAlertAction = UIAlertAction(title: AlertHandler.AlertActionsButtons.stop.title, style: .default) { _ in
-			completion()
-		}
-		showAlert(type: .setBreakSingleCleanSearch, actions: [stopSingleCleanAlertAction], cancelCompletion: nil)
-	}
-	
-	static func showStopSmartSingleSearchProcess(_ completion: @escaping () -> Void) {
-		let stopSmartSingleCleanAlertAction = UIAlertAction(title: AlertHandler.AlertActionsButtons.stop.title, style: .default) { _ in
-			completion()
-		}
-		
-		showAlert(type: .setBreakSmartSingleCleanSearch, actions: [stopSmartSingleCleanAlertAction], cancelCompletion: nil)
-	}
-	
-	static func showStopDeepCleanProcessing(_ completion: @escaping () -> Void) {
-		
-		let stopDeepCleanAlertAction = UIAlertAction(title: AlertHandler.AlertActionsButtons.stop.title, style: .default) { _ in
-			completion()
-		}
-		showAlert(type: .setBreakDeepCleanDelete, actions: [stopDeepCleanAlertAction], cancelCompletion: nil)
-	}
-	
-	static func showQuiteDeepCleanResults(_ completion: @escaping () -> Void) {
-	
-		let quiteDeepCleanAlertAction = UIAlertAction(title: AlertHandler.AlertActionsButtons.exit.title, style: .default) { _ in
-			completion()
-		}
-		
-		showAlert(type: .resetDeepCleanResults, actions: [quiteDeepCleanAlertAction], cancelCompletion: nil)
-	}
-}
-
-
-
 
 
 extension AlertManager {
-
-		/// default alert
-		private static func showAlert(_ title: String? = nil, message: String? = nil, actions: [UIAlertAction] = [], withCancel: Bool = true, style: UIAlertController.Style, completion: (() -> Void)? = nil) {
-		
-			let alert = UIAlertController(title: title, message: message, preferredStyle: style)
-			
-			let cancelAction = UIAlertAction(title: LocalizationService.Buttons.getButtonTitle(of: .cancel), style: .cancel) { action in
-				completion?()
-			}
-			
-			if actions.isEmpty {
-				let alertAction = UIAlertAction(title: LocalizationService.Buttons.getButtonTitle(of: .ok), style: .default) { _ in
-					completion?()
-				}
-				alert.addAction(alertAction)
-			} else {
-				actions.forEach { (action) in
-					alert.addAction(action)
-				}
-			}
-			
-			if withCancel {
-				alert.addAction(cancelAction)
-			}
-			U.UI {
-				topController()?.present(alert, animated: true, completion: nil)
-			}
+	
+	public static func showAlert(for alertType: AlertType, completionHandler: @escaping () -> Void) {
+		let description = alertType.alertDescription
+		let confirmAction = UIAlertAction(title: description.action, style: .default) { _ in
+			completionHandler()
 		}
+		self.presentDefaultAlert(title: description.title, message: description.description, actions: [confirmAction], style: alertType.alertStyle, withCancel: alertType.withCancel)
+	}
 }
 
-#warning("REFACTORING -> > > > > ")
 
 	//		MARK: handle error results, error for data
 extension AlertManager {
@@ -203,6 +129,7 @@ extension AlertManager {
 			completionHandler?()
 		}
 		alertController.addAction(alertAction)
+		
 		DispatchQueue.main.async {
 			if let topController = getTheMostTopController() {
 				topController.present(alertController, animated: true)
@@ -244,3 +171,4 @@ extension AlertManager {
 		}
 	}
 }
+

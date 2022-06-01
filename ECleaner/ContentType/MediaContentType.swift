@@ -17,11 +17,11 @@ enum MediaContentType {
     var navigationTitle: String {
         switch self {
             case .userPhoto:
-            return "PHOTOS_NAV_TITLE".localized()
+            return "PHOTOS_NAV_TITLE"
             case .userVideo:
-            return "VIDEOS_NAV_TITLE".localized()
+            return "VIDEOS_NAV_TITLE"
             case .userContacts:
-            return "CONTACTS_NAV_TITLE".localized()
+            return "CONTACTS_NAV_TITLE"
             case .none:
                 return ""
         }
@@ -30,11 +30,11 @@ enum MediaContentType {
 	var mediaContentTypeName: String {
 		switch self {
 			case .userPhoto:
-				return "PHOTOS_TITLE".localized()
+				return "PHOTOS_TITLE"
 			case .userVideo:
-				return "VIDEOS_TITLE".localized()
+				return "VIDEOS_TITLE"
 			case .userContacts:
-				return "CONTACTS_TITLE".localized()
+				return "CONTACTS_TITLE"
 			case .none:
 				return ""
 		}
@@ -249,36 +249,36 @@ enum MediaContentType {
             case .userPhoto:
                 switch index {
                     case 0:
-                    return "SIMILAR_PHOTO".localized()
+                    return "SIMILAR_PHOTO"
                     case 1:
-                        return "DUBLICATES_PHOTO".localized()
+                        return "DUBLICATES_PHOTO"
                     case 2:
-                        return "SCREENSHOTS".localized()
+                        return "SCREENSHOTS"
                     case 3:
                         return "similar selfie"
                     case 4:
-                        return "LIVE_PHOTO".localized()
+                        return "LIVE_PHOTO"
                     case 5:
-                        return "RECENTLY_DEL_PHOTO".localized()
+                        return "RECENTLY_DEL_PHOTO"
                     case 6:
-                        return "FACE".localized() /// do not in use
+                        return "FACE"
                     case 7:
-                        return "LOCATION".localized() /// do not in use
+                        return "LOCATION"
                     default:
                         return ""
                 }
             case .userVideo:
                 switch index {
                     case 0:
-                        return "LARGE_VIDEO".localized()
+                        return "LARGE_VIDEO"
                     case 1:
-                        return "DUPLICATE_VIDEO".localized()
+                        return "DUPLICATE_VIDEO"
                     case 2:
-                        return "SIMILAR_VIDEO".localized()
+                        return "SIMILAR_VIDEO"
                     case 3:
-                        return "SCREEN_RECORDING".localized()
+                        return "SCREEN_RECORDING"
                     case 4:
-						return "RECENTLY_DEL_VIDEO".localized()
+						return "RECENTLY_DEL_VIDEO"
                     default:
                         return ""
                 }
@@ -354,28 +354,28 @@ enum MediaContentType {
             case .userPhoto:
                 switch index {
                     case 0:
-                        return "SIMILAR_PHOTO".localized()
+                        return "SIMILAR_PHOTO"
                     case 1:
-                        return "DUBLICATES_PHOTO".localized()
+                        return "DUBLICATES_PHOTO"
                     case 2:
-                        return "SCREENSHOTS".localized()
+                        return "SCREENSHOTS"
 					case 3:
 						return "similar selfies"
                     case 4:
-                        return "SIMILAR_ALLIVE_PHOTOS".localized()
+                        return "SIMILAR_ALLIVE_PHOTOS"
                     default:
                         return ""
                 }
             case .userVideo:
                 switch index {
                     case 0:
-                        return "LARGE_VIDEO".localized()
+                        return "LARGE_VIDEO"
                     case 1:
-                        return "DUPLICATE_VIDEO".localized()
+                        return "DUPLICATE_VIDEO"
                     case 2:
-                        return "SIMILAR_VIDEO".localized()
+                        return "SIMILAR_VIDEO"
                     case 3:
-                        return "SCREEN_RECORDING".localized()
+                        return "SCREEN_RECORDING"
                     default:
                         return ""
                 }

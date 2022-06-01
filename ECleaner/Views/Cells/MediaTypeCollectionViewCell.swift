@@ -77,7 +77,7 @@ extension MediaTypeCollectionViewCell: Themeble {
 					self.mediaContentView.imageView.image = mediaType.mediaContenTypeImage
 					
 					if let photosCount = contentCount {
-						self.mediaContentSubTitleTextLabel.text = String("\(photosCount) \("FILES".localized())")
+						self.mediaContentSubTitleTextLabel.text = String("\(photosCount) \("FILES")")
 					} else {
 						self.mediaContentSubTitleTextLabel.text = contentCount == nil ? "" : "NO CONTENT"
 					}
@@ -96,7 +96,7 @@ extension MediaTypeCollectionViewCell: Themeble {
 					self.mediaContentView.imageView.image = mediaType.mediaContenTypeImage
 					
 					if let videosCount = contentCount {
-						self.mediaContentSubTitleTextLabel.text = String("\(videosCount) \("FILES".localized())")
+						self.mediaContentSubTitleTextLabel.text = String("\(videosCount) \("FILES")")
 					} else {
 						self.mediaContentSubTitleTextLabel.text = contentCount == nil ? "" : "NO CONTENT"
 					}

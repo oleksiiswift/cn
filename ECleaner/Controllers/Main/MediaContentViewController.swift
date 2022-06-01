@@ -1053,13 +1053,13 @@ extension MediaContentViewController: NavigationBarDelegate {
 		
 		switch self.searchingProcessingType {
 			case .smartGroupSearchProcess:
-				A.showStopSmartSingleSearchProcess {
+				SearchOperationStateHandler.alertHandler(for: .resetSmartSingleCleanSearch) {
 					self.setCancelSmartSearchOperationQueue {
 						self.navigationController?.popViewController(animated: true)
 					}
 				}
 			case .singleSearchProcess:
-				A.showStopSingleSearchProcess {
+				SearchOperationStateHandler.alertHandler(for: .resetSingleCleanSearch) {
 					self.setCancelActiveOperation {
 						self.navigationController?.popViewController(animated: true)
 					}
@@ -1083,11 +1083,11 @@ extension MediaContentViewController: NavigationBarDelegate {
 					startSmartCleanProcessing()
 				}
 			case .smartGroupSearchProcess:
-				A.showStopSmartSingleSearchProcess {
+				SearchOperationStateHandler.alertHandler(for: .resetSmartSingleCleanSearch) {
 					self.setCancelSmartSearchOperationQueue() {}
 				}
 			case .singleSearchProcess:
-				A.showStopSingleSearchProcess {
+				SearchOperationStateHandler.alertHandler(for: .resetSingleCleanSearch) {
 					self.setCancelActiveOperation() {
 						if self.mediaContentType == .userContacts {
 							self.searchingProcessingType = .smartGroupSearchProcess

@@ -146,7 +146,7 @@ extension ContactsGroupViewController {
 		U.delay(1) {
 			self.contactsManager.mergeAsyncContacts(in: self.contactGroup, merged: selectedSectionsIndexes) { progressType, currentIndex, totalIndexes in
 				self.updateProgressAlert(of: .mergeContacts, currentPosition: currentIndex, totalProcessing: totalIndexes)
-			} completionHandler: { suxxess, indexes in
+			} completionHandler: { success, indexes in
 				let errorsCount = selectedSectionsIndexes.count - indexes.count
 				
 				U.delay(0.5) {
@@ -154,9 +154,9 @@ extension ContactsGroupViewController {
 				}
 				
 				U.delay(1) {
-					if suxxess {
+					if success {
 						if self.contactGroup.count == indexes.count {
-							A.showSuxxessFullMerged(for: .many) {
+							AlertManager.showAlert(for: .mergeCompleted) {
 								U.delay(1) {
 									self.updateRemovedIndexes(indexes, errorsCount: errorsCount)
 									self.closeController()
@@ -193,12 +193,12 @@ extension ContactsGroupViewController {
 				self.updateProgressMergeAlert(with: 1, total: "1 / 1")
 				if errorsCount != mergedSingleGroup.contacts.count - 1 {
 					if self.contactGroup.count == 1 {
-						A.showSuxxessFullMerged(for: .one) {
+						AlertManager.showAlert(for: .mergeCompleted) {
 							self.contactGroup = []
 							self.closeController()
 						}
 					} else {
-						A.showSuxxessFullMerged(for: .one) {
+						AlertManager.showAlert(for: .mergeCompleted) {
 							self.progressAlert.showSimpleProgressAlerControllerBar(of: .updatingContacts, from: self, delegate: self)
 							self.updateContactsGroups { contactsGroup in
 								self.progressAlert.closeProgressAnimatedController()
@@ -208,7 +208,7 @@ extension ContactsGroupViewController {
 						}
 					}
 				} else {
-					ErrorHandler.shared.showMergeAlertError(.errorMergeContact) {
+					ErrorHandler.shared.showMergeAlertError(.errorMergeContacts) {
 						self.progressAlert.showSimpleProgressAlerControllerBar(of: .updatingContacts, from: self, delegate: self)
 						self.updateContactsGroups { contactsGroup in
 							self.progressAlert.closeProgressAnimatedController()
@@ -503,17 +503,17 @@ extension ContactsGroupViewController: SingleContactsGroupOperationsListener {
     
     /// `merge single section contacts`
     func didMergeContacts(in section: Int) {
-        A.showMergeContactsAlert(for: .one) {
+		AlertManager.showAlert(for: .mergeContacts) {
             self.mergeContacts(in: section)
         }
     }
     
     /// `delete singe section contacts`
     func didDeleteFullContactsGroup(in section: Int) {
-        A.showDeleteContactsAlerts(for: .many) {
+		AlertManager.showDeleteAlert(with: .userContacts, of: .many) {
 			self.deleteContacts(in: section) { errorsCount in
 				if errorsCount == 0 {
-					A.showSuxxessfullDeleted(for: .many)
+					AlertManager.showAlert(for: .deleteContactsCompleted) {}
 					self.updateRemovedIndexes([section], errorsCount: 0)
 					self.contactGroup.count == 0 ? self.closeController() : ()
 				} else {
@@ -569,10 +569,10 @@ extension ContactsGroupViewController: BottomActionButtonDelegate {
     
     /// `merge contacts from bottom button`
     func didTapActionButton() {
-        A.showMergeContactsAlert(for: self.contactGroupListDataSource.selectedSections.count > 1 ? .many : .one) {
-            P.showIndicator()
-            self.mergeSelectedItems()
-        }
+		AlertManager.showAlert(for: .mergeContacts) {
+			P.showIndicator()
+			self.mergeSelectedItems()
+		}
     }
 }
 
