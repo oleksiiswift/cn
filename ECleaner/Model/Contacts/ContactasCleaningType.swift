@@ -23,15 +23,15 @@ enum ContactasCleaningType {
     var rawValue: String {
         switch self {
             case .onlyName:
-                return "only name"
+				return C.key.contacts.groupSorting.name
             case .onlyPhone:
-                return "only phone"
+				return C.key.contacts.groupSorting.phone
             case .onlyEmail:
-                return "only mail"
+				return C.key.contacts.groupSorting.mail
             case .emptyName:
-                return "incomplete name"
+				return C.key.contacts.groupSorting.emptyName
             case .wholeEmpty:
-                return "whole Empty phone"
+				return C.key.contacts.groupSorting.empty
             default:
                 return ""
         }

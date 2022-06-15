@@ -149,7 +149,7 @@ extension PermissionsViewController: Themeble {
 		self.view.layoutIfNeeded()
 		
 		if !fromRootViewController {
-			navigationBar.setupNavigation(title: "permissions",
+			navigationBar.setupNavigation(title: self.permissionViewModel.title,
 										  leftBarButtonImage: I.systemItems.navigationBarItems.back,
 										  rightBarButtonImage: nil,
 										  contentType: .none,

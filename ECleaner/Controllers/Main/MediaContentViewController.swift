@@ -1108,7 +1108,7 @@ extension MediaContentViewController: ContentTypeCellDelegate {
 	
 	func setCancelProcessOperaion(for cell: ContentTypeTableViewCell) {
 		self.setCancelActiveOperation {
-			debugPrint("canceld")
+			debugPrint("cancel")
 		}
 	}
 }

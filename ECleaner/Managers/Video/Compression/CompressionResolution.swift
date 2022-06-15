@@ -16,34 +16,21 @@ enum CustomCompressionSection {
 	case none
 	
 	var name: String {
-		switch self {
-			case .resolution:
-				return "Resolution"
-			case .fps:
-				return "FPS"
-			case .videoBitrate:
-				return "Video Bitrate"
-			case .keyframe:
-				return "Interval Between Keyframe"
-			case .audioBitrate:
-				return "Audio Bitrate"
-			case .none:
-				return ""
-		}
+		return LocalizationService.Compression.getCompressionSectionName(of: self)
 	}
 	
 	var description: String {
 		switch self {
 			case .resolution:
-				return "if set to a lower value, the picture will be more pixelated and the file size will be smaller"
+				return Localization.Main.Descriptions.resolutionDescription
 			case .fps:
-				return "a lower framerate means the video will be less smooth and the file size will be significantly smaller"
+				return Localization.Main.Descriptions.fpsDescription
 			case .videoBitrate:
-				return "if set to a lower value, it will reduce video quality and considerably decrease file size"
+				return Localization.Main.Descriptions.videoBitrateDescription
 			case .keyframe:
-				return "if set to a higher value, video quality and size will decrease, it is recommended to choose higher values if your video has no dynamic scenes"
+				return Localization.Main.Descriptions.keyframeDescription
 			case .audioBitrate:
-				return "if set to a lower value, the audio quality will deteriorate and the file size will be insignificantly reduced"
+				return Localization.Main.Descriptions.audioBitrateDescription
 			case .none:
 				return ""
 		}
@@ -120,7 +107,7 @@ enum VideoResolution: CaseIterable {
 	public var resolutionDescription: String {
 		switch self {
 			case .origin:
-				return "keep origin resolution"
+				return Localization.Main.Subtitles.keepOriginResolution
 			case .res1080p:
 				return "1920 x 1080 (or 1080p)"
 			case .res720p:
@@ -139,7 +126,7 @@ enum VideoResolution: CaseIterable {
 	public var resolutionInfo: String {
 		switch self {
 			case .origin:
-				return "origin resolution"
+				return Localization.Main.Subtitles.originResolution
 			case .res1080p:
 				return "1920 x 1080"
 			case .res720p:

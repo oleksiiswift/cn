@@ -25,18 +25,18 @@ class DropDownMenuTableViewCell: UITableViewCell {
 
 extension DropDownMenuTableViewCell {
     
-    public func configure(with menuItem: DropDownOptionsMenuItem, row position: RowPosition) {
+    public func configure(with menuItem: MenuItem, row position: RowPosition) {
         
-        thumbnailImageView.image = menuItem.itemThumbnail
-        menuTitileTextLabel.text = menuItem.titleMenu
+        thumbnailImageView.image = menuItem.thumbnail
+        menuTitileTextLabel.text = menuItem.title
         menuTitileTextLabel.font = menuItem.titleFont
         
         if position != .bottom {
             setupSeparatorView()
         }
 		
-		menuTitileTextLabel.alpha = menuItem.isSelected ? 1 : 0.5
-		thumbnailImageView.alpha = menuItem.isSelected ? 1 : 0.5
+		menuTitileTextLabel.alpha = menuItem.selected ? 1 : 0.5
+		thumbnailImageView.alpha = menuItem.selected ? 1 : 0.5
     }
     
     private func setupSeparatorView() {

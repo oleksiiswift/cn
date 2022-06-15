@@ -24,8 +24,8 @@ extension PermissionBannerTableViewCell: Themeble {
 	
 	public func configureCell() {
 		
-		titleTextLabel.text = "Permission Request"
-		subtitleTextLabel.text = "These are the permissions the app requires to work properly. Please see description for each permission."
+		titleTextLabel.text = Localization.Main.HeaderTitle.permissionRequest
+		subtitleTextLabel.text = Localization.Main.Descriptions.permissionDescription
 	}
 	
 	private func setupUI() {

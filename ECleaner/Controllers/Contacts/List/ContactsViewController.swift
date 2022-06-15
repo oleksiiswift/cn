@@ -22,17 +22,7 @@ class ContactsViewController: UIViewController {
     @IBOutlet weak var bottomButtonView: BottomButtonBarView!
     @IBOutlet weak var bottomDoubleButtonHeightConstraint: NSLayoutConstraint!
     @IBOutlet weak var bottomButtonHeightConstraint: NSLayoutConstraint!
-    
-    lazy var setEditingModeOptionItem = DropDownOptionsMenuItem(titleMenu: "edit",
-                                                                itemThumbnail: I.systemItems.selectItems.roundedCheckMark,
-                                                                isSelected: true,
-                                                                menuItem: .edit)
-    
-    lazy var exportAllContactOptionItem = DropDownOptionsMenuItem(titleMenu: "export",
-                                                              itemThumbnail: I.systemItems.defaultItems.share,
-                                                              isSelected: true,
-                                                              menuItem: .share)
-	
+    	
 	public var selectedContactsDelegate: DeepCleanSelectableAssetsDelegate?
 	
     public var contactContentIsEditing: Bool = false
@@ -162,7 +152,7 @@ extension ContactsViewController {
 			self.navigationBar.changeHotLeftTitleWithImage(newTitle: "", image: I.systemItems.navigationBarItems.back)
 		}
 		
-		let rightNavigationTitle: String = isSelectedAllItems ? "deselect all" : "select all"
+		let rightNavigationTitle: String = LocalizationService.Buttons.getButtonTitle(of: isSelectedAllItems ? .deselectAll : .selectAll)
 		self.navigationBar.changeHotRightTitle(newTitle: rightNavigationTitle)
 	}
 	
@@ -296,7 +286,7 @@ extension ContactsViewController {
 		bottomDoubleButtonHeightConstraint.constant = selectedItems() != 0 ? height : 0
 		bottomButtonHeightConstraint.constant = 0
 		
-		let rightButtonTitle: String = "delete" + " (\(selectedItems()))"
+		let rightButtonTitle: String = LocalizationService.Buttons.getButtonTitle(of: .delete) + " (\(selectedItems()))"
 		bottomDoubleButtonView.setRightButtonTitle(rightButtonTitle)
 		
 		if disableAnimation {
@@ -322,7 +312,7 @@ extension ContactsViewController {
 		bottomButtonHeightConstraint.constant = selectedItems() != 0 ? heigt : 0
 		bottomDoubleButtonHeightConstraint.constant = 0
 		
-		let buttonTitle: String = "delete" + " (\(selectedItems()))"
+		let buttonTitle: String = LocalizationService.Buttons.getButtonTitle(of: .delete) + " (\(selectedItems()))"
 		bottomButtonView.title(buttonTitle)
 		
 		if disableAnimation {
@@ -383,11 +373,48 @@ extension ContactsViewController {
     }
 
     private func didTapOpenBurgerMenu() {
-        
-        presentDropDonwMenu(with: [setEditingModeOptionItem, exportAllContactOptionItem], from: navigationBar.rightBarButtonItem)
+  
+		if #available(iOS 14.0, *) {} else {
+			let menuItems = getDropDownItems()
+			presentDropDonwMenu(with: menuItems, from: navigationBar.rightBarButtonItem)
+		}
     }
+	
+	func getDropDownItems() -> [MenuItem] {
+		
+		let editing: MenuItem = .init(type: .edit, selected: true)
+		let share: MenuItem = .init(type: .export, selected: true)
+		return [editing, share]
+	}
+	
+	@available(iOS 14.0, *)
+	func dropDownSetup() {
+		let menuItems = getDropDownItems()
+		let menu = performMenu(from: menuItems)
+		navigationBar.rightBarButtonItem.menu = menu
+		navigationBar.rightBarButtonItem.showsMenuAsPrimaryAction = true
+		
+		navigationBar.rightBarButtonItem.onMenuActionTriggered { menu in
+			let updatedItems = self.getDropDownItems()
+			self.navigationBar.rightBarButtonItem.menu = self.performMenu(from: updatedItems)
+			return menu
+		}
+	}
+	
+	private func performMenu(from items: [MenuItem]) -> UIMenu {
+		var actions: [UIAction] = []
+		
+		items.forEach { item in
+			let attributes: UIMenuElement.Attributes = item.selected ? [] : .disabled
+			let action = UIAction(title: item.title, image: item.thumbnail, attributes: attributes) { _ in
+				self.handleDropDownMenu(item.type)
+			}
+			actions.append(action)
+		}
+		return UIMenu(children: actions)
+	}
 
-    private func presentDropDonwMenu(with items: [DropDownOptionsMenuItem], from navigationButton: UIButton) {
+    private func presentDropDonwMenu(with items: [MenuItem], from navigationButton: UIButton) {
         let dropDownViewController = DropDownMenuViewController()
         dropDownViewController.menuSectionItems = items
         dropDownViewController.delegate = self
@@ -780,13 +807,12 @@ extension ContactsViewController: ProgressAlertControllerDelegate {
 
 extension ContactsViewController: SelectDropDownMenuDelegate {
 	
-	func selectedItemListViewController(_ controller: DropDownMenuViewController, didSelectItem: DropDownMenuItems) {
-		
-		switch didSelectItem {
-			case .share:
-				self.didTapExportAllContacts()
+	func handleDropDownMenu(_ item: MenuItemType) {
+		switch item {
 			case .edit:
 				self.didTapSelectEditingMode()
+			case .export:
+				self.didTapExportAllContacts()
 			default:
 				return
 		}
@@ -825,13 +851,13 @@ extension ContactsViewController: Themeble {
                                           leftBarButtonImage: I.systemItems.navigationBarItems.back,
                                           rightBarButtonImage: nil,
 										  contentType: .userContacts,
-                                          leftButtonTitle: nil, rightButtonTitle: "edit")
+                                          leftButtonTitle: nil, rightButtonTitle: LocalizationService.Buttons.getButtonTitle(of: .edit))
         }
     }
 	
 	private func setupForDeepCleanNavigation() {
 		
-		let rightNavigationTitle: String = isSelectedAllItems ? "deselect all" : "select all"
+		let rightNavigationTitle: String = LocalizationService.Buttons.getButtonTitle(of: isSelectedAllItems ? .deselectAll : .selectAll)
 		self.searchBarIsHiden = true
 		navigationBar.setupNavigation(title: contentType.mediaTypeName,
 									  leftBarButtonImage: I.systemItems.navigationBarItems.back,
@@ -843,8 +869,8 @@ extension ContactsViewController: Themeble {
     private func setNavigationEditMode(isEditing: Bool) {
         
         if isEditing {
-            let rightNavigationTitle: String = isSelectedAllItems ? "deselect all" : "select all"
-			self.navigationBar.changeHotLeftTitle(newTitle: "cancel")
+            let rightNavigationTitle: String = LocalizationService.Buttons.getButtonTitle(of: isSelectedAllItems ? .deselectAll : .selectAll)
+			self.navigationBar.changeHotLeftTitle(newTitle: LocalizationService.Buttons.getButtonTitle(of: .cancel))
 			self.navigationBar.changeHotRightTitle(newTitle: rightNavigationTitle)
         } else {
             setupNavigation()
@@ -857,6 +883,10 @@ extension ContactsViewController: Themeble {
 			tableView.sectionHeaderTopPadding = 0
 		}
 		
+		if #available(iOS 14.0, *) {
+			dropDownSetup()
+		}
+		
 		searchBarHeightConstraint.constant = self.searchBarIsHiden ? 10 : U.UIHelper.AppDimensions.Contacts.SearchBar.searchBarContainerHeight
 		searchBarView.isHidden = self.searchBarIsHiden
 		
@@ -864,7 +894,7 @@ extension ContactsViewController: Themeble {
 		
         bottomDoubleButtonView.setLeftButtonImage(I.systemItems.defaultItems.buttonShare)
         bottomDoubleButtonView.setRightButtonImage(I.systemItems.defaultItems.delete)
-        bottomDoubleButtonView.setLeftButtonTitle("share")
+		bottomDoubleButtonView.setLeftButtonTitle(LocalizationService.Buttons.getButtonTitle(of: .share))
         
         bottomButtonView.setImage(I.systemItems.defaultItems.delete)
     }

@@ -9,5 +9,5 @@ import Foundation
 import UIKit
 
 protocol SelectDropDownMenuDelegate {
-    func selectedItemListViewController(_ controller: DropDownMenuViewController, didSelectItem: DropDownMenuItems)
+	func handleDropDownMenu(_ item: MenuItemType)
 }

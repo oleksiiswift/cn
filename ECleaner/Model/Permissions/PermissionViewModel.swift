@@ -10,7 +10,7 @@ import Foundation
 class PermissionViewModel {
 	
 	private var sections: [PermissionSectionModel]
-	public var title = "Permissions"
+	public var title = LocalizationService.Main.getNavigationTitle(for: .permission)
 	
 	init(sections: [PermissionSectionModel]) {
 		self.sections = sections

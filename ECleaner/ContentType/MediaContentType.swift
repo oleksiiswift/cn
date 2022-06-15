@@ -15,26 +15,17 @@ enum MediaContentType {
     case none
     
     var navigationTitle: String {
-        switch self {
-            case .userPhoto:
-            return "PHOTOS_NAV_TITLE"
-            case .userVideo:
-            return "VIDEOS_NAV_TITLE"
-            case .userContacts:
-            return "CONTACTS_NAV_TITLE"
-            case .none:
-                return ""
-        }
+		return self.mediaContentTypeName.uppercased()
     }
 	
 	var mediaContentTypeName: String {
 		switch self {
 			case .userPhoto:
-				return "PHOTOS_TITLE"
+				return LocalizationService.Main.getNavigationTitle(for: .photoClean)
 			case .userVideo:
-				return "VIDEOS_TITLE"
+				return LocalizationService.Main.getNavigationTitle(for: .videoClean)
 			case .userContacts:
-				return "CONTACTS_TITLE"
+				return LocalizationService.Main.getNavigationTitle(for: .contactClean)
 			case .none:
 				return ""
 		}
@@ -166,34 +157,6 @@ enum MediaContentType {
 	}
         
         /// `SECTION PROPERTIES`
-    var cellTitle: [Int: [Int : String]] {
-        switch self {
-            case .userPhoto:
-                return [0: [0: "similar",
-                            1: "dublicate",
-                            2: "screenshots",
-                            3: "selfie",
-                            4: "live",
-                            5: "recently deleted photo",
-                            6: "face",
-                            7: "location"]]
-            case .userVideo:
-                return [0: [0: "large video",
-                            1: "duplicate",
-                            2: "similart",
-                            3: "screen rec",
-                            4: "recently deleted video"]]
-            case .userContacts:
-                return [0: [0: "all contacts",
-                            1: "empty",
-                            2: "duplicates names",
-                            3: "duplicates phones",
-                            4: "duplicated emails"]]
-            case .none:
-                return [0: [0: ""]]
-        }
-    }
-    
     var numberOfSection: Int {
 		switch self {
 			case .userVideo:
@@ -249,51 +212,43 @@ enum MediaContentType {
             case .userPhoto:
                 switch index {
                     case 0:
-                    return "SIMILAR_PHOTO"
+						return LocalizationService.MediaContent.getContentName(of: .similarPhotos)
                     case 1:
-                        return "DUBLICATES_PHOTO"
+                        return LocalizationService.MediaContent.getContentName(of: .duplicatedPhotos)
                     case 2:
-                        return "SCREENSHOTS"
+                        return LocalizationService.MediaContent.getContentName(of: .singleScreenShots)
                     case 3:
-                        return "similar selfie"
+						return LocalizationService.MediaContent.getContentName(of: .similarSelfies)
                     case 4:
-                        return "LIVE_PHOTO"
-                    case 5:
-                        return "RECENTLY_DEL_PHOTO"
-                    case 6:
-                        return "FACE"
-                    case 7:
-                        return "LOCATION"
+                        return LocalizationService.MediaContent.getContentName(of: .singleLivePhotos)
                     default:
                         return ""
                 }
             case .userVideo:
                 switch index {
                     case 0:
-                        return "LARGE_VIDEO"
+						return LocalizationService.MediaContent.getContentName(of: .singleLargeVideos)
                     case 1:
-                        return "DUPLICATE_VIDEO"
+						return LocalizationService.MediaContent.getContentName(of: .duplicatedVideos)
                     case 2:
-                        return "SIMILAR_VIDEO"
+						return LocalizationService.MediaContent.getContentName(of: .similarVideos)
                     case 3:
-                        return "SCREEN_RECORDING"
-                    case 4:
-						return "RECENTLY_DEL_VIDEO"
+						return LocalizationService.MediaContent.getContentName(of: .singleScreenRecordings)
                     default:
                         return ""
                 }
             case .userContacts:
                 switch index {
                     case 0:
-                        return "all contacts"
+						return LocalizationService.MediaContent.getContentName(of: .allContacts)
                     case 1:
-                        return "empty"
+						return LocalizationService.MediaContent.getContentName(of: .emptyContacts)
                     case 2:
-                        return "duplicates names"
+						return LocalizationService.MediaContent.getContentName(of: .duplicatedContacts)
                     case 3:
-                        return "duplicate numbers"
+						return LocalizationService.MediaContent.getContentName(of: .duplicatedPhoneNumbers)
                     case 4:
-                        return "duplicated emails"
+						return LocalizationService.MediaContent.getContentName(of: .duplicatedEmails)
                     default:
                         return ""
                 }
@@ -354,41 +309,41 @@ enum MediaContentType {
             case .userPhoto:
                 switch index {
                     case 0:
-                        return "SIMILAR_PHOTO"
+						return LocalizationService.MediaContent.getContentName(of: .similarPhotos)
                     case 1:
-                        return "DUBLICATES_PHOTO"
+						return LocalizationService.MediaContent.getContentName(of: .duplicatedPhotos)
                     case 2:
-                        return "SCREENSHOTS"
+						return LocalizationService.MediaContent.getContentName(of: .singleScreenShots)
 					case 3:
-						return "similar selfies"
+						return LocalizationService.MediaContent.getContentName(of: .similarSelfies)
                     case 4:
-                        return "SIMILAR_ALLIVE_PHOTOS"
+						return LocalizationService.MediaContent.getContentName(of: .similarLivePhotos)
                     default:
                         return ""
                 }
             case .userVideo:
                 switch index {
                     case 0:
-                        return "LARGE_VIDEO"
+						return LocalizationService.MediaContent.getContentName(of: .singleLargeVideos)
                     case 1:
-                        return "DUPLICATE_VIDEO"
+						return LocalizationService.MediaContent.getContentName(of: .duplicatedVideos)
                     case 2:
-                        return "SIMILAR_VIDEO"
+						return LocalizationService.MediaContent.getContentName(of: .similarVideos)
                     case 3:
-                        return "SCREEN_RECORDING"
+						return LocalizationService.MediaContent.getContentName(of: .singleScreenRecordings)
                     default:
                         return ""
                 }
             case .userContacts:
                 switch index {
                     case 0:
-                        return "empty contacts names"
+						return LocalizationService.MediaContent.getContentName(of: .emptyContacts)
                     case 1:
-                        return "duplicated contacts"
+						return LocalizationService.MediaContent.getContentName(of: .duplicatedContacts)
                     case 2:
-                        return "duplicated phone numbers"
+						return LocalizationService.MediaContent.getContentName(of: .duplicatedPhoneNumbers)
                     case 3:
-                        return "duplicated emails"
+						return LocalizationService.MediaContent.getContentName(of: .duplicatedEmails)
                     default:
                         return ""
                 }

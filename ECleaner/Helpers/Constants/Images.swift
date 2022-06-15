@@ -8,7 +8,7 @@
 import UIKit
 
 typealias I = Images
-class Images {
+struct Images {
 
     static let blank = UIImage(named: "")
     
@@ -178,7 +178,7 @@ extension Images {
 
 extension Images {
 	
-	public func getPermissionImage(for permission: Permission.PermissionType) -> UIImage {
+	public static func getPermissionImage(for permission: Permission.PermissionType) -> UIImage {
 		switch permission {
 			case .notification:
 				return UIImage(systemName: "app.badge.fill")!
@@ -231,6 +231,30 @@ extension Images {
 				return "person.text.rectangle"
 			default:
 				return "paintbrush"
+		}
+	}
+}
+
+
+extension Images {
+	
+	public static func getMenuItemImages(_ action: MenuItemType) -> UIImage {
+		
+		switch action {
+			case .select:
+				return UIImage(systemName: "checkmark.circle")!
+			case .deselect:
+				return UIImage(systemName: "circle")!
+			case .layout:
+				return UIImage(systemName: "square.grid.2x2")!
+			case .share:
+				return UIImage(systemName: "square.and.arrow.up")!
+			case .edit:
+				return UIImage(systemName: "checkmark.circle")!
+			case .delete:
+				return UIImage(systemName: "trash")!
+			case .export:
+				return UIImage(systemName: "square.and.arrow.up")!
 		}
 	}
 }

@@ -80,7 +80,7 @@ extension VideoCollectionCompressingViewController {
 			
 			let size = phasset.imageSize
 			let stringSize = U.getSpaceFromInt(size)
-			bottomButtonView.title("compress: \(stringSize)")
+			bottomButtonView.title("\(LocalizationService.Buttons.getButtonTitle(of: .compres)) \(stringSize)")
 		}
 		
 		U.animate(0.5) {

@@ -62,7 +62,20 @@ enum ButtonType {
 	case select
 	case deselect
 	case merge
-	
+	case layout
+	case edit
+	case export
+	case fullPreview
+	case deleteSelected
+	case setAsBest
+	case mergeSelected
+	case compres
+	case submit
+	case resetDefault
+	case removeAudio
+	case origin
+	case manual
+		
 	var rawValue: String {
 		switch self {
 			case .allowed:
@@ -97,6 +110,70 @@ enum ButtonType {
 				return L.Standart.Buttons.deselect
 			case .merge:
 				return L.Standart.Buttons.merge
+			case .layout:
+				return L.Standart.Buttons.changeLauout
+			case .edit:
+				return L.Standart.Buttons.edit
+			case .export:
+				return L.Standart.Buttons.export
+			case .fullPreview:
+				return L.Standart.Buttons.fullScreenPreview
+			case .deleteSelected:
+				return L.Standart.Buttons.deleteSelected
+			case .setAsBest:
+				return L.Standart.Buttons.setAsBest
+			case .mergeSelected:
+				return L.Standart.Buttons.mergeSelected
+			case .compres:
+				return L.Standart.Buttons.compress
+			case .submit:
+				return L.Standart.Buttons.submit
+			case .resetDefault:
+				return L.Standart.Buttons.resetDefault
+			case .removeAudio:
+				return L.Standart.Buttons.removeAudio
+			case .origin:
+				return L.Standart.Buttons.origin
+			case .manual:
+				return L.Standart.Buttons.manual
+		}
+	}
+}
+
+enum ControllerType {
+	case deepClean
+	case subscription
+	case onboarding
+	case main
+	case photoClean
+	case videoClean
+	case contactClean
+	case settings
+	case permission
+	case videoCompression
+	
+	var navigationTitle: String {
+		switch self {
+			case .deepClean:
+				return Localization.Main.Title.deepClean
+			case .subscription:
+				return Localization.Main.Title.subscription
+			case .onboarding:
+				return Localization.Main.Title.onboarding
+			case .main:
+				return Localization.Main.Title.main
+			case .photoClean:
+				return Localization.Main.Title.photoTitle
+			case .videoClean:
+				return Localization.Main.Title.videoTitle
+			case .contactClean:
+				return Localization.Main.Title.contactsTitle
+			case .settings:
+				return Localization.Main.Title.settings
+			case .permission:
+				return Localization.Main.Title.permission
+			case .videoCompression:
+				return Localization.Main.Title.videoCompresion
 		}
 	}
 }

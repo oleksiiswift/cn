@@ -11,6 +11,8 @@ typealias L = Localization
 struct Localization {
 	
 	static var empty: String = ""
+	static var dash = "-"
+	static var none = "none"
 	
 	struct Service {
 		
@@ -18,6 +20,15 @@ struct Localization {
 	}
 	
 	struct Permission {
+		
+		struct Title {
+			static var permission = "Permission"
+			static var permissionRequest = "Permission Request"
+		}
+		
+		struct Subtitle {
+			static var denied = "denied!"
+		}
 		
 		struct Name {
 			static var notification = "Notification"
@@ -36,6 +47,7 @@ struct Localization {
 		}
 		
 		struct AlertService {
+			
 			struct Title {
 				static var permissionDenied = "Permission Denied!"
 				static var permissionAllowed = "Permission Alowed!"
@@ -77,6 +89,11 @@ struct Localization {
 			static let verification = "Error. Receipt verification failed. Try again."
 			static let nothing = "Nothing to restore. No previous purchases were found."
 		}
+		
+		struct Subtitle {
+			static let willEnd = "Will end on"
+			static let expired = "Expired"
+		}
 	}
 	
 	struct Notification {
@@ -114,15 +131,210 @@ struct Localization {
 			static var share = "Share"
 			static var save = "Save"
 			static var selectAll = "Select All"
-			static var deselectAll = "Select All"
+			static var deselectAll = "Deselect All"
 			static var select = "Select"
 			static var deselect = "Deselect"
 			static var merge = "Merge"
+			static var changeLauout = "Change Layout"
+			static var edit = "Edit"
+			static var export = "Export"
+			static var fullScreenPreview = "Full Screen Preview"
+			static var deleteSelected = "Delete Selected"
+			static var setAsBest = "Set as Best"
+			static var mergeSelected = "Merge Selected:"
+			static var compress = "Compress:"
+			static var submit = "Submit"
+			static var resetDefault = "Reset to Default"
+			static var removeAudio = "Remove Audio"
+			static var origin = "origin"
+			static var manual = "manual"
+		}
+	}
+	
+	struct Settings {
+		
+		struct Title {
+			static var premium = "Premium"
+			static var restore = "Restore Purchase"
+			static var subscription = "Subscription"
+			static var largeVideo = "Large Video Size"
+			static var storage = "Storage"
+			static var permission = "Permission"
+			static var support = "Support"
+			static var share = "Share App"
+			static var rateUS = "Rate Us"
+			static let privacy = "Privacy Policy"
+			static let terms = "Terms Of Use"
+			static let videoCompression = "Video Comptes"
+		}
+		
+		struct Subtitle {
+			static let share = "Share %@ with your friends".localized().replacingOccurrences(of: "%@", with: "app name")
+			static let facebook = "Facebook"
+			static let telegram = "Telegram"
+			static let email = "Email"
+		}
+	}
+	
+	struct Main {
+		
+		struct Title {
+			static let settings = "Settings"
+			static let permission = "Permissions"
+			static let photoTitle = "Photo"
+			static let videoTitle = "Video"
+			static let contactsTitle = "Contacts"
+			static let deepClean = "Deep Clean"
+			static let subscription = "Subscription"
+			static let onboarding = "Onboarding"
+			static let main = "Main"
+			static let videoCompresion = "Video Compression"
+		}
+		
+		struct MediaCcontentTitle {
+			static let similarPhoto = "Similar Photo"
+			static let duplicatePhoto = "Duplicate Photo"
+			static let singleScreenShots = "Screenshots"
+			static let singleLivePhotos = "Live Photo"
+			static let similarLivePhoto = "Similar Live Photo"
+			static let similarSelfies = "Similar Selfies"
+			static let largeVideo = "Large Video"
+			static let duplicatedVideos = "Duplicated Video"
+			static let similarVideo = "Similar Video"
+			static let singleScreenRecordings = "Screen Recordings"
+			static let compression = "Video Compression"
+			static let allContacts = "All Contacts"
+			static let emptyContacts = "Empty Contacts"
+			static let duplicatedContacts = "Duplicated Contacts"
+			static let duplicatedPhoneNumbers = "Duplicated Numbers"
+			static let duplucatedEmails = "Duplicated Emails"
+			static let backup = "Contacts Backup"
+		}
+		
+		struct Subtitles {
+			static let categories = "Categories:"
+			static let of = "of"
+			static let searchHere = "  search contacts here..."
+			static let from = "From:"
+			static let to = "To:"
+			static let best = "best"
+			static let new = "new"
+			static let allAnalyzed = "All Data Analyzed"
+			static let files = "files"
+			static let memmory = "memmory"
+			static let keepOriginResolution = "keep origin resolution"
+			static let originResolution = "origin resolution"
+		}
+		
+		struct HeaderTitle {
+			static let compressionSettings = "Compression Settings"
+			static let selectCompressionSettings = "select compression settings"
+			static let selectFileFormat = "Select Format of File"
+			static let sinceLastClean = "Since the Last Cleaning"
+			static let selectLower = "Select Lower Date"
+			static let selectUpper = "Select Upper Date"
+			static let selectLargeVideo = "Select Large Video Size"
+			static let permissionRequest = "Permission Request"
+			
+			static let resolution = "Resolution"
+			static let fps = "FPS"
+			static let videoBitrate = "Video Bitrate"
+			static let keyframe = "Interval Between Keyframe"
+			static let audioBitrate = "Audio Bitrate"
+		}
+		
+		struct Descriptions {
+			static let permissionDescription = "These are the permissions the app requires to work properly. Please see description for each permission."
+			static let permissionInfo = "Permissions are necessary for the application to work and perform correctly."
+			static let resolutionDescription = "if set to a lower value, the picture will be more pixelated and the file size will be smaller"
+			static let fpsDescription = "a lower framerate means the video will be less smooth and the file size will be significantly smaller"
+			static let videoBitrateDescription = "if set to a lower value, it will reduce video quality and considerably decrease file size"
+			static let keyframeDescription = "if set to a higher value, video quality and size will decrease, it is recommended to choose higher values if your video has no dynamic scenes"
+			static let audioBitrateDescription = "if set to a lower value, the audio quality will deteriorate and the file size will be insignificantly reduced"
+		}
+		
+		struct ProcessingState {
+			static let prepareForScanning = "Prepare for scanning"
+			static let analyzingWait = "Analyzing, please wait"
+			static let compare = "Compare results"
+			static let anayzing = "analyzing"
+			static let searchingComplete = "Searching complete!"
+			
+			struct ByGrouping {
+				static let similarGroups = "similar groups"
+				static let duplicatedGroups = "duplicated groups"
+				static let duplicatedCotactsGroups = "duplicated contacts groups"
+				///
+				static let files = "files"
+				static let contacts = "contacts"
+				///
+				static let selectedPhoto = "selected photos"
+				static let selectedVideo = "selected videos"
+				static let selectedContacts = "selected contacts"
+			}
+			
+			struct ByEmptyState {
+				static let emptySimilarPhoto = "no similiar photos"
+				static let emptyDuplicatedPhoto = "no duplicated photos"
+				static let emptyScreenShots = "no screen shots"
+				static let emptyLivePhoto = "no live photos"
+				static let emptySimilarLivePhotos = "no similar live photos"
+				static let emptySimilarSelfies = "no similar selfies"
+				static let emptyLargeVideos = "no large videos"
+				static let noDuplicatedVideo = "no duplicated videos"
+				static let noSimilarVideo = "no similar videos"
+				static let noScreenRecording = "no screen recordings"
+				static let noContacts = "no contacts"
+				static let noContactsToClean = "no contacts to clean"
+				static let noContent = "no content"
+				static let missingNumber = "missing number"
+				static let missingName = "missing name"
+				static let missingAll = "all data missing"
+			}
+			
+			struct DeepCleanProcessingTitle {
+				static let photoClean = "deleting photo (video):"
+				static let emptyContactsClean = "removing empty contacts:"
+				static let contactsMergeClean = "merge selecting contacts:"
+				static let contactsDeleteClean = "deleting selected contacts:"
+				static let prepareClen = "prepare cleaning"
+			}
+			
+			struct DeepCleanButtonState {
+				static let startDeepClean = "start deep clean"
+				static let startAnalyzing = "start analyzing"
+				static let stopAnalyzing = "stop analyzing"
+				static let startCleaning = "start cleaning"
+			}
+		}
+	
+		struct BannerHelpers {
+			
+			struct Title {
+				static let videoTitle = "Compress Videos"
+				static let contactTitle = "Sync Contacts"
+			}
+			
+			struct Subtitle {
+				static let videoSubtitle = "Optimaze your IPhone data"
+				static let contactsSubtitle = "Optimaze your IPhone data"
+			}
+			
+			struct Description {
+				static let videoDescription = "Compression Level"
+				static let videoDescriptionOne = "50x"
+				static let videoDescriptionTwo = "Ultra"
+				
+				static let contactsDescription = "Save Your Contacts"
+				static let contactsDescriptionOne = "With"
+				static let contactsDescriptionTwo = "Back-Up"
+			}
 		}
 	}
 	
 	struct AlertController {
 		struct AlertTitle {
+			static var deepCleanProcessing = "Deep Clean processing"
 			static var compressionComplete = "Compression Complete!"
 			static var mergingContacts = "Merging Contacts"
 			static var compressing = "Compressing"
@@ -243,5 +455,16 @@ struct Localization {
 				static var restorePurchseFailed = "Restore purchase failed"
 			}
 		
+	}
+}
+
+extension Localization {
+	
+	struct ServiceValues {
+		
+		static let mbs = "Mbs"
+		static let gb = "Gb"
+		static let tb = "Tb"
+		static let mb = "Mb"
 	}
 }

@@ -120,7 +120,7 @@ class Permission {
 		}
 		
 		public var permissionImage: UIImage {
-			return Images().getPermissionImage(for: self)
+			return Images.getPermissionImage(for: self)
 		}
 		
 		public var permissionAccentColors: [UIColor] {

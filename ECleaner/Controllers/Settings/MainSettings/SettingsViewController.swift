@@ -46,7 +46,7 @@ extension SettingsViewController {
 		let thirdSectionsCells = SettingsSection(cells: [.largeVideos,
 														 .dataStorage,
 														 .permissions],
-												 headerTitle: "settings one sections title",
+												 headerTitle: "settings optional first sections title",
 												 headetHeight: 40)
 		
 		let fouthSectionsCells = SettingsSection(cells: [.support,
@@ -54,7 +54,7 @@ extension SettingsViewController {
 														 .rate,
 														 .privacypolicy,
 														 .termsOfUse],
-												 headerTitle: "settings optional title two",
+												 headerTitle: "settings optional second section title",
 												 headetHeight: 40)
 		
 		let sections: [SettingsSection] = [firstSectionCells, secondSectionCells, thirdSectionsCells, fouthSectionsCells]

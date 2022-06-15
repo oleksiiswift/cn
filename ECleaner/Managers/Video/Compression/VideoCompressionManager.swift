@@ -252,7 +252,7 @@ extension VideoCompressionManager {
 							index += 1
 							let timingInfo = UnsafeMutablePointer<CMSampleTimingInfo>.allocate(capacity: 1)
 							let newSample = UnsafeMutablePointer<CMSampleBuffer?>.allocate(capacity: 1)
-							
+							debugPrint(index)
 							CMSampleBufferGetSampleTimingInfo(buffer, at: 0, timingInfoOut: timingInfo)
 							timingInfo.pointee.duration = CMTimeMultiplyByFloat64(timingInfo.pointee.duration, multiplier: Float64(originFPS/targetFPS))
 							CMSampleBufferCreateCopyWithNewTiming(allocator: nil, sampleBuffer: buffer, sampleTimingEntryCount: 1, sampleTimingArray: timingInfo, sampleBufferOut: newSample)

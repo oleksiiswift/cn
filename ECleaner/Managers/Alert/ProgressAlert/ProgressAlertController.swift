@@ -164,17 +164,17 @@ class ProgressAlertController: Themeble {
 }
 
 extension ProgressAlertController {
-	#warning("TODO")
+
     public func showDeleteContactsProgressAlert() {
-        setProgress(controllerType: .userContacts, title: "delete contacts")
+		setProgress(controllerType: .userContacts, title: Localization.AlertController.AlertTitle.deleteContact)
     }
     
     public func showMergeContactsProgressAlert() {
-        setProgress(controllerType: .userContacts, title: "merged contacts")
+		setProgress(controllerType: .userContacts, title: Localization.AlertController.AlertTitle.mergingContacts)
     }
 	
 	public func showDeepCleanProgressAlert() {
-		setProgress(controllerType: .none, title: "deep clean processing")
+		setProgress(controllerType: .none, title: Localization.AlertController.AlertTitle.deepCleanProcessing)
 	}
 	
 	public func showContactsProgressAlert(of type: ProgressAlertType) {

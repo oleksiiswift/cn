@@ -9,7 +9,7 @@ import UIKit
 
 class DropDownMenuViewController: UIViewController {
     
-    var menuSectionItems = [DropDownOptionsMenuItem]() {
+    var menuSectionItems = [MenuItem]() {
         didSet {
             self.calculateMenuContentSize()
         }
@@ -100,9 +100,8 @@ extension DropDownMenuViewController: UITableViewDataSource, UITableViewDelegate
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-		let selectedItem = menuSectionItems[indexPath.row]
         self.dismiss(animated: true) {
-            self.delegate?.selectedItemListViewController(self, didSelectItem: selectedItem.menuItem)
+			self.delegate?.handleDropDownMenu(self.menuSectionItems[indexPath.row].type)
         }
     }
     

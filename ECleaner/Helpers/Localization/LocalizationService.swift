@@ -9,8 +9,15 @@ import Foundation
 
 struct  LocalizationService {
 	
+	struct Main {
+		
+		static func getNavigationTitle(for controller: ControllerType) -> String {
+			return controller.navigationTitle
+		}
+	}
+
 	struct PermissionStings {
-	
+		
 		static func getTitle(for permission: Permission.PermissionType) -> String {
 			switch permission {
 				case .notification:
@@ -53,7 +60,7 @@ struct  LocalizationService {
 	struct Alert {
 		
 		struct Permissions {
-		
+			
 			static func getOpenSettingsPermissionDescription(for auth: Bool) -> AlertDescription {
 				return AlertDescription(title: auth ? L.Permission.AlertService.Title.permissionAllowed : L.Permission.AlertService.Title.permissionDenied,
 										description: L.Permission.AlertService.Description.openSettings,
@@ -182,24 +189,24 @@ struct  LocalizationService {
 			switch type {
 				case .cleanContacts:
 					return NotificationBodyDescription(title: L.Notification.Title.contacts,
-												   subtitle: L.empty,
-												   body: L.Notification.Body.contacts)
+													   subtitle: L.empty,
+													   body: L.Notification.Body.contacts)
 				case .cleanPhotos:
 					return NotificationBodyDescription(title: L.Notification.Title.photos,
-												   subtitle: L.empty,
-												   body: L.Notification.Body.photos)
+													   subtitle: L.empty,
+													   body: L.Notification.Body.photos)
 				case .cleanVideo:
 					return NotificationBodyDescription(title: L.Notification.Title.videos,
-												   subtitle: L.empty,
-												   body: L.Notification.Body.videos)
+													   subtitle: L.empty,
+													   body: L.Notification.Body.videos)
 				case .deepClean:
 					return NotificationBodyDescription(title: L.Notification.Title.deepClean,
-												   subtitle: L.empty,
-												   body: L.Notification.Body.deepClean)
+													   subtitle: L.empty,
+													   body: L.Notification.Body.deepClean)
 				case .clean:
 					return NotificationBodyDescription(title: L.Notification.Title.storage,
-												   subtitle: L.empty,
-												   body: L.Notification.Body.storage)
+													   subtitle: L.empty,
+													   body: L.Notification.Body.storage)
 				default:
 					return NotificationBodyDescription(title: L.empty, subtitle: L.empty, body: L.empty)
 			}
@@ -220,7 +227,7 @@ struct  LocalizationService {
 						return Localization.ErrorsHandler.Title.emptyResults
 				}
 			}
-		
+			
 			var message: String {
 				switch error {
 					case .photoLibrararyIsEmpty:
@@ -350,6 +357,101 @@ struct  LocalizationService {
 			let title = ErrorHandler.errorTitle.fatalError.rawValue
 			let message = ErrorHandler.shared.fatalErrorForKey(error)
 			return ErrorDescription(title: title, message: message, buttonTitle: actionButton)
+		}
+	}
+	
+	struct MediaContent {
+		
+		public static func getContentName(of type: PhotoMediaType) -> String {
+			switch type {
+				case .similarPhotos:
+					return Localization.Main.MediaCcontentTitle.similarPhoto
+				case .duplicatedPhotos:
+					return Localization.Main.MediaCcontentTitle.duplicatePhoto
+				case .singleScreenShots:
+					return Localization.Main.MediaCcontentTitle.singleScreenShots
+				case .singleLivePhotos:
+					return Localization.Main.MediaCcontentTitle.singleLivePhotos
+				case .similarLivePhotos:
+					return Localization.Main.MediaCcontentTitle.similarLivePhoto
+				case .similarSelfies:
+					return Localization.Main.MediaCcontentTitle.similarSelfies
+				case .singleLargeVideos:
+					return Localization.Main.MediaCcontentTitle.largeVideo
+				case .duplicatedVideos:
+					return Localization.Main.MediaCcontentTitle.duplicatedVideos
+				case .similarVideos:
+					return Localization.Main.MediaCcontentTitle.similarVideo
+				case .singleScreenRecordings:
+					return Localization.Main.MediaCcontentTitle.singleScreenRecordings
+				case .compress:
+					return Localization.Main.MediaCcontentTitle.compression
+				case .allContacts:
+					return Localization.Main.MediaCcontentTitle.allContacts
+				case .emptyContacts:
+					return Localization.Main.MediaCcontentTitle.emptyContacts
+				case .duplicatedContacts:
+					return Localization.Main.MediaCcontentTitle.duplicatedContacts
+				case .duplicatedPhoneNumbers:
+					return Localization.Main.MediaCcontentTitle.duplicatedPhoneNumbers
+				case .duplicatedEmails:
+					return Localization.Main.MediaCcontentTitle.duplucatedEmails
+				case .backup:
+					return Localization.Main.MediaCcontentTitle.backup
+				default:
+					return L.empty
+			}
+		}
+	}
+	
+	struct DeepClean {
+		
+		public static func getProgressTitle(of type: DeepCleaningType) -> String {
+			switch type {
+				case .prepareCleaning:
+					return Localization.Main.ProcessingState.DeepCleanProcessingTitle.prepareClen
+				case .photoCleaning:
+					return Localization.Main.ProcessingState.DeepCleanProcessingTitle.photoClean
+				case .contactsEmptyCleaning:
+					return Localization.Main.ProcessingState.DeepCleanProcessingTitle.emptyContactsClean
+				case .contactsMergeCleaning:
+					return Localization.Main.ProcessingState.DeepCleanProcessingTitle.contactsMergeClean
+				case .contactsDeleteCleaning:
+					return Localization.Main.ProcessingState.DeepCleanProcessingTitle.contactsDeleteClean
+			}
+		}
+		
+		public static func getButtonTitle(by state: DeepCleanButtonState) -> String {
+			switch state {
+				case .startDeepClen:
+					return Localization.Main.ProcessingState.DeepCleanButtonState.startDeepClean.uppercased()
+				case .startAnalyzing:
+					return Localization.Main.ProcessingState.DeepCleanButtonState.startAnalyzing.uppercased()
+				case .stopAnalyzing:
+					return Localization.Main.ProcessingState.DeepCleanButtonState.stopAnalyzing.uppercased()
+				case .startCleaning:
+					return Localization.Main.ProcessingState.DeepCleanButtonState.startCleaning.uppercased()
+			}
+		}
+	}
+	
+	struct Compression {
+		
+		public static func getCompressionSectionName(of type: CustomCompressionSection) -> String {
+			switch type {
+				case .resolution:
+					return Localization.Main.HeaderTitle.resolution
+				case .fps:
+					return Localization.Main.HeaderTitle.fps
+				case .videoBitrate:
+					return Localization.Main.HeaderTitle.videoBitrate
+				case .keyframe:
+					return Localization.Main.HeaderTitle.keyframe
+				case .audioBitrate:
+					return Localization.Main.HeaderTitle.audioBitrate
+				case .none:
+					return Localization.none
+			}
 		}
 	}
 }

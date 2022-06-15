@@ -807,11 +807,11 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
                case 0:
                     view.frame = CGRect(x: 0, y: 0, width: U.screenWidth, height: 0)
                case 1:
-                    sectionTitleTextLabel.text = "PHOTOS_NAV_TITLE"
+					sectionTitleTextLabel.text = MediaContentType.userPhoto.mediaContentTypeName
                case 2:
-                    sectionTitleTextLabel.text = "VIDEOS_NAV_TITLE"
+					sectionTitleTextLabel.text = MediaContentType.userVideo.mediaContentTypeName
                default:
-                    sectionTitleTextLabel.text = "CONTACTS_NAV_TITLE"
+					sectionTitleTextLabel.text = MediaContentType.userContacts.mediaContentTypeName
           }
           return view
      }
@@ -890,9 +890,9 @@ extension DeepCleaningViewController {
      private func setupNavigation() {
           
           self.navigationController?.navigationBar.isHidden = true
-          
+		  let mainTitle = LocalizationService.Main.getNavigationTitle(for: .deepClean)
           navigationBar.setIsDropShadow = false
-          navigationBar.setupNavigation(title: "DEEP_CLEEN",
+		  navigationBar.setupNavigation(title: mainTitle,
                                         leftBarButtonImage: I.systemItems.navigationBarItems.back,
                                         rightBarButtonImage: nil,
 										contentType: .none,
@@ -948,18 +948,19 @@ extension DeepCleaningViewController {
 						 self.bottomButtonView.stopAnimatingButton()
 						 self.bottomButtonView.setButtonProcess(false)
 						 self.bottomButtonView.setImage(I.systemItems.defaultItems.deepClean, with: CGSize(width: 24, height: 22))
-						 self.bottomButtonView.title("start analyzing".uppercased())
+						 self.bottomButtonView.title(LocalizationService.DeepClean.getButtonTitle(by: .startAnalyzing))
+						 
 					case .willStartCleaning:
 						 self.bottomButtonView.stopAnimatingButton()
 						 self.bottomButtonView.setButtonProcess(true)
 					case .didCleaning:
 						 self.bottomButtonView.setImage(I.systemItems.defaultItems.refreshFull, with: CGSize(width: 24, height: 22))
 						 self.bottomButtonView.startAnimatingButton()
-						 self.bottomButtonView.title("stop analyzing".uppercased())
+						 self.bottomButtonView.title(LocalizationService.DeepClean.getButtonTitle(by: .stopAnalyzing))
 						 self.bottomButtonView.setButtonProcess(false)
 					case .willAvailibleDelete:
 						 self.bottomButtonView.stopAnimatingButton()
-						 self.bottomButtonView.title("start cleaning".uppercased())
+						 self.bottomButtonView.title(LocalizationService.DeepClean.getButtonTitle(by: .startCleaning))
 						 self.bottomButtonView.setButtonProcess(false)
 						 self.bottomButtonView.setImage(I.systemItems.defaultItems.delete, with: CGSize(width: 18, height: 24))
 					case .canclel:

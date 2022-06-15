@@ -68,6 +68,18 @@ class Constants {
 			}
 		}
 		
+		struct contacts {
+			struct groupSorting {
+				static let name = "com.cleaner.contactsGroup.name"
+				static let phone = "com.cleaner.contactsGroup.phone"
+				static let mail = "com.cleaner.contactsGroup.mail"
+				static let emptyName = "com.cleaner.contactsGroup.emptyName"
+				static let empty = "com.cleaner.contactsGroup.empty"
+			}
+			
+			
+		}
+		
 		struct localUserNotification {
 			static let localNotificationRawValue = "localnotifactionRawValue"
 		}

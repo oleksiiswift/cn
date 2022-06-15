@@ -15,7 +15,7 @@
 		044281FE2692F9B800B6B47C /* SelectDropDownMenuDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 044281FD2692F9B800B6B47C /* SelectDropDownMenuDelegate.swift */; };
 		044282012693034600B6B47C /* DropDownMenuTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 044281FF2693034600B6B47C /* DropDownMenuTableViewCell.swift */; };
 		044282022693034600B6B47C /* DropDownMenuTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 044282002693034600B6B47C /* DropDownMenuTableViewCell.xib */; };
-		04428204269313AD00B6B47C /* DropDownMenuItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04428203269313AD00B6B47C /* DropDownMenuItems.swift */; };
+		04428204269313AD00B6B47C /* MenuItemType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04428203269313AD00B6B47C /* MenuItemType.swift */; };
 		04467CE0270D929D00DBBB39 /* HorizontalProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04467CDF270D929C00DBBB39 /* HorizontalProgressBar.swift */; };
 		04467CE2270D9B1200DBBB39 /* DatePicker.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 04467CE1270D9B1200DBBB39 /* DatePicker.storyboard */; };
 		04467CE4270DA3A000DBBB39 /* DateSelectebleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04467CE3270DA3A000DBBB39 /* DateSelectebleView.swift */; };
@@ -366,7 +366,7 @@
 		044281FD2692F9B800B6B47C /* SelectDropDownMenuDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectDropDownMenuDelegate.swift; sourceTree = "<group>"; };
 		044281FF2693034600B6B47C /* DropDownMenuTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropDownMenuTableViewCell.swift; sourceTree = "<group>"; };
 		044282002693034600B6B47C /* DropDownMenuTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DropDownMenuTableViewCell.xib; sourceTree = "<group>"; };
-		04428203269313AD00B6B47C /* DropDownMenuItems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropDownMenuItems.swift; sourceTree = "<group>"; };
+		04428203269313AD00B6B47C /* MenuItemType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuItemType.swift; sourceTree = "<group>"; };
 		04467CDF270D929C00DBBB39 /* HorizontalProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HorizontalProgressBar.swift; sourceTree = "<group>"; };
 		04467CE1270D9B1200DBBB39 /* DatePicker.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = DatePicker.storyboard; sourceTree = "<group>"; };
 		04467CE3270DA3A000DBBB39 /* DateSelectebleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateSelectebleView.swift; sourceTree = "<group>"; };
@@ -2261,7 +2261,7 @@
 			children = (
 				04CF0002268602DE000CA850 /* MediaContentType.swift */,
 				97238A062689BD8000C523DC /* PhotoMediaType.swift */,
-				04428203269313AD00B6B47C /* DropDownMenuItems.swift */,
+				04428203269313AD00B6B47C /* MenuItemType.swift */,
 				9712C05B27B43B220013A7C9 /* ProcessingProgressOperationState.swift */,
 				979487BC27B6A9D800135D47 /* CleanProcessingType.swift */,
 				979487BE27B6AA4200135D47 /* DeepCleaningType.swift */,
@@ -2627,7 +2627,7 @@
 				9793185A282163A200769BEB /* NSAttributedString.swift in Sources */,
 				97DDCAB2280873EA0093D5F5 /* StepSlider+Extension.swift in Sources */,
 				979318582820857900769BEB /* ContentBannerInfoModel.swift in Sources */,
-				04428204269313AD00B6B47C /* DropDownMenuItems.swift in Sources */,
+				04428204269313AD00B6B47C /* MenuItemType.swift in Sources */,
 				0447A68926B2A1E20074919B /* ConcurentPhotoProcessOperation.swift in Sources */,
 				97CA423F273EBBFA001FEA15 /* BottomButtonBarView.swift in Sources */,
 				97238A0D2689EDFF00C523DC /* CustomActivityIndicator.swift in Sources */,

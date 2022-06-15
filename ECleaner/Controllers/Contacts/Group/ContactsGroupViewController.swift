@@ -294,7 +294,7 @@ extension ContactsGroupViewController {
 		let calculatedBottomButtonHeight: CGFloat = U.UIHelper.AppDimensions.bottomBarDefaultHeight
 		bottomButtonHeightConstraint.constant = !self.contactGroupListDataSource.selectedSections.isEmpty ? calculatedBottomButtonHeight : 0
 		
-		let buttonTitle: String = "merge selected".uppercased() + " (\(self.contactGroupListDataSource.selectedSections.count))"
+		let buttonTitle: String = LocalizationService.Buttons.getButtonTitle(of: .mergeSelected).uppercased() + " (\(self.contactGroupListDataSource.selectedSections.count))"
 		self.bottomButtonBarView.title(buttonTitle)
 		
 		if disableAnimation {
@@ -446,32 +446,51 @@ extension ContactsGroupViewController: ProgressAlertControllerDelegate {
 
 //      MARK: - burger derop down menu
 extension ContactsGroupViewController: SelectDropDownMenuDelegate {
-    
+	
+	func getDropDownItems() -> [MenuItem] {
+		
+		let selectAllItem: MenuItem = .init(type: .select, selected: true)
+		let deselectAllItem: MenuItem = .init(type: .delete, selected: true)
+		let shareItem: MenuItem = .init(type: .share, selected: !self.contactGroupListDataSource.selectedSections.isEmpty)
+		return [isSelectedAllItems ? deselectAllItem : selectAllItem, shareItem]
+	}
+	
+	private func performMenu(from items: [MenuItem]) -> UIMenu {
+		var actions: [UIAction] = []
+		
+		items.forEach { item in
+			let attributes: UIMenuElement.Attributes = item.selected ? [] : .disabled
+			let action = UIAction(title: item.title, image: item.thumbnail, attributes: attributes) { _ in
+				self.handleDropDownMenu(item.type)
+			}
+			actions.append(action)
+		}
+		return UIMenu(children: actions)
+	}
+	
+	@available(iOS 14.0, *)
+	func dropDownSetup() {
+		let menuItems = getDropDownItems()
+		let menu = performMenu(from: menuItems)
+		navigationBar.rightBarButtonItem.menu = menu
+		navigationBar.rightBarButtonItem.showsMenuAsPrimaryAction = true
+		
+		navigationBar.rightBarButtonItem.onMenuActionTriggered { menu in
+			let updatedItems = self.getDropDownItems()
+			self.navigationBar.rightBarButtonItem.menu = self.performMenu(from: updatedItems)
+			return menu
+		}
+	}
+	
     private func didTapOpenBurgerMenu() {
-		
-		let selectAllOptionItem = DropDownOptionsMenuItem(titleMenu: "select all",
-															   itemThumbnail: I.systemItems.selectItems.roundedCheckMark,
-															   isSelected: true,
-															   menuItem: .selectAll)
-		
-		let deselectAllOptionItem = DropDownOptionsMenuItem(titleMenu: "deselect all",
-																 itemThumbnail: I.systemItems.selectItems.circleMark,
-																 isSelected: true,
-																 menuItem: .deselectAll)
-		
-		let availibleExportOtion = !self.contactGroupListDataSource.selectedSections.isEmpty
-		
-		let exportSelectedContacts = DropDownOptionsMenuItem(titleMenu: "export selected",
-																  itemThumbnail: I.systemItems.defaultItems.share,
-																  isSelected: availibleExportOtion,
-																  menuItem: .share)
-		
-        let firstRowItem = isSelectedAllItems ? deselectAllOptionItem : selectAllOptionItem
-        let secontRowItem = exportSelectedContacts
-        self.presentDropDonwMenu(with: [firstRowItem, secontRowItem], from: navigationBar.rightBarButtonItem)
+	
+		if #available(iOS 14.0, *) {} else {
+			let menuItems = getDropDownItems()
+			self.presentDropDonwMenu(with: menuItems, from: navigationBar.rightBarButtonItem)
+		}
     }
-
-    private func presentDropDonwMenu(with items: [DropDownOptionsMenuItem], from navigationButton: UIButton) {
+	
+    private func presentDropDonwMenu(with items: [MenuItem], from navigationButton: UIButton) {
         let dropDownViewController = DropDownMenuViewController()
         dropDownViewController.menuSectionItems = items
         dropDownViewController.delegate = self
@@ -485,17 +504,16 @@ extension ContactsGroupViewController: SelectDropDownMenuDelegate {
         self.present(dropDownViewController, animated: true, completion: nil)
     }
     
-    func selectedItemListViewController(_ controller: DropDownMenuViewController, didSelectItem: DropDownMenuItems) {
-        
-        switch didSelectItem {
-			case .deselectAll, .selectAll:
-                self.didSelectDeselecAllItems()
-            case .share:
+	func handleDropDownMenu(_ item: MenuItemType) {
+		switch item {
+			case .select, .deselect:
+				self.didSelectDeselecAllItems()
+			case .share:
 				self.didTapSharePopUpMenuButton()
-            default:
-                return
-        }
-    }
+			default:
+				return
+		}
+	}
 }
 
 //  MARK: - header delegate -
@@ -586,6 +604,9 @@ extension ContactsGroupViewController: Themeble {
         
         self.navigationController?.navigationBar.isHidden = true
         navigationBar.setupNavigation(title: navigationTitle, leftBarButtonImage: I.systemItems.navigationBarItems.back, rightBarButtonImage: I.systemItems.navigationBarItems.burgerDots, contentType: mediaType)
+		if #available(iOS 14.0, *) {
+			dropDownSetup()
+		}
     }
     
     func setupViewModel(contacts: [ContactsGroup]) {

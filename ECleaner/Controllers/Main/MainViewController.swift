@@ -547,11 +547,11 @@ extension MainViewController: UpdateColorsDelegate {
     private func setupUI() {
                 
         scrollView.alwaysBounceVertical = true
-        bottomButtonBarView.title("START DEEP CLEAN")
+		bottomButtonBarView.title(LocalizationService.DeepClean.getButtonTitle(by: .startDeepClen))
         bottomButtonBarView.actionButton.imageSize = CGSize(width: 25, height: 25)
         bottomButtonBarView.setImage(I.mainStaticItems.clean)
 		
-		sectionHeaderTextLabel.text = "Categories:"
+		sectionHeaderTextLabel.text = Localization.Main.Subtitles.categories
 		switch Screen.size {
 			case .small:
 				sectionHeaderTextLabel.font = .systemFont(ofSize: 12, weight: .heavy)
@@ -756,7 +756,7 @@ extension MainViewController: UpdateColorsDelegate {
         circleTotalSpaceView.clockwise = true
 		circleTotalSpaceView.startColor = theme.circleProgresStartingGradient
 		circleTotalSpaceView.endColor = theme.circleProgresEndingGradient
-        circleTotalSpaceView.title = "\(Device.usedDiskSpaceInGB) \n of \(Device.totalDiskSpaceInGB)"
+		circleTotalSpaceView.title = "\(Device.usedDiskSpaceInGB) \n \(Localization.Main.Subtitles.of) \(Device.totalDiskSpaceInGB)"
         circleTotalSpaceView.percentLabelFormat = "%.f%%"
     }
 }

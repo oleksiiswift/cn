@@ -154,11 +154,11 @@ extension SimpleAssetsListViewController {
 
     private func createCellContextMenu(for asset: PHAsset, at indexPath: IndexPath) -> UIMenu {
         
-		let fullScreenPreviewAction = UIAction(title: "full screen preview", image: I.systemItems.defaultItems.arrowUP) { _ in
+		let fullScreenPreviewAction = UIAction(title: LocalizationService.Buttons.getButtonTitle(of: .fullPreview), image: I.systemItems.defaultItems.arrowUP) { _ in
 			self.showFullScreenAssetPreviewAndFocus(at: indexPath)
         }
         
-		let deleteAssetAction = UIAction(title: "delete", image: I.systemItems.defaultItems.trashBin, attributes: .destructive) { _ in
+		let deleteAssetAction = UIAction(title: LocalizationService.Buttons.getButtonTitle(of: .delete), image: I.systemItems.defaultItems.trashBin, attributes: .destructive) { _ in
 			self.deleteSinglePhasset(at: indexPath)
         }
         
@@ -280,7 +280,7 @@ extension SimpleAssetsListViewController {
 extension SimpleAssetsListViewController {
 	
 	private func handleSelectAllButtonState() {
-		let rightButtonTitle = isSelectedAllPhassets ? "deselect all" : "select all"
+		let rightButtonTitle = LocalizationService.Buttons.getButtonTitle(of: isSelectedAllPhassets ? .deselectAll : .selectAll)
 		self.navigationBar.changeHotRightTitle(newTitle: rightButtonTitle)
 	}
 	
@@ -310,7 +310,7 @@ extension SimpleAssetsListViewController {
 				case .singleRecentlyDeletedPhotos, .singleRecentlyDeletedVideos:
 					bottomButtonView.title("recover selected (\(selectedItems.count)")
 				default:
-					bottomButtonView.title("delete selected (\(selectedItems.count))")
+					bottomButtonView.title("\(LocalizationService.Buttons.getButtonTitle(of: .deleteSelected)) (\(selectedItems.count))")
 			}
 			
 			U.animate(0.35) {
@@ -429,7 +429,7 @@ extension SimpleAssetsListViewController {
 									  rightBarButtonImage: nil,
 									  contentType: contentType,
 									  leftButtonTitle: nil,
-									  rightButtonTitle: isSelectedAllPhassets ? "deselect all" : "select all")
+									  rightButtonTitle: LocalizationService.Buttons.getButtonTitle(of: isSelectedAllPhassets ? .deselectAll : .selectAll))
 	}
 	
 	private func setupDelegate() {
