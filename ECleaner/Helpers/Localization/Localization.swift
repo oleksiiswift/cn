@@ -10,61 +10,62 @@ import Foundation
 typealias L = Localization
 struct Localization {
 	
-	static var empty: String = ""
+	static var empty = ""
 	static var dash = "-"
 	static var none = "none"
+	static var replacingString = "%@"
 	
 	struct Service {
 		
-		static let appName = U.appName
+		static let appName = U.appName.localized()
 	}
 	
 	struct Permission {
 		
 		struct Title {
-			static var permission = "Permission"
-			static var permissionRequest = "Permission Request"
+			static var permission = "Permission".localized()
+			static var permissionRequest = "Permission Request".localized()
 		}
 		
 		struct Subtitle {
-			static var denied = "denied!"
+			static var denied = "denied!".localized()
 		}
 		
 		struct Name {
-			static var notification = "Notification"
-			static var photoLibrary = "Photo Library"
-			static var contacts = "Contacts"
-			static var tracking = "Tracking"
-			static var libraryContacts = "Photo Library & Contacts"
+			static var notification = "Notification".localized()
+			static var photoLibrary = "Photo Library".localized()
+			static var contacts = "Contacts".localized()
+			static var tracking = "Tracking".localized()
+			static var libraryContacts = "Photo Library & Contacts".localized()
 		}
 		
 		struct Description {
-			static var notification = "Allow application recieve notification."
-			static var photoLibrary = "Access for search duplicated, simmilar photos and video in your gallery."
-			static var contacts = "Access for your Contacts and phones, delete, merge and clean Contacts."
-			static var tracking = "Allow to access app related data."
-			static var libraryContacts = "Allow access to Contacts and Photo Library."
+			static var notification = "Allow application recieve notification.".localized()
+			static var photoLibrary = "Access for search duplicated, simmilar photos and video in your gallery.".localized()
+			static var contacts = "Access for your Contacts and phones, delete, merge and clean Contacts.".localized()
+			static var tracking = "Allow to access app related data.".localized()
+			static var libraryContacts = "Allow access to Contacts and Photo Library.".localized()
 		}
 		
 		struct AlertService {
 			
 			struct Title {
-				static var permissionDenied = "Permission Denied!"
-				static var permissionAllowed = "Permission Alowed!"
-				static var appTrack = "Allow App to Request to Track!"
-				static var onePermissionRule = "Allow Permission!"
+				static var permissionDenied = "Permission Denied!".localized()
+				static var permissionAllowed = "Permission Alowed!".localized()
+				static var appTrack = "Allow App to Request to Track!".localized()
+				static var onePermissionRule = "Allow Permission!".localized()
 			}
 			
 			struct Description {
-				static var openSettings = "Please, go to Settings for allow/denied permission."
-				static var allowContactsAndPhoto = "\(Service.appName) does not have acces to Photo Library and Contacts. Please, allow the application access to your data for use Deep Clean Feature."
-				static var appTrackDescription = "Allow app to ask tot track your activity accross other companies apps and websites."
-				static var onePermissionRule = "Please allow at least one permission (Photo Library or Contacts) to use app."
+				static var openSettings = "Please, go to Settings for allow/denied permission.".localized()
+				static var allowContactsAndPhoto = "%@ does not have acces to Photo Library and Contacts. Please, allow the application access to your data for use Deep Clean Feature.".localized().replacingOccurrences(of: L.replacingString, with: Service.appName)
+				static var appTrackDescription = "Allow app to ask tot track your activity accross other companies apps and websites.".localized()
+				static var onePermissionRule = "Please allow at least one permission (Photo Library or Contacts) to use app.".localized()
 			}
 			
 			struct Restricted {
-				static var contacts = "\(Service.appName) does not have access to contacts. Please, allow the application to access to your contacts."
-				static var photoLibrary = "\(Service.appName) does not have access to Photo Library. Please, allow the application to access to your Photo Library."
+				static var contacts = "%@ does not have access to contacts. Please, allow the application to access to your contacts.".localized().replacingOccurrences(of: L.replacingString, with: Service.appName)
+				static var photoLibrary = "%@ does not have access to Photo Library. Please, allow the application to access to your Photo Library.".localized().replacingOccurrences(of: L.replacingString, with: Service.appName)
 			}
 		}
 	}
@@ -72,392 +73,402 @@ struct Localization {
 	struct Purchase {
 		
 		struct Title {
-			static let restoreFail = "Restore failed"
-			static let nothingRestore = "Nothing to restore"
-			static let purchaseRestored = "Restore completed."
-			static let congratulation = "Congratulation!"
+			static let restoreFail = "Restore failed".localized()
+			static let nothingRestore = "Nothing to restore".localized()
+			static let purchaseRestored = "Restore completed.".localized()
+			static let congratulation = "Congratulation!".localized()
 		}
 		
 		struct Message {
-			static let purchaseRestored = "Restore completed."
-			static let restoreFailed = "Please try restore later or contact support"
-			static let expire = "Product is expired since"
-			static let noPreviousPurchse = "No previous purchases were found"
-			static let cantRestore = "Purchases can't restored. Product is expired since"
-			static let noReciept = "Error. No receipt data. Try again."
-			static let network = "Network error while verifying receipt"
-			static let verification = "Error. Receipt verification failed. Try again."
-			static let nothing = "Nothing to restore. No previous purchases were found."
+			static let purchaseRestored = "Restore completed.".localized()
+			static let restoreFailed = "Please try restore later or contact support".localized()
+			static let expire = "Product is expired since".localized()
+			static let noPreviousPurchse = "No previous purchases were found".localized()
+			static let cantRestore = "Purchases can't restored. Product is expired since".localized()
+			static let noReciept = "Error. No receipt data. Try again.".localized()
+			static let network = "Network error while verifying receipt".localized()
+			static let verification = "Error. Receipt verification failed. Try again.".localized()
+			static let nothing = "Nothing to restore. No previous purchases were found.".localized()
 		}
 		
 		struct Subtitle {
-			static let willEnd = "Will end on"
-			static let expired = "Expired"
+			static let willEnd = "Will end on".localized()
+			static let expired = "Expired".localized()
 		}
 	}
 	
 	struct Notification {
 		struct Title {
-			static var contacts = "Clean up your contacts 🤷🏻‍♂️"
-			static var photos = "Clean Up your Photos 📷"
-			static var videos = "Clean Up Your Videos 🎥"
-			static var deepClean = "Free Up Storage With Deep Clean 🧹"
-			static var storage =  "Clean Up Storage ☁️"
+			static var contacts = "Clean up your contacts 🤷🏻‍♂️".localized()
+			static var photos = "Clean Up your Photos 📷".localized()
+			static var videos = "Clean Up Your Videos 🎥".localized()
+			static var deepClean = "Free Up Storage With Deep Clean 🧹".localized()
+			static var storage =  "Clean Up Storage ☁️".localized()
 		}
 		
 		struct Subtitle {}
 		
 		struct Body {
-			static var contacts = "Anazlize and delete empty and duplicated contacts"
-			static var photos = "Analize photo data for similar and duplicateds"
-			static var videos = "Analize video data for similar and duplicateds"
-			static var deepClean = "Analize your photo and video, contacts"
-			static var storage =  "Delete Your duplicated and similar photos and videos. Clean contacts"
+			static var contacts = "Anazlize and delete empty and duplicated contacts".localized()
+			static var photos = "Analize photo data for similar and duplicateds".localized()
+			static var videos = "Analize video data for similar and duplicateds".localized()
+			static var deepClean = "Analize your photo and video, contacts".localized()
+			static var storage =  "Delete Your duplicated and similar photos and videos. Clean contacts".localized()
 		}
 	}
 	
 	struct Standart {
 		
 		struct Buttons {
-			static var allowed = "Allowed"
-			static var `continue` = "Continue"
-			static var denied = "Denied"
-			static var ok = "OK"
-			static var cancel = "Cancel"
-			static var settings = "Settings"
-			static var delete = "Delete"
-			static var stop = "Stop"
-			static var exit = "Exit"
-			static var share = "Share"
-			static var save = "Save"
-			static var selectAll = "Select All"
-			static var deselectAll = "Deselect All"
-			static var select = "Select"
-			static var deselect = "Deselect"
-			static var merge = "Merge"
-			static var changeLauout = "Change Layout"
-			static var edit = "Edit"
-			static var export = "Export"
-			static var fullScreenPreview = "Full Screen Preview"
-			static var deleteSelected = "Delete Selected"
-			static var setAsBest = "Set as Best"
-			static var mergeSelected = "Merge Selected:"
-			static var compress = "Compress:"
-			static var submit = "Submit"
-			static var resetDefault = "Reset to Default"
-			static var removeAudio = "Remove Audio"
-			static var origin = "origin"
-			static var manual = "manual"
+			static var allowed = "Allowed".localized()
+			static var `continue` = "Continue".localized()
+			static var denied = "Denied".localized()
+			static var ok = "OK".localized()
+			static var cancel = "Cancel".localized()
+			static var settings = "Settings".localized()
+			static var delete = "Delete".localized()
+			static var stop = "Stop".localized()
+			static var exit = "Exit".localized()
+			static var share = "Share".localized()
+			static var save = "Save".localized()
+			static var selectAll = "Select All".localized()
+			static var deselectAll = "Deselect All".localized()
+			static var select = "Select".localized()
+			static var deselect = "Deselect".localized()
+			static var merge = "Merge".localized()
+			static var changeLauout = "Change Layout".localized()
+			static var edit = "Edit".localized()
+			static var export = "Export".localized()
+			static var fullScreenPreview = "Full Screen Preview".localized()
+			static var deleteSelected = "Delete Selected".localized()
+			static var setAsBest = "Set as Best".localized()
+			static var mergeSelected = "Merge Selected:".localized()
+			static var compress = "Compress:".localized()
+			static var submit = "Submit".localized()
+			static var resetDefault = "Reset to Default".localized()
+			static var removeAudio = "Remove Audio".localized()
+			static var origin = "origin".localized()
+			static var manual = "manual".localized()
 		}
 	}
 	
 	struct Settings {
 		
 		struct Title {
-			static var premium = "Premium"
-			static var restore = "Restore Purchase"
-			static var subscription = "Subscription"
-			static var largeVideo = "Large Video Size"
-			static var storage = "Storage"
-			static var permission = "Permission"
-			static var support = "Support"
-			static var share = "Share App"
-			static var rateUS = "Rate Us"
-			static let privacy = "Privacy Policy"
-			static let terms = "Terms Of Use"
-			static let videoCompression = "Video Comptes"
+			static var premium = "Premium".localized()
+			static var restore = "Restore Purchase".localized()
+			static var subscription = "Subscription".localized()
+			static var largeVideo = "Large Video Size".localized()
+			static var storage = "Storage".localized()
+			static var permission = "Permission".localized()
+			static var support = "Support".localized()
+			static var share = "Share App".localized()
+			static var rateUS = "Rate Us".localized()
+			static let privacy = "Privacy Policy".localized()
+			static let terms = "Terms Of Use".localized()
+			static let videoCompression = "Video Comptes".localized()
 		}
 		
 		struct Subtitle {
-			static let share = "Share %@ with your friends".localized().replacingOccurrences(of: "%@", with: "app name")
-			static let facebook = "Facebook"
-			static let telegram = "Telegram"
-			static let email = "Email"
+			static let share = "Share %@ with your friends".localized().replacingOccurrences(of: L.replacingString, with: Service.appName)
+			static let facebook = "Facebook".localized()
+			static let telegram = "Telegram".localized()
+			static let email = "Email".localized()
 		}
 	}
 	
 	struct Main {
 		
 		struct Title {
-			static let settings = "Settings"
-			static let permission = "Permissions"
-			static let photoTitle = "Photo"
-			static let videoTitle = "Video"
-			static let contactsTitle = "Contacts"
-			static let deepClean = "Deep Clean"
-			static let subscription = "Subscription"
-			static let onboarding = "Onboarding"
-			static let main = "Main"
-			static let videoCompresion = "Video Compression"
+			static let settings = "Settings".localized()
+			static let permission = "Permissions".localized()
+			static let photoTitle = "Photo".localized()
+			static let videoTitle = "Video".localized()
+			static let contactsTitle = "Contacts".localized()
+			static let deepClean = "Deep Clean".localized()
+			static let subscription = "Subscription".localized()
+			static let onboarding = "Onboarding".localized()
+			static let main = "Main".localized()
+			static let videoCompresion = "Video Compression".localized()
 		}
 		
 		struct MediaCcontentTitle {
-			static let similarPhoto = "Similar Photo"
-			static let duplicatePhoto = "Duplicate Photo"
-			static let singleScreenShots = "Screenshots"
-			static let singleLivePhotos = "Live Photo"
-			static let similarLivePhoto = "Similar Live Photo"
-			static let similarSelfies = "Similar Selfies"
-			static let largeVideo = "Large Video"
-			static let duplicatedVideos = "Duplicated Video"
-			static let similarVideo = "Similar Video"
-			static let singleScreenRecordings = "Screen Recordings"
-			static let compression = "Video Compression"
-			static let allContacts = "All Contacts"
-			static let emptyContacts = "Empty Contacts"
-			static let duplicatedContacts = "Duplicated Contacts"
-			static let duplicatedPhoneNumbers = "Duplicated Numbers"
-			static let duplucatedEmails = "Duplicated Emails"
-			static let backup = "Contacts Backup"
+			static let similarPhoto = "Similar Photo".localized()
+			static let duplicatePhoto = "Duplicate Photo".localized()
+			static let singleScreenShots = "Screenshots".localized()
+			static let singleLivePhotos = "Live Photo".localized()
+			static let similarLivePhoto = "Similar Live Photo".localized()
+			static let similarSelfies = "Similar Selfies".localized()
+			static let largeVideo = "Large Video".localized()
+			static let duplicatedVideos = "Duplicated Video".localized()
+			static let similarVideo = "Similar Video".localized()
+			static let singleScreenRecordings = "Screen Recordings".localized()
+			static let compression = "Video Compression".localized()
+			static let allContacts = "All Contacts".localized()
+			static let emptyContacts = "Empty Contacts".localized()
+			static let duplicatedContacts = "Duplicated Contacts".localized()
+			static let duplicatedPhoneNumbers = "Duplicated Numbers".localized()
+			static let duplucatedEmails = "Duplicated Emails".localized()
+			static let backup = "Contacts Backup".localized()
 		}
 		
 		struct Subtitles {
-			static let categories = "Categories:"
-			static let of = "of"
-			static let searchHere = "  search contacts here..."
-			static let from = "From:"
-			static let to = "To:"
+			static let categories = "Categories:".localized()
+			static let of = "of".localized()
+			static let searchHere = "  search contacts here...".localized()
+			static let from = "From:".localized()
+			static let to = "To:".localized()
 			static let best = "best"
 			static let new = "new"
-			static let allAnalyzed = "All Data Analyzed"
-			static let files = "files"
-			static let memmory = "memmory"
-			static let keepOriginResolution = "keep origin resolution"
-			static let originResolution = "origin resolution"
+			static let allAnalyzed = "All Data Analyzed".localized()
+			static let files = "files".localized()
+			static let memmory = "memmory".localized()
+			static let keepOriginResolution = "keep origin resolution".localized()
+			static let originResolution = "origin resolution".localized()
 		}
 		
 		struct HeaderTitle {
-			static let compressionSettings = "Compression Settings"
-			static let selectCompressionSettings = "select compression settings"
-			static let selectFileFormat = "Select Format of File"
-			static let sinceLastClean = "Since the Last Cleaning"
-			static let selectLower = "Select Lower Date"
-			static let selectUpper = "Select Upper Date"
-			static let selectLargeVideo = "Select Large Video Size"
-			static let permissionRequest = "Permission Request"
+			static let compressionSettings = "Compression Settings".localized()
+			static let selectCompressionSettings = "select compression settings".localized()
+			static let selectFileFormat = "Select Format of File".localized()
+			static let sinceLastClean = "Since the Last Cleaning".localized()
+			static let selectLower = "Select Lower Date".localized()
+			static let selectUpper = "Select Upper Date".localized()
+			static let selectLargeVideo = "Select Large Video Size".localized()
+			static let permissionRequest = "Permission Request".localized()
 			
-			static let resolution = "Resolution"
+			static let resolution = "Resolution".localized()
 			static let fps = "FPS"
-			static let videoBitrate = "Video Bitrate"
-			static let keyframe = "Interval Between Keyframe"
-			static let audioBitrate = "Audio Bitrate"
+			static let videoBitrate = "Video Bitrate".localized()
+			static let keyframe = "Interval Between Keyframe".localized()
+			static let audioBitrate = "Audio Bitrate".localized()
+			
+			static let videoPreview = "Video Preview".localized()
+			static let lowQuality = "Low Quality".localized()
+			static let mediumQuality = "Medium Quality".localized()
+			static let highQuality = "Hight Quality".localized()
+			static let customSettings = "Custom Settings".localized()
 		}
 		
 		struct Descriptions {
-			static let permissionDescription = "These are the permissions the app requires to work properly. Please see description for each permission."
-			static let permissionInfo = "Permissions are necessary for the application to work and perform correctly."
-			static let resolutionDescription = "if set to a lower value, the picture will be more pixelated and the file size will be smaller"
-			static let fpsDescription = "a lower framerate means the video will be less smooth and the file size will be significantly smaller"
-			static let videoBitrateDescription = "if set to a lower value, it will reduce video quality and considerably decrease file size"
-			static let keyframeDescription = "if set to a higher value, video quality and size will decrease, it is recommended to choose higher values if your video has no dynamic scenes"
-			static let audioBitrateDescription = "if set to a lower value, the audio quality will deteriorate and the file size will be insignificantly reduced"
+			static let permissionDescription = "These are the permissions the app requires to work properly. Please see description for each permission.".localized()
+			static let permissionInfo = "Permissions are necessary for the application to work and perform correctly.".localized()
+			static let resolutionDescription = "if set to a lower value, the picture will be more pixelated and the file size will be smaller".localized()
+			static let fpsDescription = "a lower framerate means the video will be less smooth and the file size will be significantly smaller".localized()
+			static let videoBitrateDescription = "if set to a lower value, it will reduce video quality and considerably decrease file size".localized()
+			static let keyframeDescription = "if set to a higher value, video quality and size will decrease, it is recommended to choose higher values if your video has no dynamic scenes".localized()
+			static let audioBitrateDescription = "if set to a lower value, the audio quality will deteriorate and the file size will be insignificantly reduced".localized()
+			static let shortAudioDescriptionHigh = "high-quality".localized()
+			static let shortAudioDescriptionMedium = "medium quality".localized()
+			static let shortAudioDescriptionMid = "mid-range quality".localized()
+			static let shortAudioDescriptionLow = "low-quality".localized()
 		}
 		
 		struct ProcessingState {
-			static let prepareForScanning = "Prepare for scanning"
-			static let analyzingWait = "Analyzing, please wait"
-			static let compare = "Compare results"
-			static let anayzing = "analyzing"
-			static let searchingComplete = "Searching complete!"
+			static let prepareForScanning = "Prepare for scanning".localized()
+			static let analyzingWait = "Analyzing, please wait".localized()
+			static let compare = "Compare results".localized()
+			static let anayzing = "analyzing".localized()
+			static let searchingComplete = "Searching complete!".localized()
 			
 			struct ByGrouping {
-				static let similarGroups = "similar groups"
-				static let duplicatedGroups = "duplicated groups"
-				static let duplicatedCotactsGroups = "duplicated contacts groups"
+				static let similarGroups = "similar groups".localized()
+				static let duplicatedGroups = "duplicated groups".localized()
+				static let duplicatedCotactsGroups = "duplicated contacts groups".localized()
 				///
-				static let files = "files"
-				static let contacts = "contacts"
+				static let files = "files".localized()
+				static let contacts = "contacts".localized()
 				///
-				static let selectedPhoto = "selected photos"
-				static let selectedVideo = "selected videos"
-				static let selectedContacts = "selected contacts"
+				static let selectedPhoto = "selected photos".localized()
+				static let selectedVideo = "selected videos".localized()
+				static let selectedContacts = "selected contacts".localized()
 			}
 			
 			struct ByEmptyState {
-				static let emptySimilarPhoto = "no similiar photos"
-				static let emptyDuplicatedPhoto = "no duplicated photos"
-				static let emptyScreenShots = "no screen shots"
-				static let emptyLivePhoto = "no live photos"
-				static let emptySimilarLivePhotos = "no similar live photos"
-				static let emptySimilarSelfies = "no similar selfies"
-				static let emptyLargeVideos = "no large videos"
-				static let noDuplicatedVideo = "no duplicated videos"
-				static let noSimilarVideo = "no similar videos"
-				static let noScreenRecording = "no screen recordings"
-				static let noContacts = "no contacts"
-				static let noContactsToClean = "no contacts to clean"
-				static let noContent = "no content"
-				static let missingNumber = "missing number"
-				static let missingName = "missing name"
-				static let missingAll = "all data missing"
+				static let emptySimilarPhoto = "no similiar photos".localized()
+				static let emptyDuplicatedPhoto = "no duplicated photos".localized()
+				static let emptyScreenShots = "no screen shots".localized()
+				static let emptyLivePhoto = "no live photos".localized()
+				static let emptySimilarLivePhotos = "no similar live photos".localized()
+				static let emptySimilarSelfies = "no similar selfies".localized()
+				static let emptyLargeVideos = "no large videos".localized()
+				static let noDuplicatedVideo = "no duplicated videos".localized()
+				static let noSimilarVideo = "no similar videos".localized()
+				static let noScreenRecording = "no screen recordings".localized()
+				static let noContacts = "no contacts".localized()
+				static let noContactsToClean = "no contacts to clean".localized()
+				static let noContent = "no content".localized()
+				static let missingNumber = "missing number".localized()
+				static let missingName = "missing name".localized()
+				static let missingAll = "all data missing".localized()
 			}
 			
 			struct DeepCleanProcessingTitle {
-				static let photoClean = "deleting photo (video):"
-				static let emptyContactsClean = "removing empty contacts:"
-				static let contactsMergeClean = "merge selecting contacts:"
-				static let contactsDeleteClean = "deleting selected contacts:"
-				static let prepareClen = "prepare cleaning"
+				static let photoClean = "deleting photo (video):".localized()
+				static let emptyContactsClean = "removing empty contacts:".localized()
+				static let contactsMergeClean = "merge selecting contacts:".localized()
+				static let contactsDeleteClean = "deleting selected contacts:".localized()
+				static let prepareClen = "prepare cleaning".localized()
 			}
 			
 			struct DeepCleanButtonState {
-				static let startDeepClean = "start deep clean"
-				static let startAnalyzing = "start analyzing"
-				static let stopAnalyzing = "stop analyzing"
-				static let startCleaning = "start cleaning"
+				static let startDeepClean = "start deep clean".localized()
+				static let startAnalyzing = "start analyzing".localized()
+				static let stopAnalyzing = "stop analyzing".localized()
+				static let startCleaning = "start cleaning".localized()
 			}
 		}
 	
 		struct BannerHelpers {
 			
 			struct Title {
-				static let videoTitle = "Compress Videos"
-				static let contactTitle = "Sync Contacts"
+				static let videoTitle = "Compress Videos".localized()
+				static let contactTitle = "Sync Contacts".localized()
 			}
 			
 			struct Subtitle {
-				static let videoSubtitle = "Optimaze your IPhone data"
-				static let contactsSubtitle = "Optimaze your IPhone data"
+				static let videoSubtitle = "Optimaze your IPhone data".localized()
+				static let contactsSubtitle = "Optimaze your IPhone data".localized()
 			}
 			
 			struct Description {
-				static let videoDescription = "Compression Level"
+				static let videoDescription = "Compression Level".localized()
 				static let videoDescriptionOne = "50x"
-				static let videoDescriptionTwo = "Ultra"
+				static let videoDescriptionTwo = "Ultra".localized()
 				
-				static let contactsDescription = "Save Your Contacts"
-				static let contactsDescriptionOne = "With"
-				static let contactsDescriptionTwo = "Back-Up"
+				static let contactsDescription = "Save Your Contacts".localized()
+				static let contactsDescriptionOne = "With".localized()
+				static let contactsDescriptionTwo = "Back-Up".localized()
 			}
 		}
 	}
 	
 	struct AlertController {
 		struct AlertTitle {
-			static var deepCleanProcessing = "Deep Clean processing"
-			static var compressionComplete = "Compression Complete!"
-			static var mergingContacts = "Merging Contacts"
-			static var compressing = "Compressing"
-			static var updatingContacts = "Updating Contacts"
-			static var selectingContactsWait = "Selecting Contacts, wait"
-			static var selectingVideosWait = "Selecting Videos, wait"
-			static var selectingPhotosWait = "Selecting Photos, wait"
-			static var prepareSearching = "Prepare Searching, wait"
-			static var searchComplete = "Search complete!"
-			static var deletingContact = "Deleting Contacts"
-			static var deletingVideo = "Deleting Videos"
-			static var deletingPhoto = "Deletting Photos"
+			static var deepCleanProcessing = "Deep Clean processing".localized()
+			static var compressionComplete = "Compression Complete!".localized()
+			static var mergingContacts = "Merging Contacts".localized()
+			static var compressing = "Compressing".localized()
+			static var updatingContacts = "Updating Contacts".localized()
+			static var selectingContactsWait = "Selecting Contacts, wait".localized()
+			static var selectingVideosWait = "Selecting Videos, wait".localized()
+			static var selectingPhotosWait = "Selecting Photos, wait".localized()
+			static var prepareSearching = "Prepare Searching, wait".localized()
+			static var searchComplete = "Search complete!".localized()
+			static var deletingContact = "Deleting Contacts".localized()
+			static var deletingVideo = "Deleting Videos".localized()
+			static var deletingPhoto = "Deletting Photos".localized()
 			static var deletePhoto = "_deletePhoto".localized()
 			static var deleteVideo = "_deleteVideo".localized()
 			static var deleteContact = "_deleteContact".localized()
-			static var mergeContacts = "Merge Contacts"
-			static var mergeCompleted = "Merge Completed!"
-			static var deleteContactsCompleted = "Delete Completed!"
-			static var completeSuccessfully = "Complete Successfully!"
-			static var operationIsCancel = "Operation is Canceling!"
-			static var stopSearch = "Stop search process?"
-			static var notice = "Notice!"
+			static var mergeContacts = "Merge Contacts".localized()
+			static var mergeCompleted = "Merge Completed!".localized()
+			static var deleteContactsCompleted = "Delete Completed!".localized()
+			static var completeSuccessfully = "Complete Successfully!".localized()
+			static var operationIsCancel = "Operation is Canceling!".localized()
+			static var stopSearch = "Stop search process?".localized()
+			static var notice = "Notice!".localized()
 		}
 		
 		struct AlertMessage {
-			static var compresssionComplete = "Video compression is successfully completed! filesize: "
+			static var compresssionComplete = "Video compression is successfully completed! filesize: ".localized()
 			static var deletePhoto = "_deletingPhotos".localized()
 			static var deleteVideo = "_deletingVideos".localized()
 			static var deleteContact = "_deletingContacts".localized()
-			static var mergeContacts = "Thess contacts will be merged. After the merging process is completed, unnecessary contacts will be automatically deleted."
-			static var mergeCompleted = "Merge contacts successfully completed!"
-			static var deleteContactsCompleted = "Delete successfully completed!"
-			static var deepCleanComplete = "Deep Clean processing complete successfully!"
-			static var deepCleanCancel = "Deep Clean Processing is Canceled!"
-			static var resetDeepCleanSearch = "This will be reset all searching process!"
-			static var stopSearchingProcess = "This will be stop searching process!"
-			static var stopDeepCleanDeleteProcess = "This will be stop deleting process and reset all searching data!"
-			static var resetResults = "By quiting all search results will be lose!"
+			static var mergeContacts = "Thess contacts will be merged. After the merging process is completed, unnecessary contacts will be automatically deleted.".localized()
+			static var mergeCompleted = "Merge contacts successfully completed!".localized()
+			static var deleteContactsCompleted = "Delete successfully completed!".localized()
+			static var deepCleanComplete = "Deep Clean processing complete successfully!".localized()
+			static var deepCleanCancel = "Deep Clean Processing is Canceled!".localized()
+			static var resetDeepCleanSearch = "This will be reset all searching process!".localized()
+			static var stopSearchingProcess = "This will be stop searching process!".localized()
+			static var stopDeepCleanDeleteProcess = "This will be stop deleting process and reset all searching data!".localized()
+			static var resetResults = "By quiting all search results will be lose!".localized()
 		}
 	}
 	
 	struct ErrorsHandler {
 		
 		struct Title {
-			static var emptyResults = "Sorry, no content)"
-			static var error = "Error!"
-			static var fatalError = "Fatal Error!"
-			static var atention = "Atention!"
-			static var notice = "Notice!"
+			static var emptyResults = "Sorry, no content)".localized()
+			static var error = "Error!".localized()
+			static var fatalError = "Fatal Error!".localized()
+			static var atention = "Atention!".localized()
+			static var notice = "Notice!".localized()
 		}
 		
 		struct EmptyResultsError {
-			static var photoLibrararyIsEmpty = "Photo Library is empty."
-			static var videoLibrararyIsEmpty = "Video Library is empty."
-			static var similarPhotoIsEmpty = "No similar photo."
-			static var duplicatedPhotoIsEmpty = "No duplicated photo."
-			static var screenShotsIsEmpty = "No screenshots."
-			static var similarSelfiesIsEmpty = "No similar selfies."
-			static var livePhotoIsEmpty = "No live photo."
-			static var similarLivePhotoIsEmpty = "No similar live photo."
-			static var largeVideoIsEmpty = "No large video."
-			static var duplicatedVideoIsEmpty = "No duplucated video."
-			static var similarVideoIsEmpty = "No similar video."
-			static var screenRecordingIsEmpty = "No screen recording."
-			static var contactsIsEmpty = "No Contacts found."
-			static var emptyContactsIsEmpty = "No empty contacts."
-			static var duplicatedNamesIsEmpty = "No duplicated contacts."
-			static var duplicatedNumbersIsEmpty = "No duplicated phone numbers found."
-			static var duplicatedEmailsIsEmpty = "No duplicated email found."
-			static var deepCleanResultsIsEmpty = "Deep Clean search complete with with no similar or duplicated data found."
+			static var photoLibrararyIsEmpty = "Photo Library is empty.".localized()
+			static var videoLibrararyIsEmpty = "Video Library is empty.".localized()
+			static var similarPhotoIsEmpty = "No similar photo.".localized()
+			static var duplicatedPhotoIsEmpty = "No duplicated photo.".localized()
+			static var screenShotsIsEmpty = "No screenshots.".localized()
+			static var similarSelfiesIsEmpty = "No similar selfies.".localized()
+			static var livePhotoIsEmpty = "No live photo.".localized()
+			static var similarLivePhotoIsEmpty = "No similar live photo.".localized()
+			static var largeVideoIsEmpty = "No large video.".localized()
+			static var duplicatedVideoIsEmpty = "No duplucated video.".localized()
+			static var similarVideoIsEmpty = "No similar video.".localized()
+			static var screenRecordingIsEmpty = "No screen recording.".localized()
+			static var contactsIsEmpty = "No Contacts found.".localized()
+			static var emptyContactsIsEmpty = "No empty contacts.".localized()
+			static var duplicatedNamesIsEmpty = "No duplicated contacts.".localized()
+			static var duplicatedNumbersIsEmpty = "No duplicated phone numbers found.".localized()
+			static var duplicatedEmailsIsEmpty = "No duplicated email found.".localized()
+			static var deepCleanResultsIsEmpty = "Deep Clean search complete with with no similar or duplicated data found.".localized()
 		}
 		
 		struct CompressionError {
-			static var cantLoadFile = "Can't load video file."
-			static var compressionFailed = "Video file compression failed."
-			static var resolutionError = "Resolution saved in settings are bigger the origin video file resolution."
-			static var savedError = "Can't save compressed video file."
-			static var noVideoFile = "No video file."
-			static var audioError = "Can't remove audio component from vide file."
-			static var isCanceled = "Compression operation is canceled"
+			static var cantLoadFile = "Can't load video file.".localized()
+			static var compressionFailed = "Video file compression failed.".localized()
+			static var resolutionError = "Resolution saved in settings are bigger the origin video file resolution.".localized()
+			static var savedError = "Can't save compressed video file.".localized()
+			static var noVideoFile = "No video file.".localized()
+			static var audioError = "Can't remove audio component from vide file.".localized()
+			static var isCanceled = "Compression operation is canceled".localized()
 		}
 		
 		struct DeepCleanError {
-			static var completeWithError = "Deep Clean processing complete with error!"
+			static var completeWithError = "Deep Clean processing complete with error!".localized()
 		}
 		
-		struct DeeleteError {
-			static var deleteContactsError = "There is an error deleting contact(s)."
-			static var deletePhotoError = "There is an error deleting photo(s)."
-			static var deleteVideoError = "There is and error deleting video(s)."
+		struct DeleteError {
+			static var deleteContactsError = "There is an error deleting contact(s).".localized()
+			static var deletePhotoError = "There is an error deleting photo(s).".localized()
+			static var deleteVideoError = "There is and error deleting video(s).".localized()
 		}
 		
 		struct MergeError {
-			static var errorMergeContact = "Error merge contacts."
-			static var mergeContactsError = "Contacts merge with errors!"
+			static var errorMergeContact = "Error merge contacts.".localized()
+			static var mergeContactsError = "Contacts merge with errors!".localized()
 		}
 		
 		struct Errors {
-			static var minimumPickerError = "Cannot set a maximum date that is equal or less than the minimum date."
-			static var errorLoadContact = "Error loading contacts!"
-			static var errorCreateExpoert = "Can't create export file!"
+			static var minimumPickerError = "Cannot set a maximum date that is equal or less than the minimum date.".localized()
+			static var errorLoadContact = "Error loading contacts!".localized()
+			static var errorCreateExpoert = "Can't create export file!".localized()
 		}
 		
 		struct PurchaseError {
 
-				static var defaultPurchseError = "Purchase Error!"
-				static var purchaseIsCanceled = "Purchase is canceled!"
-				static var refundsCanceled = "Refaund is canceled!"
-				static var purchaseIsPending = "Purchase is pending!"
-				static var verificationError = "Verification error!"
-				static var error = "App Store purchase error!"
-				static var productsError = "The products is not available on the store"
-				static var networkError = "A network error occurred when communicating with the App Store"
-				static var systemError = "Failure due to an unknown, unrecoverable error."
-				static var userCancelled = "The action failed because purchse did not complete some necessary interaction."
-				static var notAvailableInStorefront = "The product is not available in the current storefront."
-				static var unknown = "Error, trying again at a later time will work."
-				static var restorePurchseFailed = "Restore purchase failed"
+				static var defaultPurchseError = "Purchase Error!".localized()
+				static var purchaseIsCanceled = "Purchase is canceled!".localized()
+				static var refundsCanceled = "Refaund is canceled!".localized()
+				static var purchaseIsPending = "Purchase is pending!".localized()
+				static var verificationError = "Verification error!".localized()
+				static var error = "App Store purchase error!".localized()
+				static var productsError = "The products is not available on the store".localized()
+				static var networkError = "A network error occurred when communicating with the App Store".localized()
+				static var systemError = "Failure due to an unknown, unrecoverable error.".localized()
+				static var userCancelled = "The action failed because purchse did not complete some necessary interaction.".localized()
+				static var notAvailableInStorefront = "The product is not available in the current storefront.".localized()
+				static var unknown = "Error, trying again at a later time will work.".localized()
+				static var restorePurchseFailed = "Restore purchase failed".localized()
 			}
-		
 	}
 }
 
+//		MARK: - not translated contantValues -
 extension Localization {
 	
 	struct ServiceValues {

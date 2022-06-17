@@ -377,7 +377,7 @@ extension DateSelectorViewController: Themeble {
 			}
 		}
 		
-		customNavBar.setUpNavigation(title: navigationText.uppercased(), rightImage: I.systemItems.navigationBarItems.dissmiss, targetImageScaleFactor: 0.4)
+		customNavBar.setUpNavigation(title: navigationText, rightImage: I.systemItems.navigationBarItems.dissmiss, targetImageScaleFactor: 0.4)
 		customNavBar.topShevronEnable = true
 	}
 	

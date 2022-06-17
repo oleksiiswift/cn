@@ -142,11 +142,11 @@ extension ErrorHandler {
 	public func deleteErrorForKey(_ error: DeleteError) -> String {
 		switch error {
 			case .errorDeleteContacts:
-				return Localization.ErrorsHandler.DeeleteError.deleteContactsError
+				return Localization.ErrorsHandler.DeleteError.deleteContactsError
 			case .errorDeletePhoto:
-				return Localization.ErrorsHandler.DeeleteError.deletePhotoError
+				return Localization.ErrorsHandler.DeleteError.deletePhotoError
 			case .errorDeleteVideo:
-				return Localization.ErrorsHandler.DeeleteError.deleteVideoError
+				return Localization.ErrorsHandler.DeleteError.deleteVideoError
 		}
 	}
 }

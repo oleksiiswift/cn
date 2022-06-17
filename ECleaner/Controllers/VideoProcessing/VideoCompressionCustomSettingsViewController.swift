@@ -650,7 +650,7 @@ extension VideoCompressionCustomSettingsViewController: Themeble {
 		mainContainerView.cornerSelectRadiusView(corners: [.topLeft, .topRight], radius: 20)
 		topShevronView.setCorner(3)
 		
-		controllerTitleTextLabel.text = Localization.Main.HeaderTitle.selectCompressionSettings.uppercased()
+		controllerTitleTextLabel.text = Localization.Main.HeaderTitle.selectCompressionSettings
 		controllerTitleTextLabel.font = FontManager.modalSettingsFont(of: .mainTitle)
 		
 		bottomButtonView.title(LocalizationService.Buttons.getButtonTitle(of: .submit).uppercased())

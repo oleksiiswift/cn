@@ -76,8 +76,6 @@ class Constants {
 				static let emptyName = "com.cleaner.contactsGroup.emptyName"
 				static let empty = "com.cleaner.contactsGroup.empty"
 			}
-			
-			
 		}
 		
 		struct localUserNotification {
@@ -574,4 +572,8 @@ class Constants {
             static let facebook = "Facebook"
         }
     }
+	
+	struct video {
+	
+	}
 }

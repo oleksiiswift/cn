@@ -15,7 +15,7 @@ enum MediaContentType {
     case none
     
     var navigationTitle: String {
-		return self.mediaContentTypeName.uppercased()
+		return self.mediaContentTypeName
     }
 	
 	var mediaContentTypeName: String {
