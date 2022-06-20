@@ -63,6 +63,18 @@ class Constants {
 				static let photolibrary = "com.cleaner.permission.photolibrary"
 				static let contacts = "com.cleaner.permission.contacts"
 				static let tracking = "com.cleaner.permission.tracking"
+				static let appUsage = "com.cleaner.permission.appUsage"
+				static let blank = "com.cleaner.permission.blank"
+			}
+		}
+		
+		struct contacts {
+			struct groupSorting {
+				static let name = "com.cleaner.contactsGroup.name"
+				static let phone = "com.cleaner.contactsGroup.phone"
+				static let mail = "com.cleaner.contactsGroup.mail"
+				static let emptyName = "com.cleaner.contactsGroup.emptyName"
+				static let empty = "com.cleaner.contactsGroup.empty"
 			}
 		}
 		
@@ -560,13 +572,8 @@ class Constants {
             static let facebook = "Facebook"
         }
     }
+	
+	struct video {
+	
+	}
 }
-
-
-#warning("KEYS")
-//week_cleaner
-//month_cleaner
-//year_cleaner
-
-
-//lifetime_cleaner

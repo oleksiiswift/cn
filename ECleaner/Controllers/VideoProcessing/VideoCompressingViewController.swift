@@ -150,7 +150,7 @@ extension VideoCompressingViewController {
 					}
 				}
 			} else {
-				ErrorHandler.shared.showCompressionErrorFor(.cantLoadFile) {}
+				ErrorHandler.shared.showCompressionError(.cantLoadFile)
 			}
 		}
 	}
@@ -181,7 +181,7 @@ extension VideoCompressingViewController {
 				S.lastSavedLocalIdenifier = identifier
 				self.showPHAssetCollectionController()
 			} else {
-				ErrorHandler.shared.showCompressionErrorFor(.errorSavedFile, completion: {})
+				ErrorHandler.shared.showCompressionError(.errorSavedFile)
 			}
 		}
 	}
@@ -193,7 +193,7 @@ extension VideoCompressingViewController {
 				self.navigationController?.popViewController(animated: true, completion: {
 				})
 			} else {
-				ErrorHandler.shared.showEmptySearchResultsFor(.photoLibraryIsEmpty) {
+				ErrorHandler.shared.showEmptySearchResultsFor(.videoLibrararyIsEmpty) {
 					self.navigationController?.popViewController(animated: true)
 				}
 			}
@@ -222,7 +222,7 @@ extension VideoCompressingViewController {
 	private func setupViewModel() {
 		
 		guard let phasset = self.processingPHAsset else {
-			ErrorHandler.shared.showCompressionErrorFor(.cantLoadFile) {
+			ErrorHandler.shared.showCompressionError(.cantLoadFile) {
 				self.navigationController?.popViewController(animated: false)
 			}
 			return
@@ -234,7 +234,7 @@ extension VideoCompressingViewController {
 															  .high,
 															  .custom(fps: self.customFPS,
 																	  bitrate: self.customBitrate, scale: self.customScale)],
-													  headerTitle: "compression settings",
+													  headerTitle: Localization.Main.HeaderTitle.compressionSettings,
 													  headerHeight: 15)
 		
 		let sections: [CompressingSection] = [previewSectionCell, settingsSectionsCell]
@@ -351,7 +351,7 @@ extension VideoCompressingViewController: Themeble {
 	
 	private func setupUI() {
 		
-		bottomButtonBarView.title("compress")
+		bottomButtonBarView.title(LocalizationService.Buttons.getButtonTitle(of: .compres))
 		bottomButtonBarView.setImage(I.systemItems.defaultItems.compress, with: CGSize(width: 24, height: 22))
 		
 		navigationBarHeightConstraint.constant = U.UIHelper.AppDimensions.NavigationBar.navigationBarHeight
@@ -360,7 +360,7 @@ extension VideoCompressingViewController: Themeble {
 	
 	private func setupNavigation() {
 		
-		navigationBarView.setupNavigation(title: "compressing video",
+		navigationBarView.setupNavigation(title: LocalizationService.Main.getNavigationTitle(for: .videoCompression),
 										  leftBarButtonImage: I.systemItems.navigationBarItems.back,
 										  rightBarButtonImage: nil, contentType: .none, leftButtonTitle: nil, rightButtonTitle: nil)
 	}

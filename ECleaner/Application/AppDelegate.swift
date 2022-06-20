@@ -18,7 +18,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		developmentSettings()
 		setupObserver()
 		runDevelopmentElmtn()
-//		printAllNotifications()
 
         return true
     }
@@ -97,7 +96,8 @@ extension AppDelegate {
 	}
 		
 	private func runDevelopmentElmtn() {
-		debugPrint("hello there")
+		
+			//		printAllNotifications()
 	}
 }
 

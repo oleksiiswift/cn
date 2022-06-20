@@ -76,7 +76,6 @@ class PhotoCollectionViewCell: UICollectionViewCell {
 	
     override func awakeFromNib() {
         super.awakeFromNib()
-
     }
 		
 	@IBAction func didTapShowPHassetActionButton(_ sender: Any) {
@@ -299,12 +298,12 @@ extension PhotoCollectionViewCell: Themeble {
 	}
 	
 	public func setBestView(availible: Bool = false) {
-		bestLabel.text = "best".uppercased()
+		bestLabel.text = Localization.Main.Subtitles.best.uppercased()
 		bestView.isHidden = !availible
 	}
 	
 	private func setBestViewForNewPHasset(availible: Bool = false) {
-		bestLabel.text = "new".uppercased()
+		bestLabel.text = Localization.Main.Subtitles.new.uppercased()
 		availible ? setupBestView() : ()
 		bestView.isHidden = !availible
 	}

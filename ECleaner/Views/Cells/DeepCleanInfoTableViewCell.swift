@@ -92,9 +92,9 @@ extension DeepCleanInfoTableViewCell: Themeble {
 		circleProgressView.percentLabel.font = FontManager.deepCleanScreenFont(of: .progress)
 		circleProgressView.lineWidth = U.UIHelper.AppDimensions.circleProgressInfoLineWidth
 		
-		infoTitleTextLabel.text = "All Data Analized"
-		infoTotalFilesTitleLabel.text = "FILES".uppercased()
-		totalSpaceTitleLabel.text = "Memmory".uppercased()
+		infoTitleTextLabel.text = 		Localization.Main.Subtitles.allAnalyzed
+		infoTotalFilesTitleLabel.text = Localization.Main.Subtitles.files.uppercased()
+		totalSpaceTitleLabel.text = 	Localization.Main.Subtitles.memmory.uppercased()
 		
 		infoTitleTextLabel.font = 		FontManager.deepCleanScreenFont(of: .title).monospacedDigitFont
 		totalSpaceTextLabel.font = 		FontManager.deepCleanScreenFont(of: .title).monospacedDigitFont

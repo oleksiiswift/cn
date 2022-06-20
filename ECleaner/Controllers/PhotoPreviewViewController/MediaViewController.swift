@@ -110,7 +110,6 @@ extension MediaViewController {
 	}
 }
 
-
 //		MARK: - select delegate -
 extension MediaViewController: PhotoCollectionViewCellDelegate {
 	
@@ -194,11 +193,11 @@ extension MediaViewController {
 		let setAsBestActionImage = I.systemItems.defaultItems.star.withTintColor(theme.titleTextColor).withRenderingMode(.alwaysTemplate)
 		let deleteActionImage =    I.systemItems.defaultItems.trashBin.withTintColor(theme.actionTintColor).withRenderingMode(.alwaysTemplate)
 		
-		let setAsBestAction = UIAction(title: "set as best", image: setAsBestActionImage) { _ in
+		let setAsBestAction = UIAction(title: LocalizationService.Buttons.getButtonTitle(of: .setAsBest), image: setAsBestActionImage) { _ in
 			self.setAsBest(phasset: phasset, at: indexPath)
 		}
 		
-		let deletePHAssetAction = UIAction(title: "delete", image: deleteActionImage, attributes: .destructive) { _ in
+		let deletePHAssetAction = UIAction(title: LocalizationService.Buttons.getButtonTitle(of: .delete), image: deleteActionImage, attributes: .destructive) { _ in
 			self.showConfirmDeletePHAsset(at: indexPath)
 		}
 		
@@ -258,7 +257,7 @@ extension MediaViewController {
 	
 	private func showConfirmDeletePHAsset(at indexPath: IndexPath) {
 		
-		A.deletePHAssets(of: self.contentType, of: .one) {
+		AlertManager.showDeleteAlert(with: self.contentType, of: .one) {
 			self.deletePHAsset(at: indexPath)
 		}
 	}

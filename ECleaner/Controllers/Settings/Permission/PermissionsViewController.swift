@@ -37,7 +37,7 @@ extension PermissionsViewController {
 		
 		if #available(iOS 14.5, *) {
 			if AppTrackerPermissions().notDetermined {
-				A.showApptrackerPerformAlert(at: self) {
+				AlertManager.showPermissionAlert(of: .appTracker, at: self) {
 					AppTrackerPermissions().requestForPermission { _, _ in }
 				}
 			} else {
@@ -51,7 +51,7 @@ extension PermissionsViewController {
 	private func handleAtLeastOnePermission() {
 		
 		if PhotoLibraryPermissions().notDetermined && ContactsPermissions().notDetermined || PhotoLibraryPermissions().denied && ContactsPermissions().denied {
-			A.showAtLeastOneMediaPermissionAlert(at: self)
+			AlertManager.showPermissionAlert(of: .onePermissionRule, at: self)
 		} else {
 			self.dismiss(animated: true) {
 				SettingsManager.permissions.permisssionDidShow = true
@@ -64,7 +64,7 @@ extension PermissionsViewController {
 
 		switch permission.status {
 			case .authorized, .denied:
-				A.showDeniedAlert(permission, at: self)
+				AlertManager.showPermissionAlert(of: .openSettings, at: self, for: permission)
 			case .notDetermined:
 				permission.requestForPermission { granted, error in
 					cell.setButtonState(for: permission)
@@ -149,7 +149,7 @@ extension PermissionsViewController: Themeble {
 		self.view.layoutIfNeeded()
 		
 		if !fromRootViewController {
-			navigationBar.setupNavigation(title: "permissions",
+			navigationBar.setupNavigation(title: self.permissionViewModel.title,
 										  leftBarButtonImage: I.systemItems.navigationBarItems.back,
 										  rightBarButtonImage: nil,
 										  contentType: .none,

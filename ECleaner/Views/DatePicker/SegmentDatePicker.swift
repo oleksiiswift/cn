@@ -181,7 +181,7 @@ extension SegmentDatePicker {
 	private func validateCurrentMinimumMaximum() {
 		let ordering = self.minimumDate.compare(self.maximumDate)
 		if ordering != .orderedAscending {
-			ErrorHandler.shared.showFatalErrorAlert(.datePickerMinimumDateError) {}
+			ErrorHandler.shared.showFatalErrorAlert(.datePickerMinimumDateError)
 		}
 	}
 	

@@ -10,31 +10,31 @@ import Foundation
 enum PhotoMediaType: String {
     
         /// `photo section`
-    case similarPhotos = "similarPhotos"
-    case duplicatedPhotos = "duplicatedPhotos"
-    case singleScreenShots = "singleScreenShots"
-    case singleLivePhotos = "singleLivePhotos"
-    case similarLivePhotos = "similarLivePhotos"
-    case similarSelfies = "similarSelfies"
-    case singleRecentlyDeletedPhotos = "singleRecentlyDeletedPhotos"
+    case similarPhotos = 				"similarPhotos"
+    case duplicatedPhotos = 			"duplicatedPhotos"
+    case singleScreenShots = 			"singleScreenShots"
+    case singleLivePhotos = 			"singleLivePhotos"
+    case similarLivePhotos = 			"similarLivePhotos"
+    case similarSelfies = 				"similarSelfies"
+    case singleRecentlyDeletedPhotos = 	"singleRecentlyDeletedPhotos"
 
         /// `video section section`
-    case singleLargeVideos = "singleLargeVideos"
-    case duplicatedVideos = "duplicatedVideos"
-    case similarVideos = "similarVideos"
-    case singleScreenRecordings = "singleScreenRecordings"
-    case singleRecentlyDeletedVideos = "singleRecentlyDeletedVideos"
-    case compress = "compress video"
+    case singleLargeVideos = 			"singleLargeVideos"
+    case duplicatedVideos = 			"duplicatedVideos"
+    case similarVideos = 				"similarVideos"
+    case singleScreenRecordings = 		"singleScreenRecordings"
+    case singleRecentlyDeletedVideos =  "singleRecentlyDeletedVideos"
+    case compress = 					"compress video"
         
         /// `contacts section`
-    case allContacts = "allContacts"
-    case emptyContacts = "emptyContacts"
-    case duplicatedContacts = "duplicatedContacts"
-    case duplicatedPhoneNumbers = "duplicatedPhoneNumbers"
-    case duplicatedEmails = "duplicatedEmails"
-	case backup = "backup"
+    case allContacts = 					"allContacts"
+    case emptyContacts = 				"emptyContacts"
+    case duplicatedContacts = 			"duplicatedContacts"
+    case duplicatedPhoneNumbers = 		"duplicatedPhoneNumbers"
+    case duplicatedEmails = 			"duplicatedEmails"
+	case backup = 						"backup"
     
-    case none = ""
+    case none = 						""
 	
 	var contenType: MediaContentType {
 		switch self {
@@ -70,49 +70,7 @@ enum PhotoMediaType: String {
     
         /// `name`
     var mediaTypeName: String {
-        
-        switch self {
-            case .duplicatedPhotos:
-                return "duplicated photo"
-            case .duplicatedVideos:
-                return "duplicated video"
-            case .similarPhotos:
-                return "similar photo"
-            case .similarVideos:
-                return "similar video"
-            case .similarLivePhotos:
-                return "similar live photo"
-            case .similarSelfies:
-                return "similar selfie"
-            case .singleLivePhotos:
-                return "single live video"
-            case .singleLargeVideos:
-                return "large video"
-            case .singleScreenShots:
-                return "screenshots"
-            case .singleScreenRecordings:
-                return "screen recordings"
-            case .singleRecentlyDeletedPhotos:
-                return "recently deleted photos"
-            case .singleRecentlyDeletedVideos:
-                return "recentle deleted video"
-            case .allContacts:
-                return "all contacts"
-            case .emptyContacts:
-                return "empty contacts"
-            case .duplicatedContacts:
-                return "duplicated contacts"
-            case .duplicatedPhoneNumbers:
-                return "duplicated Numbers"
-            case .duplicatedEmails:
-                return "duplicated emails"
-            case .none:
-                return "none"
-            case .compress:
-                return "compress video"
-			case .backup:
-				return "backup contacts"
-        }
+		return LocalizationService.MediaContent.getContentName(of: self)
     }
 	
 	var cleanOperationName: String {
@@ -142,44 +100,24 @@ enum PhotoMediaType: String {
 		}
 	}
 	
-	var emptyContentAlertType: AlertType {
+	var emptyContentError: ErrorHandler.EmptyResultsError {
 		switch self {
-			case .similarPhotos:
-				return .similarPhotoIsEmpty
-			case .duplicatedPhotos:
-				return .duplicatedPhotoIsEmpty
-			case .singleScreenShots:
-				return .screenShotsIsEmpty
-			case .singleLivePhotos:
-				return .livePhotoIsEmpty
-			case .similarLivePhotos:
-				return .similarLivePhotoIsEmpty
-			case .similarSelfies:
-				return .similarSelfiesIsEmpty
-			case .singleRecentlyDeletedPhotos:
-				return .recentlyDeletedPhotosIsEmpty
-			case .singleLargeVideos:
-				return .largeVideoIsEmpty
-			case .duplicatedVideos:
-				return .duplicatedVideoIsEmpty
-			case .similarVideos:
-				return .similarVideoIsEmpty
-			case .singleScreenRecordings:
-				return .screenRecordingIsEmpty
-			case .singleRecentlyDeletedVideos:
-				return .recentlyDeletedVideosIsEmpty
-			case .allContacts:
-				return .contactsIsEmpty
-			case .emptyContacts:
-				return .emptyContactsIsEmpty
-			case .duplicatedContacts:
-				return .duplicatedNamesIsEmpty
-			case .duplicatedPhoneNumbers:
-				return .duplicatedNumbersIsEmpty
-			case .duplicatedEmails:
-				return .duplicatedEmailsIsEmpty
-			default:
-				return .none
+			case .similarPhotos: 			return .similarPhotoIsEmpty
+			case .duplicatedPhotos: 		return .duplicatedPhotoIsEmpty
+			case .singleScreenShots: 		return .screenShotsIsEmpty
+			case .singleLivePhotos: 		return .livePhotoIsEmpty
+			case .similarLivePhotos: 		return .similarLivePhotoIsEmpty
+			case .similarSelfies: 			return .similarSelfiesIsEmpty
+			case .singleLargeVideos: 		return .largeVideoIsEmpty
+			case .duplicatedVideos: 		return .duplicatedVideoIsEmpty
+			case .similarVideos: 			return .similarVideoIsEmpty
+			case .singleScreenRecordings: 	return .screenRecordingIsEmpty
+			case .allContacts: 				return .contactsIsEmpty
+			case .emptyContacts: 			return .emptyContactsIsEmpty
+			case .duplicatedContacts: 		return .duplicatedNamesIsEmpty
+			case .duplicatedPhoneNumbers: 	return .duplicatedNumbersIsEmpty
+			case .duplicatedEmails: 		return .duplicatedEmailsIsEmpty
+			default: 						return .photoLibrararyIsEmpty
 		}
 	}
 
@@ -402,20 +340,20 @@ enum PhotoMediaType: String {
 		var info: [PhotoMediaType: BannerInfo] = [:]
 		
 		let compressionBannerInfo: BannerInfo = BannerInfo(infoImage: I.systemItems.defaultItems.compress,
-														   title: "Compress Videos",
-														   subtitle: "Optimaze your Iphone data",
-														   descriptionTitle: "Compression Level",
-														   descriptitionFirstPartSubtitle: "50x",
-														   descriptionSecondPartSubtitle: "Ultra",
+														   title: Localization.Main.BannerHelpers.Title.videoTitle,
+														   subtitle: Localization.Main.BannerHelpers.Subtitle.videoSubtitle,
+														   descriptionTitle: Localization.Main.BannerHelpers.Description.videoDescription,
+														   descriptitionFirstPartSubtitle: Localization.Main.BannerHelpers.Description.videoDescriptionOne,
+														   descriptionSecondPartSubtitle: Localization.Main.BannerHelpers.Description.videoDescriptionTwo,
 														   helperImage: I.personalisation.video.bannerHelperImage,
 														   gradientColors: ThemeManager.theme.compressionGradient)
 		
 		let syncContactsBannerInfo: BannerInfo = BannerInfo(infoImage: I.systemItems.defaultItems.compress,
-															title: "Sync Contacts",
-															subtitle: "Optimaze your Iphone data",
-															descriptionTitle: "Save Your Contacts",
-															descriptitionFirstPartSubtitle: "With",
-															descriptionSecondPartSubtitle: "Back-Up",
+															title: Localization.Main.BannerHelpers.Title.contactTitle,
+															subtitle: Localization.Main.BannerHelpers.Subtitle.contactsSubtitle,
+															descriptionTitle: Localization.Main.BannerHelpers.Description.contactsDescription,
+															descriptitionFirstPartSubtitle: Localization.Main.BannerHelpers.Description.contactsDescriptionOne,
+															descriptionSecondPartSubtitle: Localization.Main.BannerHelpers.Description.contactsDescriptionTwo,
 															helperImage: I.personalisation.contacts.bannerHelperImage,
 															gradientColors: ThemeManager.theme.backupGradient)
 		info[.compress] = compressionBannerInfo

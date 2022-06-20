@@ -141,8 +141,8 @@ class DateSelectebleView: UIView {
     
     private func setupUI() {
         
-		startingDateTitileTextLabel.text = "From:"
-		endingDateTitleTextLabel.text = "To:"
+		startingDateTitileTextLabel.text = Localization.Main.Subtitles.from
+		endingDateTitleTextLabel.text = Localization.Main.Subtitles.to
 				
 		switch Screen.size {
 			case .small:

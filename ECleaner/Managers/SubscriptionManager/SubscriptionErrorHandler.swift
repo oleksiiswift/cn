@@ -28,37 +28,50 @@ extension ErrorHandler {
 	private func loadError(for key: SubscriptionError) -> String {
 		switch key {
 			case .purchaseCanceled:
-				return "Purchase is canceled"
+				return Localization.ErrorsHandler.PurchaseError.purchaseIsCanceled
 			case .refundsCanceled:
-				return "refun is canceled"
+				return Localization.ErrorsHandler.PurchaseError.refundsCanceled
 			case .purchasePending:
-				return "purchase is pending"
+				return Localization.ErrorsHandler.PurchaseError.purchaseIsPending
 			case .verificationError:
-				return "verification error"
+				return Localization.ErrorsHandler.PurchaseError.verificationError
 			case .error:
-				return "error"
+				return Localization.ErrorsHandler.PurchaseError.error
 			case .productsError:
-				return "cant load products"
+				return Localization.ErrorsHandler.PurchaseError.productsError
 		}
 	}
 	
 	@available(iOS 15.0, *)
 	private func loadStoreError(for key: StoreError) -> String {
 		switch key {
-			case .storeKit(let error):
-				return error.localizedDescription
-			case .purchase(let error):
-				return error.localizedDescription
-			case .verification(let error):
-				return error.localizedDescription
+			case .storeKit(let storeKitError):
+				switch storeKitError {
+					case .networkError(_):
+						return Localization.ErrorsHandler.PurchaseError.networkError
+					case .systemError(_):
+						return Localization.ErrorsHandler.PurchaseError.systemError
+					case .userCancelled:
+						return Localization.ErrorsHandler.PurchaseError.userCancelled
+					case .notAvailableInStorefront:
+						return Localization.ErrorsHandler.PurchaseError.notAvailableInStorefront
+					default:
+						return Localization.ErrorsHandler.PurchaseError.unknown
+				}
+			case .purchase(_):
+				return Localization.ErrorsHandler.PurchaseError.productsError
+			case .verification(_):
+				return Localization.ErrorsHandler.PurchaseError.verificationError
 		}
 	}
-		
+	
 	public func showSubsritionAlertError(for key: SubscriptionError) {
 		debugPrint("show error alert with key \(self.loadError(for: key))")
 		let errorAction = UIAlertAction(title: "Ok", style: .default) { _ in }
 		
-		A.showAlert("store error", message: self.loadError(for: key), actions: [errorAction], withCancel: false, style: .alert) {}
+		#warning("TODO ALERT Subscript")
+//
+//		A.showAlert("store error", message: self.loadError(for: key), actions: [errorAction], withCancel: false, style: .alert) {}
 	}
 	
 	@available(iOS 15.0, *)

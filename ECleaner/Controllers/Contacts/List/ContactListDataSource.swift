@@ -213,11 +213,11 @@ extension ContactListDataSource {
 		
 		let shareActionImage = I.systemElementsItems.share
 		let deleteActionImage = I.systemElementsItems.trashBtn
-		let shareAction = UIAction(title: "Share", image: shareActionImage) { _ in
+		let shareAction = UIAction(title: LocalizationService.Buttons.getButtonTitle(of: .share), image: shareActionImage) { _ in
 			self.delegate?.shareContact(at: indexPath)
 		}
 		
-		let deleteAction = UIAction(title: "Delete", image: deleteActionImage, attributes: .destructive) {_ in
+		let deleteAction = UIAction(title: LocalizationService.Buttons.getButtonTitle(of: .delete), image: deleteActionImage, attributes: .destructive) {_ in
 			self.delegate?.deleteContact(at: indexPath)
 		}
 		

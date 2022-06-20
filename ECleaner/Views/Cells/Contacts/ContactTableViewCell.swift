@@ -18,7 +18,6 @@ class ContactTableViewCell: UITableViewCell {
     @IBOutlet weak var topBaseViewConstraint: NSLayoutConstraint!
     @IBOutlet weak var bottomBaseViewConstraint: NSLayoutConstraint!
 	@IBOutlet weak var shadowRoundedViewHeightConstraint: NSLayoutConstraint!
-	
 	@IBOutlet weak var shadowRoundedViewSpaceInsetTrailingConstraint: NSLayoutConstraint!
 	
 	private var contact: CNContact?
@@ -46,7 +45,6 @@ class ContactTableViewCell: UITableViewCell {
         }
     }
 }
-
 
 extension ContactTableViewCell {
     
@@ -88,7 +86,7 @@ extension ContactTableViewCell {
         if contactFullName == nil {
             if numbers.isEmpty {
                 if emails.count == 0 {
-                    setupForMissingData(type: .wholeEmpty, textData: "all missing data")
+                    setupForMissingData(type: .wholeEmpty, textData: Localization.Main.ProcessingState.ByEmptyState.missingAll)
                 } else {
                     setupForMissingData(type: .onlyEmail, textData: emails.joined(separator: emails.count > 1 ? ", " : ""))
                 }
@@ -144,13 +142,13 @@ extension ContactTableViewCell {
 				contactSubtitleTextLabel.font = FontManager.contactsFont(of: .missongSubtitle)
                 contactSubtitleTextLabel.textColor = theme.subTitleTextColor
                 if emails.isEmpty {
-                    contactSubtitleTextLabel.text = "number missing"
+					contactSubtitleTextLabel.text = Localization.Main.ProcessingState.ByEmptyState.missingNumber
                 } else {
                     contactSubtitleTextLabel.text = emails.joined(separator: emails.count > 1 ? ", " : "")
                 }
             }
         } else if numbers.count != 0 {
-            contactTitleTextLabel.text = "name missing"
+			contactTitleTextLabel.text = Localization.Main.ProcessingState.ByEmptyState.missingName
 			contactTitleTextLabel.font = FontManager.contactsFont(of: .missingTitle)
             contactTitleTextLabel.textColor = theme.subTitleTextColor
             
@@ -162,13 +160,13 @@ extension ContactTableViewCell {
 			contactTitleTextLabel.font = FontManager.contactsFont(of: .cellTitle)
             contactTitleTextLabel.textColor = theme.titleTextColor
             
-            contactSubtitleTextLabel.text = "all data missing"
+			contactSubtitleTextLabel.text = Localization.Main.ProcessingState.ByEmptyState.missingAll
 			contactSubtitleTextLabel.font = FontManager.contactsFont(of: .missongSubtitle)
             contactSubtitleTextLabel.textColor = theme.subTitleTextColor
         } else {
             contactSubtitleTextLabel.isHidden = true
 			contactTitleTextLabel.font = FontManager.contactsFont(of: .missingTitle)
-            contactTitleTextLabel.text = "all data missing"
+            contactTitleTextLabel.text = Localization.Main.ProcessingState.ByEmptyState.missingAll
             contactTitleTextLabel.textColor = theme.subTitleTextColor
         }
     }

@@ -111,7 +111,7 @@ class VideoCompressionCustomSettingsViewController: UIViewController {
 	private var videoBitrateValue: Int = 1000_000 {
 		didSet {
 			let value = videoBitrateValue / 1000_000
-			bitrateTextLabel.text = String(value) + "Mbs"
+			bitrateTextLabel.text = String(value) + Localization.ServiceValues.mbs
 			handleValuesDidChange()
 		}
 	}
@@ -220,7 +220,7 @@ extension VideoCompressionCustomSettingsViewController {
 	private func setCompressionConfiguration() {
 		
 		guard let asset = self.asset else {
-			ErrorHandler.shared.showCompressionErrorFor(.cantLoadFile) {
+			ErrorHandler.shared.showCompressionError(.cantLoadFile) {
 				self.dismiss(animated: true, completion: nil)
 			}
 			return
@@ -650,10 +650,10 @@ extension VideoCompressionCustomSettingsViewController: Themeble {
 		mainContainerView.cornerSelectRadiusView(corners: [.topLeft, .topRight], radius: 20)
 		topShevronView.setCorner(3)
 		
-		controllerTitleTextLabel.text = "select compression settings".uppercased()
+		controllerTitleTextLabel.text = Localization.Main.HeaderTitle.selectCompressionSettings
 		controllerTitleTextLabel.font = FontManager.modalSettingsFont(of: .mainTitle)
 		
-		bottomButtonView.title("submit".uppercased())
+		bottomButtonView.title(LocalizationService.Buttons.getButtonTitle(of: .submit).uppercased())
 		
 		bottomButtonView.actionButton.imageSize = CGSize(width: 24, height: 22)
 		bottomButtonView.setImage(I.systemItems.defaultItems.compress)
@@ -685,12 +685,12 @@ extension VideoCompressionCustomSettingsViewController: Themeble {
 		bitrateShadowView.cornerRadius = 6
 		keyframeShadowView.cornerRadius = 6
 		
-		resetToDafaultButton.setTitle("Reset to Default", for: .normal)
+		resetToDafaultButton.setTitle(LocalizationService.Buttons.getButtonTitle(of: .resetDefault), for: .normal)
 		resetToDafaultButton.titleLabel?.font = FontManager.modalSettingsFont(of: .butttons)
 		resetToDafaultButton.addLeftImage(image: I.personalisation.video.reset, size: CGSize(width: 15, height: 15), spacing: 5)
 		resetButtonShadowView.cornerRadius = 8
 		
-		removeAudioButton.setTitle("Remove audio", for: .normal)
+		removeAudioButton.setTitle(LocalizationService.Buttons.getButtonTitle(of: .removeAudio), for: .normal)
 		removeAudioButton.titleLabel?.font = FontManager.modalSettingsFont(of: .butttons)
 		removeAudioShadowView.cornerRadius = 8
 		handleRemoveAudioComponentButtom()
@@ -707,8 +707,8 @@ extension VideoCompressionCustomSettingsViewController: Themeble {
 	
 	private func segmentControllSetup() {
 		
-		resolutionSegmentControll.setTitle("origin", forSegmentAt: 0)
-		resolutionSegmentControll.setTitle("manual", forSegmentAt: 1)
+		resolutionSegmentControll.setTitle(LocalizationService.Buttons.getButtonTitle(of: .origin), forSegmentAt: 0)
+		resolutionSegmentControll.setTitle(LocalizationService.Buttons.getButtonTitle(of: .manual), forSegmentAt: 1)
 		
 		let font: UIFont = FontManager.modalSettingsFont(of: .switchButtons)
 		let segmentTitleTextAttributes = [NSAttributedString.Key.foregroundColor: theme.subTitleTextColor,
@@ -822,7 +822,6 @@ extension VideoCompressionCustomSettingsViewController: Themeble {
 		fpsStepSlider.labels = fpsValues
 		
 			/// `video bitrate`
-		
 		videoBitrateSlider.maxCount = 150
 		videoBitrateSlider.addLeftLabel(with: "1Mbs",
 										font: FontManager.modalSettingsFont(of: .subTitle),

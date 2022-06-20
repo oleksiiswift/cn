@@ -66,8 +66,8 @@ enum UserNotificationType: CaseIterable {
 		}
 	}
 	
-	var notificationBodyText: notificationBodyStrings {
-		return TempText.getNotificationBodyText(of: self)
+	var notificationBodyText: NotificationBodyDescription {
+		return LocalizationService.Notification.getNotificationBodyText(of: self)
 	}
 }
 

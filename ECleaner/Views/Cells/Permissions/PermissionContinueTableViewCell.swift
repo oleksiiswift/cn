@@ -31,15 +31,15 @@ extension PermissionContinueTableViewCell: Themeble {
 	public func setupUI() {
 		
 		selectionStyle = .none
-		titleTextLabel.text = "Permissions are necessary for the application to work and perform correctly."
+		titleTextLabel.text = Localization.Main.Descriptions.permissionInfo
 		
 		titleTextLabel.font = FontManager.permissionFont(of: .desctiption)
 		titleTextLabel.textAlignment = .natural
 		bottomButtonBarView.delegate = self
 		
-		bottomButtonBarView.title("Continue")
+		bottomButtonBarView.title(LocalizationService.Buttons.getButtonTitle(of: .continue))
 		bottomButtonBarView.actionButton.imageSize = CGSize(width: 25, height: 25)
-		let image = I().getPermissionImage(for: .blank)
+		let image = I.getPermissionImage(for: .blank)
 		bottomButtonBarView.setImage(image)
 		
 		let font = FontManager.bottomButtonFont(of: .title)

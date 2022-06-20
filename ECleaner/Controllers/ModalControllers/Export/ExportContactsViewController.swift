@@ -71,7 +71,7 @@ extension ExportContactsViewController: Themeble {
         mainContainerView.cornerSelectRadiusView(corners: [.topLeft, .topRight], radius: 20)
         topShevronView.setCorner(3)
         
-        controllerTitleTextLabel.text = "select format of file"
+		controllerTitleTextLabel.text = Localization.Main.HeaderTitle.selectFileFormat
 		controllerTitleTextLabel.font = FontManager.exportModalFont(of: .title)
     
         leftButton.setTitleColor(theme.titleTextColor, for: .normal)
@@ -82,7 +82,7 @@ extension ExportContactsViewController: Themeble {
         leftButton.setTitle(leftExportFileFormat.formatRowValue, for: .normal)
         rightButton.setTitle(rightExportFileFormat.formatRowValue, for: .normal)
         
-        bottomButtonView.title("google contacts".uppercased())
+        bottomButtonView.title("Blank Func For BTN?".uppercased())
         
 		let image = I.systemItems.defaultItems.refresh
 		let size = CGSize(width: 25, height: 25)

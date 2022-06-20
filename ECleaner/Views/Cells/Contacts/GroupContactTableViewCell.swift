@@ -17,7 +17,6 @@ class GroupContactTableViewCell: UITableViewCell {
     
     @IBOutlet weak var sectionShadowView: SectionShadowView!
     @IBOutlet weak var shadowRoundedReuseView: ReuseShadowRoundedView!
-    
     @IBOutlet weak var baseView: UIView!
     @IBOutlet weak var contactTitleTextLabel: UILabel!
     @IBOutlet weak var contactSubtitleTextLabel: UILabel!

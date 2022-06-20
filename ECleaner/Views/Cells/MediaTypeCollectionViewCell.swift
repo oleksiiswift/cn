@@ -77,9 +77,9 @@ extension MediaTypeCollectionViewCell: Themeble {
 					self.mediaContentView.imageView.image = mediaType.mediaContenTypeImage
 					
 					if let photosCount = contentCount {
-						self.mediaContentSubTitleTextLabel.text = String("\(photosCount) \("FILES".localized())")
+						self.mediaContentSubTitleTextLabel.text = String("\(photosCount) \(Localization.Main.ProcessingState.ByGrouping.files.uppercased())")
 					} else {
-						self.mediaContentSubTitleTextLabel.text = contentCount == nil ? "" : "NO CONTENT"
+						self.mediaContentSubTitleTextLabel.text = contentCount == nil ? "" : Localization.Main.ProcessingState.ByEmptyState.noContent.uppercased()
 					}
 				} else {
 					self.deniedModeForContect(type: mediaType)
@@ -96,9 +96,9 @@ extension MediaTypeCollectionViewCell: Themeble {
 					self.mediaContentView.imageView.image = mediaType.mediaContenTypeImage
 					
 					if let videosCount = contentCount {
-						self.mediaContentSubTitleTextLabel.text = String("\(videosCount) \("FILES".localized())")
+						self.mediaContentSubTitleTextLabel.text = String("\(videosCount) \(Localization.Main.ProcessingState.ByGrouping.files.uppercased())")
 					} else {
-						self.mediaContentSubTitleTextLabel.text = contentCount == nil ? "" : "NO CONTENT"
+						self.mediaContentSubTitleTextLabel.text = contentCount == nil ? "" : Localization.Main.ProcessingState.ByEmptyState.noContent.uppercased()
 					}
 				} else {
 					self.deniedModeForContect(type: mediaType)
@@ -109,9 +109,9 @@ extension MediaTypeCollectionViewCell: Themeble {
 					self.mediaContentView.imageView.image = mediaType.mediaContenTypeImage
 					
 					if let contactsCount = contentCount {
-						self.mediaContentSubTitleTextLabel.text = String("\(contactsCount) contacts")
+						self.mediaContentSubTitleTextLabel.text = String("\(contactsCount) \(Localization.Main.ProcessingState.ByGrouping.contacts.uppercased())")
 					} else {
-						self.mediaContentSubTitleTextLabel.text = contentCount == nil ? "" : "NO CONTACTS"
+						self.mediaContentSubTitleTextLabel.text = contentCount == nil ? "" : Localization.Main.ProcessingState.ByEmptyState.noContacts.uppercased()
 					}
 				} else {
 					self.deniedModeForContect(type: mediaType)
@@ -133,7 +133,7 @@ extension MediaTypeCollectionViewCell: Themeble {
 		
 		let image = U.UIHelper.Manager().grayscaleImage(image: type.mediaContenTypeImage)
 		self.self.mediaContentView.imageView.image = image
-		self.mediaContentSubTitleTextLabel.text = "denied"
+		self.mediaContentSubTitleTextLabel.text = Localization.Permission.Subtitle.denied
 	}
     
 	private func handleIndicator(_ space: Int64?) {

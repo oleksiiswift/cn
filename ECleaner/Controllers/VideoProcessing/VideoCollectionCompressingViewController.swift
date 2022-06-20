@@ -80,7 +80,7 @@ extension VideoCollectionCompressingViewController {
 			
 			let size = phasset.imageSize
 			let stringSize = U.getSpaceFromInt(size)
-			bottomButtonView.title("compress: \(stringSize)")
+			bottomButtonView.title("\(LocalizationService.Buttons.getButtonTitle(of: .compres)) \(stringSize)")
 		}
 		
 		U.animate(0.5) {
@@ -137,7 +137,7 @@ extension VideoCollectionCompressingViewController {
 	private func createCellContextMenu(for asset: PHAsset, at indexPath: IndexPath) -> UIMenu {
 		
 		let shareVideoActionImage = I.systemItems.defaultItems.share
-		let shareAction = UIAction(title: "Share", image: shareVideoActionImage) { _ in
+		let shareAction = UIAction(title: LocalizationService.Buttons.getButtonTitle(of: .share), image: shareVideoActionImage) { _ in
 			self.share(phasset: asset)
 		}
 		return UIMenu(title: "", children: [shareAction])
