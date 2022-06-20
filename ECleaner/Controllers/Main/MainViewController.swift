@@ -557,7 +557,7 @@ extension MainViewController: UpdateColorsDelegate {
 				sectionHeaderTextLabel.font = .systemFont(ofSize: 12, weight: .heavy)
 				bottomButtonBarView.setFont(.systemFont(ofSize: 14, weight: .bold))
 				bottomButtonBarView.setButtonHeight(50)
-				navigationBarHeightConstraint.constant = U.UIHelper.AppDimensions.NavigationBar.navigationBarHeight
+				navigationBarHeightConstraint.constant = AppDimensions.NavigationBar.navigationBarHeight
 			case .medium:
 				sectionHeaderTextLabel.font = .systemFont(ofSize: 12, weight: .heavy)
 			default:

@@ -59,7 +59,7 @@ class BottomDoubleButtonBarView: UIView {
         contantView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         
         self.backgroundColor = .clear
-		self.setButtonHeight(U.UIHelper.AppDimensions.bottomBarButtonDefaultHeight)
+		self.setButtonHeight(AppDimensions.BottomButton.bottomBarButtonDefaultHeight)
         leftActionBottomButton.configureAppearance(buttonColor: self.leftButtonColor, tintColor: self.leftButtonTintColor)
         rightActionBottomButton.configureAppearance(buttonColor: self.rightButtonColor, tintColor: self.rightButtonTintColor)
     }
@@ -108,7 +108,7 @@ class BottomDoubleButtonBarView: UIView {
 
 class BottomPrimaryBarButtonItem: UIButton {
     
-	public var imageSpacing: CGFloat = U.UIHelper.AppDimensions.bottomPrimaryButtonImageSpacing
+	public var imageSpacing: CGFloat = AppDimensions.BottomButton.bottomPrimaryButtonImageSpacing
 //    public var imageSize: CGSize = CGSize(width: 18, height: 22)
     
     override func layoutSubviews() {
@@ -133,10 +133,8 @@ class BottomPrimaryBarButtonItem: UIButton {
     }
     
     public func setButtonImage(image: UIImage) {
-		let size = U.UIHelper.AppDimensions.bottomBarPrimaaryButtonImageSize
+		let size = AppDimensions.BottomButton .bottomBarPrimaaryButtonImageSize
 		let imageSize = image.getPreservingAspectRationScaleImageSize(from: CGSize(width: size, height: size))
-		
-		
         self.addLeftImage(image: image, size: imageSize, spacing: imageSpacing)
     }
 }

@@ -142,7 +142,7 @@ extension PermissionsViewController: Themeble {
 	
 	private func setupNavigation() {
 		
-		let navigationBarHeight = U.UIHelper.AppDimensions.NavigationBar.navigationBarHeight
+		let navigationBarHeight = AppDimensions.NavigationBar.navigationBarHeight
 		navigationBarHeightConstraint.constant = !fromRootViewController ? navigationBarHeight : 0
 		
 		navigationBar.layoutIfNeeded()

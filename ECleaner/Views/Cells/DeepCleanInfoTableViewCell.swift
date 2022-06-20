@@ -76,7 +76,7 @@ extension DeepCleanInfoTableViewCell: Themeble {
     func setupUI() {
 		
 		containerLeadingContstraint.constant = containerLeading
-		progressContainerViewHeighConstraint.constant = U.UIHelper.AppDimensions.circleProgressInfoDimension
+		progressContainerViewHeighConstraint.constant = AppDimensions.CircleProgress.circleProgressInfoDimension
 		
 		let startPoint = CGPoint(x: 0.0, y: 0.0)
 		let endPoint = CGPoint(x: 1.0, y: 0.0)
@@ -90,7 +90,7 @@ extension DeepCleanInfoTableViewCell: Themeble {
 		circleProgressView.clockwise = true
 		circleProgressView.percentLabelFormat = "%.f%%"
 		circleProgressView.percentLabel.font = FontManager.deepCleanScreenFont(of: .progress)
-		circleProgressView.lineWidth = U.UIHelper.AppDimensions.circleProgressInfoLineWidth
+		circleProgressView.lineWidth = AppDimensions.CircleProgress.circleProgressInfoLineWidth
 		
 		infoTitleTextLabel.text = 		Localization.Main.Subtitles.allAnalyzed
 		infoTotalFilesTitleLabel.text = Localization.Main.Subtitles.files.uppercased()
@@ -122,8 +122,8 @@ extension DeepCleanInfoTableViewCell: Themeble {
 		circleProgressView.backgroundShadowColor = theme.bottomShadowColor
 		
 		let titleLabelBounds = circleProgressView.percentLabel.bounds
-		let titleGradient = U.UIHelper.Manager.getGradientLayer(bounds: titleLabelBounds, colors: theme.titleCircleGradientTitleColorSet)
-		let color = U.UIHelper.Manager.gradientColor(bounds: titleLabelBounds, gradientLayer: titleGradient)
+		let titleGradient = Utils.Manager.getGradientLayer(bounds: titleLabelBounds, colors: theme.titleCircleGradientTitleColorSet)
+		let color = Utils.Manager.gradientColor(bounds: titleLabelBounds, gradientLayer: titleGradient)
 		circleProgressView.percentColor = color ?? theme.titleTextColor
     }
 }

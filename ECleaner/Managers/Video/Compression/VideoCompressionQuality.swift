@@ -67,7 +67,7 @@ enum VideoCompressionQuality: Equatable {
 			case .videoPreview:
 				return UITableView.automaticDimension
 			default:
-				return U.UIHelper.AppDimensions.ContenTypeCells.heightOfRowOfMediaContentType
+				return AppDimensions.ContenTypeCells.heightOfRowOfMediaContentType
 		}
 	}
 	
@@ -76,7 +76,7 @@ enum VideoCompressionQuality: Equatable {
 			case .videoPreview:
 				return UITableView.automaticDimension
 			default:
-				return U.UIHelper.AppDimensions.ContenTypeCells.heightOfRowOfMediaContentType
+				return AppDimensions.ContenTypeCells.heightOfRowOfMediaContentType
 		}
 	}
 	

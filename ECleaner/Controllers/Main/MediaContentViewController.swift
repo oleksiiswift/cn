@@ -1124,11 +1124,11 @@ extension MediaContentViewController: UITableViewDelegate, UITableViewDataSource
 		self.tableView.register(UINib(nibName: C.identifiers.xibs.contentBannerCell, bundle: nil), forCellReuseIdentifier: C.identifiers.cells.contentBannerCell)
 		
 		if mediaContentType == .userContacts {
-			self.tableView.contentInset.top = U.UIHelper.AppDimensions.ContenTypeCells.mediaContentCutTypeInset
+			self.tableView.contentInset.top = AppDimensions.ContenTypeCells.mediaContentCutTypeInset
 		} else {
-			self.tableView.contentInset.top = U.UIHelper.AppDimensions.ContenTypeCells.mediaContentTypeTopInset
+			self.tableView.contentInset.top = AppDimensions.ContenTypeCells.mediaContentTypeTopInset
 		}
-		self.tableView.contentInset.bottom = U.UIHelper.AppDimensions.ContenTypeCells.mediaContentBottomInset
+		self.tableView.contentInset.bottom = AppDimensions.ContenTypeCells.mediaContentBottomInset
 	}
 	
 	func configure(_ cell: ContentTypeTableViewCell, at indexPath: IndexPath) {
@@ -1313,8 +1313,8 @@ extension MediaContentViewController: Themeble {
 		segue.interactiveHide = true
 		segue.messageView.configureNoDropShadow()
 		
-		let height = selectedType == .lowerDateSelectable ? U.UIHelper.AppDimensions.DateSelectController.datePickerContainerHeightLower :
-		U.UIHelper.AppDimensions.DateSelectController.datePickerContainerHeightUper
+		let height = selectedType == .lowerDateSelectable ? AppDimensions.DateSelectController.datePickerContainerHeightLower :
+		AppDimensions.DateSelectController.datePickerContainerHeightUper
 		
 		segue.messageView.backgroundHeight = height
 		

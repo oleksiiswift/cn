@@ -64,10 +64,10 @@ extension ContactTableViewCell {
 	
 	public func checkForContactsImageDataAndSelectableMode(for contact: CNContact) {
 		
-		let defaultImageSize = U.UIHelper.AppDimensions.Contacts.Collection.helperImageViewWidth
-		let editingImageSize = U.UIHelper.AppDimensions.Contacts.Collection.selectHelperImageViewWidth
+		let defaultImageSize = AppDimensions.ContactsController.Collection.helperImageViewWidth
+		let editingImageSize = AppDimensions.ContactsController.Collection.selectHelperImageViewWidth
 		let dif = defaultImageSize - editingImageSize
-		let const: CGFloat = U.UIHelper.AppDimensions.Contacts.Collection.helperImageTrailingOffset
+		let const: CGFloat = AppDimensions.ContactsController.Collection.helperImageTrailingOffset
 		shadowRoundedViewSpaceInsetTrailingConstraint.constant = contactEditingMode ? const + dif : const
 		
 		self.shadowRoundedViewHeightConstraint.constant = contactEditingMode ? editingImageSize : defaultImageSize
@@ -196,7 +196,7 @@ extension ContactTableViewCell: Themeble {
     
     private func setupUI() {
         
-		shadowRoundedViewHeightConstraint.constant = U.UIHelper.AppDimensions.Contacts.Collection.helperImageViewWidth
+		shadowRoundedViewHeightConstraint.constant = AppDimensions.ContactsController.Collection.helperImageViewWidth
 		shadowRoundedReuseView.layoutIfNeeded()
 		shadowRoundedReuseView.updateImagesLayout()
 		

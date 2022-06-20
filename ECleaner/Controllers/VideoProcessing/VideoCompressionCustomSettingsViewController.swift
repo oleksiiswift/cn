@@ -640,12 +640,12 @@ extension VideoCompressionCustomSettingsViewController: Themeble {
 	
 	func setupUI() {
 		
-		let containerHeight: CGFloat = U.UIHelper.AppDimensions.ModalControllerSettings.mainContainerHeight
+		let containerHeight: CGFloat = AppDimensions.ModalControllerSettings.mainContainerHeight
 		self.view.frame = CGRect(x: 0, y: 0, width: U.screenWidth, height: containerHeight)
 		mainContainerHeightConstraint.constant = containerHeight
-		bottomButtonHeightConstraint.constant = U.UIHelper.AppDimensions.bottomBarDefaultHeight
-		bottomButtonTopConstraint.constant = U.UIHelper.AppDimensions.ModalControllerSettings.bottomButtonSpaceValue
-		resolutionSegmentControllWidthConstraint.constant = U.UIHelper.AppDimensions.ModalControllerSettings.segmentControlWidth
+		bottomButtonHeightConstraint.constant = AppDimensions.BottomButton.bottomBarDefaultHeight
+		bottomButtonTopConstraint.constant = AppDimensions.ModalControllerSettings.bottomButtonSpaceValue
+		resolutionSegmentControllWidthConstraint.constant = AppDimensions.ModalControllerSettings.segmentControlWidth
 		
 		mainContainerView.cornerSelectRadiusView(corners: [.topLeft, .topRight], radius: 20)
 		topShevronView.setCorner(3)

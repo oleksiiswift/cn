@@ -264,7 +264,7 @@ extension ContactsViewController {
 	
 	private func handleBottomButtonChangeAppearence(disableAnimation: Bool = false) {
 	
-		let bottomButtonMenyHeight: CGFloat = U.UIHelper.AppDimensions.bottomBarDefaultHeight
+		let bottomButtonMenyHeight: CGFloat = AppDimensions.BottomButton.bottomBarDefaultHeight
 		
 		switch contentType {
 			case .allContacts:
@@ -627,7 +627,7 @@ extension ContactsViewController {
     
     private func setActiveSearchBar(setActive: Bool) {
 		
-		self.searchBarTopConstraint.constant = setActive ? 5 : U.UIHelper.AppDimensions.Contacts.SearchBar.searchBarTopInset
+		self.searchBarTopConstraint.constant = setActive ? 5 : AppDimensions.ContactsController.SearchBar.searchBarTopInset
         self.searchBarView.searchBarIsActive = setActive
 		self.searchBarView.setShowCancelButton(setActive, animated: true)
         contactListDataSource.searchBarIsFirstResponder = setActive
@@ -663,12 +663,12 @@ extension ContactsViewController {
     
     @objc func contentDidBeginDraging() {
         
-		guard searchBarTopConstraint.constant != U.UIHelper.AppDimensions.Contacts.SearchBar.searchBarTopInset else { return }
+		guard searchBarTopConstraint.constant != AppDimensions.ContactsController.SearchBar.searchBarTopInset else { return }
         
         if searchBarView.searchBar.text == "" {
             setActiveSearchBar(setActive: false)
         } else {
-			searchBarTopConstraint.constant = U.UIHelper.AppDimensions.Contacts.SearchBar.searchBarTopInset
+			searchBarTopConstraint.constant = AppDimensions.ContactsController.SearchBar.searchBarTopInset
             U.animate(0.3) {
                 self.navigationBar.containerView.alpha = 1
                 self.navigationBar.layoutIfNeeded()
@@ -887,10 +887,10 @@ extension ContactsViewController: Themeble {
 			dropDownSetup()
 		}
 		
-		searchBarHeightConstraint.constant = self.searchBarIsHiden ? 10 : U.UIHelper.AppDimensions.Contacts.SearchBar.searchBarContainerHeight
+		searchBarHeightConstraint.constant = self.searchBarIsHiden ? 10 : AppDimensions.ContactsController.SearchBar.searchBarContainerHeight
 		searchBarView.isHidden = self.searchBarIsHiden
 		
-		searchBarTopConstraint.constant = U.UIHelper.AppDimensions.Contacts.SearchBar.searchBarTopInset
+		searchBarTopConstraint.constant = AppDimensions.ContactsController.SearchBar.searchBarTopInset
 		
         bottomDoubleButtonView.setLeftButtonImage(I.systemItems.defaultItems.buttonShare)
         bottomDoubleButtonView.setRightButtonImage(I.systemItems.defaultItems.delete)

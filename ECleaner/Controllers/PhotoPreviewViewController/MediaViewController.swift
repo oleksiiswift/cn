@@ -371,7 +371,7 @@ extension MediaViewController  {
 
 		let heightOffset = U.bottomSafeAreaHeight + U.bottomSafeAreaHeight + navigationBarHeightConstraint.constant + carouselCllectionViewHeightConstraint.constant
 		let collectionViewHeight = U.screenHeight - heightOffset
-		let itemInset = U.UIHelper.AppDimensions.CollectionItemSize.previewCollectionViewItemInset
+		let itemInset = AppDimensions.CollectionItemSize.previewCollectionViewItemInset
 		let itemSize = CGSize(width: U.screenWidth, height: collectionViewHeight - itemInset)
 		
 		self.previewColletionFlowLayput.itemSize = itemSize
@@ -389,8 +389,8 @@ extension MediaViewController  {
 		self.collectionView.showsHorizontalScrollIndicator = false
 		self.collectionView.contentInset = .zero
 		
-		self.carouselCollectionFlowLayout.spacingMode = U.UIHelper.AppDimensions.CollectionItemSize.carouselSpacingMode
-		self.carouselCollectionFlowLayout.itemSize = U.UIHelper.AppDimensions.CollectionItemSize.carouseCollectionViewItemSize
+		self.carouselCollectionFlowLayout.spacingMode = AppDimensions.CollectionItemSize.carouselSpacingMode
+		self.carouselCollectionFlowLayout.itemSize = AppDimensions.CollectionItemSize.carouseCollectionViewItemSize
 		self.carouselCollectionFlowLayout.scrollDirection = .horizontal
 		self.carouselCollectionFlowLayout.sectionInset = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
 		self.carouselCollectionFlowLayout.minimumInteritemSpacing = 10
@@ -703,9 +703,9 @@ extension MediaViewController {
 	
 	private func setupUI() {
 		
-		navigationBarHeightConstraint.constant = U.UIHelper.AppDimensions.NavigationBar.navigationBarHeight
-		carouselCllectionViewHeightConstraint.constant = U.UIHelper.AppDimensions.CollectionItemSize.carouselCollectionViewHeght
-		botoomCarouselCollectionViewConstrainstain.constant = U.UIHelper.AppDimensions.CollectionItemSize.bottomCarouselViewCollectionInset
+		navigationBarHeightConstraint.constant = AppDimensions.NavigationBar.navigationBarHeight
+		carouselCllectionViewHeightConstraint.constant = AppDimensions.CollectionItemSize.carouselCollectionViewHeght
+		botoomCarouselCollectionViewConstrainstain.constant = AppDimensions.CollectionItemSize.bottomCarouselViewCollectionInset
 	}
 	
 	private func setupNavigationBar() {

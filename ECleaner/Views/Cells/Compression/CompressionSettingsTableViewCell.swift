@@ -86,7 +86,7 @@ extension CompressionSettingsTableViewCell: Themeble {
 		self.titleTextLabel.font = FontManager.contentTypeFont(of: .title)
 		self.subtitleTetLabel.font = FontManager.contentTypeFont(of: .subtitle)
 		
-		self.reuseShadowRoundedViewHeightConstraint.constant = U.UIHelper.AppDimensions.ContenTypeCells.radioButtonSize
+		self.reuseShadowRoundedViewHeightConstraint.constant = AppDimensions.ContenTypeCells.radioButtonSize
 		
 		reuseShadowView.topShadowOffsetOriginY = -2
 		reuseShadowView.topShadowOffsetOriginX = -2

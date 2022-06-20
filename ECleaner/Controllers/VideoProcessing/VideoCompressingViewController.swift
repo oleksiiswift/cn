@@ -264,7 +264,7 @@ extension VideoCompressingViewController {
 		self.tableView.allowsMultipleSelection = false
 		
 		self.tableView.contentInset.top = 10
-		self.tableView.contentInset.bottom = U.UIHelper.AppDimensions.bottomBarDefaultHeight //+ (Device.isSafeAreaDevice ? 0 : 10)
+		self.tableView.contentInset.bottom = AppDimensions.BottomButton.bottomBarDefaultHeight 
 		if #available(iOS 15.0, *) {
 			tableView.sectionHeaderTopPadding = 0
 		}
@@ -354,8 +354,8 @@ extension VideoCompressingViewController: Themeble {
 		bottomButtonBarView.title(LocalizationService.Buttons.getButtonTitle(of: .compres))
 		bottomButtonBarView.setImage(I.systemItems.defaultItems.compress, with: CGSize(width: 24, height: 22))
 		
-		navigationBarHeightConstraint.constant = U.UIHelper.AppDimensions.NavigationBar.navigationBarHeight
-		self.bottomButtonViewHeightConstraint.constant = U.UIHelper.AppDimensions.bottomBarDefaultHeight
+		navigationBarHeightConstraint.constant = AppDimensions.NavigationBar.navigationBarHeight
+		self.bottomButtonViewHeightConstraint.constant = AppDimensions.BottomButton.bottomBarDefaultHeight
 	}
 	
 	private func setupNavigation() {

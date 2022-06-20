@@ -94,11 +94,11 @@ extension ContactListDataSource: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-		return U.UIHelper.AppDimensions.Contacts.Collection.headerHeight
+		return AppDimensions.ContactsController.Collection.headerHeight
     }
 	
 	func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-		return U.UIHelper.AppDimensions.Contacts.Collection.contactsCellHeight
+		return AppDimensions.ContactsController.Collection.contactsCellHeight
 	}
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -139,19 +139,19 @@ extension ContactListDataSource: UITableViewDelegate, UITableViewDataSource {
 	func tableView(_ tableView: UITableView, willDisplayContextMenu configuration: UIContextMenuConfiguration, animator: UIContextMenuInteractionAnimating?) {
 		DispatchQueue.main.async {
 			if let window = U.application.windows.first {
-				if let view = U.UIHelper.Manager.viewByClassName(view: window, className: "_UICutoutShadowView") {
+				if let view = Utils.Manager.viewByClassName(view: window, className: "_UICutoutShadowView") {
 					view.isHidden = true
 				}
-				if let view = U.UIHelper.Manager.viewByClassName(view: window, className: "_UIPortalView") {
+				if let view = Utils.Manager.viewByClassName(view: window, className: "_UIPortalView") {
 					view.rounded()
 				}
-				if let view = U.UIHelper.Manager.viewByClassName(view: window, className: "_UIPlatterTransformView") {
+				if let view = Utils.Manager.viewByClassName(view: window, className: "_UIPlatterTransformView") {
 					view.rounded()
 				}
-				if let view = U.UIHelper.Manager.viewByClassName(view: window, className: "_UIPlatterClippingView") {
+				if let view = Utils.Manager.viewByClassName(view: window, className: "_UIPlatterClippingView") {
 					view.rounded()
 				}
-				if let view = U.UIHelper.Manager.viewByClassName(view: window, className: "_UIPlatterTransformView") {
+				if let view = Utils.Manager.viewByClassName(view: window, className: "_UIPlatterTransformView") {
 					view.rounded()
 				}
 			}

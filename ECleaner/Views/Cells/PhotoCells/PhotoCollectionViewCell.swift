@@ -44,7 +44,7 @@ class PhotoCollectionViewCell: UICollectionViewCell {
 
 	@IBOutlet var thumnailViewOffsetConstraint: [NSLayoutConstraint]!
 	
-	private var selectButtonSize = U.UIHelper.AppDimensions.CollectionItemSize.cellSelectRectangleSize
+	private var selectButtonSize = AppDimensions.CollectionItemSize.cellSelectRectangleSize
 	public var collectionType: CollectionType = .none
     public var indexPath: IndexPath?
     public var cellMediaType: PhotoMediaType = .none

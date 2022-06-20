@@ -53,7 +53,7 @@ class ContentTypeTableViewCell: UITableViewCell {
     override func layoutSubviews() {
           super.layoutSubviews()
 		
-		let margins = U.UIHelper.AppDimensions.mediaContentTypeCellIEdgeInset
+		let margins = AppDimensions.ContenTypeCells.mediaContentTypeCellIEdgeInset
           contentView.frame = contentView.frame.inset(by: margins)
     }
 	@IBAction func stopOperationActionButton(_ sender: Any) {
@@ -260,7 +260,7 @@ extension ContentTypeTableViewCell: Themeble {
 		self.operationActionButton.isEnabled = false
 		baseView.setCorner(14)
 		
-		reuseShadowHeightConstraint.constant = U.UIHelper.AppDimensions.ContenTypeCells.helperImageViewWidth
+		reuseShadowHeightConstraint.constant = AppDimensions.ContenTypeCells.helperImageViewWidth
 		reuseShadowRoundedView.layoutIfNeeded()
 		reuseShadowRoundedView.updateImagesLayout()
 		contentTypeTextLabel.font = FontManager.contentTypeFont(of: .title)

@@ -304,7 +304,7 @@ extension SimpleAssetsListViewController {
 		guard !isDeepCleaningSelectableFlow else { return }
 		
 		if let selectedItems = collectionView.indexPathsForSelectedItems {
-			bottomMenuHeightConstraint.constant = selectedItems.count > 0 ? U.UIHelper.AppDimensions.bottomBarDefaultHeight : 0
+			bottomMenuHeightConstraint.constant = selectedItems.count > 0 ? AppDimensions.BottomButton.bottomBarDefaultHeight : 0
 			
 			switch mediaType {
 				case .singleRecentlyDeletedPhotos, .singleRecentlyDeletedVideos:
@@ -314,7 +314,7 @@ extension SimpleAssetsListViewController {
 			}
 			
 			U.animate(0.35) {
-				self.collectionView.contentInset.bottom = selectedItems.count > 0 ? U.UIHelper.AppDimensions.bottomBarDefaultHeight + 10 + U.bottomSafeAreaHeight : 5
+				self.collectionView.contentInset.bottom = selectedItems.count > 0 ? AppDimensions.BottomButton.bottomBarDefaultHeight + 10 + U.bottomSafeAreaHeight : 5
 				self.collectionView.layoutIfNeeded()
 				self.view.layoutIfNeeded()
 			}
@@ -412,7 +412,7 @@ extension SimpleAssetsListViewController {
 	func setupUI() {
 		
 		bottomMenuHeightConstraint.constant = 0
-		navigationBarHeightConstraint.constant = U.UIHelper.AppDimensions.NavigationBar.navigationBarHeight
+		navigationBarHeightConstraint.constant = AppDimensions.NavigationBar.navigationBarHeight
 		
 		switch mediaType {
 			case .singleRecentlyDeletedPhotos, .singleRecentlyDeletedVideos:
@@ -453,11 +453,11 @@ extension SimpleAssetsListViewController: UICollectionViewDelegate, UICollection
 				flowLayout.isSquare = true
 				flowLayout.cellsPerRow = 2
 			case .singleScreenRecordings:
-				flowLayout.itemHieght = U.UIHelper.AppDimensions.CollectionItemSize.singleCollectionScreenRecordingItemSize
+				flowLayout.itemHieght = AppDimensions.CollectionItemSize.singleCollectionScreenRecordingItemSize
 			case .singleScreenShots:
-				flowLayout.itemHieght = U.UIHelper.AppDimensions.CollectionItemSize.singleCollectionScreenShotsItemSize
+				flowLayout.itemHieght = AppDimensions.CollectionItemSize.singleCollectionScreenShotsItemSize
 			case .singleLivePhotos:
-				flowLayout.itemHieght = U.UIHelper.AppDimensions.CollectionItemSize.singleCollectionLivePhotoItemSize
+				flowLayout.itemHieght = AppDimensions.CollectionItemSize.singleCollectionLivePhotoItemSize
 			default:
 				flowLayout.itemHieght = ((U.screenWidth - 30) / 3) / U.ratio
 		}

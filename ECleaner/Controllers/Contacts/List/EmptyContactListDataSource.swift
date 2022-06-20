@@ -78,11 +78,11 @@ extension EmptyContactListDataSource: UITableViewDelegate, UITableViewDataSource
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-		return U.UIHelper.AppDimensions.Contacts.Collection.headerHeight
+		return AppDimensions.ContactsController.Collection.headerHeight
     }
 	
 	func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-		return U.UIHelper.AppDimensions.Contacts.Collection.contactsCellHeight
+		return AppDimensions.ContactsController.Collection.contactsCellHeight
 	}
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
