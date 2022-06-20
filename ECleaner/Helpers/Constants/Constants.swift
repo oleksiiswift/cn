@@ -44,6 +44,7 @@ class Constants {
 		
 		struct application {
 			static let applicationLastUsage = "applicationLastUsage"
+			static let applicationFirstTimeStart = "applicationFirstTimeStart"
 		}
 		
 		struct inApPurchse {

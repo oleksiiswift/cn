@@ -29,6 +29,14 @@ class SettingsManager {
 				U.userDefaults.set(date: newValue, forKey: C.key.application.applicationLastUsage)
 			}
 		}
+		
+		static var firstTimeApplicationStart: Bool {
+			get {
+				U.userDefaults.bool(forKey: C.key.application.applicationFirstTimeStart)
+			} set {
+				U.userDefaults.set(newValue, forKey: C.key.application.applicationFirstTimeStart)
+			}
+		}
 	}
 	
 	struct inAppPurchase {

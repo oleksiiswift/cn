@@ -29,6 +29,12 @@ class PermissionsViewController: UIViewController {
 		setupDelegate()
 		setupObservers()
     }
+	
+	override func viewWillAppear(_ animated: Bool) {
+		super.viewWillAppear(animated)
+		
+		handlePermissionHasActive()
+	}
 }
 
 extension PermissionsViewController {
@@ -53,10 +59,14 @@ extension PermissionsViewController {
 		if PhotoLibraryPermissions().notDetermined && ContactsPermissions().notDetermined || PhotoLibraryPermissions().denied && ContactsPermissions().denied {
 			AlertManager.showPermissionAlert(of: .onePermissionRule, at: self)
 		} else {
-			self.dismiss(animated: true) {
-				SettingsManager.permissions.permisssionDidShow = true
-				U.sceneDelegate.permissionWindow = nil
-			}
+			self.closeController()
+		}
+	}
+	
+	private func closeController() {
+		self.dismiss(animated: true) {
+			SettingsManager.permissions.permisssionDidShow = true
+			U.sceneDelegate.permissionWindow = nil
 		}
 	}
 	
@@ -71,6 +81,39 @@ extension PermissionsViewController {
 				}
 			case .notSupported:
 				return
+		}
+	}
+	
+	private func handlePermissionHasActive() {
+
+		guard fromRootViewController, !SettingsManager.application.firstTimeApplicationStart else { return }
+		
+		SettingsManager.application.firstTimeApplicationStart = true
+		
+		U.delay(1) {
+			NotificationsPermissions().requestForPermission { _, _ in
+				U.delay(1) {
+					PhotoLibraryPermissions().requestForPermission { _, _ in
+						U.delay(1) {
+							ContactsPermissions().requestForPermission { _, _ in
+								if #available(iOS 14.5, *) {
+									U.delay(1) {
+										AppTrackerPermissions().requestForPermission { _, _ in
+											U.delay(1) {
+												self.closeController()
+											}
+										}
+									}
+								} else {
+									U.delay(1) {
+										self.closeController()
+									}
+								}
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 	
