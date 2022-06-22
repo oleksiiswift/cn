@@ -176,7 +176,7 @@ class NavigationBar: UIView {
 	}
 	
 	private func getProportionalSize(of image: UIImage, targetImageScaleFactor: CGFloat = 0.5) -> CGSize {
-		let buttonSize = U.UIHelper.AppDimensions.NavigationBar.navigationBarButtonSize
+		let buttonSize = AppDimensions.NavigationBar.navigationBarButtonSize
 		let targetSize: CGSize = CGSize(width: buttonSize * targetImageScaleFactor, height: buttonSize * targetImageScaleFactor)
 		return image.getPreservingAspectRationScaleImageSize(from: targetSize)
 	}

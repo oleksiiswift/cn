@@ -131,7 +131,7 @@ extension MediaTypeCollectionViewCell: Themeble {
 		
 		self.handleIndicator(0)
 		
-		let image = U.UIHelper.Manager().grayscaleImage(image: type.mediaContenTypeImage)
+		let image = Utils.Manager().grayscaleImage(image: type.mediaContenTypeImage)
 		self.self.mediaContentView.imageView.image = image
 		self.mediaContentSubTitleTextLabel.text = Localization.Permission.Subtitle.denied
 	}

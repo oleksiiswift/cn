@@ -103,8 +103,8 @@ class ShadowButtonWithImage: UIButton {
 		let colors = contentType.screeAcentGradientColorSet
 		let disableColors = [UIColor().colorFromHexString("DDDDDD").cgColor, UIColor().colorFromHexString("989898").cgColor]
 		
-		let gradient = U.UIHelper.Manager.getGradientLayer(bounds: self.bounds, colors: enabled ? colors: disableColors.reversed())
-		self.setTitleColor(U.UIHelper.Manager.gradientColor(bounds: self.bounds, gradientLayer: gradient), for: .normal)
+		let gradient = Utils.Manager.getGradientLayer(bounds: self.bounds, colors: enabled ? colors: disableColors.reversed())
+		self.setTitleColor(Utils.Manager.gradientColor(bounds: self.bounds, gradientLayer: gradient), for: .normal)
 		
 		if let image = buttonImageView.image {
 			buttonImageView.image = image.tintedWithLinearGradientColors(colorsArr: enabled ? colors.reversed() : disableColors)

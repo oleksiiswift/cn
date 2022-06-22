@@ -121,9 +121,9 @@ class DateSelectebleView: UIView {
     
     private func addContainerShadow() {
     
-		let halfSize = U.UIHelper.AppDimensions.dateSelectableHeight / 2
+		let halfSize = AppDimensions.DateSelectController.dateSelectableHeight / 2
 		
-		helperView.frame = CGRect(x: 0, y: 0, width: U.screenWidth, height: U.UIHelper.AppDimensions.dateSelectableHeight)
+		helperView.frame = CGRect(x: 0, y: 0, width: U.screenWidth, height: AppDimensions.DateSelectController.dateSelectableHeight)
 		
         self.insertSubview(helperView, at: 0)
         

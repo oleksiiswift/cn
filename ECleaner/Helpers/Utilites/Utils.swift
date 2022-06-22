@@ -69,7 +69,28 @@ class Utils {
     static let appSettings = UIApplication.openSettingsURLString
     
 //    MARK: - DEVICES -
-    
+	
+	static let statusBarHeight: CGFloat = UIApplication.shared.windows.first?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0
+	
+	static let topSafeAreaInset: CGFloat = U.screenHeight < 600 ? 5 : 10
+	
+	static let largeTitleTopSafeAreaInset: CGFloat = U.screenHeight < 600 ? 100 : 120
+	
+	static let navigationBarHeight: CGFloat = 44.0 + topSafeAreaInset
+	
+	static let statusAndNavigationBarsHeight: CGFloat = statusBarHeight + navigationBarHeight
+	
+	static let advertisementHeight: CGFloat = 50
+	
+	static let actualScreen: CGRect = {
+		var rect = mainScreen.bounds
+		rect.size.height -= statusAndNavigationBarsHeight
+		return rect
+	}()
+	
+	static let tabBarHeight: CGFloat = 49.0
+	
+	static let toolBarHeight: CGFloat = 44.0
     static let isIpad: Bool = UIDevice.current.userInterfaceIdiom == .pad
     
     static let isSmallDevice: Bool = mainScreen.bounds.size.height <= 667
@@ -87,7 +108,7 @@ class Utils {
 	static public var topSafeAreaHeight: CGFloat {
 		return UIApplication.shared.windows.first?.safeAreaInsets.top ?? 0
 	}
-    
+	
     static let isSimulator = UIDevice.isSimulator
     
 //    MARK: - DATE and TIME

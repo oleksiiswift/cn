@@ -1011,12 +1011,12 @@ extension GroupedAssetListViewController {
 			}
 			
 				/// `bottom menu`
-			bottomMenuHeightConstraint.constant = !selectedAssets.isEmpty ? U.UIHelper.AppDimensions.bottomBarDefaultHeight  : 0
+			bottomMenuHeightConstraint.constant = !selectedAssets.isEmpty ? AppDimensions.BottomButton.bottomBarDefaultHeight  : 0
 			
 			bottomButtonBarView.title("\(LocalizationService.Buttons.getButtonTitle(of: .deleteSelected)) (\(selectedAssets.count))")
 			
 			U.animate(0.5) {
-				self.collectionView.contentInset.bottom = !self.selectedAssets.isEmpty ? U.UIHelper.AppDimensions.bottomBarDefaultHeight + 10 + U.bottomSafeAreaHeight : 5
+				self.collectionView.contentInset.bottom = !self.selectedAssets.isEmpty ? AppDimensions.BottomButton.bottomBarDefaultHeight + 10 + U.bottomSafeAreaHeight : 5
 			
 				self.photoContentContainerView.layoutIfNeeded()
 				self.view.layoutIfNeeded()
@@ -1179,7 +1179,7 @@ extension GroupedAssetListViewController {
 	
 	private func setupNavigation() {
 		
-		navigationBarHeightConstraint.constant = U.UIHelper.AppDimensions.NavigationBar.navigationBarHeight
+		navigationBarHeightConstraint.constant = AppDimensions.NavigationBar.navigationBarHeight
 		if #available(iOS 14.0, *) {
 			dropDownSetup()
 		}

@@ -253,9 +253,9 @@ extension DateSelectorViewController: Themeble {
 		var containerHeight: CGFloat {
 			switch dateSelectedType {
 				case .lowerDateSelectable:
-					return U.UIHelper.AppDimensions.DateSelectController.datePickerContainerHeightLower
+					return AppDimensions.DateSelectController.datePickerContainerHeightLower
 				case .upperDateSelectable:
-					return U.UIHelper.AppDimensions.DateSelectController.datePickerContainerHeightUper
+					return AppDimensions.DateSelectController.datePickerContainerHeightUper
 				default:
 					return .zero
 			}
@@ -265,21 +265,21 @@ extension DateSelectorViewController: Themeble {
 			case .lowerDateSelectable:
 				autoDatePickView.isHidden = false
 				bottomButtonsTopConstraint.constant = 0
-				bottomButtonsHeghtConstraint.constant = U.UIHelper.AppDimensions.DateSelectController.fullDatePickerContainerHeight
+				bottomButtonsHeghtConstraint.constant = AppDimensions.DateSelectController.fullDatePickerContainerHeight
 			case .upperDateSelectable:
-				bottomButtonsTopConstraint.constant = U.UIHelper.AppDimensions.DateSelectController.bottomContainerSpacerHeight
-				bottomButtonsHeghtConstraint.constant = U.UIHelper.AppDimensions.DateSelectController.cutDatePickerContainerHeight
+				bottomButtonsTopConstraint.constant = AppDimensions.DateSelectController.bottomContainerSpacerHeight
+				bottomButtonsHeghtConstraint.constant = AppDimensions.DateSelectController.cutDatePickerContainerHeight
 				autoDatePickView.isHidden = true
 			default:
 				return
 		}
-		customNavigationBarHeightConstraint.constant = U.UIHelper.AppDimensions.NavigationBar.navigationBarHeight
+		customNavigationBarHeightConstraint.constant = AppDimensions.NavigationBar.navigationBarHeight
 		
 		self.view.frame = CGRect(x: 0, y: 0, width: U.screenWidth, height: containerHeight)
 		mainContainerView.cornerSelectRadiusView(corners: [.topLeft, .topRight], radius: 20)
         mainContainerViewHeightConstraint.constant = containerHeight
 	
-		let autoDateSelectSize = U.UIHelper.AppDimensions.NavigationBar.startingNavigationBarButtonSize - 10
+		let autoDateSelectSize = AppDimensions.NavigationBar.startingNavigationBarButtonSize - 10
 		autoDatePickerButtonWidthConstraint.constant = autoDateSelectSize
 	
 		bottomButtonView.title(LocalizationService.Buttons.getButtonTitle(of: .submit))

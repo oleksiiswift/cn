@@ -280,12 +280,12 @@ enum MediaContentType {
 			case .userVideo, .userContacts:
 				switch section {
 					case 1:
-						return U.UIHelper.AppDimensions.ContenTypeCells.heightOfBottomHelperCellBanner
+						return AppDimensions.ContenTypeCells.heightOfBottomHelperCellBanner
 					default:
-						return U.UIHelper.AppDimensions.ContenTypeCells.heightOfRowOfMediaContentType
+						return AppDimensions.ContenTypeCells.heightOfRowOfMediaContentType
 				}
 			default:
-				return U.UIHelper.AppDimensions.ContenTypeCells.heightOfRowOfMediaContentType
+				return AppDimensions.ContenTypeCells.heightOfRowOfMediaContentType
 		}
 	}
     

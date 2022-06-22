@@ -17,3 +17,29 @@ extension UIFont {
 		return UIFont(descriptor: newFontDescriptor, size: 0)
 	}
 }
+
+
+//
+//extension UIFont {
+//	public func withMonospacedNumbers() -> Self {
+//		let monospacedFeature: [UIFontDescriptor.FeatureKey: Any]
+//
+//		if #available(iOS 15.0, *) {
+//			monospacedFeature = [
+//				.type: kNumberSpacingType,
+//				.selector: kMonospacedNumbersSelector
+//			]
+//		} else {
+//			monospacedFeature = [
+//				.featureIdentifier: kNumberSpacingType,
+//				.typeIdentifier: kMonospacedNumbersSelector
+//			]
+//		}
+//
+//		let descriptor = fontDescriptor.addingAttributes([
+//			.featureSettings: [monospacedFeature]
+//		])
+//
+//		return Self(descriptor: descriptor, size: 0)
+//	}
+//}

@@ -708,8 +708,8 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
           tableView.register(UINib(nibName: C.identifiers.xibs.contentTypeCell, bundle: nil), forCellReuseIdentifier: C.identifiers.cells.contentTypeCell)
           tableView.register(UINib(nibName: C.identifiers.xibs.cleanInfoCell, bundle: nil), forCellReuseIdentifier: C.identifiers.cells.cleanInfoCell)
           tableView.separatorStyle = .none
-		  tableView.contentInset.top = U.UIHelper.AppDimensions.ContenTypeCells.deepCleanMediaContentTypeTopInset
-		  tableView.contentInset.bottom = U.UIHelper.AppDimensions.bottomBarDefaultHeight - 20
+		  tableView.contentInset.top = AppDimensions.ContenTypeCells.deepCleanMediaContentTypeTopInset
+		  tableView.contentInset.bottom = AppDimensions.BottomButton.bottomBarDefaultHeight - 20
 		  UIView.performWithoutAnimation {
 			   tableView.layoutIfNeeded()
 			   self.view.layoutIfNeeded()
@@ -784,7 +784,7 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
      }
      
      func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-		  return indexPath.section == 0 ? U.UIHelper.AppDimensions.ContenTypeCells.heightOfTopHelperCellBanner : U.UIHelper.AppDimensions.ContenTypeCells.heightOfRowOfMediaContentType
+		  return indexPath.section == 0 ? AppDimensions.ContenTypeCells.heightOfTopHelperCellBanner : AppDimensions.ContenTypeCells.heightOfRowOfMediaContentType
      }
      
      func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -821,8 +821,8 @@ extension DeepCleaningViewController {
      
      private func setupUI() {
 		  
-		  dateSelectContainerHeigntConstraint.constant = U.UIHelper.AppDimensions.dateSelectableHeight
-		  bottomContainerHeightConstraint.constant = U.UIHelper.AppDimensions.bottomBarDefaultHeight
+		  dateSelectContainerHeigntConstraint.constant = AppDimensions.DateSelectController.dateSelectableHeight
+		  bottomContainerHeightConstraint.constant = AppDimensions.BottomButton.bottomBarDefaultHeight
      }
      
      private func setupDateInterval() {
@@ -909,8 +909,7 @@ extension DeepCleaningViewController {
 		  segue.interactiveHide = true
 		  segue.messageView.configureNoDropShadow()
 		  
-		  let height = selectedType == .lowerDateSelectable ? U.UIHelper.AppDimensions.DateSelectController.datePickerContainerHeightLower :
-		  U.UIHelper.AppDimensions.DateSelectController.datePickerContainerHeightUper
+		  let height = selectedType == .lowerDateSelectable ? AppDimensions.DateSelectController.datePickerContainerHeightLower : AppDimensions.DateSelectController.datePickerContainerHeightUper
 		  
 		  segue.messageView.backgroundHeight = height
 		  
@@ -1059,9 +1058,9 @@ extension DeepCleaningViewController {
 	 }
 	 
 	 private func showBottomButtonBar() {
-		  bottomContainerHeightConstraint.constant = U.UIHelper.AppDimensions.bottomBarDefaultHeight
+		  bottomContainerHeightConstraint.constant = AppDimensions.BottomButton.bottomBarDefaultHeight
 		  U.animate(0.35) {
-			   self.tableView.contentInset.bottom =  U.UIHelper.AppDimensions.bottomBarDefaultHeight - 30
+			   self.tableView.contentInset.bottom =  AppDimensions.BottomButton.bottomBarDefaultHeight - 30
 			   self.tableView.layoutIfNeeded()
 			   self.view.layoutIfNeeded()
 		  }
@@ -1079,8 +1078,8 @@ extension DeepCleaningViewController {
 	 private func handleButtonStateActive() {
 		  
 		  let selectedAssetsCount = deepCleanModel.objects.values.flatMap({$0.selectedAssetsCollectionID}).count
-		  bottomContainerHeightConstraint.constant = selectedAssetsCount > 0 ? U.UIHelper.AppDimensions.bottomBarDefaultHeight : 0
-		  self.tableView.contentInset.bottom = selectedAssetsCount > 0 ? U.UIHelper.AppDimensions.bottomBarDefaultHeight - 20 : 0
+		  bottomContainerHeightConstraint.constant = selectedAssetsCount > 0 ? AppDimensions.BottomButton.bottomBarDefaultHeight : 0
+		  self.tableView.contentInset.bottom = selectedAssetsCount > 0 ? AppDimensions.BottomButton.bottomBarDefaultHeight - 20 : 0
 		  
 		  U.animate(0.5) {
 			   self.tableView.layoutIfNeeded()

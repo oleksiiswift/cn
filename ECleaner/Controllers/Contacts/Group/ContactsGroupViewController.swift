@@ -291,7 +291,7 @@ extension ContactsGroupViewController {
 			return
 		}
 		
-		let calculatedBottomButtonHeight: CGFloat = U.UIHelper.AppDimensions.bottomBarDefaultHeight
+		let calculatedBottomButtonHeight: CGFloat = AppDimensions.BottomButton.bottomBarDefaultHeight
 		bottomButtonHeightConstraint.constant = !self.contactGroupListDataSource.selectedSections.isEmpty ? calculatedBottomButtonHeight : 0
 		
 		let buttonTitle: String = LocalizationService.Buttons.getButtonTitle(of: .mergeSelected).uppercased() + " (\(self.contactGroupListDataSource.selectedSections.count))"

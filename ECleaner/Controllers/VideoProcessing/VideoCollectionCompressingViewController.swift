@@ -319,7 +319,7 @@ extension VideoCollectionCompressingViewController {
 	
 	private func setupUI() {
 		
-		self.navigationControllerHeightConstraint.constant = U.UIHelper.AppDimensions.NavigationBar.navigationBarHeight
+		self.navigationControllerHeightConstraint.constant = AppDimensions.NavigationBar.navigationBarHeight
 		self.bottomMenuHeightConstraint.constant = 0
 		self.bottomButtonView.setImage(I.systemItems.defaultItems.compress, with: CGSize(width: 24, height: 22))
 	}

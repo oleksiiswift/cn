@@ -62,11 +62,11 @@ extension ExportContactsViewController: Themeble {
     
     private func setupUI() {
         
-		let containerHeight: CGFloat = U.UIHelper.AppDimensions.Contacts.ExportModalController.controllerHeight
+		let containerHeight: CGFloat = AppDimensions.ContactsController.ExportModalController.controllerHeight
         self.view.frame = CGRect(x: 0, y: 0, width: U.screenWidth, height: containerHeight)
         mainContainerHeightConstraint.constant = containerHeight
-		bottomButtonMenuHeightConstraint.constant = U.UIHelper.AppDimensions.Contacts.ExportModalController.bottomButtonViewHeight
-		bottomButtonView.setButtonHeight(U.UIHelper.AppDimensions.bottomBarButtonDefaultHeight)
+		bottomButtonMenuHeightConstraint.constant = AppDimensions.ContactsController.ExportModalController.bottomButtonViewHeight
+		bottomButtonView.setButtonHeight(AppDimensions.BottomButton.bottomBarButtonDefaultHeight)
 		
         mainContainerView.cornerSelectRadiusView(corners: [.topLeft, .topRight], radius: 20)
         topShevronView.setCorner(3)

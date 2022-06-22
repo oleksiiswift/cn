@@ -71,7 +71,7 @@ extension DropDownMenuViewController {
     
     private func calculateMenuContentSize() {
 		let itemsCount = CGFloat(menuSectionItems.compactMap({$0}).count)
-		var viewWidth: CGFloat = U.UIHelper.AppDimensions.DropDounMenu.menuWidth
+		var viewWidth: CGFloat = AppDimensions.DropDounMenu.menuWidth
         let viewHeight: CGFloat = itemsCount * 39
 		let flatItems = menuSectionItems.compactMap({$0})
         for item in flatItems {

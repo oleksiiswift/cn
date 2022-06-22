@@ -41,10 +41,10 @@ extension ContentBannerTableViewCell {
 		/// `title labels`
 		let gradientColors = info.gradientColors.compactMap({$0.cgColor})
 
-		let gradientLayer = U.UIHelper.Manager.getGradientLayer(bounds: descriptionSubtitleTextLabel.bounds,
+		let gradientLayer = Utils.Manager.getGradientLayer(bounds: descriptionSubtitleTextLabel.bounds,
 																colors: gradientColors,
 																startPoint: .topLeft, endPoint: .bottomRight)
-		let gradientColor = U.UIHelper.Manager.gradientColor(bounds: descriptionSubtitleTextLabel.bounds, gradientLayer: gradientLayer)
+		let gradientColor = Utils.Manager.gradientColor(bounds: descriptionSubtitleTextLabel.bounds, gradientLayer: gradientLayer)
 		let firstSubtitleAttributes: [NSAttributedString.Key : Any] = [.font: FontManager.bannerFont(of: .descriptionFirstTitle),
 																	   .foregroundColor: gradientColor!]
 		let secondSubtitleAttributes: [NSAttributedString.Key : Any] = [.font: FontManager.bannerFont(of: .descriptionSecontTitle),
@@ -55,10 +55,10 @@ extension ContentBannerTableViewCell {
 		
 		descriptionSubtitleTextLabel.attributedText = attributedString
 		
-		let gradientLayerTitle = U.UIHelper.Manager.getGradientLayer(bounds: descriptionTitleTextLabel.bounds,
+		let gradientLayerTitle = Utils.Manager.getGradientLayer(bounds: descriptionTitleTextLabel.bounds,
 																colors: gradientColors,
 																startPoint: .topLeft, endPoint: .bottomRight)
-		let gradientTitleColor = U.UIHelper.Manager.gradientColor(bounds: descriptionTitleTextLabel.bounds, gradientLayer: gradientLayerTitle)
+		let gradientTitleColor = Utils.Manager.gradientColor(bounds: descriptionTitleTextLabel.bounds, gradientLayer: gradientLayerTitle)
 		descriptionTitleTextLabel.textColor = gradientTitleColor
 		titleTextLabel.text = info.title
 		subtitleTextLabel.text = info.subtitle
@@ -69,7 +69,7 @@ extension ContentBannerTableViewCell {
 		
 		/// `rounded view`
 		
-		let roundedViewSize = U.UIHelper.AppDimensions.HelperBanner.roundedImageViewSize
+		let roundedViewSize = AppDimensions.HelperBanner.roundedImageViewSize
 		reuseShadowViewWidthConstraint.constant = roundedViewSize
 		let defaultSize = CGSize(width: roundedViewSize * 0.4, height: roundedViewSize * 0.4)
 		let imageSize = info.infoImage.getPreservingAspectRationScaleImageSize(from: defaultSize)
@@ -83,10 +83,10 @@ extension ContentBannerTableViewCell {
 		
 		switch content {
 			case .compress:
-				setHelperImageSize(from: U.UIHelper.AppDimensions.HelperBanner.cornerHelperImageSize, of: info.helperImage)
+				setHelperImageSize(from: AppDimensions.HelperBanner.cornerHelperImageSize, of: info.helperImage)
 				helperImageViewTrailingConstraint.constant = 0
 			case .backup:
-				setHelperImageSize(from: U.UIHelper.AppDimensions.HelperBanner.offsetHelperImageSize, of: info.helperImage)
+				setHelperImageSize(from: AppDimensions.HelperBanner.offsetHelperImageSize, of: info.helperImage)
 				helperImageViewTrailingConstraint.constant = 15
 			default:
 				return
