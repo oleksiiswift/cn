@@ -59,7 +59,7 @@ class BottomButtonBarView: UIView {
         containerView.frame = self.bounds
         containerView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
 		
-		self.setButtonHeight(U.UIHelper.AppDimensions.bottomBarButtonDefaultHeight)
+		self.setButtonHeight(AppDimensions.BottomButton.bottomBarButtonDefaultHeight)
         
 		self.backgroundColor = .clear
 		self.activityIndicatorView.color = activityIndicatorColor
@@ -184,6 +184,11 @@ class BottomBarButtonItem: UIButton {
 	public func setButtonImage(image: UIImage, size: CGSize = CGSize(width: 18, height: 22)) {
 		self.addLeftImageWithFixLeft(spacing: imageSpacing, size: size, image: image)
 	}
+	
+	public func setbuttonAvailible(_ availible: Bool) {
+		self.isEnabled = availible
+		self.alpha = availible ? 1.0 : 0.6
+	}
 }
 
 extension BottomButtonBarView {
@@ -220,6 +225,55 @@ extension BottomBarButtonItem {
 		if let imageView = self.subviews.first(where: {$0.tag == 66613}) {
 			imageView.layer.removeAnimation(forKey: "spin")
 		}
+	}
+}
+
+extension BottomBarButtonItem {
+	
+	public func animateShakeHello() {
+		
+		U.delay(10) {
+			self.shakeWith(duration: 4, angle: 45, yOffset: 0)
+			self.animateShakeHello()
+		}
+	}
+	
+	private func shakeWith(duration: Double, angle: CGFloat, yOffset: CGFloat) {
+		   
+		guard let imageView = self.subviews.first(where: {$0.tag == 66613})  else { return }
+		   
+		   let numberOfFrames: Double = 6
+		   let frameDuration = Double(1/numberOfFrames)
+		
+		   UIView.animateKeyframes(withDuration: duration, delay: 0, options: [],
+			 animations: {
+			   UIView.addKeyframe(withRelativeStartTime: 0.0,
+								  relativeDuration: frameDuration) {
+				   imageView.transform = CGAffineTransform(rotationAngle: -angle)
+			   }
+			   UIView.addKeyframe(withRelativeStartTime: frameDuration,
+								  relativeDuration: frameDuration) {
+				   imageView.transform = CGAffineTransform(rotationAngle: +angle)
+			   }
+			   UIView.addKeyframe(withRelativeStartTime: frameDuration*2,
+								  relativeDuration: frameDuration) {
+				   imageView.transform = CGAffineTransform(rotationAngle: -angle)
+			   }
+			   UIView.addKeyframe(withRelativeStartTime: frameDuration*3,
+								  relativeDuration: frameDuration) {
+				   imageView.transform = CGAffineTransform(rotationAngle: +angle)
+			   }
+			   UIView.addKeyframe(withRelativeStartTime: frameDuration*4,
+								  relativeDuration: frameDuration) {
+				   imageView.transform = CGAffineTransform(rotationAngle: -angle)
+			   }
+			   UIView.addKeyframe(withRelativeStartTime: frameDuration*5,
+								  relativeDuration: frameDuration) {
+				   imageView.transform = CGAffineTransform.identity
+			   }
+			 },
+			 completion: nil
+		   )
 	}
 }
 

@@ -34,54 +34,6 @@ class ContactsManager {
 		CNContactImageDataAvailableKey as CNKeyDescriptor,
 		CNContactImageDataKey as CNKeyDescriptor
 	]
-	
-//    MARK: - contacts store auth status -
-		/// auth for contacts data
-	private func checkContactStoreAuthStatus(completion: @escaping(_ grantAccess: Bool) -> Void) {
-		completion(CNContactStore.authorizationStatus(for: .contacts) == .authorized)
-	}
-	
-		/// request access for user contacts
-	private func requestAccesss(_ requestGranted: @escaping(Bool, Error?) -> ()) {
-		CNContactStore().requestAccess(for: .contacts) { grandted, error in
-			requestGranted(grandted, error)
-		}
-	}
-	
-		/// `public external status check metods
-		/// check status and if restricted returned to settings or ask for permision
-	public func checkStatus(completionHandler: @escaping ([String: [CNContact]]) -> ()) {
-		
-		switch CNContactStore.authorizationStatus(for: .contacts) {
-			case .denied, .restricted:
-				A.showResrictedAlert(by: .contactsRestricted) {}
-			case .notDetermined:
-				self.requestAccesss { [unowned self] granted, error in
-					self.checkStatus(completionHandler: completionHandler)
-				}
-			case .authorized:
-				self.contactsProcessingStore()
-			@unknown default:
-				A.showResrictedAlert(by: .contactsRestricted) {}
-		}
-	}
-	
-	private var isStoreOpen: Bool {
-		
-		switch CNContactStore.authorizationStatus(for: .contacts) {
-				
-			case .denied, .restricted:
-				return false
-			case .notDetermined:
-				self.requestAccesss { granted, error in }
-				return false
-			case .authorized:
-				return true
-			@unknown default:
-				A.showResrictedAlert(by: .contactsRestricted) {}
-		}
-		return false
-	}
 }
 
 //		MARK: - fetching contacts -
@@ -102,20 +54,6 @@ extension ContactsManager {
 			debugPrint(error.localizedDescription)
 			completionHandler(.failure(error))
 		}
-	}
-	
-		/// `all containers`
-	private func getContactsContainers() -> [CNContainer] {
-		
-		let contactStore = CNContactStore()
-		var contactsContainers: [CNContainer] = []
-		
-		do {
-			contactsContainers = try contactStore.containers(matching: nil)
-		} catch {
-			self.checkStatus { _ in }
-		}
-		return contactsContainers
 	}
 	
 		/// `sort contacts` by alphabetical results (helper private function)
@@ -175,7 +113,7 @@ extension ContactsManager {
 		/// fetch all contacts
 	public func getAllContacts(_ completionHandler: @escaping ([CNContact]) -> Void) {
 		
-		guard isStoreOpen else { return }
+		 guard ContactsPermissions().authorized else { return }
 		
 		U.BG {
 			self.fetchContacts(keys: self.fetchingKeys) { result in
@@ -196,22 +134,22 @@ extension ContactsManager {
 		let predicate = CNContact.predicateForContacts(withIdentifiers: identifiers)
 		var contacts: [CNContact] = []
 		
-		if isStoreOpen {
-			let contactStore: CNContactStore = CNContactStore()
-			
-			do {
-				contacts = try contactStore.unifiedContacts(matching: predicate, keysToFetch: self.fetchingKeys)
-				if !contacts.isEmpty {
-					complationHandler(contacts)
-				}
-			} catch {
-				complationHandler([])
+		guard ContactsPermissions().authorized else { return }
+		let contactStore: CNContactStore = CNContactStore()
+		
+		do {
+			contacts = try contactStore.unifiedContacts(matching: predicate, keysToFetch: self.fetchingKeys)
+			if !contacts.isEmpty {
+				complationHandler(contacts)
 			}
+		} catch {
+			complationHandler([])
 		}
+		
 	}
 	
 	
-	private func contactsProcessingStore() {
+	public func contactsProcessingStore() {
 		
 		self.getAllContacts { contacts in
 			U.UI {
@@ -330,7 +268,7 @@ extension ContactsManager {
 														   duplicatedEmailGrops: @escaping ([ContactsGroup]) -> Void) {
 		
 		self.getAllContacts { contacts in
-			var numbersOfOperations = 4
+			var numbersOfOperations = 0
 				/// returned contacts all containers
 			allContacts(contacts)
 			

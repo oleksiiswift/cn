@@ -33,7 +33,6 @@ class SearchBarView: UIView {
         self.setupSearchBar()
         self.updateColors()
         self.setupCancelButton()
-        
     }
     
     override init(frame: CGRect) {
@@ -53,11 +52,10 @@ class SearchBarView: UIView {
         U.mainBundle.loadNibNamed(C.identifiers.views.searchBar, owner: self, options: nil)
     }
     
-    
     private func configure() {
         
-		cancelButtonHeightConstraint.constant = U.UIHelper.AppDimensions.Contacts.SearchBar.searchBarHeight
-		searchBarBottomConstraint.constant = U.UIHelper.AppDimensions.Contacts.SearchBar.searchBarBottomInset
+		cancelButtonHeightConstraint.constant = AppDimensions.ContactsController.SearchBar.searchBarHeight
+		searchBarBottomConstraint.constant = AppDimensions.ContactsController.SearchBar.searchBarBottomInset
 		
         self.addSubview(containerView)
         containerView.frame = self.bounds
@@ -109,11 +107,11 @@ class SearchBarView: UIView {
     
     private func setupCancelButton() {
         
-        cancelButton.setTitle("cancel", for: .normal)
+		cancelButton.setTitle(LocalizationService.Buttons.getButtonTitle(of: .cancel), for: .normal)
         cancelButton.setTitleColor(theme.contactsTintColor, for: .normal)
 		cancelButton.titleLabel?.font = FontManager.contactsFont(of: .cancelButtonTitle)
         cancelButton.addTarget(self, action: #selector(didTapCancelButton), for: .touchUpInside)
-		cancelButtonWidthConstraint.constant = U.UIHelper.AppDimensions.Contacts.SearchBar.cancelButtonWidth
+		cancelButtonWidthConstraint.constant = AppDimensions.ContactsController.SearchBar.cancelButtonWidth
     }
     
     @objc func didTapCancelButton() {
@@ -133,7 +131,7 @@ class SearchBarView: UIView {
 		
         cancelButton.alpha = showCancelButton ? 1.0 : 0
         leadingButtonConstraint.constant = showCancelButton ? 0 : 20
-		trailingButtonConstraint.constant = showCancelButton ? 5 : -U.UIHelper.AppDimensions.Contacts.SearchBar.cancelButtonWidth
+		trailingButtonConstraint.constant = showCancelButton ? 5 : -AppDimensions.ContactsController.SearchBar.cancelButtonWidth
         
         if animated {
             U.animate(0.3) {
@@ -168,7 +166,7 @@ class SearchBarView: UIView {
 
     private func setupSearchBar() {
 
-        searchBar.placeholder = "  search contacts here..."
+		searchBar.placeholder = Localization.Main.Subtitles.searchHere
         searchBar.barTintColor = theme.innerBackgroundColor
         searchBar.showsCancelButton = false
                 

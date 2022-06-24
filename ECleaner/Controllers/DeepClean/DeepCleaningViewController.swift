@@ -163,8 +163,7 @@ extension DeepCleaningViewController {
 	 }
 
 	 private func showStopDeepCleanScanAlert() {
-		  
-		  A.showStopDeepCleanSearchProcess {
+		  SearchOperationStateHandler.alertHandler(for: .resetDeepCleanSearch) {
 			   self.stopAllCleaningOperation()
 		  }
 	 }
@@ -229,7 +228,7 @@ extension DeepCleaningViewController {
           
           guard let options = scansOptions else { return }
 		  
-		  let timer = ParkBenchTimer()
+		  let timer = BenchTimer()
 	 
 		  isDeepCleanSearchingProcessRunning = !isDeepCleanSearchingProcessRunning
 		  U.application.isIdleTimerDisabled = true
@@ -323,7 +322,7 @@ extension DeepCleaningViewController {
 			   self.photoManager.clearRequestsAfterDeepCleanProcessing()
 		  } emptyResultsHandler: {
 			   U.delay(1) {
-					ErrorHandler.shared.showEmptySearchResultsFor(.deepCleanSearchinResultsIsEmpty) {
+					ErrorHandler.shared.showEmptySearchResultsFor(.deepCleanResultsIsEmpty) {
 						 self.navigationController?.popViewController(animated: true)
 					}
 			   }
@@ -594,6 +593,12 @@ extension DeepCleaningViewController {
      private func calculateProgressPercentage(total: Int, current: Int, completion: @escaping (CGFloat) -> Void) {
 			   completion(CGFloat(Double(current) / Double(total)) * 100)
      }
+	 
+	 @objc func handleStopAnyAnalizeProcessing() {
+		  self.removeObservers()
+		  self.deepCleanManager.stopDeepCleanOperation()
+		  self.cleanAndResetAllValues()
+	 }
 }
 
 //      MARK: - show cleaning view controllers -
@@ -703,8 +708,8 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
           tableView.register(UINib(nibName: C.identifiers.xibs.contentTypeCell, bundle: nil), forCellReuseIdentifier: C.identifiers.cells.contentTypeCell)
           tableView.register(UINib(nibName: C.identifiers.xibs.cleanInfoCell, bundle: nil), forCellReuseIdentifier: C.identifiers.cells.cleanInfoCell)
           tableView.separatorStyle = .none
-		  tableView.contentInset.top = U.UIHelper.AppDimensions.ContenTypeCells.deepCleanMediaContentTypeTopInset
-		  tableView.contentInset.bottom = U.UIHelper.AppDimensions.bottomBarDefaultHeight - 20
+		  tableView.contentInset.top = AppDimensions.ContenTypeCells.deepCleanMediaContentTypeTopInset
+		  tableView.contentInset.bottom = AppDimensions.BottomButton.bottomBarDefaultHeight - 20
 		  UIView.performWithoutAnimation {
 			   tableView.layoutIfNeeded()
 			   self.view.layoutIfNeeded()
@@ -779,7 +784,7 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
      }
      
      func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-		  return indexPath.section == 0 ? U.UIHelper.AppDimensions.ContenTypeCells.heightOfTopHelperCellBanner : U.UIHelper.AppDimensions.ContenTypeCells.heightOfRowOfMediaContentType
+		  return indexPath.section == 0 ? AppDimensions.ContenTypeCells.heightOfTopHelperCellBanner : AppDimensions.ContenTypeCells.heightOfRowOfMediaContentType
      }
      
      func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -802,11 +807,11 @@ extension DeepCleaningViewController: UITableViewDelegate, UITableViewDataSource
                case 0:
                     view.frame = CGRect(x: 0, y: 0, width: U.screenWidth, height: 0)
                case 1:
-                    sectionTitleTextLabel.text = "PHOTOS_NAV_TITLE".localized()
+					sectionTitleTextLabel.text = MediaContentType.userPhoto.mediaContentTypeName
                case 2:
-                    sectionTitleTextLabel.text = "VIDEOS_NAV_TITLE".localized()
+					sectionTitleTextLabel.text = MediaContentType.userVideo.mediaContentTypeName
                default:
-                    sectionTitleTextLabel.text = "CONTACTS_NAV_TITLE".localized()
+					sectionTitleTextLabel.text = MediaContentType.userContacts.mediaContentTypeName
           }
           return view
      }
@@ -816,8 +821,8 @@ extension DeepCleaningViewController {
      
      private func setupUI() {
 		  
-		  dateSelectContainerHeigntConstraint.constant = U.UIHelper.AppDimensions.dateSelectableHeight
-		  bottomContainerHeightConstraint.constant = U.UIHelper.AppDimensions.bottomBarDefaultHeight
+		  dateSelectContainerHeigntConstraint.constant = AppDimensions.DateSelectController.dateSelectableHeight
+		  bottomContainerHeightConstraint.constant = AppDimensions.BottomButton.bottomBarDefaultHeight
      }
      
      private func setupDateInterval() {
@@ -847,6 +852,7 @@ extension DeepCleaningViewController {
 		  
 		  U.notificationCenter.addObserver(self, selector: #selector(recievFilesSizeNotification(_:)), name: .deepCleanPhotoFilesScan, object: nil)
 		  U.notificationCenter.addObserver(self, selector: #selector(recievFilesSizeNotification(_:)), name: .deepCleanVideoFilesScan, object: nil)
+		  U.notificationCenter.addObserver(self, selector: #selector(handleStopAnyAnalizeProcessing), name: .incomingRemoteActionRecived, object: nil)
      }
 	 
 	 private func removeObservers() {
@@ -884,9 +890,9 @@ extension DeepCleaningViewController {
      private func setupNavigation() {
           
           self.navigationController?.navigationBar.isHidden = true
-          
+		  let mainTitle = LocalizationService.Main.getNavigationTitle(for: .deepClean)
           navigationBar.setIsDropShadow = false
-          navigationBar.setupNavigation(title: "DEEP_CLEEN".localized(),
+		  navigationBar.setupNavigation(title: mainTitle,
                                         leftBarButtonImage: I.systemItems.navigationBarItems.back,
                                         rightBarButtonImage: nil,
 										contentType: .none,
@@ -903,8 +909,7 @@ extension DeepCleaningViewController {
 		  segue.interactiveHide = true
 		  segue.messageView.configureNoDropShadow()
 		  
-		  let height = selectedType == .lowerDateSelectable ? U.UIHelper.AppDimensions.DateSelectController.datePickerContainerHeightLower :
-		  U.UIHelper.AppDimensions.DateSelectController.datePickerContainerHeightUper
+		  let height = selectedType == .lowerDateSelectable ? AppDimensions.DateSelectController.datePickerContainerHeightLower : AppDimensions.DateSelectController.datePickerContainerHeightUper
 		  
 		  segue.messageView.backgroundHeight = height
 		  
@@ -942,18 +947,19 @@ extension DeepCleaningViewController {
 						 self.bottomButtonView.stopAnimatingButton()
 						 self.bottomButtonView.setButtonProcess(false)
 						 self.bottomButtonView.setImage(I.systemItems.defaultItems.deepClean, with: CGSize(width: 24, height: 22))
-						 self.bottomButtonView.title("start analyzing".uppercased())
+						 self.bottomButtonView.title(LocalizationService.DeepClean.getButtonTitle(by: .startAnalyzing))
+						 
 					case .willStartCleaning:
 						 self.bottomButtonView.stopAnimatingButton()
 						 self.bottomButtonView.setButtonProcess(true)
 					case .didCleaning:
 						 self.bottomButtonView.setImage(I.systemItems.defaultItems.refreshFull, with: CGSize(width: 24, height: 22))
 						 self.bottomButtonView.startAnimatingButton()
-						 self.bottomButtonView.title("stop analyzing".uppercased())
+						 self.bottomButtonView.title(LocalizationService.DeepClean.getButtonTitle(by: .stopAnalyzing))
 						 self.bottomButtonView.setButtonProcess(false)
 					case .willAvailibleDelete:
 						 self.bottomButtonView.stopAnimatingButton()
-						 self.bottomButtonView.title("start cleaning".uppercased())
+						 self.bottomButtonView.title(LocalizationService.DeepClean.getButtonTitle(by: .startCleaning))
 						 self.bottomButtonView.setButtonProcess(false)
 						 self.bottomButtonView.setImage(I.systemItems.defaultItems.delete, with: CGSize(width: 18, height: 24))
 					case .canclel:
@@ -1052,9 +1058,9 @@ extension DeepCleaningViewController {
 	 }
 	 
 	 private func showBottomButtonBar() {
-		  bottomContainerHeightConstraint.constant = U.UIHelper.AppDimensions.bottomBarDefaultHeight
+		  bottomContainerHeightConstraint.constant = AppDimensions.BottomButton.bottomBarDefaultHeight
 		  U.animate(0.35) {
-			   self.tableView.contentInset.bottom =  U.UIHelper.AppDimensions.bottomBarDefaultHeight - 30
+			   self.tableView.contentInset.bottom =  AppDimensions.BottomButton.bottomBarDefaultHeight - 30
 			   self.tableView.layoutIfNeeded()
 			   self.view.layoutIfNeeded()
 		  }
@@ -1072,8 +1078,8 @@ extension DeepCleaningViewController {
 	 private func handleButtonStateActive() {
 		  
 		  let selectedAssetsCount = deepCleanModel.objects.values.flatMap({$0.selectedAssetsCollectionID}).count
-		  bottomContainerHeightConstraint.constant = selectedAssetsCount > 0 ? U.UIHelper.AppDimensions.bottomBarDefaultHeight : 0
-		  self.tableView.contentInset.bottom = selectedAssetsCount > 0 ? U.UIHelper.AppDimensions.bottomBarDefaultHeight - 20 : 0
+		  bottomContainerHeightConstraint.constant = selectedAssetsCount > 0 ? AppDimensions.BottomButton.bottomBarDefaultHeight : 0
+		  self.tableView.contentInset.bottom = selectedAssetsCount > 0 ? AppDimensions.BottomButton.bottomBarDefaultHeight - 20 : 0
 		  
 		  U.animate(0.5) {
 			   self.tableView.layoutIfNeeded()
@@ -1109,7 +1115,11 @@ extension DeepCleaningViewController: BottomActionButtonDelegate {
 					self.progressAlert.closeForceController()
 					self.cleanAndResetAllValues()
 					U.delay(1) {
-						 AlertHandler.deepCleanCompleteStateHandler(for: errorsCount == 0 ? .deepCleanCompleteSuxxessfull : .deepCleanCompleteWithErrors)
+						 if errorsCount == 0 {
+							  DeepCleanCompleteStateHandler.alertHandler(for: .successfull)
+						 } else {
+							  ErrorHandler.shared.showDeepCleanErrorForkey(.error)
+						 }
 					}
 			   }
 		  } concelCompletionHandler: {
@@ -1117,7 +1127,7 @@ extension DeepCleaningViewController: BottomActionButtonDelegate {
 					self.progressAlert.closeForceController()
 					self.cleanAndResetAllValues()
 					U.delay(1) {
-						 AlertHandler.deepCleanCompleteStateHandler(for: .deepCleanCanceled)
+						 DeepCleanCompleteStateHandler.alertHandler(for: .canceled)
 					}
 			   }
 		  }
@@ -1194,7 +1204,7 @@ extension DeepCleaningViewController: NavigationBarDelegate {
      
      func didTapLeftBarButton(_ sender: UIButton) {
 		  if handleSearchingResults {
-			   A.showQuiteDeepCleanResults {
+			   SearchOperationStateHandler.alertHandler(for: .resetDeepCleanResults) {
 					self.updateMediaStoreDelegate?.didStartUpdatingMediaSpace(photo: S.phassetPhotoFilesSizes, video: S.phassetVideoFilesSizes)
 					self.navigationController?.popViewController(animated: true)
 			   }

@@ -21,19 +21,19 @@ enum ProcessingProgressOperationState {
 	func getTitle(by mediaType: PhotoMediaType, files: Int, selected: Int, progress: CGFloat) -> String {
 		switch self {
 			case .sleeping:
-				return "-"
+				return Localization.dash
 			case .prepare:
-				return "prepare for scanning"
+				return Localization.Main.ProcessingState.prepareForScanning
 			case .analyzing:
-				return "analyzing, please wait"
+				return Localization.Main.ProcessingState.analyzingWait
 			case .compare:
-				return "compare results"
+				return Localization.Main.ProcessingState.compare
 			case .progress:
-				return "\(progress.rounded().cleanValue)% - analyzing"
+				return "\(progress.rounded().cleanValue)% - \(Localization.Main.ProcessingState.anayzing)"
 			case .complete:
 				return ProcessingResultComplete.instance.resultProcessingComplete(mediaType, files: files)
 			case .result:
-				return "searching complete"
+				return Localization.Main.ProcessingState.searchingComplete
 			case .empty:
 				return ProcessingResultComplete.instance.emptyResultProcessingComplete(mediaType)
 			case .selected:
@@ -49,35 +49,35 @@ struct ProcessingResultComplete {
 	func selectedVsResultProcessing(_ mediaType: PhotoMediaType, files: Int, selected: Int) -> String {
 		switch mediaType {
 			case .similarPhotos:
-				return String("\(files) ") + "similar groups" + "(\(selected) selected photos)"
+				return String("\(files) ") + Localization.Main.ProcessingState.ByGrouping.similarGroups + "(\(selected) \(Localization.Main.ProcessingState.ByGrouping.selectedPhoto))"
 			case .duplicatedPhotos:
-				return String("\(files) ") + "duplicated groups" + "(\(selected) selected photos)"
+				return String("\(files) ") + Localization.Main.ProcessingState.ByGrouping.duplicatedGroups + "(\(selected) \(Localization.Main.ProcessingState.ByGrouping.selectedPhoto))"
 			case .singleScreenShots:
-				return String("\(files) ") + "files" + "(\(selected) selected photos)"
+				return String("\(files) ") + Localization.Main.ProcessingState.ByGrouping.files + "(\(selected) \(Localization.Main.ProcessingState.ByGrouping.selectedPhoto))"
 			case .singleLivePhotos:
-				return String("\(files) ") + "files" + "(\(selected) selected photos)"
+				return String("\(files) ") + Localization.Main.ProcessingState.ByGrouping.files + "(\(selected) \(Localization.Main.ProcessingState.ByGrouping.selectedPhoto))"
 			case .similarLivePhotos:
-				return String("\(files) ") + "similar groups" + "(\(selected) selected photos)"
+				return String("\(files) ") + Localization.Main.ProcessingState.ByGrouping.similarGroups + "(\(selected) \(Localization.Main.ProcessingState.ByGrouping.selectedPhoto))"
 			case .similarSelfies:
-				return String("\(files) ") + "similar groups" + "(\(selected) selected photos)"
+				return String("\(files) ") + Localization.Main.ProcessingState.ByGrouping.similarGroups + "(\(selected) \(Localization.Main.ProcessingState.ByGrouping.selectedPhoto))"
 			case .singleLargeVideos:
-				return String("\(files) ") + "files" + "(\(selected) selected videos)"
+				return String("\(files) ") + Localization.Main.ProcessingState.ByGrouping.files + "(\(selected) \(Localization.Main.ProcessingState.ByGrouping.selectedPhoto))"
 			case .duplicatedVideos:
-				return String("\(files) ") + "duplicated groups" + "(\(selected) selected videos)"
+				return String("\(files) ") + Localization.Main.ProcessingState.ByGrouping.duplicatedGroups + "(\(selected) \(Localization.Main.ProcessingState.ByGrouping.selectedVideo))"
 			case .similarVideos:
-				return String("\(files) ") + "similar groups" + "(\(selected) selected videos)"
+				return String("\(files) ") + Localization.Main.ProcessingState.ByGrouping.similarGroups + "(\(selected) \(Localization.Main.ProcessingState.ByGrouping.selectedVideo))"
 			case .singleScreenRecordings:
-				return String("\(files) ") + "files" + "(\(selected) selected videos)"
+				return String("\(files) ") + Localization.Main.ProcessingState.ByGrouping.files + "(\(selected) \(Localization.Main.ProcessingState.ByGrouping.selectedVideo))"
 			case .allContacts:
-				return String("\(files) ") + "contacts" + "(\(selected) selected contacts)"
+				return String("\(files) ") + Localization.Main.ProcessingState.ByGrouping.contacts + "(\(selected) \(Localization.Main.ProcessingState.ByGrouping.selectedContacts))"
 			case .emptyContacts:
-				return String("\(files) ") + "contacts" + "(\(selected) selected contacts)"
+				return String("\(files) ") + Localization.Main.ProcessingState.ByGrouping.contacts + "(\(selected) \(Localization.Main.ProcessingState.ByGrouping.selectedContacts))"
 			case .duplicatedContacts:
-				return String("\(files) ") + "duplicated contacts group" + "(\(selected) selected contacts)"
+				return String("\(files) ") + Localization.Main.ProcessingState.ByGrouping.duplicatedCotactsGroups + "(\(selected) \(Localization.Main.ProcessingState.ByGrouping.selectedContacts))"
 			case .duplicatedPhoneNumbers:
-				return String("\(files) ") + "duplicated contacts group" + "(\(selected) selected contacts)"
+				return String("\(files) ") + Localization.Main.ProcessingState.ByGrouping.duplicatedCotactsGroups + "(\(selected) \(Localization.Main.ProcessingState.ByGrouping.selectedVideo))"
 			case .duplicatedEmails:
-				return String("\(files) ") + "duplicated contacts group" + "(\(selected) selected contacts)"
+				return String("\(files) ") + Localization.Main.ProcessingState.ByGrouping.duplicatedCotactsGroups + "(\(selected) \(Localization.Main.ProcessingState.ByGrouping.selectedContacts))"
 			default:
 				return "none"
 		}
@@ -86,105 +86,105 @@ struct ProcessingResultComplete {
 	func selectedResultProcessing(_ mediaType: PhotoMediaType, files: Int, selected: Int) -> String {
 		switch mediaType {
 			case .similarPhotos:
-				return selected == 0 ? String("\(files) " + "similar groups") : "\(selected) selected photos"
+				return selected == 0 ? String("\(files) " + Localization.Main.ProcessingState.ByGrouping.similarGroups) : "\(selected) \(Localization.Main.ProcessingState.ByGrouping.selectedPhoto)"
 			case .duplicatedPhotos:
-				return selected == 0 ? String("\(files) ") + "duplicated groups" : "\(selected) selected photos"
+				return selected == 0 ? String("\(files) ") + Localization.Main.ProcessingState.ByGrouping.duplicatedGroups : "\(selected) \(Localization.Main.ProcessingState.ByGrouping.selectedPhoto)"
 			case .singleScreenShots:
-				return selected == 0 ? String("\(files) ") + "files" : "\(selected) selected photos"
+				return selected == 0 ? String("\(files) ") + Localization.Main.ProcessingState.ByGrouping.files : "\(selected) \(Localization.Main.ProcessingState.ByGrouping.selectedPhoto)"
 			case .singleLivePhotos:
-				return selected == 0 ? String("\(files) ") + "files" : "\(selected) selected photos"
+				return selected == 0 ? String("\(files) ") + Localization.Main.ProcessingState.ByGrouping.files : "\(selected) \(Localization.Main.ProcessingState.ByGrouping.selectedPhoto)"
 			case .similarLivePhotos:
-				return selected == 0 ? String("\(files) ") + "similar groups" : "\(selected) selected photos"
+				return selected == 0 ? String("\(files) ") + Localization.Main.ProcessingState.ByGrouping.similarGroups : "\(selected) \(Localization.Main.ProcessingState.ByGrouping.selectedPhoto)"
 			case .similarSelfies:
-				return selected == 0 ? String("\(files) ") + "similar groups" : "\(selected) selected photos"
+				return selected == 0 ? String("\(files) ") + Localization.Main.ProcessingState.ByGrouping.similarGroups : "\(selected) \(Localization.Main.ProcessingState.ByGrouping.selectedPhoto)"
 			case .singleLargeVideos:
-				return selected == 0 ? String("\(files) ") + "files" : "\(selected) selected videos"
+				return selected == 0 ? String("\(files) ") + Localization.Main.ProcessingState.ByGrouping.files : "\(selected) \(Localization.Main.ProcessingState.ByGrouping.selectedVideo)"
 			case .duplicatedVideos:
-				return selected == 0 ? String("\(files) ") + "duplicated groups" : "\(selected) selected videos"
+				return selected == 0 ? String("\(files) ") + Localization.Main.ProcessingState.ByGrouping.duplicatedGroups : "\(selected) \(Localization.Main.ProcessingState.ByGrouping.selectedVideo)"
 			case .similarVideos:
-				return selected == 0 ? String("\(files) ") + "similar groups" : "\(selected) selected videos"
+				return selected == 0 ? String("\(files) ") + Localization.Main.ProcessingState.ByGrouping.similarGroups : "\(selected) \(Localization.Main.ProcessingState.ByGrouping.selectedVideo)"
 			case .singleScreenRecordings:
-				return selected == 0 ? String("\(files) ") + "files" : "\(selected) selected videos"
+				return selected == 0 ? String("\(files) ") + Localization.Main.ProcessingState.ByGrouping.files : "\(selected) \(Localization.Main.ProcessingState.ByGrouping.selectedVideo)"
 			case .allContacts:
-				return selected == 0 ? String("\(files) ") + "contacts" : "\(selected) selected contacts"
+				return selected == 0 ? String("\(files) ") + Localization.Main.ProcessingState.ByGrouping.contacts : "\(selected) \(Localization.Main.ProcessingState.ByGrouping.selectedContacts)"
 			case .emptyContacts:
-				return selected == 0 ? String("\(files) ") + "contacts" : "\(selected) selected contacts"
+				return selected == 0 ? String("\(files) ") + Localization.Main.ProcessingState.ByGrouping.contacts : "\(selected) \(Localization.Main.ProcessingState.ByGrouping.selectedContacts)"
 			case .duplicatedContacts:
-				return selected == 0 ? String("\(files) ") + "duplicated contacts group" : "\(selected) selected contacts"
+				return selected == 0 ? String("\(files) ") + Localization.Main.ProcessingState.ByGrouping.duplicatedCotactsGroups : "\(selected) \(Localization.Main.ProcessingState.ByGrouping.selectedContacts)"
 			case .duplicatedPhoneNumbers:
-				return selected == 0 ? String("\(files) ") + "duplicated contacts group" : "\(selected) selected contacts"
+				return selected == 0 ? String("\(files) ") + Localization.Main.ProcessingState.ByGrouping.duplicatedCotactsGroups : "\(selected) \(Localization.Main.ProcessingState.ByGrouping.selectedContacts)"
 			case .duplicatedEmails:
-				return selected == 0 ? String("\(files) ") + "duplicated contacts group" : "\(selected) selected contacts"
+				return selected == 0 ? String("\(files) ") + Localization.Main.ProcessingState.ByGrouping.duplicatedCotactsGroups : "\(selected) \(Localization.Main.ProcessingState.ByGrouping.selectedContacts)"
 			default:
-				return "none"
+				return Localization.none
 		}
 	}
 	
 	func resultProcessingComplete(_ mediaType: PhotoMediaType, files: Int) -> String {
 		switch mediaType {
 			case .similarPhotos:
-				return String("\(files) ") + "similar groups"
+				return String("\(files) ") + Localization.Main.ProcessingState.ByGrouping.similarGroups
 			case .duplicatedPhotos:
-				return String("\(files) ") + "duplicated groups"
+				return String("\(files) ") + Localization.Main.ProcessingState.ByGrouping.duplicatedGroups
 			case .singleScreenShots:
-				return String("\(files) ") + "files"
+				return String("\(files) ") + Localization.Main.ProcessingState.ByGrouping.files
 			case .singleLivePhotos:
-				return String("\(files) ") + "files"
+				return String("\(files) ") + Localization.Main.ProcessingState.ByGrouping.files
 			case .similarLivePhotos:
-				return String("\(files) ") + "similar groups"
+				return String("\(files) ") + Localization.Main.ProcessingState.ByGrouping.similarGroups
 			case .similarSelfies:
-				return String("\(files) ") + "similar groups"
+				return String("\(files) ") + Localization.Main.ProcessingState.ByGrouping.similarGroups
 			case .singleLargeVideos:
-				return String("\(files) ") + "files"
+				return String("\(files) ") + Localization.Main.ProcessingState.ByGrouping.files
 			case .duplicatedVideos:
-				return String("\(files) ") + "duplicated groups"
+				return String("\(files) ") + Localization.Main.ProcessingState.ByGrouping.duplicatedGroups
 			case .similarVideos:
-				return String("\(files) ") + "similar groups"
+				return String("\(files) ") + Localization.Main.ProcessingState.ByGrouping.similarGroups
 			case .singleScreenRecordings:
-				return String("\(files) ") + "files"
+				return String("\(files) ") + Localization.Main.ProcessingState.ByGrouping.files
 			case .allContacts:
-				return String("\(files) ") + "contacts"
+				return String("\(files) ") + Localization.Main.ProcessingState.ByGrouping.contacts
 			case .emptyContacts:
-				return String("\(files) ") + "contacts"
+				return String("\(files) ") + Localization.Main.ProcessingState.ByGrouping.contacts
 			case .duplicatedContacts:
-				return String("\(files) ") + "duplicated contacts group"
+				return String("\(files) ") + Localization.Main.ProcessingState.ByGrouping.duplicatedCotactsGroups
 			case .duplicatedPhoneNumbers:
-				return String("\(files) ") + "duplicated contacts group"
+				return String("\(files) ") + Localization.Main.ProcessingState.ByGrouping.duplicatedCotactsGroups
 			case .duplicatedEmails:
-				return String("\(files) ") + "duplicated contacts group"
+				return String("\(files) ") + Localization.Main.ProcessingState.ByGrouping.duplicatedCotactsGroups
 			default:
-				return "none"
+				return Localization.none
 		}
 	}
 	
 	func emptyResultProcessingComplete(_ mediaType: PhotoMediaType) -> String {
 		switch mediaType {
 			case .similarPhotos:
-				return "no similiar photos"
+				return Localization.Main.ProcessingState.ByEmptyState.emptySimilarPhoto
 			case .duplicatedPhotos:
-				return "no duplicated photos"
+				return Localization.Main.ProcessingState.ByEmptyState.emptyDuplicatedPhoto
 			case .singleScreenShots:
-				return "np screen shots"
+				return Localization.Main.ProcessingState.ByEmptyState.emptyScreenShots
 			case .singleLivePhotos:
-				return "no live photos"
+				return Localization.Main.ProcessingState.ByEmptyState.emptyLivePhoto
 			case .similarLivePhotos:
-				return "no similar live photos"
+				return Localization.Main.ProcessingState.ByEmptyState.emptySimilarLivePhotos
 			case .similarSelfies:
-				return "no similar selfies"
+				return Localization.Main.ProcessingState.ByEmptyState.emptySimilarSelfies
 			case .singleLargeVideos:
-				return "no large videos"
+				return Localization.Main.ProcessingState.ByEmptyState.emptyLargeVideos
 			case .duplicatedVideos:
-				return "no duplicated videos"
+				return Localization.Main.ProcessingState.ByEmptyState.noDuplicatedVideo
 			case .similarVideos:
-				return "no similar videos"
+				return Localization.Main.ProcessingState.ByEmptyState.noSimilarVideo
 			case .singleScreenRecordings:
-				return "no screen recordings"
+				return Localization.Main.ProcessingState.ByEmptyState.noScreenRecording
 			case .allContacts:
-				return "no contacts"
+				return Localization.Main.ProcessingState.ByEmptyState.noContacts
 			case .emptyContacts, .duplicatedContacts, .duplicatedPhoneNumbers, .duplicatedEmails:
-				return "no contacts to clean"
+				return Localization.Main.ProcessingState.ByEmptyState.noContactsToClean
 			default:
-				return "none"
+				return Localization.none
 		}
 	}
 }

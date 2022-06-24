@@ -82,8 +82,8 @@ extension SimpleAssetsListViewController {
 		
 		guard let selectedPHAssets = self.collectionView.indexPathsForSelectedItems else { return }
 		
-		A.deletePHAssets(of: self.contentType, of: selectedPHAssets.count > 1 ? .many : .one) {
-			let progress: ProgressAlertType = self.contentType == .userPhoto ? .deletePhotos : .deleteVideos
+		AlertManager.showDeleteAlert(with: self.contentType, of: .getRaw(from: selectedPHAssets.count)) {
+			let progress: ProgressAlertType = .progressDeleteAlertType(self.contentType)
 			self.progrssAlertController.showSimpleProgressAlerControllerBar(of: progress, from: self)
 			U.delay(1) {
 				self.deleteSelectedAssets()
@@ -154,11 +154,11 @@ extension SimpleAssetsListViewController {
 
     private func createCellContextMenu(for asset: PHAsset, at indexPath: IndexPath) -> UIMenu {
         
-		let fullScreenPreviewAction = UIAction(title: "full screen preview", image: I.systemItems.defaultItems.arrowUP) { _ in
+		let fullScreenPreviewAction = UIAction(title: LocalizationService.Buttons.getButtonTitle(of: .fullPreview), image: I.systemItems.defaultItems.arrowUP) { _ in
 			self.showFullScreenAssetPreviewAndFocus(at: indexPath)
         }
         
-		let deleteAssetAction = UIAction(title: "delete", image: I.systemItems.defaultItems.trashBin, attributes: .destructive) { _ in
+		let deleteAssetAction = UIAction(title: LocalizationService.Buttons.getButtonTitle(of: .delete), image: I.systemItems.defaultItems.trashBin, attributes: .destructive) { _ in
 			self.deleteSinglePhasset(at: indexPath)
         }
         
@@ -274,22 +274,13 @@ extension SimpleAssetsListViewController {
 		}
 		self.handleActionButtons()
 	}
-	
-	private func didSelectAll() {
-		
-		guard isDeepCleaningSelectableFlow else { return }
-		
-		A.showSelectAllStarterAlert(for: mediaType) {
-			self.setCollection(selected: true)
-		}
-	}
 }
 
 //		MARK: - handle select ui elements (bottom buttons, navigation)
 extension SimpleAssetsListViewController {
 	
 	private func handleSelectAllButtonState() {
-		let rightButtonTitle = isSelectedAllPhassets ? "deselect all" : "select all"
+		let rightButtonTitle = LocalizationService.Buttons.getButtonTitle(of: isSelectedAllPhassets ? .deselectAll : .selectAll)
 		self.navigationBar.changeHotRightTitle(newTitle: rightButtonTitle)
 	}
 	
@@ -313,17 +304,17 @@ extension SimpleAssetsListViewController {
 		guard !isDeepCleaningSelectableFlow else { return }
 		
 		if let selectedItems = collectionView.indexPathsForSelectedItems {
-			bottomMenuHeightConstraint.constant = selectedItems.count > 0 ? U.UIHelper.AppDimensions.bottomBarDefaultHeight : 0
+			bottomMenuHeightConstraint.constant = selectedItems.count > 0 ? AppDimensions.BottomButton.bottomBarDefaultHeight : 0
 			
 			switch mediaType {
 				case .singleRecentlyDeletedPhotos, .singleRecentlyDeletedVideos:
 					bottomButtonView.title("recover selected (\(selectedItems.count)")
 				default:
-					bottomButtonView.title("delete selected (\(selectedItems.count))")
+					bottomButtonView.title("\(LocalizationService.Buttons.getButtonTitle(of: .deleteSelected)) (\(selectedItems.count))")
 			}
 			
 			U.animate(0.35) {
-				self.collectionView.contentInset.bottom = selectedItems.count > 0 ? U.UIHelper.AppDimensions.bottomBarDefaultHeight + 10 + U.bottomSafeAreaHeight : 5
+				self.collectionView.contentInset.bottom = selectedItems.count > 0 ? AppDimensions.BottomButton.bottomBarDefaultHeight + 10 + U.bottomSafeAreaHeight : 5
 				self.collectionView.layoutIfNeeded()
 				self.view.layoutIfNeeded()
 			}
@@ -421,7 +412,7 @@ extension SimpleAssetsListViewController {
 	func setupUI() {
 		
 		bottomMenuHeightConstraint.constant = 0
-		navigationBarHeightConstraint.constant = U.UIHelper.AppDimensions.NavigationBar.navigationBarHeight
+		navigationBarHeightConstraint.constant = AppDimensions.NavigationBar.navigationBarHeight
 		
 		switch mediaType {
 			case .singleRecentlyDeletedPhotos, .singleRecentlyDeletedVideos:
@@ -438,7 +429,7 @@ extension SimpleAssetsListViewController {
 									  rightBarButtonImage: nil,
 									  contentType: contentType,
 									  leftButtonTitle: nil,
-									  rightButtonTitle: isSelectedAllPhassets ? "deselect all" : "select all")
+									  rightButtonTitle: LocalizationService.Buttons.getButtonTitle(of: isSelectedAllPhassets ? .deselectAll : .selectAll))
 	}
 	
 	private func setupDelegate() {
@@ -462,11 +453,11 @@ extension SimpleAssetsListViewController: UICollectionViewDelegate, UICollection
 				flowLayout.isSquare = true
 				flowLayout.cellsPerRow = 2
 			case .singleScreenRecordings:
-				flowLayout.itemHieght = U.UIHelper.AppDimensions.CollectionItemSize.singleCollectionScreenRecordingItemSize
+				flowLayout.itemHieght = AppDimensions.CollectionItemSize.singleCollectionScreenRecordingItemSize
 			case .singleScreenShots:
-				flowLayout.itemHieght = U.UIHelper.AppDimensions.CollectionItemSize.singleCollectionScreenShotsItemSize
+				flowLayout.itemHieght = AppDimensions.CollectionItemSize.singleCollectionScreenShotsItemSize
 			case .singleLivePhotos:
-				flowLayout.itemHieght = U.UIHelper.AppDimensions.CollectionItemSize.singleCollectionLivePhotoItemSize
+				flowLayout.itemHieght = AppDimensions.CollectionItemSize.singleCollectionLivePhotoItemSize
 			default:
 				flowLayout.itemHieght = ((U.screenWidth - 30) / 3) / U.ratio
 		}

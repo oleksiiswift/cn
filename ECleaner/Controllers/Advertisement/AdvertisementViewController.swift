@@ -54,7 +54,6 @@ extension AdvertisementViewController: UpdateColorsDelegate {
     }
     
     func setupNavigation() {
-        
         self.navigationController?.updateNavigationColors()
     }
 }
@@ -63,8 +62,12 @@ extension AdvertisementViewController {
 	
 	private func setupAdvertisementView() {
 		
-		let advertisementHeigh: CGFloat = S.premium.allowAdvertisementBanner ? 50 : -U.bottomSafeAreaHeight
+		let advertisementHeigh: CGFloat = S.inAppPurchase.allowAdvertisementBanner ? 50 : -U.bottomSafeAreaHeight
 		let containerHeignt = advertisementHeigh + U.bottomSafeAreaHeight
 		advertisementHightConstraint.constant = containerHeignt
 	}
+}
+extension AdvertisementViewController {
+	
+	
 }

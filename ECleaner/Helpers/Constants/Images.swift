@@ -8,7 +8,7 @@
 import UIKit
 
 typealias I = Images
-class Images {
+struct Images {
 
     static let blank = UIImage(named: "")
     
@@ -135,4 +135,126 @@ class Images {
 		static let trashBtn = UIImage(systemName: "trash")
 		static let share = UIImage(systemName: "square.and.arrow.up")
     }
+}
+
+extension Images {
+	
+	public func getSettingsImages(for settings: SettingsModel) -> UIImage {
+		switch settings {
+			case .premium:
+				return UIImage()
+			case .largeVideos:
+				return UIImage(systemName: "video")!
+			case .dataStorage:
+				return UIImage(systemName: "tray.2")!
+			case .permissions:
+				return UIImage(systemName: "hand.raised")!
+			case .restore:
+				return UIImage(systemName: "purchased")!
+			case .support:
+				return UIImage(systemName: "captions.bubble")!
+			case .share:
+				return UIImage(systemName: "square.and.arrow.up.on.square")!
+			case .rate:
+				if #available(iOS 15.0, *) {
+					return UIImage(systemName: "star.bubble.fill")!
+				} else {
+					return UIImage(systemName: "star")!
+				}
+			case .privacypolicy:
+				if #available(iOS 15.0, *) {
+					return UIImage(systemName: "list.bullet.rectangle.portrait")!
+				} else {
+					return UIImage(systemName: "doc.text")!
+				}
+			case .termsOfUse:
+				return UIImage(systemName: "doc.on.clipboard")!
+			case .videoCompress:
+				return UIImage(systemName: "tray.2")!
+		}
+	}
+}
+
+
+extension Images {
+	
+	public static func getPermissionImage(for permission: Permission.PermissionType) -> UIImage {
+		switch permission {
+			case .notification:
+				return UIImage(systemName: "app.badge.fill")!
+			case .photolibrary:
+				if #available(iOS 15.0, *) {
+					return UIImage(systemName: "circle.hexagonpath.fill")!
+				} else {
+					return UIImage(systemName: "photo.fill")!
+				}
+			case .contacts:
+				return UIImage(systemName: "person.crop.square")!
+			case .tracking:
+				if #available(iOS 15.0, *) {
+					return UIImage(systemName: "app.connected.to.app.below.fill")!
+				} else {
+					return UIImage(systemName: "point.fill.topleft.down.curvedto.point.fill.bottomright.up")!
+				}
+			default:
+				if #available(iOS 15.0, *) {
+					return UIImage(systemName: "hand.raised.fill")!
+//					return UIImage(systemName: "rectangle.and.hand.point.up.left.fill")!
+				} else {
+					return UIImage(systemName: "hand.raised.fill")!
+				}
+		}
+	}
+}
+
+extension Images {
+	
+	public static func getNotificationActionSystemImages(by action: NotificationAction) -> String {
+		switch action {
+			case .deepClean:
+				return "paintbrush"
+			case .similarPhotoClean:
+				return "camera.on.rectangle"
+			case .duplicatedPhotoClean:
+				return "photo.circle" // dup photo
+			case .similiarVideoClean:
+				return "video.square" // sim vid
+			case .duplicatedVideoClean:
+				return "film.circle" // dup vide
+			case .duplicatedContactsClean:
+				return "person.crop.rectangle.stack" // contacts
+			case .photoScan:
+				return "camera.on.rectangle"
+			case .videoScan:
+				return "video"
+			case .contactsScan:
+				return "person.text.rectangle"
+			default:
+				return "paintbrush"
+		}
+	}
+}
+
+
+extension Images {
+	
+	public static func getMenuItemImages(_ action: MenuItemType) -> UIImage {
+		
+		switch action {
+			case .select:
+				return UIImage(systemName: "checkmark.circle")!
+			case .deselect:
+				return UIImage(systemName: "circle")!
+			case .layout:
+				return UIImage(systemName: "square.grid.2x2")!
+			case .share:
+				return UIImage(systemName: "square.and.arrow.up")!
+			case .edit:
+				return UIImage(systemName: "checkmark.circle")!
+			case .delete:
+				return UIImage(systemName: "trash")!
+			case .export:
+				return UIImage(systemName: "square.and.arrow.up")!
+		}
+	}
 }

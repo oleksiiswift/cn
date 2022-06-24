@@ -10,7 +10,7 @@ import UIKit
 class SettingsViewModel {
 	
 	private var sections: [SettingsSection]
-	public var controllerTitle = "Settings"
+	public var controllerTitle = LocalizationService.Main.getNavigationTitle(for: .settings)
 	
 	init(sections: [SettingsSection]) {
 		self.sections = sections

@@ -13,35 +13,22 @@ enum VideoCompressionErrorHandler: Error, LocalizedError {
 	case errorRemoveAudioComponent
 	case operationIsCanceled
 	
-	public var errorDescription: String? {
-		switch self {
-			case .noVideoFile:
-				return ErrorHandler.CompressionError.noVideoFile.errorMessage
-			case .compressedFailed(let error):
-				return error.localizedDescription
-			case .errorRemoveAudioComponent:
-				return ErrorHandler.CompressionError.removeAudio.errorMessage
-			case .operationIsCanceled:
-				return ErrorHandler.CompressionError.operationIsCanceled.errorMessage
-		}
-	}
-	
 	public func showErrorAlert(completionHandler: @escaping () -> Void) {
 		switch self {
 			case .noVideoFile:
-				ErrorHandler.shared.showCompressionErrorFor(.noVideoFile) {
+				ErrorHandler.shared.showCompressionError(.noVideoFile) {
 					completionHandler()
 				}
-			case .compressedFailed(_):
-				ErrorHandler.shared.showCompressionErrorFor(.compressionFailed) {
+			case .compressedFailed(let error):
+				ErrorHandler.shared.showCompressionError(.compressionFailed, error) {
 					completionHandler()
 				}
 			case .errorRemoveAudioComponent:
-				ErrorHandler.shared.showCompressionErrorFor(.removeAudio) {
+				ErrorHandler.shared.showCompressionError(.removeAudio) {
 					completionHandler()
 				}
 			case .operationIsCanceled:
-				ErrorHandler.shared.showCompressionErrorFor(.operationIsCanceled) {
+				ErrorHandler.shared.showCompressionError(.operationIsCanceled) {
 					completionHandler()
 				}
 		}

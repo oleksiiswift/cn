@@ -8,6 +8,10 @@
 import UIKit
 import Photos
 
+protocol ContentTypeCellDelegate {
+	func setCancelProcessOperaion(for cell: ContentTypeTableViewCell)
+}
+
 class ContentTypeTableViewCell: UITableViewCell {
     
 	@IBOutlet weak var reuseShadowView: ReuseShadowView!
@@ -18,6 +22,9 @@ class ContentTypeTableViewCell: UITableViewCell {
     @IBOutlet weak var contentSubtitleTextLabel: UILabel!
     @IBOutlet weak var horizontalProgressView: HorizontalProgressBar!
 	@IBOutlet weak var reuseShadowHeightConstraint: NSLayoutConstraint!
+	@IBOutlet weak var operationActionButton: UIButton!
+	
+	public var delegate: ContentTypeCellDelegate?
 	
 	override func prepareForReuse() {
         super.prepareForReuse()
@@ -46,9 +53,12 @@ class ContentTypeTableViewCell: UITableViewCell {
     override func layoutSubviews() {
           super.layoutSubviews()
 		
-		let margins = U.UIHelper.AppDimensions.mediaContentTypeCellIEdgeInset
+		let margins = AppDimensions.ContenTypeCells.mediaContentTypeCellIEdgeInset
           contentView.frame = contentView.frame.inset(by: margins)
     }
+	@IBAction func stopOperationActionButton(_ sender: Any) {
+		delegate?.setCancelProcessOperaion(for: self)
+	}
 }
 
 extension ContentTypeTableViewCell {
@@ -58,7 +68,7 @@ extension ContentTypeTableViewCell {
      - `handleDeepCellState` use in deep cleaning part for show selected checkmark for clean or state
     */
 	
-	public func singleCleanCellConfigure(with model: SingleCleanStateModel, mediaType: PhotoMediaType = .none, indexPath: IndexPath) {
+	public func singleCleanCellConfigure(with model: SingleCleanStateModel, mediaType: PhotoMediaType = .none, indexPath: IndexPath, for groupProcessing: Bool) {
 		
 		let mainTitle = model.mediaType.contenType.getCellTitle(index: indexPath.row)
 		self.contentTypeTextLabel.text = mainTitle
@@ -66,7 +76,7 @@ extension ContentTypeTableViewCell {
 		let subTitle = model.cleanState.getTitle(by: model.mediaType, files: model.resultCount, selected: 0, progress: model.cleanProgress)
 		contentSubtitleTextLabel.text = subTitle
 		
-		self.handleSingleCellState(with: model.cleanState, model: model)
+		self.handleSingleCellState(with: model.cleanState, model: model, for: groupProcessing)
 	}
 	
 	public func deepCleanCellConfigure(with model: DeepCleanStateModel, mediaType: PhotoMediaType = .none, indexPath: IndexPath) {
@@ -138,7 +148,7 @@ extension ContentTypeTableViewCell {
 		}
 	}
 	
-	private func handleSingleCellState(with state: ProcessingProgressOperationState, model: SingleCleanStateModel) {
+	private func handleSingleCellState(with state: ProcessingProgressOperationState, model: SingleCleanStateModel, for groupProcessing: Bool) {
 		
 		let selectedImage = model.mediaType.contenType.selectableAssetsCheckMark
 		let disabledImage = model.mediaType.contenType.unAbleImageOfRows
@@ -146,35 +156,29 @@ extension ContentTypeTableViewCell {
 		let processingImage = model.mediaType.contenType.processingImageOfRows
 		
 		self.horizontalProgressView.state = model.cleanState
-		
+		self.handleTouchOperationCell(for: model, contentType: model.mediaType.contenType, for: groupProcessing)
 		switch model.cleanState {
 			case .sleeping:
-				self.handleRightArrowState(false)
 				self.reuseShadowRoundedView.hideIndicator()
 				self.reuseShadowRoundedView.setImage(disabledImage)
 				self.resetProgress()
 			case .prepare:
-				self.handleRightArrowState(false)
 				self.reuseShadowRoundedView.showIndicator()
 				self.reuseShadowRoundedView.setImage(processingImage)
 				self.resetProgress()
 			case .analyzing:
-				self.handleRightArrowState(false)
 				self.reuseShadowRoundedView.showIndicator()
 				self.reuseShadowRoundedView.setImage(processingImage)
 				self.resetProgress()
 			case .compare:
-				self.handleRightArrowState(false)
 				self.reuseShadowRoundedView.showIndicator()
 				self.reuseShadowRoundedView.setImage(processingImage)
 				self.setProgress(model.cleanProgress)
 			case .progress:
-				self.handleRightArrowState(false)
 				self.reuseShadowRoundedView.showIndicator()
 				self.reuseShadowRoundedView.setImage(processingImage)
 				self.setProgress(model.cleanProgress)
 			case .result:
-				self.handleRightArrowState(false)
 				self.reuseShadowRoundedView.hideIndicator()
 				self.reuseShadowRoundedView.setImage(activeImage)
 				self.setProgress(100)
@@ -184,7 +188,6 @@ extension ContentTypeTableViewCell {
 				self.reuseShadowRoundedView.setImage(model.isEmpty ? disabledImage : activeImage)
 				self.resetProgress()
 			case .empty:
-				self.handleRightArrowState(false)
 				self.reuseShadowRoundedView.setImage(disabledImage)
 				self.reuseShadowRoundedView.hideIndicator()
 				self.resetProgress()
@@ -218,6 +221,35 @@ extension ContentTypeTableViewCell {
 	private func handleRightArrowState(_ show: Bool) {
 		self.rightArrowImageView.isHidden = !show
 	}
+	
+	private func handleTouchOperationCell(for model: SingleCleanStateModel, contentType: MediaContentType, for groupProcessing: Bool) {
+		let state = model.cleanState
+		switch state {
+			case .complete, .selected:
+				self.rightArrowImageView.isHidden = model.isEmpty
+				self.rightArrowImageView.image = I.systemItems.navigationBarItems.forward
+				self.operationActionButton.isEnabled = false
+				self.rightArrowImageView.transform = .identity
+			case .sleeping, .empty, .compare:
+				self.rightArrowImageView.isHidden = true
+				self.rightArrowImageView.image = nil
+				self.operationActionButton.isEnabled = false
+				self.rightArrowImageView.transform = .identity
+			case .prepare, .analyzing, .progress:
+				guard !groupProcessing else { return}
+				self.operationActionButton.isEnabled = true
+				self.rightArrowImageView.transform = CGAffineTransform(scaleX: 1.5, y: 1.5)
+				self.rightArrowImageView.isHidden = false
+				self.rightArrowImageView.image = I.systemItems.navigationBarItems.stopMagic
+				self.rightArrowImageView.tintColor = contentType.screenAcentTintColor
+			case .result:
+				self.rightArrowImageView.transform = .identity
+				self.operationActionButton.isEnabled = false
+				self.rightArrowImageView.isHidden = false
+				self.rightArrowImageView.image = I.systemItems.navigationBarItems.forward
+				self.rightArrowImageView.tintColor = nil
+		}
+	}
 }
 
 extension ContentTypeTableViewCell: Themeble {
@@ -225,9 +257,10 @@ extension ContentTypeTableViewCell: Themeble {
 	func setupCellUI() {
 		selectionStyle = .none
 		rightArrowImageView.isHidden = true
+		self.operationActionButton.isEnabled = false
 		baseView.setCorner(14)
-		rightArrowImageView.image = I.systemItems.navigationBarItems.forward
-		reuseShadowHeightConstraint.constant = U.UIHelper.AppDimensions.ContenTypeCells.helperImageViewWidth
+		
+		reuseShadowHeightConstraint.constant = AppDimensions.ContenTypeCells.helperImageViewWidth
 		reuseShadowRoundedView.layoutIfNeeded()
 		reuseShadowRoundedView.updateImagesLayout()
 		contentTypeTextLabel.font = FontManager.contentTypeFont(of: .title)
@@ -264,8 +297,13 @@ extension ContentTypeTableViewCell {
 		reuseShadowView.shadowBlurValue = 5
 		
 		self.contentTypeTextLabel.text = settings.settingsTitle
-		self.reuseShadowRoundedView.setImage(settings.settingsImages)
-		
+		let imageSizeWidth = reuseShadowRoundedView.frame.size.width / 1.8
+		let roundedShadowImageSize = CGSize(width: imageSizeWidth, height: imageSizeWidth)
+		reuseShadowRoundedView.setImageWithCustomBackground(image: settings.settingsImages,
+															tineColor: .white,
+															size: roundedShadowImageSize,
+															colors: settings.gradientColorsForSettings)
+		reuseShadowRoundedView.updateImagesLayout()
 		self.contentSubtitleTextLabel.isHidden = true
 	}
 }

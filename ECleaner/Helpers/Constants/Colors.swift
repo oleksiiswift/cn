@@ -664,3 +664,81 @@ enum Theme: Int {
 	}
 }
 
+extension Theme {
+	
+	var permissionNotificationAccentColors: [UIColor] {
+		let startColor = UIColor().colorFromHexString("FF543E")
+		let endColor = UIColor ().colorFromHexString("F99C90")
+		return [startColor, endColor]
+	}
+	
+	var permissionPhotoLibraryAccentColors: [UIColor] {
+		let startColor = UIColor().colorFromHexString("AEA1CE")
+		let endColor = UIColor ().colorFromHexString("82BFE6")
+		return [startColor, endColor]
+	}
+	
+	var permissionContantsAccentColors: [UIColor] {
+		let startColor = UIColor().colorFromHexString("C5BFB9")
+		let endColor = UIColor ().colorFromHexString("E5E3DE")
+		return [startColor, endColor]
+	}
+	
+	var permissionTrackingAccentColors: [UIColor] {
+		let startColor = UIColor().colorFromHexString("FFA600")
+		let endColor = UIColor ().colorFromHexString("FFCE72")
+		return [startColor, endColor]
+	}
+}
+
+extension Theme {
+	
+	public func getColorsGradient(for settings: SettingsModel) -> [UIColor] {
+		switch settings {
+			case .premium:
+				let startColor = UIColor().colorFromHexString("6773B4")
+				let endColor = UIColor ().colorFromHexString("A7B3EF")
+				return [startColor, endColor]
+			case .largeVideos:
+				let startColor = UIColor().colorFromHexString("A45C8A")
+				let endColor = UIColor ().colorFromHexString("E49CCA")
+				return [startColor, endColor]
+			case .dataStorage:
+				let startColor = UIColor().colorFromHexString("3F9094")
+				let endColor = UIColor ().colorFromHexString("8BE7EB")
+				return [startColor, endColor]
+			case .permissions:
+				let startColor = UIColor().colorFromHexString("DB4F43")
+				let endColor = UIColor ().colorFromHexString("F7ADA6")
+				return [startColor, endColor]
+			case .restore:
+				let startColor = UIColor().colorFromHexString("6773B4")
+				let endColor = UIColor ().colorFromHexString("A7B3EF")
+				return [startColor, endColor]
+			case .support:
+				let startColor = UIColor().colorFromHexString("4FAA47")
+				let endColor = UIColor ().colorFromHexString("A5E79F")
+				return [startColor, endColor]
+			case .share:
+				let startColor = UIColor().colorFromHexString("F56A0E")
+				let endColor = UIColor ().colorFromHexString("FCC49F")
+				return [startColor, endColor]
+			case .rate:
+				let startColor = UIColor().colorFromHexString("3550C1")
+				let endColor = UIColor ().colorFromHexString("92A1E1")
+				return [startColor, endColor]
+			case .privacypolicy:
+				let startColor = UIColor().colorFromHexString("F46C0C")
+				let endColor = UIColor ().colorFromHexString("FCBC8F")
+				return [startColor, endColor]
+			case .termsOfUse:
+				let startColor = UIColor().colorFromHexString("F7876F")
+				let endColor = UIColor ().colorFromHexString("FFCFC5")
+				return [startColor, endColor]
+			case .videoCompress:
+				let startColor = UIColor().colorFromHexString("FFA600")
+				let endColor = UIColor ().colorFromHexString("FFCE72")
+				return [startColor, endColor]
+		}
+	}
+}

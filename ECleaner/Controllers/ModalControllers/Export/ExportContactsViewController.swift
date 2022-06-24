@@ -62,16 +62,16 @@ extension ExportContactsViewController: Themeble {
     
     private func setupUI() {
         
-		let containerHeight: CGFloat = U.UIHelper.AppDimensions.Contacts.ExportModalController.controllerHeight
+		let containerHeight: CGFloat = AppDimensions.ContactsController.ExportModalController.controllerHeight
         self.view.frame = CGRect(x: 0, y: 0, width: U.screenWidth, height: containerHeight)
         mainContainerHeightConstraint.constant = containerHeight
-		bottomButtonMenuHeightConstraint.constant = U.UIHelper.AppDimensions.Contacts.ExportModalController.bottomButtonViewHeight
-		bottomButtonView.setButtonHeight(U.UIHelper.AppDimensions.bottomBarButtonDefaultHeight)
+		bottomButtonMenuHeightConstraint.constant = AppDimensions.ContactsController.ExportModalController.bottomButtonViewHeight
+		bottomButtonView.setButtonHeight(AppDimensions.BottomButton.bottomBarButtonDefaultHeight)
 		
         mainContainerView.cornerSelectRadiusView(corners: [.topLeft, .topRight], radius: 20)
         topShevronView.setCorner(3)
         
-        controllerTitleTextLabel.text = "select format of file"
+		controllerTitleTextLabel.text = Localization.Main.HeaderTitle.selectFileFormat
 		controllerTitleTextLabel.font = FontManager.exportModalFont(of: .title)
     
         leftButton.setTitleColor(theme.titleTextColor, for: .normal)
@@ -82,7 +82,7 @@ extension ExportContactsViewController: Themeble {
         leftButton.setTitle(leftExportFileFormat.formatRowValue, for: .normal)
         rightButton.setTitle(rightExportFileFormat.formatRowValue, for: .normal)
         
-        bottomButtonView.title("google contacts".uppercased())
+        bottomButtonView.title("Blank Func For BTN?".uppercased())
         
 		let image = I.systemItems.defaultItems.refresh
 		let size = CGSize(width: 25, height: 25)

@@ -17,103 +17,6 @@ protocol AnimatedProgressDelegate: AnyObject {
 	func didProgressSetCanceled()
 }
 
-enum ProgressAlertType {
-	case mergeContacts
-	case deleteContacts
-	case deleteVideos
-	case deletePhotos
-	case compressing
-	case updatingContacts
-	case selectingContacts
-	case selectingPhotos
-	case selectingVideos
-	case prepareDeepClean
-	
-	var progressTitle: String {
-		switch self {
-			case .mergeContacts:
-				return "merged contacts"
-			case .deleteContacts:
-				return "delete contacts"
-			case .deleteVideos:
-				return "delete contacts"
-			case .deletePhotos:
-				return "delete photos"
-			case .compressing:
-				return "compressing"
-			case .updatingContacts:
-				return "updating contacts"
-			case .selectingContacts:
-				return "select contacts, wait"
-			case .selectingPhotos:
-				return "select photo, wait"
-			case .selectingVideos:
-				return "select videio, wait"
-			case .prepareDeepClean:
-				return "prepare searching"
-		}
-	}
-	
-	var withCancel: Bool {
-		switch self {
-			case .mergeContacts:
-				return true
-			case .deleteContacts:
-				return true
-			case .deleteVideos:
-				return false
-			case .deletePhotos:
-				return false
-			case .compressing:
-				return true
-			case .updatingContacts:
-				return false
-			case .selectingContacts, .selectingVideos, .selectingPhotos:
-				return false
-			case .prepareDeepClean:
-				return false
-		}
-	}
-	
-	var accentColor: UIColor {
-		switch self {
-			case .mergeContacts, .deleteContacts, .updatingContacts, .selectingPhotos:
-				return self.contentType.screenAcentTintColor
-			case .deleteVideos, .deletePhotos, .compressing, .selectingVideos:
-				return self.contentType.screenAcentTintColor
-			case .selectingContacts:
-				return self.contentType.screenAcentTintColor
-			case .prepareDeepClean:
-				return self.contentType.screenAcentTintColor
-		}
-	}
-	
-	private var contentType: MediaContentType {
-		switch self {
-			case .mergeContacts:
-				return .userContacts
-			case .deleteContacts:
-				return .userContacts
-			case .deleteVideos:
-				return .userVideo
-			case .deletePhotos:
-				return .userPhoto
-			case .compressing:
-				return .userVideo
-			case .updatingContacts:
-				return .userContacts
-			case .selectingContacts:
-				return .userContacts
-			case .selectingVideos:
-				return .userVideo
-			case .selectingPhotos:
-				return .userPhoto
-			case .prepareDeepClean:
-				return .userPhoto
-		}
-	}
-}
-
 class ProgressAlertController: Themeble {
 
     static var shared = ProgressAlertController()
@@ -159,7 +62,7 @@ class ProgressAlertController: Themeble {
         contentProgressType = .userContacts
         alertController = UIAlertController(title: title, message: " ", preferredStyle: .alert)
         
-		let cancelAction = UIAlertAction(title: AlertHandler.AlertActionsButtons.cancel.title, style: .cancel) { _ in
+		let cancelAction = UIAlertAction(title: LocalizationService.Buttons.getButtonTitle(of: .cancel), style: .cancel) { _ in
 			self.controllerPresented = false
             self.delegate?.didTapCancelOperation()
         }
@@ -193,7 +96,7 @@ class ProgressAlertController: Themeble {
 		animatedProgressBar.progressMainColor = barColor
 		animatedProgressBar.progressAnimatedColor = animatedColor
 		
-		let cancelAction = UIAlertAction(title: AlertHandler.AlertActionsButtons.cancel.title, style: .cancel) { _ in
+		let cancelAction = UIAlertAction(title: LocalizationService.Buttons.getButtonTitle(of: .cancel), style: .cancel) { _ in
 			progressDelegate?.didProgressSetCanceled()
 			self.removeAnimatedProgress()
 		}
@@ -261,17 +164,17 @@ class ProgressAlertController: Themeble {
 }
 
 extension ProgressAlertController {
-    
+
     public func showDeleteContactsProgressAlert() {
-        setProgress(controllerType: .userContacts, title: "delete contacts")
+		setProgress(controllerType: .userContacts, title: Localization.AlertController.AlertTitle.deleteContact)
     }
     
     public func showMergeContactsProgressAlert() {
-        setProgress(controllerType: .userContacts, title: "merged contacts")
+		setProgress(controllerType: .userContacts, title: Localization.AlertController.AlertTitle.mergingContacts)
     }
 	
 	public func showDeepCleanProgressAlert() {
-		setProgress(controllerType: .none, title: "deep clean processing")
+		setProgress(controllerType: .none, title: Localization.AlertController.AlertTitle.deepCleanProcessing)
 	}
 	
 	public func showContactsProgressAlert(of type: ProgressAlertType) {

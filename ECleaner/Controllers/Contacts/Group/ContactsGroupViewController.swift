@@ -123,13 +123,6 @@ extension ContactsGroupViewController {
 	private func handleStartingSelectableAssets() {
 		self.didSelectDeselecAllItems()
 	}
-	
-	private func showSelectStartingAllContactsAlert() {
-		
-		A.showSelectAllStarterAlert(for: self.contentType) {
-			self.handleStartingSelectableAssets()
-		}
-	}
 }
 
 //		MARK: - merge contacts -
@@ -153,7 +146,7 @@ extension ContactsGroupViewController {
 		U.delay(1) {
 			self.contactsManager.mergeAsyncContacts(in: self.contactGroup, merged: selectedSectionsIndexes) { progressType, currentIndex, totalIndexes in
 				self.updateProgressAlert(of: .mergeContacts, currentPosition: currentIndex, totalProcessing: totalIndexes)
-			} completionHandler: { suxxess, indexes in
+			} completionHandler: { success, indexes in
 				let errorsCount = selectedSectionsIndexes.count - indexes.count
 				
 				U.delay(0.5) {
@@ -161,9 +154,9 @@ extension ContactsGroupViewController {
 				}
 				
 				U.delay(1) {
-					if suxxess {
+					if success {
 						if self.contactGroup.count == indexes.count {
-							A.showSuxxessFullMerged(for: .many) {
+							AlertManager.showAlert(for: .mergeCompleted) {
 								U.delay(1) {
 									self.updateRemovedIndexes(indexes, errorsCount: errorsCount)
 									self.closeController()
@@ -200,12 +193,12 @@ extension ContactsGroupViewController {
 				self.updateProgressMergeAlert(with: 1, total: "1 / 1")
 				if errorsCount != mergedSingleGroup.contacts.count - 1 {
 					if self.contactGroup.count == 1 {
-						A.showSuxxessFullMerged(for: .one) {
+						AlertManager.showAlert(for: .mergeCompleted) {
 							self.contactGroup = []
 							self.closeController()
 						}
 					} else {
-						A.showSuxxessFullMerged(for: .one) {
+						AlertManager.showAlert(for: .mergeCompleted) {
 							self.progressAlert.showSimpleProgressAlerControllerBar(of: .updatingContacts, from: self, delegate: self)
 							self.updateContactsGroups { contactsGroup in
 								self.progressAlert.closeProgressAnimatedController()
@@ -215,7 +208,7 @@ extension ContactsGroupViewController {
 						}
 					}
 				} else {
-					ErrorHandler.shared.showMergeAlertError(.errorMergeContact) {
+					ErrorHandler.shared.showMergeAlertError(.errorMergeContacts) {
 						self.progressAlert.showSimpleProgressAlerControllerBar(of: .updatingContacts, from: self, delegate: self)
 						self.updateContactsGroups { contactsGroup in
 							self.progressAlert.closeProgressAnimatedController()
@@ -298,10 +291,10 @@ extension ContactsGroupViewController {
 			return
 		}
 		
-		let calculatedBottomButtonHeight: CGFloat = U.UIHelper.AppDimensions.bottomBarDefaultHeight
+		let calculatedBottomButtonHeight: CGFloat = AppDimensions.BottomButton.bottomBarDefaultHeight
 		bottomButtonHeightConstraint.constant = !self.contactGroupListDataSource.selectedSections.isEmpty ? calculatedBottomButtonHeight : 0
 		
-		let buttonTitle: String = "merge selected".uppercased() + " (\(self.contactGroupListDataSource.selectedSections.count))"
+		let buttonTitle: String = LocalizationService.Buttons.getButtonTitle(of: .mergeSelected).uppercased() + " (\(self.contactGroupListDataSource.selectedSections.count))"
 		self.bottomButtonBarView.title(buttonTitle)
 		
 		if disableAnimation {
@@ -453,32 +446,51 @@ extension ContactsGroupViewController: ProgressAlertControllerDelegate {
 
 //      MARK: - burger derop down menu
 extension ContactsGroupViewController: SelectDropDownMenuDelegate {
-    
+	
+	func getDropDownItems() -> [MenuItem] {
+		
+		let selectAllItem: MenuItem = .init(type: .select, selected: true)
+		let deselectAllItem: MenuItem = .init(type: .delete, selected: true)
+		let shareItem: MenuItem = .init(type: .share, selected: !self.contactGroupListDataSource.selectedSections.isEmpty)
+		return [isSelectedAllItems ? deselectAllItem : selectAllItem, shareItem]
+	}
+	
+	private func performMenu(from items: [MenuItem]) -> UIMenu {
+		var actions: [UIAction] = []
+		
+		items.forEach { item in
+			let attributes: UIMenuElement.Attributes = item.selected ? [] : .disabled
+			let action = UIAction(title: item.title, image: item.thumbnail, attributes: attributes) { _ in
+				self.handleDropDownMenu(item.type)
+			}
+			actions.append(action)
+		}
+		return UIMenu(children: actions)
+	}
+	
+	@available(iOS 14.0, *)
+	func dropDownSetup() {
+		let menuItems = getDropDownItems()
+		let menu = performMenu(from: menuItems)
+		navigationBar.rightBarButtonItem.menu = menu
+		navigationBar.rightBarButtonItem.showsMenuAsPrimaryAction = true
+		
+		navigationBar.rightBarButtonItem.onMenuActionTriggered { menu in
+			let updatedItems = self.getDropDownItems()
+			self.navigationBar.rightBarButtonItem.menu = self.performMenu(from: updatedItems)
+			return menu
+		}
+	}
+	
     private func didTapOpenBurgerMenu() {
-		
-		let selectAllOptionItem = DropDownOptionsMenuItem(titleMenu: "select all",
-															   itemThumbnail: I.systemItems.selectItems.roundedCheckMark,
-															   isSelected: true,
-															   menuItem: .selectAll)
-		
-		let deselectAllOptionItem = DropDownOptionsMenuItem(titleMenu: "deselect all",
-																 itemThumbnail: I.systemItems.selectItems.circleMark,
-																 isSelected: true,
-																 menuItem: .deselectAll)
-		
-		let availibleExportOtion = !self.contactGroupListDataSource.selectedSections.isEmpty
-		
-		let exportSelectedContacts = DropDownOptionsMenuItem(titleMenu: "export selected",
-																  itemThumbnail: I.systemItems.defaultItems.share,
-																  isSelected: availibleExportOtion,
-																  menuItem: .share)
-		
-        let firstRowItem = isSelectedAllItems ? deselectAllOptionItem : selectAllOptionItem
-        let secontRowItem = exportSelectedContacts
-        self.presentDropDonwMenu(with: [firstRowItem, secontRowItem], from: navigationBar.rightBarButtonItem)
+	
+		if #available(iOS 14.0, *) {} else {
+			let menuItems = getDropDownItems()
+			self.presentDropDonwMenu(with: menuItems, from: navigationBar.rightBarButtonItem)
+		}
     }
-
-    private func presentDropDonwMenu(with items: [DropDownOptionsMenuItem], from navigationButton: UIButton) {
+	
+    private func presentDropDonwMenu(with items: [MenuItem], from navigationButton: UIButton) {
         let dropDownViewController = DropDownMenuViewController()
         dropDownViewController.menuSectionItems = items
         dropDownViewController.delegate = self
@@ -492,17 +504,16 @@ extension ContactsGroupViewController: SelectDropDownMenuDelegate {
         self.present(dropDownViewController, animated: true, completion: nil)
     }
     
-    func selectedItemListViewController(_ controller: DropDownMenuViewController, didSelectItem: DropDownMenuItems) {
-        
-        switch didSelectItem {
-			case .deselectAll, .selectAll:
-                self.didSelectDeselecAllItems()
-            case .share:
+	func handleDropDownMenu(_ item: MenuItemType) {
+		switch item {
+			case .select, .deselect:
+				self.didSelectDeselecAllItems()
+			case .share:
 				self.didTapSharePopUpMenuButton()
-            default:
-                return
-        }
-    }
+			default:
+				return
+		}
+	}
 }
 
 //  MARK: - header delegate -
@@ -510,17 +521,17 @@ extension ContactsGroupViewController: SingleContactsGroupOperationsListener {
     
     /// `merge single section contacts`
     func didMergeContacts(in section: Int) {
-        A.showMergeContactsAlert(for: .one) {
+		AlertManager.showAlert(for: .mergeContacts) {
             self.mergeContacts(in: section)
         }
     }
     
     /// `delete singe section contacts`
     func didDeleteFullContactsGroup(in section: Int) {
-        A.showDeleteContactsAlerts(for: .many) {
+		AlertManager.showDeleteAlert(with: .userContacts, of: .many) {
 			self.deleteContacts(in: section) { errorsCount in
 				if errorsCount == 0 {
-					A.showSuxxessfullDeleted(for: .many)
+					AlertManager.showAlert(for: .deleteContactsCompleted) {}
 					self.updateRemovedIndexes([section], errorsCount: 0)
 					self.contactGroup.count == 0 ? self.closeController() : ()
 				} else {
@@ -576,10 +587,10 @@ extension ContactsGroupViewController: BottomActionButtonDelegate {
     
     /// `merge contacts from bottom button`
     func didTapActionButton() {
-        A.showMergeContactsAlert(for: self.contactGroupListDataSource.selectedSections.count > 1 ? .many : .one) {
-            P.showIndicator()
-            self.mergeSelectedItems()
-        }
+		AlertManager.showAlert(for: .mergeContacts) {
+			P.showIndicator()
+			self.mergeSelectedItems()
+		}
     }
 }
 
@@ -593,6 +604,9 @@ extension ContactsGroupViewController: Themeble {
         
         self.navigationController?.navigationBar.isHidden = true
         navigationBar.setupNavigation(title: navigationTitle, leftBarButtonImage: I.systemItems.navigationBarItems.back, rightBarButtonImage: I.systemItems.navigationBarItems.burgerDots, contentType: mediaType)
+		if #available(iOS 14.0, *) {
+			dropDownSetup()
+		}
     }
     
     func setupViewModel(contacts: [ContactsGroup]) {

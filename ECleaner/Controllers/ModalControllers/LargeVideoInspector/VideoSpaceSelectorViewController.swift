@@ -163,7 +163,7 @@ extension VideoSpaceSelectorViewController {
 	
 	private func setupNavigation() {
 		
-		let navigationTitle = "Select large video size"
+		let navigationTitle = Localization.Main.HeaderTitle.selectLargeVideo
 		navigationBar.setUpNavigation(title: navigationTitle, leftImage: nil, rightImage: I.systemItems.navigationBarItems.dissmiss)
 	}
 	
@@ -174,7 +174,7 @@ extension VideoSpaceSelectorViewController {
 		self.view.frame = CGRect(x: 0, y: 0, width: U.screenWidth, height: containerHeight)
 		mainContainerViewHeightConstraint.constant = containerHeight
 		
-		bottomButtonView.title("SUBMIT".localized())
+		bottomButtonView.title(LocalizationService.Buttons.getButtonTitle(of: .submit))
 	}
 	
 	private func stepSliderSetup() {

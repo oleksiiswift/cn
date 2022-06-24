@@ -17,7 +17,6 @@ class GroupContactTableViewCell: UITableViewCell {
     
     @IBOutlet weak var sectionShadowView: SectionShadowView!
     @IBOutlet weak var shadowRoundedReuseView: ReuseShadowRoundedView!
-    
     @IBOutlet weak var baseView: UIView!
     @IBOutlet weak var contactTitleTextLabel: UILabel!
     @IBOutlet weak var contactSubtitleTextLabel: UILabel!
@@ -135,8 +134,8 @@ extension GroupContactTableViewCell: Themeble {
         selectionStyle = .none
 		contactTitleTextLabel.font = FontManager.contactsFont(of: .cellTitle)
 		contactSubtitleTextLabel.font = FontManager.contactsFont(of: .cellSubtitle)
-		shadowRoundedViewHeightConstraint.constant = U.UIHelper.AppDimensions.Contacts.Collection.helperImageViewWidth
-		selectableContactImageViewWidthConstraint.constant = U.UIHelper.AppDimensions.Contacts.Collection.selectableGoupAssetViewWidth
+		shadowRoundedViewHeightConstraint.constant = AppDimensions.ContactsController.Collection.helperImageViewWidth
+		selectableContactImageViewWidthConstraint.constant = AppDimensions.ContactsController.Collection.selectableGoupAssetViewWidth
     }
     
     func updateColors() {

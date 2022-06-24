@@ -10,7 +10,19 @@ import UIKit
 
 typealias C = Constants
 class Constants {
-    
+	
+	struct project {
+		static let appleID = ""
+		static let appID = ""
+		static let appStoreName = ""
+		static let storeSecretKey = "57832c2c61d74286a1f4e65063a5cdba"
+		static let appBundle = ""
+		static let mail = ""
+		static let telegram = ""
+		static let facebookURL = ""
+		static let facebookID = ""
+	}
+	
     struct gadAdvertisementKey {
         /**
          - parameter GADApplicationIdentifier use in info.plist file
@@ -29,6 +41,47 @@ class Constants {
 		struct advertisement {
 			static let bannerIsShow = "advertisementBannerDidShow"
 		}
+		
+		struct application {
+			static let applicationLastUsage = "applicationLastUsage"
+			static let applicationFirstTimeStart = "applicationFirstTimeStart"
+		}
+		
+		struct inApPurchse {
+			static let purchasePremium = "purchasePremium"
+			static let verificationPassed = "verificationPassed"
+			static let expireDate = "expireDate"
+			static let expiredSubscription = "expiredSubscription"
+		}
+		
+		struct permissions {
+			static let permissionDidShow = "permissionWindowDidShow"
+			static let settingsPhotoPermission = "photoPermissionValue"
+			static let settingsContactsPermission = "contactePermissionValue"
+			
+			struct rawValue {
+				static let notification = "com.cleaner.permission.notification"
+				static let photolibrary = "com.cleaner.permission.photolibrary"
+				static let contacts = "com.cleaner.permission.contacts"
+				static let tracking = "com.cleaner.permission.tracking"
+				static let appUsage = "com.cleaner.permission.appUsage"
+				static let blank = "com.cleaner.permission.blank"
+			}
+		}
+		
+		struct contacts {
+			struct groupSorting {
+				static let name = "com.cleaner.contactsGroup.name"
+				static let phone = "com.cleaner.contactsGroup.phone"
+				static let mail = "com.cleaner.contactsGroup.mail"
+				static let emptyName = "com.cleaner.contactsGroup.emptyName"
+				static let empty = "com.cleaner.contactsGroup.empty"
+			}
+		}
+		
+		struct localUserNotification {
+			static let localNotificationRawValue = "localnotifactionRawValue"
+		}
         
         struct settings {
             static let isDarkModeOn = "darkModeIsSetOn"
@@ -42,6 +95,7 @@ class Constants {
             static let photoSpace = "photoDiskSpace"
             static let videoSpace = "videoDiskSpace"
             static let allMediaSpace = "wholeAssetsDiskSpace"
+			
         }
 		
 		struct compressionSettings {
@@ -69,6 +123,9 @@ class Constants {
             static let contactsCountNotificationName = "contactsCountDidChange"
 			static let removeStoreObserver = "removeStoreObserver"
 			static let addStoreObserver = "addStoreObserver"
+			
+			static let permissionDidChange = "permissionDidChange"
+			static let forceStopProcessing = "forceStopProcessingStartHandleReciveRemoteCleanAction"
             
                 /// `deep clean update progress notification name`
             struct deepClean {
@@ -126,6 +183,46 @@ class Constants {
 			
 			/// `compression notification`
 			static let compressionDidStart = "CompressionVideoFileDidStartNotification"
+			
+			struct name {
+				static let photoClean = "didSendCleanPhotoContentNotification"
+				static let videoClean = "didSendCleanVideoContentNotification"
+				static let contactsClean = "didSendCleanContactsContentNotification"
+				static let deepClean = "didSendDeepCleanContentNotification"
+				static let clean = "didSendCleanContentnotification"
+			}
+			
+			struct identifier {
+				static let photoClean = "com.cleaner.photoClean"
+				static let videoClean = "con.cleaner.videoClean"
+				static let contactsClean = "com.cleaner.contactsClean"
+				static let deepClean = "com.cleaner.deepClean"
+				static let clean = "com.cleaner.clean"
+			}
+			
+			struct request {
+				static let photoClean = "com.cleaner.request.photoClean"
+				static let videoClean = "con.cleaner.request.videoClean"
+				static let contactsClean = "com.cleaner.request.contactsClean"
+				static let deepClean = "com.cleaner.requestdeepClean"
+				static let clean = "com.cleaner.requestClean"
+			}
+			
+			struct notificationAction {
+				static let decline = "com.cleaner.actions.declinenotificationAction"
+				static let similarPhotoCleanAction = "com.cleaner.action.similarPhotoCleanAction"
+				static let duplicatedPhotoCleanAction = "com.cleaner.action.duplicatedPhotoCleanAction"
+				static let similarVideCleanAction = "com.cleaner.action.similarVideoCleanAction"
+				static let duplicatedVideoCleanAction = "com.cleaner.action.duplicatedVideoCleanAction"
+				static let duplicatedContectsCleanAction = "com.cleaner.action.duplicatedContactsCleanActions"
+				static let deepClean = "com.cleaner.actions.deepCleanNotificationAction"
+			}
+			
+			struct shortCutAction {
+				static let photoScan = "com.cleaner.actions.photoScan"
+				static let videoScan = "com.cleaner.actions.videoScan"
+				static let contactsScan = "com.cleaner.actions.contactScan"
+			}
         }
 		
 		struct observers {
@@ -223,6 +320,11 @@ class Constants {
          */
     
         struct notificationDictionary {
+			
+			struct permission {
+				static let photoPermission = "photoPermissionDidChangeNotificationDictionary"
+				static let contactsPermission = "contactsPermissionDidChangeNotificationDictionary"
+			}
             
                 /// `INDEXES`
             struct index {
@@ -338,6 +440,7 @@ class Constants {
             static let exportContacts = "ExportContact"
 			static let settings = "Settings"
 			static let videoProcessing = "VideoProcessing"
+			static let permissions = "Permissions"
         }
         
         struct viewControllers {
@@ -357,6 +460,7 @@ class Constants {
             static let expordContacts = "ExportContactsViewController"
 			static let settings = "SettingsViewController"
 			static let customCompression = "VideoCompressionCustomSettingsViewController"
+			static let permissions = "PermissionsViewController" 
         }
         
         struct cells {
@@ -373,6 +477,9 @@ class Constants {
 			static let compressionCell = "CompressionSettingsTableViewCell"
 			static let videoPreviewCell = "VideoPreviewTableViewCell"
 			static let contentBannerCell = "ContentBannerTableViewCell"
+			static let permissionCell = "PermissionTableViewCell"
+			static let permissionBannerCell = "PermissionBannerTableViewCell"
+			static let permissionContinueCell = "PermissionContinueTableViewCell"
         }
         
         struct views {
@@ -398,6 +505,9 @@ class Constants {
 			static let compressionCell = "CompressionSettingsTableViewCell"
 			static let videoPreivew = "VideoPreviewTableViewCell"
 			static let contentBannerCell = "ContentBannerTableViewCell"
+			static let permissionCell = "PermissionTableViewCell"
+			static let permissionBannerCell = "PermissionBannerTableViewCell"
+			static let permissionContinueCell = "PermissionContinueTableViewCell"
             /// `views`
             static let groupHeader = "GroupedAssetsReusableHeaderView"
             static let groupFooter = "GroupedAssetsReusableFooterView"
@@ -463,4 +573,8 @@ class Constants {
             static let facebook = "Facebook"
         }
     }
+	
+	struct video {
+	
+	}
 }

@@ -49,7 +49,7 @@ class NavigationBar: UIView {
     private func configure() {
         
         containerView.backgroundColor = theme.navigationBarBackgroundColor
-        
+		
         backgroundColor = .clear
         addSubview(self.containerView)
         containerView.frame = self.bounds
@@ -176,7 +176,7 @@ class NavigationBar: UIView {
 	}
 	
 	private func getProportionalSize(of image: UIImage, targetImageScaleFactor: CGFloat = 0.5) -> CGSize {
-		let buttonSize = U.UIHelper.AppDimensions.NavigationBar.navigationBarButtonSize
+		let buttonSize = AppDimensions.NavigationBar.navigationBarButtonSize
 		let targetSize: CGSize = CGSize(width: buttonSize * targetImageScaleFactor, height: buttonSize * targetImageScaleFactor)
 		return image.getPreservingAspectRationScaleImageSize(from: targetSize)
 	}
@@ -223,10 +223,25 @@ extension NavigationBar {
     
     public func handleChangeRightButtonSelectState(selectAll: Bool) {
         
-        let newtitle: String = !selectAll ? "select all" : "deselectAll"
-        
+		let newtitle: String = LocalizationService.Buttons.getButtonTitle(of: !selectAll ? .selectAll : .deselectAll)
         changeHotRightTitle(newTitle: newtitle)
     }
 }
 
 
+
+extension UIControl {
+
+	/// Update the menu when the action is triggered,
+	/// when we use `menu` and optionnaly `showsMenuAsPrimaryAction`.
+	///
+	/// - Parameter menuHandler: the callback to modify the menu.
+	@available(iOS 14.0, *)
+	func onMenuActionTriggered(menuHandler: @escaping (UIMenu) -> UIMenu) {
+		self.addAction(UIAction(title: "", handler: { _ in
+			DispatchQueue.main.async { [weak self] in // if done before menu visible we have "while no context menu is visible. This won't do anything."
+				self?.contextMenuInteraction?.updateVisibleMenu(menuHandler)
+			}
+		}), for: .menuActionTriggered)
+	}
+}

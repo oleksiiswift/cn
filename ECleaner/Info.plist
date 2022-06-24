@@ -26,6 +26,8 @@
 	<string>$(PRODUCT_NAME) application requests access to Contacts. Please grant access to Contacts in order to import contacts</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Please grant access to your Photo Library in order to access its contents in the app</string>
+	<key>NSUserTrackingUsageDescription</key>
+	<string>Example Description</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Roboto-Black.ttf</string>

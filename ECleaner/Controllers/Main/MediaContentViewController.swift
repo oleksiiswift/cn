@@ -234,13 +234,48 @@ extension MediaContentViewController {
 				if let collection = self.singleCleanModel.objects[photoMediaType]?.phassets, !collection.isEmpty {
 					self.showAssetViewController(collection: collection, photoContent: photoMediaType, media: selectedType)
 				} else {
-					ErrorHandler.shared.showEmptySearchResultsFor(photoMediaType.emptyContentAlertType, completion: nil)
+					ErrorHandler.shared.showEmptySearchResultsFor(photoMediaType.emptyContentError)
 				}
 			case .grouped:
 				if let phassetGroups = self.singleCleanModel.objects[photoMediaType]?.phassetGroup, !phassetGroups.isEmpty {
 					self.showGropedContoller(grouped: phassetGroups, photoContent: photoMediaType, media: selectedType)
 				} else {
-					ErrorHandler.shared.showEmptySearchResultsFor(photoMediaType.emptyContentAlertType, completion: nil)
+					ErrorHandler.shared.showEmptySearchResultsFor(photoMediaType.emptyContentError)
+				}
+			default:
+				return
+		}
+	}
+}
+
+extension MediaContentViewController {
+	
+	public func handleShortcutProcessing(of processingType: RemoteCleanType) {
+		switch processingType {
+			case .similarPhotoClean:
+				let mediaType: PhotoMediaType = .similarPhotos
+				self.showMediaContent(by: .userPhoto, selected: mediaType.singleSearchIndexPath.row)
+			case .duplicatedPhotoClean:
+				let mediaType: PhotoMediaType = .duplicatedPhotos
+				self.showMediaContent(by: .userPhoto, selected: mediaType.singleSearchIndexPath.row)
+			case .similiarVideoClean:
+				let mediaType: PhotoMediaType = .similarVideos
+				self.showMediaContent(by: .userVideo, selected: mediaType.singleSearchIndexPath.row)
+			case .duplicatedVideoClean:
+				let mediaType: PhotoMediaType = .duplicatedVideos
+				self.showMediaContent(by: .userVideo, selected: mediaType.singleSearchIndexPath.row)
+			case .duplicatedContactsClean:
+				let mediaType: PhotoMediaType = .duplicatedContacts
+				self.showMediaContent(by: .userContacts, selected: mediaType.singleSearchIndexPath.row)
+			case .photoScan:
+				self.startSmartCleanProcessing()
+			case .videoScan:
+				self.startSmartCleanProcessing()
+			case .contactsScan:
+				self.searchingProcessingType = .smartGroupSearchProcess
+				self.updateContacts {
+					self.searchingProcessingType = .clearSearchingProcessingQueue
+					self.smartCleaningDidFinishWithResults = true
 				}
 			default:
 				return
@@ -268,7 +303,7 @@ extension MediaContentViewController {
 				if !similarGroup.isEmpty {
 					self.showGropedContoller(grouped: similarGroup, photoContent: .similarPhotos, media: .userPhoto)
 				} else {
-					!isCancelled ? ErrorHandler.shared.showEmptySearchResultsFor(.similarPhotoIsEmpty, completion: nil) : ()
+					!isCancelled ? ErrorHandler.shared.showEmptySearchResultsFor(.similarPhotoIsEmpty) : ()
 				}
 			}
 		}
@@ -288,7 +323,7 @@ extension MediaContentViewController {
 				if !duplicateGroup.isEmpty {
 					self.showGropedContoller(grouped: duplicateGroup, photoContent: .duplicatedPhotos, media: .userPhoto)
 				} else {
-					!isCancelled ? ErrorHandler.shared.showEmptySearchResultsFor(.duplicatedPhotoIsEmpty, completion: nil) : ()
+					!isCancelled ? ErrorHandler.shared.showEmptySearchResultsFor(.duplicatedPhotoIsEmpty) : ()
 				}
 			}
 		}
@@ -308,7 +343,7 @@ extension MediaContentViewController {
 				if !screenshots.isEmpty {
 					self.showAssetViewController(collection: screenshots, photoContent: .singleScreenShots, media: .userPhoto)
 				} else {
-					!isCancelled ? ErrorHandler.shared.showEmptySearchResultsFor(.screenShotsIsEmpty, completion: nil) : ()
+					!isCancelled ? ErrorHandler.shared.showEmptySearchResultsFor(.screenShotsIsEmpty) : ()
 				}
 			}
 		}
@@ -330,7 +365,7 @@ extension MediaContentViewController {
 				if !similartSelfiesGroup.isEmpty {
 					self.showGropedContoller(grouped: similartSelfiesGroup, photoContent: .similarSelfies, media: .userPhoto)
 				} else {
-					!isCancelled ? ErrorHandler.shared.showEmptySearchResultsFor(.similarSelfiesIsEmpty, completion: nil) : ()
+					!isCancelled ? ErrorHandler.shared.showEmptySearchResultsFor(.similarSelfiesIsEmpty) : ()
 				}
 			}
 		}
@@ -351,7 +386,7 @@ extension MediaContentViewController {
 				if !livePhoto.isEmpty {
 					self.showAssetViewController(collection: livePhoto, photoContent: .singleLivePhotos, media: .userPhoto)
 				} else {
-					!isCancelled ? ErrorHandler.shared.showEmptySearchResultsFor(.livePhotoIsEmpty, completion: nil) : ()
+					!isCancelled ? ErrorHandler.shared.showEmptySearchResultsFor(.livePhotoIsEmpty) : ()
 				}
 			}
 		}
@@ -372,8 +407,6 @@ extension MediaContentViewController {
 				self.currentlyScanningProcess = .none
 				if photosAssets.count != 0 {
 					self.showAssetViewController(collection: photosAssets, photoContent: .singleRecentlyDeletedPhotos, media: .userPhoto)
-				} else {
-					ErrorHandler.shared.showEmptySearchResultsFor(.recentlyDeletedPhotosIsEmpty, completion: nil)
 				}
 			}
 		}
@@ -396,7 +429,7 @@ extension MediaContentViewController {
 				if largeVodeoAsset.count != 0 {
 					self.showAssetViewController(collection: largeVodeoAsset, photoContent: .singleLargeVideos, media: .userVideo)
 				} else {
-					!isCancelled ? ErrorHandler.shared.showEmptySearchResultsFor(.largeVideoIsEmpty, completion: nil) : ()
+					!isCancelled ? ErrorHandler.shared.showEmptySearchResultsFor(.largeVideoIsEmpty) : ()
 				}
 			}
 		}
@@ -416,7 +449,7 @@ extension MediaContentViewController {
 				if duplicatedVideoAsset.count != 0 {
 					self.showGropedContoller(grouped: duplicatedVideoAsset, photoContent: .duplicatedVideos, media: .userVideo)
 				} else {
-					!isCancelled ? ErrorHandler.shared.showEmptySearchResultsFor(.duplicatedVideoIsEmpty, completion: nil) : ()
+					!isCancelled ? ErrorHandler.shared.showEmptySearchResultsFor(.duplicatedVideoIsEmpty) : ()
 				}
 			}
 		}
@@ -437,7 +470,7 @@ extension MediaContentViewController {
 				if similiarVideoAsset.count != 0 {
 					self.showGropedContoller(grouped: similiarVideoAsset, photoContent: .similarVideos, media: .userVideo)
 				} else {
-					!isCancelled ? ErrorHandler.shared.showEmptySearchResultsFor(.similarVideoIsEmpty, completion: nil) : ()
+					!isCancelled ? ErrorHandler.shared.showEmptySearchResultsFor(.similarVideoIsEmpty) : ()
 				}
 			}
 		}
@@ -457,7 +490,7 @@ extension MediaContentViewController {
 				if screenRecordsAssets.count != 0 {
 					self.showAssetViewController(collection: screenRecordsAssets, photoContent: .singleScreenRecordings, media: .userVideo)
 				} else {
-					!isCancelled ? ErrorHandler.shared.showEmptySearchResultsFor(.screenRecordingIsEmpty, completion: nil) : ()
+					!isCancelled ? ErrorHandler.shared.showEmptySearchResultsFor(.screenRecordingIsEmpty) : ()
 				}
 			}
 		}
@@ -476,8 +509,6 @@ extension MediaContentViewController {
 				self.currentlyScanningProcess = .none
 				if videoAssets.count != 0 {
 					self.showAssetViewController(collection: videoAssets, photoContent: .singleRecentlyDeletedVideos, media: .userVideo)
-				} else {
-					ErrorHandler.shared.showEmptySearchResultsFor(.recentlyDeletedVideosIsEmpty, completion: nil)
 				}
 			}
 		}
@@ -492,7 +523,7 @@ extension MediaContentViewController {
 			if similarVideos.count != 0 {
 				self.showGropedContoller(grouped: similarVideos, photoContent: .similarVideos, media: .userVideo)
 			} else {
-				ErrorHandler.shared.showEmptySearchResultsFor(.similarVideoIsEmpty, completion: nil)
+				ErrorHandler.shared.showEmptySearchResultsFor(.similarVideoIsEmpty)
 			}
 		}
 		phassetProcessingOperationQueuer.addOperation(getSimilarVideosByTimeStamp)
@@ -504,7 +535,7 @@ extension MediaContentViewController {
 			if !phassets.isEmpty {
 				self.showCompressVideoPickerController(with: phassets)
 			} else {
-				ErrorHandler.shared.showEmptySearchResultsFor(.photoLibraryIsEmpty)
+				ErrorHandler.shared.showEmptySearchResultsFor(.videoLibrararyIsEmpty)
 			}
 		}
 	}
@@ -524,7 +555,7 @@ extension MediaContentViewController {
 				if !contacts.isEmpty {
 					self.showContactViewController(contacts: contacts, contentType: .allContacts)
 				} else {
-					A.showEmptyContactsToPresent(of: .contactsIsEmpty) {}
+					ErrorHandler.shared.showEmptySearchResultsFor(.contactsIsEmpty)
 				}
 			}
 		}
@@ -544,7 +575,7 @@ extension MediaContentViewController {
 				if totalContacts != 0 {
 					self.showContactViewController(contactGroup: group, contentType: .emptyContacts)
 				} else {
-					!isCancelled ? A.showEmptyContactsToPresent(of: .emptyContactsIsEmpty) {} : ()
+					!isCancelled ? ErrorHandler.shared.showEmptySearchResultsFor(.emptyContactsIsEmpty) : ()
 				}
 			}
 		}
@@ -575,7 +606,7 @@ extension MediaContentViewController {
 					let group = contactsGroup.sorted(by: {$0.name < $1.name})
 					self.showGroupedContactsViewController(contacts: group, group: cleanType, content:  cleanType.photoMediaType)
 				} else {
-					!isCancelled ? A.showEmptyContactsToPresent(of: cleanType.alertEmptyType) {} : ()
+					!isCancelled ? ErrorHandler.shared.showEmptySearchResultsFor(cleanType.emptyResultsError) : ()
 				}
 			}
 		}
@@ -594,6 +625,18 @@ extension MediaContentViewController {
 
 	@objc func addStoreObserver() {
 		U.notificationCenter.addObserver(self, selector: #selector(handleChangeContactsContainers), name: .CNContactStoreDidChange, object: nil)
+	}
+	
+	@objc func handleStopAnyAnalizeProcessing() {
+		
+		switch self.searchingProcessingType {
+			case .smartGroupSearchProcess:
+					self.setCancelSmartSearchOperationQueue {}
+			case .singleSearchProcess:
+					self.setCancelActiveOperation {}
+			case .clearSearchingProcessingQueue:
+				return
+		}
 	}
 }
 
@@ -641,10 +684,10 @@ extension MediaContentViewController {
 					
 				case .allContacts:
 					self.updateContactsSingleChanged(contacts: changedContacts, content: currentChangedMediaType)
-					self.updateContacts()
+					self.updateContacts {}
 				default:
 					self.updateGroupedContacts(contacts: changedContactsGroups, media: currentChangedMediaType)
-					self.updateContacts()
+					self.updateContacts {}
 			}
 		}
 	
@@ -664,7 +707,7 @@ extension MediaContentViewController {
 			guard storeDidChange else { return}
 			
 			self.updateGroupedContacts(contacts: changedContactsGroup, media: currentChangedMediaType)
-			self.updateContacts()
+			self.updateContacts {}
 		}
 
 		self.navigationController?.pushViewController(viewController, animated: true)
@@ -698,7 +741,7 @@ extension MediaContentViewController {
 			case .userVideo:
 				self.updateVideo()
 			case .userContacts:
-				self.updateContacts()
+				self.updateContacts {}
 			case .none:
 				debugPrint("")
 		}
@@ -730,9 +773,9 @@ extension MediaContentViewController {
 		phassetProcessingOperationQueuer.addOperation(largeVideosOperation)
 	}
 	
-	private func updateContacts() {
+	private func updateContacts(completionHandler: @escaping () -> Void) {
 		self.contactsManager.getUpdatingContactsAfterContainerDidChange(cleanProcessingType: .background) { _ in
-			
+			completionHandler()
 		} allContacts: { contacts in
 			self.updateContactsSingleChanged(contacts: contacts, content: .allContacts)
 		} emptyContacts: { emptyContactsGroup in
@@ -833,7 +876,7 @@ extension MediaContentViewController {
 		self.configure(cell, at: indexPath)
     }
     	
-	private func setCanselActiveOperation(completionHandler: @escaping () -> Void) {
+	private func setCancelActiveOperation(completionHandler: @escaping () -> Void) {
 		
 		self.searchingProcessingType = .clearSearchingProcessingQueue
 		
@@ -980,7 +1023,7 @@ extension MediaContentViewController {
 			case .clearSearchingProcessingQueue:
 				self.navigationBar.changeHotRightButton(with: I.systemItems.navigationBarItems.magic)
 			case .singleSearchProcess:
-				self.navigationBar.changeHotRightButton(with: I.systemItems.navigationBarItems.stopMagic)
+				self.navigationBar.changeHotRightButton(with: I.systemItems.navigationBarItems.magic)
 			case .smartGroupSearchProcess:
 				self.navigationBar.changeHotRightButton(with: I.systemItems.navigationBarItems.stopMagic)
 		}
@@ -1010,14 +1053,14 @@ extension MediaContentViewController: NavigationBarDelegate {
 		
 		switch self.searchingProcessingType {
 			case .smartGroupSearchProcess:
-				A.showStopSmartSingleSearchProcess {
+				SearchOperationStateHandler.alertHandler(for: .resetSmartSingleCleanSearch) {
 					self.setCancelSmartSearchOperationQueue {
 						self.navigationController?.popViewController(animated: true)
 					}
 				}
 			case .singleSearchProcess:
-				A.showStopSingleSearchProcess {
-					self.setCanselActiveOperation {
+				SearchOperationStateHandler.alertHandler(for: .resetSingleCleanSearch) {
+					self.setCancelActiveOperation {
 						self.navigationController?.popViewController(animated: true)
 					}
 				}
@@ -1030,15 +1073,42 @@ extension MediaContentViewController: NavigationBarDelegate {
 		
 		switch searchingProcessingType {
 			case .clearSearchingProcessingQueue:
-				startSmartCleanProcessing()
+				if self.mediaContentType == .userContacts {
+					self.searchingProcessingType = .smartGroupSearchProcess
+					self.updateContacts {
+						self.searchingProcessingType = .clearSearchingProcessingQueue
+						self.smartCleaningDidFinishWithResults = true
+					}
+				} else {
+					startSmartCleanProcessing()
+				}
 			case .smartGroupSearchProcess:
-				A.showStopSmartSingleSearchProcess {
+				SearchOperationStateHandler.alertHandler(for: .resetSmartSingleCleanSearch) {
 					self.setCancelSmartSearchOperationQueue() {}
 				}
 			case .singleSearchProcess:
-				A.showStopSingleSearchProcess {
-					self.setCanselActiveOperation() {}
+				SearchOperationStateHandler.alertHandler(for: .resetSingleCleanSearch) {
+					self.setCancelActiveOperation() {
+						if self.mediaContentType == .userContacts {
+							self.searchingProcessingType = .smartGroupSearchProcess
+							self.updateContacts {
+								self.searchingProcessingType = .clearSearchingProcessingQueue
+								self.smartCleaningDidFinishWithResults = true
+							}
+						} else {
+							self.startSmartCleanProcessing()
+						}
+					}
 				}
+		}
+	}
+}
+
+extension MediaContentViewController: ContentTypeCellDelegate {
+	
+	func setCancelProcessOperaion(for cell: ContentTypeTableViewCell) {
+		self.setCancelActiveOperation {
+			debugPrint("cancel")
 		}
 	}
 }
@@ -1054,17 +1124,18 @@ extension MediaContentViewController: UITableViewDelegate, UITableViewDataSource
 		self.tableView.register(UINib(nibName: C.identifiers.xibs.contentBannerCell, bundle: nil), forCellReuseIdentifier: C.identifiers.cells.contentBannerCell)
 		
 		if mediaContentType == .userContacts {
-			self.tableView.contentInset.top = U.UIHelper.AppDimensions.ContenTypeCells.mediaContentCutTypeInset
+			self.tableView.contentInset.top = AppDimensions.ContenTypeCells.mediaContentCutTypeInset
 		} else {
-			self.tableView.contentInset.top = U.UIHelper.AppDimensions.ContenTypeCells.mediaContentTypeTopInset
+			self.tableView.contentInset.top = AppDimensions.ContenTypeCells.mediaContentTypeTopInset
 		}
-		self.tableView.contentInset.bottom = U.UIHelper.AppDimensions.ContenTypeCells.mediaContentBottomInset
+		self.tableView.contentInset.bottom = AppDimensions.ContenTypeCells.mediaContentBottomInset
 	}
 	
 	func configure(_ cell: ContentTypeTableViewCell, at indexPath: IndexPath) {
 		let photoMediaType: PhotoMediaType = .getSingleSearchMediaContentType(from: indexPath, type: mediaContentType)
 		let singleModel = self.singleCleanModel.objects[photoMediaType]!
-		cell.singleCleanCellConfigure(with: singleModel, mediaType: photoMediaType, indexPath: indexPath)
+		cell.singleCleanCellConfigure(with: singleModel, mediaType: photoMediaType, indexPath: indexPath, for: self.searchingProcessingType == .smartGroupSearchProcess)
+		cell.delegate = self
 	}
 	
 	func configureBannerContent(cell: ContentBannerTableViewCell, at indexPath: IndexPath) {
@@ -1109,6 +1180,18 @@ extension MediaContentViewController {
 	}
 	
 	private func didSelect(rowAt indexPath: IndexPath) {
+		
+		if self.mediaContentType == .userVideo || self.mediaContentType == .userPhoto {
+			
+			if !PhotoLibraryPermissions().authorized {
+				return
+			}
+		} else if self.mediaContentType == .userContacts {
+			if !ContactsPermissions().authorized {
+				return
+			}
+		}
+	
 		switch indexPath.section {
 			case 1:
 				switch self.mediaContentType {
@@ -1121,7 +1204,11 @@ extension MediaContentViewController {
 				}
 			default:
 				if self.smartCleaningDidFinishWithResults {
-					self.showPrescanMediaContent(by: self.mediaContentType, selected: indexPath.row)
+					if self.mediaContentType == .userContacts {
+						self.showMediaContent(by: self.mediaContentType, selected: indexPath.row)
+					} else {
+						self.showPrescanMediaContent(by: self.mediaContentType, selected: indexPath.row)
+					}
 				} else {
 					self.showMediaContent(by: self.mediaContentType, selected: indexPath.row)
 				}
@@ -1157,7 +1244,7 @@ extension MediaContentViewController: Themeble {
 		} else {
 			navigationBar.setupNavigation(title: mediaContentType.navigationTitle,
 										  leftBarButtonImage: I.systemItems.navigationBarItems.back,
-										  rightBarButtonImage: nil,
+										  rightBarButtonImage: I.systemItems.navigationBarItems.magic,
 										  contentType: mediaContentType,
 										  leftButtonTitle: nil,
 										  rightButtonTitle: nil)
@@ -1203,6 +1290,8 @@ extension MediaContentViewController: Themeble {
             case .none:
                 return
         }
+		
+		U.notificationCenter.addObserver(self, selector: #selector(handleStopAnyAnalizeProcessing), name: .incomingRemoteActionRecived, object: nil)
     }
     
     private func setupDateInterval() {
@@ -1224,8 +1313,8 @@ extension MediaContentViewController: Themeble {
 		segue.interactiveHide = true
 		segue.messageView.configureNoDropShadow()
 		
-		let height = selectedType == .lowerDateSelectable ? U.UIHelper.AppDimensions.DateSelectController.datePickerContainerHeightLower :
-		U.UIHelper.AppDimensions.DateSelectController.datePickerContainerHeightUper
+		let height = selectedType == .lowerDateSelectable ? AppDimensions.DateSelectController.datePickerContainerHeightLower :
+		AppDimensions.DateSelectController.datePickerContainerHeightUper
 		
 		segue.messageView.backgroundHeight = height
 		

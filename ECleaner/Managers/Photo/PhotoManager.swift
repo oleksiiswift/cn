@@ -86,62 +86,7 @@ class PhotoManager {
 
 	private var activePHAssetRequests: [String: PHImageRequestID] = [:]
 	private var activeAVAssetRequests: [String: PHImageRequestID] = [:]
-	
-//		    MARK: - authentification -
-	private func photoLibraryRequestAuth(completion: @escaping (_ status: Bool) -> Void ) {
-		if #available(iOS 14, *) {
-			PHPhotoLibrary.requestAuthorization(for: .readWrite) { status in
-				switch status {
-					case .notDetermined:
-						debugPrint("notDetermined")
-						completion(false)
-					case .restricted:
-						debugPrint("restricted")
-						completion(false)
-					case .denied:
-						debugPrint("denied")
-						completion(false)
-					case .authorized:
-						debugPrint("authorized")
-						completion(true)
-					case .limited:
-						debugPrint("limited")
-						completion(true)
-					@unknown default:
-						debugPrint("default")
-				}
-			}
-		} else {
-			if PHPhotoLibrary.authorizationStatus() == PHAuthorizationStatus.authorized {
-				completion(true)
-			} else {
-				PHPhotoLibrary.requestAuthorization { status in
-					if status == PHAuthorizationStatus.authorized {
-						completion(true)
-					} else {
-						completion(false)
-					}
-				}
-			}
-		}
-	}
-	
-	public func checkPhotoLibraryAccess() {
-		self.photoLibraryRequestAuth { accessGranted in
-			if accessGranted {
-				self.getPhotoLibraryContentAndCalculateSpace()
-			} else {
-				A.showResrictedAlert(by: .photoLibraryRestricted) {}
-			}
-		}
-	}
-	
-	public func requestPhotoLibraryAccess(_ completion: @escaping () -> Void) {
-		self.photoLibraryRequestAuth { accessGranted in
-			accessGranted ? completion() : A.showResrictedAlert(by: .photoLibraryRestricted) {}
-		}
-	}
-	
+		
 	public func saveVideoAsset(from url: URL, completionHandler: @escaping (_ identifier: String? ,_ isSaved: Bool) -> Void) {
 		self.fetchManager.saveAVAsset(with: url) { identifier, completed, error in
 			completionHandler(identifier, completed)
@@ -245,7 +190,7 @@ extension PhotoManager {
 	public func getPhotoLibraryPHAssetsEstimatedSizeOperation(estimatedComplitionHandler: @escaping (_ photosEstimatedSize: Int64,_ currentIndex: Int,_ totalFilesCount: Int) -> Void, completionHandler: @escaping (_ photosCollectionSize: Int64) -> Void) -> ConcurrentProcessOperation {
 		
 		let photolibraryOperation = ConcurrentProcessOperation { operation in
-			let timer = ParkBenchTimer()
+			let timer = BenchTimer()
 			var photoLibrararyPhotosSize: Int64 = 0
 			var currentProcessingIndex = 0
 			
@@ -321,7 +266,7 @@ extension PhotoManager {
 															  completionHandler: @escaping (_ videosCollectionSize: Int64) -> Void) -> ConcurrentProcessOperation {
 		let photoLibraryOperation = ConcurrentProcessOperation { operation in
 			
-			let timer = ParkBenchTimer()
+			let timer = BenchTimer()
 			var photoLibrararyVideosSize: Int64 = 0
 			var currentProcessingIndex = 0
 			

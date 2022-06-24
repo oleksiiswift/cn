@@ -27,10 +27,11 @@ class MainViewController: UIViewController {
 	@IBOutlet weak var bottomButtonHeightConstraint: NSLayoutConstraint!
 	
     private let baseCarouselLayout = BaseCarouselFlowLayout()
-        
+    
+	private var permissionManager = PermissionManager.shared
 	private var photoMenager = PhotoManager.shared
 	private var singleCleanModel: SingleCleanModel!
-    
+	
     private var contentCount: [MediaContentType : Int] = [:]
     private var diskSpaceForStartingScreen: [MediaContentType : Int64] = [:]
 	
@@ -54,12 +55,14 @@ class MainViewController: UIViewController {
         super.viewWillAppear(animated)
 		
 		self.addSizeCalcuateObeserver()
-        setupNavigation()
-        updateContactsCount()
+		self.setupNavigation()
+		self.updateContactsCount()
 		self.updateInformation(.userPhoto)
 		self.updateInformation(.userVideo)
+		self.updateDeepCleanState()
+		self.handleShortcutItem()
     }
-	
+
 	override func viewWillDisappear(_ animated: Bool) {
 		super.viewWillDisappear(animated)
 		
@@ -129,6 +132,13 @@ extension MainViewController {
 			}
 		}
     }
+	
+	private func updateDeepCleanState() {
+		DispatchQueue.main.async {
+			let availible = PhotoLibraryPermissions().authorized && ContactsPermissions().authorized
+			self.bottomButtonBarView.alpha = availible ? 1.0 : 0.5
+		}
+	}
     
     private func updateCircleProgress() {}
 	
@@ -145,20 +155,22 @@ extension MainViewController {
 	}
 	
 	private func setupUpdateSizeValues(from type: SingleContentSearchNotificationType, userInfo: [AnyHashable: Any]?) {
-		
-		guard let userInfo = userInfo,
-			  let totalProcessing = userInfo[type.dictionaryCountName] as? Int,
-			  let currentProcessingIndex = userInfo[type.dictioanartyIndexName] as? Int else { return }
-		
-		let progress = CGFloat(currentProcessingIndex) / CGFloat(totalProcessing)
-		
-		switch type {
-			case .photosSizeCheckerType:
-				self.setProgressSize(for: .userPhoto, progress: progress)
-			case .videosSizeCheckerType:
-				self.setProgressSize(for: .userVideo, progress: progress)
-			default:
-				return
+		DispatchQueue.main.async {
+			
+			guard let userInfo = userInfo,
+				  let totalProcessing = userInfo[type.dictionaryCountName] as? Int,
+				  let currentProcessingIndex = userInfo[type.dictioanartyIndexName] as? Int else { return }
+			
+			let progress = CGFloat(currentProcessingIndex) / CGFloat(totalProcessing)
+			
+			switch type {
+				case .photosSizeCheckerType:
+					self.setProgressSize(for: .userPhoto, progress: progress)
+				case .videosSizeCheckerType:
+					self.setProgressSize(for: .userVideo, progress: progress)
+				default:
+					return
+			}
 		}
 	}
 	
@@ -244,17 +256,48 @@ extension MainViewController: UpdateContentDataBaseListener {
 }
 
 extension MainViewController {
+	
+	private func checkForAccessPermission(of type: MediaContentType, animated: Bool = true, cleanType: RemoteCleanType = .none) {
+		
+		switch type {
+			case .userPhoto, .userVideo:
+				permissionManager.photolibraryPermissionAccess { status in
+					status == .authorized ? self.openMediaController(type: type, animated: animated, cleanType: cleanType) : ()
+				}
+			case .userContacts:
+				permissionManager.contactsPermissionAccess { status in
+					status == .authorized ? self.openMediaController(type: type, animated: animated, cleanType: cleanType) : ()
+				}
+			default:
+				return
+		}
+	}
+	
+	private func prepareDeepCleanController(animated: Bool = true) {
+		
+		guard PhotoLibraryPermissions().authorized && ContactsPermissions().authorized else {
+			AlertManager.showPermissionAlert(of: .deniedDeepClean, at: self)
+			return
+		}
+		
+		self.photoMenager.stopEstimatedSizeProcessingOperations()
+		self.openDeepCleanController(animated: animated)
+	}
     
-    private func openMediaController(type: MediaContentType) {
+	private func openMediaController(type: MediaContentType, animated: Bool = true, cleanType: RemoteCleanType) {
         let storyboard = UIStoryboard(name: C.identifiers.storyboards.media, bundle: nil)
         let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.content) as! MediaContentViewController
 		viewController.singleCleanModel = self.singleCleanModel
 		ContactsManager.shared.contactsProcessingOperationQueuer.cancelAll()
         viewController.mediaContentType = type
-        self.navigationController?.pushViewController(viewController, animated: true)
+		self.navigationController?.pushViewController(viewController: viewController, animated: true, completion: {
+			U.delay(0.5) {
+				viewController.handleShortcutProcessing(of: cleanType)
+			}
+		})
     }
-    
-    private func openDeepCleanController() {
+	
+	private func openDeepCleanController(animated: Bool = true) {
         let storyboard = UIStoryboard(name: C.identifiers.storyboards.deep, bundle: nil)
         let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.deepClean) as! DeepCleaningViewController
 		viewController.updateMediaStoreDelegate = self
@@ -272,7 +315,7 @@ extension MainViewController {
 									   .duplicatedPhoneNumbers,
 									   .duplicatedEmails
 		]
-        self.navigationController?.pushViewController(viewController, animated: true)
+        self.navigationController?.pushViewController(viewController, animated: animated)
     }
     
     private func openSettingsController() {
@@ -283,6 +326,14 @@ extension MainViewController {
 	}
     
     private func openSubscriptionController() {}
+	
+	@objc func shortCutItemStartCleanProcess(_ notification: Notification) {}
+	
+	private func popTopMainViewController() {
+		if self != getTheMostTopController() {
+			self.navigationController?.popToRootViewController(animated: false)
+		}
+	}
 }
 
 extension MainViewController {
@@ -303,6 +354,41 @@ extension MainViewController {
             self.updateInformation(.userContacts)
         }
     }
+	
+	@objc func permissionDidChange(_ notification: Notification) {
+		
+		guard let userInfo = notification.userInfo  else { return }
+		
+		DispatchQueue.main.async {
+			if let rawValue = userInfo[C.key.notificationDictionary.permission.photoPermission] as? String, rawValue == PhotoLibraryPermissions().permissionRawValue {
+				let photoPath = MediaContentType.userPhoto.mainScreenIndexPath
+				let videoPath = MediaContentType.userVideo.mainScreenIndexPath
+				defer {
+					self.tryStartPhotoAccessProcess()
+				}
+				self.mediaCollectionView.reloadItems(at: [photoPath, videoPath])
+			} else if let rawValue = userInfo[C.key.notificationDictionary.permission.contactsPermission] as? String, rawValue == ContactsPermissions().permissionRawValue {
+				let contactsPath = MediaContentType.userContacts.mainScreenIndexPath
+				defer {
+					self.tryStartContactsAccessProcess()
+				}
+				self.mediaCollectionView.reloadItems(at: [contactsPath])
+			}
+		}
+		self.updateDeepCleanState()
+	}
+	
+	private func tryStartPhotoAccessProcess() {
+		
+		guard PhotoLibraryPermissions().authorized else { return }
+		 PhotoManager.shared.getPhotoLibraryContentAndCalculateSpace()
+	}
+	
+	private func tryStartContactsAccessProcess() {
+		
+		guard ContactsPermissions().authorized  else { return }
+		ContactsManager.shared.contactsProcessingStore()
+	}
 }
 
 extension MainViewController: UpdateMediaStoreSizeDelegate {
@@ -311,6 +397,30 @@ extension MainViewController: UpdateMediaStoreSizeDelegate {
 		
 		photo == nil ? self.photoMenager.startPhotosizeCher() : ()
 		video == nil ? self.photoMenager.startVideSizeCher() : ()
+	}
+}
+
+extension MainViewController: RemoteLaunchServiceListener {
+
+	private func handleShortcutItem() {
+		
+		guard let shortcutItem = U.sceneDelegate.shortCutItem else { return }
+		U.delay(0.33) {
+			let _ = RemoteLaunchServiceMediator.sharedInstance.handleShortCutItem(shortcutItem: shortcutItem)
+		}
+		U.sceneDelegate.shortCutItem = nil
+	}
+	
+	func remoteProcessingClean(by cleanType: RemoteCleanType) {
+		
+		self.popTopMainViewController()
+		
+		switch cleanType {
+			case .deepClean:
+				self.prepareDeepCleanController(animated: false)
+			default:
+				self.checkForAccessPermission(of: cleanType.mediaType, animated: false, cleanType: cleanType)
+		}
 	}
 }
 
@@ -329,12 +439,12 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         switch indexPath.item {
             case 0:
-                self.openMediaController(type: .userPhoto)
+				self.checkForAccessPermission(of: .userPhoto)
             case 1:
-                self.openMediaController(type: .userVideo)
+				self.checkForAccessPermission(of: .userVideo)
             case 2:
 				ContactsManager.shared.setProcess(.search, state: .disable)
-                self.openMediaController(type: .userContacts)
+				self.checkForAccessPermission(of: .userContacts)
             default:
                 return
         }
@@ -386,8 +496,7 @@ extension MainViewController: BottomActionButtonDelegate, StartingNavigationBarD
     }
     
     func didTapActionButton() {
-		self.photoMenager.stopEstimatedSizeProcessingOperations()
-        self.openDeepCleanController()
+		self.prepareDeepCleanController()
     }
 }
 
@@ -395,6 +504,7 @@ extension MainViewController: UpdateColorsDelegate {
     
     private func setupObserversAndDelegates() {
         UpdateContentDataBaseMediator.instance.setListener(listener: self)
+		RemoteLaunchServiceMediator.sharedInstance.setListener(listener: self)
         bottomButtonBarView.delegate = self
         navigationBar.delegate = self
         
@@ -405,6 +515,9 @@ extension MainViewController: UpdateColorsDelegate {
         U.notificationCenter.addObserver(self, selector: #selector(contactsStoreDidChange), name: .CNContactStoreDidChange, object: nil)
 		U.notificationCenter.addObserver(self, selector: #selector(removeStoreObserver), name: .removeContactsStoreObserver, object: nil)
 		U.notificationCenter.addObserver(self, selector: #selector(addStoreObserver), name: .addContactsStoreObserver, object: nil)
+		U.notificationCenter.addObserver(self, selector: #selector(permissionDidChange(_:)), name: .permisionDidChange, object: nil)
+		
+		U.notificationCenter.addObserver(self, selector: #selector(shortCutItemStartCleanProcess(_:)), name: .shortCutsItemsNavigationItemsNotification, object: nil)
     }
 	
 	private func addSizeCalcuateObeserver() {
@@ -434,18 +547,17 @@ extension MainViewController: UpdateColorsDelegate {
     private func setupUI() {
                 
         scrollView.alwaysBounceVertical = true
-        bottomButtonBarView.title("START DEEP CLEAN")
+		bottomButtonBarView.title(LocalizationService.DeepClean.getButtonTitle(by: .startDeepClen))
         bottomButtonBarView.actionButton.imageSize = CGSize(width: 25, height: 25)
         bottomButtonBarView.setImage(I.mainStaticItems.clean)
 		
-		sectionHeaderTextLabel.text = "Categories:"
-		
+		sectionHeaderTextLabel.text = Localization.Main.Subtitles.categories
 		switch Screen.size {
 			case .small:
 				sectionHeaderTextLabel.font = .systemFont(ofSize: 12, weight: .heavy)
 				bottomButtonBarView.setFont(.systemFont(ofSize: 14, weight: .bold))
 				bottomButtonBarView.setButtonHeight(50)
-				navigationBarHeightConstraint.constant = U.UIHelper.AppDimensions.NavigationBar.navigationBarHeight
+				navigationBarHeightConstraint.constant = AppDimensions.NavigationBar.navigationBarHeight
 			case .medium:
 				sectionHeaderTextLabel.font = .systemFont(ofSize: 12, weight: .heavy)
 			default:
@@ -469,7 +581,7 @@ extension MainViewController: UpdateColorsDelegate {
 
 		switch Screen.size {
 			case .small:
-				if S.premium.allowAdvertisementBanner {
+				if S.inAppPurchase.allowAdvertisementBanner {
 					circleTotalSpaceView.percentLabel.font = .systemFont(ofSize: 30, weight: .black)
 					circleTotalSpaceView.titleLabel.font = .systemFont(ofSize: 8, weight: .bold)
 					circleTotalSpaceView.lineWidth = 28
@@ -496,7 +608,7 @@ extension MainViewController: UpdateColorsDelegate {
 				baseCarouselLayout.spacing = -40
 				baseCarouselLayout.focusedSpacing = -40
 			case .medium:
-				if S.premium.allowAdvertisementBanner {
+				if S.inAppPurchase.allowAdvertisementBanner {
 					circleTotalSpaceView.percentLabel.font = .systemFont(ofSize: 40, weight: .black)
 					circleTotalSpaceView.titleLabel.font = .systemFont(ofSize: 11, weight: .bold)
 					circleTotalSpaceView.lineWidth = 34
@@ -519,7 +631,7 @@ extension MainViewController: UpdateColorsDelegate {
 				baseCarouselLayout.spacing = -30
 				baseCarouselLayout.focusedSpacing = -30
 			case .plus:
-				if S.premium.allowAdvertisementBanner {
+				if S.inAppPurchase.allowAdvertisementBanner {
 					circleTotalSpaceView.percentLabel.font = .systemFont(ofSize: 44, weight: .black)
 					circleTotalSpaceView.titleLabel.font = .systemFont(ofSize: 11, weight: .bold)
 					circleTotalSpaceView.lineWidth = 36
@@ -540,7 +652,7 @@ extension MainViewController: UpdateColorsDelegate {
 				baseCarouselLayout.spacing = -25
 				baseCarouselLayout.focusedSpacing = -25
 			case .large:
-				if S.premium.allowAdvertisementBanner {
+				if S.inAppPurchase.allowAdvertisementBanner {
 					circleTotalSpaceView.percentLabel.font = .systemFont(ofSize: 46, weight: .black)
 					circleTotalSpaceView.titleLabel.font = .systemFont(ofSize: 12, weight: .bold)
 					circleTotalSpaceView.lineWidth = 38
@@ -564,7 +676,7 @@ extension MainViewController: UpdateColorsDelegate {
 			case .modern:
 				circleTotalSpaceView.percentLabel.font = .systemFont(ofSize: 48, weight: .black)
 				circleTotalSpaceView.titleLabel.font = .systemFont(ofSize: 13, weight: .bold)
-				if S.premium.allowAdvertisementBanner {
+				if S.inAppPurchase.allowAdvertisementBanner {
 					circleTotalSpaceView.lineWidth = 40
 					circleProgressTopConstraint.constant = -10
 					circleProgressBottomConstraint.constant = 30
@@ -583,7 +695,7 @@ extension MainViewController: UpdateColorsDelegate {
 			case .max:
 				circleTotalSpaceView.percentLabel.font = .systemFont(ofSize: 50, weight: .black)
 				circleTotalSpaceView.titleLabel.font = .systemFont(ofSize: 14, weight: .bold)
-				if S.premium.allowAdvertisementBanner {
+				if S.inAppPurchase.allowAdvertisementBanner {
 					circleTotalSpaceView.lineWidth = 46
 					bottomButtonHeightConstraint.constant = 90
 					circleProgressBottomConstraint.constant = 35
@@ -602,7 +714,7 @@ extension MainViewController: UpdateColorsDelegate {
 				circleTotalSpaceView.lineWidth = 50
 				circleTotalSpaceView.percentLabel.font = .systemFont(ofSize: 50, weight: .black)
 				circleTotalSpaceView.titleLabel.font = .systemFont(ofSize: 14, weight: .bold)
-				if S.premium.allowAdvertisementBanner {
+				if S.inAppPurchase.allowAdvertisementBanner {
 					circleProgressBottomConstraint.constant = 40
 					collectionViewHeightConstraint.constant = 280
 					bottomButtonHeightConstraint.constant = 90
@@ -644,11 +756,10 @@ extension MainViewController: UpdateColorsDelegate {
         circleTotalSpaceView.clockwise = true
 		circleTotalSpaceView.startColor = theme.circleProgresStartingGradient
 		circleTotalSpaceView.endColor = theme.circleProgresEndingGradient
-        circleTotalSpaceView.title = "\(Device.usedDiskSpaceInGB) \n of \(Device.totalDiskSpaceInGB)"
+		circleTotalSpaceView.title = "\(Device.usedDiskSpaceInGB) \n \(Localization.Main.Subtitles.of) \(Device.totalDiskSpaceInGB)"
         circleTotalSpaceView.percentLabelFormat = "%.f%%"
     }
 }
-
 
 extension MainViewController {
 	

@@ -9,7 +9,7 @@ import UIKit
 
 class DropDownMenuViewController: UIViewController {
     
-    var menuSectionItems = [DropDownOptionsMenuItem]() {
+    var menuSectionItems = [MenuItem]() {
         didSet {
             self.calculateMenuContentSize()
         }
@@ -71,7 +71,7 @@ extension DropDownMenuViewController {
     
     private func calculateMenuContentSize() {
 		let itemsCount = CGFloat(menuSectionItems.compactMap({$0}).count)
-		var viewWidth: CGFloat = U.UIHelper.AppDimensions.DropDounMenu.menuWidth
+		var viewWidth: CGFloat = AppDimensions.DropDounMenu.menuWidth
         let viewHeight: CGFloat = itemsCount * 39
 		let flatItems = menuSectionItems.compactMap({$0})
         for item in flatItems {
@@ -100,9 +100,8 @@ extension DropDownMenuViewController: UITableViewDataSource, UITableViewDelegate
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-		let selectedItem = menuSectionItems[indexPath.row]
         self.dismiss(animated: true) {
-            self.delegate?.selectedItemListViewController(self, didSelectItem: selectedItem.menuItem)
+			self.delegate?.handleDropDownMenu(self.menuSectionItems[indexPath.row].type)
         }
     }
     

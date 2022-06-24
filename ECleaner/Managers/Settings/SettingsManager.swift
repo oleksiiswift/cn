@@ -16,7 +16,30 @@ class SettingsManager {
         return self.shared
     }
 	
-	struct premium {
+	struct application {
+		
+		static var lastApplicationUsage: Date {
+			get {
+				if let date = U.userDefaults.getDate(forKey: C.key.application.applicationLastUsage) {
+					return date
+				} else {
+					return Date()
+				}
+			} set {
+				U.userDefaults.set(date: newValue, forKey: C.key.application.applicationLastUsage)
+			}
+		}
+		
+		static var firstTimeApplicationStart: Bool {
+			get {
+				U.userDefaults.bool(forKey: C.key.application.applicationFirstTimeStart)
+			} set {
+				U.userDefaults.set(newValue, forKey: C.key.application.applicationFirstTimeStart)
+			}
+		}
+	}
+	
+	struct inAppPurchase {
 		
 		 static var allowAdvertisementBanner: Bool {
 			get {
@@ -25,10 +48,86 @@ class SettingsManager {
 				U.userDefaults.set(newValue, forKey: C.key.advertisement.bannerIsShow)
 			}
 		}
+		
+		static var isVerificationPassed: Bool {
+			get {
+				return U.userDefaults.bool(forKey: C.key.inApPurchse.verificationPassed)
+			} set {
+				U.userDefaults.set(newValue, forKey: C.key.inApPurchse.verificationPassed)
+			}
+		}
+		
+		static var expiredSubscription: Bool {
+			get {
+				return U.userDefaults.bool(forKey: C.key.inApPurchse.expiredSubscription)
+			} set {
+				U.userDefaults.setValue(newValue, forKey: C.key.inApPurchse.expiredSubscription)
+			}
+		}
+		
+		static var expireDateSubscription: Date? {
+			get {
+				return U.userDefaults.object(forKey: C.key.inApPurchse.expireDate) as? Date
+			} set {
+				U.userDefaults.set(newValue, forKey: C.key.inApPurchse.expireDate)
+			}
+		}
 	}
 	
-
-    
+	struct permissions {
+		
+		static var permisssionDidShow: Bool {
+			get {
+				return U.userDefaults.bool(forKey: C.key.permissions.permissionDidShow)
+			} set {
+				U.userDefaults.set(newValue, forKey: C.key.permissions.permissionDidShow)
+			}
+		}
+		
+		static var photoPermissionSavedValue: Bool {
+			get {
+				return U.userDefaults.bool(forKey: C.key.permissions.settingsPhotoPermission)
+			} set {
+				if photoPermissionSavedValue != newValue {
+					let userInfo = [C.key.notificationDictionary.permission.photoPermission: PhotoLibraryPermissions().permissionRawValue]
+					U.userDefaults.set(newValue, forKey: C.key.permissions.settingsPhotoPermission)
+					do {
+						U.notificationCenter.post(name: .permisionDidChange, object: nil, userInfo: userInfo)
+					}
+				}
+			}
+		}
+		
+		static var contactsPermissionSavedValue: Bool {
+			get {
+				return U.userDefaults.bool(forKey: C.key.permissions.settingsContactsPermission)
+			} set {
+				if contactsPermissionSavedValue != newValue {
+					let userInfo = [C.key.notificationDictionary.permission.contactsPermission: ContactsPermissions().permissionRawValue]
+					U.userDefaults.set(newValue, forKey: C.key.permissions.settingsContactsPermission)
+					do {
+						U.notificationCenter.post(name: .permisionDidChange, object: nil, userInfo: userInfo)
+					}
+				}
+			}
+		}
+	}
+	
+	struct notification {
+		
+		static var localUserNotificationRawValue: Int {
+			get {
+				return U.userDefaults.integer(forKey: C.key.localUserNotification.localNotificationRawValue)
+			} set {
+				U.userDefaults.set(newValue, forKey: C.key.localUserNotification.localNotificationRawValue)
+			}
+		}
+		
+		static func setNewRemoteNotificationVaule(value: Int) {
+			self.localUserNotificationRawValue = self.localUserNotificationRawValue == 5 ? 1 : value
+		}
+	}
+	
     public var isDarkMode: Bool {
         get {
             U.userDefaults.bool(forKey: C.key.settings.isDarkModeOn)
