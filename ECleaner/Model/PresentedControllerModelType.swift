@@ -10,11 +10,17 @@ import Foundation
 enum PresentedControllerType {
 	
 	case permission
+	case onboarding
+	case subscription
 
 	var storyboardName: String {
 		switch self {
 			case .permission:
 				return C.identifiers.storyboards.permissions
+			case .onboarding:
+				return C.identifiers.storyboards.onboarding
+			case .subscription:
+				return C.identifiers.storyboards.subscription
 		}
 	}
 	
@@ -22,6 +28,10 @@ enum PresentedControllerType {
 		switch self {
 			case .permission:
 				return C.identifiers.viewControllers.permissions
+			case .onboarding:
+				<#code#>
+			case .subscription:
+				<#code#>
 		}
 	}
 		
@@ -29,6 +39,10 @@ enum PresentedControllerType {
 		switch self {
 			case .permission:
 				return getPresentedViewController(type: .permission)
+			case .onboarding:
+				<#code#>
+			case .subscription:
+				<#code#>
 		}
 	}
 	
@@ -38,6 +52,10 @@ enum PresentedControllerType {
 		switch self {
 			case .permission:
 				return storyboard.instantiateViewController(withIdentifier: type.viewControllerIdentifier) as! PermissionsViewController
+			case .onboarding:
+				<#code#>
+			case .subscription:
+				<#code#>
 		}
 	}
 }
