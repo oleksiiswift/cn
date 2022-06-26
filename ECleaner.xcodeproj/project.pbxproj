@@ -347,6 +347,8 @@
 		97E678462750F68A004E340B /* UsageDataNotificationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97E678452750F68A004E340B /* UsageDataNotificationType.swift */; };
 		97EB665127B1A4AE00B21EF5 /* CGSize+pixel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97EB665027B1A4AE00B21EF5 /* CGSize+pixel.swift */; };
 		97EB665327B1BC1F00B21EF5 /* UICollectionView+NextItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97EB665227B1BC1F00B21EF5 /* UICollectionView+NextItem.swift */; };
+		97EC82E528685A4A00A32A21 /* ApplicationStartupStateModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97EC82E428685A4A00A32A21 /* ApplicationStartupStateModel.swift */; };
+		97EC82E72868726300A32A21 /* Array+Repeated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97EC82E62868726300A32A21 /* Array+Repeated.swift */; };
 		97F50C2C27B8107E00FBDA0C /* DeepCleaningState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F50C2B27B8107E00FBDA0C /* DeepCleaningState.swift */; };
 		97F50C2E27B8426500FBDA0C /* SingleCleanStateModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F50C2D27B8426500FBDA0C /* SingleCleanStateModel.swift */; };
 		97FC789226888120000D7F26 /* Date+CurrentDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97FC789126888120000D7F26 /* Date+CurrentDate.swift */; };
@@ -704,6 +706,8 @@
 		97E678452750F68A004E340B /* UsageDataNotificationType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsageDataNotificationType.swift; sourceTree = "<group>"; };
 		97EB665027B1A4AE00B21EF5 /* CGSize+pixel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGSize+pixel.swift"; sourceTree = "<group>"; };
 		97EB665227B1BC1F00B21EF5 /* UICollectionView+NextItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UICollectionView+NextItem.swift"; sourceTree = "<group>"; };
+		97EC82E428685A4A00A32A21 /* ApplicationStartupStateModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationStartupStateModel.swift; sourceTree = "<group>"; };
+		97EC82E62868726300A32A21 /* Array+Repeated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Repeated.swift"; sourceTree = "<group>"; };
 		97F50C2B27B8107E00FBDA0C /* DeepCleaningState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepCleaningState.swift; sourceTree = "<group>"; };
 		97F50C2D27B8426500FBDA0C /* SingleCleanStateModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleCleanStateModel.swift; sourceTree = "<group>"; };
 		97FC789126888120000D7F26 /* Date+CurrentDate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+CurrentDate.swift"; sourceTree = "<group>"; };
@@ -771,6 +775,7 @@
 				975AF4382728300E00744E3B /* Arrray+Rearranged.swift */,
 				044A6FBC270F1B9B00CF0D17 /* Sequence+GetSum.swift */,
 				977BA04427328C4A0018DF53 /* Array+BestValue.swift */,
+				97EC82E62868726300A32A21 /* Array+Repeated.swift */,
 			);
 			path = Sequence;
 			sourceTree = "<group>";
@@ -2206,6 +2211,7 @@
 				97420BDC283E59E100B0E134 /* Content */,
 				97420BE5283E785000B0E134 /* Presenter */,
 				97420BF5283EB9A900B0E134 /* Permissions */,
+				97EC82E428685A4A00A32A21 /* ApplicationStartupStateModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -2505,6 +2511,7 @@
 				97420C0B2841186000B0E134 /* FontManager+Permission.swift in Sources */,
 				97D2BECC275A3D06002082EB /* CNContactVCard+ImageData.swift in Sources */,
 				975617D8273BC32A00E07A62 /* ReuseShadowRoundedView.swift in Sources */,
+				97EC82E72868726300A32A21 /* Array+Repeated.swift in Sources */,
 				975AF43127281DF700744E3B /* ContactListViewModel.swift in Sources */,
 				97C4D71727F1B74D00C476FE /* UICollectionView+ReloadData.swift in Sources */,
 				4F56074927205AF300CA19E9 /* Style.swift in Sources */,
@@ -2518,6 +2525,7 @@
 				97238A0F2689EE2700C523DC /* CustomDoneHud.swift in Sources */,
 				9710285028032602003CBF7E /* VideoCollectionCompressingViewController.swift in Sources */,
 				04E5837E267B60F600EDC3A3 /* AlertManager.swift in Sources */,
+				97EC82E528685A4A00A32A21 /* ApplicationStartupStateModel.swift in Sources */,
 				975AF440272898AE00744E3B /* ContactsViewController.swift in Sources */,
 				97C70B54277634AC0033F466 /* ShadowButton.swift in Sources */,
 				975C86442846592B002E07DC /* AlertManager+Permission.swift in Sources */,

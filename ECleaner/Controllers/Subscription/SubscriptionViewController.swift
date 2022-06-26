@@ -7,8 +7,10 @@
 
 import UIKit
 
-class SubscriptionViewController: UIViewController {
+class SubscriptionViewController: UIViewController, Storyboarded {
 
+	weak var coordinator: ApplicationStartupStateCoordinator?
+	
     override func viewDidLoad() {
         super.viewDidLoad()
 

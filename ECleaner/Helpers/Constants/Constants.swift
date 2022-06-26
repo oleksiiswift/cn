@@ -46,7 +46,8 @@ class Constants {
 			static let applicationLastUsage = "applicationLastUsage"
 			static let applicationFirstTimeStart = "applicationFirstTimeStart"
 
-			static let aplicationRoutingKey = "com.cleanerApplicationRouting.Key"
+			static let applicationRoutingKey = "com.cleanerApplicationRouting.Key"
+			
 			static let onboardingValue      = "com.cleaner.tryPassOnboarding.key"
 			static let permissionValue      = "com.cleaner.tryPassPermission.key"
 			static let subscriptionValue    = "com.cleaner.tryPassSubscription.key"
@@ -467,7 +468,9 @@ class Constants {
             static let expordContacts = "ExportContactsViewController"
 			static let settings = "SettingsViewController"
 			static let customCompression = "VideoCompressionCustomSettingsViewController"
-			static let permissions = "PermissionsViewController" 
+			static let permissions = "PermissionsViewController"
+			static let onbording = "OnbordingViewController"
+			static let subscription = "SubscriptionViewController"
         }
         
         struct cells {

@@ -12,7 +12,7 @@ enum PresentedControllerType {
 	case permission
 	case onboarding
 	case subscription
-
+	
 	var storyboardName: String {
 		switch self {
 			case .permission:
@@ -29,33 +29,46 @@ enum PresentedControllerType {
 			case .permission:
 				return C.identifiers.viewControllers.permissions
 			case .onboarding:
-				<#code#>
+				return C.identifiers.viewControllers.onbording
 			case .subscription:
-				<#code#>
-		}
-	}
-		
-	var presentController: UIViewController {
-		switch self {
-			case .permission:
-				return getPresentedViewController(type: .permission)
-			case .onboarding:
-				<#code#>
-			case .subscription:
-				<#code#>
+				return C.identifiers.viewControllers.subscription
 		}
 	}
 	
-	private func getPresentedViewController(type: PresentedControllerType) -> UIViewController {
+	var navigationController: UINavigationController {
+		return UINavigationController.init(rootViewController: self.presentController)
+	}
 		
-		let storyboard = UIStoryboard(name: type.storyboardName, bundle: nil)
+	var presentController: UIViewController {
+		return getPresentedViewController(type: self)
+	}
+	
+	private func getPresentedViewController(type: PresentedControllerType) -> UIViewController {
+			
 		switch self {
 			case .permission:
-				return storyboard.instantiateViewController(withIdentifier: type.viewControllerIdentifier) as! PermissionsViewController
+				return PermissionsViewController.instantiate(type: type)
 			case .onboarding:
-				<#code#>
+				return OnbordingViewController.instantiate(type: type)
 			case .subscription:
-				<#code#>
+				return SubscriptionViewController.instantiate(type: type)
 		}
 	}
 }
+
+
+
+protocol Storyboarded {
+//	static func instantiate() -> Self
+}
+
+extension Storyboarded where Self: UIViewController {
+	
+	static func instantiate(type: PresentedControllerType) -> Self {
+		let storyboard = UIStoryboard(name: type.storyboardName, bundle: nil)
+		return storyboard.instantiateViewController(withIdentifier: type.viewControllerIdentifier) as! Self
+	}
+}
+
+
+

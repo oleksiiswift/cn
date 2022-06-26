@@ -7,8 +7,8 @@
 
 import UIKit
 
-class PermissionsViewController: UIViewController {
-	
+class PermissionsViewController: UIViewController, Storyboarded {
+
 	@IBOutlet weak var navigationBar: NavigationBar!
 	@IBOutlet weak var tableView: UITableView!
 	@IBOutlet weak var navigationBarHeightConstraint: NSLayoutConstraint!
@@ -17,7 +17,9 @@ class PermissionsViewController: UIViewController {
 	private var permissionDataSource: PermissionsDataSource!
 	
 	public var fromRootViewController: Bool = true
-		
+	
+	weak var coordinator: ApplicationStartupStateCoordinator?
+	
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -65,9 +67,16 @@ extension PermissionsViewController {
 	
 	private func closeController() {
 		self.dismiss(animated: true) {
-			AplicationStartupState.state = .
-			SettingsManager.permissions.permisssionDidShow = true
-			U.sceneDelegate.permissionWindow = nil
+			#warning("TODO")
+//			AplicationStartupState.state = .
+//			SettingsManager.permissions.permisssionDidShow = true
+//			U.sceneDelegate.permissionWindow = nil
+			
+			if self.fromRootViewController {
+				self.coordinator?.showSubscription()
+			} else {
+				
+			}
 		}
 	}
 	

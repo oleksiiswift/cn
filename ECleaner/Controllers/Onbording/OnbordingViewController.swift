@@ -7,8 +7,10 @@
 
 import UIKit
 
-class OnbordingViewController: UIViewController {
+class OnbordingViewController: UIViewController, Storyboarded {
 
+	weak var coordinator: ApplicationStartupStateCoordinator?
+	
     override func viewDidLoad() {
         super.viewDidLoad()
 

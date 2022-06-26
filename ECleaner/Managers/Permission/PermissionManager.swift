@@ -16,8 +16,8 @@ class PermissionManager {
 	
 	
 	public func checkForStartingPemissions() {
-		
-		guard SettingsManager.permissions.permisssionDidShow else { return }
+		#warning("TODO")
+//		guard SettingsManager.permissions.permisssionDidShow else { return }
 		
 		PhotoLibraryPermissions().authorized ? PhotoManager.shared.getPhotoLibraryContentAndCalculateSpace() : ()
 		ContactsPermissions().authorized ? ContactsManager.shared.contactsProcessingStore() : ()

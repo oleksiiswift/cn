@@ -10,23 +10,16 @@ import UIKit
 typealias P = UIPresenter
 class UIPresenter {
     
-	 public static func showViewController(of presentedType: PresentedControllerType, scenePresenter: Bool = true) {
+	public static func showViewController(of presentedType: PresentedControllerType, scenePresenter: Bool = true, completionHandler: ((_ navigationController: UINavigationController?) -> Void)? = nil) {
 		
-		 guard let scene = currentScene as? UIWindowScene else { return }
-		 
-		 let viewController = presentedType.presentController
-		 let navigationController = UINavigationController.init(rootViewController: viewController)
-		 
-//		 switch presentedType {
-//			 case .permission:
-//				 
-//				
-//		 }
-		 
-		 U.sceneDelegate.presentedWindow = UIWindow(windowScene: scene)
-		 U.sceneDelegate.presentedWindow?.windowLevel = .statusBar - 1
-		 U.sceneDelegate.presentedWindow?.rootViewController = navigationController
-		 U.sceneDelegate.presentedWindow?.makeKeyAndVisible()
+		guard let scene = currentScene as? UIWindowScene else { return }
+		
+		let navigationController = presentedType.navigationController
+		U.sceneDelegate.presentedWindow = UIWindow(windowScene: scene)
+		U.sceneDelegate.presentedWindow?.windowLevel = .statusBar - 1
+		U.sceneDelegate.presentedWindow?.rootViewController = navigationController
+		U.sceneDelegate.presentedWindow?.makeKeyAndVisible()
+		completionHandler?(navigationController)
 	}
 }
 

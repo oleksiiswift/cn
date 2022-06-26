@@ -78,8 +78,8 @@ extension AppDelegate {
 	}
 	
 	@objc func checkPermissionStatus() {
-		
-		guard SettingsManager.permissions.permisssionDidShow else { return }
+		#warning("TODO")
+//		guard SettingsManager.permissions.permisssionDidShow else { return }
 		
 		SettingsManager.permissions.photoPermissionSavedValue = PhotoLibraryPermissions().authorized
 		SettingsManager.permissions.contactsPermissionSavedValue = ContactsPermissions().authorized
