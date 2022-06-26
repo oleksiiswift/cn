@@ -177,6 +177,8 @@
 		97420C07283EC7A500B0E134 /* PermissionContinueTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 97420C05283EC7A500B0E134 /* PermissionContinueTableViewCell.xib */; };
 		97420C0B2841186000B0E134 /* FontManager+Permission.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97420C0A2841186000B0E134 /* FontManager+Permission.swift */; };
 		97420C0D28411EA000B0E134 /* AppDimensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97420C0C28411EA000B0E134 /* AppDimensions.swift */; };
+		9742C3C52864745D00ADCE1A /* OnbordingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9742C3C42864745D00ADCE1A /* OnbordingViewController.swift */; };
+		9742C3C72864748500ADCE1A /* SubscriptionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9742C3C62864748500ADCE1A /* SubscriptionViewController.swift */; };
 		9745CC1B280765DA00335C04 /* VideoCompressionCustomSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9745CC1A280765D900335C04 /* VideoCompressionCustomSettingsViewController.swift */; };
 		975617D8273BC32A00E07A62 /* ReuseShadowRoundedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 975617D7273BC32A00E07A62 /* ReuseShadowRoundedView.swift */; };
 		975AF43127281DF700744E3B /* ContactListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 975AF43027281DF700744E3B /* ContactListViewModel.swift */; };
@@ -532,6 +534,8 @@
 		97420C05283EC7A500B0E134 /* PermissionContinueTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PermissionContinueTableViewCell.xib; sourceTree = "<group>"; };
 		97420C0A2841186000B0E134 /* FontManager+Permission.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FontManager+Permission.swift"; sourceTree = "<group>"; };
 		97420C0C28411EA000B0E134 /* AppDimensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDimensions.swift; sourceTree = "<group>"; };
+		9742C3C42864745D00ADCE1A /* OnbordingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnbordingViewController.swift; sourceTree = "<group>"; };
+		9742C3C62864748500ADCE1A /* SubscriptionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionViewController.swift; sourceTree = "<group>"; };
 		9745CC1A280765D900335C04 /* VideoCompressionCustomSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoCompressionCustomSettingsViewController.swift; sourceTree = "<group>"; };
 		975617D7273BC32A00E07A62 /* ReuseShadowRoundedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReuseShadowRoundedView.swift; sourceTree = "<group>"; };
 		975AF43027281DF700744E3B /* ContactListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactListViewModel.swift; sourceTree = "<group>"; };
@@ -1086,6 +1090,8 @@
 				9701D26427BD2ED60078E39F /* Settings */,
 				9710285528038278003CBF7E /* VideoProcessing */,
 				04B20F03269C4F9A00C6BC14 /* ModalControllers */,
+				9742C3C82864751D00ADCE1A /* Onbording */,
+				9742C3C92864752E00ADCE1A /* Subscription */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -1693,6 +1699,22 @@
 				97420C0C28411EA000B0E134 /* AppDimensions.swift */,
 			);
 			path = AppDimensions;
+			sourceTree = "<group>";
+		};
+		9742C3C82864751D00ADCE1A /* Onbording */ = {
+			isa = PBXGroup;
+			children = (
+				9742C3C42864745D00ADCE1A /* OnbordingViewController.swift */,
+			);
+			path = Onbording;
+			sourceTree = "<group>";
+		};
+		9742C3C92864752E00ADCE1A /* Subscription */ = {
+			isa = PBXGroup;
+			children = (
+				9742C3C62864748500ADCE1A /* SubscriptionViewController.swift */,
+			);
+			path = Subscription;
 			sourceTree = "<group>";
 		};
 		974EEA3726A74239000A0326 /* PhotoPreviewViewController */ = {
@@ -2621,6 +2643,7 @@
 				97D0BABD2680AD6E0067A3A6 /* String+NSDate.swift in Sources */,
 				049CC21F268312950002F988 /* UpdateColorsProtocolol.swift in Sources */,
 				9776F57C273593CF009D806A /* DeepCleanBackgroundShadowView.swift in Sources */,
+				9742C3C52864745D00ADCE1A /* OnbordingViewController.swift in Sources */,
 				972A29F928057C4700D6F54A /* SettingActionsDelegate.swift in Sources */,
 				049CC22F268337310002F988 /* MediaTypeCollectionViewCell.swift in Sources */,
 				049CC21D268225F80002F988 /* ThemeManager.swift in Sources */,
@@ -2731,6 +2754,7 @@
 				04649B28268B2F7300336FE4 /* UpdatingChangesInOpenedScreensMediator.swift in Sources */,
 				97CC2F40268749CF0072EF8C /* UIButton+ImageAlign.swift in Sources */,
 				044282012693034600B6B47C /* DropDownMenuTableViewCell.swift in Sources */,
+				9742C3C72864748500ADCE1A /* SubscriptionViewController.swift in Sources */,
 				9701D26727BD31A40078E39F /* SettingsViewController.swift in Sources */,
 				97B6587F284353F7000AB92B /* UserNotifficationService.swift in Sources */,
 				97C44FBB274EF93B001B61AB /* ContactasCleaningType.swift in Sources */,

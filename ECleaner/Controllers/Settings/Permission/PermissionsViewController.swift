@@ -65,6 +65,7 @@ extension PermissionsViewController {
 	
 	private func closeController() {
 		self.dismiss(animated: true) {
+			AplicationStartupState.state = .
 			SettingsManager.permissions.permisssionDidShow = true
 			U.sceneDelegate.permissionWindow = nil
 		}

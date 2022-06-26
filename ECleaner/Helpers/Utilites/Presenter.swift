@@ -17,14 +17,16 @@ class UIPresenter {
 		 let viewController = presentedType.presentController
 		 let navigationController = UINavigationController.init(rootViewController: viewController)
 		 
-		 switch presentedType {
-			 case .permission:
-				 
-				 U.sceneDelegate.permissionWindow = UIWindow(windowScene: scene)
-				 U.sceneDelegate.permissionWindow?.windowLevel = .statusBar - 1
-				 U.sceneDelegate.permissionWindow?.rootViewController = navigationController
-				 U.sceneDelegate.permissionWindow?.makeKeyAndVisible()
-		 }
+//		 switch presentedType {
+//			 case .permission:
+//				 
+//				
+//		 }
+		 
+		 U.sceneDelegate.presentedWindow = UIWindow(windowScene: scene)
+		 U.sceneDelegate.presentedWindow?.windowLevel = .statusBar - 1
+		 U.sceneDelegate.presentedWindow?.rootViewController = navigationController
+		 U.sceneDelegate.presentedWindow?.makeKeyAndVisible()
 	}
 }
 

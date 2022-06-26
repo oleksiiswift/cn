@@ -45,6 +45,12 @@ class Constants {
 		struct application {
 			static let applicationLastUsage = "applicationLastUsage"
 			static let applicationFirstTimeStart = "applicationFirstTimeStart"
+
+			static let aplicationRoutingKey = "com.cleanerApplicationRouting.Key"
+			static let onboardingValue      = "com.cleaner.tryPassOnboarding.key"
+			static let permissionValue      = "com.cleaner.tryPassPermission.key"
+			static let subscriptionValue    = "com.cleaner.tryPassSubscription.key"
+			static let aplicationValue 	    = "com.cleaner.tryAplication.key"
 		}
 		
 		struct inApPurchse {
@@ -55,7 +61,6 @@ class Constants {
 		}
 		
 		struct permissions {
-			static let permissionDidShow = "permissionWindowDidShow"
 			static let settingsPhotoPermission = "photoPermissionValue"
 			static let settingsContactsPermission = "contactePermissionValue"
 			
@@ -441,6 +446,8 @@ class Constants {
 			static let settings = "Settings"
 			static let videoProcessing = "VideoProcessing"
 			static let permissions = "Permissions"
+			static let onboarding = "Onboarding"
+			static let subscription = "Subscription"
         }
         
         struct viewControllers {
