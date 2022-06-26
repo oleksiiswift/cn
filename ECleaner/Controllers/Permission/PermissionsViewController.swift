@@ -18,7 +18,7 @@ class PermissionsViewController: UIViewController, Storyboarded {
 	
 	public var fromRootViewController: Bool = true
 	
-	weak var coordinator: ApplicationStartupStateCoordinator?
+	weak var coordinator: ApplicationCoordinator?
 	
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -73,7 +73,7 @@ extension PermissionsViewController {
 //			U.sceneDelegate.permissionWindow = nil
 			
 			if self.fromRootViewController {
-				self.coordinator?.showSubscription()
+				
 			} else {
 				
 			}

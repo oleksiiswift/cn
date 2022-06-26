@@ -13,6 +13,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
 	var presentedWindow: UIWindow?
+	var coordinator: ApplicationCoordinator?
 	
 	public var shortCutItem: UIApplicationShortcutItem?
 	
@@ -61,8 +62,10 @@ extension SceneDelegate {
 	}
 	
 	private func handleStartupRouting() {
-		
-		let coordinator = ApplicationStartupStateCoordinator()
-		coordinator.start()
+	
+		let navController = UINavigationController()
+		coordinator = ApplicationCoordinator(navigationController: navController)
+		#warning("TODO")
+//		coordinator?.start()
 	}
 }

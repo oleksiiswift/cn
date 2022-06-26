@@ -9,15 +9,10 @@ import UIKit
 
 class OnbordingViewController: UIViewController, Storyboarded {
 
-	weak var coordinator: ApplicationStartupStateCoordinator?
+	weak var coordinator: ApplicationCoordinator?
 	
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        
     }
-    
-
- 
-
 }

@@ -12,6 +12,7 @@ enum PresentedControllerType {
 	case permission
 	case onboarding
 	case subscription
+	case settings
 	
 	var storyboardName: String {
 		switch self {
@@ -21,6 +22,8 @@ enum PresentedControllerType {
 				return C.identifiers.storyboards.onboarding
 			case .subscription:
 				return C.identifiers.storyboards.subscription
+			case .settings:
+				return C.identifiers.storyboards.settings
 		}
 	}
 	
@@ -32,6 +35,8 @@ enum PresentedControllerType {
 				return C.identifiers.viewControllers.onbording
 			case .subscription:
 				return C.identifiers.viewControllers.subscription
+			case .settings:
+				return C.identifiers.viewControllers.settings
 		}
 	}
 	
@@ -40,35 +45,27 @@ enum PresentedControllerType {
 	}
 		
 	var presentController: UIViewController {
-		return getPresentedViewController(type: self)
+		return self.getPresentedViewController(type: self, coordinator: Utils.sceneDelegate.coordinator)
 	}
 	
-	private func getPresentedViewController(type: PresentedControllerType) -> UIViewController {
+	private func getPresentedViewController(type: PresentedControllerType, coordinator: ApplicationCoordinator?) -> UIViewController {
 			
 		switch self {
 			case .permission:
-				return PermissionsViewController.instantiate(type: type)
+				let viewController = PermissionsViewController.instantiate(type: type)
+				viewController.coordinator = coordinator
+				return viewController
 			case .onboarding:
-				return OnbordingViewController.instantiate(type: type)
+				let viewController = OnbordingViewController.instantiate(type: type)
+				viewController.coordinator = coordinator
+				return viewController
 			case .subscription:
-				return SubscriptionViewController.instantiate(type: type)
+				let viewController = SubscriptionViewController.instantiate(type: type)
+				viewController.coordinator = coordinator
+				return viewController
+			case .settings:
+				let viewController = SettingsViewController.instantiate(type: type)
+				return viewController
 		}
 	}
 }
-
-
-
-protocol Storyboarded {
-//	static func instantiate() -> Self
-}
-
-extension Storyboarded where Self: UIViewController {
-	
-	static func instantiate(type: PresentedControllerType) -> Self {
-		let storyboard = UIStoryboard(name: type.storyboardName, bundle: nil)
-		return storyboard.instantiateViewController(withIdentifier: type.viewControllerIdentifier) as! Self
-	}
-}
-
-
-

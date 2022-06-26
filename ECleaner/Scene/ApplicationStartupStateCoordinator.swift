@@ -1,5 +1,5 @@
 //
-//  ApplicationStartupStateModel.swift
+//  ApplicationStartupStateCoordinator.swift
 //  ECleaner
 //
 //  Created by alexey sorochan on 26.06.2022.
@@ -9,7 +9,7 @@ import Foundation
 
 protocol Coordinator {
 	
-	var navigationController: UINavigationController? { get set }
+	var navigationController: UINavigationController { get set }
 	func start()
 }
 
@@ -38,11 +38,15 @@ enum ApplicationStartupState: CaseIterable {
 	}
 }
 
-class ApplicationStartupStateCoordinator: Coordinator {
+class ApplicationCoordinator: Coordinator {
 
-	var navigationController: UINavigationController?
+	var navigationController: UINavigationController
 
 	private let routingStateKey = Constants.key.application.applicationRoutingKey
+	
+	init(navigationController: UINavigationController) {
+		self.navigationController = navigationController
+	}
 	
 	public var currentState: ApplicationStartupState {
 		get {
@@ -85,11 +89,15 @@ class ApplicationStartupStateCoordinator: Coordinator {
 		switch state {
 			case .onboarding:
 				UIPresenter.showViewController(of: .onboarding) { navigationController in
-					self.navigationController = navigationController
+					if let navigationController = navigationController {
+						self.navigationController = navigationController
+					}
 				}
 			case .permission:
 				UIPresenter.showViewController(of: .permission) { navigationController in
-					self.navigationController = navigationController
+					if let navigationController = navigationController {
+						self.navigationController = navigationController
+					}
 				}
 			case .subscription:
 				UIPresenter.showViewController(of: .subscription)
@@ -98,16 +106,28 @@ class ApplicationStartupStateCoordinator: Coordinator {
 		}
 	}
 	
-	public func showPermission() {
+	public func showPermissionViewController() {
 		let viewcontroller = PermissionsViewController.instantiate(type: .permission)
 		viewcontroller.coordinator = self
-		self.navigationController?.pushViewController(viewcontroller, animated: true)
+		self.navigationController.pushViewController(viewcontroller, animated: true)
 	}
 	
-	public func showSubscription() {
+	public func showPermissionViewController(from navigationController: UINavigationController?) {
+		let viewController = PermissionsViewController.instantiate(type: .permission)
+		viewController.fromRootViewController = false
+		navigationController?.pushViewController(viewController, animated: true)
+	}
+	
+	public func showSubscriptionViewController() {
 		let viewController = SubscriptionViewController.instantiate(type: .subscription)
 		viewController.coordinator = self
-		self.navigationController?.pushViewController(viewController, animated: true)
+		self.navigationController.pushViewController(viewController, animated: true)
+	}
+	
+	public func showSettingsViewController(from navigationController: UINavigationController?) {
+		let viewController = SettingsViewController.instantiate(type: .settings)
+		viewController.coordinator = self
+		navigationController?.pushViewController(viewController, animated: true)
 	}
 }
 
