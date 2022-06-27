@@ -1,5 +1,6 @@
 PODS:
   - CocoaImageHashing (1.7.0)
+  - lottie-ios (3.3.0)
   - PhoneNumberKit (3.3.4):
     - PhoneNumberKit/PhoneNumberKitCore (= 3.3.4)
     - PhoneNumberKit/UIKit (= 3.3.4)
@@ -13,6 +14,7 @@ PODS:
 
 DEPENDENCIES:
   - CocoaImageHashing
+  - lottie-ios
   - PhoneNumberKit
   - SwiftMessages
   - SwiftyStoreKit
@@ -20,16 +22,18 @@ DEPENDENCIES:
 SPEC REPOS:
   https://github.com/CocoaPods/Specs.git:
     - CocoaImageHashing
+    - lottie-ios
     - PhoneNumberKit
     - SwiftMessages
     - SwiftyStoreKit
 
 SPEC CHECKSUMS:
   CocoaImageHashing: 2c8efd6dd60f9030cd54086b34ffc48e927821c3
+  lottie-ios: 6ac74dcc09904798f59b18cb3075c089d76be9ae
   PhoneNumberKit: 441e8b26ec88d598e3591de9061eff18f5dd12e8
   SwiftMessages: f0c7ef4705a570ad6c5e208b611f4333e660ed92
   SwiftyStoreKit: 6b9c08810269f030586dac1fae8e75871a82e84a
 
-PODFILE CHECKSUM: 2186404d9101b45e68a988a0ac149028dc234ece
+PODFILE CHECKSUM: f75d0658c3a7a5fedbba770cf21f03ab89350445
 
 COCOAPODS: 1.11.2
