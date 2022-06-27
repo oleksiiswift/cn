@@ -212,6 +212,7 @@
 		9776F57E27359406009D806A /* ShadowRoundedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9776F57D27359406009D806A /* ShadowRoundedView.swift */; };
 		9776F5802735944E009D806A /* CALAyer+Extension+SL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9776F57F2735944E009D806A /* CALAyer+Extension+SL.swift */; };
 		9776F5842735953A009D806A /* ShadowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9776F5832735953A009D806A /* ShadowView.swift */; };
+		977AC39E2869B3EA0074DCCE /* OnboardingPages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977AC39D2869B3EA0074DCCE /* OnboardingPages.swift */; };
 		977BA04527328C4A0018DF53 /* Array+BestValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977BA04427328C4A0018DF53 /* Array+BestValue.swift */; };
 		977BA0472733171F0018DF53 /* CNContacts+FillRows.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977BA0462733171F0018DF53 /* CNContacts+FillRows.swift */; };
 		977FE23527302F57004DE4C3 /* ContactGroupListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977FE23427302F57004DE4C3 /* ContactGroupListViewModel.swift */; };
@@ -574,6 +575,7 @@
 		9776F57D27359406009D806A /* ShadowRoundedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowRoundedView.swift; sourceTree = "<group>"; };
 		9776F57F2735944E009D806A /* CALAyer+Extension+SL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CALAyer+Extension+SL.swift"; sourceTree = "<group>"; };
 		9776F5832735953A009D806A /* ShadowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowView.swift; sourceTree = "<group>"; };
+		977AC39D2869B3EA0074DCCE /* OnboardingPages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPages.swift; sourceTree = "<group>"; };
 		977BA04427328C4A0018DF53 /* Array+BestValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+BestValue.swift"; sourceTree = "<group>"; };
 		977BA0462733171F0018DF53 /* CNContacts+FillRows.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CNContacts+FillRows.swift"; sourceTree = "<group>"; };
 		977FE23427302F57004DE4C3 /* ContactGroupListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactGroupListViewModel.swift; sourceTree = "<group>"; };
@@ -2286,6 +2288,7 @@
 			isa = PBXGroup;
 			children = (
 				97EC82E428685A4A00A32A21 /* ApplicationStartupStateCoordinator.swift */,
+				977AC39D2869B3EA0074DCCE /* OnboardingPages.swift */,
 			);
 			path = Scene;
 			sourceTree = "<group>";
@@ -2656,6 +2659,7 @@
 				04CFFFEC2684725F000CA850 /* Device+DiskSpace.swift in Sources */,
 				97CE4499273D305900DF6114 /* NavigationBar.swift in Sources */,
 				4F56074527205AF300CA19E9 /* GreenLightStyle.swift in Sources */,
+				977AC39E2869B3EA0074DCCE /* OnboardingPages.swift in Sources */,
 				97A17F652836701300591409 /* FontManager+BottomButton.swift in Sources */,
 				97DC111427A2BA6C00D10FE4 /* MediaViewController.swift in Sources */,
 				972AAACD27F7524A00F3A1D2 /* UIView+AnimateButtonsAndViews.swift in Sources */,

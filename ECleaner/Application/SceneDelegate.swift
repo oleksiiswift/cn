@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import SwiftUI
+
 
 var currentScene: UIScene?
 
@@ -67,5 +69,16 @@ extension SceneDelegate {
 		coordinator = ApplicationCoordinator(navigationController: navController)
 		#warning("TODO")
 //		coordinator?.start()
+//
+		
+		
+		let nav = UIHostingController(rootView: OnboardingView(pages: OnboardingPage.fullOnboarding))
+		guard let scene = currentScene as? UIWindowScene else { return }
+		
+		Utils.sceneDelegate.presentedWindow = UIWindow(windowScene: scene)
+		Utils.sceneDelegate.presentedWindow?.windowLevel = .statusBar - 1
+		Utils.sceneDelegate.presentedWindow?.rootViewController = nav
+		Utils.sceneDelegate.presentedWindow?.makeKeyAndVisible()
+
 	}
 }
