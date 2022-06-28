@@ -1119,6 +1119,7 @@
 				9710285528038278003CBF7E /* VideoProcessing */,
 				04B20F03269C4F9A00C6BC14 /* ModalControllers */,
 				97420BF8283EC4EE00B0E134 /* Permission */,
+				9742C3C92864752E00ADCE1A /* Subscription */,
 				9742C3C82864751D00ADCE1A /* Onbording */,
 			);
 			path = Controllers;
@@ -1737,7 +1738,6 @@
 				97879B25286A63AC0040A8F7 /* OnbordingPageViewController.swift */,
 				97879B21286A5F120040A8F7 /* OnboardingDataSource.swift */,
 				97879B23286A5F530040A8F7 /* OnboardingViewModel.swift */,
-				9742C3C92864752E00ADCE1A /* Subscription */,
 			);
 			path = Onbording;
 			sourceTree = "<group>";

@@ -10,13 +10,14 @@ import Lottie
 
 class OnbordingPageViewController: UIViewController {
 
+
+	@IBOutlet weak var bottomButtonView: BottomButtonBarView!
 	@IBOutlet weak var animationView: AnimationView!
 	
 	@IBOutlet weak var titleTextLabel: UILabel!
 	@IBOutlet weak var subtitleTextLabel: UILabel!
 	
 	var onboarding: Onboarding?
-
 	var sceneTitle: String?
 	
 	override func viewDidLoad() {
@@ -25,6 +26,7 @@ class OnbordingPageViewController: UIViewController {
 		setupOnboarding()
 		setupUI()
 		updateColors()
+		setupDelegate()
 	}
 
 	override func viewWillAppear(_ animated: Bool) {
@@ -37,6 +39,9 @@ class OnbordingPageViewController: UIViewController {
 		super.viewDidDisappear(animated)
 		animationView.stop()
 	}
+}
+
+extension OnbordingPageViewController {
 	
 	private func setupOnboarding() {
 		
@@ -51,14 +56,36 @@ class OnbordingPageViewController: UIViewController {
 	}
 }
 
+extension OnbordingPageViewController: BottomActionButtonDelegate {
+	
+	func didTapActionButton() {
+		debugPrint("next")
+	}
+}
+
 extension OnbordingPageViewController: Themeble {
 	
 	private func setupUI() {
+		
+		self.bottomButtonView.setButtonSideOffset(40)
+		self.bottomButtonView.setImageRight(I.systemItems.defaultItems.arrowLeft, with: CGSize(width: 24, height: 22))
+		self.bottomButtonView.title(LocalizationService.Buttons.getButtonTitle(of: .next).uppercased())
+		
+	}
 	
+	private func setupDelegate() {
+		bottomButtonView.delegate = self
 	}
 	
 	func updateColors() {
 		
 		self.view.backgroundColor = .clear
+		self.bottomButtonView.configureShadow = true
+		let colors: [UIColor] = theme.onboardingButtonColors
+		self.bottomButtonView.addButtonShadow()
+		self.bottomButtonView.addButtonGradientBackground(colors: colors)
+		bottomButtonView.buttonTintColor = theme.activeTitleTextColor
+		bottomButtonView.buttonTitleColor = theme.activeTitleTextColor
+		bottomButtonView.updateColorsSettings()
 	}
 }

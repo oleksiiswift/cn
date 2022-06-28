@@ -53,6 +53,7 @@ struct Images {
             static let arrowUP = UIImage(named: "arrowUpDown")!
 			static let compress = UIImage(named: "compressItem")!
 			static let info = UIImage(named: "infoItem")!
+			static let arrowLeft = UIImage(named: "arrowLeftItem")!
         }
 		
 		struct helpersItems {
@@ -134,7 +135,8 @@ struct Images {
         static let sliderView = UIImage(named: "sliderItem")
 		static let trashBtn = UIImage(systemName: "trash")
 		static let share = UIImage(systemName: "square.and.arrow.up")
-    }
+		static let arrowRight = UIImage(systemName: "arrow.right")!
+	}
 }
 
 extension Images {

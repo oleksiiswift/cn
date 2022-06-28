@@ -662,6 +662,19 @@ enum Theme: Int {
 				return [startColor, endColor]
 		}
 	}
+	
+	var onboardingButtonColors: [UIColor] {
+		switch self {
+			case .light:
+				let startColor = UIColor().colorFromHexString("69C5FF")
+				let endColor = UIColor ().colorFromHexString("5CA4FF")
+				return [startColor, endColor]
+			case .dark:
+				let startColor = UIColor().colorFromHexString("69C5FF")
+				let endColor = UIColor ().colorFromHexString("5CA4FF")
+				return [startColor, endColor]
+		}
+	}
 }
 
 extension Theme {

@@ -7,14 +7,16 @@
 
 import UIKit
 
+protocol OnboardingControllDelegate {
+	
+}
+
 class OnbordingViewController: UIPageViewController, Storyboarded {
 	
 	private var onboardingViewModel: OnboardingViewModel!
 	private var onboardingDataSource: OnboardingDataSource?!
 	
 	weak var coordinator: ApplicationCoordinator?
-	
-	public var onboardingPageRowValue: String?
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -47,8 +49,10 @@ extension OnbordingViewController {
 	}
 	
 	func setupPageControl() {
-		UIPageControl.appearance(whenContainedInInstancesOf: [OnbordingViewController.self]).currentPageIndicatorTintColor = .red
-		UIPageControl.appearance(whenContainedInInstancesOf: [OnbordingViewController.self]).pageIndicatorTintColor = .black
+		
+		UIPageControl.appearance(whenContainedInInstancesOf: [OnbordingViewController.self]).currentPageIndicatorTintColor = UIColor().colorFromHexString("9DA6B7")
+		UIPageControl.appearance(whenContainedInInstancesOf: [OnbordingViewController.self]).pageIndicatorTintColor =  UIColor().colorFromHexString("CBD1DC")
+
 	}
 }
 

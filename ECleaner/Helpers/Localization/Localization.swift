@@ -149,6 +149,8 @@ struct Localization {
 			static var removeAudio = "Remove Audio".localized()
 			static var origin = "origin".localized()
 			static var manual = "manual".localized()
+			static var skip = "skip".localized()
+			static var next = "next".localized()
 		}
 	}
 	

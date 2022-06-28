@@ -6,6 +6,7 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -46,17 +47,26 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qjZ-59-aur" customClass="BottomButtonBarView" customModule="ECleaner" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="786" width="414" height="110"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="110" id="Sd1-c2-GZ3"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="2ZN-1h-iSD"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="GJH-qZ-O5D" firstAttribute="top" secondItem="jhT-qw-1cs" secondAttribute="bottom" constant="80" id="8w9-Nr-VCT"/>
                             <constraint firstItem="jhT-qw-1cs" firstAttribute="centerX" secondItem="zeM-YT-foM" secondAttribute="centerX" id="BIS-BV-zct"/>
-                            <constraint firstItem="2ZN-1h-iSD" firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="RKa-qs-jFw" secondAttribute="bottom" constant="50" id="MLA-ra-T2Y"/>
                             <constraint firstItem="jhT-qw-1cs" firstAttribute="width" secondItem="zeM-YT-foM" secondAttribute="width" multiplier="0.8" id="Nhz-sf-ABH"/>
                             <constraint firstItem="GJH-qZ-O5D" firstAttribute="leading" secondItem="2ZN-1h-iSD" secondAttribute="leading" constant="20" id="Y22-a3-tHp"/>
+                            <constraint firstAttribute="bottom" secondItem="qjZ-59-aur" secondAttribute="bottom" id="etP-E6-nve"/>
+                            <constraint firstItem="2ZN-1h-iSD" firstAttribute="trailing" secondItem="qjZ-59-aur" secondAttribute="trailing" id="gMA-5Q-GRY"/>
                             <constraint firstItem="RKa-qs-jFw" firstAttribute="leading" secondItem="GJH-qZ-O5D" secondAttribute="leading" id="kE8-Bf-fba"/>
                             <constraint firstItem="2ZN-1h-iSD" firstAttribute="trailing" secondItem="GJH-qZ-O5D" secondAttribute="trailing" constant="20" id="kyk-D0-rZV"/>
+                            <constraint firstItem="qjZ-59-aur" firstAttribute="leading" secondItem="2ZN-1h-iSD" secondAttribute="leading" id="mY8-b7-RsM"/>
                             <constraint firstItem="RKa-qs-jFw" firstAttribute="trailing" secondItem="GJH-qZ-O5D" secondAttribute="trailing" id="oZ8-cz-N9d"/>
                             <constraint firstItem="jhT-qw-1cs" firstAttribute="centerY" secondItem="zeM-YT-foM" secondAttribute="centerY" multiplier="0.75" id="xAl-Eq-hwg"/>
                             <constraint firstItem="RKa-qs-jFw" firstAttribute="top" secondItem="GJH-qZ-O5D" secondAttribute="bottom" constant="30" id="ypD-bY-zoa"/>
@@ -64,6 +74,7 @@
                     </view>
                     <connections>
                         <outlet property="animationView" destination="jhT-qw-1cs" id="ZNk-Xm-bNC"/>
+                        <outlet property="bottomButtonView" destination="qjZ-59-aur" id="hJd-Dl-6Og"/>
                         <outlet property="subtitleTextLabel" destination="RKa-qs-jFw" id="FsZ-Ot-uQN"/>
                         <outlet property="titleTextLabel" destination="GJH-qZ-O5D" id="c7C-He-pUS"/>
                     </connections>
@@ -73,12 +84,12 @@
             <point key="canvasLocation" x="1339" y="117"/>
         </scene>
     </scenes>
-    <designables>
-        <designable name="jhT-qw-1cs"/>
-    </designables>
     <resources>
         <namedColor name="introTextColor">
             <color red="0.11900000274181366" green="0.1080000028014183" blue="0.19799999892711639" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
         </namedColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
     </resources>
 </document>

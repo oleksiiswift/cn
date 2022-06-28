@@ -29,9 +29,9 @@ enum Onboarding: CaseIterable {
 	var title: String {
 		switch self {
 			case .welcome:
-				return "main title wellcome app"
+				return "welcome cleaner app"
 			case .photo:
-				return "title for clean photo"
+				return "Clear Similar Photos"
 			case .video:
 				return "title for clean video"
 			case .contacts:
@@ -44,7 +44,7 @@ enum Onboarding: CaseIterable {
 			case .welcome:
 				return "hello cleaner app"
 			case .photo:
-				return "very long descriptopn for clean photo and some extra feat blah blah blag"
+				return "Autosearch and delete similar photos to obtain more space on iPhone."
 			case .video:
 				return "another very long descriptopn for clean vide and some extra feat blah blah "
 			case .contacts:
