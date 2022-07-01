@@ -129,6 +129,11 @@ class ApplicationCoordinator: Coordinator {
 		viewController.coordinator = self
 		navigationController?.pushViewController(viewController, animated: true)
 	}
+	
+	public func routingWillPass() {
+		self.currentState = .application
+		UIPresenter.closePresentedWindow()
+	}
 }
 
 

@@ -26,7 +26,7 @@ class MainViewController: UIViewController {
 	@IBOutlet weak var collectionViewHeightConstraint: NSLayoutConstraint!
 	@IBOutlet weak var bottomButtonHeightConstraint: NSLayoutConstraint!
 	
-	weak var coordinator: ApplicationStartupStateCoordinator?
+	weak var coordinator: ApplicationCoordinator?
 	
     private let baseCarouselLayout = BaseCarouselFlowLayout()
     

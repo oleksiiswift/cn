@@ -391,6 +391,15 @@ enum Theme: Int {
 		}
 	}
 	
+	var onboardingSubTitleTextColor: UIColor {
+		switch self {
+			case .light:
+				return UIColor().colorFromHexString("120B4D")
+			case .dark:
+				return UIColor().colorFromHexString("120B4D")
+		}
+	}
+	
 	var navigationBarTextColor: UIColor {
 		switch self {
 			case .light:
@@ -659,6 +668,19 @@ enum Theme: Int {
 			case .dark:
 				let startColor = UIColor().colorFromHexString("23AEA0")
 				let endColor = UIColor ().colorFromHexString("6DACD7")
+				return [startColor, endColor]
+		}
+	}
+	
+	var onboardingButtonColors: [UIColor] {
+		switch self {
+			case .light:
+				let startColor = UIColor().colorFromHexString("69C5FF")
+				let endColor = UIColor ().colorFromHexString("5CA4FF")
+				return [startColor, endColor]
+			case .dark:
+				let startColor = UIColor().colorFromHexString("69C5FF")
+				let endColor = UIColor ().colorFromHexString("5CA4FF")
 				return [startColor, endColor]
 		}
 	}

@@ -61,25 +61,10 @@ extension PermissionsViewController {
 		if PhotoLibraryPermissions().notDetermined && ContactsPermissions().notDetermined || PhotoLibraryPermissions().denied && ContactsPermissions().denied {
 			AlertManager.showPermissionAlert(of: .onePermissionRule, at: self)
 		} else {
-			self.closeController()
+			self.permissionWillPass()
 		}
 	}
-	
-	private func closeController() {
-		self.dismiss(animated: true) {
-			#warning("TODO")
-//			AplicationStartupState.state = .
-//			SettingsManager.permissions.permisssionDidShow = true
-//			U.sceneDelegate.permissionWindow = nil
-			
-			if self.fromRootViewController {
-				
-			} else {
-				
-			}
-		}
-	}
-	
+		
 	private func handlePermissionChange(at cell: PermissionTableViewCell, with permission: Permission) {
 
 		switch permission.status {
@@ -110,13 +95,13 @@ extension PermissionsViewController {
 									U.delay(1) {
 										AppTrackerPermissions().requestForPermission { _, _ in
 											U.delay(1) {
-												self.closeController()
+												self.permissionWillPass()
 											}
 										}
 									}
 								} else {
 									U.delay(1) {
-										self.closeController()
+										self.permissionWillPass()
 									}
 								}
 							}
@@ -124,6 +109,16 @@ extension PermissionsViewController {
 					}
 				}
 			}
+		}
+	}
+	
+	private func permissionWillPass() {
+		
+		if SubscriptionManager.instance.purchasePremium() {
+			self.coordinator?.routingWillPass()
+		} else {
+			self.coordinator?.currentState = .subscription
+			self.coordinator?.showSubscriptionViewController()
 		}
 	}
 	

@@ -158,4 +158,13 @@ class FontManager {
 				return PermissionFont.descriptioFont
 		}
 	}
+	
+	static func onboardingFont(of type: OnboardingFontType) -> UIFont {
+		switch type {
+			case .title:
+				return OnboardingFontSize.titleFont
+			case .subtitle:
+				return OnboardingFontSize.subtitleFont
+		}
+	}
 }

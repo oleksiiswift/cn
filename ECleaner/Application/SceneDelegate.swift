@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import SwiftUI
+
 
 var currentScene: UIScene?
 
@@ -65,7 +67,17 @@ extension SceneDelegate {
 	
 		let navController = UINavigationController()
 		coordinator = ApplicationCoordinator(navigationController: navController)
-		#warning("TODO")
-//		coordinator?.start()
+		#warning("DEVELOP")
+		devopmentEnviroment()
+		
+		coordinator?.start()
+	}
+}
+
+extension SceneDelegate {
+	
+	private func devopmentEnviroment() {
+		
+		coordinator?.currentState = .onboarding
 	}
 }
