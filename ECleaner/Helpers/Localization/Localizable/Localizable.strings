@@ -106,6 +106,9 @@
 "Remove Audio" = "Remove Audio";
 "origin" = "Remove Audio";
 "manual" = "manual";
+"Skip" = "Skip";
+"Next" = "Next";
+
 	//		MARK: - settings -
 	// MARK: title
 "Premium" = "Premium";
@@ -258,6 +261,17 @@
 "Save Your Contacts" = "Save Your Contacts";
 "With" = "With";
 "Back-Up" = "Back-Up";
+	// MARK: Onboarding
+	// MARK: Onboarding title
+"Clear Similar Photos" = "Clear Similar Photos";
+"Optimize Large Video" = "Optimize Large Video";
+"Merge Same Contacts" = "Merge Same Contacts";
+
+	// MARK: Onboarding description
+"Autosearch and delete similar photos to obtain more space on iPhone." = "Autosearch and delete similar photos to obtain more space on iPhone.";
+"Compress or delete large videos to clear your iPhone data" = "Compress or delete large videos to clear your iPhone data";
+"Organize your Contact Library using merge and clean empty contacts" = "Organize your Contact Library using merge and clean empty contacts";
+
 	// MARK: AlertController
 	// MARK: AlertTitle
 "Deep Clean processing" = "Deep Clean processing";

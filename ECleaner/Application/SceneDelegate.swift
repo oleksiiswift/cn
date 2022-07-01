@@ -67,19 +67,17 @@ extension SceneDelegate {
 	
 		let navController = UINavigationController()
 		coordinator = ApplicationCoordinator(navigationController: navController)
-		#warning("TODO")
-		coordinator?.start()
-//		guard let scene = currentScene as? UIWindowScene else { return }
+		#warning("DEVELOP")
+		devopmentEnviroment()
 		
-//
-////		let navigation = UINavigationController(rootViewController: OnboardingView(onboardingPages: Onboarding.allCases))
-//		let nav = UIHostingController(rootView: OnboardingView(onboardingPages: Onboarding.allCases))
-////
-////
-//		Utils.sceneDelegate.presentedWindow = UIWindow(windowScene: scene)
-//		Utils.sceneDelegate.presentedWindow?.windowLevel = .statusBar - 1
-//		Utils.sceneDelegate.presentedWindow?.rootViewController = nav
-//		Utils.sceneDelegate.presentedWindow?.makeKeyAndVisible()
+		coordinator?.start()
+	}
+}
 
+extension SceneDelegate {
+	
+	private func devopmentEnviroment() {
+		
+		coordinator?.currentState = .onboarding
 	}
 }

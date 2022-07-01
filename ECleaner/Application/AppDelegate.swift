@@ -12,7 +12,7 @@ import Contacts
 class AppDelegate: UIResponder, UIApplicationDelegate {
 	
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        
+	
         configureApplication(with: launchOptions)
         setDefaults()
 		developmentSettings()
@@ -55,12 +55,12 @@ extension AppDelegate {
 			SettingsManager.application.lastApplicationUsage = Date()
 		}
 	
-		U.setUpperDefaultValue()
-		U.setLowerDafaultValue()
+		Utils.setUpperDefaultValue()
+		Utils.setLowerDafaultValue()
 		
-		S.phassetVideoFilesSizes = nil
-		S.phassetPhotoFilesSizes = nil
-		S.lastSavedLocalIdenifier = nil
+		SettingsManager.phassetVideoFilesSizes = nil
+		SettingsManager.phassetPhotoFilesSizes = nil
+		SettingsManager.lastSavedLocalIdenifier = nil
 		
 		if !CompressionSettingsConfiguretion.isDefaultConfigurationIsSet {
 			CompressionSettingsConfiguretion.setDefaultConfiguration()
@@ -78,9 +78,9 @@ extension AppDelegate {
 	}
 	
 	@objc func checkPermissionStatus() {
-		#warning("TODO")
-//		guard SettingsManager.permissions.permisssionDidShow else { return }
 		
+		guard Utils.sceneDelegate.coordinator?.currentState == .application else { return }
+
 		SettingsManager.permissions.photoPermissionSavedValue = PhotoLibraryPermissions().authorized
 		SettingsManager.permissions.contactsPermissionSavedValue = ContactsPermissions().authorized
 	}

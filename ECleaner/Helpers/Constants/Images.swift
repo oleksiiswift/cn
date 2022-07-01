@@ -137,6 +137,19 @@ struct Images {
 		static let share = UIImage(systemName: "square.and.arrow.up")
 		static let arrowRight = UIImage(systemName: "arrow.right")!
 	}
+	
+	struct onboarding {
+		static let photo = UIImage(named: "photoonboarding")!
+		static let video = UIImage(named: "videoonboarding")!
+		static let contacts = UIImage(named: "contactsonboarding")!
+	}
+	
+	struct onboardingAnimation {
+		
+		static let photo = "photo"
+		static let video = "video"
+		static let contacts = "contacts"
+	}
 }
 
 extension Images {

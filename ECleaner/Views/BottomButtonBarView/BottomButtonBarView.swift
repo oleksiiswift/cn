@@ -230,7 +230,7 @@ extension BottomButtonBarView {
 	
 	public func addButtonGradientBackground(colors: [UIColor]) {
 		let gradientColors = colors.compactMap({$0.cgColor})
-		actionButton.layerGradient(startPoint: .topLeft, endPoint: .bottomRight, colors: gradientColors , type: .axial)
+		actionButton.layerGradient(startPoint: .centerLeft, endPoint: .centerRight, colors: gradientColors , type: .axial)
 	}
 }
 

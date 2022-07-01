@@ -158,6 +158,7 @@
 		972ED06B2808E09000096502 /* CompressionSettingsConfiguretion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972ED06A2808E09000096502 /* CompressionSettingsConfiguretion.swift */; };
 		97346485284789DE00BE0DE1 /* Localize+Count.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97346484284789DE00BE0DE1 /* Localize+Count.swift */; };
 		9740EB7D280EFDB000B8E63C /* TableView+ReoloadRows.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9740EB7C280EFDB000B8E63C /* TableView+ReoloadRows.swift */; };
+		97410502286B950A00277E86 /* FontManager+Onboarding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97410501286B950A00277E86 /* FontManager+Onboarding.swift */; };
 		97420BDF283E5A2200B0E134 /* PresentedControllerModelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97420BDE283E5A2200B0E134 /* PresentedControllerModelType.swift */; };
 		97420BE1283E5B2800B0E134 /* Permissions.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97420BE0283E5B2800B0E134 /* Permissions.storyboard */; };
 		97420BE3283E5D5C00B0E134 /* PermissionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97420BE2283E5D5C00B0E134 /* PermissionsViewController.swift */; };
@@ -528,6 +529,7 @@
 		972ED06A2808E09000096502 /* CompressionSettingsConfiguretion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompressionSettingsConfiguretion.swift; sourceTree = "<group>"; };
 		97346484284789DE00BE0DE1 /* Localize+Count.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Localize+Count.swift"; sourceTree = "<group>"; };
 		9740EB7C280EFDB000B8E63C /* TableView+ReoloadRows.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TableView+ReoloadRows.swift"; sourceTree = "<group>"; };
+		97410501286B950A00277E86 /* FontManager+Onboarding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FontManager+Onboarding.swift"; sourceTree = "<group>"; };
 		97420BDE283E5A2200B0E134 /* PresentedControllerModelType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresentedControllerModelType.swift; sourceTree = "<group>"; };
 		97420BE0283E5B2800B0E134 /* Permissions.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Permissions.storyboard; sourceTree = "<group>"; };
 		97420BE2283E5D5C00B0E134 /* PermissionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionsViewController.swift; sourceTree = "<group>"; };
@@ -1978,6 +1980,7 @@
 				97A17F5C2836679400591409 /* FontManager+ContentType.swift */,
 				97A17F6228366EF300591409 /* FontManager+Banner.swift */,
 				978D8C2D283A7C3300F65D79 /* FontManager+Export.swift */,
+				97410501286B950A00277E86 /* FontManager+Onboarding.swift */,
 			);
 			path = FontManager;
 			sourceTree = "<group>";
@@ -2656,6 +2659,7 @@
 				97FC789A2688D907000D7F26 /* SimpleColumnFlowLayout.swift in Sources */,
 				977BA0472733171F0018DF53 /* CNContacts+FillRows.swift in Sources */,
 				978FEF12274BB73700ADE1D9 /* AlertType.swift in Sources */,
+				97410502286B950A00277E86 /* FontManager+Onboarding.swift in Sources */,
 				97C44FBD274EF959001B61AB /* ContactsContainerType.swift in Sources */,
 				97B01A7F2747CB8C00DDE03C /* ExportContactsViewController.swift in Sources */,
 				97B8CFED283CC54D00F3E4E6 /* Subscriptions.swift in Sources */,

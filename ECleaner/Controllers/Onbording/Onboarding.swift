@@ -8,60 +8,62 @@
 import Foundation
 
 enum Onboarding: CaseIterable {
-	case welcome
 	case photo
 	case video
 	case contacts
 	
 	var rawValue: String {
 		switch self {
-			case .welcome:
-				return "welcome"
 			case .photo:
-				return "photo"
+				return Constants.identifiers.onboarding.photo
 			case .video:
-				return "vide0"
+				return Constants.identifiers.onboarding.video
 			case .contacts:
-				return "contacts"
+				return Constants.identifiers.onboarding.contacts
 		}
 	}
 	
 	var title: String {
 		switch self {
-			case .welcome:
-				return "welcome cleaner app"
 			case .photo:
-				return "Clear Similar Photos"
+				return Localization.Onboarding.Title.photo
 			case .video:
-				return "title for clean video"
+				return Localization.Onboarding.Title.video
 			case .contacts:
-				return "title for clean contacts"
+				return Localization.Onboarding.Title.contacts
 		}
 	}
 	
 	var description: String {
 		switch self {
-			case .welcome:
-				return "hello cleaner app"
 			case .photo:
-				return "Autosearch and delete similar photos to obtain more space on iPhone."
+				return Localization.Onboarding.Description.photo
 			case .video:
-				return "another very long descriptopn for clean vide and some extra feat blah blah "
+				return Localization.Onboarding.Description.video
 			case .contacts:
-				return "very long descriptopn for clean contacts and some extra featblah contacts contacts"
+				return Localization.Onboarding.Description.contacts
 		}
 	}
 	
 	var animationName: String {
 		switch self {
-			case .welcome:
-				return "welcome"
 			case .photo:
-				return "photo"
+				return Images.onboardingAnimation.photo
 			case .video:
-				return "video"
+				return Images.onboardingAnimation.video
 			case .contacts:
-				return "contacts"
+				return Images.onboardingAnimation.contacts
+		}
+	}
+	
+	var thumbnail: UIImage {
+		switch self {
+			case .photo:
+				return Images.onboarding.photo
+			case .video:
+				return Images.onboarding.video
+			case .contacts:
+				return Images.onboarding.contacts
 		}
 	}
 }

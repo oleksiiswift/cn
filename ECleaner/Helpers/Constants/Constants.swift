@@ -101,7 +101,6 @@ class Constants {
             static let photoSpace = "photoDiskSpace"
             static let videoSpace = "videoDiskSpace"
             static let allMediaSpace = "wholeAssetsDiskSpace"
-			
         }
 		
 		struct compressionSettings {
@@ -537,6 +536,12 @@ class Constants {
             /// controllers
 //            static let photoPreview = "PhotoPreviewViewControllerOLDVers"
         }
+		
+		struct onboarding {
+			static let photo = "com.cleaner.onboarding.photo"
+			static let video = "com.cleaner.onboarding.video"
+			static let contacts = "com.cleaner.onbarding.contacts"
+		}
         
         struct segue {
 			static let showLowerDatePicker = "ShowDatePickerLowerDateSelectorViewController"

@@ -11,6 +11,12 @@ public class OnboardingViewModel {
 	
 	let onboarding: [Onboarding]
 	
+	public var pageActionDidChange: ((_ index: Int) -> Void) = {_ in }
+	public var pageIndicatorDidChange: ((_ index: Int) -> Void) = {_ in }
+	public var didShowPermission: (() -> Void) = {}
+	
+	public var rawIndex: Int = 0
+	
 	init(onboarding: [Onboarding]) {
 		self.onboarding = onboarding
 	}
@@ -19,25 +25,23 @@ public class OnboardingViewModel {
 		
 		guard let viewController = viewController as? OnbordingPageViewController else { return nil}
 		
-		var rowIndex: Int = 0
-		
 		for (index, value) in self.onboarding.enumerated() {
 			if value.rawValue == viewController.sceneTitle {
-				rowIndex = index
+				rawIndex = index
 			}
 		}
-		next ? (rowIndex += 1) : (rowIndex -= 1)
+		next ? (rawIndex += 1) : (rawIndex -= 1)
 		
 		if next {
-			if onboarding.count > rowIndex {
-				return self.viewController(from: rowIndex)
+			if onboarding.count > rawIndex {
+				return self.viewController(from: rawIndex)
 			} else {
 				return nil
 			}
 			
 		} else {
-			if rowIndex >= 0 {
-				return self.viewController(from: rowIndex)
+			if rawIndex >= 0 {
+				return self.viewController(from: rawIndex)
 			} else {
 				return nil
 			}
@@ -49,6 +53,7 @@ public class OnboardingViewModel {
 		let stroryboard = UIStoryboard(name: Constants.identifiers.storyboards.onboarding, bundle: nil)
 		let viewController = stroryboard.instantiateViewController(withIdentifier: Constants.identifiers.viewControllers.onbordingPage) as! OnbordingPageViewController
 		viewController.onboarding = onboarding
+		viewController.delegate = self
 		return viewController
 	}
 	
@@ -56,3 +61,21 @@ public class OnboardingViewModel {
 		return self.onboarding.count
 	}
 }
+
+extension OnboardingViewModel: OnboardingControllDelegate {
+	
+	func didUpdatePageIndicator(with index: Int) {
+		self.pageIndicatorDidChange(index)
+	}
+	
+	func didTapActionButton(for index: Int) {
+		
+		if onboarding.count == index {
+			self.didShowPermission()
+		} else if onboarding.count > index {
+			self.pageActionDidChange(index)
+		}
+	}
+}
+
+

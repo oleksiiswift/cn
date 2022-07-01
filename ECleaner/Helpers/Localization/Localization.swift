@@ -149,8 +149,8 @@ struct Localization {
 			static var removeAudio = "Remove Audio".localized()
 			static var origin = "origin".localized()
 			static var manual = "manual".localized()
-			static var skip = "skip".localized()
-			static var next = "next".localized()
+			static var skip = "Skip".localized()
+			static var next = "Next".localized()
 		}
 	}
 	
@@ -342,6 +342,22 @@ struct Localization {
 				static let contactsDescriptionOne = "With".localized()
 				static let contactsDescriptionTwo = "Back-Up".localized()
 			}
+		}
+	}
+	
+	struct Onboarding {
+		
+		struct Title {
+			static let photo = "Clear Similar Photos".localized()
+			static let video = "Optimize Large Video".localized()
+			static let contacts = "Merge Same Contacts".localized()
+		}
+		
+		struct Description {
+			static let photo = "Autosearch and delete similar photos to obtain more space on iPhone.".localized()
+			static let video = "Compress or delete large videos to clear your iPhone data".localized()
+			static let contacts = "Organize your Contact Library using merge and clean empty contacts".localized()
+			
 		}
 	}
 	

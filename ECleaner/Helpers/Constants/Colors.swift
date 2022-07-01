@@ -391,6 +391,15 @@ enum Theme: Int {
 		}
 	}
 	
+	var onboardingSubTitleTextColor: UIColor {
+		switch self {
+			case .light:
+				return UIColor().colorFromHexString("120B4D")
+			case .dark:
+				return UIColor().colorFromHexString("120B4D")
+		}
+	}
+	
 	var navigationBarTextColor: UIColor {
 		switch self {
 			case .light:
