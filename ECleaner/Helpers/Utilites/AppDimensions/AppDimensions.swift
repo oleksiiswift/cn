@@ -813,5 +813,48 @@ extension AppDimensions {
 				}
 			}
 		}
+		
+		
+		struct Features {
+			
+			static var cellSize: CGFloat {
+				switch screenSize {
+						
+					case .small:
+						return 25
+					case .medium:
+						return 40
+					case .plus:
+						return 45
+					case .large:
+						return 42
+					case .modern:
+						return 40
+					case .max:
+						return 40
+					case .madMax:
+						return 40
+				}
+			}
+			
+			static var leadingInset: CGFloat {
+				switch screenSize {
+					case .large:
+						return 70
+					default:
+						return 70
+				}
+			}
+			
+			static var thumbnailSize: CGFloat {
+				switch screenSize {
+					case .large:
+						return 30
+					default:
+						return 30
+						
+				}
+			}
+		}
 	}
 }

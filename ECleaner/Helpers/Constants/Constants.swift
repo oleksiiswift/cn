@@ -491,6 +491,7 @@ class Constants {
 			static let permissionCell = "PermissionTableViewCell"
 			static let permissionBannerCell = "PermissionBannerTableViewCell"
 			static let permissionContinueCell = "PermissionContinueTableViewCell"
+			static let premiumFeature = "PremiumFeatureTableViewCell"
         }
         
         struct views {
@@ -519,6 +520,7 @@ class Constants {
 			static let permissionCell = "PermissionTableViewCell"
 			static let permissionBannerCell = "PermissionBannerTableViewCell"
 			static let permissionContinueCell = "PermissionContinueTableViewCell"
+			static let premiumFeature = "PremiumFeatureTableViewCell"
             /// `views`
             static let groupHeader = "GroupedAssetsReusableHeaderView"
             static let groupFooter = "GroupedAssetsReusableFooterView"

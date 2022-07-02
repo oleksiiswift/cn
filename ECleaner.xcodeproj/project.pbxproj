@@ -345,6 +345,8 @@
 		97D2BED0275A3F88002082EB /* ContactsExportManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97D2BECF275A3F88002082EB /* ContactsExportManager.swift */; };
 		97D2BED2275A4227002082EB /* ContactsGroupModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97D2BED1275A4227002082EB /* ContactsGroupModel.swift */; };
 		97D38C0527FDDB12007A80E8 /* SingleSmartClean.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97D38C0427FDDB12007A80E8 /* SingleSmartClean.swift */; };
+		97D4273C287031B5006772A2 /* FontManager+Subscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97D4273B287031B5006772A2 /* FontManager+Subscription.swift */; };
+		97D4273E2870378F006772A2 /* GradientShadowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97D4273D2870378F006772A2 /* GradientShadowView.swift */; };
 		97DA18F12797502B00427587 /* Thread+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97DA18F02797502B00427587 /* Thread+Extension.swift */; };
 		97DAB62E272C164A00F05CEA /* GroupContactTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97DAB62C272C164A00F05CEA /* GroupContactTableViewCell.swift */; };
 		97DAB62F272C164A00F05CEA /* GroupContactTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 97DAB62D272C164A00F05CEA /* GroupContactTableViewCell.xib */; };
@@ -724,6 +726,8 @@
 		97D2BECF275A3F88002082EB /* ContactsExportManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsExportManager.swift; sourceTree = "<group>"; };
 		97D2BED1275A4227002082EB /* ContactsGroupModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsGroupModel.swift; sourceTree = "<group>"; };
 		97D38C0427FDDB12007A80E8 /* SingleSmartClean.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleSmartClean.swift; sourceTree = "<group>"; };
+		97D4273B287031B5006772A2 /* FontManager+Subscription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FontManager+Subscription.swift"; sourceTree = "<group>"; };
+		97D4273D2870378F006772A2 /* GradientShadowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientShadowView.swift; sourceTree = "<group>"; };
 		97DA18F02797502B00427587 /* Thread+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Thread+Extension.swift"; sourceTree = "<group>"; };
 		97DAB62C272C164A00F05CEA /* GroupContactTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupContactTableViewCell.swift; sourceTree = "<group>"; };
 		97DAB62D272C164A00F05CEA /* GroupContactTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GroupContactTableViewCell.xib; sourceTree = "<group>"; };
@@ -1001,6 +1005,8 @@
 				0459DF8A26A55F360085EEDF /* CarouselCollectionViewCell.swift */,
 				047DE61726AAA53100733CD5 /* DeepCleanInfoTableViewCell.swift */,
 				97931853282074C300769BEB /* ContentBannerTableViewCell.swift */,
+				9760158B286FACD7006965BB /* PremiumFeatureTableViewCell.swift */,
+				9760159028702C9E006965BB /* Subscription */,
 				97420C09283EC80A00B0E134 /* Permissions */,
 			);
 			path = Cells;
@@ -1019,6 +1025,7 @@
 				97931854282074C300769BEB /* ContentBannerTableViewCell.xib */,
 				044282002693034600B6B47C /* DropDownMenuTableViewCell.xib */,
 				972A29FF28057D6700D6F54A /* CompressionSettingsTableViewCell.xib */,
+				9760158C286FACD7006965BB /* PremiumFeatureTableViewCell.xib */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -1766,11 +1773,7 @@
 			isa = PBXGroup;
 			children = (
 				97601583286F9442006965BB /* SubscriptionViewController.swift */,
-				97601587286FAB5A006965BB /* PremiumFeutureDataSource.swift */,
-				97601585286FA290006965BB /* PremiumFeatures.swift */,
-				97601589286FAB69006965BB /* PremiumFeaturesViewModel.swift */,
-				9760158B286FACD7006965BB /* PremiumFeatureTableViewCell.swift */,
-				9760158C286FACD7006965BB /* PremiumFeatureTableViewCell.xib */,
+				9760158F28702350006965BB /* PremiumFeatures */,
 			);
 			path = Subscription;
 			sourceTree = "<group>";
@@ -1827,6 +1830,23 @@
 				975C864C2846BA2F002E07DC /* AlertPermissionType.swift */,
 			);
 			path = Permission;
+			sourceTree = "<group>";
+		};
+		9760158F28702350006965BB /* PremiumFeatures */ = {
+			isa = PBXGroup;
+			children = (
+				97601585286FA290006965BB /* PremiumFeatures.swift */,
+				97601589286FAB69006965BB /* PremiumFeaturesViewModel.swift */,
+				97601587286FAB5A006965BB /* PremiumFeutureDataSource.swift */,
+			);
+			path = PremiumFeatures;
+			sourceTree = "<group>";
+		};
+		9760159028702C9E006965BB /* Subscription */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Subscription;
 			sourceTree = "<group>";
 		};
 		9763F4902847F506004122A9 /* Localizable */ = {
@@ -1903,6 +1923,7 @@
 				97CB351027395802005DA881 /* SectionShadowView.swift */,
 				975617D7273BC32A00E07A62 /* ReuseShadowRoundedView.swift */,
 				97FDA09B27FB5A0A002BC233 /* SliderShadowView.swift */,
+				97D4273D2870378F006772A2 /* GradientShadowView.swift */,
 			);
 			path = ShadowView;
 			sourceTree = "<group>";
@@ -2004,6 +2025,7 @@
 				97A17F6228366EF300591409 /* FontManager+Banner.swift */,
 				978D8C2D283A7C3300F65D79 /* FontManager+Export.swift */,
 				97410501286B950A00277E86 /* FontManager+Onboarding.swift */,
+				97D4273B287031B5006772A2 /* FontManager+Subscription.swift */,
 			);
 			path = FontManager;
 			sourceTree = "<group>";
@@ -2651,6 +2673,7 @@
 				97B8CFE4283C283B00F3E4E6 /* InAppSubscription.swift in Sources */,
 				97DC39AA273BE9C800D487BE /* GroupedContactsHeaderView.swift in Sources */,
 				97B01A59274582F900DDE03C /* BottomDoubleButtonBarView.swift in Sources */,
+				97D4273C287031B5006772A2 /* FontManager+Subscription.swift in Sources */,
 				97A39FDC27649DF4007CB482 /* SegmentDatePicker.swift in Sources */,
 				04467CE4270DA3A000DBBB39 /* DateSelectebleView.swift in Sources */,
 				4F56073B27205AF300CA19E9 /* Property.swift in Sources */,
@@ -2743,6 +2766,7 @@
 				97708662276A283A003D0416 /* CommonOperationSearchType.swift in Sources */,
 				4F56074227205AF300CA19E9 /* WindowBuilder.swift in Sources */,
 				970D778D275B9C9E0048F41D /* SingleContentSearchNotificationType.swift in Sources */,
+				97D4273E2870378F006772A2 /* GradientShadowView.swift in Sources */,
 				978D8C2E283A7C3300F65D79 /* FontManager+Export.swift in Sources */,
 				97AC5DC02767C55100C20F73 /* Date+LocalizedDescription.swift in Sources */,
 				97E54A86268BB16A00C7FD54 /* SNCollectionViewLayout.swift in Sources */,

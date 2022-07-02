@@ -35,12 +35,12 @@ extension PremiumFeutureDataSource: UITableViewDelegate, UITableViewDataSource {
 	}
 	
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		let cell = tableView.dequeueReusableCell(withIdentifier: "PremiumFeatureTableViewCell", for: indexPath) as! PremiumFeatureTableViewCell
+		let cell = tableView.dequeueReusableCell(withIdentifier: Constants.identifiers.cells.premiumFeature, for: indexPath) as! PremiumFeatureTableViewCell
 		self.cellConfigure(cell: cell, at: indexPath)
 		return cell
 	}
 	
 	func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-		return 25
+		return AppDimensions.Subscription.Features.cellSize
 	}
 }

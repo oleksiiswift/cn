@@ -10,29 +10,19 @@ import Foundation
 enum PremiumFeature: CaseIterable {
 	case deepClean
 	case multiselect
-	case conpression
+	case compression
 	case location
 	
 	var title: String {
-		switch self {
-			case .deepClean:
-				return "deep clean"
-			case .multiselect:
-				return "mutiselect"
-			case .conpression:
-				return "comression"
-			case .location:
-				return "location"
-		}
-	
+		return LocalizationService.Subscription.getPremiumFeaturesTitle(of: self)
 	}
 	
 	var thumbnail: UIImage {
-		return UIImage()
+		return Images.subsctiption.getFeaturesImages(for: self)
 	}
 	
 	var thumbnailColors: [UIColor] {
-		return [UIColor()]
+		return Theme.getSubscriptionFeatureColorGradient(for: self)
 	}
 }
 

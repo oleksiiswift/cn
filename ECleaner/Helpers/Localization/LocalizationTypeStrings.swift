@@ -77,6 +77,8 @@ enum ButtonType {
 	case manual
 	case skip
 	case next
+	case restore
+	case activate
 		
 	var rawValue: String {
 		switch self {
@@ -142,6 +144,10 @@ enum ButtonType {
 				return L.Standart.Buttons.skip
 			case .next:
 				return L.Standart.Buttons.next
+			case .restore:
+				return L.Standart.Buttons.restore
+			case .activate:
+				return L.Standart.Buttons.activate
 		}
 	}
 }

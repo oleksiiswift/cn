@@ -400,6 +400,15 @@ enum Theme: Int {
 		}
 	}
 	
+	var featureTitleTextColor: UIColor {
+		switch self {
+			case .light:
+				return UIColor().colorFromHexString("8C93A6")
+			case .dark:
+				return UIColor().colorFromHexString("8C93A6")
+		}
+	}
+	
 	var navigationBarTextColor: UIColor {
 		switch self {
 			case .light:
@@ -769,6 +778,32 @@ extension Theme {
 			case .videoCompress:
 				let startColor = UIColor().colorFromHexString("FFA600")
 				let endColor = UIColor ().colorFromHexString("FFCE72")
+				return [startColor, endColor]
+		}
+	}
+}
+
+extension Theme {
+	
+	
+	public static func getSubscriptionFeatureColorGradient(for type: PremiumFeature) -> [UIColor] {
+		
+		switch type {
+			case .deepClean:
+				let startColor = UIColor().colorFromHexString("FF7890")
+				let endColor = UIColor ().colorFromHexString("FF822F")
+				return [startColor, endColor]
+			case .multiselect:
+				let startColor = UIColor().colorFromHexString("5F92FB")
+				let endColor = UIColor ().colorFromHexString("2BACEE")
+				return [startColor, endColor]
+			case .compression:
+				let startColor = UIColor().colorFromHexString("16C08A")
+				let endColor = UIColor ().colorFromHexString("1BC0AE")
+				return [startColor, endColor]
+			case .location:
+				let startColor = UIColor().colorFromHexString("B578FF")
+				let endColor = UIColor ().colorFromHexString("FF2F2F")
 				return [startColor, endColor]
 		}
 	}

@@ -16,7 +16,8 @@ class BottomButtonBarView: UIView {
     
     @IBOutlet var containerView: UIView!
     @IBOutlet weak var actionButton: BottomBarButtonItem!
-    @IBOutlet weak var buttonHeightConstraint: NSLayoutConstraint!
+	@IBOutlet weak var containerHeightConstraint: NSLayoutConstraint!
+	@IBOutlet weak var buttonHeightConstraint: NSLayoutConstraint!
     
     private lazy var activityIndicatorView = UIActivityIndicatorView(style: .medium)
 
@@ -118,6 +119,11 @@ class BottomButtonBarView: UIView {
 	
 	public func setButtonHeight(_ height: CGFloat) {
 		buttonHeightConstraint.constant = height
+	}
+	
+	public func setContainerHeight(_ height: CGFloat) {
+		containerHeightConstraint.constant = height
+		containerView.layoutIfNeeded()
 	}
 	
 	public func setFont(_ font: UIFont) {
