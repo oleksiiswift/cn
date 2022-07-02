@@ -433,6 +433,7 @@ class Constants {
         struct navigation {
             static let main = "StartingNavigationBar"
             static let navigationBar = "NavigationBar"
+			static let subscription = "PremiumNavigationBar"
         }
         
         struct storyboards {

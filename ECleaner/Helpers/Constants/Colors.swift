@@ -408,6 +408,15 @@ enum Theme: Int {
 				return UIColor().colorFromHexString("4F4F4F")
 		}
 	}
+	
+	var navigationBarButtonTintColor: UIColor {
+		switch self {
+			case .light:
+				return UIColor().colorFromHexString("7F8697")
+			case .dark:
+				return UIColor().colorFromHexString("7F8697")
+		}
+	}
     
     var sectionTitleTextColor: UIColor {
         switch self {

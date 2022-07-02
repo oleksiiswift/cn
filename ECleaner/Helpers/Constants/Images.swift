@@ -54,6 +54,7 @@ struct Images {
 			static let compress = UIImage(named: "compressItem")!
 			static let info = UIImage(named: "infoItem")!
 			static let arrowLeft = UIImage(named: "arrowLeftItem")!
+			static let circleArrow = UIImage(named: "circleRoundedThin")!
         }
 		
 		struct helpersItems {

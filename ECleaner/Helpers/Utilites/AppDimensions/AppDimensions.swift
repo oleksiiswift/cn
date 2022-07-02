@@ -589,7 +589,7 @@ extension AppDimensions {
 }
 
 extension AppDimensions {
-	
+		
 	struct NavigationBar {
 		
 			///`CUSTOM NAVIGATION BAR`
@@ -779,6 +779,38 @@ extension AppDimensions {
 					return 10
 				default:
 					return 10
+			}
+		}
+	}
+}
+
+extension AppDimensions {
+	
+	
+	struct Subscription {
+		
+		struct Navigation {
+			
+			static var leftNavigationButton: CGSize {
+				switch screenSize {
+					case .small:
+						return CGSize(width: 30, height: 30)
+					case .medium:
+						return CGSize(width: 35, height: 35)
+					default:
+						return CGSize(width: 40, height: 40)
+				}
+			}
+			
+			static var rightNavigationButton: CGSize {
+				switch screenSize {
+					case .small:
+						return CGSize(width: 80, height: 25)
+					case .medium:
+						return CGSize(width: 90, height: 30)
+					default:
+						return CGSize(width: 100, height: 35)
+				}
 			}
 		}
 	}

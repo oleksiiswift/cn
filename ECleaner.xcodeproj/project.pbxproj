@@ -179,7 +179,6 @@
 		97420C0B2841186000B0E134 /* FontManager+Permission.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97420C0A2841186000B0E134 /* FontManager+Permission.swift */; };
 		97420C0D28411EA000B0E134 /* AppDimensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97420C0C28411EA000B0E134 /* AppDimensions.swift */; };
 		9742C3C52864745D00ADCE1A /* OnbordingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9742C3C42864745D00ADCE1A /* OnbordingViewController.swift */; };
-		9742C3C72864748500ADCE1A /* SubscriptionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9742C3C62864748500ADCE1A /* SubscriptionViewController.swift */; };
 		9745CC1B280765DA00335C04 /* VideoCompressionCustomSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9745CC1A280765D900335C04 /* VideoCompressionCustomSettingsViewController.swift */; };
 		975617D8273BC32A00E07A62 /* ReuseShadowRoundedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 975617D7273BC32A00E07A62 /* ReuseShadowRoundedView.swift */; };
 		975AF43127281DF700744E3B /* ContactListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 975AF43027281DF700744E3B /* ContactListViewModel.swift */; };
@@ -193,6 +192,13 @@
 		975C86442846592B002E07DC /* AlertManager+Permission.swift in Sources */ = {isa = PBXBuildFile; fileRef = 975C86432846592B002E07DC /* AlertManager+Permission.swift */; };
 		975C864728469D28002E07DC /* ProgressAlertType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 975C864628469D28002E07DC /* ProgressAlertType.swift */; };
 		975C864D2846BA2F002E07DC /* AlertPermissionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 975C864C2846BA2F002E07DC /* AlertPermissionType.swift */; };
+		97601582286F9019006965BB /* NSLayoutConstraint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97601581286F9019006965BB /* NSLayoutConstraint.swift */; };
+		97601584286F9442006965BB /* SubscriptionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97601583286F9442006965BB /* SubscriptionViewController.swift */; };
+		97601586286FA290006965BB /* PremiumFeatures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97601585286FA290006965BB /* PremiumFeatures.swift */; };
+		97601588286FAB5A006965BB /* PremiumFeutureDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97601587286FAB5A006965BB /* PremiumFeutureDataSource.swift */; };
+		9760158A286FAB69006965BB /* PremiumFeaturesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97601589286FAB69006965BB /* PremiumFeaturesViewModel.swift */; };
+		9760158D286FACD7006965BB /* PremiumFeatureTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9760158B286FACD7006965BB /* PremiumFeatureTableViewCell.swift */; };
+		9760158E286FACD7006965BB /* PremiumFeatureTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9760158C286FACD7006965BB /* PremiumFeatureTableViewCell.xib */; };
 		9763F46F2847E7ED004122A9 /* DeepCleanCompleteStateHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9763F46E2847E7ED004122A9 /* DeepCleanCompleteStateHandler.swift */; };
 		9763F4712847E808004122A9 /* SearchOperationStateHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9763F4702847E808004122A9 /* SearchOperationStateHandler.swift */; };
 		9763F4842847EECF004122A9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9763F4832847EECF004122A9 /* LaunchScreen.storyboard */; };
@@ -361,6 +367,8 @@
 		97EC82E92868EC3E00A32A21 /* Onboarding.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97EC82E82868EC3E00A32A21 /* Onboarding.storyboard */; };
 		97EC82EB2868EC4C00A32A21 /* Subscription.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97EC82EA2868EC4C00A32A21 /* Subscription.storyboard */; };
 		97EC82EE2869059C00A32A21 /* StoryBoarded.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97EC82ED2869059C00A32A21 /* StoryBoarded.swift */; };
+		97EF1445286F145B00564065 /* PremiumNavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97EF1444286F145B00564065 /* PremiumNavigationBar.swift */; };
+		97EF1447286F148600564065 /* PremiumNavigationBar.xib in Resources */ = {isa = PBXBuildFile; fileRef = 97EF1446286F148600564065 /* PremiumNavigationBar.xib */; };
 		97F50C2C27B8107E00FBDA0C /* DeepCleaningState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F50C2B27B8107E00FBDA0C /* DeepCleaningState.swift */; };
 		97F50C2E27B8426500FBDA0C /* SingleCleanStateModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F50C2D27B8426500FBDA0C /* SingleCleanStateModel.swift */; };
 		97FC789226888120000D7F26 /* Date+CurrentDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97FC789126888120000D7F26 /* Date+CurrentDate.swift */; };
@@ -550,7 +558,6 @@
 		97420C0A2841186000B0E134 /* FontManager+Permission.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FontManager+Permission.swift"; sourceTree = "<group>"; };
 		97420C0C28411EA000B0E134 /* AppDimensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDimensions.swift; sourceTree = "<group>"; };
 		9742C3C42864745D00ADCE1A /* OnbordingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnbordingViewController.swift; sourceTree = "<group>"; };
-		9742C3C62864748500ADCE1A /* SubscriptionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionViewController.swift; sourceTree = "<group>"; };
 		9745CC1A280765D900335C04 /* VideoCompressionCustomSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoCompressionCustomSettingsViewController.swift; sourceTree = "<group>"; };
 		975617D7273BC32A00E07A62 /* ReuseShadowRoundedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReuseShadowRoundedView.swift; sourceTree = "<group>"; };
 		975AF43027281DF700744E3B /* ContactListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactListViewModel.swift; sourceTree = "<group>"; };
@@ -564,6 +571,13 @@
 		975C86432846592B002E07DC /* AlertManager+Permission.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AlertManager+Permission.swift"; sourceTree = "<group>"; };
 		975C864628469D28002E07DC /* ProgressAlertType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressAlertType.swift; sourceTree = "<group>"; };
 		975C864C2846BA2F002E07DC /* AlertPermissionType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertPermissionType.swift; sourceTree = "<group>"; };
+		97601581286F9019006965BB /* NSLayoutConstraint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSLayoutConstraint.swift; sourceTree = "<group>"; };
+		97601583286F9442006965BB /* SubscriptionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionViewController.swift; sourceTree = "<group>"; };
+		97601585286FA290006965BB /* PremiumFeatures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PremiumFeatures.swift; sourceTree = "<group>"; };
+		97601587286FAB5A006965BB /* PremiumFeutureDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PremiumFeutureDataSource.swift; sourceTree = "<group>"; };
+		97601589286FAB69006965BB /* PremiumFeaturesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PremiumFeaturesViewModel.swift; sourceTree = "<group>"; };
+		9760158B286FACD7006965BB /* PremiumFeatureTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PremiumFeatureTableViewCell.swift; sourceTree = "<group>"; };
+		9760158C286FACD7006965BB /* PremiumFeatureTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PremiumFeatureTableViewCell.xib; sourceTree = "<group>"; };
 		9763F46E2847E7ED004122A9 /* DeepCleanCompleteStateHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepCleanCompleteStateHandler.swift; sourceTree = "<group>"; };
 		9763F4702847E808004122A9 /* SearchOperationStateHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchOperationStateHandler.swift; sourceTree = "<group>"; };
 		9763F4832847EECF004122A9 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -732,6 +746,8 @@
 		97EC82E82868EC3E00A32A21 /* Onboarding.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Onboarding.storyboard; sourceTree = "<group>"; };
 		97EC82EA2868EC4C00A32A21 /* Subscription.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Subscription.storyboard; sourceTree = "<group>"; };
 		97EC82ED2869059C00A32A21 /* StoryBoarded.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryBoarded.swift; sourceTree = "<group>"; };
+		97EF1444286F145B00564065 /* PremiumNavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PremiumNavigationBar.swift; sourceTree = "<group>"; };
+		97EF1446286F148600564065 /* PremiumNavigationBar.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PremiumNavigationBar.xib; sourceTree = "<group>"; };
 		97F50C2B27B8107E00FBDA0C /* DeepCleaningState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepCleaningState.swift; sourceTree = "<group>"; };
 		97F50C2D27B8426500FBDA0C /* SingleCleanStateModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleCleanStateModel.swift; sourceTree = "<group>"; };
 		97FC789126888120000D7F26 /* Date+CurrentDate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+CurrentDate.swift"; sourceTree = "<group>"; };
@@ -1159,6 +1175,7 @@
 				9787576E281C768E00CE27A9 /* AVUrlAsset.swift */,
 				97AB3B28281E888F00187617 /* UIFont.swift */,
 				97931859282163A200769BEB /* NSAttributedString.swift */,
+				97601581286F9019006965BB /* NSLayoutConstraint.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -1330,6 +1347,7 @@
 			isa = PBXGroup;
 			children = (
 				4F4A17BA271D819F00CAF157 /* StartingNavigationBar.swift */,
+				97EF1444286F145B00564065 /* PremiumNavigationBar.swift */,
 				97CE4498273D305900DF6114 /* NavigationBar.swift */,
 			);
 			path = NavigationBar;
@@ -1747,7 +1765,12 @@
 		9742C3C92864752E00ADCE1A /* Subscription */ = {
 			isa = PBXGroup;
 			children = (
-				9742C3C62864748500ADCE1A /* SubscriptionViewController.swift */,
+				97601583286F9442006965BB /* SubscriptionViewController.swift */,
+				97601587286FAB5A006965BB /* PremiumFeutureDataSource.swift */,
+				97601585286FA290006965BB /* PremiumFeatures.swift */,
+				97601589286FAB69006965BB /* PremiumFeaturesViewModel.swift */,
+				9760158B286FACD7006965BB /* PremiumFeatureTableViewCell.swift */,
+				9760158C286FACD7006965BB /* PremiumFeatureTableViewCell.xib */,
 			);
 			path = Subscription;
 			sourceTree = "<group>";
@@ -2236,6 +2259,7 @@
 			isa = PBXGroup;
 			children = (
 				4F4A17B8271D812400CAF157 /* StartingNavigationBar.xib */,
+				97EF1446286F148600564065 /* PremiumNavigationBar.xib */,
 				97CE449A273D307700DF6114 /* NavigationBar.xib */,
 			);
 			path = NavigationBar;
@@ -2488,6 +2512,7 @@
 				04649B36268C52B100336FE4 /* GroupedAssetsReusableFooterView.xib in Resources */,
 				97CA4241273EBC33001FEA15 /* BottomButtonBarView.xib in Resources */,
 				9763F4912847F50D004122A9 /* Localizable.stringsdict in Resources */,
+				9760158E286FACD7006965BB /* PremiumFeatureTableViewCell.xib in Resources */,
 				97A05B762743D4C200968459 /* SearchBarView.xib in Resources */,
 				04CF00012685F0C3000CA850 /* ContentTypeTableViewCell.xib in Resources */,
 				049CC230268337310002F988 /* MediaTypeCollectionViewCell.xib in Resources */,
@@ -2510,6 +2535,7 @@
 				97CB3517273A9129005DA881 /* ContactTableViewCell.xib in Resources */,
 				97CE449B273D307700DF6114 /* NavigationBar.xib in Resources */,
 				97879B1A286A422E0040A8F7 /* photo.json in Resources */,
+				97EF1447286F148600564065 /* PremiumNavigationBar.xib in Resources */,
 				97420BE1283E5B2800B0E134 /* Permissions.storyboard in Resources */,
 				044282022693034600B6B47C /* DropDownMenuTableViewCell.xib in Resources */,
 				97DC39AC273BE9D300D487BE /* GroupedContactsHeaderView.xib in Resources */,
@@ -2605,6 +2631,7 @@
 				97FC789226888120000D7F26 /* Date+CurrentDate.swift in Sources */,
 				0405AA59269D77A5004AC07A /* CMtime+StringDuration.swift in Sources */,
 				979BDF1B280AF75E00B49ABB /* URL+FileSize.swift in Sources */,
+				97601586286FA290006965BB /* PremiumFeatures.swift in Sources */,
 				97A39FE72764A2CF007CB482 /* SegmentDatePickerDelegate.swift in Sources */,
 				9776F5842735953A009D806A /* ShadowView.swift in Sources */,
 				979487BD27B6A9D800135D47 /* CleanProcessingType.swift in Sources */,
@@ -2678,6 +2705,7 @@
 				049CC2372683730A0002F988 /* BaseCollectionFlowLayout.swift in Sources */,
 				978FEF14274BC21A00ADE1D9 /* ProgressAlertController.swift in Sources */,
 				97A39FEB2764E8CB007CB482 /* UILabel+Margin.swift in Sources */,
+				97601588286FAB5A006965BB /* PremiumFeutureDataSource.swift in Sources */,
 				972E0256274105B300C236C7 /* SingleContactsGroupOperationsMediator.swift in Sources */,
 				040E288826A98B0F0019F372 /* DeepCleaningViewController.swift in Sources */,
 				972A2A0028057D6700D6F54A /* CompressionSettingsTableViewCell.swift in Sources */,
@@ -2699,6 +2727,7 @@
 				4F56074527205AF300CA19E9 /* GreenLightStyle.swift in Sources */,
 				97A17F652836701300591409 /* FontManager+BottomButton.swift in Sources */,
 				97DC111427A2BA6C00D10FE4 /* MediaViewController.swift in Sources */,
+				97EF1445286F145B00564065 /* PremiumNavigationBar.swift in Sources */,
 				972AAACD27F7524A00F3A1D2 /* UIView+AnimateButtonsAndViews.swift in Sources */,
 				97CC2F3C26873A7D0072EF8C /* DateSelectorViewController.swift in Sources */,
 				97EB665127B1A4AE00B21EF5 /* CGSize+pixel.swift in Sources */,
@@ -2784,12 +2813,14 @@
 				9793185A282163A200769BEB /* NSAttributedString.swift in Sources */,
 				97DDCAB2280873EA0093D5F5 /* StepSlider+Extension.swift in Sources */,
 				979318582820857900769BEB /* ContentBannerInfoModel.swift in Sources */,
+				9760158A286FAB69006965BB /* PremiumFeaturesViewModel.swift in Sources */,
 				04428204269313AD00B6B47C /* MenuItemType.swift in Sources */,
 				0447A68926B2A1E20074919B /* ConcurentPhotoProcessOperation.swift in Sources */,
 				97CA423F273EBBFA001FEA15 /* BottomButtonBarView.swift in Sources */,
 				97238A0D2689EDFF00C523DC /* CustomActivityIndicator.swift in Sources */,
 				04649B24268B2F3900336FE4 /* UpdatingChangesInOpenedScreensListeners.swift in Sources */,
 				979487C127B7065E00135D47 /* DeepCleanStateModel.swift in Sources */,
+				97601582286F9019006965BB /* NSLayoutConstraint.swift in Sources */,
 				9702443E27EA0F6900011743 /* PHAsset+URL.swift in Sources */,
 				04E58377267B323E00EDC3A3 /* Constants.swift in Sources */,
 				04CFFFE726846A23000CA850 /* Device.swift in Sources */,
@@ -2880,6 +2911,7 @@
 				976D8E4128046E9B005004F4 /* VideoCompressionManager.swift in Sources */,
 				97D2BEC8275A2AA2002082EB /* OperationServiceQueue.swift in Sources */,
 				97931855282074C300769BEB /* ContentBannerTableViewCell.swift in Sources */,
+				97601584286F9442006965BB /* SubscriptionViewController.swift in Sources */,
 				97A39FE92764A9B8007CB482 /* DatePickerStringComponents.swift in Sources */,
 				97011E1A27ECCBED00663C8E /* GroupSelectableAssetsDelegate.swift in Sources */,
 				9712C05C27B43B220013A7C9 /* ProcessingProgressOperationState.swift in Sources */,
@@ -2890,11 +2922,11 @@
 				04649B28268B2F7300336FE4 /* UpdatingChangesInOpenedScreensMediator.swift in Sources */,
 				97CC2F40268749CF0072EF8C /* UIButton+ImageAlign.swift in Sources */,
 				044282012693034600B6B47C /* DropDownMenuTableViewCell.swift in Sources */,
-				9742C3C72864748500ADCE1A /* SubscriptionViewController.swift in Sources */,
 				9701D26727BD31A40078E39F /* SettingsViewController.swift in Sources */,
 				97B6587F284353F7000AB92B /* UserNotifficationService.swift in Sources */,
 				97C44FBB274EF93B001B61AB /* ContactasCleaningType.swift in Sources */,
 				9701D27827BE56DD0078E39F /* StepSlider.m in Sources */,
+				9760158D286FACD7006965BB /* PremiumFeatureTableViewCell.swift in Sources */,
 				9790CDC028074B6C005E9570 /* AssetVideoScrollView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
