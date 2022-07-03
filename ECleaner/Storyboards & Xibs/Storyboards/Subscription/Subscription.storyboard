@@ -6,7 +6,6 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
-        <capability name="collection view cell content view" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -108,33 +107,17 @@
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FRw-ea-EW4">
                                                 <rect key="frame" x="0.0" y="472" width="414" height="150"/>
                                                 <subviews>
-                                                    <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="aKP-c7-u4h">
-                                                        <rect key="frame" x="0.0" y="0.0" width="414" height="150"/>
-                                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                        <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="k5O-18-Nix">
-                                                            <size key="itemSize" width="128" height="128"/>
-                                                            <size key="headerReferenceSize" width="0.0" height="0.0"/>
-                                                            <size key="footerReferenceSize" width="0.0" height="0.0"/>
-                                                            <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
-                                                        </collectionViewFlowLayout>
-                                                        <cells>
-                                                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="6ee-H3-mR5">
-                                                                <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
-                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                                <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="9LQ-r7-bWD">
-                                                                    <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
-                                                                    <autoresizingMask key="autoresizingMask"/>
-                                                                </collectionViewCellContentView>
-                                                            </collectionViewCell>
-                                                        </cells>
-                                                    </collectionView>
+                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="PLM-pr-iIC" customClass="TOSegmentedControl">
+                                                        <rect key="frame" x="20" y="10" width="374" height="130"/>
+                                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                                    </view>
                                                 </subviews>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <constraints>
-                                                    <constraint firstAttribute="bottom" secondItem="aKP-c7-u4h" secondAttribute="bottom" id="IMR-kV-jHi"/>
-                                                    <constraint firstItem="aKP-c7-u4h" firstAttribute="leading" secondItem="FRw-ea-EW4" secondAttribute="leading" id="Sn6-dx-xv8"/>
-                                                    <constraint firstAttribute="trailing" secondItem="aKP-c7-u4h" secondAttribute="trailing" id="YW1-sF-ShY"/>
-                                                    <constraint firstItem="aKP-c7-u4h" firstAttribute="top" secondItem="FRw-ea-EW4" secondAttribute="top" id="o5v-bv-52P"/>
+                                                    <constraint firstItem="PLM-pr-iIC" firstAttribute="leading" secondItem="FRw-ea-EW4" secondAttribute="leading" constant="20" id="BeU-db-8sH"/>
+                                                    <constraint firstAttribute="bottom" secondItem="PLM-pr-iIC" secondAttribute="bottom" constant="10" id="EQT-Jm-n9Y"/>
+                                                    <constraint firstAttribute="trailing" secondItem="PLM-pr-iIC" secondAttribute="trailing" constant="20" id="bOq-eO-mFg"/>
+                                                    <constraint firstItem="PLM-pr-iIC" firstAttribute="top" secondItem="FRw-ea-EW4" secondAttribute="top" constant="10" id="e7h-Px-E4e"/>
                                                 </constraints>
                                             </view>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vK0-HP-dDo" customClass="BottomButtonBarView" customModule="ECleaner" customModuleProvider="target">
@@ -266,7 +249,6 @@
                         <outlet property="backgroundImageViewLeadingConstraint" destination="5qc-Em-8Hx" id="zBA-jo-qpf"/>
                         <outlet property="backgroundView" destination="jnf-by-rgL" id="lGJ-Zq-5FH"/>
                         <outlet property="bottomTitleTextLabel" destination="0ba-gO-3lX" id="A8e-JQ-cvb"/>
-                        <outlet property="collectionView" destination="aKP-c7-u4h" id="C31-AB-FXP"/>
                         <outlet property="dimmerVewHeightConstraint" destination="Jkk-Al-VVd" id="zzG-bt-pre"/>
                         <outlet property="dimmerView" destination="wta-qO-6s8" id="rbB-jy-oBK"/>
                         <outlet property="featuresContainerMultiplyerHeightConstraint" destination="vyU-wF-xUp" id="sJd-QU-nPR"/>
@@ -276,6 +258,7 @@
                         <outlet property="linksContainerView" destination="H4o-sI-H5k" id="QRj-p4-8wn"/>
                         <outlet property="navigationBar" destination="jD0-6n-eLR" id="2TQ-Nk-Em5"/>
                         <outlet property="policyButton" destination="Whs-8M-rHd" id="6WG-ku-bUE"/>
+                        <outlet property="segmentControll" destination="PLM-pr-iIC" id="X12-9a-GHU"/>
                         <outlet property="subcribeContainerView" destination="vK0-HP-dDo" id="Fy9-XY-5UM"/>
                         <outlet property="subscribeContainerMultiplyerHeightConstraint" destination="uSp-Tf-g33" id="XVL-Zh-MIr"/>
                         <outlet property="subscriptionItemsContainerMultiplyerHeightConstraint" destination="ObQ-4c-iTt" id="dpG-lR-clU"/>

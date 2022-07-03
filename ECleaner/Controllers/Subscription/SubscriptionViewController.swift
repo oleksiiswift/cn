@@ -38,14 +38,14 @@ class SubscriptionViewController: UIViewController, Storyboarded {
 	
 	@IBOutlet weak var termsTitleTextLabel: UILabel!
 	@IBOutlet weak var tableView: UITableView!
-	@IBOutlet weak var collectionView: UICollectionView!
+	
+	
+	@IBOutlet weak var segmentControll: SegmentedControl!
+	
 	
 	private var premiumFeaturesViewModel: PremiumFeaturesViewModel!
 	private var premiumFeaturesDataSource: PremiumFeutureDataSource!
-	
-	private var premiumViewModel: PremiumViewModel!
-	private var premiumDataSource: PremiumDataSource!
-	
+
 	var coordinator: ApplicationCoordinator?
 	
 	override public var preferredStatusBarStyle: UIStatusBarStyle {
@@ -55,14 +55,29 @@ class SubscriptionViewController: UIViewController, Storyboarded {
     override func viewDidLoad() {
         super.viewDidLoad()
 		
+		
+		segmentControll.items = [
+			"hello;\ngoog;\n555;\ndadada",
+			"hello;\ndadad;\n555;\ndasdas",
+			"hello;\ndadad;\n555;\ndadad",
+		]
+		
+		segmentControll.layer.shadowColor = UIColor().colorFromHexString("1ED1EB").withAlphaComponent(0.1).cgColor
+		segmentControll.layer.shadowOpacity = 1
+		segmentControll.layer.shadowOffset = CGSize(width: 0, height: 10)
+		segmentControll.layer.shadowRadius = 10
+		segmentControll.backgroundColor = .clear
+		segmentControll.separatorColor = .clear
+		
+		
+		
+		
 		setupLayout()
 		setupUI()
 		setupNavigation()
 		setupTitle()
-		setupPremiumViewModel()
 		setupPremiumFeautiresViewModel()
 		setupTableView()
-		setupCollectionView()
 		updateColors()
     }
     
@@ -136,15 +151,6 @@ extension SubscriptionViewController {
 		self.tableView.dataSource = self.premiumFeaturesDataSource
 		self.tableView.delegate = self.premiumFeaturesDataSource
 	}
-	
-	private func setupPremiumViewModel() {
-		
-		let premium = Premium.allCases
-		self.premiumViewModel = PremiumViewModel(premium: premium)
-		self.premiumDataSource = PremiumDataSource(premiumViewModel: premiumViewModel)
-		self.collectionView.dataSource = self.premiumDataSource
-		self.collectionView.delegate = self.premiumDataSource
-	}
 }
 
 
@@ -168,12 +174,6 @@ extension SubscriptionViewController: Themeble {
 		self.tableView.separatorStyle = .none
 		self.tableView.alwaysBounceVertical = false
 	}
-	
-	private func setupCollectionView() {
-		self.collectionView.register(UINib(nibName: "PremiumCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "PremiumCollectionViewCell")
-		
-	}
-	
 	
 	private func setupUI() {
 		

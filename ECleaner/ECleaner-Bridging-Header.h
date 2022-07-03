@@ -6,5 +6,7 @@
 #define ECleaner_Bridging_Header_h
 
 #import "StepSlider.h"
+#import "TOSegmentedControl.h"
+#import "TOSegmentedControlSegment.h"
 
 #endif

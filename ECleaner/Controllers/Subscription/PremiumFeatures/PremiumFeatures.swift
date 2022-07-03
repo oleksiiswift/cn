@@ -25,9 +25,3 @@ enum PremiumFeature: CaseIterable {
 		return Theme.getSubscriptionFeatureColorGradient(for: self)
 	}
 }
-
-enum Premium: CaseIterable {
-	case week
-	case month
-	case yeaer
-}
