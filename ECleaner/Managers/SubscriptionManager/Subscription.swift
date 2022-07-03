@@ -100,7 +100,6 @@ extension Subscription {
 		
 		
 		guard let product = self.getProduct(by: type) else { return nil}
-		
 		let model = ProductStoreDesriptionModel(name: product.displayName,
 												price: product.displayPrice,
 												description: product.description)

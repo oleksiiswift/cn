@@ -8,7 +8,11 @@
 import UIKit
 
 protocol SubscriptionSegmentControllDelegate: AnyObject {
-	func didChange(to index: Int)
+	func didChange(to subscription: Int)
+}
+
+protocol SegmentSubscriptionButtonDelegate {
+	func indexSelect(index: Int)
 }
 
 struct SubscriptionButtonModel {
@@ -181,11 +185,6 @@ extension SubscriptionSegmentControll: SegmentSubscriptionButtonDelegate {
 		stackView.leadingAnchor.constraint(equalTo: self.leadingAnchor).isActive = true
 		stackView.trailingAnchor.constraint(equalTo: self.trailingAnchor).isActive = true
 	}
-}
-
-
-protocol SegmentSubscriptionButtonDelegate {
-	func indexSelect(index: Int)
 }
 
 class SegmentSubscriptionButton: UIView {

@@ -39,13 +39,15 @@ class SubscriptionViewController: UIViewController, Storyboarded {
 	@IBOutlet weak var termsTitleTextLabel: UILabel!
 	@IBOutlet weak var tableView: UITableView!
 	
-	
 	@IBOutlet weak var segmentControll: SubscriptionSegmentControll!
 	
 	private var premiumFeaturesViewModel: PremiumFeaturesViewModel!
 	private var premiumFeaturesDataSource: PremiumFeutureDataSource!
 
 	var coordinator: ApplicationCoordinator?
+	
+	private var subscriptionManager =  SubscriptionManager.instance
+	private var subscription: [SubscriptionButtonModel] = []
 	
 	override public var preferredStatusBarStyle: UIStatusBarStyle {
 		return .darkContent
@@ -54,10 +56,11 @@ class SubscriptionViewController: UIViewController, Storyboarded {
     override func viewDidLoad() {
         super.viewDidLoad()
 		
+		loadProducts()
 		setupLayout()
 		setupUI()
 		setupNavigation()
-		setupSubscriptionSegment()
+	
 		setupTitle()
 		setupPremiumFeautiresViewModel()
 		setupTableView()
@@ -88,6 +91,30 @@ extension SubscriptionViewController: BottomActionButtonDelegate {
 	}
 }
 
+extension SubscriptionViewController {
+	
+	private func loadProducts() {
+		#warning("TODO!")
+		var sub = Subscriptions.allCases
+		sub.removeLast()
+		var id = 0
+		sub.forEach {
+			if let sub = subscriptionManager.getProductModel(from: $0 ) {
+				
+				let firts = SubscriptionButtonModel(title: "monthly", price: sub.productPrice, priceDescription: "per", subtitle: "dskd \n.dsd", id: id)
+				id += 1
+				subscription.append(firts)
+				
+			}
+		}
+		debugPrint("load")
+		segmentControll.setSubscription(subscriptions: subscription)
+		setupSubscriptionSegment()
+		
+	}
+	
+}
+
 
 extension SubscriptionViewController: PremiumNavigationBarDelegate {
 	
@@ -110,12 +137,12 @@ extension SubscriptionViewController {
 	private func setupSubscriptionSegment() {
 		
 		
-		let firts = SubscriptionButtonModel(title: "monthly", price: "222", priceDescription: "per", subtitle: "dskd \n.dsd", id: 0)
-		let second = SubscriptionButtonModel(title: "yearly", price: "2223", priceDescription: "oer", subtitle: "dskdd \nsds", id: 1)
-		let third = SubscriptionButtonModel(title: "weekly", price: "22323", priceDescription: "kek", subtitle: "dskd \ndadasd", id: 2)
+//		let firts = SubscriptionButtonModel(title: "monthly", price: "222", priceDescription: "per", subtitle: "dskd \n.dsd", id: 0)
+//		let second = SubscriptionButtonModel(title: "yearly", price: "2223", priceDescription: "oer", subtitle: "dskdd \nsds", id: 1)
+//		let third = SubscriptionButtonModel(title: "weekly", price: "22323", priceDescription: "kek", subtitle: "dskd \ndadasd", id: 2)
 		
-		segmentControll.setSubscription(subscriptions: [firts, second, third])
-		segmentControll.configureSelectableGradient(width: 3, colors: theme.subscribeGradientColors, startPoint: .top, endPoint: .bottom, cornerRadius: 12)
+//		segmentControll.setSubscription(subscriptions: [firts, second, third])
+   		segmentControll.configureSelectableGradient(width: 3, colors: theme.subscribeGradientColors, startPoint: .top, endPoint: .bottom, cornerRadius: 12)
 		segmentControll.setFont(title: .systemFont(ofSize: 13, weight: .bold),
 								price: nil,
 								description: .systemFont(ofSize: 13, weight: .medium))

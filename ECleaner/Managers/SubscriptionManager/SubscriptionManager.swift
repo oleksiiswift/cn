@@ -88,6 +88,19 @@ class SubscriptionManager: NSObject {
 }
 
 
+extension SubscriptionManager {
+	
+	public func getProductModel(from subscriptionType: Subscriptions) -> ProductStoreDesriptionModel? {
+		
+		if #available(iOS 15.0, *) {
+			let model = subscription.getProductDesctiption(for: subscriptionType)
+			return model
+		}
+		return nil
+	}
+}
+
+
 
 
 

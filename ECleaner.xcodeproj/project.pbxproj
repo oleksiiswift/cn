@@ -155,7 +155,6 @@
 		972AAACD27F7524A00F3A1D2 /* UIView+AnimateButtonsAndViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972AAACC27F7524A00F3A1D2 /* UIView+AnimateButtonsAndViews.swift */; };
 		972C805F28717AD300691271 /* TOSegmentedControlSegment.m in Sources */ = {isa = PBXBuildFile; fileRef = 972C805B28717AD200691271 /* TOSegmentedControlSegment.m */; };
 		972C806028717AD300691271 /* TOSegmentedControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 972C805E28717AD200691271 /* TOSegmentedControl.m */; };
-		972C806228717ADD00691271 /* BorderedImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972C806128717ADD00691271 /* BorderedImageView.swift */; };
 		972C806428719D6500691271 /* SubscriptionSegmentControll.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972C806328719D6500691271 /* SubscriptionSegmentControll.swift */; };
 		972C80662871FA6200691271 /* UIView+GradientBorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972C80652871FA6200691271 /* UIView+GradientBorder.swift */; };
 		972C80682871FA9100691271 /* CGPoint+Coordinate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972C80672871FA9100691271 /* CGPoint+Coordinate.swift */; };
@@ -544,7 +543,6 @@
 		972C805C28717AD200691271 /* TOSegmentedControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TOSegmentedControl.h; sourceTree = "<group>"; };
 		972C805D28717AD200691271 /* TOSegmentedControlSegment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TOSegmentedControlSegment.h; sourceTree = "<group>"; };
 		972C805E28717AD200691271 /* TOSegmentedControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TOSegmentedControl.m; sourceTree = "<group>"; };
-		972C806128717ADD00691271 /* BorderedImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BorderedImageView.swift; sourceTree = "<group>"; };
 		972C806328719D6500691271 /* SubscriptionSegmentControll.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionSegmentControll.swift; sourceTree = "<group>"; };
 		972C80652871FA6200691271 /* UIView+GradientBorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+GradientBorder.swift"; sourceTree = "<group>"; };
 		972C80672871FA9100691271 /* CGPoint+Coordinate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGPoint+Coordinate.swift"; sourceTree = "<group>"; };
@@ -1274,7 +1272,6 @@
 		04E58364267A3F1600EDC3A3 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				972C806128717ADD00691271 /* BorderedImageView.swift */,
 				972C805928717AD200691271 /* SegmentedControl */,
 				9701D27927BE56E60078E39F /* StepSlider */,
 				97CA4242273ECB59001FEA15 /* BottomButtonBarView */,
@@ -2738,7 +2735,6 @@
 				9710285028032602003CBF7E /* VideoCollectionCompressingViewController.swift in Sources */,
 				04E5837E267B60F600EDC3A3 /* AlertManager.swift in Sources */,
 				97EC82E528685A4A00A32A21 /* ApplicationStartupStateCoordinator.swift in Sources */,
-				972C806228717ADD00691271 /* BorderedImageView.swift in Sources */,
 				975AF440272898AE00744E3B /* ContactsViewController.swift in Sources */,
 				97C70B54277634AC0033F466 /* ShadowButton.swift in Sources */,
 				975C86442846592B002E07DC /* AlertManager+Permission.swift in Sources */,
