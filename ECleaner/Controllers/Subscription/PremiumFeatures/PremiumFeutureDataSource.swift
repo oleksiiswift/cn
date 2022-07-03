@@ -44,3 +44,56 @@ extension PremiumFeutureDataSource: UITableViewDelegate, UITableViewDataSource {
 		return AppDimensions.Subscription.Features.cellSize
 	}
 }
+
+
+
+class PremiumDataSource: NSObject {
+	
+	public var premiumViewModel: PremiumViewModel
+	
+	init(premiumViewModel: PremiumViewModel) {
+		self.premiumViewModel = premiumViewModel
+	}
+}
+
+extension PremiumDataSource {
+	
+	private func cellConfigure(cell: PremiumCollectionViewCell, at indexPath: IndexPath) {
+		let premiumModel = premiumViewModel.getFeatureModel(at: indexPath)
+		cell.configure(model: premiumModel)
+	}
+}
+
+extension PremiumDataSource: UICollectionViewDelegate, UICollectionViewDataSource {
+	
+	func numberOfSections(in collectionView: UICollectionView) -> Int {
+		return 1
+	}
+	
+	func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+		return premiumViewModel.numbersOfRows(in: section)
+	}
+	
+	func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PremiumCollectionViewCell", for: indexPath) as! PremiumCollectionViewCell
+		return cell
+	}
+	
+	func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+		let cell = collectionView.cellForItem(at: indexPath)
+
+		//Briefly fade the cell on selection
+		UIView.animate(withDuration: 0.5,
+					   animations: {
+						//Fade-out
+						cell?.alpha = 0.5
+		}) { (completed) in
+			UIView.animate(withDuration: 0.5,
+						   animations: {
+							//Fade-out
+							cell?.alpha = 1
+			})
+		}
+
+	}
+}

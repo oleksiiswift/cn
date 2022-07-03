@@ -27,3 +27,25 @@ class PremiumFeaturesViewModel {
 		return self.features[indexPath.row]
 	}
 }
+
+
+class PremiumViewModel {
+	
+	let premium: [Premium]
+	
+	init(premium: [Premium]) {
+		self.premium = premium
+	}
+	
+	public func numberOfSection() -> Int {
+		return 1
+	}
+	
+	public func numbersOfRows(in section: Int) -> Int {
+		return self.premium.count
+	}
+	
+	public func getFeatureModel(at indexPath: IndexPath) -> Premium {
+		return self.premium[indexPath.row]
+	}
+}

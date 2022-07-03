@@ -26,5 +26,8 @@ enum PremiumFeature: CaseIterable {
 	}
 }
 
-
-
+enum Premium: CaseIterable {
+	case week
+	case month
+	case yeaer
+}

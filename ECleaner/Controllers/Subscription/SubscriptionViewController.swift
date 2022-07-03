@@ -43,6 +43,9 @@ class SubscriptionViewController: UIViewController, Storyboarded {
 	private var premiumFeaturesViewModel: PremiumFeaturesViewModel!
 	private var premiumFeaturesDataSource: PremiumFeutureDataSource!
 	
+	private var premiumViewModel: PremiumViewModel!
+	private var premiumDataSource: PremiumDataSource!
+	
 	var coordinator: ApplicationCoordinator?
 	
 	override public var preferredStatusBarStyle: UIStatusBarStyle {
@@ -56,8 +59,10 @@ class SubscriptionViewController: UIViewController, Storyboarded {
 		setupUI()
 		setupNavigation()
 		setupTitle()
+		setupPremiumViewModel()
 		setupPremiumFeautiresViewModel()
 		setupTableView()
+		setupCollectionView()
 		updateColors()
     }
     
@@ -131,6 +136,15 @@ extension SubscriptionViewController {
 		self.tableView.dataSource = self.premiumFeaturesDataSource
 		self.tableView.delegate = self.premiumFeaturesDataSource
 	}
+	
+	private func setupPremiumViewModel() {
+		
+		let premium = Premium.allCases
+		self.premiumViewModel = PremiumViewModel(premium: premium)
+		self.premiumDataSource = PremiumDataSource(premiumViewModel: premiumViewModel)
+		self.collectionView.dataSource = self.premiumDataSource
+		self.collectionView.delegate = self.premiumDataSource
+	}
 }
 
 
@@ -156,8 +170,10 @@ extension SubscriptionViewController: Themeble {
 	}
 	
 	private func setupCollectionView() {
+		self.collectionView.register(UINib(nibName: "PremiumCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "PremiumCollectionViewCell")
 		
 	}
+	
 	
 	private func setupUI() {
 		
