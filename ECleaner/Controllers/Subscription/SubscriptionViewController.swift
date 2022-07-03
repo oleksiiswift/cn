@@ -40,8 +40,7 @@ class SubscriptionViewController: UIViewController, Storyboarded {
 	@IBOutlet weak var tableView: UITableView!
 	
 	
-	@IBOutlet weak var segmentControll: SegmentedControl!
-	
+	@IBOutlet weak var segmentControll: SubscriptionSegmentControll!
 	
 	private var premiumFeaturesViewModel: PremiumFeaturesViewModel!
 	private var premiumFeaturesDataSource: PremiumFeutureDataSource!
@@ -55,26 +54,10 @@ class SubscriptionViewController: UIViewController, Storyboarded {
     override func viewDidLoad() {
         super.viewDidLoad()
 		
-		
-		segmentControll.items = [
-			"hello;\ngoog;\n555;\ndadada",
-			"hello;\ndadad;\n555;\ndasdas",
-			"hello;\ndadad;\n555;\ndadad",
-		]
-		
-		segmentControll.layer.shadowColor = UIColor().colorFromHexString("1ED1EB").withAlphaComponent(0.1).cgColor
-		segmentControll.layer.shadowOpacity = 1
-		segmentControll.layer.shadowOffset = CGSize(width: 0, height: 10)
-		segmentControll.layer.shadowRadius = 10
-		segmentControll.backgroundColor = .clear
-		segmentControll.separatorColor = .clear
-		
-		
-		
-		
 		setupLayout()
 		setupUI()
 		setupNavigation()
+		setupSubscriptionSegment()
 		setupTitle()
 		setupPremiumFeautiresViewModel()
 		setupTableView()
@@ -85,15 +68,16 @@ class SubscriptionViewController: UIViewController, Storyboarded {
 		super.viewWillAppear(animated)
 		
 		self.navigationController?.setNavigationBarHidden(true, animated: animated)
+		
 	}
 	
-	
 	@IBAction func didTapShowPrivacyActionButton(_ sender: Any) {
+		
 	}
 	
 	@IBAction func didTapShowTermsActionButton(_ sender: Any) {
+		
 	}
-	
 }
 
 extension SubscriptionViewController: BottomActionButtonDelegate {
@@ -122,6 +106,24 @@ extension SubscriptionViewController: PremiumNavigationBarDelegate {
 }
 
 extension SubscriptionViewController {
+	
+	private func setupSubscriptionSegment() {
+		
+		
+		let firts = SubscriptionButtonModel(title: "monthly", price: "222", priceDescription: "per", subtitle: "dskd \n.dsd", id: 0)
+		let second = SubscriptionButtonModel(title: "yearly", price: "2223", priceDescription: "oer", subtitle: "dskdd \nsds", id: 1)
+		let third = SubscriptionButtonModel(title: "weekly", price: "22323", priceDescription: "kek", subtitle: "dskd \ndadasd", id: 2)
+		
+		segmentControll.setSubscription(subscriptions: [firts, second, third])
+		segmentControll.configureSelectableGradient(width: 3, colors: theme.subscribeGradientColors, startPoint: .top, endPoint: .bottom, cornerRadius: 12)
+		segmentControll.setFont(title: .systemFont(ofSize: 13, weight: .bold),
+								price: nil,
+								description: .systemFont(ofSize: 13, weight: .medium))
+		segmentControll.setTextColorForTitle(theme.subscribeTitleTextColor)
+		segmentControll.setTextGradientColorsforPrice(theme.subscribeGradientColors, font: .systemFont(ofSize: 13, weight: .bold))
+		
+		segmentControll.setTextColorForSubtitle(theme.subscribeDescriptionTextColor)
+	}
 	
 	private func setupTitle() {
 		
@@ -152,7 +154,6 @@ extension SubscriptionViewController {
 		self.tableView.delegate = self.premiumFeaturesDataSource
 	}
 }
-
 
 extension SubscriptionViewController: Themeble {
 	
@@ -186,7 +187,6 @@ extension SubscriptionViewController: Themeble {
 		policyButton.setTitle("Privacy policy", for: .normal)
 	}
 	
-	
 	func updateColors() {
 		
 		self.view.backgroundColor = .clear
@@ -203,7 +203,6 @@ extension SubscriptionViewController: Themeble {
 }
 
 extension SubscriptionViewController {
-	
 	
 	private func setupLayout() {
 		
@@ -232,9 +231,6 @@ extension SubscriptionViewController {
 		}
 	}
 }
-
-
-
 
 class TitleLabel: UILabel {
 

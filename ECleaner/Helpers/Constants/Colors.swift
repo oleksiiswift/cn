@@ -702,6 +702,37 @@ enum Theme: Int {
 				return [startColor, endColor]
 		}
 	}
+	
+	var subscribeGradientColors: [UIColor] {
+		switch self {
+			case .light:
+				let startColor = UIColor().colorFromHexString("69C5FF")
+				let endColor = UIColor ().colorFromHexString("5CA4FF")
+				return [startColor, endColor]
+			case .dark:
+				let startColor = UIColor().colorFromHexString("69C5FF")
+				let endColor = UIColor ().colorFromHexString("5CA4FF")
+				return [startColor, endColor]
+		}
+	}
+	
+	var subscribeTitleTextColor: UIColor {
+		switch self {
+			case .light:
+				return UIColor().colorFromHexString("35405A")
+			case .dark:
+				return UIColor().colorFromHexString("35405A")
+		}
+	}
+	
+	var subscribeDescriptionTextColor: UIColor {
+		switch self {
+			case .light:
+				return UIColor().colorFromHexString("434F69")
+			case .dark:
+				return UIColor().colorFromHexString("434F69")
+		}
+	}
 }
 
 extension Theme {

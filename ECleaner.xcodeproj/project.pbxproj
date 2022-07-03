@@ -156,6 +156,9 @@
 		972C805F28717AD300691271 /* TOSegmentedControlSegment.m in Sources */ = {isa = PBXBuildFile; fileRef = 972C805B28717AD200691271 /* TOSegmentedControlSegment.m */; };
 		972C806028717AD300691271 /* TOSegmentedControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 972C805E28717AD200691271 /* TOSegmentedControl.m */; };
 		972C806228717ADD00691271 /* BorderedImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972C806128717ADD00691271 /* BorderedImageView.swift */; };
+		972C806428719D6500691271 /* SubscriptionSegmentControll.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972C806328719D6500691271 /* SubscriptionSegmentControll.swift */; };
+		972C80662871FA6200691271 /* UIView+GradientBorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972C80652871FA6200691271 /* UIView+GradientBorder.swift */; };
+		972C80682871FA9100691271 /* CGPoint+Coordinate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972C80672871FA9100691271 /* CGPoint+Coordinate.swift */; };
 		972E02542741050D00C236C7 /* SingleContactsGroupOperationsListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972E02532741050D00C236C7 /* SingleContactsGroupOperationsListener.swift */; };
 		972E0256274105B300C236C7 /* SingleContactsGroupOperationsMediator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972E0255274105B300C236C7 /* SingleContactsGroupOperationsMediator.swift */; };
 		972ED06B2808E09000096502 /* CompressionSettingsConfiguretion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972ED06A2808E09000096502 /* CompressionSettingsConfiguretion.swift */; };
@@ -542,6 +545,9 @@
 		972C805D28717AD200691271 /* TOSegmentedControlSegment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TOSegmentedControlSegment.h; sourceTree = "<group>"; };
 		972C805E28717AD200691271 /* TOSegmentedControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TOSegmentedControl.m; sourceTree = "<group>"; };
 		972C806128717ADD00691271 /* BorderedImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BorderedImageView.swift; sourceTree = "<group>"; };
+		972C806328719D6500691271 /* SubscriptionSegmentControll.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionSegmentControll.swift; sourceTree = "<group>"; };
+		972C80652871FA6200691271 /* UIView+GradientBorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+GradientBorder.swift"; sourceTree = "<group>"; };
+		972C80672871FA9100691271 /* CGPoint+Coordinate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGPoint+Coordinate.swift"; sourceTree = "<group>"; };
 		972E02532741050D00C236C7 /* SingleContactsGroupOperationsListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleContactsGroupOperationsListener.swift; sourceTree = "<group>"; };
 		972E0255274105B300C236C7 /* SingleContactsGroupOperationsMediator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleContactsGroupOperationsMediator.swift; sourceTree = "<group>"; };
 		972ED06A2808E09000096502 /* CompressionSettingsConfiguretion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompressionSettingsConfiguretion.swift; sourceTree = "<group>"; };
@@ -1041,6 +1047,7 @@
 		049CC23526833D350002F988 /* UIView */ = {
 			isa = PBXGroup;
 			children = (
+				972C80652871FA6200691271 /* UIView+GradientBorder.swift */,
 				972AAACC27F7524A00F3A1D2 /* UIView+AnimateButtonsAndViews.swift */,
 				97238A102689EECE00C523DC /* UIView+BlurView.swift */,
 				049CC23326833D320002F988 /* UIView+Radius.swift */,
@@ -1191,6 +1198,7 @@
 				97AB3B28281E888F00187617 /* UIFont.swift */,
 				97931859282163A200769BEB /* NSAttributedString.swift */,
 				97601581286F9019006965BB /* NSLayoutConstraint.swift */,
+				972C80692871FA9F00691271 /* CGPoint */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -1288,6 +1296,7 @@
 				970B208B27F5BCB900B5AF7D /* GradientSlider */,
 				97B288A6281D790D0020A235 /* SegementControll */,
 				97B288A9281D79340020A235 /* AnimatedProgressView */,
+				972C806328719D6500691271 /* SubscriptionSegmentControll.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1650,6 +1659,14 @@
 				972C805E28717AD200691271 /* TOSegmentedControl.m */,
 			);
 			path = SegmentedControl;
+			sourceTree = "<group>";
+		};
+		972C80692871FA9F00691271 /* CGPoint */ = {
+			isa = PBXGroup;
+			children = (
+				972C80672871FA9100691271 /* CGPoint+Coordinate.swift */,
+			);
+			path = CGPoint;
 			sourceTree = "<group>";
 		};
 		97420BD9283E59B300B0E134 /* DeepClean */ = {
@@ -2785,6 +2802,7 @@
 				97AC5DBD276790C700C20F73 /* UserDefaults+Date.swift in Sources */,
 				044A6FB9270F1B1000CF0D17 /* CircleProgressBar.swift in Sources */,
 				979732862846207700034E49 /* LocalizationService.swift in Sources */,
+				972C80682871FA9100691271 /* CGPoint+Coordinate.swift in Sources */,
 				97708662276A283A003D0416 /* CommonOperationSearchType.swift in Sources */,
 				4F56074227205AF300CA19E9 /* WindowBuilder.swift in Sources */,
 				970D778D275B9C9E0048F41D /* SingleContentSearchNotificationType.swift in Sources */,
@@ -2909,11 +2927,13 @@
 				970D7784275B66CE0048F41D /* PhotoManager.swift in Sources */,
 				975AF43B2728306C00744E3B /* ContactListDataSource.swift in Sources */,
 				9787576F281C768E00CE27A9 /* AVUrlAsset.swift in Sources */,
+				972C80662871FA6200691271 /* UIView+GradientBorder.swift in Sources */,
 				97A39FDE27649F0C007CB482 /* UIView+RecurciveSearch.swift in Sources */,
 				970A0F332814826F0071FCD9 /* CompressingInfoViewController.swift in Sources */,
 				97DDCAB0280822760093D5F5 /* CompressionResolution.swift in Sources */,
 				972C805F28717AD300691271 /* TOSegmentedControlSegment.m in Sources */,
 				97420BEE283EAB4E00B0E134 /* NotificationsPermissions.swift in Sources */,
+				972C806428719D6500691271 /* SubscriptionSegmentControll.swift in Sources */,
 				97B01A752746ED5D00DDE03C /* UIFont+Italic.swift in Sources */,
 				97CC2F3A2683D00F0072EF8C /* UpdateContentDataBaseListener.swift in Sources */,
 				9776F57E27359406009D806A /* ShadowRoundedView.swift in Sources */,

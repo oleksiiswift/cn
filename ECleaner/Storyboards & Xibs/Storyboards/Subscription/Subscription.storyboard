@@ -107,9 +107,9 @@
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FRw-ea-EW4">
                                                 <rect key="frame" x="0.0" y="472" width="414" height="150"/>
                                                 <subviews>
-                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="PLM-pr-iIC" customClass="TOSegmentedControl">
-                                                        <rect key="frame" x="20" y="10" width="374" height="130"/>
-                                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="PLM-pr-iIC" customClass="SubscriptionSegmentControll" customModule="ECleaner" customModuleProvider="target">
+                                                        <rect key="frame" x="20" y="0.0" width="374" height="140"/>
+                                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     </view>
                                                 </subviews>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -117,7 +117,7 @@
                                                     <constraint firstItem="PLM-pr-iIC" firstAttribute="leading" secondItem="FRw-ea-EW4" secondAttribute="leading" constant="20" id="BeU-db-8sH"/>
                                                     <constraint firstAttribute="bottom" secondItem="PLM-pr-iIC" secondAttribute="bottom" constant="10" id="EQT-Jm-n9Y"/>
                                                     <constraint firstAttribute="trailing" secondItem="PLM-pr-iIC" secondAttribute="trailing" constant="20" id="bOq-eO-mFg"/>
-                                                    <constraint firstItem="PLM-pr-iIC" firstAttribute="top" secondItem="FRw-ea-EW4" secondAttribute="top" constant="10" id="e7h-Px-E4e"/>
+                                                    <constraint firstItem="PLM-pr-iIC" firstAttribute="top" secondItem="FRw-ea-EW4" secondAttribute="top" id="e7h-Px-E4e"/>
                                                 </constraints>
                                             </view>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vK0-HP-dDo" customClass="BottomButtonBarView" customModule="ECleaner" customModuleProvider="target">
@@ -258,7 +258,7 @@
                         <outlet property="linksContainerView" destination="H4o-sI-H5k" id="QRj-p4-8wn"/>
                         <outlet property="navigationBar" destination="jD0-6n-eLR" id="2TQ-Nk-Em5"/>
                         <outlet property="policyButton" destination="Whs-8M-rHd" id="6WG-ku-bUE"/>
-                        <outlet property="segmentControll" destination="PLM-pr-iIC" id="X12-9a-GHU"/>
+                        <outlet property="segmentControll" destination="PLM-pr-iIC" id="gVQ-6c-Lw9"/>
                         <outlet property="subcribeContainerView" destination="vK0-HP-dDo" id="Fy9-XY-5UM"/>
                         <outlet property="subscribeContainerMultiplyerHeightConstraint" destination="uSp-Tf-g33" id="XVL-Zh-MIr"/>
                         <outlet property="subscriptionItemsContainerMultiplyerHeightConstraint" destination="ObQ-4c-iTt" id="dpG-lR-clU"/>
