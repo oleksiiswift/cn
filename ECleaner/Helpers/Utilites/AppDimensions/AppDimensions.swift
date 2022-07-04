@@ -812,6 +812,19 @@ extension AppDimensions {
 						return CGSize(width: 100, height: 35)
 				}
 			}
+			
+			static var bottomBarButtonDefaultHeight: CGFloat {
+				switch screenSize {
+					case .small:
+						return 50
+					case .medium:
+						return 50
+					case .large:
+						return 50
+					default:
+						return 60
+				}
+			}
 		}
 		
 		
@@ -827,7 +840,7 @@ extension AppDimensions {
 					case .plus:
 						return 35
 					case .large:
-						return 42
+						return 38
 					case .modern:
 						return 40
 					case .max:
@@ -849,15 +862,15 @@ extension AppDimensions {
 			static var thumbnailSize: CGFloat {
 				switch screenSize {
 					case .small:
-						return 25
+						return 20
 					case .medium:
 						return 25
 					case .plus:
-						return 28
+						return 26
 					case .large:
-						return 30
+						return 26
 					case .modern:
-						return 30
+						return 27
 					case .max:
 						return 30
 					case .madMax:

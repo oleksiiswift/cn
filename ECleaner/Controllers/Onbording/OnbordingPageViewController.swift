@@ -16,6 +16,8 @@ class OnbordingPageViewController: UIViewController {
 	
 	@IBOutlet weak var titleTextLabel: UILabel!
 	@IBOutlet weak var subtitleTextLabel: UILabel!
+	@IBOutlet weak var thumbnailsCenterConstraint: NSLayoutConstraint!
+	@IBOutlet weak var thumbnailWidthConstraint: NSLayoutConstraint!
 	
 	public var delegate: OnboardingControllDelegate?
 	
@@ -89,6 +91,20 @@ extension OnbordingPageViewController: Themeble {
 		
 		titleTextLabel.textAlignment = .center
 		subtitleTextLabel.textAlignment = .center
+		
+		switch Screen.size {
+				
+			case .small:
+				thumbnailWidthConstraint = thumbnailWidthConstraint.setMultiplier(multiplier: 0.7)
+				thumbnailsCenterConstraint = thumbnailsCenterConstraint.setMultiplier(multiplier: 0.5)
+			case .medium:
+				thumbnailWidthConstraint = thumbnailWidthConstraint.setMultiplier(multiplier: 0.7)
+				thumbnailsCenterConstraint = thumbnailsCenterConstraint.setMultiplier(multiplier: 0.5)
+			case .plus:
+				thumbnailsCenterConstraint = thumbnailsCenterConstraint.setMultiplier(multiplier: 0.6)
+			default:
+				thumbnailsCenterConstraint = thumbnailsCenterConstraint.setMultiplier(multiplier: 0.75)
+		}
 	}
 	
 	private func setupDelegate() {

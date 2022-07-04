@@ -87,6 +87,8 @@
                         <outlet property="bottomButtonView" destination="qjZ-59-aur" id="hJd-Dl-6Og"/>
                         <outlet property="subtitleTextLabel" destination="RKa-qs-jFw" id="FsZ-Ot-uQN"/>
                         <outlet property="thumbnailView" destination="p4r-nM-XbQ" id="ihg-3w-JlY"/>
+                        <outlet property="thumbnailWidthConstraint" destination="Nhz-sf-ABH" id="nlm-GD-op9"/>
+                        <outlet property="thumbnailsCenterConstraint" destination="xAl-Eq-hwg" id="0XE-8f-s2Z"/>
                         <outlet property="titleTextLabel" destination="GJH-qZ-O5D" id="c7C-He-pUS"/>
                     </connections>
                 </viewController>
@@ -95,9 +97,6 @@
             <point key="canvasLocation" x="1337.68115942029" y="116.51785714285714"/>
         </scene>
     </scenes>
-    <designables>
-        <designable name="jhT-qw-1cs"/>
-    </designables>
     <resources>
         <namedColor name="introTextColor">
             <color red="0.11900000274181366" green="0.1080000028014183" blue="0.19799999892711639" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>

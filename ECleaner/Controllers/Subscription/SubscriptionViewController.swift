@@ -56,8 +56,8 @@ class SubscriptionViewController: UIViewController, Storyboarded {
     override func viewDidLoad() {
         super.viewDidLoad()
 		
-		loadProducts()
 		setupLayout()
+		loadProducts()
 		setupUI()
 		setupNavigation()
 		setupTitle()
@@ -70,7 +70,6 @@ class SubscriptionViewController: UIViewController, Storyboarded {
 		super.viewWillAppear(animated)
 		
 		self.navigationController?.setNavigationBarHidden(true, animated: animated)
-		
 		self.selectPriorytySubscription()
 	}
 	
@@ -144,11 +143,11 @@ extension SubscriptionViewController {
 	private func setupSubscriptionSegment() {
 		
    		segmentControll.configureSelectableGradient(width: 3, colors: theme.subscribeGradientColors, startPoint: .top, endPoint: .bottom, cornerRadius: 12)
-		segmentControll.setFont(title: .systemFont(ofSize: 14, weight: .bold),
+		segmentControll.setFont(title: FontManager.subscriptionFont(of: .buttonTitle),
 								price: nil,
-								description: .systemFont(ofSize: 12, weight: .medium))
+								description: FontManager.subscriptionFont(of: .buttonDescription))
 		segmentControll.setTextColorForTitle(theme.subscribeTitleTextColor)
-		segmentControll.setTextGradientColorsforPrice(theme.subscribeGradientColors, font: .systemFont(ofSize: 13, weight: .bold))
+		segmentControll.setTextGradientColorsforPrice(theme.subscribeGradientColors, font: FontManager.subscriptionFont(of: .buttonPrice))
 		segmentControll.setTextColorForSubtitle(theme.subscribeDescriptionTextColor)
 		segmentControll.delegate = self
 	}
@@ -219,9 +218,17 @@ extension SubscriptionViewController: Themeble {
 		subcribeContainerView.delegate = self
 		subcribeContainerView.setButtonSideOffset(25)
 		subcribeContainerView.title(LocalizationService.Buttons.getButtonTitle(of: .activate).uppercased())
-		termsOfUseButton.setTitle("terms of user", for: .normal)
-		policyButton.setTitle("Privacy policy", for: .normal)
-		termsTitleTextLabel.contentInsets = .init(top: -10, left: 5, bottom: 0, right: 5)
+		termsOfUseButton.setTitle(Localization.Subscription.Helper.termsOfUse, for: .normal)
+		termsOfUseButton.titleLabel?.font = FontManager.subscriptionFont(of: .links)
+		policyButton.setTitle(Localization.Subscription.Helper.privicy, for: .normal)
+		policyButton.titleLabel?.font = FontManager.subscriptionFont(of: .links)
+		
+		switch Screen.size {
+			case .small:
+				termsTitleTextLabel.contentInsets = .init(top: 0, left: 5, bottom: 0, right: 5)
+			default:
+				termsTitleTextLabel.contentInsets = .init(top: -10, left: 5, bottom: 0, right: 5)
+		}
 	}
 	
 	func updateColors() {
@@ -236,6 +243,8 @@ extension SubscriptionViewController: Themeble {
 		subcribeContainerView.updateColorsSettings()
 		termsTitleTextLabel.textColor = theme.featureTitleTextColor
 		termsTitleTextLabel.font = FontManager.subscriptionFont(of: .helperText)
+		
+		self.segmentControll.configureSelectableGradient(width: 3, colors: theme.subscribeGradientColors, startPoint: .top, endPoint: .bottom, cornerRadius: 12)
 	}
 }
 
@@ -246,41 +255,43 @@ extension SubscriptionViewController {
 		switch Screen.size {
 				
 			case .small:
-				dimmerVewHeightConstraint.constant = 90
-				
-				backggroundImageViewTopConstraint.constant = -130
+				dimmerVewHeightConstraint.constant = 85
+				subscribeContainerMultiplyerHeightConstraint = subscribeContainerMultiplyerHeightConstraint.setMultiplier(multiplier: 0.7)
+				subscriptionItemsContainerMultiplyerHeightConstraint = subscriptionItemsContainerMultiplyerHeightConstraint.setMultiplier(multiplier: 1.5)
+				backggroundImageViewTopConstraint.constant = -180
 				backgroundImageViewLeadingConstraint.constant = -60
 			case .medium:
-				dimmerVewHeightConstraint.constant = 110
-				
-				backggroundImageViewTopConstraint.constant = -130
-				backgroundImageViewLeadingConstraint.constant = -60
+				dimmerVewHeightConstraint.constant = 103
+				subscribeContainerMultiplyerHeightConstraint = subscribeContainerMultiplyerHeightConstraint.setMultiplier(multiplier: 0.6)
+				subscriptionItemsContainerMultiplyerHeightConstraint = subscriptionItemsContainerMultiplyerHeightConstraint.setMultiplier(multiplier: 1.4)
+				backggroundImageViewTopConstraint.constant = -210
+				backgroundImageViewLeadingConstraint.constant = -90
 			case .plus:
-				dimmerVewHeightConstraint.constant = 125
-				
-				backggroundImageViewTopConstraint.constant = -220
+				dimmerVewHeightConstraint.constant = 120
+				subscriptionItemsContainerMultiplyerHeightConstraint = subscriptionItemsContainerMultiplyerHeightConstraint.setMultiplier(multiplier: 1.3)
+				backggroundImageViewTopConstraint.constant = -240
 				backgroundImageViewLeadingConstraint.constant = -100
 			case .large:
-				dimmerVewHeightConstraint.constant = 137
+				dimmerVewHeightConstraint.constant = 135
 				
-				backggroundImageViewTopConstraint.constant = -160
+				backggroundImageViewTopConstraint.constant = -150
 				backgroundImageViewLeadingConstraint.constant = -80
 			case .modern:
-				dimmerVewHeightConstraint.constant = 143
+				dimmerVewHeightConstraint.constant = 140
 				
-				backggroundImageViewTopConstraint.constant = -130
-				backgroundImageViewLeadingConstraint.constant = -60
+				backggroundImageViewTopConstraint.constant = -170
+				backgroundImageViewLeadingConstraint.constant = -90
 			case .max:
-				dimmerVewHeightConstraint.constant = 150
+				dimmerVewHeightConstraint.constant = 153
 				
-				backggroundImageViewTopConstraint.constant = -130
-				backgroundImageViewLeadingConstraint.constant = -60
+				backggroundImageViewTopConstraint.constant = -175
+				backgroundImageViewLeadingConstraint.constant = -100
 				
 			case .madMax:
 				dimmerVewHeightConstraint.constant = 155
 				
-				backggroundImageViewTopConstraint.constant = -130
-				backgroundImageViewLeadingConstraint.constant = -60
+				backggroundImageViewTopConstraint.constant = -180
+				backgroundImageViewLeadingConstraint.constant = -100
 		}
 	}
 }
@@ -310,6 +321,8 @@ class TitleLabel: UILabel {
 	}
 	
 	public func addGradientText(string: String, with colors: [UIColor], font: UIFont) {
+		
+		guard self.bounds != .zero else { return }
 		
 		let gradientColors = colors.compactMap({$0.cgColor})
 		let gradeintLayer = Utils.Manager.getGradientLayer(bounds: self.bounds, colors: gradientColors, startPoint: .topLeft, endPoint: .bottomRight)

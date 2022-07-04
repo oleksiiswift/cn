@@ -147,7 +147,7 @@ extension SubscriptionSegmentControll: SegmentSubscriptionButtonDelegate {
 		addSubview(selectedView)
 		selectedView.translatesAutoresizingMaskIntoConstraints = false
 		selectedView.topAnchor.constraint(equalTo: self.topAnchor, constant: self.viewSelectorInset.top).isActive = true
-		selectedView.heightAnchor.constraint(equalToConstant: self.frame.height - self.viewSelectorInset.bottom - self.viewSelectorInset.top).isActive = true
+		selectedView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -self.viewSelectorInset.bottom).isActive = true
 		selectedView.widthAnchor.constraint(equalToConstant: (self.frame.width / sectionCount) - self.viewSelectorInset.left - self.viewSelectorInset.right).isActive = true
 		
 		selectedViewLeadingConstraint = selectedView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: self.viewSelectorInset.left)
@@ -232,7 +232,24 @@ class SegmentSubscriptionButton: UIView {
 		descriptionTextLabel.textAlignment = .center
 		descriptionTextLabel.numberOfLines = 2
 		descriptionTextLabel.lineBreakMode = .byWordWrapping
-		descriptionTextLabel.contentInsets = UIEdgeInsets(top: 0, left: 15, bottom: 10, right: 15)
+		
+		switch Screen.size {
+				
+			case .small:
+				descriptionTextLabel.contentInsets = UIEdgeInsets(top: 0, left: 15, bottom: 10, right: 15)
+			case .medium:
+				descriptionTextLabel.contentInsets = UIEdgeInsets(top: 0, left: 25, bottom: 10, right: 25)
+			case .plus:
+				descriptionTextLabel.contentInsets = UIEdgeInsets(top: 0, left: 25, bottom: 10, right: 25)
+			case .large:
+				descriptionTextLabel.contentInsets = UIEdgeInsets(top: 0, left: 25, bottom: 10, right: 25)
+			case .modern:
+				descriptionTextLabel.contentInsets = UIEdgeInsets(top: 0, left: 25, bottom: 10, right: 25)
+			case .max:
+				descriptionTextLabel.contentInsets = UIEdgeInsets(top: 0, left: 25, bottom: 10, right: 25)
+			case .madMax:
+				descriptionTextLabel.contentInsets = UIEdgeInsets(top: 0, left: 25, bottom: 10, right: 25)
+		}
 	}
 	
 	public func setupTitleFont(font: UIFont) {

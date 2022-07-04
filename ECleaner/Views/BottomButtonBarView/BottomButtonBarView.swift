@@ -63,7 +63,7 @@ class BottomButtonBarView: UIView {
         containerView.frame = self.bounds
         containerView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
 		
-		self.setButtonHeight(AppDimensions.BottomButton.bottomBarButtonDefaultHeight)
+		self.setButtonHeight(AppDimensions.Subscription.Navigation.bottomBarButtonDefaultHeight)
         
 		self.backgroundColor = .clear
 		self.activityIndicatorView.color = activityIndicatorColor
