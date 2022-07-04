@@ -78,6 +78,6 @@ extension SceneDelegate {
 	
 	private func devopmentEnviroment() {
 		
-		coordinator?.currentState = .permission
+		coordinator?.currentState = .onboarding
 	}
 }

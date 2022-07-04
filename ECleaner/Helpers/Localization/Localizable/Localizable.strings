@@ -377,3 +377,8 @@
 "Multiselect Elements" = "Multiselect Elements";
 "Video Compression" = "Video Compression";
 "Clean GPS Location" = "Clean GPS Location";
+//	MARK: Description
+"per day" = "per day";
+"per week" = "per week";
+"per month" = "per month";
+"per year" = "per year";

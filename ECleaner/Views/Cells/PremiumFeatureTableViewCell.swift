@@ -28,7 +28,7 @@ extension PremiumFeatureTableViewCell: Themeble {
 	public func configure(model: PremiumFeature) {
 		
 		titleTextLabel.text = model.title
-		
+		thumbnailView.layoutIfNeeded()
 		thumbnailView.setImageWithCustomBackground(image: model.thumbnail, tineColor: .white, size: CGSize(width: thumbnailView.frame.height / 2, height: thumbnailView.frame.height / 2), colors: model.thumbnailColors)
 		
 	}

@@ -46,7 +46,7 @@ class SubscriptionManager: NSObject {
 		}
 	}
 	
-	public func setPurchasePrmium(_ purchased: Bool) {
+	public func setPurchasePremium(_ purchased: Bool) {
 		self.purchasedPremium = purchased
 	}
 	
@@ -90,13 +90,13 @@ class SubscriptionManager: NSObject {
 
 extension SubscriptionManager {
 	
-	public func getProductModel(from subscriptionType: Subscriptions) -> ProductStoreDesriptionModel? {
+	public func descriptionModel() -> [ProductStoreDesriptionModel] {
 		
 		if #available(iOS 15.0, *) {
-			let model = subscription.getProductDesctiption(for: subscriptionType)
-			return model
+			return subscription.getProductDescription()
+		} else {
+			return []
 		}
-		return nil
 	}
 }
 

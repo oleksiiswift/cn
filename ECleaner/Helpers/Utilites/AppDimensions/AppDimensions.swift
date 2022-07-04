@@ -823,9 +823,9 @@ extension AppDimensions {
 					case .small:
 						return 25
 					case .medium:
-						return 40
+						return 30
 					case .plus:
-						return 45
+						return 35
 					case .large:
 						return 42
 					case .modern:
@@ -848,11 +848,20 @@ extension AppDimensions {
 			
 			static var thumbnailSize: CGFloat {
 				switch screenSize {
+					case .small:
+						return 25
+					case .medium:
+						return 25
+					case .plus:
+						return 28
 					case .large:
 						return 30
-					default:
+					case .modern:
 						return 30
-						
+					case .max:
+						return 30
+					case .madMax:
+						return 30
 				}
 			}
 		}

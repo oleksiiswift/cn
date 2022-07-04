@@ -8,37 +8,22 @@
 import UIKit
 
 protocol SubscriptionSegmentControllDelegate: AnyObject {
-	func didChange(to subscription: Int)
+	func didChange(to subscription: Subscriptions)
 }
 
 protocol SegmentSubscriptionButtonDelegate {
 	func indexSelect(index: Int)
 }
 
-struct SubscriptionButtonModel {
-	
-	var title: String
-	var price: String
-	var priceDescription: String
-	var subtitle: String
-	var id: Int
-	
-	init(title: String, price: String, priceDescription: String, subtitle: String, id: Int) {
-		self.title = title
-		self.price = price
-		self.priceDescription = priceDescription
-		self.subtitle = subtitle
-		self.id = id
-	}
-}
-
 class SubscriptionSegmentControll: UIView {
 	
 	public private(set) var selectedIndex: Int = 0
 	
-	private var subscriptions: [SubscriptionButtonModel]!
+	public var subscriptions: [ProductStoreDesriptionModel]!
 	
 	private var selectedView: UIView!
+	private var selectedViewLeadingConstraint = NSLayoutConstraint()
+	
 	private var subscriptionButtons: [SegmentSubscriptionButton]!
 	
 	private var viewSelectorInset: UIEdgeInsets = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
@@ -46,7 +31,7 @@ class SubscriptionSegmentControll: UIView {
 		
 	weak var delegate: SubscriptionSegmentControllDelegate?
 	
-	convenience init(frame: CGRect, subscriptions: [SubscriptionButtonModel]) {
+	convenience init(frame: CGRect, subscriptions: [ProductStoreDesriptionModel]) {
 		self.init(frame: frame)
 		
 		self.subscriptions = subscriptions
@@ -57,7 +42,7 @@ class SubscriptionSegmentControll: UIView {
 
 	}
 	
-	public func setSubscription(subscriptions: [SubscriptionButtonModel]) {
+	public func setSubscription(subscriptions: [ProductStoreDesriptionModel]) {
 		self.subscriptions = subscriptions
 		
 		configure()
@@ -100,27 +85,38 @@ extension SubscriptionSegmentControll {
 	}
 }
 
-
 extension SubscriptionSegmentControll: SegmentSubscriptionButtonDelegate {
-
+	
+	func setupDefaultIndex(index: Int) {
+		self.selectedIndex = index
+		let selectorPosition = (frame.width) / CGFloat(subscriptions.count) * CGFloat(index) + viewSelectorInset.left
+		selectedViewLeadingConstraint.constant = selectorPosition
+		self.selectedView.layoutIfNeeded()
+	}
+	
 	func indexSelect(index: Int) {
-	
-		for (identifier, subsciption) in subscriptions.enumerated() {
-			if subsciption.id == index {
-				let selectorPosition = getLeadingPosition(from: identifier)
-				selectedIndex = identifier
-				delegate?.didChange(to: selectedIndex)
-	
-				UIView.animate(withDuration: 0.3) {
-					self.selectedView.frame.origin.x = selectorPosition
-					if self.isAnimationEnabled {
-						self.selectedView.transform = CGAffineTransform(scaleX: 0.95, y: 0.95)
-					}
-				} completion: { _ in
-					if self.isAnimationEnabled {
-						UIView.animate(withDuration: 0.1) {
-							self.selectedView.transform = .identity
-						}
+		
+		let subscription = subscriptions[index]
+		
+		if let firstIndex = subscriptions.firstIndex(where: {$0 === subscription}) {
+			let selectorPosition = getLeadingPosition(from: firstIndex)
+			selectedIndex = firstIndex
+			
+			if let product = Subscriptions.allCases.first(where: {$0.rawValue == subscription.id}) {
+				delegate?.didChange(to: product)
+			}
+			
+			self.selectedViewLeadingConstraint.constant = selectorPosition
+			self.setNeedsLayout()
+			UIView.animate(withDuration: 0.3) {
+				self.layoutIfNeeded()
+				if self.isAnimationEnabled {
+					self.selectedView.transform = CGAffineTransform(scaleX: 0.95, y: 0.95)
+				}
+			} completion: { _ in
+				if self.isAnimationEnabled {
+					UIView.animate(withDuration: 0.1) {
+						self.selectedView.transform = .identity
 					}
 				}
 			}
@@ -139,14 +135,24 @@ extension SubscriptionSegmentControll: SegmentSubscriptionButtonDelegate {
 	
 	private func configureSelector() {
 		
+		self.layoutIfNeeded()
+		
 		let sectionCount = CGFloat(self.subscriptions.count)
 		let widthInsets = (self.viewSelectorInset.left + self.viewSelectorInset.right)
 		let heithtInsets = (self.viewSelectorInset.top + self.viewSelectorInset.bottom)
-		let selectorWidth = ((frame.width - 40) / sectionCount) - widthInsets
+		let selectorWidth = ((frame.width) / sectionCount) - widthInsets
 		
 		selectedView = UIView(frame: CGRect(x: self.viewSelectorInset.left, y: self.viewSelectorInset.top, width: selectorWidth, height: frame.height - heithtInsets))
 		selectedView.backgroundColor = .clear
 		addSubview(selectedView)
+		selectedView.translatesAutoresizingMaskIntoConstraints = false
+		selectedView.topAnchor.constraint(equalTo: self.topAnchor, constant: self.viewSelectorInset.top).isActive = true
+		selectedView.heightAnchor.constraint(equalToConstant: self.frame.height - self.viewSelectorInset.bottom - self.viewSelectorInset.top).isActive = true
+		selectedView.widthAnchor.constraint(equalToConstant: (self.frame.width / sectionCount) - self.viewSelectorInset.left - self.viewSelectorInset.right).isActive = true
+		
+		selectedViewLeadingConstraint = selectedView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: self.viewSelectorInset.left)
+		selectedViewLeadingConstraint.isActive = true
+		selectedView.layoutIfNeeded()
 	}
 	
 	public func configureSelectableGradient(width: CGFloat, colors: [UIColor], startPoint: CoordinateSide, endPoint: CoordinateSide, cornerRadius: CGFloat) {
@@ -160,10 +166,10 @@ extension SubscriptionSegmentControll: SegmentSubscriptionButtonDelegate {
 		
 		subviews.forEach({$0.removeFromSuperview()})
 		
-		for model in subscriptions {
+		for (index, subscriptionModel) in subscriptions.enumerated() {
 			let subscriptionButton = SegmentSubscriptionButton()
 			subscriptionButton.shadowViewInset = self.viewSelectorInset
-			subscriptionButton.configure(model: model)
+			subscriptionButton.configure(model: subscriptionModel, index: index)
 			subscriptionButton.delegate = self
 			subscriptionButtons.append(subscriptionButton)
 		}
@@ -172,7 +178,7 @@ extension SubscriptionSegmentControll: SegmentSubscriptionButtonDelegate {
 	private func setupStackView() {
 		
 		let stackView = UIStackView(arrangedSubviews: subscriptionButtons)
-		
+		stackView.frame = self.bounds
 		stackView.axis = .horizontal
 		stackView.alignment = .fill
 		stackView.distribution = .fillEqually
@@ -180,7 +186,7 @@ extension SubscriptionSegmentControll: SegmentSubscriptionButtonDelegate {
 		self.addSubview(stackView)
 		stackView.translatesAutoresizingMaskIntoConstraints = false
 		
-		stackView.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
+		stackView.topAnchor.constraint(equalTo: self.topAnchor, constant: 0).isActive = true
 		stackView.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
 		stackView.leadingAnchor.constraint(equalTo: self.leadingAnchor).isActive = true
 		stackView.trailingAnchor.constraint(equalTo: self.trailingAnchor).isActive = true
@@ -226,7 +232,7 @@ class SegmentSubscriptionButton: UIView {
 		descriptionTextLabel.textAlignment = .center
 		descriptionTextLabel.numberOfLines = 2
 		descriptionTextLabel.lineBreakMode = .byWordWrapping
-		descriptionTextLabel.contentInsets = UIEdgeInsets(top: 0, left: 10, bottom: 10, right: 10)
+		descriptionTextLabel.contentInsets = UIEdgeInsets(top: 0, left: 15, bottom: 10, right: 15)
 	}
 	
 	public func setupTitleFont(font: UIFont) {
@@ -254,6 +260,7 @@ class SegmentSubscriptionButton: UIView {
 	public func setupPriceGradient(colors: [UIColor], font: UIFont) {
 		self.gradeintColors = colors
 		self.priceTextLabel.font = font
+		self.gradientSetup()
 	}
 	
 	public func setupDescriptionColor(color: UIColor) {
@@ -268,6 +275,10 @@ class SegmentSubscriptionButton: UIView {
 		self.shadowSetup()
 		self.labelsStackSetup()
 		self.setupButton()
+		self.gradientSetup()
+	}
+	
+	public func gradientSetup() {
 		
 		if !gradeintColors.isEmpty {
 			if let price = self.priceTextLabel.text, let font = self.priceTextLabel.font {
@@ -315,22 +326,15 @@ class SegmentSubscriptionButton: UIView {
 		stackView.layoutIfNeeded()
 	}
 	
-	
-	public func configure(model: SubscriptionButtonModel) {
+	public func configure(model: ProductStoreDesriptionModel, index: Int) {
 		
-		self.index = model.id
-		self.titleTextLabel.text = model.title.uppercased()
-		self.priceTextLabel.text = model.price + "\n" + model.priceDescription
-		self.descriptionTextLabel.text = model.subtitle
+		self.index = index
+		self.titleTextLabel.text = model.productName.uppercased()
+		self.priceTextLabel.text = model.productPrice + "\n" + model.productPeriod
+		self.descriptionTextLabel.text = model.description
 	}
 	
 	@objc func segmentDidSelect() {
 		delegate?.indexSelect(index: self.index)
 	}
 }
-
-
-
-
-
-

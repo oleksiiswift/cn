@@ -78,7 +78,7 @@ extension OnbordingPageViewController: Themeble {
 	
 	private func setupUI() {
 		
-		thumbnailView.isHidden = true
+		animationView.isHidden = true
 	
 		self.bottomButtonView.setButtonSideOffset(40)
 		self.bottomButtonView.setImageRight(I.systemItems.defaultItems.arrowLeft, with: CGSize(width: 24, height: 22))

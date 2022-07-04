@@ -40,10 +40,6 @@ class Subscription {
 	public func loadProducts() async throws -> [Product] {
 		let productsIDs: Set<String> = Set(Subscriptions.allCases.map({$0.rawValue}))
 		let products = try await self.getPurchaseProducts(from: productsIDs)
-		
-		for product in products {
-			debugPrint(product)
-		}
 		return products
 	}
 		
@@ -96,13 +92,90 @@ extension Subscription {
 		return nil
 	}
 	
+	public func getProductDescription() -> [ProductStoreDesriptionModel] {
+		
+		var descriptionsModel: [ProductStoreDesriptionModel] = []
+		
+		if !self.products.isEmpty {
+			for product in products {
+				if product.id != Subscriptions.lifeTime.rawValue {
+					let model = getDescription(for: product)
+					descriptionsModel.append(model)
+				}
+			}
+		}
+		return descriptionsModel
+	}
+	
 	public func getProductDesctiption(for type: Subscriptions) -> ProductStoreDesriptionModel? {
 		
-		
 		guard let product = self.getProduct(by: type) else { return nil}
+
+		var description = product.description
+		var period = ""
+		
+		if let subscriptionPeriod = product.subscription?.subscriptionPeriod {
+			if let unitName = getUnitName(unit: subscriptionPeriod.unit, value: subscriptionPeriod.value) {
+				period = unitName
+			}
+		}
+		
+		if let introductoryPeriod = product.subscription?.introductoryOffer {
+			description = introductoryPeriod.period.debugDescription + "\n" + introductoryPeriod.paymentMode.rawValue
+		}
+		
 		let model = ProductStoreDesriptionModel(name: product.displayName,
 												price: product.displayPrice,
-												description: product.description)
+												period: period,
+												description: description, id: product.id)
 		return model
+	}
+	
+	
+	public func getDescription(for product: Product) -> ProductStoreDesriptionModel {
+
+		var description = product.description
+		var period = ""
+
+		if let subscriptionPeriod = product.subscription?.subscriptionPeriod {
+			if let unitName = getUnitName(unit: subscriptionPeriod.unit, value: subscriptionPeriod.value) {
+				period = unitName
+			}
+		}
+		
+		if let introductoryPeriod = product.subscription?.introductoryOffer {
+			description = introductoryPeriod.period.debugDescription + "\n" + introductoryPeriod.paymentMode.rawValue
+		}
+		
+		let model = ProductStoreDesriptionModel(name: product.displayName,
+												price: product.displayPrice,
+												period: period,
+												description: description, id: product.id)
+		return model
+	}
+}
+
+
+
+@available(iOS 15.0, *)
+extension Subscription {
+	
+	private func getUnitName(unit: Product.SubscriptionPeriod.Unit, value: Int) -> String? {
+		
+		switch unit {
+			case .day:
+				if value == 7 {
+					return Localization.Subscription.Description.week
+				}
+				return Localization.Subscription.Description.day
+			case .week:
+				return Localization.Subscription.Description.week
+			case .month:
+				return Localization.Subscription.Description.month
+			case .year:
+				return Localization.Subscription.Description.year
+			default:
+				return nil
+		}
 	}
 }

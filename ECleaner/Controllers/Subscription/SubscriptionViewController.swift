@@ -36,7 +36,7 @@ class SubscriptionViewController: UIViewController, Storyboarded {
 	@IBOutlet weak var topTitlteTextLabel: TitleLabel!
 	@IBOutlet weak var bottomTitleTextLabel: TitleLabel!
 	
-	@IBOutlet weak var termsTitleTextLabel: UILabel!
+	@IBOutlet weak var termsTitleTextLabel: TitleLabel!
 	@IBOutlet weak var tableView: UITableView!
 	
 	@IBOutlet weak var segmentControll: SubscriptionSegmentControll!
@@ -47,7 +47,7 @@ class SubscriptionViewController: UIViewController, Storyboarded {
 	var coordinator: ApplicationCoordinator?
 	
 	private var subscriptionManager =  SubscriptionManager.instance
-	private var subscription: [SubscriptionButtonModel] = []
+	private var currentSubscription: Subscriptions = .year
 	
 	override public var preferredStatusBarStyle: UIStatusBarStyle {
 		return .darkContent
@@ -60,7 +60,6 @@ class SubscriptionViewController: UIViewController, Storyboarded {
 		setupLayout()
 		setupUI()
 		setupNavigation()
-	
 		setupTitle()
 		setupPremiumFeautiresViewModel()
 		setupTableView()
@@ -72,6 +71,7 @@ class SubscriptionViewController: UIViewController, Storyboarded {
 		
 		self.navigationController?.setNavigationBarHidden(true, animated: animated)
 		
+		self.selectPriorytySubscription()
 	}
 	
 	@IBAction func didTapShowPrivacyActionButton(_ sender: Any) {
@@ -85,36 +85,43 @@ class SubscriptionViewController: UIViewController, Storyboarded {
 
 extension SubscriptionViewController: BottomActionButtonDelegate {
 	
-	
 	func didTapActionButton() {
 		
+		subscriptionManager.purchasePremium(of: self.currentSubscription, with: .sandbox)
 	}
 }
 
 extension SubscriptionViewController {
 	
 	private func loadProducts() {
-		#warning("TODO!")
-		var sub = Subscriptions.allCases
-		sub.removeLast()
-		var id = 0
-		sub.forEach {
-			if let sub = subscriptionManager.getProductModel(from: $0 ) {
-				
-				let firts = SubscriptionButtonModel(title: "monthly", price: sub.productPrice, priceDescription: "per", subtitle: "dskd \n.dsd", id: id)
-				id += 1
-				subscription.append(firts)
-				
-			}
-		}
-		debugPrint("load")
-		segmentControll.setSubscription(subscriptions: subscription)
-		setupSubscriptionSegment()
 		
+		var model = subscriptionManager.descriptionModel()
+		
+		if let monthlyIndex = model.firstIndex(where: {$0.id == Subscriptions.month.rawValue}) {
+			model.move(from: monthlyIndex, to: 0)
+		}
+		
+		if let yearlyIndex = model.firstIndex(where: {$0.id == Subscriptions.year.rawValue}) {
+			model.move(from: yearlyIndex, to: 1)
+		}
+		
+		if !model.isEmpty {
+			segmentControll.setSubscription(subscriptions: model)
+			setupSubscriptionSegment()
+		} else {
+			
+		}
 	}
 	
+	private func selectPriorytySubscription() {
+		
+		guard segmentControll.subscriptions != nil else { return }
+		
+		if let index = segmentControll.subscriptions.firstIndex(where: {$0.id == self.currentSubscription.rawValue}) {
+			segmentControll.setupDefaultIndex(index: index)
+		}
+	}
 }
-
 
 extension SubscriptionViewController: PremiumNavigationBarDelegate {
 	
@@ -136,20 +143,14 @@ extension SubscriptionViewController {
 	
 	private func setupSubscriptionSegment() {
 		
-		
-//		let firts = SubscriptionButtonModel(title: "monthly", price: "222", priceDescription: "per", subtitle: "dskd \n.dsd", id: 0)
-//		let second = SubscriptionButtonModel(title: "yearly", price: "2223", priceDescription: "oer", subtitle: "dskdd \nsds", id: 1)
-//		let third = SubscriptionButtonModel(title: "weekly", price: "22323", priceDescription: "kek", subtitle: "dskd \ndadasd", id: 2)
-		
-//		segmentControll.setSubscription(subscriptions: [firts, second, third])
    		segmentControll.configureSelectableGradient(width: 3, colors: theme.subscribeGradientColors, startPoint: .top, endPoint: .bottom, cornerRadius: 12)
-		segmentControll.setFont(title: .systemFont(ofSize: 13, weight: .bold),
+		segmentControll.setFont(title: .systemFont(ofSize: 14, weight: .bold),
 								price: nil,
-								description: .systemFont(ofSize: 13, weight: .medium))
+								description: .systemFont(ofSize: 12, weight: .medium))
 		segmentControll.setTextColorForTitle(theme.subscribeTitleTextColor)
 		segmentControll.setTextGradientColorsforPrice(theme.subscribeGradientColors, font: .systemFont(ofSize: 13, weight: .bold))
-		
 		segmentControll.setTextColorForSubtitle(theme.subscribeDescriptionTextColor)
+		segmentControll.delegate = self
 	}
 	
 	private func setupTitle() {
@@ -182,18 +183,26 @@ extension SubscriptionViewController {
 	}
 }
 
+extension SubscriptionViewController: SubscriptionSegmentControllDelegate {
+	
+	func didChange(to subscription: Subscriptions) {
+		debugPrint("set current subscription to \(subscription)")
+		self.currentSubscription = subscription
+	}
+}
+
 extension SubscriptionViewController: Themeble {
 	
 	private func setupNavigation() {
 		
-			navigationBar.delegate = self
+		navigationBar.delegate = self
 		navigationBar.setUpNavigation(lefTitle: LocalizationService.Buttons.getButtonTitle(of: .restore),
 									  leftImage: I.systemItems.defaultItems.circleArrow,
 									  rightImage: I.systemItems.navigationBarItems.dissmiss)
-			navigationBar.configureLeftButtonAppearance(tintColor: theme.navigationBarButtonTintColor,
-														textColor: theme.navigationBarButtonTintColor,
-														font: .systemFont(ofSize: 12, weight: .medium))
-			navigationBar.configureRightButtonAppearance(tintColor: theme.navigationBarButtonTintColor)
+		navigationBar.configureLeftButtonAppearance(tintColor: theme.navigationBarButtonTintColor,
+													textColor: theme.navigationBarButtonTintColor,
+													font: .systemFont(ofSize: 12, weight: .medium))
+		navigationBar.configureRightButtonAppearance(tintColor: theme.navigationBarButtonTintColor)
 	}
 	
 	private func setupTableView() {
@@ -208,10 +217,11 @@ extension SubscriptionViewController: Themeble {
 		backgroundImageView.image = Images.subsctiption.rocket
 		
 		subcribeContainerView.delegate = self
-		subcribeContainerView.setButtonSideOffset(20)
+		subcribeContainerView.setButtonSideOffset(25)
 		subcribeContainerView.title(LocalizationService.Buttons.getButtonTitle(of: .activate).uppercased())
 		termsOfUseButton.setTitle("terms of user", for: .normal)
 		policyButton.setTitle("Privacy policy", for: .normal)
+		termsTitleTextLabel.contentInsets = .init(top: -10, left: 5, bottom: 0, right: 5)
 	}
 	
 	func updateColors() {
@@ -236,25 +246,41 @@ extension SubscriptionViewController {
 		switch Screen.size {
 				
 			case .small:
-				dimmerVewHeightConstraint.constant = 137
+				dimmerVewHeightConstraint.constant = 90
+				
+				backggroundImageViewTopConstraint.constant = -130
+				backgroundImageViewLeadingConstraint.constant = -60
 			case .medium:
-				dimmerVewHeightConstraint.constant = 137
+				dimmerVewHeightConstraint.constant = 110
+				
+				backggroundImageViewTopConstraint.constant = -130
+				backgroundImageViewLeadingConstraint.constant = -60
 			case .plus:
-				dimmerVewHeightConstraint.constant = 137
+				dimmerVewHeightConstraint.constant = 125
+				
+				backggroundImageViewTopConstraint.constant = -220
+				backgroundImageViewLeadingConstraint.constant = -100
 			case .large:
+				dimmerVewHeightConstraint.constant = 137
 				
+				backggroundImageViewTopConstraint.constant = -160
+				backgroundImageViewLeadingConstraint.constant = -80
+			case .modern:
+				dimmerVewHeightConstraint.constant = 143
 				
+				backggroundImageViewTopConstraint.constant = -130
+				backgroundImageViewLeadingConstraint.constant = -60
+			case .max:
+				dimmerVewHeightConstraint.constant = 150
 				
 				backggroundImageViewTopConstraint.constant = -130
 				backgroundImageViewLeadingConstraint.constant = -60
 				
-				dimmerVewHeightConstraint.constant = 137
-			case .modern:
-				dimmerVewHeightConstraint.constant = 137
-			case .max:
-				dimmerVewHeightConstraint.constant = 137
 			case .madMax:
-				dimmerVewHeightConstraint.constant = 137
+				dimmerVewHeightConstraint.constant = 155
+				
+				backggroundImageViewTopConstraint.constant = -130
+				backgroundImageViewLeadingConstraint.constant = -60
 		}
 	}
 }

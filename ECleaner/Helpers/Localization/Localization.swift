@@ -359,7 +359,6 @@ struct Localization {
 			static let photo = "Autosearch and delete similar photos to obtain more space on iPhone.".localized()
 			static let video = "Compress or delete large videos to clear your iPhone data".localized()
 			static let contacts = "Organize your Contact Library using merge and clean empty contacts".localized()
-			
 		}
 	}
 	
@@ -498,6 +497,13 @@ struct Localization {
 			static var multiselect = "Multiselect Elements".localized()
 			static var compression = "Video Compression".localized()
 			static var location = "Clean GPS Location".localized()
+		}
+		
+		struct Description {
+			static var day = "per day".localized()
+			static var week = "per week".localized()
+			static var month = "per month".localized()
+			static var year = "per year".localized()
 		}
 	}
 }
