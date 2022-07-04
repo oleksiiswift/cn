@@ -16,11 +16,15 @@ class BottomButtonBarView: UIView {
     
     @IBOutlet var containerView: UIView!
     @IBOutlet weak var actionButton: BottomBarButtonItem!
-    @IBOutlet weak var buttonHeightConstraint: NSLayoutConstraint!
+	@IBOutlet weak var containerHeightConstraint: NSLayoutConstraint!
+	@IBOutlet weak var buttonHeightConstraint: NSLayoutConstraint!
     
     private lazy var activityIndicatorView = UIActivityIndicatorView(style: .medium)
-    
-    var delegate: BottomActionButtonDelegate?
+
+	@IBOutlet weak var actionButtonLeadingConstraint: NSLayoutConstraint!
+	@IBOutlet weak var actionButtonTrailingConstraint: NSLayoutConstraint!
+	
+	var delegate: BottomActionButtonDelegate?
     
     public var buttonColor: UIColor = .red
     public var buttonTintColor: UIColor = .white
@@ -117,6 +121,11 @@ class BottomButtonBarView: UIView {
 		buttonHeightConstraint.constant = height
 	}
 	
+	public func setContainerHeight(_ height: CGFloat) {
+		containerHeightConstraint.constant = height
+		containerView.layoutIfNeeded()
+	}
+	
 	public func setFont(_ font: UIFont) {
 		actionButton.font = font
 	}
@@ -127,6 +136,10 @@ class BottomButtonBarView: UIView {
 	
 	public func setImage(_ image: UIImage, with size: CGSize = CGSize(width: 18, height: 22) ) {
 		actionButton.setButtonImage(image: image, size: size)
+	}
+	
+	public func setImageRight(_ image: UIImage, with size: CGSize = CGSize(width: 18, height: 22)) {
+		actionButton.setButtonImageRight(image: image, size: size)
 	}
 	
 	@objc func didTapActionButton() {
@@ -140,6 +153,19 @@ class BottomButtonBarView: UIView {
 	
 	public func stopAnimatingButton() {
 		actionButton.removeAnimateProgress()
+	}
+	
+	public func setButtonSideOffset(_ offset: CGFloat = 20) {
+		self.actionButtonLeadingConstraint.constant = offset
+		self.actionButtonTrailingConstraint.constant = offset
+	}
+	
+	public func setButtonGradientBackgroundColor(from startPount: CAGradientPoint, to endPoiunt: CAGradientPoint, with colors: [UIColor]) {
+		
+		let gradientColors = colors.compactMap({$0.cgColor})
+		let gradientBaseView = UIView(frame: CGRect(x: 0, y: 0, width: self.frame.size.width, height: self.frame.size.height))
+		self.actionButton.insertSubview(gradientBaseView, at: 0)
+		gradientBaseView.layerGradient(startPoint: .topLeft, endPoint: .bottomRight, colors: gradientColors , type: .axial)
 	}
 }
 
@@ -185,6 +211,10 @@ class BottomBarButtonItem: UIButton {
 		self.addLeftImageWithFixLeft(spacing: imageSpacing, size: size, image: image)
 	}
 	
+	public func setButtonImageRight(image: UIImage, size: CGSize = CGSize(width: 19, height: 22)) {
+		self.addRighttImageWithFixRight(spacing: imageSpacing, size: size, image: image)
+	}
+	
 	public func setbuttonAvailible(_ availible: Bool) {
 		self.isEnabled = availible
 		self.alpha = availible ? 1.0 : 0.6
@@ -203,6 +233,11 @@ extension BottomButtonBarView {
         topShadow.bottomAnchor.constraint(equalTo: actionButton.bottomAnchor).isActive = true
         topShadow.topAnchor.constraint(equalTo: actionButton.topAnchor).isActive = true
     }
+	
+	public func addButtonGradientBackground(colors: [UIColor]) {
+		let gradientColors = colors.compactMap({$0.cgColor})
+		actionButton.layerGradient(startPoint: .centerLeft, endPoint: .centerRight, colors: gradientColors , type: .axial)
+	}
 }
 
 extension BottomBarButtonItem {

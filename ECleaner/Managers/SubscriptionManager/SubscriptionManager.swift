@@ -46,7 +46,7 @@ class SubscriptionManager: NSObject {
 		}
 	}
 	
-	public func setPurchasePrmium(_ purchased: Bool) {
+	public func setPurchasePremium(_ purchased: Bool) {
 		self.purchasedPremium = purchased
 	}
 	
@@ -83,6 +83,19 @@ class SubscriptionManager: NSObject {
 			self.iapSubscription.restoreSubscription { restored in
 				debugPrint(restored)
 			}
+		}
+	}
+}
+
+
+extension SubscriptionManager {
+	
+	public func descriptionModel() -> [ProductStoreDesriptionModel] {
+		
+		if #available(iOS 15.0, *) {
+			return subscription.getProductDescription()
+		} else {
+			return []
 		}
 	}
 }

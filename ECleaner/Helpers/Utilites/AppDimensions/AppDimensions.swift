@@ -589,7 +589,7 @@ extension AppDimensions {
 }
 
 extension AppDimensions {
-	
+		
 	struct NavigationBar {
 		
 			///`CUSTOM NAVIGATION BAR`
@@ -779,6 +779,90 @@ extension AppDimensions {
 					return 10
 				default:
 					return 10
+			}
+		}
+	}
+}
+
+extension AppDimensions {
+	
+	
+	struct Subscription {
+		
+		struct Navigation {
+			
+			static var leftNavigationButton: CGSize {
+				switch screenSize {
+					case .small:
+						return CGSize(width: 30, height: 30)
+					case .medium:
+						return CGSize(width: 35, height: 35)
+					default:
+						return CGSize(width: 40, height: 40)
+				}
+			}
+			
+			static var rightNavigationButton: CGSize {
+				switch screenSize {
+					case .small:
+						return CGSize(width: 80, height: 25)
+					case .medium:
+						return CGSize(width: 90, height: 30)
+					default:
+						return CGSize(width: 100, height: 35)
+				}
+			}
+		}
+		
+		
+		struct Features {
+			
+			static var cellSize: CGFloat {
+				switch screenSize {
+						
+					case .small:
+						return 25
+					case .medium:
+						return 30
+					case .plus:
+						return 35
+					case .large:
+						return 42
+					case .modern:
+						return 40
+					case .max:
+						return 40
+					case .madMax:
+						return 40
+				}
+			}
+			
+			static var leadingInset: CGFloat {
+				switch screenSize {
+					case .large:
+						return 70
+					default:
+						return 70
+				}
+			}
+			
+			static var thumbnailSize: CGFloat {
+				switch screenSize {
+					case .small:
+						return 25
+					case .medium:
+						return 25
+					case .plus:
+						return 28
+					case .large:
+						return 30
+					case .modern:
+						return 30
+					case .max:
+						return 30
+					case .madMax:
+						return 30
+				}
 			}
 		}
 	}

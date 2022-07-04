@@ -164,3 +164,7 @@ class StartingNavigationBar: UIView {
     }
     
 }
+
+
+
+

@@ -53,6 +53,8 @@ struct Images {
             static let arrowUP = UIImage(named: "arrowUpDown")!
 			static let compress = UIImage(named: "compressItem")!
 			static let info = UIImage(named: "infoItem")!
+			static let arrowLeft = UIImage(named: "arrowLeftItem")!
+			static let circleArrow = UIImage(named: "circleRoundedThin")!
         }
 		
 		struct helpersItems {
@@ -134,7 +136,39 @@ struct Images {
         static let sliderView = UIImage(named: "sliderItem")
 		static let trashBtn = UIImage(systemName: "trash")
 		static let share = UIImage(systemName: "square.and.arrow.up")
-    }
+		static let arrowRight = UIImage(systemName: "arrow.right")!
+	}
+	
+	struct onboarding {
+		static let photo = UIImage(named: "photoonboarding")!
+		static let video = UIImage(named: "videoonboarding")!
+		static let contacts = UIImage(named: "contactsonboarding")!
+	}
+	
+	struct onboardingAnimation {
+		
+		static let photo = "photo"
+		static let video = "video"
+		static let contacts = "contacts"
+	}
+	
+	struct subsctiption {
+		
+		public static var rocket = UIImage(named: "rocket")
+		
+		public static func getFeaturesImages(for type: PremiumFeature) -> UIImage {
+			switch type {
+				case .deepClean:
+					return UIImage(systemName: "viewfinder.circle.fill")!
+				case .multiselect:
+					return UIImage(systemName: "checkmark.circle.fill")!
+				case .compression:
+					return UIImage(systemName: "archivebox.fill")!
+				case .location:
+					return UIImage(systemName: "photo.fill")!
+			}
+		}
+	}
 }
 
 extension Images {

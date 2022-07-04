@@ -6,13 +6,16 @@
 //
 
 import UIKit
+import SwiftUI
+
 
 var currentScene: UIScene?
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
-	var permissionWindow: UIWindow?
+	var presentedWindow: UIWindow?
+	var coordinator: ApplicationCoordinator?
 	
 	public var shortCutItem: UIApplicationShortcutItem?
 	
@@ -61,9 +64,20 @@ extension SceneDelegate {
 	}
 	
 	private func handleStartupRouting() {
+	
+		let navController = UINavigationController()
+		coordinator = ApplicationCoordinator(navigationController: navController)
+		#warning("DEVELOP")
+		devopmentEnviroment()
 		
-		if !SettingsManager.permissions.permisssionDidShow {
-			UIPresenter.showViewController(of: .permission)
-		}
+		coordinator?.start()
+	}
+}
+
+extension SceneDelegate {
+	
+	private func devopmentEnviroment() {
+		
+		coordinator?.currentState = .onboarding
 	}
 }

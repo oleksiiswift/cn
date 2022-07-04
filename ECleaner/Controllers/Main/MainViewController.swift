@@ -26,6 +26,8 @@ class MainViewController: UIViewController {
 	@IBOutlet weak var collectionViewHeightConstraint: NSLayoutConstraint!
 	@IBOutlet weak var bottomButtonHeightConstraint: NSLayoutConstraint!
 	
+	weak var coordinator: ApplicationCoordinator?
+	
     private let baseCarouselLayout = BaseCarouselFlowLayout()
     
 	private var permissionManager = PermissionManager.shared
@@ -53,6 +55,8 @@ class MainViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+		
+		self.coordinator = Utils.sceneDelegate.coordinator
 		
 		self.addSizeCalcuateObeserver()
 		self.setupNavigation()
@@ -319,13 +323,12 @@ extension MainViewController {
     }
     
     private func openSettingsController() {
-		
-		let storyboard = UIStoryboard(name: C.identifiers.storyboards.settings, bundle: nil)
-		let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.settings) as! SettingsViewController
-		self.navigationController?.pushViewController(viewController, animated: true)
+		coordinator?.showSettingsViewController(from: self.navigationController)
 	}
     
-    private func openSubscriptionController() {}
+    private func openSubscriptionController() {
+		UIPresenter.showViewController(of: .subscription)
+	}
 	
 	@objc func shortCutItemStartCleanProcess(_ notification: Notification) {}
 	

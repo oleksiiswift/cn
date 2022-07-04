@@ -7,8 +7,8 @@
 
 import UIKit
 
-class PermissionsViewController: UIViewController {
-	
+class PermissionsViewController: UIViewController, Storyboarded {
+
 	@IBOutlet weak var navigationBar: NavigationBar!
 	@IBOutlet weak var tableView: UITableView!
 	@IBOutlet weak var navigationBarHeightConstraint: NSLayoutConstraint!
@@ -17,7 +17,9 @@ class PermissionsViewController: UIViewController {
 	private var permissionDataSource: PermissionsDataSource!
 	
 	public var fromRootViewController: Bool = true
-		
+	
+	weak var coordinator: ApplicationCoordinator?
+	
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -59,17 +61,10 @@ extension PermissionsViewController {
 		if PhotoLibraryPermissions().notDetermined && ContactsPermissions().notDetermined || PhotoLibraryPermissions().denied && ContactsPermissions().denied {
 			AlertManager.showPermissionAlert(of: .onePermissionRule, at: self)
 		} else {
-			self.closeController()
+			self.permissionWillPass()
 		}
 	}
-	
-	private func closeController() {
-		self.dismiss(animated: true) {
-			SettingsManager.permissions.permisssionDidShow = true
-			U.sceneDelegate.permissionWindow = nil
-		}
-	}
-	
+		
 	private func handlePermissionChange(at cell: PermissionTableViewCell, with permission: Permission) {
 
 		switch permission.status {
@@ -100,13 +95,13 @@ extension PermissionsViewController {
 									U.delay(1) {
 										AppTrackerPermissions().requestForPermission { _, _ in
 											U.delay(1) {
-												self.closeController()
+												self.permissionWillPass()
 											}
 										}
 									}
 								} else {
 									U.delay(1) {
-										self.closeController()
+										self.permissionWillPass()
 									}
 								}
 							}
@@ -114,6 +109,16 @@ extension PermissionsViewController {
 					}
 				}
 			}
+		}
+	}
+	
+	private func permissionWillPass() {
+		
+		if SubscriptionManager.instance.purchasePremium() {
+			self.coordinator?.routingWillPass()
+		} else {
+			self.coordinator?.currentState = .subscription
+			self.coordinator?.showSubscriptionViewController()
 		}
 	}
 	

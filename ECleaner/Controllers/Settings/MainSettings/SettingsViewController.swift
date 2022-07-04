@@ -8,10 +8,12 @@
 import UIKit
 import SwiftMessages
 
-class SettingsViewController: UIViewController {
+class SettingsViewController: UIViewController, Storyboarded {
 	
 	@IBOutlet weak var navigationBar: NavigationBar!
 	@IBOutlet weak var tableView: UITableView!
+	
+	weak var coordinator: ApplicationCoordinator?
 	
 	private var settingsViewModel: SettingsViewModel!
 	private var settingsDataSource: SettingsDataSource!
@@ -185,10 +187,7 @@ extension SettingsViewController: SettingActionsDelegate {
 	}
 	
 	private func showPermissionController() {
-		let storyboard = UIStoryboard(name: C.identifiers.storyboards.permissions, bundle: nil)
-		let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.permissions) as! PermissionsViewController
-		viewController.fromRootViewController = false
-		self.navigationController?.pushViewController(viewController, animated: true)
+		self.coordinator?.showPermissionViewController(from: self.navigationController)
 	}
 	
 	private func showRestorePurchaseAction() {
