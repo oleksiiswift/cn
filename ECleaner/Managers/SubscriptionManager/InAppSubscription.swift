@@ -41,7 +41,7 @@ extension InAppSubscription {
 	
 	private func updateSubscriptionStatus(startApp: Bool = false) {
 		self.checkSubscriptionAvailability { purchasePremium in
-			SubscriptionManager.instance.setPurchasePrmium(purchasePremium)
+			SubscriptionManager.instance.setPurchasePremium(purchasePremium)
 		}
 	}
 }
@@ -61,7 +61,7 @@ extension InAppSubscription {
 			switch result {
 				case .success(_):
 					updateExpireSubscription()
-					SubscriptionManager.instance.setPurchasePrmium(true)
+					SubscriptionManager.instance.setPurchasePremium(true)
 					SettingsManager.inAppPurchase.expiredSubscription = true
 					completion(true)
 				case .error(error: let error):
@@ -101,12 +101,12 @@ extension InAppSubscription {
 									
 									SettingsManager.inAppPurchase.expiredSubscription = true
 									SettingsManager.inAppPurchase.expireDateSubscription = exprireDate
-									SubscriptionManager.instance.setPurchasePrmium(true)
+									SubscriptionManager.instance.setPurchasePremium(true)
 									completionHandler(true)
 								case .expired(expiryDate: let expireDate, items: _):
 									SettingsManager.inAppPurchase.expiredSubscription = false
 									SettingsManager.inAppPurchase.expireDateSubscription = expireDate
-									SubscriptionManager.instance.setPurchasePrmium(false)
+									SubscriptionManager.instance.setPurchasePremium(false)
 									completionHandler(false)
 									U.delay(0.2) {
 #warning("TODO")
@@ -206,7 +206,7 @@ extension InAppSubscription {
 							
 						case .expired(expiryDate: let expireDate, items: _):
 							SettingsManager.inAppPurchase.expiredSubscription = false
-							SubscriptionManager.instance.setPurchasePrmium(false)
+							SubscriptionManager.instance.setPurchasePremium(false)
 							debugPrint(expireDate)
 							completionHandler(false)
 						default:

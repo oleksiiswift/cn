@@ -454,6 +454,22 @@ struct  LocalizationService {
 			}
 		}
 	}
+	
+	struct Subscription {
+		
+		public static func getPremiumFeaturesTitle(of type: PremiumFeature) -> String {
+			switch type {
+				case .deepClean:
+					return Localization.Subscription.PremiumFeautures.deepClean
+				case .multiselect:
+					return Localization.Subscription.PremiumFeautures.multiselect
+				case .compression:
+					return Localization.Subscription.PremiumFeautures.compression
+				case .location:
+					return Localization.Subscription.PremiumFeautures.location
+			}
+		}
+	}
 }
 
 

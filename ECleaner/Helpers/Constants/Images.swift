@@ -54,6 +54,7 @@ struct Images {
 			static let compress = UIImage(named: "compressItem")!
 			static let info = UIImage(named: "infoItem")!
 			static let arrowLeft = UIImage(named: "arrowLeftItem")!
+			static let circleArrow = UIImage(named: "circleRoundedThin")!
         }
 		
 		struct helpersItems {
@@ -149,6 +150,24 @@ struct Images {
 		static let photo = "photo"
 		static let video = "video"
 		static let contacts = "contacts"
+	}
+	
+	struct subsctiption {
+		
+		public static var rocket = UIImage(named: "rocket")
+		
+		public static func getFeaturesImages(for type: PremiumFeature) -> UIImage {
+			switch type {
+				case .deepClean:
+					return UIImage(systemName: "viewfinder.circle.fill")!
+				case .multiselect:
+					return UIImage(systemName: "checkmark.circle.fill")!
+				case .compression:
+					return UIImage(systemName: "archivebox.fill")!
+				case .location:
+					return UIImage(systemName: "photo.fill")!
+			}
+		}
 	}
 }
 

@@ -151,6 +151,8 @@ struct Localization {
 			static var manual = "manual".localized()
 			static var skip = "Skip".localized()
 			static var next = "Next".localized()
+			static var restore = "Restore".localized()
+			static var activate = "Activate".localized()
 		}
 	}
 	
@@ -357,7 +359,6 @@ struct Localization {
 			static let photo = "Autosearch and delete similar photos to obtain more space on iPhone.".localized()
 			static let video = "Compress or delete large videos to clear your iPhone data".localized()
 			static let contacts = "Organize your Contact Library using merge and clean empty contacts".localized()
-			
 		}
 	}
 	
@@ -483,6 +484,32 @@ struct Localization {
 				static var unknown = "Error, trying again at a later time will work.".localized()
 				static var restorePurchseFailed = "Restore purchase failed".localized()
 			}
+	}
+	
+	struct Subscription {
+		
+		struct Main {
+			static var getPremium = "Get Premium".localized()
+		}
+		
+		struct PremiumFeautures {
+			static var deepClean = "Deep Clean".localized()
+			static var multiselect = "Multiselect Elements".localized()
+			static var compression = "Video Compression".localized()
+			static var location = "Clean GPS Location".localized()
+		}
+		
+		struct Description {
+			static var day = "per day".localized()
+			static var week = "per week".localized()
+			static var month = "per month".localized()
+			static var year = "per year".localized()
+		}
+		
+		struct Helper {
+			static var termsOfUse = "Terms of Use".localized()
+			static var privicy = "Privacy Policy".localized()
+		}
 	}
 }
 

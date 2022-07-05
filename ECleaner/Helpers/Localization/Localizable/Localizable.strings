@@ -108,6 +108,8 @@
 "manual" = "manual";
 "Skip" = "Skip";
 "Next" = "Next";
+"Restore" = "Restore";
+"Activate" = "Activate";
 
 	//		MARK: - settings -
 	// MARK: title
@@ -367,3 +369,16 @@
 "The product is not available in the current storefront." = "The product is not available in the current storefront.";
 "Error, trying again at a later time will work." = "Error, trying again at a later time will work.";
 "Restore purchase failed" = "Restore purchase failed";
+//	MARK: Subscription
+//	MARK: MAIN
+"Get Premium" = "Get Premium";
+//	MARK: PremiumFeatures
+"Deep Clean" = "Deep Clean";
+"Multiselect Elements" = "Multiselect Elements";
+"Video Compression" = "Video Compression";
+"Clean GPS Location" = "Clean GPS Location";
+//	MARK: Description
+"per day" = "per day";
+"per week" = "per week";
+"per month" = "per month";
+"per year" = "per year";

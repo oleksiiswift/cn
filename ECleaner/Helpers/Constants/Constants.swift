@@ -433,6 +433,7 @@ class Constants {
         struct navigation {
             static let main = "StartingNavigationBar"
             static let navigationBar = "NavigationBar"
+			static let subscription = "PremiumNavigationBar"
         }
         
         struct storyboards {
@@ -490,6 +491,7 @@ class Constants {
 			static let permissionCell = "PermissionTableViewCell"
 			static let permissionBannerCell = "PermissionBannerTableViewCell"
 			static let permissionContinueCell = "PermissionContinueTableViewCell"
+			static let premiumFeature = "PremiumFeatureTableViewCell"
         }
         
         struct views {
@@ -518,6 +520,7 @@ class Constants {
 			static let permissionCell = "PermissionTableViewCell"
 			static let permissionBannerCell = "PermissionBannerTableViewCell"
 			static let permissionContinueCell = "PermissionContinueTableViewCell"
+			static let premiumFeature = "PremiumFeatureTableViewCell"
             /// `views`
             static let groupHeader = "GroupedAssetsReusableHeaderView"
             static let groupFooter = "GroupedAssetsReusableFooterView"

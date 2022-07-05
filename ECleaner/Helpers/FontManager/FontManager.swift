@@ -167,4 +167,23 @@ class FontManager {
 				return OnboardingFontSize.subtitleFont
 		}
 	}
+	
+	static func subscriptionFont(of type: SubscriptionFontType) -> UIFont {
+		switch type {
+			case .premiumFeature:
+				return SubscriptionFontSize.premiumFeature
+			case .title:
+				return SubscriptionFontSize.title
+			case .helperText:
+				return SubscriptionFontSize.helperText
+			case .links:
+				return SubscriptionFontSize.links
+			case .buttonTitle:
+				return SubscriptionFontSize.buttonTitle
+			case .buttonPrice:
+				return SubscriptionFontSize.buttonPrice
+			case .buttonDescription:
+				return SubscriptionFontSize.buttonDescription
+		}
+	}
 }

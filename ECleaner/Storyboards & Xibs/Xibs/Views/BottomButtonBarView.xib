@@ -14,6 +14,7 @@
                 <outlet property="actionButtonLeadingConstraint" destination="WrF-Ad-q01" id="Yxu-TQ-FZv"/>
                 <outlet property="actionButtonTrailingConstraint" destination="Ky3-Uf-WSn" id="Jy0-LR-Uzv"/>
                 <outlet property="buttonHeightConstraint" destination="5sU-ct-TJJ" id="mSE-7N-UiC"/>
+                <outlet property="containerHeightConstraint" destination="Lao-hN-rBX" id="IQ7-1g-JwF"/>
                 <outlet property="containerView" destination="iN0-l3-epB" id="pOJ-pV-MxI"/>
             </connections>
         </placeholder>

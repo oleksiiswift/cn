@@ -62,7 +62,7 @@ extension SubscriptionService {
 		let productionType =  Product.PurchaseOption.simulatesAskToBuyInSandbox(service == .sandbox)
 		var options: Set<Product.PurchaseOption> = []
 		options.insert(productQuaintty)
-		options.insert(productionType)
+//		options.insert(productionType)
 		
 		if let applicationToken = applicationToken {
 			let productToken = Product.PurchaseOption.appAccountToken(applicationToken)
