@@ -8,33 +8,11 @@
 import Foundation
 import StoreKit
 
-struct SubscribeType {
-	#warning("TODO")
-	var id: String
-	var price: String
-	var trial: String
-	var title: String
-	var subtitle: String
-}
-
-class ProductStoreDesriptionModel {
-
-	var productName: String
-	var productPrice: String
-	var description: String
-
-	init(name: String, price: String, description: String) {
-		self.productName = name
-		self.productPrice = price
-		self.description = description
-	}
-}
-
 enum Subscriptions: String, CaseIterable {
 
-	case week = 	"week_cleaner"
 	case month = 	"month_cleaner"
 	case year = 	"year_cleaner"
+	case week = 	"week_cleaner"
 	case lifeTime = "lifetime_cleaner"
 }
 

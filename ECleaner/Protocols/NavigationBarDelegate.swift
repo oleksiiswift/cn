@@ -19,3 +19,10 @@ protocol NavigationBarDelegate: AnyObject {
     func didTapLeftBarButton(_ sender: UIButton)
     func didTapRightBarButton(_ sender: UIButton)
 }
+
+
+protocol PremiumNavigationBarDelegate: AnyObject {
+	
+	func didTapLeftBarButton(_sender: UIButton)
+	func didTapRightBarButton(_sender: UIButton)
+}

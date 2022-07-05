@@ -24,7 +24,7 @@ target 'ECleaner' do
 	pod 'SwiftyStoreKit'
 	
 	# - temporary disabled or not in use -
-	
+	pod 'lottie-ios'
 	#pod 'SwiftyMediaGallery'
 	#pod 'SwiftDate'
 	#pod 'SwiftyContacts'

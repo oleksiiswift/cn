@@ -12,7 +12,8 @@ enum PresentedControllerType {
 	case permission
 	case onboarding
 	case subscription
-
+	case settings
+	
 	var storyboardName: String {
 		switch self {
 			case .permission:
@@ -21,6 +22,8 @@ enum PresentedControllerType {
 				return C.identifiers.storyboards.onboarding
 			case .subscription:
 				return C.identifiers.storyboards.subscription
+			case .settings:
+				return C.identifiers.storyboards.settings
 		}
 	}
 	
@@ -29,33 +32,40 @@ enum PresentedControllerType {
 			case .permission:
 				return C.identifiers.viewControllers.permissions
 			case .onboarding:
-				<#code#>
+				return C.identifiers.viewControllers.onboarding
 			case .subscription:
-				<#code#>
-		}
-	}
-		
-	var presentController: UIViewController {
-		switch self {
-			case .permission:
-				return getPresentedViewController(type: .permission)
-			case .onboarding:
-				<#code#>
-			case .subscription:
-				<#code#>
+				return C.identifiers.viewControllers.subscription
+			case .settings:
+				return C.identifiers.viewControllers.settings
 		}
 	}
 	
-	private func getPresentedViewController(type: PresentedControllerType) -> UIViewController {
+	var navigationController: UINavigationController {
+		return UINavigationController.init(rootViewController: self.presentController)
+	}
 		
-		let storyboard = UIStoryboard(name: type.storyboardName, bundle: nil)
+	var presentController: UIViewController {
+		return self.getPresentedViewController(type: self, coordinator: Utils.sceneDelegate.coordinator)
+	}
+	
+	private func getPresentedViewController(type: PresentedControllerType, coordinator: ApplicationCoordinator?) -> UIViewController {
+			
 		switch self {
 			case .permission:
-				return storyboard.instantiateViewController(withIdentifier: type.viewControllerIdentifier) as! PermissionsViewController
+				let viewController = PermissionsViewController.instantiate(type: type)
+				viewController.coordinator = coordinator
+				return viewController
 			case .onboarding:
-				<#code#>
+				let viewController = OnboardingViewController.instantiate(type: type)
+				viewController.coordinator = coordinator
+				return viewController
 			case .subscription:
-				<#code#>
+				let viewController = SubscriptionViewController.instantiate(type: type)
+				viewController.coordinator = coordinator
+				return viewController
+			case .settings:
+				let viewController = SettingsViewController.instantiate(type: type)
+				return viewController
 		}
 	}
 }

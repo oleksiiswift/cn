@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import SwiftUI
+
 
 var currentScene: UIScene?
 
@@ -13,6 +15,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
 	var presentedWindow: UIWindow?
+	var coordinator: ApplicationCoordinator?
 	
 	public var shortCutItem: UIApplicationShortcutItem?
 	
@@ -61,152 +64,20 @@ extension SceneDelegate {
 	}
 	
 	private func handleStartupRouting() {
+	
+		let navController = UINavigationController()
+		coordinator = ApplicationCoordinator(navigationController: navController)
+		#warning("DEVELOP")
+		devopmentEnviroment()
 		
-		switch AplicationStartupState.state {
-			case .tryPassApplication:
-				return
-			case .tryPassOnboarding:
-				UIPresenter.showViewController(of: .onboarding)
-			case .tryPassPermission:
-				UIPresenter.showViewController(of: .permission)
-			case .tryPassSubscription:
-				UIPresenter.showViewController(of: .subscription)
-		}
+		coordinator?.start()
 	}
 }
 
-struct AplicationStartupState {
+extension SceneDelegate {
 	
-	private static var routingKey = Constants.key.application.aplicationRoutingKey
-	
-	public static var state: [State : StateValue] {
-		get {
-			
-		} set {
-			
-		}
-	}
-	
-//	public static var state: State {
-//		get {
-//			return self.currentState()
-//		} set {
-//			self.set(state: newValue)
-//		}
-//	}
-	
-	enum StateValue {
-		case willPass
-		case didPass
-		case unknown
-	}
+	private func devopmentEnviroment() {
 		
-	enum State {
-		
-		case aplication
-		case onbording
-		case permission
-		case subbscription
-
-		var key: String {
-			switch self {
-				case .onbording:
-					return Constants.key.application.onboardingValue
-				case .permission:
-					return Constants.key.application.permissionValue
-				case .subbscription:
-					return Constants.key.application.subscriptionValue
-				case .aplication:
-					return Constants.key.application.aplicationValue
-			}
-		}
-		
-		var progress: StateValue {
-			
-			if !Utils.contains() {
-				return .unknown
-			}
-			
-			
-			switch self {
-				case .aplication:
-					<#code#>
-				case .onbording:
-					<#code#>
-				case .permission:
-					<#code#>
-				case .subbscription:
-					<#code#>
-			}
-		}
-	}
-	
-	
-	private static func current() -> StateValue {
-		
-	
-		
-		var storedDictionary: [String: StateValue] = [:]
-		
-		if let dictionary = Utils.userDefaults.object(forKey: self.routingKey) as? [String : StateValue] {
-			storedDictionary = dictionary
-		}
-		
-		
-		if let currentState = storedDictionary[self.k]
-		
-		
-		
-		
-		
-	}
-	
-	
-	
-	private static func currentState() -> [State : StateValue] {
-		
-		let storedState = Utils.userDefaults.object(forKey: <#T##String#>)
-		
-		if Utils.contains(self.routingKey) {
-		
-		
-		} else {
-			
-			
-			
-		}
-		
-//		let stateValue = Utils.userDefaults.string(forKey: self.routingKey)
-//
-//		switch stateValue {
-//			case State.aplication.key:
-//				return .aplication
-//			case State.onbording.key:
-//				return .onbording
-//			case State.permission.key:
-//				return .permission
-//			case State.subbscription.key:
-//				return .subbscription
-//			default:
-//				return .onbording
-//		}
-	}
-	
-	private static func set(value: StateValue, for state: State) {
-		
-		var storedDictionary: [State: StateValue] = [:]
-				
-		if let dictionary = Utils.userDefaults.object(forKey: self.routingKey) as? [State: StateValue] {
-			storedDictionary = dictionary
-		}
-		
-		storedDictionary[state] = value
-	}
-	
-	private static func saveState(state: [State: StateValue]) {
-		Utils.userDefaults.set(state, forKey: self.routingKey)
+		coordinator?.currentState = .onboarding
 	}
 }
-
-
-

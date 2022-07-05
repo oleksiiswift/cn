@@ -46,7 +46,8 @@ class Constants {
 			static let applicationLastUsage = "applicationLastUsage"
 			static let applicationFirstTimeStart = "applicationFirstTimeStart"
 
-			static let aplicationRoutingKey = "com.cleanerApplicationRouting.Key"
+			static let applicationRoutingKey = "com.cleanerApplicationRouting.Key"
+			
 			static let onboardingValue      = "com.cleaner.tryPassOnboarding.key"
 			static let permissionValue      = "com.cleaner.tryPassPermission.key"
 			static let subscriptionValue    = "com.cleaner.tryPassSubscription.key"
@@ -100,7 +101,6 @@ class Constants {
             static let photoSpace = "photoDiskSpace"
             static let videoSpace = "videoDiskSpace"
             static let allMediaSpace = "wholeAssetsDiskSpace"
-			
         }
 		
 		struct compressionSettings {
@@ -433,6 +433,7 @@ class Constants {
         struct navigation {
             static let main = "StartingNavigationBar"
             static let navigationBar = "NavigationBar"
+			static let subscription = "PremiumNavigationBar"
         }
         
         struct storyboards {
@@ -467,7 +468,10 @@ class Constants {
             static let expordContacts = "ExportContactsViewController"
 			static let settings = "SettingsViewController"
 			static let customCompression = "VideoCompressionCustomSettingsViewController"
-			static let permissions = "PermissionsViewController" 
+			static let permissions = "PermissionsViewController"
+			static let onboarding = "OnboardingViewController"
+			static let onboardingPage = "OnboardingPageViewController"
+			static let subscription = "SubscriptionViewController"
         }
         
         struct cells {
@@ -487,6 +491,7 @@ class Constants {
 			static let permissionCell = "PermissionTableViewCell"
 			static let permissionBannerCell = "PermissionBannerTableViewCell"
 			static let permissionContinueCell = "PermissionContinueTableViewCell"
+			static let premiumFeature = "PremiumFeatureTableViewCell"
         }
         
         struct views {
@@ -515,6 +520,7 @@ class Constants {
 			static let permissionCell = "PermissionTableViewCell"
 			static let permissionBannerCell = "PermissionBannerTableViewCell"
 			static let permissionContinueCell = "PermissionContinueTableViewCell"
+			static let premiumFeature = "PremiumFeatureTableViewCell"
             /// `views`
             static let groupHeader = "GroupedAssetsReusableHeaderView"
             static let groupFooter = "GroupedAssetsReusableFooterView"
@@ -533,6 +539,12 @@ class Constants {
             /// controllers
 //            static let photoPreview = "PhotoPreviewViewControllerOLDVers"
         }
+		
+		struct onboarding {
+			static let photo = "com.cleaner.onboarding.photo"
+			static let video = "com.cleaner.onboarding.video"
+			static let contacts = "com.cleaner.onbarding.contacts"
+		}
         
         struct segue {
 			static let showLowerDatePicker = "ShowDatePickerLowerDateSelectorViewController"
