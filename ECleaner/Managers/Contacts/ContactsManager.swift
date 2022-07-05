@@ -145,9 +145,7 @@ extension ContactsManager {
 		} catch {
 			complationHandler([])
 		}
-		
 	}
-	
 	
 	public func contactsProcessingStore() {
 		

@@ -24,8 +24,12 @@ class BottomButtonBarView: UIView {
 	@IBOutlet weak var actionButtonLeadingConstraint: NSLayoutConstraint!
 	@IBOutlet weak var actionButtonTrailingConstraint: NSLayoutConstraint!
 	
+	private var topShadow = ReuseShadowView()
+	
 	var delegate: BottomActionButtonDelegate?
     
+	private var buttonOffset: UIEdgeInsets = .zero
+	
     public var buttonColor: UIColor = .red
     public var buttonTintColor: UIColor = .white
     public var buttonTitleColor: UIColor?
@@ -156,6 +160,7 @@ class BottomButtonBarView: UIView {
 	}
 	
 	public func setButtonSideOffset(_ offset: CGFloat = 20) {
+	    self.buttonOffset = UIEdgeInsets(top: 0, left: offset, bottom: 0, right: offset)
 		self.actionButtonLeadingConstraint.constant = offset
 		self.actionButtonTrailingConstraint.constant = offset
 	}
@@ -175,6 +180,26 @@ class BottomBarButtonItem: UIButton {
 	public var imageSpacing: CGFloat = 26
 	public var imageSize: CGSize = CGSize(width: 18, height: 22)
 	public var font: UIFont = FontManager.bottomButtonFont(of: .title)
+	
+	override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+		super.touchesBegan(touches, with: event)
+		
+		if let imageView = self.subviews.first(where: {$0.tag == 66613}) {
+			UIView.animate(withDuration: 0.1) {
+				imageView.alpha = 0.3
+			}
+		}
+	}
+	
+	override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+		super.touchesEnded(touches, with: event)
+		
+		if let imageView = self.subviews.first(where: {$0.tag == 66613}) {
+			UIView.animate(withDuration: 0.1) {
+				imageView.alpha = 1
+			}
+		}
+	}
 
 	override func layoutSubviews() {
 		super.layoutSubviews()
@@ -225,7 +250,6 @@ extension BottomButtonBarView {
     
     public func addButtonShadow() {
         
-        let topShadow = ReuseShadowView()
         self.insertSubview(topShadow, at: 0)
         topShadow.translatesAutoresizingMaskIntoConstraints = false
         topShadow.leadingAnchor.constraint(equalTo: actionButton.leadingAnchor).isActive = true
@@ -233,6 +257,20 @@ extension BottomButtonBarView {
         topShadow.bottomAnchor.constraint(equalTo: actionButton.bottomAnchor).isActive = true
         topShadow.topAnchor.constraint(equalTo: actionButton.topAnchor).isActive = true
     }
+	
+	public func addButtonShadhowIfLayoutError() {
+		
+		actionButton.removeFromSuperview()
+		
+		self.addSubview(actionButton)
+		actionButton.translatesAutoresizingMaskIntoConstraints = false
+		actionButton.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: buttonOffset.left).isActive = true
+		actionButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -buttonOffset.right).isActive = true
+		actionButton.topAnchor.constraint(equalTo: self.topAnchor, constant: 0).isActive = true
+		actionButton.heightAnchor.constraint(equalToConstant: AppDimensions.Subscription.Navigation.bottomBarButtonDefaultHeight).isActive = true
+		addButtonShadow()
+		actionButton.addTarget(self, action: #selector(didTapActionButton), for: .touchUpInside)
+	}
 	
 	public func addButtonGradientBackground(colors: [UIColor]) {
 		let gradientColors = colors.compactMap({$0.cgColor})

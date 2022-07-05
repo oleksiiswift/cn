@@ -1,5 +1,5 @@
 //
-//  OnbordingViewController.swift
+//  OnboardingViewController.swift
 //  ECleaner
 //
 //  Created by alexey sorochan on 23.06.2022.
@@ -8,15 +8,15 @@
 import UIKit
 
 protocol OnboardingControllDelegate {
-	func didTapActionButton(for index: Int)
 	func didUpdatePageIndicator(with index: Int)
 }
 
-class OnbordingViewController: UIPageViewController, Storyboarded {
+class OnboardingViewController: UIPageViewController, Storyboarded {
 
-	var scrollView: UIScrollView?
-	var pageControl = UIPageControl()
-	var skipButton = UIButton()
+	private var scrollView: UIScrollView?
+	private var pageControl = UIPageControl()
+	private var skipButton = UIButton()
+	private var bottomButtonView = BottomButtonBarView()
 	
 	private var onboardingViewModel: OnboardingViewModel!
 	private var onboardingDataSource: OnboardingDataSource!
@@ -31,6 +31,7 @@ class OnbordingViewController: UIPageViewController, Storyboarded {
 		setupViewModel()
 		setupDelegate()
 		setupPageControl()
+		setupBottomButtonView()
 		setupControllers()
 		setupSkipButton()
 		updateColors()
@@ -44,15 +45,35 @@ class OnbordingViewController: UIPageViewController, Storyboarded {
 	}
 }
 
-extension OnbordingViewController {
+extension OnboardingViewController {
 	
 	private func onboardingWillPass() {
 		self.coordinator?.currentState = .permission
 		self.coordinator?.showPermissionViewController()
 	}
+	
+	private func showNextPage(with index: Int) {
+		
+		guard self.onboardingViewModel.onboarding.count > index else { return }
+		self.setViewControllers([self.onboardingViewModel.viewController(from: index)], direction: .forward, animated: true, completion: nil)
+	}
+}
+
+extension OnboardingViewController: BottomActionButtonDelegate {
+	
+	func didTapActionButton() {
+		
+		let index = self.pageControl.currentPage + 1
+		
+		if onboardingViewModel.onboarding.count == index {
+			self.onboardingWillPass()
+		} else {
+			self.showNextPage(with: index)
+		}
+	}
 }
 	
-extension OnbordingViewController {
+extension OnboardingViewController {
 	
 	private func setupViewModel() {
 		
@@ -60,19 +81,10 @@ extension OnbordingViewController {
 		self.onboardingDataSource = OnboardingDataSource(onboardingViewModel: self.onboardingViewModel)
 		self.pageControl.numberOfPages = self.onboardingViewModel.onboarding.count
 		self.pageControl.currentPage = 0
-		
-		self.onboardingViewModel.pageActionDidChange = { index in
-			guard self.onboardingViewModel.onboarding.count > index else { return }
-			self.setViewControllers([self.onboardingViewModel.viewController(from: index)], direction: .forward, animated: true, completion: nil)
-		}
-		
+				
 		self.onboardingViewModel.pageIndicatorDidChange = { index in
 			self.pageControl.numberOfPages = self.onboardingViewModel.onboarding.count
 			self.pageControl.currentPage = index
-		}
-		
-		self.onboardingViewModel.didShowPermission = {
-			self.onboardingWillPass()
 		}
 	}
 	
@@ -80,12 +92,13 @@ extension OnbordingViewController {
 		
 		self.dataSource = self.onboardingDataSource
 		self.delegate = self.onboardingDataSource
+		bottomButtonView.delegate = self
 	}
 	
 	private func setupControllers() {
 		setViewControllers([self.onboardingViewModel.viewController(from: 0)], direction: .forward, animated: true, completion: nil)
 	}
-	
+		
 	private func setupPageControl() {
 		
 		pageControl.addTarget(self, action: #selector(pageUpdater), for: .valueChanged)
@@ -106,6 +119,21 @@ extension OnbordingViewController {
 		pageControl.heightAnchor.constraint(equalToConstant: 40).isActive = true
 	}
 	
+	private func setupBottomButtonView() {
+		
+		self.view.addSubview(bottomButtonView)
+		
+		bottomButtonView.translatesAutoresizingMaskIntoConstraints = false
+		bottomButtonView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -70).isActive = true
+		bottomButtonView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor).isActive = true
+		bottomButtonView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor).isActive = true
+		bottomButtonView.heightAnchor.constraint(equalToConstant: 80).isActive = true
+		
+		bottomButtonView.setButtonSideOffset(40)
+		bottomButtonView.setImageRight(I.systemItems.defaultItems.arrowLeft, with: CGSize(width: 20, height: 18))
+		bottomButtonView.title(LocalizationService.Buttons.getButtonTitle(of: .next).uppercased())
+	}
+
 	private func setupSkipButton() {
 	
 		self.view.addSubview(skipButton)
@@ -136,7 +164,7 @@ extension OnbordingViewController {
 	}
 }
 
-extension OnbordingViewController: Themeble {
+extension OnboardingViewController: Themeble {
 
 	private func setupUI() {
 		
@@ -148,10 +176,18 @@ extension OnbordingViewController: Themeble {
 	
 		self.view.backgroundColor = theme.cellBackGroundColor
 		skipButton.setTitleColor(theme.subTitleTextColor, for: .normal)
+		
+		let colors: [UIColor] = theme.onboardingButtonColors
+		bottomButtonView.configureShadow = true
+		bottomButtonView.addButtonShadhowIfLayoutError()
+		bottomButtonView.addButtonGradientBackground(colors: colors)
+		bottomButtonView.buttonTintColor = theme.activeTitleTextColor
+		bottomButtonView.buttonTitleColor = theme.activeTitleTextColor
+		bottomButtonView.updateColorsSettings()
 	}
 }
 
-extension OnbordingViewController: UIScrollViewDelegate {
+extension OnboardingViewController: UIScrollViewDelegate {
 	
 	func scrollViewDidScroll(_ scrollView: UIScrollView) {
 		if onboardingViewModel.rawIndex == onboardingViewModel.onboarding.count {

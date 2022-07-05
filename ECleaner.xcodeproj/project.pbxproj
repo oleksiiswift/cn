@@ -153,8 +153,6 @@
 		972A2A052805F01E00D6F54A /* VideoPreviewTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972A2A032805F01E00D6F54A /* VideoPreviewTableViewCell.swift */; };
 		972A2A062805F01E00D6F54A /* VideoPreviewTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 972A2A042805F01E00D6F54A /* VideoPreviewTableViewCell.xib */; };
 		972AAACD27F7524A00F3A1D2 /* UIView+AnimateButtonsAndViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972AAACC27F7524A00F3A1D2 /* UIView+AnimateButtonsAndViews.swift */; };
-		972C805F28717AD300691271 /* TOSegmentedControlSegment.m in Sources */ = {isa = PBXBuildFile; fileRef = 972C805B28717AD200691271 /* TOSegmentedControlSegment.m */; };
-		972C806028717AD300691271 /* TOSegmentedControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 972C805E28717AD200691271 /* TOSegmentedControl.m */; };
 		972C806428719D6500691271 /* SubscriptionSegmentControll.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972C806328719D6500691271 /* SubscriptionSegmentControll.swift */; };
 		972C80662871FA6200691271 /* UIView+GradientBorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972C80652871FA6200691271 /* UIView+GradientBorder.swift */; };
 		972C80682871FA9100691271 /* CGPoint+Coordinate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972C80672871FA9100691271 /* CGPoint+Coordinate.swift */; };
@@ -540,10 +538,6 @@
 		972A2A032805F01E00D6F54A /* VideoPreviewTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPreviewTableViewCell.swift; sourceTree = "<group>"; };
 		972A2A042805F01E00D6F54A /* VideoPreviewTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = VideoPreviewTableViewCell.xib; sourceTree = "<group>"; };
 		972AAACC27F7524A00F3A1D2 /* UIView+AnimateButtonsAndViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+AnimateButtonsAndViews.swift"; sourceTree = "<group>"; };
-		972C805B28717AD200691271 /* TOSegmentedControlSegment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TOSegmentedControlSegment.m; sourceTree = "<group>"; };
-		972C805C28717AD200691271 /* TOSegmentedControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TOSegmentedControl.h; sourceTree = "<group>"; };
-		972C805D28717AD200691271 /* TOSegmentedControlSegment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TOSegmentedControlSegment.h; sourceTree = "<group>"; };
-		972C805E28717AD200691271 /* TOSegmentedControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TOSegmentedControl.m; sourceTree = "<group>"; };
 		972C806328719D6500691271 /* SubscriptionSegmentControll.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionSegmentControll.swift; sourceTree = "<group>"; };
 		972C80652871FA6200691271 /* UIView+GradientBorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+GradientBorder.swift"; sourceTree = "<group>"; };
 		972C80672871FA9100691271 /* CGPoint+Coordinate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGPoint+Coordinate.swift"; sourceTree = "<group>"; };
@@ -1132,6 +1126,7 @@
 				97EC82EC2869030500A32A21 /* Scene */,
 				04E5835B267A3E4700EDC3A3 /* Controllers */,
 				04E58364267A3F1600EDC3A3 /* Views */,
+				97BE98C8287442E700419C6A /* SubscriptionSegmentControll */,
 				04E58362267A3EE900EDC3A3 /* Storyboards & Xibs */,
 				04E5835F267A3EB600EDC3A3 /* Managers */,
 				04E5835E267A3E7D00EDC3A3 /* Helpers */,
@@ -1274,7 +1269,6 @@
 		04E58364267A3F1600EDC3A3 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				972C805928717AD200691271 /* SegmentedControl */,
 				9701D27927BE56E60078E39F /* StepSlider */,
 				97CA4242273ECB59001FEA15 /* BottomButtonBarView */,
 				97B01A5C274584AC00DDE03C /* BottomDoubleButtonBarView */,
@@ -1295,7 +1289,6 @@
 				970B208B27F5BCB900B5AF7D /* GradientSlider */,
 				97B288A6281D790D0020A235 /* SegementControll */,
 				97B288A9281D79340020A235 /* AnimatedProgressView */,
-				972C806328719D6500691271 /* SubscriptionSegmentControll.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1647,17 +1640,6 @@
 				97EB665027B1A4AE00B21EF5 /* CGSize+pixel.swift */,
 			);
 			path = CGSize;
-			sourceTree = "<group>";
-		};
-		972C805928717AD200691271 /* SegmentedControl */ = {
-			isa = PBXGroup;
-			children = (
-				972C805B28717AD200691271 /* TOSegmentedControlSegment.m */,
-				972C805C28717AD200691271 /* TOSegmentedControl.h */,
-				972C805D28717AD200691271 /* TOSegmentedControlSegment.h */,
-				972C805E28717AD200691271 /* TOSegmentedControl.m */,
-			);
-			path = SegmentedControl;
 			sourceTree = "<group>";
 		};
 		972C80692871FA9F00691271 /* CGPoint */ = {
@@ -2235,6 +2217,14 @@
 				971F05142813EE56009B796C /* BenchTimer.swift */,
 			);
 			path = Timer;
+			sourceTree = "<group>";
+		};
+		97BE98C8287442E700419C6A /* SubscriptionSegmentControll */ = {
+			isa = PBXGroup;
+			children = (
+				972C806328719D6500691271 /* SubscriptionSegmentControll.swift */,
+			);
+			path = SubscriptionSegmentControll;
 			sourceTree = "<group>";
 		};
 		97C4217727FF4DDB00FF62D7 /* SmartCleanManager */ = {
@@ -2931,7 +2921,6 @@
 				97A39FDE27649F0C007CB482 /* UIView+RecurciveSearch.swift in Sources */,
 				970A0F332814826F0071FCD9 /* CompressingInfoViewController.swift in Sources */,
 				97DDCAB0280822760093D5F5 /* CompressionResolution.swift in Sources */,
-				972C805F28717AD300691271 /* TOSegmentedControlSegment.m in Sources */,
 				97420BEE283EAB4E00B0E134 /* NotificationsPermissions.swift in Sources */,
 				972C806428719D6500691271 /* SubscriptionSegmentControll.swift in Sources */,
 				97B01A752746ED5D00DDE03C /* UIFont+Italic.swift in Sources */,
@@ -2975,7 +2964,6 @@
 				04CFFFEF268479CE000CA850 /* CircleProgressView.swift in Sources */,
 				4F56074627205AF300CA19E9 /* BlueIndicatorStyle.swift in Sources */,
 				970D778B275B9B850048F41D /* ProgressSearchNotificationManager.swift in Sources */,
-				972C806028717AD300691271 /* TOSegmentedControl.m in Sources */,
 				976D8E4128046E9B005004F4 /* VideoCompressionManager.swift in Sources */,
 				97D2BEC8275A2AA2002082EB /* OperationServiceQueue.swift in Sources */,
 				97931855282074C300769BEB /* ContentBannerTableViewCell.swift in Sources */,

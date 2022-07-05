@@ -1,5 +1,5 @@
 //
-//  OnbordingPageViewController.swift
+//  OnboardingPageViewController.swift
 //  ECleaner
 //
 //  Created by alexey sorochan on 28.06.2022.
@@ -8,12 +8,10 @@
 import UIKit
 import Lottie
 
-class OnbordingPageViewController: UIViewController {
+class OnboardingPageViewController: UIViewController {
 	
-	@IBOutlet weak var bottomButtonView: BottomButtonBarView!
 	@IBOutlet weak var animationView: AnimationView!
 	@IBOutlet weak var thumbnailView: UIImageView!
-	
 	@IBOutlet weak var titleTextLabel: UILabel!
 	@IBOutlet weak var subtitleTextLabel: UILabel!
 	@IBOutlet weak var thumbnailsCenterConstraint: NSLayoutConstraint!
@@ -31,7 +29,6 @@ class OnbordingPageViewController: UIViewController {
 		setupOnboarding()
 		setupUI()
 		updateColors()
-		setupDelegate()
 	}
 
 	override func viewWillAppear(_ animated: Bool) {
@@ -48,7 +45,7 @@ class OnbordingPageViewController: UIViewController {
 	}
 }
 
-extension OnbordingPageViewController {
+extension OnboardingPageViewController {
 	
 	private func setupOnboarding() {
 		
@@ -69,22 +66,11 @@ extension OnbordingPageViewController {
 	}
 }
 
-extension OnbordingPageViewController: BottomActionButtonDelegate {
-	
-	func didTapActionButton() {
-		delegate?.didTapActionButton(for: currentIndex + 1)
-	}
-}
-
-extension OnbordingPageViewController: Themeble {
+extension OnboardingPageViewController: Themeble {
 	
 	private func setupUI() {
 		
 		animationView.isHidden = true
-	
-		self.bottomButtonView.setButtonSideOffset(40)
-		self.bottomButtonView.setImageRight(I.systemItems.defaultItems.arrowLeft, with: CGSize(width: 24, height: 22))
-		self.bottomButtonView.title(LocalizationService.Buttons.getButtonTitle(of: .next).uppercased())
 		
 		titleTextLabel.font = FontManager.onboardingFont(of: .title)
 		subtitleTextLabel.font = FontManager.onboardingFont(of: .subtitle)
@@ -107,21 +93,9 @@ extension OnbordingPageViewController: Themeble {
 		}
 	}
 	
-	private func setupDelegate() {
-		bottomButtonView.delegate = self
-	}
-	
 	func updateColors() {
 		
 		self.view.backgroundColor = .clear
-		self.bottomButtonView.configureShadow = true
-		let colors: [UIColor] = theme.onboardingButtonColors
-		self.bottomButtonView.addButtonShadow()
-		self.bottomButtonView.addButtonGradientBackground(colors: colors)
-		bottomButtonView.buttonTintColor = theme.activeTitleTextColor
-		bottomButtonView.buttonTitleColor = theme.activeTitleTextColor
-		bottomButtonView.updateColorsSettings()
-		
 		titleTextLabel.textColor = theme.titleTextColor
 		subtitleTextLabel.textColor = theme.onboardingSubTitleTextColor
 	}

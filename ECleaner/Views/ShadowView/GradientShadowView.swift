@@ -66,7 +66,7 @@ class GradientShadowView: UIView {
 			layer.insertSublayer($0, at: 0)
 		}
 		
-		topLayer.setRoundedShadow(with: topShadowColor, size: CGSize(width: -2, height: -2), alpha: 1.0, radius: 6)
-		bottomLayer.setRoundedShadow(with: bottomShadowColor, size: CGSize(width: 2, height: 2), alpha: 1.0, radius: 6)
+		topLayer.setRoundedShadow(with: topShadowColor, size: CGSize(width: -1, height: -1), alpha: 1.0, radius: 6)
+		bottomLayer.setRoundedShadow(with: bottomShadowColor, size: CGSize(width: 1, height: 1), alpha: 1.0, radius: 6)
 	}
 }

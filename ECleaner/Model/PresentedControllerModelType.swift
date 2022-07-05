@@ -32,7 +32,7 @@ enum PresentedControllerType {
 			case .permission:
 				return C.identifiers.viewControllers.permissions
 			case .onboarding:
-				return C.identifiers.viewControllers.onbording
+				return C.identifiers.viewControllers.onboarding
 			case .subscription:
 				return C.identifiers.viewControllers.subscription
 			case .settings:
@@ -56,7 +56,7 @@ enum PresentedControllerType {
 				viewController.coordinator = coordinator
 				return viewController
 			case .onboarding:
-				let viewController = OnbordingViewController.instantiate(type: type)
+				let viewController = OnboardingViewController.instantiate(type: type)
 				viewController.coordinator = coordinator
 				return viewController
 			case .subscription:

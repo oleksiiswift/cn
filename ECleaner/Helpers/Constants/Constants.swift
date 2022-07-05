@@ -469,8 +469,8 @@ class Constants {
 			static let settings = "SettingsViewController"
 			static let customCompression = "VideoCompressionCustomSettingsViewController"
 			static let permissions = "PermissionsViewController"
-			static let onbording = "OnbordingViewController"
-			static let onbordingPage = "OnbordingPageViewController"
+			static let onboarding = "OnboardingViewController"
+			static let onboardingPage = "OnboardingPageViewController"
 			static let subscription = "SubscriptionViewController"
         }
         

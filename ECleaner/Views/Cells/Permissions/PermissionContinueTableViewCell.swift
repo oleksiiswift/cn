@@ -37,11 +37,10 @@ extension PermissionContinueTableViewCell: Themeble {
 		titleTextLabel.textAlignment = .natural
 		bottomButtonBarView.delegate = self
 		
-		bottomButtonBarView.title(LocalizationService.Buttons.getButtonTitle(of: .continue))
-		bottomButtonBarView.actionButton.imageSize = CGSize(width: 25, height: 25)
+		bottomButtonBarView.title(LocalizationService.Buttons.getButtonTitle(of: .continue).uppercased())
 		let image = I.getPermissionImage(for: .blank)
-		bottomButtonBarView.setImage(image)
-		
+		bottomButtonBarView.setButtonSideOffset(20)
+		bottomButtonBarView.setImageRight(image, with: CGSize(width: 25, height: 25))
 		let font = FontManager.bottomButtonFont(of: .title)
 		bottomButtonBarView.setFont(font)
 		if Screen.size == .small {
@@ -52,11 +51,15 @@ extension PermissionContinueTableViewCell: Themeble {
 	func updateColors() {
 		
 		titleTextLabel.textColor = theme.subTitleTextColor
-		bottomButtonBarView.buttonColor = theme.cellBackGroundColor
-		bottomButtonBarView.buttonTintColor = theme.secondaryTintColor
-		bottomButtonBarView.buttonTitleColor = theme.activeLinkTitleTextColor
+		
+		let colors: [UIColor] = theme.onboardingButtonColors
 		bottomButtonBarView.configureShadow = true
+		bottomButtonBarView.buttonTintColor = theme.activeTitleTextColor
+		bottomButtonBarView.buttonTitleColor = theme.activeTitleTextColor
+		bottomButtonBarView.layoutIfNeeded()
+		
 		bottomButtonBarView.addButtonShadow()
+		bottomButtonBarView.addButtonGradientBackground(colors: colors)
 		bottomButtonBarView.updateColorsSettings()
 		bottomButtonBarView.actionButton.animateShakeHello()
 	}

@@ -6,24 +6,23 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
-        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Onbording View Controller-->
+        <!--Onboarding View Controller-->
         <scene sceneID="jY6-Mp-hUv">
             <objects>
-                <pageViewController storyboardIdentifier="OnbordingViewController" autoresizesArchivedViewToFullSize="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" transitionStyle="scroll" navigationOrientation="horizontal" spineLocation="none" id="tVb-FV-P6L" customClass="OnbordingViewController" customModule="ECleaner" customModuleProvider="target" sceneMemberID="viewController">
+                <pageViewController storyboardIdentifier="OnboardingViewController" autoresizesArchivedViewToFullSize="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" transitionStyle="scroll" navigationOrientation="horizontal" spineLocation="none" id="tVb-FV-P6L" customClass="OnboardingViewController" customModule="ECleaner" customModuleProvider="target" sceneMemberID="viewController">
                     <nil key="simulatedTopBarMetrics"/>
                 </pageViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="a7f-HV-2kE" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="652" y="117"/>
         </scene>
-        <!--Onbording Page View Controller-->
+        <!--Onboarding Page View Controller-->
         <scene sceneID="cR8-8r-IcI">
             <objects>
-                <viewController storyboardIdentifier="OnbordingPageViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="SBw-vA-xTy" customClass="OnbordingPageViewController" customModule="ECleaner" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="OnboardingPageViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="SBw-vA-xTy" customClass="OnboardingPageViewController" customModule="ECleaner" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="zeM-YT-foM">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -52,9 +51,9 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qjZ-59-aur" customClass="BottomButtonBarView" customModule="ECleaner" customModuleProvider="target">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qjZ-59-aur">
                                 <rect key="frame" x="0.0" y="746" width="414" height="80"/>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="80" id="Sd1-c2-GZ3"/>
                                 </constraints>
@@ -84,7 +83,6 @@
                     </view>
                     <connections>
                         <outlet property="animationView" destination="jhT-qw-1cs" id="ZNk-Xm-bNC"/>
-                        <outlet property="bottomButtonView" destination="qjZ-59-aur" id="hJd-Dl-6Og"/>
                         <outlet property="subtitleTextLabel" destination="RKa-qs-jFw" id="FsZ-Ot-uQN"/>
                         <outlet property="thumbnailView" destination="p4r-nM-XbQ" id="ihg-3w-JlY"/>
                         <outlet property="thumbnailWidthConstraint" destination="Nhz-sf-ABH" id="nlm-GD-op9"/>
@@ -97,12 +95,12 @@
             <point key="canvasLocation" x="1337.68115942029" y="116.51785714285714"/>
         </scene>
     </scenes>
+    <designables>
+        <designable name="jhT-qw-1cs"/>
+    </designables>
     <resources>
         <namedColor name="introTextColor">
             <color red="0.11900000274181366" green="0.1080000028014183" blue="0.19799999892711639" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
         </namedColor>
-        <systemColor name="systemBackgroundColor">
-            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-        </systemColor>
     </resources>
 </document>
