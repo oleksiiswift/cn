@@ -67,7 +67,6 @@ extension SceneDelegate {
 	
 		let navController = UINavigationController()
 		coordinator = ApplicationCoordinator(navigationController: navController)
-		#warning("DEVELOP")
 		devopmentEnviroment()
 		
 		coordinator?.start()
@@ -77,7 +76,18 @@ extension SceneDelegate {
 extension SceneDelegate {
 	
 	private func devopmentEnviroment() {
-		
-		coordinator?.currentState = .onboarding
+//		coordinator?.currentState = .onboarding
+//		printAllNotifications()
 	}
 }
+
+extension SceneDelegate {
+	
+	private func printAllNotifications() {
+		
+		NotificationCenter.default.addObserver(forName: nil, object: nil, queue: nil) { notification in
+			debugPrint(notification)
+		}
+	}
+}
+

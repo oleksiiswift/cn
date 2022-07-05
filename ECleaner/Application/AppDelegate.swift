@@ -17,7 +17,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setDefaults()
 		developmentSettings()
 		setupObserver()
-		runDevelopmentElmtn()
 
         return true
     }
@@ -86,18 +85,4 @@ extension AppDelegate {
 	}
 }
 
-extension AppDelegate {
-	
-	private func printAllNotifications() {
-		
-		NotificationCenter.default.addObserver(forName: nil, object: nil, queue: nil) { notification in
-			debugPrint(notification)
-		}
-	}
-		
-	private func runDevelopmentElmtn() {
-		
-			//		printAllNotifications()
-	}
-}
 
