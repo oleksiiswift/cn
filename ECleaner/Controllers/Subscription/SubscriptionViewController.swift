@@ -185,7 +185,6 @@ extension SubscriptionViewController {
 extension SubscriptionViewController: SubscriptionSegmentControllDelegate {
 	
 	func didChange(to subscription: Subscriptions) {
-		debugPrint("set current subscription to \(subscription)")
 		self.currentSubscription = subscription
 	}
 }
@@ -243,6 +242,12 @@ extension SubscriptionViewController: Themeble {
 		subcribeContainerView.updateColorsSettings()
 		termsTitleTextLabel.textColor = theme.featureTitleTextColor
 		termsTitleTextLabel.font = FontManager.subscriptionFont(of: .helperText)
+		
+		termsOfUseButton.setTitleColor(theme.subTitleTextColor, for: .normal)
+		policyButton.setTitleColor(theme.subTitleTextColor, for: .normal)
+		
+		policyButton.underline()
+		termsOfUseButton.underline()
 		
 		self.segmentControll.configureSelectableGradient(width: 3, colors: theme.subscribeGradientColors, startPoint: .top, endPoint: .bottom, cornerRadius: 12)
 	}

@@ -127,7 +127,7 @@ extension OnboardingViewController {
 		bottomButtonView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -70).isActive = true
 		bottomButtonView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor).isActive = true
 		bottomButtonView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor).isActive = true
-		bottomButtonView.heightAnchor.constraint(equalToConstant: 80).isActive = true
+		bottomButtonView.heightAnchor.constraint(equalToConstant: 60).isActive = true
 		
 		bottomButtonView.setButtonSideOffset(40)
 		bottomButtonView.setImageRight(I.systemItems.defaultItems.arrowLeft, with: CGSize(width: 20, height: 18))

@@ -605,9 +605,9 @@ extension AppDimensions {
 		static var startingNavigationBarButtonSize: CGFloat {
 			switch screenSize {
 				case .small:
-					return 40
+					return 30
 				case .medium:
-					return 55
+					return 40
 				default:
 					return 50
 			}

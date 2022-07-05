@@ -69,17 +69,17 @@ extension FontManager {
 				case .small:
 					return .systemFont(ofSize: 10, weight: .medium)
 				case .medium:
-					return .systemFont(ofSize: 11, weight: .medium)
+					return .systemFont(ofSize: 10, weight: .medium)
 				case .plus:
 					return .systemFont(ofSize: 11, weight: .medium)
 				case .large:
-					return .systemFont(ofSize: 12, weight: .medium)
+					return .systemFont(ofSize: 11, weight: .medium)
 				case .modern:
-					return .systemFont(ofSize: 13, weight: .medium)
+					return .systemFont(ofSize: 12, weight: .medium)
 				case .max:
-					return .systemFont(ofSize: 13, weight: .medium)
+					return .systemFont(ofSize: 12, weight: .medium)
 				case .madMax:
-					return .systemFont(ofSize: 14, weight: .medium)
+					return .systemFont(ofSize: 13, weight: .medium)
 			}
 		}
 		
