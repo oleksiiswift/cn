@@ -68,7 +68,9 @@ extension PermissionsViewController {
 	private func handlePermissionChange(at cell: PermissionTableViewCell, with permission: Permission) {
 
 		switch permission.status {
-			case .authorized, .denied:
+			case .authorized:
+					return
+			case .denied:
 				AlertManager.showPermissionAlert(of: .openSettings, at: self, for: permission)
 			case .notDetermined:
 				permission.requestForPermission { granted, error in
