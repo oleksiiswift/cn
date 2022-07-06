@@ -44,25 +44,29 @@ class SubscriptionService {
 		return try await self.isProductPurchased(productId: product.id)
 	}
 	
-	private func isProductPurchased(productId: String) async throws -> Bool {
+	public func isProductPurchased(productId: String) async throws -> Bool {
 		
 		guard let transactionResult = await Transaction.latest(for: productId) else { return false }
 		
 		let transaction = try self.checkVerificationResult(transactionResult)
 		return transaction.revocationDate == nil && !transaction.isUpgraded
 	}
+	
+	
+	public func handleStatus(with product: Product) async throws -> Bool {
+		let isProductPurchased = try await self.isProductPurchsed(product)
+		return isProductPurchased
+	}
 }
 
 @available(iOS 15.0, *)
 extension SubscriptionService {
 	
-	public func purchase(product: Product, service: ProductValidator, applicationToken: UUID? = nil, finishTransaction: Bool = true) async throws -> Purchase {
+	public func purchase(product: Product, applicationToken: UUID? = nil, finishTransaction: Bool = true) async throws -> Purchase {
 		
-		let productQuaintty = Product.PurchaseOption.quantity(1)
-		let productionType =  Product.PurchaseOption.simulatesAskToBuyInSandbox(service == .sandbox)
+		let productQuainty = Product.PurchaseOption.quantity(1)
 		var options: Set<Product.PurchaseOption> = []
-		options.insert(productQuaintty)
-//		options.insert(productionType)
+		options.insert(productQuainty)
 		
 		if let applicationToken = applicationToken {
 			let productToken = Product.PurchaseOption.appAccountToken(applicationToken)
@@ -70,7 +74,7 @@ extension SubscriptionService {
 		}
 		
 		let purchaseResult = try await product.purchase(options: options)
-		
+	
 		switch purchaseResult {
 			case .success(let verification):
 				let transaction = try self.checkVerificationResult(verification)

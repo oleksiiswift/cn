@@ -191,7 +191,7 @@ extension SettingsViewController: SettingActionsDelegate {
 	}
 	
 	private func showRestorePurchaseAction() {
-		SubscriptionManager.instance.restorePurchase()
+		debugPrint("restore purchase")
 	}
 	
 	private func showSupportAction() {

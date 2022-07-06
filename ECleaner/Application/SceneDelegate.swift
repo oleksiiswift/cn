@@ -8,7 +8,6 @@
 import UIKit
 import SwiftUI
 
-
 var currentScene: UIScene?
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
@@ -78,6 +77,12 @@ extension SceneDelegate {
 	private func devopmentEnviroment() {
 		coordinator?.currentState = .permission
 //		printAllNotifications()
+		
+		Utils.delay(5) {
+			debugPrint("****")
+			debugPrint("is purchase premium -> \(SubscriptionManager.instance.purchasePremium())")
+			debugPrint("****")
+		}
 	}
 }
 
