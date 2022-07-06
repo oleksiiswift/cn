@@ -86,7 +86,17 @@ extension SubscriptionViewController: BottomActionButtonDelegate {
 	
 	func didTapActionButton() {
 		
-		subscriptionManager.purchasePremium(of: self.currentSubscription, with: .sandbox)
+		#warning("TODO: check for internet connection")
+		
+		UIPresenter.showIndicator(in: self)
+		subscriptionManager.purchasePremium(of: self.currentSubscription) { purchased in
+			UIPresenter.hideIndicator()
+			if purchased {
+				self.closeSubscriptionController()
+			} else {
+				
+			}
+		}
 	}
 }
 
@@ -120,21 +130,31 @@ extension SubscriptionViewController {
 			segmentControll.setupDefaultIndex(index: index)
 		}
 	}
-}
-
-extension SubscriptionViewController: PremiumNavigationBarDelegate {
 	
-	func didTapLeftBarButton(_sender: UIButton) {
-		debugPrint("restore")
-	}
-	
-	func didTapRightBarButton(_sender: UIButton) {
+	private func closeSubscriptionController() {
 		if coordinator?.currentState == .onboarding {
 			coordinator?.currentState = .application
 			UIPresenter.closePresentedWindow()
 		} else {
 			UIPresenter.closePresentedWindow()
 		}
+	}
+}
+
+extension SubscriptionViewController: PremiumNavigationBarDelegate {
+	
+	func didTapLeftBarButton(_sender: UIButton) {
+		
+		#warning("TODO: check internet connection")
+		UIPresenter.showIndicator(in: self)
+		subscriptionManager.restorePurchase { restored in
+			
+			UIPresenter.hideIndicator()
+		}
+	}
+	
+	func didTapRightBarButton(_sender: UIButton) {
+		self.closeSubscriptionController()
 	}
 }
 

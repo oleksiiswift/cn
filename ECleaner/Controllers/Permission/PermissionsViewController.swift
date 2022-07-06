@@ -116,11 +116,15 @@ extension PermissionsViewController {
 	
 	private func permissionWillPass() {
 		
-		if SubscriptionManager.instance.purchasePremium() {
-			self.coordinator?.routingWillPass()
-		} else {
-			self.coordinator?.currentState = .subscription
-			self.coordinator?.showSubscriptionViewController()
+		SubscriptionManager.instance.checkForCurrentSubscription { isSubscribe in
+			DispatchQueue.main.async {
+				if isSubscribe {
+					self.coordinator?.routingWillPass()
+				} else {
+					self.coordinator?.currentState = .subscription
+					self.coordinator?.showSubscriptionViewController()
+				}
+			}
 		}
 	}
 	
