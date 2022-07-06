@@ -51,6 +51,8 @@ class MainViewController: UIViewController {
         setupCollectionView()
         setupCircleProgressView()
         updateColors()
+		subscriptionDidChange()
+		addSubscriptionChangeObserver()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -503,6 +505,20 @@ extension MainViewController: BottomActionButtonDelegate, StartingNavigationBarD
     }
 }
 
+extension MainViewController: SubscriptionObserver {
+	
+	func subscriptionDidChange() {
+		
+		Utils.UI {
+			if SubscriptionManager.instance.purchasePremiumHandler() {
+				self.navigationBar.setUpNavigation(title: nil, leftImage: nil, rightImage: I.systemItems.navigationBarItems.settings)
+			} else {
+				self.navigationBar.setUpNavigation(title: nil, leftImage: I.systemItems.navigationBarItems.premium, rightImage: I.systemItems.navigationBarItems.settings)
+			}
+		}
+	}
+}
+
 extension MainViewController: UpdateColorsDelegate {
     
     private func setupObserversAndDelegates() {
@@ -544,7 +560,6 @@ extension MainViewController: UpdateColorsDelegate {
     private func setupNavigation() {
             
         self.navigationController?.navigationBar.isHidden = true
-        navigationBar.setUpNavigation(title: nil, leftImage: I.systemItems.navigationBarItems.premium, rightImage: I.systemItems.navigationBarItems.settings)
     }
     
     private func setupUI() {

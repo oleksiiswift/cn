@@ -117,6 +117,7 @@ extension PermissionsViewController {
 	private func permissionWillPass() {
 		
 		SubscriptionManager.instance.checkForCurrentSubscription { isSubscribe in
+						
 			DispatchQueue.main.async {
 				if isSubscribe {
 					self.coordinator?.routingWillPass()
