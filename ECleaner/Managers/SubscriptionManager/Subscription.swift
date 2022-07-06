@@ -73,7 +73,9 @@ class Subscription {
 					finishTransaction ? await transaction.finish() : ()
 					await updateBlock?(transaction)
 				} catch {
-					ErrorHandler.shared.showSubsritionAlertError(for: .verificationError)
+					if let topController = getTheMostTopController() {
+						ErrorHandler.shared.showSubsritionAlertError(for: .verificationError, at: topController)
+					}
 				}
 			}
 		}

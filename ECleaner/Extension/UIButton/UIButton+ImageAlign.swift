@@ -77,7 +77,7 @@ extension UIButton {
     
 	private func addImage(image: UIImage, imageWidth: CGFloat, imageHeight: CGFloat, spacing: CGFloat, isLeft: Bool, tintColor: UIColor? = nil) {
         
-		let imageViewTag = 331122
+		let imageViewTag = 66613
 		removePreviousImageView(with: imageViewTag)
 		
         let imageView = UIImageView(image: image)

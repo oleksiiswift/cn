@@ -75,12 +75,12 @@ extension SceneDelegate {
 extension SceneDelegate {
 	
 	private func devopmentEnviroment() {
-		coordinator?.currentState = .permission
+		coordinator?.currentState = .onboarding
 //		printAllNotifications()
 		
 		Utils.delay(5) {
 			debugPrint("****")
-			debugPrint("is purchase premium -> \(SubscriptionManager.instance.purchasePremium())")
+			debugPrint("is purchase premium -> \(SubscriptionManager.instance.purchasePremiumHandler())")
 			debugPrint("****")
 		}
 	}

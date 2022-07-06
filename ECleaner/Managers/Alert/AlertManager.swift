@@ -172,3 +172,18 @@ extension AlertManager {
 	}
 }
 
+
+extension AlertManager {
+	
+	public static func showPurchaseAlert(of errorType: ErrorHandler.SubscriptionError, at viewController: UIViewController) {
+		
+		let alertDescription = errorType.alertDescription
+		let confirmAction = UIAlertAction(title: alertDescription.action, style: .default) { _ in }
+		
+		let alertController = UIAlertController(title: alertDescription.title, message: alertDescription.description, preferredStyle: .alert)
+		alertController.addAction(confirmAction)
+		DispatchQueue.main.async {
+			viewController.present(alertController, animated: true)
+		}
+	}
+}

@@ -344,7 +344,7 @@ extension InAppSubscription {
 	func lifeCicleIAPExpireChecker() {
 		
 		if let date = SettingsManager.inAppPurchase.expireDateSubscription, date.timeIntervalSince1970 < Date.getCurrentDate() {
-			if SubscriptionManager.instance.purchasePremium() {
+			if SubscriptionManager.instance.purchasePremiumHandler() {
 				self.checkSubscriptionAvailability { (isSubscriptionAvail) in
 					if !isSubscriptionAvail {
 						debugPrint("subsctiption expired")
