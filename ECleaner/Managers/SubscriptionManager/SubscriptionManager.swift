@@ -113,12 +113,16 @@ extension SubscriptionManager {
 //	MARK: restore purchase
 extension SubscriptionManager {
 
-	public func restorePurchase(completionHandler: @escaping (_ restored: Bool) -> Void) {
+	public func restorePurchase(completionHandler: @escaping (_ restored: Bool,_ requested: Bool) -> Void) {
 		if #available(iOS 15.0, *) {
 			Task {
-				let _ = try await subscription.restorePurchase()
-				let purchasePremium = try await subscription.purchaseProductsStatus()
-				completionHandler(purchasePremium)
+				let requested = try await subscription.restorePurchase()
+				if requested {
+					let purchasePremium = try await subscription.purchaseProductsStatus()
+					completionHandler(purchasePremium, requested)
+				} else {
+					completionHandler(false, requested)
+				}
 			}
 		} else {
 			self.iapSubscription.restoreSubscription { restored in

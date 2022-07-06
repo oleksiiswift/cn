@@ -75,7 +75,7 @@ extension SceneDelegate {
 extension SceneDelegate {
 	
 	private func devopmentEnviroment() {
-		coordinator?.currentState = .permission
+		coordinator?.currentState = .onboarding
 //		printAllNotifications()
 		
 		Utils.delay(5) {

@@ -85,8 +85,15 @@ class SubscriptionViewController: UIViewController, Storyboarded {
 extension SubscriptionViewController: BottomActionButtonDelegate {
 	
 	func didTapActionButton() {
-		
-		#warning("TODO: check for internet connection")
+		self.didTapPurchasePremium()
+	}
+}
+
+extension SubscriptionViewController {
+	
+	private func didTapPurchasePremium() {
+	
+	#warning("TODO: check for internet connection")
 		
 		UIPresenter.showIndicator(in: self)
 		subscriptionManager.purchasePremium(of: self.currentSubscription) { purchased in
@@ -98,9 +105,27 @@ extension SubscriptionViewController: BottomActionButtonDelegate {
 			}
 		}
 	}
-}
-
-extension SubscriptionViewController {
+	
+	private func didTapRestorePurchase() {
+		
+		#warning("TODO: check internet connection")
+		
+		UIPresenter.showIndicator(in: self)
+		self.setLeftButtonAnimateButton(status: .start)
+		subscriptionManager.restorePurchase { restored, requested in
+			
+			UIPresenter.hideIndicator()
+			self.setLeftButtonAnimateButton(status: .stop)
+			
+			guard requested else { return }
+			
+			if !restored {
+				ErrorHandler.shared.showSubsritionAlertError(for: .restoreError, at: self)
+			} else {
+				self.closeSubscriptionController()
+			}
+		}
+	}
 	
 	private func loadProducts() {
 		
@@ -144,18 +169,7 @@ extension SubscriptionViewController {
 extension SubscriptionViewController: PremiumNavigationBarDelegate {
 	
 	func didTapLeftBarButton(_sender: UIButton) {
-		
-		#warning("TODO: check internet connection")
-		
-		UIPresenter.showIndicator(in: self)
-		subscriptionManager.restorePurchase { restored in
-			UIPresenter.hideIndicator()
-			if !restored {
-				ErrorHandler.shared.showSubsritionAlertError(for: .restoreError, at: self)
-			} else {
-				self.closeSubscriptionController()
-			}
-		}
+		self.didTapRestorePurchase()
 	}
 	
 	func didTapRightBarButton(_sender: UIButton) {
@@ -195,6 +209,10 @@ extension SubscriptionViewController {
 			bottomTitleTextLabel.contentInsets = UIEdgeInsets(top: 0, left: 30, bottom: 0, right: 0)
 			bottomTitleTextLabel.addGradientText(string: bottomTitle, with: secondColor, font: FontManager.subscriptionFont(of: .title))
 		}
+	}
+	
+	private func setLeftButtonAnimateButton(status: AnimationStatus) {
+		navigationBar.setLeftButton(animation: status)
 	}
 	
 	private func setupPremiumFeautiresViewModel() {
