@@ -80,7 +80,7 @@ extension SceneDelegate {
 		
 		Utils.delay(5) {
 			debugPrint("****")
-			debugPrint("is purchase premium -> \(SubscriptionManager.instance.purchasePremium())")
+			debugPrint("is purchase premium -> \(SubscriptionManager.instance.purchasePremiumHandler())")
 			debugPrint("****")
 		}
 	}

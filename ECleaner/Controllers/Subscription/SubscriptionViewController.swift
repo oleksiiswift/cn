@@ -146,10 +146,15 @@ extension SubscriptionViewController: PremiumNavigationBarDelegate {
 	func didTapLeftBarButton(_sender: UIButton) {
 		
 		#warning("TODO: check internet connection")
+		
 		UIPresenter.showIndicator(in: self)
 		subscriptionManager.restorePurchase { restored in
-			
 			UIPresenter.hideIndicator()
+			if !restored {
+				ErrorHandler.shared.showSubsritionAlertError(for: .restoreError, at: self)
+			} else {
+				self.closeSubscriptionController()
+			}
 		}
 	}
 	

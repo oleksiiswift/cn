@@ -51,9 +51,32 @@ class SubscriptionManager: NSObject {
 		self.purchasedPremium = purchased
 	}
 	
-	public func purchasePremium() -> Bool {
+	public func purchasePremiumHandler() -> Bool {
 		return self.purchasedPremium
 	}
+}
+
+//	MARK: purchase prmium check
+extension SubscriptionManager {
+	public func checkForCurrentSubscription(completionHandler: @escaping (_ isSubscribe: Bool) -> Void) {
+		if #available(iOS 15.0, *) {
+			Task {
+				do {
+					let isPurchasedPremium = try await subscription.purchaseProductsStatus()
+					completionHandler(isPurchasedPremium)
+				} catch {
+					completionHandler(false)
+				}
+			}
+		} else {
+			#warning("TODO")
+			debugPrint("for lower ios version")
+		}
+	}
+}
+
+//	MARK: pruchase premium {
+extension SubscriptionManager {
 	
 	public func purchasePremium(of type: Subscriptions, completionHadnler: @escaping (_ purchased: Bool) -> Void) {
 		if #available(iOS 15.0, *) {
@@ -74,7 +97,8 @@ class SubscriptionManager: NSObject {
 					}
 				} else {
 					completionHadnler(false)
-					ErrorHandler.shared.showSubsritionAlertError(for: .productsError)
+					#warning("TODO ALERt")
+//					ErrorHandler.shared.showSubsritionAlertError(for: .productsError)
 				}
 			}
 		} else {
@@ -84,37 +108,30 @@ class SubscriptionManager: NSObject {
 			}
 		}
 	}
-	
+}
+
+//	MARK: restore purchase
+extension SubscriptionManager {
+
 	public func restorePurchase(completionHandler: @escaping (_ restored: Bool) -> Void) {
 		if #available(iOS 15.0, *) {
 			Task {
 				let _ = try await subscription.restorePurchase()
-				
+				let purchasePremium = try await subscription.purchaseProductsStatus()
+				completionHandler(purchasePremium)
 			}
 		} else {
 			self.iapSubscription.restoreSubscription { restored in
+				#warning("TODO!!!")
 				debugPrint(restored)
 			}
 		}
 	}
 	
-	public func checkForCurrentSubscription(completionHandler: @escaping (_ isSubscribe: Bool) -> Void) {
-		if #available(iOS 15.0, *) {
-			Task {
-				do {
-					let isPurchasedPremium = try await subscription.purchaseProductsStatus()
-					completionHandler(isPurchasedPremium)
-				} catch {
-					completionHandler(false)
-				}
-			}
-		} else {
-			#warning("TODO")
-			debugPrint("for lower ios version")
-		}
-	}
 }
 
+
+//		MARK: product model helper
 extension SubscriptionManager {
 	
 	public func descriptionModel() -> [ProductStoreDesriptionModel] {
