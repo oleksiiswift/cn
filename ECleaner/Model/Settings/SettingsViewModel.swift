@@ -39,4 +39,14 @@ class SettingsViewModel {
 	public func getHeightForRow(at indexPath: IndexPath) -> CGFloat {
 		return self.sections[indexPath.section].cells[indexPath.row].heightForRow
 	}
+	
+	public func getCurrentSubscription(completionHandler: @escaping (_ model: CurrentSubscriptionModel) -> Void) {
+		
+		SubscriptionManager.instance.getCurrentSubscriptionModel { subsctiptionModel in
+			if let model = subsctiptionModel {
+				completionHandler(model)
+			}
+		}
+	}
 }
+

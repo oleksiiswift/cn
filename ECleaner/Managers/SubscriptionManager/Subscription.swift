@@ -90,6 +90,34 @@ class Subscription {
 		return try await self.service.getCurrentSubsctiption(renewable: renewable).map({$0.productID})
 	}
 	
+	public func getCurrentSubscriptionModel() async throws -> CurrentSubscriptionModel? {
+		
+		var name: String = SettingsManager.subscripton.currentSubscriptionName
+		var date: String = SettingsManager.subscripton.currentExprireSubscriptionDate
+	
+		do {
+			let productID = try await self.getCurrentSubscription()
+			let subscription = Subscriptions.allCases.first(where: {$0.rawValue == productID.first})
+			
+			if let currentSubscription = subscription, let productDescription = self.getProductDesctiption(for: currentSubscription) {
+				SettingsManager.subscripton.currentSubscriptionName = productDescription.productName
+				name = productDescription.productName
+			}
+			
+			let currentTransaction = try await self.service.getCurrentSubsctiption()
+			
+			if let expireDate = currentTransaction.first?.expirationDate {
+				let stringdate = Utils.getString(from: expireDate, format: Constants.dateFormat.expiredDateFormat)
+				SettingsManager.subscripton.currentExprireSubscriptionDate = stringdate
+				date = stringdate
+			}
+			return CurrentSubscriptionModel(expireDate: date, name: name)
+		} catch {
+			debugPrint(error)
+		}
+		return CurrentSubscriptionModel(expireDate: date, name: name)
+	}
+	
 	public func purchaseProductsStatus() async throws -> Bool {
 		
 		do {

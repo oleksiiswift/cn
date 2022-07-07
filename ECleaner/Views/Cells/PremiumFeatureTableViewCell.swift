@@ -13,7 +13,7 @@ class PremiumFeatureTableViewCell: UITableViewCell {
 	@IBOutlet weak var thumbnailView: GradientShadowView!
 	
 	@IBOutlet var thumbnailViewLeadingConstraint: NSLayoutConstraint!
-	@IBOutlet var thumnailViewHeightConstraint: NSLayoutConstraint!
+	@IBOutlet var thumbnailViewHeightConstraint: NSLayoutConstraint!
 	
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -37,7 +37,7 @@ extension PremiumFeatureTableViewCell: Themeble {
 		self.selectionStyle = .none
 		
 		thumbnailViewLeadingConstraint.constant = AppDimensions.Subscription.Features.leadingInset
-		thumnailViewHeightConstraint.constant = AppDimensions.Subscription.Features.thumbnailSize
+		thumbnailViewHeightConstraint.constant = AppDimensions.Subscription.Features.thumbnailSize
 		titleTextLabel.font = FontManager.subscriptionFont(of: .premiumFeature)
 	}
 	

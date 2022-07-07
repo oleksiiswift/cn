@@ -26,12 +26,30 @@ extension SettingsDataSource {
 		let settingsModel = settingsViewModel.getSettingsModel(at: indexPath)
 		cell.settingsCellConfigure(with: settingsModel)
 	}
+
+	private func featuresCellConfigure(cell: PremiumFeaturesSubscriptionTableViewCell) {
+		let features = PremiumFeature.allCases
+		cell.configure(with: features)
+	}
 	
-	private func bannerCellConfigure(cell: HelperBannerTableViewCell, at indexPath: IndexPath) {
-		let settingsModel = settingsViewModel.getSettingsModel(at: indexPath)
-		cell.cellConfigure(with: settingsModel)
+	private func subscriptionCellConfiguration(cell: CurrentSubscriptionTableViewCell) {
+		cell.delegate = self
+		settingsViewModel.getCurrentSubscription { model in
+			Utils.UI {
+				cell.configure(model: model)				
+			}
+		}
 	}
 }
+
+extension SettingsDataSource: CurrentSubscriptionChangeDelegate {
+	
+	func didTapChangeSubscription() {
+		didSelectedSettings(.premium)
+	}
+}
+
+
 
 extension SettingsDataSource: UITableViewDelegate, UITableViewDataSource {
 	
@@ -46,9 +64,15 @@ extension SettingsDataSource: UITableViewDelegate, UITableViewDataSource {
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		switch indexPath.section {
 			case 0:
-				let cell = tableView.dequeueReusableCell(withIdentifier: C.identifiers.cells.helperBannerCell, for: indexPath) as! HelperBannerTableViewCell
-				self.bannerCellConfigure(cell: cell, at: indexPath)
-				return cell
+				if SubscriptionManager.instance.purchasePremiumHandler() {
+					let cell = tableView.dequeueReusableCell(withIdentifier: C.identifiers.cells.currentSubscription, for: indexPath) as! CurrentSubscriptionTableViewCell
+					self.subscriptionCellConfiguration(cell: cell)
+					return cell
+				} else {
+					let cell = tableView.dequeueReusableCell(withIdentifier: C.identifiers.cells.premiumFeaturesSubcription, for: indexPath) as! PremiumFeaturesSubscriptionTableViewCell
+					self.featuresCellConfigure(cell: cell)
+					return cell
+				}
 			default:
 				let cell = tableView.dequeueReusableCell(withIdentifier: C.identifiers.cells.contentTypeCell, for: indexPath) as! ContentTypeTableViewCell
 				self.cellConfigure(cell: cell, at: indexPath)

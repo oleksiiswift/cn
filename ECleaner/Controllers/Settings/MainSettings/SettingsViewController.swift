@@ -14,6 +14,7 @@ class SettingsViewController: UIViewController, Storyboarded {
 	@IBOutlet weak var tableView: UITableView!
 	
 	weak var coordinator: ApplicationCoordinator?
+	private var subscriptionManager = SubscriptionManager.instance
 	
 	private var settingsViewModel: SettingsViewModel!
 	private var settingsDataSource: SettingsDataSource!
@@ -26,6 +27,7 @@ class SettingsViewController: UIViewController, Storyboarded {
 		setupTableView()
 		setupDelegate()
 		updateColors()
+		addSubscriptionChangeObserver()
     }
 		
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -38,31 +40,57 @@ class SettingsViewController: UIViewController, Storyboarded {
 	}
 }
 
+extension SettingsViewController: SubscriptionObserver {
+	
+	func subscriptionDidChange() {
+	
+		self.setupViewModel()
+		self.tableView.reloadRowWithoutAnimation()
+		
+	}
+}
+
 extension SettingsViewController {
 	
 	private func setupViewModel() {
 		
-		let firstSectionCells =  SettingsSection(cells: [.premium])
-		let secondSectionCells = SettingsSection(cells: [.restore], headetHeight: 40)
+		let premiumSectionCell = SettingsSection(cells: [.premium])
+		let restoreSectionCell = SettingsSection(cells: [.restore], headetHeight: 40)
 		
-		let thirdSectionsCells = SettingsSection(cells: [.largeVideos,
-														 .dataStorage,
+		
+		let permissionSectionCell = SettingsSection(cells: [.largeVideos,
 														 .permissions],
 												 headerTitle: "settings optional first sections title",
 												 headetHeight: 40)
 		
-		let fouthSectionsCells = SettingsSection(cells: [.support,
+		let supportSectionCells = SettingsSection(cells: [.support,
 														 .share,
 														 .rate,
 														 .privacypolicy,
 														 .termsOfUse],
 												 headerTitle: "settings optional second section title",
 												 headetHeight: 40)
+	
 		
-		let sections: [SettingsSection] = [firstSectionCells, secondSectionCells, thirdSectionsCells, fouthSectionsCells]
+		var sections: [SettingsSection] {
+			if self.subscriptionManager.purchasePremiumHandler() {
+				return [premiumSectionCell, permissionSectionCell, supportSectionCells]
+			} else {
+				return [premiumSectionCell, restoreSectionCell, permissionSectionCell, supportSectionCells]
+			}
+		}
 		
 		self.settingsViewModel = SettingsViewModel(sections: sections)
 		self.settingsDataSource = SettingsDataSource(settingsViewModel: self.settingsViewModel)
+		
+		self.settingsDataSource.didSelectedSettings = { settingModel in
+			
+			if settingModel == .premium {
+				if self.subscriptionManager.purchasePremiumHandler() {
+					self.changeCurrentSubscription()
+				}
+			}
+		}
 	}
 }
 
@@ -80,8 +108,9 @@ extension SettingsViewController {
 	
 	private func setupTableView() {
 		
-		self.tableView.register(UINib(nibName: C.identifiers.xibs.bannerCell, bundle: nil), forCellReuseIdentifier: C.identifiers.cells.helperBannerCell)
 		self.tableView.register(UINib(nibName: C.identifiers.xibs.contentTypeCell, bundle: nil), forCellReuseIdentifier: C.identifiers.cells.contentTypeCell)
+		self.tableView.register(UINib(nibName: C.identifiers.xibs.currentSubscription, bundle: nil), forCellReuseIdentifier: C.identifiers.cells.currentSubscription)
+		self.tableView.register(UINib(nibName: C.identifiers.xibs.premiumFeaturesSubcription, bundle: nil), forCellReuseIdentifier: C.identifiers.cells.premiumFeaturesSubcription)
 		
 		self.tableView.delegate = settingsDataSource
 		self.tableView.dataSource = settingsDataSource
@@ -143,13 +172,12 @@ extension SettingsViewController {
 	}
 }
 
-
 extension SettingsViewController: SettingActionsDelegate {
 	
 	public func setAction(at cell: SettingsModel) {
 		switch cell {
 			case .premium:
-				self.showPremiumController()
+				subscriptionManager.purchasePremiumHandler() ? self.changeCurrentSubscription() : self.showPremiumController()
 			case .largeVideos:
 				self.showLargeVideoSettings()
 			case .dataStorage:
@@ -173,8 +201,13 @@ extension SettingsViewController: SettingActionsDelegate {
 		}
 	}
 	
+	private func changeCurrentSubscription() {
+		debugPrint("change current subscription")
+		self.subscriptionManager.changeCurrentSubscription()
+	}
+	
 	private func showPremiumController() {
-		debugPrint("showPremiumController")
+		self.coordinator?.showSubscriptionViewController()
 	}
 	
 	private func showLargeVideoSettings() {

@@ -58,6 +58,7 @@ class SubscriptionManager: NSObject {
 
 //	MARK: purchase prmium check
 extension SubscriptionManager {
+	
 	public func checkForCurrentSubscription(completionHandler: @escaping (_ isSubscribe: Bool) -> Void) {
 		if #available(iOS 15.0, *) {
 			Task {
@@ -71,6 +72,22 @@ extension SubscriptionManager {
 		} else {
 			#warning("TODO")
 			debugPrint("for lower ios version")
+		}
+	}
+	
+	public func getCurrentSubscriptionModel(completionHandler: @escaping (_ subsctiptionModel: CurrentSubscriptionModel?) -> Void) {
+		
+		if #available(iOS 15.0, *) {
+			Task {
+				do {
+					let model = try await subscription.getCurrentSubscriptionModel()
+					completionHandler(model)
+				} catch {
+					debugPrint("catch error for current")
+				}
+			}
+		} else {
+			#warning("TODO")
 		}
 	}
 }
@@ -131,7 +148,24 @@ extension SubscriptionManager {
 			}
 		}
 	}
+}
+
+extension SubscriptionManager {
 	
+	public func changeCurrentSubscription() {
+		
+		if #available(iOS 15.0, *) {
+			Task {
+				do {
+					if let scene = currentScene as? UIWindowScene {
+						try await Subscription.manageSubscription(in: scene)
+					}
+				} catch {
+					debugPrint(error)
+				}
+			}
+		}
+	}
 }
 
 

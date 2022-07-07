@@ -764,6 +764,51 @@ extension Theme {
 
 extension Theme {
 	
+	var premiumCrownGradientColor: [UIColor] {
+		let startColor = UIColor().colorFromHexString("FF7890")
+		let endColor = UIColor ().colorFromHexString("FF822F")
+		return [startColor, endColor]
+	}
+	
+	var bunneTitleGradienColors: [UIColor] {
+		switch self {
+			case .light:
+				let startColor = UIColor().colorFromHexString("69C5FF")
+				let endColor = UIColor ().colorFromHexString("5CA4FF")
+				return [startColor, endColor]
+			case .dark:
+				let startColor = UIColor().colorFromHexString("69C5FF")
+				let endColor = UIColor ().colorFromHexString("5CA4FF")
+				return [startColor, endColor]
+		}
+	}
+	
+	var changeSubscriptionbuttonGradientColors: [UIColor] {
+		switch self {
+			case .light:
+				let startColor = UIColor().colorFromHexString("16C08A")
+				let endColor = UIColor ().colorFromHexString("1BC0AE")
+				return [startColor, endColor]
+			case .dark:
+				let startColor = UIColor().colorFromHexString("16C08A")
+				let endColor = UIColor ().colorFromHexString("1BC0AE")
+				return [startColor, endColor]
+		}
+	}
+	
+	
+	var premiumSubtitleTextColor: UIColor {
+		switch self {
+			case .light:
+				return UIColor().colorFromHexString("5A688C")
+			case .dark:
+				return UIColor().colorFromHexString("5A688C")
+		}
+	}
+}
+
+extension Theme {
+	
 	public func getColorsGradient(for settings: SettingsModel) -> [UIColor] {
 		switch settings {
 			case .premium:

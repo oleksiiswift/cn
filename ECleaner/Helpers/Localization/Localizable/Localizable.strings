@@ -110,6 +110,7 @@
 "Next" = "Next";
 "Restore" = "Restore";
 "Activate" = "Activate";
+"Change Plan" = "Change Plan";
 
 	//		MARK: - settings -
 	// MARK: title
@@ -382,3 +383,6 @@
 "per week" = "per week";
 "per month" = "per month";
 "per year" = "per year";
+// MARK: Premium
+"Subscription Expire on:" = "Subscription Expire on:";
+"Already Premium" = "Already Premium";

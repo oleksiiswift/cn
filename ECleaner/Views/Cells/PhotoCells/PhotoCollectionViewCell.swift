@@ -42,7 +42,7 @@ class PhotoCollectionViewCell: UICollectionViewCell {
 	@IBOutlet weak var reuseBottomConstraint: NSLayoutConstraint!
 	@IBOutlet weak var videoDurationViewWidthConstraint: NSLayoutConstraint!
 
-	@IBOutlet var thumnailViewOffsetConstraint: [NSLayoutConstraint]!
+	@IBOutlet var thumbnailViewOffsetConstraint: [NSLayoutConstraint]!
 	
 	private var selectButtonSize = AppDimensions.CollectionItemSize.cellSelectRectangleSize
 	public var collectionType: CollectionType = .none
@@ -171,7 +171,7 @@ extension PhotoCollectionViewCell: Themeble {
 	
 	private func setThumnailViewOffcet(_ offset: CGFloat) {
 		
-		self.thumnailViewOffsetConstraint.forEach {
+		self.thumbnailViewOffsetConstraint.forEach {
 			$0.constant = offset
 		}
 	}

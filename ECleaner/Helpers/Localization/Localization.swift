@@ -153,6 +153,7 @@ struct Localization {
 			static var next = "Next".localized()
 			static var restore = "Restore".localized()
 			static var activate = "Activate".localized()
+			static var changePlan = "Change Plan".localized()
 		}
 	}
 	
@@ -509,6 +510,11 @@ struct Localization {
 		struct Helper {
 			static var termsOfUse = "Terms of Use".localized()
 			static var privicy = "Privacy Policy".localized()
+		}
+		
+		struct Premium {
+			static var expireSubscription = "Subscription Expire on:".localized()
+			static var alreadyPremium = "Already Premium".localized()
 		}
 	}
 }
