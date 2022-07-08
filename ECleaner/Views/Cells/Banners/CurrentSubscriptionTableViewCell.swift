@@ -54,7 +54,7 @@ extension CurrentSubscriptionTableViewCell: Themeble {
 		
 		thumbnailView.layoutIfNeeded()
 		thumbnailView.setImageWithCustomBackground(image: Images.subsctiption.crown!,
-												   tineColor: .white,
+												   tintColor: .white,
 												   size: CGSize(width: thumbnailView.frame.height / 2,
 																height: thumbnailView.frame.height / 2),
 												   colors: theme.premiumCrownGradientColor)

@@ -28,8 +28,7 @@ extension SettingsDataSource {
 	}
 
 	private func featuresCellConfigure(cell: PremiumFeaturesSubscriptionTableViewCell) {
-		let features = PremiumFeature.allCases
-		cell.configure(with: features)
+		cell.featuresConfigure(leadingFeatures: [.deepClean, .multiselect], trailingFeautures: [.location, .compression])
 	}
 	
 	private func subscriptionCellConfiguration(cell: CurrentSubscriptionTableViewCell) {
@@ -48,8 +47,6 @@ extension SettingsDataSource: CurrentSubscriptionChangeDelegate {
 		didSelectedSettings(.premium)
 	}
 }
-
-
 
 extension SettingsDataSource: UITableViewDelegate, UITableViewDataSource {
 	

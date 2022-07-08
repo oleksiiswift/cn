@@ -185,11 +185,17 @@ class FontManager {
 			case .buttonDescription:
 				return SubscriptionFontSize.buttonDescription
 			case .premimBannerTitle:
-				return SubscriptionFontSize.premimBannerTitle
+				return SubscriptionFontSize.premiumBannerTitle
 			case .permiumBannerSubtitle:
 				return SubscriptionFontSize.permiumBannerSubtitle
 			case .premiumBannerDateSubtitle:
 				return SubscriptionFontSize.premiumBannerDateSubtitle
+			case .premiumFeatureBannerTitle:
+				return SubscriptionFontSize.premiumFeatureBannerTitle
+			case .premiumFeatureBannerSubtitle:
+				return SubscriptionFontSize.premiumFeatureBannerSubtitle
+			case .premiumFeatureBannerSubtitleTitle:
+				return SubscriptionFontSize.premiumFeatureBannerSubtitleTitle
 		}
 	}
 }

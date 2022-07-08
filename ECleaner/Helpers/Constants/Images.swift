@@ -156,6 +156,7 @@ struct Images {
 		
 		public static var rocket = UIImage(named: "rocket")
 		public static var crown = UIImage(named: "crown")
+		public static var rocketPocket = UIImage(named: "rocketPocket")
 		
 		public static func getFeaturesImages(for type: PremiumFeature) -> UIImage {
 			switch type {

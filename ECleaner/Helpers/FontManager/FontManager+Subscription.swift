@@ -19,6 +19,9 @@ enum SubscriptionFontType {
 	case premimBannerTitle
 	case permiumBannerSubtitle
 	case premiumBannerDateSubtitle
+	case premiumFeatureBannerTitle
+	case premiumFeatureBannerSubtitle
+	case premiumFeatureBannerSubtitleTitle
 }
 
 extension FontManager {
@@ -143,7 +146,7 @@ extension FontManager {
 			}
 		}
 		
-		static var premimBannerTitle: UIFont {
+		static var premiumBannerTitle: UIFont {
 			switch screenSize {
 				case .small:
 					return .systemFont(ofSize: 20, weight: .black)
@@ -197,6 +200,63 @@ extension FontManager {
 					return .systemFont(ofSize: 14, weight: .bold)
 				case .madMax:
 					return .systemFont(ofSize: 14, weight: .bold)
+			}
+		}
+		
+		static var premiumFeatureBannerTitle: UIFont {
+			switch screenSize {
+				case .small:
+					return .systemFont(ofSize: 14, weight: .black)
+				case .medium:
+					return .systemFont(ofSize: 16, weight: .black)
+				case .plus:
+					return .systemFont(ofSize: 18, weight: .black)
+				case .large:
+					return .systemFont(ofSize: 20, weight: .black)
+				case .modern:
+					return .systemFont(ofSize: 20, weight: .black)
+				case .max:
+					return .systemFont(ofSize: 22, weight: .black)
+				case .madMax:
+					return .systemFont(ofSize: 22, weight: .black)
+			}
+		}
+		
+		static var premiumFeatureBannerSubtitle: UIFont {
+			switch screenSize {
+				case .small:
+					return .systemFont(ofSize: 12, weight: .black)
+				case .medium:
+					return .systemFont(ofSize: 14, weight: .black)
+				case .plus:
+					return .systemFont(ofSize: 16, weight: .black)
+				case .large:
+					return .systemFont(ofSize: 18, weight: .black)
+				case .modern:
+					return .systemFont(ofSize: 18, weight: .black)
+				case .max:
+					return .systemFont(ofSize: 20, weight: .black)
+				case .madMax:
+					return .systemFont(ofSize: 20, weight: .black)
+			}
+		}
+		
+		static var premiumFeatureBannerSubtitleTitle: UIFont {
+			switch screenSize {
+				case .small:
+					return .systemFont(ofSize: 10, weight: .medium)
+				case .medium:
+					return .systemFont(ofSize: 12, weight: .medium)
+				case .plus:
+					return .systemFont(ofSize: 14, weight: .medium)
+				case .large:
+					return .systemFont(ofSize: 16, weight: .medium)
+				case .modern:
+					return .systemFont(ofSize: 16, weight: .medium)
+				case .max:
+					return .systemFont(ofSize: 18, weight: .medium)
+				case .madMax:
+					return .systemFont(ofSize: 18, weight: .medium)
 			}
 		}
 	}

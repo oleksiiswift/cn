@@ -24,16 +24,25 @@
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="BH0-aP-jSt">
                         <rect key="frame" x="20" y="20" width="451" height="172"/>
                         <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="NL5-a2-YE6">
-                                <rect key="frame" x="0.0" y="0.0" width="225.5" height="172"/>
-                            </stackView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Wda-K4-SUy">
+                                <rect key="frame" x="0.0" y="0.0" width="451" height="96"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Pik-sx-TSI">
+                                <rect key="frame" x="0.0" y="86" width="451" height="81"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstAttribute="bottom" secondItem="NL5-a2-YE6" secondAttribute="bottom" id="Feh-fE-RCz"/>
-                            <constraint firstItem="NL5-a2-YE6" firstAttribute="trailing" secondItem="BH0-aP-jSt" secondAttribute="centerX" id="GIg-xn-245"/>
-                            <constraint firstItem="NL5-a2-YE6" firstAttribute="leading" secondItem="BH0-aP-jSt" secondAttribute="leading" id="aks-4u-jl2"/>
-                            <constraint firstItem="NL5-a2-YE6" firstAttribute="top" secondItem="BH0-aP-jSt" secondAttribute="top" id="lWi-2q-auC"/>
+                            <constraint firstAttribute="trailing" secondItem="Pik-sx-TSI" secondAttribute="trailing" id="42M-Kv-JTa"/>
+                            <constraint firstItem="Pik-sx-TSI" firstAttribute="leading" secondItem="BH0-aP-jSt" secondAttribute="leading" id="Bi5-N7-laG"/>
+                            <constraint firstItem="Wda-K4-SUy" firstAttribute="leading" secondItem="BH0-aP-jSt" secondAttribute="leading" id="CJJ-Ea-ueJ"/>
+                            <constraint firstAttribute="bottom" secondItem="Pik-sx-TSI" secondAttribute="bottom" constant="5" id="PQY-VA-Z4W"/>
+                            <constraint firstItem="Wda-K4-SUy" firstAttribute="top" secondItem="BH0-aP-jSt" secondAttribute="top" id="WBi-zs-tFj"/>
+                            <constraint firstItem="Pik-sx-TSI" firstAttribute="top" secondItem="BH0-aP-jSt" secondAttribute="centerY" id="ZAO-xg-7dG"/>
+                            <constraint firstItem="Pik-sx-TSI" firstAttribute="top" secondItem="Wda-K4-SUy" secondAttribute="bottom" constant="-10" id="dvL-V8-vRs"/>
+                            <constraint firstAttribute="trailing" secondItem="Wda-K4-SUy" secondAttribute="trailing" id="hE8-OZ-zLl"/>
                         </constraints>
                     </view>
                 </subviews>
@@ -54,7 +63,8 @@
             <connections>
                 <outlet property="baseView" destination="BH0-aP-jSt" id="CSr-vE-UrW"/>
                 <outlet property="reuseShadowView" destination="ihL-sF-Rza" id="Bi9-K7-863"/>
-                <outlet property="stackView" destination="NL5-a2-YE6" id="UWM-w6-wYO"/>
+                <outlet property="stackContainerView" destination="Pik-sx-TSI" id="95p-le-xW8"/>
+                <outlet property="titleStackContainerView" destination="Wda-K4-SUy" id="dSz-bH-kW4"/>
             </connections>
             <point key="canvasLocation" x="136.95652173913044" y="189.84375"/>
         </tableViewCell>

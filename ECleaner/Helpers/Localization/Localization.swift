@@ -491,6 +491,7 @@ struct Localization {
 		
 		struct Main {
 			static var getPremium = "Get Premium".localized()
+			static var unlockFeatures = "Unlock All Features".localized()
 		}
 		
 		struct PremiumFeautures {

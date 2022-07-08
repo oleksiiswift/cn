@@ -11,7 +11,6 @@ class PremiumFeatureTableViewCell: UITableViewCell {
 	
 	@IBOutlet weak var titleTextLabel: UILabel!
 	@IBOutlet weak var thumbnailView: GradientShadowView!
-	
 	@IBOutlet var thumbnailViewLeadingConstraint: NSLayoutConstraint!
 	@IBOutlet var thumbnailViewHeightConstraint: NSLayoutConstraint!
 	
@@ -29,8 +28,7 @@ extension PremiumFeatureTableViewCell: Themeble {
 		
 		titleTextLabel.text = model.title
 		thumbnailView.layoutIfNeeded()
-		thumbnailView.setImageWithCustomBackground(image: model.thumbnail, tineColor: .white, size: CGSize(width: thumbnailView.frame.height / 2, height: thumbnailView.frame.height / 2), colors: model.thumbnailColors)
-		
+		thumbnailView.setImageWithCustomBackground(image: model.thumbnail, tintColor: .white, size: CGSize(width: thumbnailView.frame.height / 2, height: thumbnailView.frame.height / 2), colors: model.thumbnailColors)
 	}
 	
 	private func setup() {

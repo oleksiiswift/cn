@@ -207,7 +207,7 @@ extension SettingsViewController: SettingActionsDelegate {
 	}
 	
 	private func showPremiumController() {
-		self.coordinator?.showSubscriptionViewController()
+		UIPresenter.showViewController(of: .subscription)
 	}
 	
 	private func showLargeVideoSettings() {
@@ -224,7 +224,19 @@ extension SettingsViewController: SettingActionsDelegate {
 	}
 	
 	private func showRestorePurchaseAction() {
-		debugPrint("restore purchase")
+		#warning("TODO network checker")
+		
+		UIPresenter.showIndicator(in: self)
+		self.subscriptionManager.restorePurchase { restored, requested in
+			UIPresenter.hideIndicator()
+			guard requested else { return }
+			
+			if !restored {
+				ErrorHandler.shared.showSubsritionAlertError(for: .restoreError, at: self)
+			} else {
+				debugPrint("UPdate")
+			}
+		}
 	}
 	
 	private func showSupportAction() {
