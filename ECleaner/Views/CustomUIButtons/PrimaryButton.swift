@@ -39,7 +39,7 @@ class PrimaryButton: UIButton {
 }
 
 
-extension PrimaryButton {
+extension UIButton {
 	
 	public func animateProgress() {
 		

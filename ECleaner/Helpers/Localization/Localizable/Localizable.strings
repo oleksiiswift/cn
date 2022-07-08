@@ -110,6 +110,7 @@
 "Next" = "Next";
 "Restore" = "Restore";
 "Activate" = "Activate";
+"Change Plan" = "Change Plan";
 
 	//		MARK: - settings -
 	// MARK: title
@@ -372,6 +373,7 @@
 //	MARK: Subscription
 //	MARK: MAIN
 "Get Premium" = "Get Premium";
+"Unlock All Features" = "Unlock All Features";
 //	MARK: PremiumFeatures
 "Deep Clean" = "Deep Clean";
 "Multiselect Elements" = "Multiselect Elements";
@@ -382,3 +384,6 @@
 "per week" = "per week";
 "per month" = "per month";
 "per year" = "per year";
+// MARK: Premium
+"Subscription Expire on:" = "Subscription Expire on:";
+"Already Premium" = "Already Premium";

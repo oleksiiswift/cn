@@ -11,9 +11,8 @@ class PremiumFeatureTableViewCell: UITableViewCell {
 	
 	@IBOutlet weak var titleTextLabel: UILabel!
 	@IBOutlet weak var thumbnailView: GradientShadowView!
-	
 	@IBOutlet var thumbnailViewLeadingConstraint: NSLayoutConstraint!
-	@IBOutlet var thumnailViewHeightConstraint: NSLayoutConstraint!
+	@IBOutlet var thumbnailViewHeightConstraint: NSLayoutConstraint!
 	
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -29,15 +28,14 @@ extension PremiumFeatureTableViewCell: Themeble {
 		
 		titleTextLabel.text = model.title
 		thumbnailView.layoutIfNeeded()
-		thumbnailView.setImageWithCustomBackground(image: model.thumbnail, tineColor: .white, size: CGSize(width: thumbnailView.frame.height / 2, height: thumbnailView.frame.height / 2), colors: model.thumbnailColors)
-		
+		thumbnailView.setImageWithCustomBackground(image: model.thumbnail, tintColor: .white, size: CGSize(width: thumbnailView.frame.height / 2, height: thumbnailView.frame.height / 2), colors: model.thumbnailColors)
 	}
 	
 	private func setup() {
 		self.selectionStyle = .none
 		
 		thumbnailViewLeadingConstraint.constant = AppDimensions.Subscription.Features.leadingInset
-		thumnailViewHeightConstraint.constant = AppDimensions.Subscription.Features.thumbnailSize
+		thumbnailViewHeightConstraint.constant = AppDimensions.Subscription.Features.thumbnailSize
 		titleTextLabel.font = FontManager.subscriptionFont(of: .premiumFeature)
 	}
 	

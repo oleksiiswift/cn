@@ -61,6 +61,12 @@ class Constants {
 			static let expiredSubscription = "expiredSubscription"
 		}
 		
+		struct subscription {
+			static let subscriptionExpireDate = "subscriptionExpireDate"
+			static let subscriptionCurrentName = "subscriptionCurrentName"
+			 
+		}
+		
 		struct permissions {
 			static let settingsPhotoPermission = "photoPermissionValue"
 			static let settingsContactsPermission = "contactePermissionValue"
@@ -492,6 +498,8 @@ class Constants {
 			static let permissionBannerCell = "PermissionBannerTableViewCell"
 			static let permissionContinueCell = "PermissionContinueTableViewCell"
 			static let premiumFeature = "PremiumFeatureTableViewCell"
+			static let currentSubscription = "CurrentSubscriptionTableViewCell"
+			static let premiumFeaturesSubcription = "PremiumFeaturesSubscriptionTableViewCell"
         }
         
         struct views {
@@ -521,6 +529,8 @@ class Constants {
 			static let permissionBannerCell = "PermissionBannerTableViewCell"
 			static let permissionContinueCell = "PermissionContinueTableViewCell"
 			static let premiumFeature = "PremiumFeatureTableViewCell"
+			static let currentSubscription = "CurrentSubscriptionTableViewCell"
+			static let premiumFeaturesSubcription = "PremiumFeaturesSubscriptionTableViewCell"
             /// `views`
             static let groupHeader = "GroupedAssetsReusableHeaderView"
             static let groupFooter = "GroupedAssetsReusableFooterView"

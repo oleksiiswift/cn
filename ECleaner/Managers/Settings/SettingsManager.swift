@@ -39,6 +39,25 @@ class SettingsManager {
 		}
 	}
 	
+	struct subscripton {
+		static var currentSubscriptionName: String {
+			get {
+				U.userDefaults.string(forKey: C.key.subscription.subscriptionCurrentName) ?? ""
+			} set {
+				U.userDefaults.set(newValue, forKey: C.key.subscription.subscriptionCurrentName)
+			}
+		}
+		
+		static var currentExprireSubscriptionDate: String {
+			get {
+				U.userDefaults.string(forKey: C.key.subscription.subscriptionExpireDate) ?? ""
+			} set {
+				U.userDefaults.set(newValue, forKey: C.key.subscription.subscriptionExpireDate)
+			}
+		}
+	}
+	
+	
 	struct inAppPurchase {
 		
 		 static var allowAdvertisementBanner: Bool {

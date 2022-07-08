@@ -16,4 +16,12 @@ extension UITableView {
 			}
 		}
 	}
+	
+	func reloadRowWithoutAnimation() {
+		DispatchQueue.main.async {
+			UIView.performWithoutAnimation {
+				self.reloadData()
+			}
+		}
+	}
 }
