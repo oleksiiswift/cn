@@ -293,3 +293,36 @@ extension SettingsManager {
     }
 }
 
+
+extension SettingsManager {
+	
+	public var changePremiumBunner: String {
+		get {
+			if let value = U.userDefaults.string(forKey: "changePremiumBunner") {
+				return value
+			} else {
+				self.changePremiumBunner = "premiumFeaturesSubcription"
+				return self.changePremiumBunner
+			}
+		} set {
+			U.userDefaults.set(newValue, forKey: "changePremiumBunner")
+		}
+	}
+}
+
+enum PremiumAdvBunnerType {
+	case stack
+	case horizontal
+	case alreadyPremium
+	
+	var rowValue: String {
+		switch self {
+			case .stack:
+				return "premiumFeaturesSubcription"
+			case .horizontal:
+				return "featuresSubscription"
+			case .alreadyPremium:
+				return "currentSubscription"
+		}
+	}
+}

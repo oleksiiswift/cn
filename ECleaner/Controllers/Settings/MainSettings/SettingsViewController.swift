@@ -44,9 +44,12 @@ extension SettingsViewController: SubscriptionObserver {
 	
 	func subscriptionDidChange() {
 	
-		self.setupViewModel()
-		self.tableView.reloadRowWithoutAnimation()
-		
+		Utils.delay(0.3) {
+			self.setupViewModel()
+			self.tableView.delegate = self.settingsDataSource
+			self.tableView.dataSource = self.settingsDataSource
+			self.tableView.reloadDataWithoutAnimation()
+		}
 	}
 }
 
@@ -55,21 +58,21 @@ extension SettingsViewController {
 	private func setupViewModel() {
 		
 		let premiumSectionCell = SettingsSection(cells: [.premium])
-		let restoreSectionCell = SettingsSection(cells: [.restore], headetHeight: 40)
+		let restoreSectionCell = SettingsSection(cells: [.restore], headetHeight: 20)
 		
 		
 		let permissionSectionCell = SettingsSection(cells: [.largeVideos,
 														 .permissions],
-												 headerTitle: "settings optional first sections title",
-												 headetHeight: 40)
+												 headerTitle: "Settings",
+												 headetHeight: 20)
 		
 		let supportSectionCells = SettingsSection(cells: [.support,
 														 .share,
 														 .rate,
 														 .privacypolicy,
 														 .termsOfUse],
-												 headerTitle: "settings optional second section title",
-												 headetHeight: 40)
+												 headerTitle: "Support?",
+												 headetHeight: 20)
 	
 		
 		var sections: [SettingsSection] {
@@ -111,7 +114,8 @@ extension SettingsViewController {
 		self.tableView.register(UINib(nibName: C.identifiers.xibs.contentTypeCell, bundle: nil), forCellReuseIdentifier: C.identifiers.cells.contentTypeCell)
 		self.tableView.register(UINib(nibName: C.identifiers.xibs.currentSubscription, bundle: nil), forCellReuseIdentifier: C.identifiers.cells.currentSubscription)
 		self.tableView.register(UINib(nibName: C.identifiers.xibs.premiumFeaturesSubcription, bundle: nil), forCellReuseIdentifier: C.identifiers.cells.premiumFeaturesSubcription)
-		
+		self.tableView.register(UINib(nibName: C.identifiers.xibs.featuresSubscription, bundle: nil), forCellReuseIdentifier: C.identifiers.cells.featuresSubscription)
+	
 		self.tableView.delegate = settingsDataSource
 		self.tableView.dataSource = settingsDataSource
 		

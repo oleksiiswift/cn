@@ -157,6 +157,8 @@ struct Images {
 		public static var rocket = UIImage(named: "rocket")
 		public static var crown = UIImage(named: "crown")
 		public static var rocketPocket = UIImage(named: "rocketPocket")
+		public static var colorRocket = UIImage(named: "colorRocket")
+		public static var flyingRocket = UIImage(named: "rocketFlyingPocket")
 		
 		public static func getFeaturesImages(for type: PremiumFeature) -> UIImage {
 			switch type {
@@ -193,7 +195,7 @@ extension Images {
 				return UIImage(systemName: "square.and.arrow.up.on.square")!
 			case .rate:
 				if #available(iOS 15.0, *) {
-					return UIImage(systemName: "star.bubble.fill")!
+					return UIImage(systemName: "star.bubble")!
 				} else {
 					return UIImage(systemName: "star")!
 				}
@@ -210,7 +212,6 @@ extension Images {
 		}
 	}
 }
-
 
 extension Images {
 	
@@ -270,7 +271,6 @@ extension Images {
 		}
 	}
 }
-
 
 extension Images {
 	

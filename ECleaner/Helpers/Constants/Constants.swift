@@ -500,6 +500,7 @@ class Constants {
 			static let premiumFeature = "PremiumFeatureTableViewCell"
 			static let currentSubscription = "CurrentSubscriptionTableViewCell"
 			static let premiumFeaturesSubcription = "PremiumFeaturesSubscriptionTableViewCell"
+			static let featuresSubscription = "FeaturesSubscriptionTableViewCell"
         }
         
         struct views {
@@ -531,6 +532,7 @@ class Constants {
 			static let premiumFeature = "PremiumFeatureTableViewCell"
 			static let currentSubscription = "CurrentSubscriptionTableViewCell"
 			static let premiumFeaturesSubcription = "PremiumFeaturesSubscriptionTableViewCell"
+			static let featuresSubscription = "FeaturesSubscriptionTableViewCell"
             /// `views`
             static let groupHeader = "GroupedAssetsReusableHeaderView"
             static let groupFooter = "GroupedAssetsReusableFooterView"

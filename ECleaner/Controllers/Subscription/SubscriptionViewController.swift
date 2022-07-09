@@ -7,16 +7,22 @@
 
 import UIKit
 
+enum SubscriptionActionProcessingState {
+	case processing
+	case active
+}
+
 class SubscriptionViewController: UIViewController, Storyboarded {
 	
 	@IBOutlet weak var backgroundView: UIView!
 	@IBOutlet weak var backgroundImageView: UIImageView!
+	@IBOutlet weak var premiumImageView: UIImageView!
 	@IBOutlet weak var navigationBar: PremiumNavigationBar!
 	@IBOutlet weak var dimmerView: UIView!
 	@IBOutlet weak var titleContainerView: UIView!
 	@IBOutlet weak var featuresContainerView: UIView!
 	@IBOutlet weak var subscriptionItemsContainerView: UIView!
-	@IBOutlet weak var subcribeContainerView: BottomButtonBarView!
+	@IBOutlet weak var subscribeContainerView: BottomButtonBarView!
 	@IBOutlet weak var linksContainerView: UIView!
 	@IBOutlet weak var infoContainerView: UIView!
 	
@@ -95,9 +101,11 @@ extension SubscriptionViewController {
 	
 	#warning("TODO: check for internet connection")
 		
-		UIPresenter.showIndicator(in: self)
+		self.purchaseProcessingHandler(for: .processing)
+		
 		subscriptionManager.purchasePremium(of: self.currentSubscription) { purchased in
-			UIPresenter.hideIndicator()
+			
+			self.purchaseProcessingHandler(for: .active)
 			if purchased {
 				self.closeSubscriptionController()
 			} else {
@@ -110,13 +118,14 @@ extension SubscriptionViewController {
 		
 		#warning("TODO: check internet connection")
 		
-		UIPresenter.showIndicator(in: self)
 		self.setLeftButtonAnimateButton(status: .start)
+		self.restoreProcessingHandler(for: .processing)
+		
 		subscriptionManager.restorePurchase { restored, requested in
 			
-			UIPresenter.hideIndicator()
 			self.setLeftButtonAnimateButton(status: .stop)
-			
+			self.restoreProcessingHandler(for: .active)
+		
 			guard requested else { return }
 			
 			if !restored {
@@ -157,11 +166,37 @@ extension SubscriptionViewController {
 	}
 	
 	private func closeSubscriptionController() {
-		if coordinator?.currentState == .onboarding {
+		if coordinator?.currentState == .onboarding || coordinator?.currentState == .subscription {
 			coordinator?.currentState = .application
 			UIPresenter.closePresentedWindow()
 		} else {
 			UIPresenter.closePresentedWindow()
+		}
+	}
+}
+
+extension SubscriptionViewController {
+	
+	private func restoreProcessingHandler(for state: SubscriptionActionProcessingState) {
+		
+		setActionButtonProcessingFor(state: state)
+		Utils.UI {
+			self.subscribeContainerView.actionButton.isEnabled = state == .active
+		}
+	}
+	
+	private func purchaseProcessingHandler(for state: SubscriptionActionProcessingState) {
+		
+		self.subscribeContainerView.setLockButtonAnimate(state: state)
+		self.setActionButtonProcessingFor(state: state)
+	}
+	
+	private func setActionButtonProcessingFor(state: SubscriptionActionProcessingState) {
+		Utils.UI {
+			self.navigationBar.leftBarButton.isEnabled = state == .active
+			self.navigationBar.rightBarButton.isEnabled = state == .active
+			self.termsOfUseButton.isEnabled = state == .active
+			self.policyButton.isEnabled = state == .active
 		}
 	}
 }
@@ -197,7 +232,7 @@ extension SubscriptionViewController {
 		let first = titleString.first
 		let second = titleString.last
 		
-		let firstColor = [UIColor().colorFromHexString("FF685C"), UIColor().colorFromHexString("764040")]
+		let firstColor = theme.premiumCrownGradientColor
 		let secondColor = [UIColor().colorFromHexString("687EAF"), UIColor().colorFromHexString("47526B")]
 	
 		if let topTitle = first {
@@ -206,7 +241,7 @@ extension SubscriptionViewController {
 		}
 		
 		if let bottomTitle = second {
-			bottomTitleTextLabel.contentInsets = UIEdgeInsets(top: 0, left: 30, bottom: 0, right: 0)
+			bottomTitleTextLabel.contentInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0)
 			bottomTitleTextLabel.addGradientText(string: bottomTitle, with: secondColor, font: FontManager.subscriptionFont(of: .title))
 		}
 	}
@@ -255,11 +290,13 @@ extension SubscriptionViewController: Themeble {
 	
 	private func setupUI() {
 		
+		premiumImageView.image = Images.subsctiption.flyingRocket
 		backgroundImageView.image = Images.subsctiption.rocket
+		backgroundImageView.isHidden = true
 		
-		subcribeContainerView.delegate = self
-		subcribeContainerView.setButtonSideOffset(25)
-		subcribeContainerView.title(LocalizationService.Buttons.getButtonTitle(of: .activate).uppercased())
+		subscribeContainerView.delegate = self
+		subscribeContainerView.setButtonSideOffset(25)
+		subscribeContainerView.title(LocalizationService.Buttons.getButtonTitle(of: .activate).uppercased())
 		termsOfUseButton.setTitle(Localization.Subscription.Helper.termsOfUse, for: .normal)
 		termsOfUseButton.titleLabel?.font = FontManager.subscriptionFont(of: .links)
 		policyButton.setTitle(Localization.Subscription.Helper.privicy, for: .normal)
@@ -278,11 +315,11 @@ extension SubscriptionViewController: Themeble {
 		self.view.backgroundColor = .clear
 		self.backgroundView.backgroundColor = theme.backgroundColor
 		
-		subcribeContainerView.configureShadow = true
-		subcribeContainerView.addButtonShadow()
-		subcribeContainerView.addButtonGradientBackground(colors: theme.onboardingButtonColors)
-		subcribeContainerView.buttonTintColor = theme.activeTitleTextColor
-		subcribeContainerView.updateColorsSettings()
+		subscribeContainerView.configureShadow = true
+		subscribeContainerView.addButtonShadow()
+		subscribeContainerView.addButtonGradientBackground(colors: theme.onboardingButtonColors)
+		subscribeContainerView.buttonTintColor = theme.activeTitleTextColor
+		subscribeContainerView.updateColorsSettings()
 		termsTitleTextLabel.textColor = theme.featureTitleTextColor
 		termsTitleTextLabel.font = FontManager.subscriptionFont(of: .helperText)
 		

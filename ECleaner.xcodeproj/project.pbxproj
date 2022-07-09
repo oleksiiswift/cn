@@ -268,6 +268,8 @@
 		979732862846207700034E49 /* LocalizationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 979732852846207700034E49 /* LocalizationService.swift */; };
 		97973288284627FB00034E49 /* LocalizationTypeStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97973287284627FB00034E49 /* LocalizationTypeStrings.swift */; };
 		9797C2B0285CF4F4008457A5 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9797C2AF285CF4F4008457A5 /* Localizable.strings */; };
+		979A0F2E2879954C00ACC724 /* FeaturesSubscriptionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 979A0F2C2879954C00ACC724 /* FeaturesSubscriptionTableViewCell.swift */; };
+		979A0F2F2879954C00ACC724 /* FeaturesSubscriptionTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 979A0F2D2879954C00ACC724 /* FeaturesSubscriptionTableViewCell.xib */; };
 		979BDF1B280AF75E00B49ABB /* URL+FileSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 979BDF1A280AF75E00B49ABB /* URL+FileSize.swift */; };
 		97A05B742743D4B600968459 /* SearchBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A05B732743D4B600968459 /* SearchBarView.swift */; };
 		97A05B762743D4C200968459 /* SearchBarView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 97A05B752743D4C200968459 /* SearchBarView.xib */; };
@@ -663,6 +665,8 @@
 		979732852846207700034E49 /* LocalizationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizationService.swift; sourceTree = "<group>"; };
 		97973287284627FB00034E49 /* LocalizationTypeStrings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizationTypeStrings.swift; sourceTree = "<group>"; };
 		9797C2AF285CF4F4008457A5 /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
+		979A0F2C2879954C00ACC724 /* FeaturesSubscriptionTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeaturesSubscriptionTableViewCell.swift; sourceTree = "<group>"; };
+		979A0F2D2879954C00ACC724 /* FeaturesSubscriptionTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FeaturesSubscriptionTableViewCell.xib; sourceTree = "<group>"; };
 		979BDF1A280AF75E00B49ABB /* URL+FileSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL+FileSize.swift"; sourceTree = "<group>"; };
 		97A05B732743D4B600968459 /* SearchBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBarView.swift; sourceTree = "<group>"; };
 		97A05B752743D4C200968459 /* SearchBarView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SearchBarView.xib; sourceTree = "<group>"; };
@@ -1901,6 +1905,7 @@
 		976D8BB62878A36500761830 /* Subscription */ = {
 			isa = PBXGroup;
 			children = (
+				979A0F2D2879954C00ACC724 /* FeaturesSubscriptionTableViewCell.xib */,
 				9760158C286FACD7006965BB /* PremiumFeatureTableViewCell.xib */,
 				97B575CB2876C8E9000D8FE9 /* PremiumFeaturesSubscriptionTableViewCell.xib */,
 				97B575CF2876F2F2000D8FE9 /* CurrentSubscriptionTableViewCell.xib */,
@@ -2274,6 +2279,7 @@
 				97B575CE2876F2F2000D8FE9 /* CurrentSubscriptionTableViewCell.swift */,
 				97931853282074C300769BEB /* ContentBannerTableViewCell.swift */,
 				97B575CA2876C8E9000D8FE9 /* PremiumFeaturesSubscriptionTableViewCell.swift */,
+				979A0F2C2879954C00ACC724 /* FeaturesSubscriptionTableViewCell.swift */,
 				976D8BB72878A39300761830 /* PremiumFeatureView.swift */,
 			);
 			path = Banners;
@@ -2678,6 +2684,7 @@
 				044282022693034600B6B47C /* DropDownMenuTableViewCell.xib in Resources */,
 				97DC39AC273BE9D300D487BE /* GroupedContactsHeaderView.xib in Resources */,
 				04649B32268C507F00336FE4 /* GroupedAssetsReusableHeaderView.xib in Resources */,
+				979A0F2F2879954C00ACC724 /* FeaturesSubscriptionTableViewCell.xib in Resources */,
 				97420C07283EC7A500B0E134 /* PermissionContinueTableViewCell.xib in Resources */,
 				9797C2B0285CF4F4008457A5 /* Localizable.strings in Resources */,
 				04467CE2270D9B1200DBBB39 /* DatePicker.storyboard in Resources */,
@@ -3066,6 +3073,7 @@
 				97601584286F9442006965BB /* SubscriptionViewController.swift in Sources */,
 				97A39FE92764A9B8007CB482 /* DatePickerStringComponents.swift in Sources */,
 				97011E1A27ECCBED00663C8E /* GroupSelectableAssetsDelegate.swift in Sources */,
+				979A0F2E2879954C00ACC724 /* FeaturesSubscriptionTableViewCell.swift in Sources */,
 				9712C05C27B43B220013A7C9 /* ProcessingProgressOperationState.swift in Sources */,
 				97238A0B2689EDD200C523DC /* Toast.swift in Sources */,
 				04649B3A268C6FEC00336FE4 /* Array+Extension.swift in Sources */,

@@ -26,6 +26,10 @@ extension SettingsDataSource {
 		let settingsModel = settingsViewModel.getSettingsModel(at: indexPath)
 		cell.settingsCellConfigure(with: settingsModel)
 	}
+	
+	private func featuresCellConfigure(cell: FeaturesSubscriptionTableViewCell) {
+		cell.featuresConfigure(features: PremiumFeature.allCases)
+	}
 
 	private func featuresCellConfigure(cell: PremiumFeaturesSubscriptionTableViewCell) {
 		cell.featuresConfigure(leadingFeatures: [.deepClean, .multiselect], trailingFeautures: [.location, .compression])
@@ -66,9 +70,17 @@ extension SettingsDataSource: UITableViewDelegate, UITableViewDataSource {
 					self.subscriptionCellConfiguration(cell: cell)
 					return cell
 				} else {
-					let cell = tableView.dequeueReusableCell(withIdentifier: C.identifiers.cells.premiumFeaturesSubcription, for: indexPath) as! PremiumFeaturesSubscriptionTableViewCell
-					self.featuresCellConfigure(cell: cell)
-					return cell
+					if SettingsManager.sharedInstance.changePremiumBunner == PremiumAdvBunnerType.stack.rowValue {
+						SettingsManager.sharedInstance.changePremiumBunner = PremiumAdvBunnerType.horizontal.rowValue
+						let cell = tableView.dequeueReusableCell(withIdentifier: C.identifiers.cells.premiumFeaturesSubcription, for: indexPath) as! PremiumFeaturesSubscriptionTableViewCell
+						self.featuresCellConfigure(cell: cell)
+						return cell
+					} else {
+						SettingsManager.sharedInstance.changePremiumBunner = PremiumAdvBunnerType.stack.rowValue
+						let cell = tableView.dequeueReusableCell(withIdentifier: C.identifiers.cells.featuresSubscription, for: indexPath) as! FeaturesSubscriptionTableViewCell
+						self.featuresCellConfigure(cell: cell)
+						return cell
+					}
 				}
 			default:
 				let cell = tableView.dequeueReusableCell(withIdentifier: C.identifiers.cells.contentTypeCell, for: indexPath) as! ContentTypeTableViewCell

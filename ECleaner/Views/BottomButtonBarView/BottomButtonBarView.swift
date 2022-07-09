@@ -98,6 +98,25 @@ class BottomButtonBarView: UIView {
 		}
     }
 	
+	public func setLockButtonAnimate(state: SubscriptionActionProcessingState) {
+		Utils.UI {
+			switch state {
+				case .processing:
+					self.setButtonProcess(true)
+					self.actionButton.isEnabled = false
+					UIView.animate(withDuration: 0.3) {
+						self.actionButton.alpha = 0.5
+					}
+				case .active:
+					self.setButtonProcess(false)
+					self.actionButton.isEnabled = true
+					UIView.animate(withDuration: 0.3) {
+						self.actionButton.alpha = 1.0
+					}
+			}
+		}
+	}
+	
 	private func setActivityIndicator(_ isStarting: Bool) {
 		
 		if isStarting {

@@ -17,7 +17,7 @@ extension UITableView {
 		}
 	}
 	
-	func reloadRowWithoutAnimation() {
+	func reloadDataWithoutAnimation() {
 		DispatchQueue.main.async {
 			UIView.performWithoutAnimation {
 				self.reloadData()

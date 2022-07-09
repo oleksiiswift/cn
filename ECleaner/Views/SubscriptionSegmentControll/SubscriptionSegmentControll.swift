@@ -21,7 +21,7 @@ class SubscriptionSegmentControll: UIView {
 	
 	public var subscriptions: [ProductStoreDesriptionModel]!
 	
-	private var selectedView: UIView!
+	private var selectedView = UIView()
 	private var selectedViewLeadingConstraint = NSLayoutConstraint()
 	
 	private var subscriptionButtons: [SegmentSubscriptionButton]!
@@ -156,6 +156,8 @@ extension SubscriptionSegmentControll: SegmentSubscriptionButtonDelegate {
 	}
 	
 	public func configureSelectableGradient(width: CGFloat, colors: [UIColor], startPoint: CoordinateSide, endPoint: CoordinateSide, cornerRadius: CGFloat) {
+		
+		guard selectedView != nil else { return }
 		selectedView.gradientBorder(width: width, colors: colors, startPoint: .unitCoordinate(startPoint), endPoint: .unitCoordinate(endPoint), andRoundCornersWithRadius: cornerRadius)
 	}
 
