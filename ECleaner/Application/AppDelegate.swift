@@ -37,7 +37,7 @@ extension AppDelegate {
     
     private func configureApplication(with launchOptions: [UIApplication.LaunchOptionsKey: Any]?) {
         
-		SubscriptionManager.instance.initialize()
+		self.initializeSubscriptions()
 		ECFileManager().deleteAllFiles(at: AppDirectories.temp) {
 			debugPrint("deleted all files from temp")
 		}
@@ -47,6 +47,14 @@ extension AppDelegate {
 }
 
 extension AppDelegate {
+	
+	private func initializeSubscriptions() {
+		Network.start()
+		Network.theyLive { isAlive in
+			guard isAlive else { return }
+			SubscriptionManager.instance.initialize()
+		}
+	}
 
     private func setDefaults() {
 		
@@ -74,6 +82,8 @@ extension AppDelegate {
 	private func setupObserver() {
 		
 		NotificationCenter.default.addObserver(self, selector: #selector(checkPermissionStatus), name: UIApplication.didBecomeActiveNotification, object: nil)
+//		NotificationCenter.default.addObserver(self, selector: #selector(networkingStatusDidChange), name: .ReachabilityDidChange, object: nil)
+		
 	}
 	
 	@objc func checkPermissionStatus() {
@@ -83,6 +93,10 @@ extension AppDelegate {
 		SettingsManager.permissions.photoPermissionSavedValue = PhotoLibraryPermissions().authorized
 		SettingsManager.permissions.contactsPermissionSavedValue = ContactsPermissions().authorized
 	}
+	
+//	@objc func networkingStatusDidChange() {
+//		self.initializeSubscriptions()
+//	}
 }
 
 

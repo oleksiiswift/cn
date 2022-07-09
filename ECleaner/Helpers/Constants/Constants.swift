@@ -137,6 +137,7 @@ class Constants {
 			
 			static let permissionDidChange = "permissionDidChange"
 			static let forceStopProcessing = "forceStopProcessingStartHandleReciveRemoteCleanAction"
+			static let networking = "networkingStatusDidChange"
             
                 /// `deep clean update progress notification name`
             struct deepClean {

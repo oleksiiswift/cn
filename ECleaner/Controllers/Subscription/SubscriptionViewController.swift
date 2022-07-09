@@ -21,6 +21,7 @@ class SubscriptionViewController: UIViewController, Storyboarded {
 	@IBOutlet weak var dimmerView: UIView!
 	@IBOutlet weak var titleContainerView: UIView!
 	@IBOutlet weak var featuresContainerView: UIView!
+	@IBOutlet weak var networkConnectionView: UIView!
 	@IBOutlet weak var subscriptionItemsContainerView: UIView!
 	@IBOutlet weak var subscribeContainerView: BottomButtonBarView!
 	@IBOutlet weak var linksContainerView: UIView!
@@ -64,12 +65,15 @@ class SubscriptionViewController: UIViewController, Storyboarded {
 		
 		setupLayout()
 		loadProducts()
+		setupNetworkingContainer()
+		subscriptionsSetup()
 		setupUI()
 		setupNavigation()
 		setupTitle()
 		setupPremiumFeautiresViewModel()
 		setupTableView()
 		updateColors()
+		setupObserver()
     }
     
 	override func viewWillAppear(_ animated: Bool) {
@@ -91,37 +95,37 @@ class SubscriptionViewController: UIViewController, Storyboarded {
 extension SubscriptionViewController: BottomActionButtonDelegate {
 	
 	func didTapActionButton() {
-		self.didTapPurchasePremium()
+		Network.theyLive { isAlive in
+			if isAlive {
+				self.didTapPurchasePremium()
+			} else {
+				debugPrint("ne network")
+			}
+		}
 	}
 }
 
 extension SubscriptionViewController {
 	
 	private func didTapPurchasePremium() {
-	
-	#warning("TODO: check for internet connection")
-		
-		self.purchaseProcessingHandler(for: .processing)
-		
-		subscriptionManager.purchasePremium(of: self.currentSubscription) { purchased in
 			
+		self.purchaseProcessingHandler(for: .processing)
+		self.subscriptionManager.purchasePremium(of: self.currentSubscription) { purchased in
 			self.purchaseProcessingHandler(for: .active)
 			if purchased {
 				self.closeSubscriptionController()
 			} else {
-				
+				debugPrint("cant purchase")
 			}
 		}
 	}
 	
 	private func didTapRestorePurchase() {
 		
-		#warning("TODO: check internet connection")
-		
 		self.setLeftButtonAnimateButton(status: .start)
 		self.restoreProcessingHandler(for: .processing)
 		
-		subscriptionManager.restorePurchase { restored, requested in
+		self.subscriptionManager.restorePurchase { restored, requested in
 			
 			self.setLeftButtonAnimateButton(status: .stop)
 			self.restoreProcessingHandler(for: .active)
@@ -134,6 +138,44 @@ extension SubscriptionViewController {
 				self.closeSubscriptionController()
 			}
 		}
+	}
+	
+	private func subscriptionsSetup() {
+		
+		Network.theyLive { isAlive in
+			Utils.UI {
+				if isAlive {
+					self.loadProducts()
+					self.segmentControll.isHidden = false
+					self.networkConnectionView.isHidden = true
+				} else {
+					self.segmentControll.isHidden = true
+					self.networkConnectionView.isHidden = false
+				}
+			}
+		}
+	}
+	
+	private func setupNetworkingContainer() {
+		let shadowView = ReuseShadowView()
+		
+		networkConnectionView.addSubview(shadowView)
+		
+		shadowView.translatesAutoresizingMaskIntoConstraints = false
+		shadowView.leadingAnchor.constraint(equalTo: networkConnectionView.leadingAnchor, constant: 20).isActive = true
+		shadowView.trailingAnchor.constraint(equalTo: networkConnectionView.trailingAnchor, constant: -20).isActive = true
+		shadowView.topAnchor.constraint(equalTo: networkConnectionView.topAnchor, constant: 0).isActive = true
+		shadowView.bottomAnchor.constraint(equalTo: networkConnectionView.bottomAnchor, constant: -20).isActive = true
+		shadowView.layoutIfNeeded()
+		let imageView = UIImageView(image: Images.systemElementsItems.connectionLost)
+		imageView.frame = CGRect(origin: .zero, size: CGSize(width: 40, height: 40))
+		networkConnectionView.addSubview(imageView)
+		imageView.translatesAutoresizingMaskIntoConstraints = false
+		imageView.centerXAnchor.constraint(equalTo: networkConnectionView.centerXAnchor).isActive = true
+		imageView.centerYAnchor.constraint(equalTo: networkConnectionView.centerYAnchor, constant: -10).isActive = true
+		imageView.widthAnchor.constraint(equalToConstant: 40).isActive = true
+		imageView.heightAnchor.constraint(equalToConstant: 40).isActive = true
+		imageView.tintColor = theme.subTitleTextColor
 	}
 	
 	private func loadProducts() {
@@ -173,6 +215,10 @@ extension SubscriptionViewController {
 			UIPresenter.closePresentedWindow()
 		}
 	}
+	
+	@objc func networkStatusDidChange() {
+		self.subscriptionsSetup()
+	}
 }
 
 extension SubscriptionViewController {
@@ -204,7 +250,13 @@ extension SubscriptionViewController {
 extension SubscriptionViewController: PremiumNavigationBarDelegate {
 	
 	func didTapLeftBarButton(_sender: UIButton) {
-		self.didTapRestorePurchase()
+		Network.theyLive { isAlive in
+			if isAlive {
+				self.didTapRestorePurchase()
+			} else {
+				debugPrint("show no internt ")
+			}
+		}
 	}
 	
 	func didTapRightBarButton(_sender: UIButton) {
@@ -268,6 +320,11 @@ extension SubscriptionViewController: SubscriptionSegmentControllDelegate {
 }
 
 extension SubscriptionViewController: Themeble {
+	
+	private func setupObserver() {
+		
+		U.notificationCenter.addObserver(self, selector: #selector(networkStatusDidChange), name: .ReachabilityDidChange, object: nil)
+	}
 	
 	private func setupNavigation() {
 		

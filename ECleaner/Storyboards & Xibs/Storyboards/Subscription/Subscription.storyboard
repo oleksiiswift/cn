@@ -116,6 +116,10 @@
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FRw-ea-EW4">
                                                 <rect key="frame" x="0.0" y="472" width="414" height="150"/>
                                                 <subviews>
+                                                    <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="B0w-wh-5mc">
+                                                        <rect key="frame" x="0.0" y="0.0" width="414" height="150"/>
+                                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    </view>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="PLM-pr-iIC" customClass="SubscriptionSegmentControll" customModule="ECleaner" customModuleProvider="target">
                                                         <rect key="frame" x="20" y="0.0" width="374" height="140"/>
                                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -123,10 +127,15 @@
                                                 </subviews>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <constraints>
+                                                    <constraint firstItem="B0w-wh-5mc" firstAttribute="top" secondItem="FRw-ea-EW4" secondAttribute="top" id="3K7-eQ-yia"/>
+                                                    <constraint firstAttribute="bottom" secondItem="B0w-wh-5mc" secondAttribute="bottom" id="9VA-Kq-vXj"/>
                                                     <constraint firstItem="PLM-pr-iIC" firstAttribute="leading" secondItem="FRw-ea-EW4" secondAttribute="leading" constant="20" id="BeU-db-8sH"/>
                                                     <constraint firstAttribute="bottom" secondItem="PLM-pr-iIC" secondAttribute="bottom" constant="10" id="EQT-Jm-n9Y"/>
+                                                    <constraint firstItem="PLM-pr-iIC" firstAttribute="centerX" secondItem="FRw-ea-EW4" secondAttribute="centerX" id="QV5-bw-2f2"/>
                                                     <constraint firstAttribute="trailing" secondItem="PLM-pr-iIC" secondAttribute="trailing" constant="20" id="bOq-eO-mFg"/>
                                                     <constraint firstItem="PLM-pr-iIC" firstAttribute="top" secondItem="FRw-ea-EW4" secondAttribute="top" id="e7h-Px-E4e"/>
+                                                    <constraint firstAttribute="trailing" secondItem="B0w-wh-5mc" secondAttribute="trailing" id="xTE-jc-jW7"/>
+                                                    <constraint firstItem="B0w-wh-5mc" firstAttribute="leading" secondItem="FRw-ea-EW4" secondAttribute="leading" id="yPi-P0-QCp"/>
                                                 </constraints>
                                             </view>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vK0-HP-dDo" customClass="BottomButtonBarView" customModule="ECleaner" customModuleProvider="target">
@@ -267,6 +276,7 @@
                         <outlet property="linksContainerMultiplyerHeightConstraint" destination="y2F-5K-M2l" id="MEe-dT-2K6"/>
                         <outlet property="linksContainerView" destination="H4o-sI-H5k" id="QRj-p4-8wn"/>
                         <outlet property="navigationBar" destination="jD0-6n-eLR" id="2TQ-Nk-Em5"/>
+                        <outlet property="networkConnectionView" destination="B0w-wh-5mc" id="sqA-wV-JtL"/>
                         <outlet property="policyButton" destination="Whs-8M-rHd" id="6WG-ku-bUE"/>
                         <outlet property="premiumImageView" destination="Rs8-IV-cJV" id="t7w-Bs-BAX"/>
                         <outlet property="segmentControll" destination="PLM-pr-iIC" id="gVQ-6c-Lw9"/>
