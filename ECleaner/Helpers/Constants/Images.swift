@@ -138,6 +138,7 @@ struct Images {
 		static let share = UIImage(systemName: "square.and.arrow.up")
 		static let arrowRight = UIImage(systemName: "arrow.right")!
 		static let connectionLost = UIImage(systemName: "wifi.slash")
+		static let noContent = UIImage(systemName: "exclamationmark.circle")
 	}
 	
 	struct onboarding {

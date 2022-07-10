@@ -206,8 +206,14 @@ extension SettingsViewController: SettingActionsDelegate {
 	}
 	
 	private func changeCurrentSubscription() {
-		debugPrint("change current subscription")
-		self.subscriptionManager.changeCurrentSubscription()
+	
+		Network.theyLive { isAlive in
+			if isAlive {
+				self.subscriptionManager.changeCurrentSubscription()
+			} else {
+				ErrorHandler.shared.showNetworkErrorAlert(.networkError, at: self)
+			}
+		}
 	}
 	
 	private func showPremiumController() {
@@ -228,17 +234,21 @@ extension SettingsViewController: SettingActionsDelegate {
 	}
 	
 	private func showRestorePurchaseAction() {
-		#warning("TODO network checker")
-		
-		UIPresenter.showIndicator(in: self)
-		self.subscriptionManager.restorePurchase { restored, requested in
-			UIPresenter.hideIndicator()
-			guard requested else { return }
-			
-			if !restored {
-				ErrorHandler.shared.showSubsritionAlertError(for: .restoreError, at: self)
+	
+		Network.theyLive { isAlive in
+			if isAlive {
+				UIPresenter.showIndicator(in: self)
+				self.subscriptionManager.restorePurchase { restored, requested in
+					UIPresenter.hideIndicator()
+					
+					guard requested else { return }
+					
+					if !restored {
+						ErrorHandler.shared.showSubsritionAlertError(for: .restoreError, at: self)
+					}
+				}
 			} else {
-				debugPrint("UPdate")
+				ErrorHandler.shared.showNetworkErrorAlert(.networkError, at: self)
 			}
 		}
 	}
@@ -268,6 +278,10 @@ extension SettingsViewController {
 	
 	private func showWebView(with url: URL) {
 		
+		Network.theyLive { isAlive in
+			
+			
+		}
 	}
 }
 

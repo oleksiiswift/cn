@@ -297,6 +297,7 @@
 "Operation is Canceling!" = "Operation is Canceling!";
 "Stop search process?" = "Stop search process?";
 "Notice!" = "Notice!";
+"Error! No network connection!" =  "Error! No Network Connection!";
 	// MARK: AlertMessage
 "Video compression is successfully completed! filesize: " = "Video compression is successfully completed! filesize: ";
 "Thess contacts will be merged. After the merging process is completed, unnecessary contacts will be automatically deleted." = "Thess contacts will be merged. After the merging process is completed, unnecessary contacts will be automatically deleted.";

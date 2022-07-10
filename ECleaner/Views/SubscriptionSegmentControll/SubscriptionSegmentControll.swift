@@ -7,6 +7,13 @@
 
 import UIKit
 
+enum SubscriptionSegmentStatus {
+	case willLoading
+	case didLoad
+	case disable
+	case empty
+}
+
 protocol SubscriptionSegmentControllDelegate: AnyObject {
 	func didChange(to subscription: Subscriptions)
 }
@@ -21,8 +28,13 @@ class SubscriptionSegmentControll: UIView {
 	
 	public var subscriptions: [ProductStoreDesriptionModel]!
 	
+	private var stackView = UIStackView()
 	private var selectedView = UIView()
 	private var selectedViewLeadingConstraint = NSLayoutConstraint()
+	private var disabledView = UIView()
+	private var activityIndicatorView = UIActivityIndicatorView()
+	private var contentDisabledImageView = UIImageView()
+	private var loadMessageTextLabel = UILabel()
 	
 	private var subscriptionButtons: [SegmentSubscriptionButton]!
 	
@@ -30,58 +42,207 @@ class SubscriptionSegmentControll: UIView {
 	public var isAnimationEnabled: Bool = false
 		
 	weak var delegate: SubscriptionSegmentControllDelegate?
-	
-	convenience init(frame: CGRect, subscriptions: [ProductStoreDesriptionModel]) {
-		self.init(frame: frame)
-		
-		self.subscriptions = subscriptions
-	}
-	
-	override func draw(_ rect: CGRect) {
-		super.draw(rect)
 
+	override init(frame: CGRect) {
+		super.init(frame: frame)
+		
+		self.commonInit()
 	}
 	
+	required init?(coder aDecoder: NSCoder) {
+		super.init(coder: aDecoder)
+		
+		self.commonInit()
+	}
+		
 	public func setSubscription(subscriptions: [ProductStoreDesriptionModel]) {
 		self.subscriptions = subscriptions
 		
-		configure()
+		self.configure()
 	}
 }
 
 extension SubscriptionSegmentControll {
 	
-	public func setFont(title: UIFont, price: UIFont?, description: UIFont) {
+	public func setSegment(status: SubscriptionSegmentStatus) {
+		DispatchQueue.main.async {
+			UIView.animate(withDuration: 0.3) {
+				self.stackView(status: status)
+				self.disabledView(status: status)
+				self.setActivitiIndicator(status: status)
+				self.contentDisabledImageView(status: status)
+				self.selectorView(status: status)
+				self.messageView(status: status)
+			}
+		}
+	}
+	
+	private func stackView(status: SubscriptionSegmentStatus) {
 		
-		subscriptionButtons.forEach {
-			$0.setupTitleFont(font: title)
-			$0.setupPriceFont(font: price)
-			$0.setupDescription(font: description)
+		switch status {
+			case .didLoad:
+				self.stackView.isHidden = false
+			default:
+				self.stackView.isHidden = true
 		}
 	}
 	
-	public func setTextGradientColorsforPrice(_ colors: [UIColor], font: UIFont) {
-		subscriptionButtons.forEach {
-			$0.setupPriceGradient(colors: colors, font: font)
+	private func disabledView(status: SubscriptionSegmentStatus) {
+		
+		switch status {
+			case .willLoading, .didLoad:
+				self.disabledView.isHidden = true
+			case .empty, .disable:
+				self.disabledView.isHidden = false
 		}
 	}
 	
-	public func setTextColorForPrice(_ color: UIColor) {
-		subscriptionButtons.forEach {
-			$0.setupPriceColor(color: color)
+	private func contentDisabledImageView(status: SubscriptionSegmentStatus) {
+		
+		let networkImage = Images.systemElementsItems.connectionLost
+		let disabledImage = Images.systemElementsItems.noContent
+		
+		switch status {
+			case .willLoading, .didLoad:
+				contentDisabledImageView.isHidden = true
+			case .disable:
+				contentDisabledImageView.image = networkImage
+				contentDisabledImageView.isHidden = false
+			case .empty:
+				contentDisabledImageView.image = disabledImage
+				contentDisabledImageView.isHidden = false
 		}
 	}
 	
-	public func setTextColorForTitle(_ color: UIColor) {
-		subscriptionButtons.forEach {
-			$0.setupTitleColor(color: color)
+	private func setActivitiIndicator(status: SubscriptionSegmentStatus) {
+		
+		switch status {
+			case .willLoading:
+				self.activityIndicatorView.isHidden = false
+				self.activityIndicatorView.startAnimating()
+			case .didLoad, .disable, .empty:
+				self.activityIndicatorView.isHidden = true
+				self.activityIndicatorView.stopAnimating()
 		}
 	}
 	
-	public func setTextColorForSubtitle(_ color: UIColor) {
-		subscriptionButtons.forEach {
-			$0.setupDescriptionColor(color: color)
+	private func selectorView(status: SubscriptionSegmentStatus) {
+		
+		switch status {
+			case .willLoading, .disable, .empty:
+				self.selectedView.removeFromSuperview()
+			case .didLoad:
+				self.configureSelector()
 		}
+	}
+	
+	private func messageView(status: SubscriptionSegmentStatus) {
+		
+		switch status {
+			case .empty:
+				self.loadMessageTextLabel.isHidden = false
+			default:
+				self.loadMessageTextLabel.isHidden = true
+		}
+	}
+}
+
+extension SubscriptionSegmentControll {
+	
+	private func commonInit() {
+	
+		self.setupDisabledview()
+		self.setupConnectionLostImageView()
+		self.setupActivityView()
+		self.setupStackView()
+		self.setupMessage()
+	}
+	
+	private func configure() {
+		setupButtons()
+		configureStackView()
+		configureSelector()
+	}
+	
+	private func setupDisabledview() {
+		
+		self.disabledView.isHidden = true
+		
+		let reuseView = ReuseShadowView()
+		self.addSubview(self.disabledView)
+		self.layoutIfNeeded()
+		self.disabledView.translatesAutoresizingMaskIntoConstraints = false
+		self.disabledView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 5).isActive = true
+		self.disabledView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -5).isActive = true
+		self.disabledView.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
+		self.disabledView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: 0).isActive = true
+		self.disabledView.layoutIfNeeded()
+		self.disabledView.addSubview(reuseView)
+		reuseView.translatesAutoresizingMaskIntoConstraints = false
+		reuseView.leadingAnchor.constraint(equalTo: self.disabledView.leadingAnchor).isActive = true
+		reuseView.trailingAnchor.constraint(equalTo: self.disabledView.trailingAnchor).isActive = true
+		reuseView.topAnchor.constraint(equalTo: self.disabledView.topAnchor).isActive = true
+		reuseView.bottomAnchor.constraint(equalTo: self.disabledView.bottomAnchor).isActive = true
+		reuseView.layoutIfNeeded()
+	}
+	
+	private func setupConnectionLostImageView() {
+		
+		self.contentDisabledImageView.isHidden = true
+		self.contentDisabledImageView.frame = CGRect(origin: .zero, size: CGSize(width: 40, height: 40))
+		self.disabledView.addSubview(self.contentDisabledImageView)
+		self.contentDisabledImageView.translatesAutoresizingMaskIntoConstraints = false
+		self.contentDisabledImageView.centerXAnchor.constraint(equalTo: self.disabledView.centerXAnchor).isActive = true
+		self.contentDisabledImageView.centerYAnchor.constraint(equalTo: self.disabledView.centerYAnchor, constant: -10).isActive = true
+		self.contentDisabledImageView.widthAnchor.constraint(equalToConstant: 40).isActive = true
+		self.contentDisabledImageView.heightAnchor.constraint(equalToConstant: 40).isActive = true
+		self.contentDisabledImageView.tintColor = theme.subTitleTextColor
+		self.contentDisabledImageView.layoutIfNeeded()
+	}
+	
+	private func setupActivityView() {
+		
+		self.activityIndicatorView.isHidden = true
+		self.addSubview(self.activityIndicatorView)
+		self.activityIndicatorView.translatesAutoresizingMaskIntoConstraints = false
+		self.activityIndicatorView.widthAnchor.constraint(equalToConstant: 20).isActive = true
+		self.activityIndicatorView.heightAnchor.constraint(equalToConstant: 20).isActive = true
+		self.activityIndicatorView.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
+		self.activityIndicatorView.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
+	}
+	
+	private func setupStackView() {
+		
+		self.stackView.isHidden = true
+		self.stackView.frame = self.bounds
+		self.stackView.axis = .horizontal
+		self.stackView.alignment = .fill
+		self.stackView.distribution = .fillEqually
+		
+		self.addSubview(stackView)
+		self.stackView.translatesAutoresizingMaskIntoConstraints = false
+		
+		self.stackView.topAnchor.constraint(equalTo: self.topAnchor, constant: 0).isActive = true
+		self.stackView.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
+		self.stackView.leadingAnchor.constraint(equalTo: self.leadingAnchor).isActive = true
+		self.stackView.trailingAnchor.constraint(equalTo: self.trailingAnchor).isActive = true
+	}
+	
+	private func setupMessage() {
+		
+		self.loadMessageTextLabel.isHidden = true
+		self.addSubview(self.loadMessageTextLabel)
+		self.loadMessageTextLabel.translatesAutoresizingMaskIntoConstraints = false
+		
+		self.loadMessageTextLabel.topAnchor.constraint(equalTo: self.contentDisabledImageView.bottomAnchor, constant: 0).isActive = true
+		self.loadMessageTextLabel.centerXAnchor.constraint(equalTo: self.contentDisabledImageView.centerXAnchor).isActive = true
+		self.loadMessageTextLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 40).isActive = true
+		self.loadMessageTextLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -40).isActive = true
+		self.loadMessageTextLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -5).isActive = true
+		self.loadMessageTextLabel.numberOfLines = 0
+		self.loadMessageTextLabel.textAlignment = .center
+		self.loadMessageTextLabel.font = .systemFont(ofSize: 10, weight: .medium)
+		self.loadMessageTextLabel.text = Localization.ErrorsHandler.PurchaseError.networkError
 	}
 }
 
@@ -126,14 +287,10 @@ extension SubscriptionSegmentControll: SegmentSubscriptionButtonDelegate {
 	private func getLeadingPosition(from index: Int) -> CGFloat {
 		return (frame.width) / CGFloat(subscriptions.count) * CGFloat(index) + viewSelectorInset.left
 	}
-	
-	private func configure() {
-		setupButtons()
-		setupStackView()
-		configureSelector()
-	}
-	
+
 	private func configureSelector() {
+	
+		guard !self.subviews.contains(where: {$0.tag == 666}) else { return }
 		
 		self.layoutIfNeeded()
 		
@@ -142,31 +299,33 @@ extension SubscriptionSegmentControll: SegmentSubscriptionButtonDelegate {
 		let heithtInsets = (self.viewSelectorInset.top + self.viewSelectorInset.bottom)
 		let selectorWidth = ((frame.width) / sectionCount) - widthInsets
 		
-		selectedView = UIView(frame: CGRect(x: self.viewSelectorInset.left, y: self.viewSelectorInset.top, width: selectorWidth, height: frame.height - heithtInsets))
-		selectedView.backgroundColor = .clear
-		addSubview(selectedView)
-		selectedView.translatesAutoresizingMaskIntoConstraints = false
-		selectedView.topAnchor.constraint(equalTo: self.topAnchor, constant: self.viewSelectorInset.top).isActive = true
-		selectedView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -self.viewSelectorInset.bottom).isActive = true
-		selectedView.widthAnchor.constraint(equalToConstant: (self.frame.width / sectionCount) - self.viewSelectorInset.left - self.viewSelectorInset.right).isActive = true
+		self.selectedView = UIView(frame: CGRect(x: self.viewSelectorInset.left, y: self.viewSelectorInset.top, width: selectorWidth, height: frame.height - heithtInsets))
+		self.selectedView.tag = 666
+		self.selectedView.backgroundColor = .clear
+		addSubview(self.selectedView)
+		self.selectedView.translatesAutoresizingMaskIntoConstraints = false
+		self.selectedView.topAnchor.constraint(equalTo: self.topAnchor, constant: self.viewSelectorInset.top).isActive = true
+		self.selectedView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -self.viewSelectorInset.bottom).isActive = true
+		self.selectedView.widthAnchor.constraint(equalToConstant: (self.frame.width / sectionCount) - self.viewSelectorInset.left - self.viewSelectorInset.right).isActive = true
 		
-		selectedViewLeadingConstraint = selectedView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: self.viewSelectorInset.left)
+		selectedViewLeadingConstraint = self.selectedView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: self.viewSelectorInset.left)
 		selectedViewLeadingConstraint.isActive = true
 		selectedView.layoutIfNeeded()
 	}
 	
 	public func configureSelectableGradient(width: CGFloat, colors: [UIColor], startPoint: CoordinateSide, endPoint: CoordinateSide, cornerRadius: CGFloat) {
 		
-		guard selectedView != nil else { return }
-		selectedView.gradientBorder(width: width, colors: colors, startPoint: .unitCoordinate(startPoint), endPoint: .unitCoordinate(endPoint), andRoundCornersWithRadius: cornerRadius)
+		selectedView.gradientBorder(width: width,
+									colors: colors,
+									startPoint: .unitCoordinate(startPoint),
+									endPoint: .unitCoordinate(endPoint),
+									andRoundCornersWithRadius: cornerRadius)
 	}
 
 	private func setupButtons() {
 		
 		subscriptionButtons = [SegmentSubscriptionButton]()
 		subscriptionButtons.removeAll()
-		
-		subviews.forEach({$0.removeFromSuperview()})
 		
 		for (index, subscriptionModel) in subscriptions.enumerated() {
 			let subscriptionButton = SegmentSubscriptionButton()
@@ -177,183 +336,50 @@ extension SubscriptionSegmentControll: SegmentSubscriptionButtonDelegate {
 		}
 	}
 	
-	private func setupStackView() {
+	private func configureStackView() {
 		
-		let stackView = UIStackView(arrangedSubviews: subscriptionButtons)
-		stackView.frame = self.bounds
-		stackView.axis = .horizontal
-		stackView.alignment = .fill
-		stackView.distribution = .fillEqually
+		self.stackView.arrangedSubviews
+			.filter({$0 is SegmentSubscriptionButton})
+			.forEach({$0.removeFromSuperview()})
 		
-		self.addSubview(stackView)
-		stackView.translatesAutoresizingMaskIntoConstraints = false
-		
-		stackView.topAnchor.constraint(equalTo: self.topAnchor, constant: 0).isActive = true
-		stackView.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
-		stackView.leadingAnchor.constraint(equalTo: self.leadingAnchor).isActive = true
-		stackView.trailingAnchor.constraint(equalTo: self.trailingAnchor).isActive = true
+		self.subscriptionButtons.forEach {
+			self.stackView.addArrangedSubview($0)
+		}
 	}
 }
 
-class SegmentSubscriptionButton: UIView {
+extension SubscriptionSegmentControll {
 	
-	private var shadowView = ReuseShadowView()
-	private var segmentButton = UIButton()
-	
-	private var titleTextLabel = UILabel()
-	private var priceTextLabel = TitleLabel()
-	private var descriptionTextLabel = TitleLabel()
-	
-	private var gradeintColors: [UIColor] = []
-	
-	private var index: Int = 0
-	var delegate: SegmentSubscriptionButtonDelegate?
-	
-	public var shadowViewInset: UIEdgeInsets = UIEdgeInsets.zero
-	
-	
-	override init(frame: CGRect) {
-	  super.init(frame: frame)
-	
-	  setupView()
-	}
-	
-	required init?(coder aDecoder: NSCoder) {
-		super.init(coder: aDecoder)
+	public func setFont(title: UIFont, price: UIFont?, description: UIFont) {
 		
-		setupView()
-	}
-
-	private func setupView() {
-		
-		segmentButton.addTarget(self, action: #selector(segmentDidSelect), for: .touchUpInside)
-		titleTextLabel.textAlignment = .center
-		priceTextLabel.textAlignment = .center
-		descriptionTextLabel.textAlignment = .center
-		priceTextLabel.numberOfLines = 2
-		descriptionTextLabel.textAlignment = .center
-		descriptionTextLabel.numberOfLines = 2
-		descriptionTextLabel.lineBreakMode = .byWordWrapping
-		
-		switch Screen.size {
-				
-			case .small:
-				descriptionTextLabel.contentInsets = UIEdgeInsets(top: 0, left: 15, bottom: 10, right: 15)
-			case .medium:
-				descriptionTextLabel.contentInsets = UIEdgeInsets(top: 0, left: 25, bottom: 10, right: 25)
-			case .plus:
-				descriptionTextLabel.contentInsets = UIEdgeInsets(top: 0, left: 25, bottom: 10, right: 25)
-			case .large:
-				descriptionTextLabel.contentInsets = UIEdgeInsets(top: 0, left: 25, bottom: 10, right: 25)
-			case .modern:
-				descriptionTextLabel.contentInsets = UIEdgeInsets(top: 0, left: 25, bottom: 10, right: 25)
-			case .max:
-				descriptionTextLabel.contentInsets = UIEdgeInsets(top: 0, left: 25, bottom: 10, right: 25)
-			case .madMax:
-				descriptionTextLabel.contentInsets = UIEdgeInsets(top: 0, left: 25, bottom: 10, right: 25)
+		subscriptionButtons.forEach {
+			$0.setupTitleFont(font: title)
+			$0.setupPriceFont(font: price)
+			$0.setupDescription(font: description)
 		}
 	}
 	
-	public func setupTitleFont(font: UIFont) {
-		self.titleTextLabel.font = font
-	}
-	
-	public func setupPriceFont(font: UIFont?) {
-		if let font = font {
-			self.priceTextLabel.font = font
+	public func setTextGradientColorsforPrice(_ colors: [UIColor], font: UIFont) {
+		subscriptionButtons.forEach {
+			$0.setupPriceGradient(colors: colors, font: font)
 		}
 	}
 	
-	public func setupDescription(font: UIFont) {
-		self.descriptionTextLabel.font = font
-	}
-	
-	public func setupTitleColor(color: UIColor) {
-		self.titleTextLabel.textColor = color
-	}
-	
-	public func setupPriceColor(color: UIColor) {
-		self.priceTextLabel.textColor = color
-	}
-	
-	public func setupPriceGradient(colors: [UIColor], font: UIFont) {
-		self.gradeintColors = colors
-		self.priceTextLabel.font = font
-		self.gradientSetup()
-	}
-	
-	public func setupDescriptionColor(color: UIColor) {
-		self.descriptionTextLabel.textColor = color
-	}
-	
-	override func layoutSubviews() {
-		super.layoutSubviews()
-		
-		self.backgroundColor = .clear
-		
-		self.shadowSetup()
-		self.labelsStackSetup()
-		self.setupButton()
-		self.gradientSetup()
-	}
-	
-	public func gradientSetup() {
-		
-		if !gradeintColors.isEmpty {
-			if let price = self.priceTextLabel.text, let font = self.priceTextLabel.font {
-				self.priceTextLabel.layoutIfNeeded()
-				self.priceTextLabel.addGradientText(string: price, with: gradeintColors, font: font)
-			}
+	public func setTextColorForPrice(_ color: UIColor) {
+		subscriptionButtons.forEach {
+			$0.setupPriceColor(color: color)
 		}
 	}
 	
-	private func setupButton() {
-		segmentButton.frame = CGRect(x: 0, y: 0, width: self.frame.width, height: self.frame.height)
-		self.addSubview(segmentButton)
-		
-		segmentButton.translatesAutoresizingMaskIntoConstraints = false
-		segmentButton.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
-		segmentButton.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
-		segmentButton.leadingAnchor.constraint(equalTo: self.leadingAnchor).isActive = true
-		segmentButton.trailingAnchor.constraint(equalTo: self.trailingAnchor).isActive = true
+	public func setTextColorForTitle(_ color: UIColor) {
+		subscriptionButtons.forEach {
+			$0.setupTitleColor(color: color)
+		}
 	}
 	
-	private func shadowSetup() {
-		
-		shadowView.frame = self.bounds
-		self.addSubview(shadowView)
-		
-		shadowView.translatesAutoresizingMaskIntoConstraints = false
-		shadowView.topAnchor.constraint(equalTo: self.topAnchor, constant: shadowViewInset.top).isActive = true
-		shadowView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -shadowViewInset.bottom).isActive = true
-		shadowView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: shadowViewInset.left).isActive = true
-		shadowView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant:  -shadowViewInset.right).isActive = true
-	}
-	
-	private func labelsStackSetup() {
-
-		let stackView = UIStackView(arrangedSubviews: [titleTextLabel, priceTextLabel, descriptionTextLabel])
-		stackView.axis = .vertical
-		stackView.alignment = .fill
-		stackView.distribution = .fillEqually
-		self.addSubview(stackView)
-		stackView.translatesAutoresizingMaskIntoConstraints = false
-		stackView.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
-		stackView.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
-		stackView.leadingAnchor.constraint(equalTo: self.leadingAnchor).isActive = true
-		stackView.trailingAnchor.constraint(equalTo: self.trailingAnchor).isActive = true
-		stackView.layoutIfNeeded()
-	}
-	
-	public func configure(model: ProductStoreDesriptionModel, index: Int) {
-		
-		self.index = index
-		self.titleTextLabel.text = model.productName.uppercased()
-		self.priceTextLabel.text = model.productPrice + "\n" + model.productPeriod
-		self.descriptionTextLabel.text = model.description
-	}
-	
-	@objc func segmentDidSelect() {
-		delegate?.indexSelect(index: self.index)
+	public func setTextColorForSubtitle(_ color: UIColor) {
+		subscriptionButtons.forEach {
+			$0.setupDescriptionColor(color: color)
+		}
 	}
 }

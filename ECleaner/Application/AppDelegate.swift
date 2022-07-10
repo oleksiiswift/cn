@@ -82,8 +82,7 @@ extension AppDelegate {
 	private func setupObserver() {
 		
 		NotificationCenter.default.addObserver(self, selector: #selector(checkPermissionStatus), name: UIApplication.didBecomeActiveNotification, object: nil)
-//		NotificationCenter.default.addObserver(self, selector: #selector(networkingStatusDidChange), name: .ReachabilityDidChange, object: nil)
-		
+		NotificationCenter.default.addObserver(self, selector: #selector(networkingStatusDidChange), name: .ReachabilityDidChange, object: nil)
 	}
 	
 	@objc func checkPermissionStatus() {
@@ -94,9 +93,9 @@ extension AppDelegate {
 		SettingsManager.permissions.contactsPermissionSavedValue = ContactsPermissions().authorized
 	}
 	
-//	@objc func networkingStatusDidChange() {
-//		self.initializeSubscriptions()
-//	}
+	@objc func networkingStatusDidChange() {
+		self.initializeSubscriptions()
+	}
 }
 
 

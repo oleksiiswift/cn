@@ -21,7 +21,6 @@ class SubscriptionViewController: UIViewController, Storyboarded {
 	@IBOutlet weak var dimmerView: UIView!
 	@IBOutlet weak var titleContainerView: UIView!
 	@IBOutlet weak var featuresContainerView: UIView!
-	@IBOutlet weak var networkConnectionView: UIView!
 	@IBOutlet weak var subscriptionItemsContainerView: UIView!
 	@IBOutlet weak var subscribeContainerView: BottomButtonBarView!
 	@IBOutlet weak var linksContainerView: UIView!
@@ -64,9 +63,7 @@ class SubscriptionViewController: UIViewController, Storyboarded {
         super.viewDidLoad()
 		
 		setupLayout()
-		loadProducts()
-		setupNetworkingContainer()
-		subscriptionsSetup()
+		loadSubscriptionProducts()
 		setupUI()
 		setupNavigation()
 		setupTitle()
@@ -74,13 +71,13 @@ class SubscriptionViewController: UIViewController, Storyboarded {
 		setupTableView()
 		updateColors()
 		setupObserver()
+		setupDelegate()
     }
     
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 		
 		self.navigationController?.setNavigationBarHidden(true, animated: animated)
-		self.selectPriorytySubscription()
 	}
 	
 	@IBAction func didTapShowPrivacyActionButton(_ sender: Any) {
@@ -95,11 +92,15 @@ class SubscriptionViewController: UIViewController, Storyboarded {
 extension SubscriptionViewController: BottomActionButtonDelegate {
 	
 	func didTapActionButton() {
+		
+		self.purchaseProcessingHandler(for: .processing)
+		
 		Network.theyLive { isAlive in
 			if isAlive {
 				self.didTapPurchasePremium()
 			} else {
-				debugPrint("ne network")
+				ErrorHandler.shared.showNetworkErrorAlert(.networkError, at: self)
+				self.purchaseProcessingHandler(for: .active)
 			}
 		}
 	}
@@ -108,22 +109,18 @@ extension SubscriptionViewController: BottomActionButtonDelegate {
 extension SubscriptionViewController {
 	
 	private func didTapPurchasePremium() {
-			
-		self.purchaseProcessingHandler(for: .processing)
 		self.subscriptionManager.purchasePremium(of: self.currentSubscription) { purchased in
 			self.purchaseProcessingHandler(for: .active)
 			if purchased {
 				self.closeSubscriptionController()
 			} else {
+				#warning("Error for cant purchse")
 				debugPrint("cant purchase")
 			}
 		}
 	}
 	
 	private func didTapRestorePurchase() {
-		
-		self.setLeftButtonAnimateButton(status: .start)
-		self.restoreProcessingHandler(for: .processing)
 		
 		self.subscriptionManager.restorePurchase { restored, requested in
 			
@@ -139,46 +136,25 @@ extension SubscriptionViewController {
 			}
 		}
 	}
-	
-	private func subscriptionsSetup() {
+		
+	private func loadSubscriptionProducts() {
+		
+		self.segmentControll.setSegment(status: .willLoading)
 		
 		Network.theyLive { isAlive in
 			Utils.UI {
 				if isAlive {
-					self.loadProducts()
-					self.segmentControll.isHidden = false
-					self.networkConnectionView.isHidden = true
+					self.tryLoadingProducts { status in
+						self.segmentControll.setSegment(status: status)
+					}
 				} else {
-					self.segmentControll.isHidden = true
-					self.networkConnectionView.isHidden = false
+					self.segmentControll.setSegment(status: .disable)
 				}
 			}
 		}
 	}
 	
-	private func setupNetworkingContainer() {
-		let shadowView = ReuseShadowView()
-		
-		networkConnectionView.addSubview(shadowView)
-		
-		shadowView.translatesAutoresizingMaskIntoConstraints = false
-		shadowView.leadingAnchor.constraint(equalTo: networkConnectionView.leadingAnchor, constant: 20).isActive = true
-		shadowView.trailingAnchor.constraint(equalTo: networkConnectionView.trailingAnchor, constant: -20).isActive = true
-		shadowView.topAnchor.constraint(equalTo: networkConnectionView.topAnchor, constant: 0).isActive = true
-		shadowView.bottomAnchor.constraint(equalTo: networkConnectionView.bottomAnchor, constant: -20).isActive = true
-		shadowView.layoutIfNeeded()
-		let imageView = UIImageView(image: Images.systemElementsItems.connectionLost)
-		imageView.frame = CGRect(origin: .zero, size: CGSize(width: 40, height: 40))
-		networkConnectionView.addSubview(imageView)
-		imageView.translatesAutoresizingMaskIntoConstraints = false
-		imageView.centerXAnchor.constraint(equalTo: networkConnectionView.centerXAnchor).isActive = true
-		imageView.centerYAnchor.constraint(equalTo: networkConnectionView.centerYAnchor, constant: -10).isActive = true
-		imageView.widthAnchor.constraint(equalToConstant: 40).isActive = true
-		imageView.heightAnchor.constraint(equalToConstant: 40).isActive = true
-		imageView.tintColor = theme.subTitleTextColor
-	}
-	
-	private func loadProducts() {
+	private func tryLoadingProducts(completionHandler: @escaping (_ status: SubscriptionSegmentStatus) -> Void) {
 		
 		var model = subscriptionManager.descriptionModel()
 		
@@ -190,14 +166,16 @@ extension SubscriptionViewController {
 			model.move(from: yearlyIndex, to: 1)
 		}
 		
-		if !model.isEmpty {
-			segmentControll.setSubscription(subscriptions: model)
-			setupSubscriptionSegment()
+		if model.isEmpty {
+			completionHandler(.empty)
 		} else {
-			
+			self.segmentControll.setSubscription(subscriptions: model)
+			self.setupSubscriptionSegment()
+			completionHandler(.didLoad)
+			self.selectPriorytySubscription()
 		}
 	}
-	
+
 	private func selectPriorytySubscription() {
 		
 		guard segmentControll.subscriptions != nil else { return }
@@ -217,7 +195,7 @@ extension SubscriptionViewController {
 	}
 	
 	@objc func networkStatusDidChange() {
-		self.subscriptionsSetup()
+		loadSubscriptionProducts()
 	}
 }
 
@@ -250,11 +228,18 @@ extension SubscriptionViewController {
 extension SubscriptionViewController: PremiumNavigationBarDelegate {
 	
 	func didTapLeftBarButton(_sender: UIButton) {
+		
+		self.setLeftButtonAnimateButton(status: .start)
+		self.restoreProcessingHandler(for: .processing)
+		
 		Network.theyLive { isAlive in
 			if isAlive {
 				self.didTapRestorePurchase()
 			} else {
-				debugPrint("show no internt ")
+				ErrorHandler.shared.showNetworkErrorAlert(.networkError, at: self)
+				
+				self.setLeftButtonAnimateButton(status: .stop)
+				self.restoreProcessingHandler(for: .active)
 			}
 		}
 	}
@@ -275,7 +260,6 @@ extension SubscriptionViewController {
 		segmentControll.setTextColorForTitle(theme.subscribeTitleTextColor)
 		segmentControll.setTextGradientColorsforPrice(theme.subscribeGradientColors, font: FontManager.subscriptionFont(of: .buttonPrice))
 		segmentControll.setTextColorForSubtitle(theme.subscribeDescriptionTextColor)
-		segmentControll.delegate = self
 	}
 	
 	private func setupTitle() {
@@ -324,6 +308,11 @@ extension SubscriptionViewController: Themeble {
 	private func setupObserver() {
 		
 		U.notificationCenter.addObserver(self, selector: #selector(networkStatusDidChange), name: .ReachabilityDidChange, object: nil)
+	}
+	
+	private func setupDelegate() {
+		
+		segmentControll.delegate = self
 	}
 	
 	private func setupNavigation() {

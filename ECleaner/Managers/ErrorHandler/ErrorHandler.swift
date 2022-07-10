@@ -35,6 +35,24 @@ class ErrorHandler {
 	}	
 }
 
+extension ErrorHandler {
+	
+	enum NetworkError: Error {
+		case networkError
+		
+		var alertDescription: AlertDescription {
+			return LocalizationService.Alert.Networking.alertDescription(for: self)
+		}
+	}
+	
+	public func showNetworkErrorAlert(_ errorType: NetworkError, at viewController: UIViewController) {
+		switch errorType {
+			case .networkError:
+				AlertManager.showNetworkError(with: errorType.alertDescription, at: viewController)	
+		}
+	}
+}
+
 //	MARK: - Permission Access Restricted Errors -
 extension ErrorHandler {
 	
