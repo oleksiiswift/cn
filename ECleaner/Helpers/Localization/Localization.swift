@@ -510,6 +510,13 @@ struct Localization {
 			static var year = "per year".localized()
 		}
 		
+		struct DescriptionSK {
+			static var day = "day".localized()
+			static var week = "week".localized()
+			static var month = "month".localized()
+			static var year = "year".localized()
+		}
+		
 		struct Helper {
 			static var termsOfUse = "Terms of Use".localized()
 			static var privicy = "Privacy Policy".localized()

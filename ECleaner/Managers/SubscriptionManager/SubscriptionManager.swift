@@ -70,8 +70,9 @@ extension SubscriptionManager {
 				}
 			}
 		} else {
-			#warning("TODO")
-			debugPrint("for lower ios version")
+			self.iapSubscription.checkForCurrentSubscription { isPurchasePremium in
+				completionHandler(isPurchasePremium)
+			}
 		}
 	}
 	
@@ -83,11 +84,14 @@ extension SubscriptionManager {
 					let model = try await subscription.getCurrentSubscriptionModel()
 					completionHandler(model)
 				} catch {
-					debugPrint("catch error for current")
+					completionHandler(nil)
+					debugPrint(error)
 				}
 			}
 		} else {
-			#warning("TODO")
+			iapSubscription.getCurrentSubscriptionModel { model in
+				completionHandler(model)
+			}
 		}
 	}
 }
@@ -114,14 +118,12 @@ extension SubscriptionManager {
 					}
 				} else {
 					completionHadnler(false)
-					#warning("TODO ALERt")
-//					ErrorHandler.shared.showSubsritionAlertError(for: .productsError)
 				}
 			}
 		} else {
 			self.iapSubscription.purchaseProduct(productType: type) { purchased in
-				#warning("TODO!!!!!")
-				debugPrint(purchased)
+				completionHadnler(purchased)
+				self.iapSubscription.updateSubscriptionStatus()
 			}
 		}
 	}
@@ -130,21 +132,26 @@ extension SubscriptionManager {
 //	MARK: restore purchase
 extension SubscriptionManager {
 
-	public func restorePurchase(completionHandler: @escaping (_ restored: Bool,_ requested: Bool) -> Void) {
+	public func restorePurchase(completionHandler: @escaping (_ restored: Bool,_ requested: Bool,_ date: Date?) -> Void) {
 		if #available(iOS 15.0, *) {
 			Task {
 				let requested = try await subscription.restorePurchase()
 				if requested {
 					let purchasePremium = try await subscription.purchaseProductsStatus()
-					completionHandler(purchasePremium, requested)
+					completionHandler(purchasePremium, requested, nil)
 				} else {
-					completionHandler(false, requested)
+					completionHandler(false, requested, nil)
 				}
 			}
 		} else {
-			self.iapSubscription.restoreSubscription { restored in
-				#warning("TODO!!!")
-				debugPrint(restored)
+			self.iapSubscription.restoreSubscription { restored, expireDate in
+				if !restored, let date = expireDate {
+					self.iapSubscription.updateSubscriptionStatus()
+					completionHandler(restored, true, date)
+				} else {
+					self.iapSubscription.updateSubscriptionStatus()
+					completionHandler(restored, true, nil)
+				}
 			}
 		}
 	}
@@ -172,19 +179,16 @@ extension SubscriptionManager {
 //		MARK: product model helper
 extension SubscriptionManager {
 	
-	public func descriptionModel() -> [ProductStoreDesriptionModel] {
+	public func descriptionModel(completionHandler: @escaping (_ model: [ProductStoreDesriptionModel]) -> Void) {
 		
 		if #available(iOS 15.0, *) {
-			return subscription.getProductDescription()
+			subscription.getProductDescription { model in
+				completionHandler(model)
+			}
 		} else {
-			#warning("TODO")
-			return []
+			iapSubscription.getProductDescription { models in
+				completionHandler(models)
+			}
 		}
 	}
 }
-
-
-
-
-
-

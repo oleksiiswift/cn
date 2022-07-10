@@ -327,6 +327,14 @@ extension SubscriptionSegmentControll: SegmentSubscriptionButtonDelegate {
 		subscriptionButtons = [SegmentSubscriptionButton]()
 		subscriptionButtons.removeAll()
 		
+		if let monthlyIndex = subscriptions.firstIndex(where: {$0.id == Subscriptions.month.rawValue}) {
+			subscriptions.move(from: monthlyIndex, to: 0)
+		}
+		
+		if let yearlyIndex = subscriptions.firstIndex(where: {$0.id == Subscriptions.year.rawValue}) {
+			subscriptions.move(from: yearlyIndex, to: 1)
+		}
+		
 		for (index, subscriptionModel) in subscriptions.enumerated() {
 			let subscriptionButton = SegmentSubscriptionButton()
 			subscriptionButton.shadowViewInset = self.viewSelectorInset
