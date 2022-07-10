@@ -415,6 +415,7 @@ struct Localization {
 			static var fatalError = "Fatal Error!".localized()
 			static var atention = "Atention!".localized()
 			static var notice = "Notice!".localized()
+			static var noNetwork = "Error! No network connection!".localized()
 		}
 		
 		struct EmptyResultsError {

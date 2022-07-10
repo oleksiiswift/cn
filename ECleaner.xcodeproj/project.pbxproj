@@ -121,6 +121,7 @@
 		970A0F35281493FF0071FCD9 /* UILabel+HeightSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970A0F34281493FF0071FCD9 /* UILabel+HeightSize.swift */; };
 		970A0F372814CF730071FCD9 /* DimmerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970A0F362814CF730071FCD9 /* DimmerViewController.swift */; };
 		970B208D27F604D300B5AF7D /* String+Secionds.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970B208C27F604D300B5AF7D /* String+Secionds.swift */; };
+		970B6266287AF32100FE21D2 /* SegmentSubscriptionButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970B6265287AF32100FE21D2 /* SegmentSubscriptionButton.swift */; };
 		970D7782275A9C400048F41D /* PHAssetGroupModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970D7781275A9C400048F41D /* PHAssetGroupModel.swift */; };
 		970D7784275B66CE0048F41D /* PhotoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970D7783275B66CE0048F41D /* PhotoManager.swift */; };
 		970D7786275B70420048F41D /* PHAsset+FileSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970D7785275B70420048F41D /* PHAsset+FileSize.swift */; };
@@ -270,6 +271,7 @@
 		9797C2B0285CF4F4008457A5 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9797C2AF285CF4F4008457A5 /* Localizable.strings */; };
 		979A0F2E2879954C00ACC724 /* FeaturesSubscriptionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 979A0F2C2879954C00ACC724 /* FeaturesSubscriptionTableViewCell.swift */; };
 		979A0F2F2879954C00ACC724 /* FeaturesSubscriptionTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 979A0F2D2879954C00ACC724 /* FeaturesSubscriptionTableViewCell.xib */; };
+		979A0F312879D68E00ACC724 /* Network.swift in Sources */ = {isa = PBXBuildFile; fileRef = 979A0F302879D68E00ACC724 /* Network.swift */; };
 		979BDF1B280AF75E00B49ABB /* URL+FileSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 979BDF1A280AF75E00B49ABB /* URL+FileSize.swift */; };
 		97A05B742743D4B600968459 /* SearchBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A05B732743D4B600968459 /* SearchBarView.swift */; };
 		97A05B762743D4C200968459 /* SearchBarView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 97A05B752743D4C200968459 /* SearchBarView.xib */; };
@@ -518,6 +520,7 @@
 		970A0F34281493FF0071FCD9 /* UILabel+HeightSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+HeightSize.swift"; sourceTree = "<group>"; };
 		970A0F362814CF730071FCD9 /* DimmerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DimmerViewController.swift; sourceTree = "<group>"; };
 		970B208C27F604D300B5AF7D /* String+Secionds.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Secionds.swift"; sourceTree = "<group>"; };
+		970B6265287AF32100FE21D2 /* SegmentSubscriptionButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentSubscriptionButton.swift; sourceTree = "<group>"; };
 		970D7781275A9C400048F41D /* PHAssetGroupModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PHAssetGroupModel.swift; sourceTree = "<group>"; };
 		970D7783275B66CE0048F41D /* PhotoManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoManager.swift; sourceTree = "<group>"; };
 		970D7785275B70420048F41D /* PHAsset+FileSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PHAsset+FileSize.swift"; sourceTree = "<group>"; };
@@ -667,6 +670,7 @@
 		9797C2AF285CF4F4008457A5 /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		979A0F2C2879954C00ACC724 /* FeaturesSubscriptionTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeaturesSubscriptionTableViewCell.swift; sourceTree = "<group>"; };
 		979A0F2D2879954C00ACC724 /* FeaturesSubscriptionTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FeaturesSubscriptionTableViewCell.xib; sourceTree = "<group>"; };
+		979A0F302879D68E00ACC724 /* Network.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Network.swift; sourceTree = "<group>"; };
 		979BDF1A280AF75E00B49ABB /* URL+FileSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL+FileSize.swift"; sourceTree = "<group>"; };
 		97A05B732743D4B600968459 /* SearchBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBarView.swift; sourceTree = "<group>"; };
 		97A05B752743D4C200968459 /* SearchBarView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SearchBarView.xib; sourceTree = "<group>"; };
@@ -1257,6 +1261,7 @@
 				976D8E3A280468A8005004F4 /* Video */,
 				97420BE8283E92B300B0E134 /* Permission */,
 				97B65886284423AC000AB92B /* RemoteLaunchService */,
+				979A0F322879D69500ACC724 /* Network */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -2054,6 +2059,14 @@
 			path = Preview;
 			sourceTree = "<group>";
 		};
+		979A0F322879D69500ACC724 /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				979A0F302879D68E00ACC724 /* Network.swift */,
+			);
+			path = Network;
+			sourceTree = "<group>";
+		};
 		979BDF1C280AF77500B49ABB /* URL */ = {
 			isa = PBXGroup;
 			children = (
@@ -2260,6 +2273,7 @@
 			isa = PBXGroup;
 			children = (
 				972C806328719D6500691271 /* SubscriptionSegmentControll.swift */,
+				970B6265287AF32100FE21D2 /* SegmentSubscriptionButton.swift */,
 			);
 			path = SubscriptionSegmentControll;
 			sourceTree = "<group>";
@@ -2829,6 +2843,7 @@
 				97C70B50277633AC0033F466 /* UIImage+Gradient.swift in Sources */,
 				972A29FC28057C7100D6F54A /* CompressionActionDelegate.swift in Sources */,
 				976D8BB32878A31E00761830 /* UIImage+Resize.swift in Sources */,
+				979A0F312879D68E00ACC724 /* Network.swift in Sources */,
 				4F4A17BB271D819F00CAF157 /* StartingNavigationBar.swift in Sources */,
 				97FC789A2688D907000D7F26 /* SimpleColumnFlowLayout.swift in Sources */,
 				977BA0472733171F0018DF53 /* CNContacts+FillRows.swift in Sources */,
@@ -2931,6 +2946,7 @@
 				4F56073D27205AF300CA19E9 /* ProgressAtRatioView.swift in Sources */,
 				9701D25B27BD17D70078E39F /* SettingsModel.swift in Sources */,
 				970A0F35281493FF0071FCD9 /* UILabel+HeightSize.swift in Sources */,
+				970B6266287AF32100FE21D2 /* SegmentSubscriptionButton.swift in Sources */,
 				4F56074127205AF300CA19E9 /* Background.swift in Sources */,
 				97C909CA2748F68B00BC2E47 /* ECFileManager.swift in Sources */,
 				97D2BEC6275A292E002082EB /* OperationProcessingQueuer.swift in Sources */,

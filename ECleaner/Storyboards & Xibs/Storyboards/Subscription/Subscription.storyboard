@@ -125,6 +125,7 @@
                                                 <constraints>
                                                     <constraint firstItem="PLM-pr-iIC" firstAttribute="leading" secondItem="FRw-ea-EW4" secondAttribute="leading" constant="20" id="BeU-db-8sH"/>
                                                     <constraint firstAttribute="bottom" secondItem="PLM-pr-iIC" secondAttribute="bottom" constant="10" id="EQT-Jm-n9Y"/>
+                                                    <constraint firstItem="PLM-pr-iIC" firstAttribute="centerX" secondItem="FRw-ea-EW4" secondAttribute="centerX" id="QV5-bw-2f2"/>
                                                     <constraint firstAttribute="trailing" secondItem="PLM-pr-iIC" secondAttribute="trailing" constant="20" id="bOq-eO-mFg"/>
                                                     <constraint firstItem="PLM-pr-iIC" firstAttribute="top" secondItem="FRw-ea-EW4" secondAttribute="top" id="e7h-Px-E4e"/>
                                                 </constraints>

@@ -55,6 +55,7 @@ struct Images {
 			static let info = UIImage(named: "infoItem")!
 			static let arrowLeft = UIImage(named: "arrowLeftItem")!
 			static let circleArrow = UIImage(named: "circleRoundedThin")!
+			
         }
 		
 		struct helpersItems {
@@ -122,7 +123,6 @@ struct Images {
 	}
 
     struct navigationItems {
-    
         static let elipseBurger = UIImage(systemName: "ellipsis.circle.fill")
         static let leftShevronBack = UIImage(systemName: "chevron.left")
     }
@@ -137,6 +137,8 @@ struct Images {
 		static let trashBtn = UIImage(systemName: "trash")
 		static let share = UIImage(systemName: "square.and.arrow.up")
 		static let arrowRight = UIImage(systemName: "arrow.right")!
+		static let connectionLost = UIImage(systemName: "wifi.slash")
+		static let noContent = UIImage(systemName: "exclamationmark.circle")
 	}
 	
 	struct onboarding {

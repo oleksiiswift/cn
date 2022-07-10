@@ -18,6 +18,7 @@ extension Notification.Name {
 		/// `ìncoming processing recieved`
 	static let incomingRemoteActionRecived = Notification.Name(C.key.notification.forceStopProcessing)
 	
+	static let networkingChanged 		   = Notification.Name(C.key.notification.networking)
     
         /// `disk space`
     static let photoSpaceDidChange =         Notification.Name(C.key.notification.photoSpaceNotificationName)

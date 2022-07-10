@@ -187,3 +187,15 @@ extension AlertManager {
 		}
 	}
 }
+
+extension AlertManager {
+	
+	public static func showNetworkError(with description: AlertDescription, at viewController: UIViewController) {
+		let alertController = UIAlertController(title: description.title, message: description.description, preferredStyle: .alert)
+		let action = UIAlertAction(title: description.action, style: .default) { _ in }
+		alertController.addAction(action)
+		DispatchQueue.main.async {
+			viewController.present(alertController, animated: true)
+		}
+	}
+}

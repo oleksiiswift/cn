@@ -3,7 +3,6 @@
 
 target 'ECleaner' do
   source 'https://github.com/CocoaPods/Specs.git'
-  source 'git@bitbucket.org:cisua/specs.git'
   # Comment the next line if you don't want to use dynamic frameworks
   use_frameworks!
   use_modular_headers!
@@ -25,10 +24,8 @@ target 'ECleaner' do
 	
 	# - temporary disabled or not in use -
 	pod 'lottie-ios'
-	#pod 'SwiftyMediaGallery'
-	#pod 'SwiftDate'
-	#pod 'SwiftyContacts'
-	#pod 'SwiftyUserDefaults'
+	pod "Connectivity"
+
 	
 #  pod 'Google-Mobile-Ads-SDK'
 
