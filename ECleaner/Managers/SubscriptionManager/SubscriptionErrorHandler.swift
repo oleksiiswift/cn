@@ -17,6 +17,7 @@ extension ErrorHandler {
 		case error
 		case productsError
 		case restoreError
+		case purchaseError
 		
 		var alertDescription: AlertDescription {
 			return AlertDescription(title: "Subsctiption Error!",
@@ -49,6 +50,8 @@ extension ErrorHandler {
 				return Localization.ErrorsHandler.PurchaseError.productsError
 			case .restoreError:
 				return Localization.ErrorsHandler.PurchaseError.restorePurchseFailed
+			case .purchaseError:
+				return Localization.ErrorsHandler.PurchaseError.defaultPurchseError
 		}
 	}
 	
@@ -75,7 +78,7 @@ extension ErrorHandler {
 		}
 	}
 	
-	public func showSubsritionAlertError(for key: SubscriptionError, at viewController: UIViewController) {
+	public func showSubsritionAlertError(for key: SubscriptionError, at viewController: UIViewController, expreDate: String? = nil) {
 		AlertManager.showPurchaseAlert(of: key, at: viewController)
 	}
 

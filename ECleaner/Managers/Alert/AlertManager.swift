@@ -175,12 +175,20 @@ extension AlertManager {
 
 extension AlertManager {
 	
-	public static func showPurchaseAlert(of errorType: ErrorHandler.SubscriptionError, at viewController: UIViewController) {
+	public static func showPurchaseAlert(of errorType: ErrorHandler.SubscriptionError, at viewController: UIViewController, expireDate: String? = nil) {
 		
 		let alertDescription = errorType.alertDescription
 		let confirmAction = UIAlertAction(title: alertDescription.action, style: .default) { _ in }
 		
-		let alertController = UIAlertController(title: alertDescription.title, message: alertDescription.description, preferredStyle: .alert)
+		var message: String {
+			if let expireDate = expireDate {
+				return Localization.Subscription.Premium.expireSubscription + " " + expireDate
+			} else {
+				return alertDescription.description
+			}
+		}
+		
+		let alertController = UIAlertController(title: alertDescription.title, message: message, preferredStyle: .alert)
 		alertController.addAction(confirmAction)
 		DispatchQueue.main.async {
 			viewController.present(alertController, animated: true)

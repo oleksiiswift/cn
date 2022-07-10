@@ -1,5 +1,5 @@
 //
-//  SubscriptionOnserveDelegate.swift
+//  SubscriptionObserveDelegate.swift
 //  ECleaner
 //
 //  Created by alexey sorochan on 06.07.2022.

@@ -155,7 +155,7 @@ extension Subscription {
 		return nil
 	}
 	
-	public func getProductDescription() -> [ProductStoreDesriptionModel] {
+	public func getProductDescription(completionHandler: @escaping (_ model: [ProductStoreDesriptionModel]) -> Void) {
 		
 		var descriptionsModel: [ProductStoreDesriptionModel] = []
 		
@@ -167,7 +167,7 @@ extension Subscription {
 				}
 			}
 		}
-		return descriptionsModel
+		completionHandler(descriptionsModel)
 	}
 	
 	public func getProductDesctiption(for type: Subscriptions) -> ProductStoreDesriptionModel? {

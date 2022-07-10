@@ -238,13 +238,19 @@ extension SettingsViewController: SettingActionsDelegate {
 		Network.theyLive { isAlive in
 			if isAlive {
 				UIPresenter.showIndicator(in: self)
-				self.subscriptionManager.restorePurchase { restored, requested in
+				self.subscriptionManager.restorePurchase { restored, requested, date in
+					
 					UIPresenter.hideIndicator()
 					
 					guard requested else { return }
 					
 					if !restored {
-						ErrorHandler.shared.showSubsritionAlertError(for: .restoreError, at: self)
+						if let date = date {
+							let dateString = Utils.getString(from: date, format: Constants.dateFormat.expiredDateFormat)
+							ErrorHandler.shared.showSubsritionAlertError(for: .restoreError, at: self, expreDate: dateString)
+						} else {
+							ErrorHandler.shared.showSubsritionAlertError(for: .restoreError, at: self)
+						}
 					}
 				}
 			} else {

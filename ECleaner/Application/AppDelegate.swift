@@ -37,6 +37,7 @@ extension AppDelegate {
     
     private func configureApplication(with launchOptions: [UIApplication.LaunchOptionsKey: Any]?) {
         
+		Network.start()
 		self.initializeSubscriptions()
 		ECFileManager().deleteAllFiles(at: AppDirectories.temp) {
 			debugPrint("deleted all files from temp")
@@ -49,7 +50,7 @@ extension AppDelegate {
 extension AppDelegate {
 	
 	private func initializeSubscriptions() {
-		Network.start()
+
 		Network.theyLive { isAlive in
 			guard isAlive else { return }
 			SubscriptionManager.instance.initialize()

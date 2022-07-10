@@ -341,7 +341,7 @@
 		97C909CC2748FA5300BC2E47 /* ShareManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97C909CB2748FA5300BC2E47 /* ShareManager.swift */; };
 		97CA423F273EBBFA001FEA15 /* BottomButtonBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CA423E273EBBFA001FEA15 /* BottomButtonBarView.swift */; };
 		97CA4241273EBC33001FEA15 /* BottomButtonBarView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 97CA4240273EBC33001FEA15 /* BottomButtonBarView.xib */; };
-		97CA77612875E2B8007E9D50 /* SubscriptionOnserveDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CA77602875E2B8007E9D50 /* SubscriptionOnserveDelegate.swift */; };
+		97CA77612875E2B8007E9D50 /* SubscriptionObserveDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CA77602875E2B8007E9D50 /* SubscriptionObserveDelegate.swift */; };
 		97CB351127395803005DA881 /* SectionShadowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CB351027395802005DA881 /* SectionShadowView.swift */; };
 		97CB3513273965BD005DA881 /* CAlayer+selectedCorners.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CB3512273965BD005DA881 /* CAlayer+selectedCorners.swift */; };
 		97CB3516273A9129005DA881 /* ContactTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CB3514273A9129005DA881 /* ContactTableViewCell.swift */; };
@@ -740,7 +740,7 @@
 		97C909CB2748FA5300BC2E47 /* ShareManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareManager.swift; sourceTree = "<group>"; };
 		97CA423E273EBBFA001FEA15 /* BottomButtonBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomButtonBarView.swift; sourceTree = "<group>"; };
 		97CA4240273EBC33001FEA15 /* BottomButtonBarView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BottomButtonBarView.xib; sourceTree = "<group>"; };
-		97CA77602875E2B8007E9D50 /* SubscriptionOnserveDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionOnserveDelegate.swift; sourceTree = "<group>"; };
+		97CA77602875E2B8007E9D50 /* SubscriptionObserveDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionObserveDelegate.swift; sourceTree = "<group>"; };
 		97CB351027395802005DA881 /* SectionShadowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionShadowView.swift; sourceTree = "<group>"; };
 		97CB3512273965BD005DA881 /* CAlayer+selectedCorners.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CAlayer+selectedCorners.swift"; sourceTree = "<group>"; };
 		97CB3514273A9129005DA881 /* ContactTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactTableViewCell.swift; sourceTree = "<group>"; };
@@ -2256,7 +2256,7 @@
 				97B8CFF2283CE05600F3E4E6 /* SubscriptionService.swift */,
 				97B8CFEE283CC5D000F3E4E6 /* SubscriptionErrorHandler.swift */,
 				97B8CFE3283C283A00F3E4E6 /* InAppSubscription.swift */,
-				97CA77602875E2B8007E9D50 /* SubscriptionOnserveDelegate.swift */,
+				97CA77602875E2B8007E9D50 /* SubscriptionObserveDelegate.swift */,
 			);
 			path = SubscriptionManager;
 			sourceTree = "<group>";
@@ -2868,7 +2868,7 @@
 				049CC2372683730A0002F988 /* BaseCollectionFlowLayout.swift in Sources */,
 				978FEF14274BC21A00ADE1D9 /* ProgressAlertController.swift in Sources */,
 				97A39FEB2764E8CB007CB482 /* UILabel+Margin.swift in Sources */,
-				97CA77612875E2B8007E9D50 /* SubscriptionOnserveDelegate.swift in Sources */,
+				97CA77612875E2B8007E9D50 /* SubscriptionObserveDelegate.swift in Sources */,
 				97601588286FAB5A006965BB /* PremiumFeutureDataSource.swift in Sources */,
 				972E0256274105B300C236C7 /* SingleContactsGroupOperationsMediator.swift in Sources */,
 				040E288826A98B0F0019F372 /* DeepCleaningViewController.swift in Sources */,

@@ -115,8 +115,7 @@ extension SubscriptionService {
 		switch result {
 			case .verified(let verified):
 				return verified
-			case .unverified(let unverifyed, let error):
-//				throw ErrorHandler.StoreError.verification(error: error as! VerificationResult.VerificationError)
+			case .unverified(let unverifyed, _):
 				return unverifyed
 		}
 	}

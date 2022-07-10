@@ -386,6 +386,11 @@
 "per week" = "per week";
 "per month" = "per month";
 "per year" = "per year";
+
+"day" = "day";
+"week" = "week";
+"month" = "month";
+"year" = "year";
 // MARK: Premium
 "Subscription Expire on:" = "Subscription Expire on:";
 "Already Premium" = "Already Premium";

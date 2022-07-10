@@ -114,15 +114,14 @@ extension SubscriptionViewController {
 			if purchased {
 				self.closeSubscriptionController()
 			} else {
-				#warning("Error for cant purchse")
-				debugPrint("cant purchase")
+				ErrorHandler.shared.showSubsritionAlertError(for: .purchaseError, at: self)
 			}
 		}
 	}
 	
 	private func didTapRestorePurchase() {
 		
-		self.subscriptionManager.restorePurchase { restored, requested in
+		self.subscriptionManager.restorePurchase { restored, requested, date in
 			
 			self.setLeftButtonAnimateButton(status: .stop)
 			self.restoreProcessingHandler(for: .active)
@@ -130,7 +129,12 @@ extension SubscriptionViewController {
 			guard requested else { return }
 			
 			if !restored {
-				ErrorHandler.shared.showSubsritionAlertError(for: .restoreError, at: self)
+				if let date = date {
+					let dateString = Utils.getString(from: date, format: Constants.dateFormat.expiredDateFormat)
+					ErrorHandler.shared.showSubsritionAlertError(for: .restoreError, at: self, expreDate: dateString)
+				} else {
+					ErrorHandler.shared.showSubsritionAlertError(for: .restoreError, at: self)
+				}
 			} else {
 				self.closeSubscriptionController()
 			}
@@ -156,23 +160,25 @@ extension SubscriptionViewController {
 	
 	private func tryLoadingProducts(completionHandler: @escaping (_ status: SubscriptionSegmentStatus) -> Void) {
 		
-		var model = subscriptionManager.descriptionModel()
-		
-		if let monthlyIndex = model.firstIndex(where: {$0.id == Subscriptions.month.rawValue}) {
-			model.move(from: monthlyIndex, to: 0)
-		}
-		
-		if let yearlyIndex = model.firstIndex(where: {$0.id == Subscriptions.year.rawValue}) {
-			model.move(from: yearlyIndex, to: 1)
-		}
-		
-		if model.isEmpty {
-			completionHandler(.empty)
-		} else {
-			self.segmentControll.setSubscription(subscriptions: model)
-			self.setupSubscriptionSegment()
-			completionHandler(.didLoad)
-			self.selectPriorytySubscription()
+		subscriptionManager.descriptionModel { model in
+			
+			var currentModel = model
+			if let monthlyIndex = model.firstIndex(where: {$0.id == Subscriptions.month.rawValue}) {
+				currentModel.move(from: monthlyIndex, to: 0)
+			}
+			
+			if let yearlyIndex = model.firstIndex(where: {$0.id == Subscriptions.year.rawValue}) {
+				currentModel.move(from: yearlyIndex, to: 1)
+			}
+			
+			if model.isEmpty {
+				completionHandler(.empty)
+			} else {
+				self.segmentControll.setSubscription(subscriptions: currentModel)
+				self.setupSubscriptionSegment()
+				completionHandler(.didLoad)
+				self.selectPriorytySubscription()
+			}
 		}
 	}
 
