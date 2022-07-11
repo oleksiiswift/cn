@@ -764,6 +764,16 @@ extension Theme {
 
 extension Theme {
 	
+	var premiumColor: UIColor {
+		
+		switch self {
+			case .light:
+				return UIColor().colorFromHexString("FF685C")
+			case .dark:
+				return UIColor().colorFromHexString("FF685C")
+		}
+	}
+	
 	var premiumCrownGradientColor: [UIColor] {
 		let startColor = UIColor().colorFromHexString("FF7890")
 		let endColor = UIColor ().colorFromHexString("FF822F")

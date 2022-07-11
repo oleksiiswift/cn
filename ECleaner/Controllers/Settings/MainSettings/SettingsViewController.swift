@@ -114,7 +114,6 @@ extension SettingsViewController {
 		self.tableView.register(UINib(nibName: C.identifiers.xibs.contentTypeCell, bundle: nil), forCellReuseIdentifier: C.identifiers.cells.contentTypeCell)
 		self.tableView.register(UINib(nibName: C.identifiers.xibs.currentSubscription, bundle: nil), forCellReuseIdentifier: C.identifiers.cells.currentSubscription)
 		self.tableView.register(UINib(nibName: C.identifiers.xibs.premiumFeaturesSubcription, bundle: nil), forCellReuseIdentifier: C.identifiers.cells.premiumFeaturesSubcription)
-		self.tableView.register(UINib(nibName: C.identifiers.xibs.featuresSubscription, bundle: nil), forCellReuseIdentifier: C.identifiers.cells.featuresSubscription)
 	
 		self.tableView.delegate = settingsDataSource
 		self.tableView.dataSource = settingsDataSource

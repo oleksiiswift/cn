@@ -113,6 +113,11 @@ class BottomButtonBarView: UIView {
 					UIView.animate(withDuration: 0.3) {
 						self.actionButton.alpha = 1.0
 					}
+				case .disabled:
+					self.actionButton.isEnabled = false
+					UIView.animate(withDuration: 0.3) {
+						self.actionButton.alpha = 0.5
+					}
 			}
 		}
 	}

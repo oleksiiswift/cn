@@ -50,19 +50,19 @@ extension FontManager {
 		static var title: UIFont {
 			switch screenSize {
 				case .small:
-					return .systemFont(ofSize: 30, weight: .black)
+					return .systemFont(ofSize: 32, weight: .black)
 				case .medium:
-					return .systemFont(ofSize: 38, weight: .black)
+					return .systemFont(ofSize: 42, weight: .black)
 				case .plus:
-					return .systemFont(ofSize: 38, weight: .black)
+					return .systemFont(ofSize: 42, weight: .black)
 				case .large:
-					return .systemFont(ofSize: 38, weight: .black)
+					return .systemFont(ofSize: 42, weight: .black)
 				case .modern:
-					return .systemFont(ofSize: 40, weight: .black)
+					return .systemFont(ofSize: 44, weight: .black)
 				case .max:
-					return .systemFont(ofSize: 40, weight: .black)
+					return .systemFont(ofSize: 44, weight: .black)
 				case .madMax:
-					return .systemFont(ofSize: 40, weight: .black)
+					return .systemFont(ofSize: 44, weight: .black)
 			}
 			
 		}

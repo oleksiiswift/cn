@@ -10,6 +10,7 @@ import UIKit
 enum SubscriptionActionProcessingState {
 	case processing
 	case active
+	case disabled
 }
 
 class SubscriptionViewController: UIViewController, Storyboarded {
@@ -33,7 +34,9 @@ class SubscriptionViewController: UIViewController, Storyboarded {
 	@IBOutlet weak var subscribeContainerMultiplyerHeightConstraint: NSLayoutConstraint!
 	@IBOutlet weak var linksContainerMultiplyerHeightConstraint: NSLayoutConstraint!
 	
-	@IBOutlet weak var backggroundImageViewTopConstraint: NSLayoutConstraint!
+	@IBOutlet weak var titleStackContainerTopConstraint: NSLayoutConstraint!
+	@IBOutlet weak var titleStackContainerBottomConstraint: NSLayoutConstraint!
+	@IBOutlet weak var backgroundImageViewTopConstraint: NSLayoutConstraint!
 	@IBOutlet weak var backgroundImageViewLeadingConstraint: NSLayoutConstraint!
 	
 	@IBOutlet weak var termsOfUseButton: UIButton!
@@ -54,6 +57,7 @@ class SubscriptionViewController: UIViewController, Storyboarded {
 	
 	private var subscriptionManager =  SubscriptionManager.instance
 	private var currentSubscription: Subscriptions = .year
+	private var statusSegmentLoaded: SubscriptionSegmentStatus = .willLoading
 	
 	override public var preferredStatusBarStyle: UIStatusBarStyle {
 		return .darkContent
@@ -92,6 +96,8 @@ class SubscriptionViewController: UIViewController, Storyboarded {
 extension SubscriptionViewController: BottomActionButtonDelegate {
 	
 	func didTapActionButton() {
+		
+		guard statusSegmentLoaded != .disable else { return }
 		
 		self.purchaseProcessingHandler(for: .processing)
 		
@@ -149,10 +155,14 @@ extension SubscriptionViewController {
 			Utils.UI {
 				if isAlive {
 					self.tryLoadingProducts { status in
+						self.statusSegmentLoaded = status
 						self.segmentControll.setSegment(status: status)
+						self.subscribeContainerView.setLockButtonAnimate(state: .active)
 					}
 				} else {
 					self.segmentControll.setSegment(status: .disable)
+					self.subscribeContainerView.setLockButtonAnimate(state: .disabled)
+					self.statusSegmentLoaded = .disable
 				}
 			}
 		}
@@ -173,6 +183,9 @@ extension SubscriptionViewController {
 			
 			if model.isEmpty {
 				completionHandler(.empty)
+				Utils.delay(1) {
+					self.loadSubscriptionProducts()
+				}
 			} else {
 				self.segmentControll.setSubscription(subscriptions: currentModel)
 				self.setupSubscriptionSegment()
@@ -273,18 +286,17 @@ extension SubscriptionViewController {
 		let titleString = Localization.Subscription.Main.getPremium.components(separatedBy: " ")
 		let first = titleString.first
 		let second = titleString.last
-		
-		let firstColor = theme.premiumCrownGradientColor
-		let secondColor = [UIColor().colorFromHexString("687EAF"), UIColor().colorFromHexString("47526B")]
-	
+			
 		if let topTitle = first {
-			topTitlteTextLabel.contentInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0)
-			topTitlteTextLabel.addGradientText(string: topTitle, with: firstColor, font: FontManager.subscriptionFont(of: .title))
+			topTitlteTextLabel.font = FontManager.subscriptionFont(of: .title)
+			topTitlteTextLabel.textColor = theme.premiumColor
+			topTitlteTextLabel.text = topTitle
 		}
 		
 		if let bottomTitle = second {
-			bottomTitleTextLabel.contentInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0)
-			bottomTitleTextLabel.addGradientText(string: bottomTitle, with: secondColor, font: FontManager.subscriptionFont(of: .title))
+			bottomTitleTextLabel.font = FontManager.subscriptionFont(of: .title)
+			bottomTitleTextLabel.textColor = theme.titleTextColor
+			bottomTitleTextLabel.text = bottomTitle
 		}
 	}
 	
@@ -342,9 +354,8 @@ extension SubscriptionViewController: Themeble {
 	
 	private func setupUI() {
 		
-		premiumImageView.image = Images.subsctiption.flyingRocket
+		premiumImageView.isHidden = true
 		backgroundImageView.image = Images.subsctiption.rocket
-		backgroundImageView.isHidden = true
 		
 		subscribeContainerView.delegate = self
 		subscribeContainerView.setButtonSideOffset(25)
@@ -393,41 +404,51 @@ extension SubscriptionViewController {
 				
 			case .small:
 				dimmerVewHeightConstraint.constant = 85
+				titleContainerMultiplyerHeightConstraint = titleContainerMultiplyerHeightConstraint.setMultiplier(multiplier: 0.8)
 				subscribeContainerMultiplyerHeightConstraint = subscribeContainerMultiplyerHeightConstraint.setMultiplier(multiplier: 0.7)
 				subscriptionItemsContainerMultiplyerHeightConstraint = subscriptionItemsContainerMultiplyerHeightConstraint.setMultiplier(multiplier: 1.5)
-				backggroundImageViewTopConstraint.constant = -180
+				
+				titleStackContainerBottomConstraint.constant = -10
+				titleStackContainerTopConstraint.constant = 0
+				
+				backgroundImageViewTopConstraint.constant = -180
 				backgroundImageViewLeadingConstraint.constant = -60
 			case .medium:
 				dimmerVewHeightConstraint.constant = 103
+				titleContainerMultiplyerHeightConstraint = titleContainerMultiplyerHeightConstraint.setMultiplier(multiplier: 0.8)
 				subscribeContainerMultiplyerHeightConstraint = subscribeContainerMultiplyerHeightConstraint.setMultiplier(multiplier: 0.6)
 				subscriptionItemsContainerMultiplyerHeightConstraint = subscriptionItemsContainerMultiplyerHeightConstraint.setMultiplier(multiplier: 1.4)
-				backggroundImageViewTopConstraint.constant = -210
+				
+				titleStackContainerBottomConstraint.constant = -10
+				titleStackContainerTopConstraint.constant = 0
+				
+				backgroundImageViewTopConstraint.constant = -240
 				backgroundImageViewLeadingConstraint.constant = -90
 			case .plus:
 				dimmerVewHeightConstraint.constant = 120
 				subscriptionItemsContainerMultiplyerHeightConstraint = subscriptionItemsContainerMultiplyerHeightConstraint.setMultiplier(multiplier: 1.3)
-				backggroundImageViewTopConstraint.constant = -240
+				backgroundImageViewTopConstraint.constant = -260
 				backgroundImageViewLeadingConstraint.constant = -100
 			case .large:
 				dimmerVewHeightConstraint.constant = 135
 				
-				backggroundImageViewTopConstraint.constant = -150
+				backgroundImageViewTopConstraint.constant = -170
 				backgroundImageViewLeadingConstraint.constant = -80
 			case .modern:
 				dimmerVewHeightConstraint.constant = 140
 				
-				backggroundImageViewTopConstraint.constant = -170
+				backgroundImageViewTopConstraint.constant = -190
 				backgroundImageViewLeadingConstraint.constant = -90
 			case .max:
 				dimmerVewHeightConstraint.constant = 153
 				
-				backggroundImageViewTopConstraint.constant = -175
+				backgroundImageViewTopConstraint.constant = -195
 				backgroundImageViewLeadingConstraint.constant = -100
 				
 			case .madMax:
 				dimmerVewHeightConstraint.constant = 155
 				
-				backggroundImageViewTopConstraint.constant = -180
+				backgroundImageViewTopConstraint.constant = -200
 				backgroundImageViewLeadingConstraint.constant = -100
 		}
 	}
