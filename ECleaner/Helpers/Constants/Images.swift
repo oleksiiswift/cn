@@ -191,6 +191,8 @@ extension Images {
 				return UIImage(systemName: "hand.raised")!
 			case .restore:
 				return UIImage(systemName: "purchased")!
+			case .lifetime:
+				return UIImage(systemName: "crown")!
 			case .support:
 				return UIImage(systemName: "captions.bubble")!
 			case .share:

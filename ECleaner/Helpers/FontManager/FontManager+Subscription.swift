@@ -15,6 +15,7 @@ enum SubscriptionFontType {
 	case links
 	case buttonTitle
 	case buttonPrice
+	case lifeTimeTitle
 	case buttonDescription
 	case premimBannerTitle
 	case permiumBannerSubtitle
@@ -64,8 +65,28 @@ extension FontManager {
 				case .madMax:
 					return .systemFont(ofSize: 44, weight: .black)
 			}
-			
 		}
+		
+		
+		static var lifeTimeTitle: UIFont {
+			switch screenSize {
+				case .small:
+					return .systemFont(ofSize: 18, weight: .black)
+				case .medium:
+					return .systemFont(ofSize: 20, weight: .black)
+				case .plus:
+					return .systemFont(ofSize: 24, weight: .black)
+				case .large:
+					return .systemFont(ofSize: 26, weight: .black)
+				case .modern:
+					return .systemFont(ofSize: 26, weight: .black)
+				case .max:
+					return .systemFont(ofSize: 28, weight: .black)
+				case .madMax:
+					return .systemFont(ofSize: 30, weight: .black)
+			}
+		}
+		
 		static var helperText: UIFont {
 			return .systemFont(ofSize: 12, weight: .regular)
 		}

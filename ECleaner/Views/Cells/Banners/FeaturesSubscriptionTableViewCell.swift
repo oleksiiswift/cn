@@ -29,7 +29,7 @@ extension FeaturesSubscriptionTableViewCell {
 		
 		for feature in features {
 			let featureView = PremiumFeatureView()
-			featureView.configureView(from: feature)
+			featureView.configureView(from: feature, isSettingsSize: true)
 			featuresViews.append(featureView)
 		}
 		

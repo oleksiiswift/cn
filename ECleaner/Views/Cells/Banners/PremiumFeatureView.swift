@@ -44,9 +44,16 @@ class PremiumFeatureView: UIView {
 		thumbnailView.setNeedsLayout()
 	}
 	
-	public func configureView(from feature: PremiumFeature) {
+	public func configureView(from feature: PremiumFeature, isSettingsSize: Bool = false) {
 		
-		let aproxThumbSize = AppDimensions.Subscription.Features.thumbnailSize - 13
+		var aproxThumbSize: CGFloat {
+			if isSettingsSize {
+				return AppDimensions.Subscription.Features.settingsThumbnailSize - 13
+			} else {
+				return AppDimensions.Subscription.Features.thumbnailSize - 13
+			}
+		}
+	
 		let imageSize = CGSize(width: aproxThumbSize, height: aproxThumbSize)
 
 		thumbnailView.setImageWithCustomBackground(image: feature.thumbnail,
@@ -80,6 +87,27 @@ class PremiumFeatureView: UIView {
 		
 		titleTextLabel.text = titleText
 		titleTextLabel.font = .systemFont(ofSize: 10, weight: .medium)
+		titleTextLabel.textColor = theme.titleTextColor
+		titleTextLabel.lineBreakMode = .byWordWrapping
+		titleTextLabel.numberOfLines = 2
+	}
+	
+	
+	public func configureLifeTimeFeatures(from feature: PremiumFeature) {
+		
+		
+		let  aproxThumbSize = AppDimensions.Subscription.Features.thumbnailSize - 10
+			
+		let imageSize = CGSize(width: aproxThumbSize, height: aproxThumbSize)
+
+		thumbnailView.setImageWithCustomBackground(image: feature.thumbnail,
+												   tintColor: theme.activeTitleTextColor,
+												   size: imageSize,
+												   colors: feature.thumbnailColors)
+		thumbnailView.setShadowColor(for: .clear, and: .clear)
+				
+		titleTextLabel.text = feature.title
+		titleTextLabel.font = .systemFont(ofSize: 13, weight: .medium)
 		titleTextLabel.textColor = theme.titleTextColor
 		titleTextLabel.lineBreakMode = .byWordWrapping
 		titleTextLabel.numberOfLines = 2

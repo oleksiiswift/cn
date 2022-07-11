@@ -34,13 +34,13 @@ extension PremiumFeaturesSubscriptionTableViewCell {
 		
 		for feature in leadingFeatures {
 			let featureView = PremiumFeatureView()
-			featureView.configureView(from: feature)
+			featureView.configureView(from: feature, isSettingsSize: true)
 			leadingViews.append(featureView)
 		}
 		
 		for feature in trailingFeautures {
 			let featureView = PremiumFeatureView()
-			featureView.configureView(from: feature)
+			featureView.configureView(from: feature, isSettingsSize: true)
 			trailingViews.append(featureView)
 		}
 		

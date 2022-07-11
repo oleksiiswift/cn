@@ -40,7 +40,14 @@ class CurrentSubscriptionTableViewCell: UITableViewCell {
 extension CurrentSubscriptionTableViewCell {
 	
 	public func configure(model: CurrentSubscriptionModel) {
-		setupExpireDateSubtitle(with: model.expireDate)
+	
+		if model.expireDate.isEmpty {
+			if SettingsManager.subscripton.currentSubscriptionName == Subscriptions.lifeTime.rawValue {
+				setupExpireDateSubtitle(with: Localization.Settings.Title.lifeTime)
+			}
+		} else {
+			setupExpireDateSubtitle(with: model.expireDate)
+		}
 	}
 }
 

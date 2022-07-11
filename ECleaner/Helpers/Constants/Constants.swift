@@ -54,17 +54,14 @@ class Constants {
 			static let aplicationValue 	    = "com.cleaner.tryAplication.key"
 		}
 		
-		struct inApPurchse {
-			static let purchasePremium = "purchasePremium"
-			static let verificationPassed = "verificationPassed"
-			static let expireDate = "expireDate"
-			static let expiredSubscription = "expiredSubscription"
-		}
-		
 		struct subscription {
+			static let purchasePremium = "purchasePremium"
 			static let subscriptionExpireDate = "subscriptionExpireDate"
 			static let subscriptionCurrentName = "subscriptionCurrentName"
-			 
+			static let expiredSubscription = "expiredSubscription"
+			static let verificationPassed = "verificationPassed"
+			static let currentSubscription = "currentSubscription"
+			static let subscriptionID = "currentSubscriptionID"
 		}
 		
 		struct permissions {
@@ -479,6 +476,7 @@ class Constants {
 			static let onboarding = "OnboardingViewController"
 			static let onboardingPage = "OnboardingPageViewController"
 			static let subscription = "SubscriptionViewController"
+			static let lifeTime = "LifeTimeSubscriptionViewController"
         }
         
         struct cells {
@@ -565,6 +563,7 @@ class Constants {
             static let showExportContacts = "ShowExportContactsViewControllerSegue"
 			static let showSizeSelector = "ShowVideoSizeSelectorSegue"
 			static let showCustomCompression = "ShowCustomCompressionSegue"
+			static let lifeTime = "ShowLifeTimeViewControllerSegue"
         }
     }
 	

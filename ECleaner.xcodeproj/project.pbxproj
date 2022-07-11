@@ -273,6 +273,7 @@
 		979A0F2F2879954C00ACC724 /* FeaturesSubscriptionTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 979A0F2D2879954C00ACC724 /* FeaturesSubscriptionTableViewCell.xib */; };
 		979A0F312879D68E00ACC724 /* Network.swift in Sources */ = {isa = PBXBuildFile; fileRef = 979A0F302879D68E00ACC724 /* Network.swift */; };
 		979BDF1B280AF75E00B49ABB /* URL+FileSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 979BDF1A280AF75E00B49ABB /* URL+FileSize.swift */; };
+		979CBF09287C742500BB459D /* LifeTimeSubscriptionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 979CBF08287C742500BB459D /* LifeTimeSubscriptionViewController.swift */; };
 		97A05B742743D4B600968459 /* SearchBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A05B732743D4B600968459 /* SearchBarView.swift */; };
 		97A05B762743D4C200968459 /* SearchBarView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 97A05B752743D4C200968459 /* SearchBarView.xib */; };
 		97A17F502836363D00591409 /* FontManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A17F4F2836363D00591409 /* FontManager.swift */; };
@@ -672,6 +673,7 @@
 		979A0F2D2879954C00ACC724 /* FeaturesSubscriptionTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FeaturesSubscriptionTableViewCell.xib; sourceTree = "<group>"; };
 		979A0F302879D68E00ACC724 /* Network.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Network.swift; sourceTree = "<group>"; };
 		979BDF1A280AF75E00B49ABB /* URL+FileSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL+FileSize.swift"; sourceTree = "<group>"; };
+		979CBF08287C742500BB459D /* LifeTimeSubscriptionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LifeTimeSubscriptionViewController.swift; sourceTree = "<group>"; };
 		97A05B732743D4B600968459 /* SearchBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBarView.swift; sourceTree = "<group>"; };
 		97A05B752743D4C200968459 /* SearchBarView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SearchBarView.xib; sourceTree = "<group>"; };
 		97A17F4F2836363D00591409 /* FontManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontManager.swift; sourceTree = "<group>"; };
@@ -1823,6 +1825,7 @@
 			children = (
 				97601583286F9442006965BB /* SubscriptionViewController.swift */,
 				9760158F28702350006965BB /* PremiumFeatures */,
+				979CBF08287C742500BB459D /* LifeTimeSubscriptionViewController.swift */,
 			);
 			path = Subscription;
 			sourceTree = "<group>";
@@ -2803,6 +2806,7 @@
 				0405AA5B269D9BD6004AC07A /* PreviewAVController.swift in Sources */,
 				97420BFB283EC52700B0E134 /* PermissionsDataSource.swift in Sources */,
 				97C1C71427F5A95800E262FA /* GradientSlider.swift in Sources */,
+				979CBF09287C742500BB459D /* LifeTimeSubscriptionViewController.swift in Sources */,
 				97D38C0527FDDB12007A80E8 /* SingleSmartClean.swift in Sources */,
 				97DC110F27A172A800D10FE4 /* UICollectionView+IndexPath.swift in Sources */,
 				97CB3513273965BD005DA881 /* CAlayer+selectedCorners.swift in Sources */,
