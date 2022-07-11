@@ -15,6 +15,7 @@ enum SettingsModel {
 	case dataStorage
 	case permissions
 	case restore
+	case lifetime
 	case support
 	case share
 	case rate
@@ -34,6 +35,8 @@ enum SettingsModel {
 				return L.Settings.Title.permission
 			case .restore:
 				return L.Settings.Title.restore
+			case .lifetime:
+				return L.Settings.Title.lifeTime
 			case .support:
 				return L.Settings.Title.support
 			case .share:

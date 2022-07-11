@@ -40,6 +40,7 @@ class SettingsManager {
 	}
 	
 	struct subscripton {
+		
 		static var currentSubscriptionName: String {
 			get {
 				U.userDefaults.string(forKey: C.key.subscription.subscriptionCurrentName) ?? ""
@@ -55,42 +56,30 @@ class SettingsManager {
 				U.userDefaults.set(newValue, forKey: C.key.subscription.subscriptionExpireDate)
 			}
 		}
-	}
-	
-	
-	struct inAppPurchase {
 		
-		 static var allowAdvertisementBanner: Bool {
-			get {
-				U.userDefaults.bool(forKey: C.key.advertisement.bannerIsShow)
-			} set {
-				U.userDefaults.set(newValue, forKey: C.key.advertisement.bannerIsShow)
-			}
-		}
-		
-		static var isVerificationPassed: Bool {
-			get {
-				return U.userDefaults.bool(forKey: C.key.inApPurchse.verificationPassed)
-			} set {
-				U.userDefaults.set(newValue, forKey: C.key.inApPurchse.verificationPassed)
-			}
-		}
-		
-		static var expiredSubscription: Bool {
-			get {
-				return U.userDefaults.bool(forKey: C.key.inApPurchse.expiredSubscription)
-			} set {
-				U.userDefaults.setValue(newValue, forKey: C.key.inApPurchse.expiredSubscription)
-			}
-		}
-		
-		static var expireDateSubscription: Date? {
-			get {
-				return U.userDefaults.object(forKey: C.key.inApPurchse.expireDate) as? Date
-			} set {
-				U.userDefaults.set(newValue, forKey: C.key.inApPurchse.expireDate)
-			}
-		}
+		static var allowAdvertisementBanner: Bool {
+		   get {
+			   U.userDefaults.bool(forKey: C.key.advertisement.bannerIsShow)
+		   } set {
+			   U.userDefaults.set(newValue, forKey: C.key.advertisement.bannerIsShow)
+		   }
+	   }
+	   
+	   static var isVerificationPassed: Bool {
+		   get {
+			   return U.userDefaults.bool(forKey: C.key.subscription.verificationPassed)
+		   } set {
+			   U.userDefaults.set(newValue, forKey: C.key.subscription.verificationPassed)
+		   }
+	   }
+	   
+	   static var expiredSubscription: Bool {
+		   get {
+			   return U.userDefaults.bool(forKey: C.key.subscription.expiredSubscription)
+		   } set {
+			   U.userDefaults.setValue(newValue, forKey: C.key.subscription.expiredSubscription)
+		   }
+	   }
 	}
 	
 	struct permissions {

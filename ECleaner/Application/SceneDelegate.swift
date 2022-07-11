@@ -39,6 +39,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneDidBecomeActive(_ scene: UIScene) {
 		SubscriptionManager.instance.checkForCurrentSubscription { isSubscribe in
 			debugPrint("is subscribe -> \(isSubscribe)")
+			if !isSubscribe {
+				SubscriptionManager.instance.saveSubscription(nil)
+			}
 		}
 	}
 

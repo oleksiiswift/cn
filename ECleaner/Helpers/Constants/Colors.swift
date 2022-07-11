@@ -841,6 +841,10 @@ extension Theme {
 				let startColor = UIColor().colorFromHexString("6773B4")
 				let endColor = UIColor ().colorFromHexString("A7B3EF")
 				return [startColor, endColor]
+			case .lifetime:
+				let startColor = UIColor().colorFromHexString("F5C62C")
+				let endColor = UIColor ().colorFromHexString("FD8000")
+				return [startColor, endColor]
 			case .support:
 				let startColor = UIColor().colorFromHexString("4FAA47")
 				let endColor = UIColor ().colorFromHexString("A5E79F")

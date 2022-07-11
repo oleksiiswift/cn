@@ -182,6 +182,8 @@ class FontManager {
 				return SubscriptionFontSize.buttonTitle
 			case .buttonPrice:
 				return SubscriptionFontSize.buttonPrice
+			case .lifeTimeTitle:
+				return SubscriptionFontSize.lifeTimeTitle
 			case .buttonDescription:
 				return SubscriptionFontSize.buttonDescription
 			case .premimBannerTitle:

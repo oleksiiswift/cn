@@ -69,6 +69,20 @@ extension InAppSubscription {
 		}
 	}
 	
+	public func getDescriptionForProduct(_ subscription: Subscriptions, completionHandler: @escaping (_ model: ProductStoreDesriptionModel?) -> Void) {
+		
+		let product = Subscriptions.lifeTime.rawValue
+		SwiftyStoreKit.retrieveProductsInfo(Set([product])) { results in
+			if let lifeTime = results.retrievedProducts.first(where: {$0.productIdentifier == Subscriptions.lifeTime.rawValue}) {
+				let model = self.getDescriptionFrom(product: lifeTime)
+				completionHandler(model)
+			} else {
+				completionHandler(nil)
+			}
+		}
+	}
+	
+	
 	private func getDescriptionFrom(products: [SKProduct]) -> [ProductStoreDesriptionModel] {
 		var descriptionsModel: [ProductStoreDesriptionModel] = []
 		
@@ -141,13 +155,13 @@ extension InAppSubscription {
 						switch purchaseResult {
 							case .purchased(let expireDate,_):
 								self.restoreExpire = false
-								SettingsManager.inAppPurchase.expiredSubscription = true
+								SettingsManager.subscripton.expiredSubscription = true
 								let date = Utils.getString(from: expireDate, format: Constants.dateFormat.expiredDateFormat)
 								SettingsManager.subscripton.currentExprireSubscriptionDate = date
 								let model = CurrentSubscriptionModel(expireDate: date, name: "")
 								completionHandler(model)
 							case .expired(expiryDate: let expireDate, items: _):
-								SettingsManager.inAppPurchase.expiredSubscription = false
+								SettingsManager.subscripton.expiredSubscription = false
 								let date = Utils.getString(from: expireDate, format: Constants.dateFormat.expiredDateFormat)
 								SettingsManager.subscripton.currentExprireSubscriptionDate = date
 								SubscriptionManager.instance.setPurchasePremium(false)
@@ -199,7 +213,7 @@ extension InAppSubscription {
 			switch result {
 				case .success(_):
 					updateExpireSubscription()
-					SettingsManager.inAppPurchase.expiredSubscription = true
+					SettingsManager.subscripton.expiredSubscription = true
 					completion(true)
 				case .error(error: let error):
 					completion(false)
@@ -231,19 +245,20 @@ extension InAppSubscription {
 						case .success(receipt: let receipt):
 							let productIDs = Set(Subscriptions.allCases.map({$0.rawValue}))
 							let purchaseResultSubscription = SwiftyStoreKit.verifySubscriptions(productIds: productIDs, inReceipt: receipt)
-							
 							switch purchaseResultSubscription {
-								case .purchased(expiryDate: let exprireDate, items: _):
-									
-									SettingsManager.inAppPurchase.expiredSubscription = true
+								case .purchased(expiryDate: let exprireDate, items: let items):
+									SettingsManager.subscripton.expiredSubscription = true
 									let date = Utils.getString(from: exprireDate, format: Constants.dateFormat.expiredDateFormat)
 									SettingsManager.subscripton.currentExprireSubscriptionDate = date
 									SubscriptionManager.instance.setPurchasePremium(true)
+									let subscription = Subscriptions.allCases.first(where: {$0.rawValue == items.first?.productId})
+									SubscriptionManager.instance.saveSubscription(subscription)
 									completionHandler(true, nil)
 								case .expired(expiryDate: let expireDate, items: _):
 									let date = Utils.getString(from: expireDate, format: Constants.dateFormat.expiredDateFormat)
 									SettingsManager.subscripton.currentExprireSubscriptionDate = date
 									SubscriptionManager.instance.setPurchasePremium(false)
+									SubscriptionManager.instance.saveSubscription(nil)
 									completionHandler(false, expireDate)
 								default:
 									completionHandler(false, nil)
@@ -295,7 +310,7 @@ extension InAppSubscription {
 				return Subscriptions.allCases.contains(addingProduct)
 			}
 			
-			if SettingsManager.inAppPurchase.isVerificationPassed, let _ = SwiftyStoreKit.localReceiptData {
+			if SettingsManager.subscripton.isVerificationPassed, let _ = SwiftyStoreKit.localReceiptData {
 				self.updateSubscriptionStatus(startApp: true)
 			}
 		}
@@ -316,13 +331,13 @@ extension InAppSubscription {
 					switch purchaseResult {
 						case .purchased(let expireDate,_):
 							self.restoreExpire = false
-							SettingsManager.inAppPurchase.expiredSubscription = true
+							SettingsManager.subscripton.expiredSubscription = true
 							let date = Utils.getString(from: expireDate, format: Constants.dateFormat.expiredDateFormat)
 							SettingsManager.subscripton.currentExprireSubscriptionDate = date
 							completionHandler(true)
 							
 						case .expired(expiryDate: let expireDate, items: _):
-							SettingsManager.inAppPurchase.expiredSubscription = false
+							SettingsManager.subscripton.expiredSubscription = false
 							SubscriptionManager.instance.setPurchasePremium(false)
 							debugPrint(expireDate)
 							completionHandler(false)
@@ -349,9 +364,11 @@ extension InAppSubscription {
 					
 					switch purchaseResult {
 						case .purchased(let expireDate, _):
-							SettingsManager.inAppPurchase.expireDateSubscription = expireDate
+							let date = Utils.getString(from: expireDate, format: Constants.dateFormat.expiredDateFormat)
+							SettingsManager.subscripton.currentExprireSubscriptionDate = date
 						case .expired(expiryDate: let expireDate, _):
-							SettingsManager.inAppPurchase.expireDateSubscription = expireDate
+							let date = Utils.getString(from: expireDate, format: Constants.dateFormat.expiredDateFormat)
+							SettingsManager.subscripton.currentExprireSubscriptionDate = date
 						default:
 							debugPrint("hello chao)")
 					}
@@ -438,23 +455,6 @@ extension InAppSubscription {
 		} catch {
 			debugPrint("error")
 			return false
-		}
-	}
-}
-
-extension InAppSubscription {
-	
-	func lifeCicleIAPExpireChecker() {
-		
-		if let date = SettingsManager.inAppPurchase.expireDateSubscription, date.timeIntervalSince1970 < Date.getCurrentDate() {
-			if SubscriptionManager.instance.purchasePremiumHandler() {
-				self.checkSubscriptionAvailability { (isSubscriptionAvail) in
-					if !isSubscriptionAvail {
-						debugPrint("subsctiption expired")
-						debugPrint(SettingsManager.inAppPurchase.expiredSubscription)
-					}
-				}
-			}
 		}
 	}
 }

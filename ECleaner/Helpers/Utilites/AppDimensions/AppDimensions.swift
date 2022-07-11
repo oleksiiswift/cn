@@ -877,6 +877,40 @@ extension AppDimensions {
 						return 30
 				}
 			}
+			
+			static var settingsThumbnailSize: CGFloat {
+				switch screenSize {
+					case .small:
+						return 20
+					case .medium:
+						return 25
+					case .plus:
+						return 26
+					case .large:
+						return 26
+					case .modern:
+						return 27
+					case .max:
+						return 27
+					case .madMax:
+						return 27
+				}
+			}
+			
+			static var lifeTimeConttolerHeigh: CGFloat {
+				switch screenSize {
+					case .small:
+						return 420
+					case .medium:
+						return 460
+					case .plus:
+						return 470
+					case .large, .modern, .max:
+						return 485
+					case .madMax:
+						return 485
+				}
+			}
 		}
 	}
 }

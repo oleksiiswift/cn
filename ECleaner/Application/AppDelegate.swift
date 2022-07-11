@@ -77,7 +77,7 @@ extension AppDelegate {
 	
 	private func developmentSettings() {
 		
-		S.inAppPurchase.allowAdvertisementBanner = false
+		S.subscripton.allowAdvertisementBanner = false
 	}
 	
 	private func setupObserver() {

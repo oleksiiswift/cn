@@ -74,7 +74,7 @@ class Subscription {
 					await updateBlock?(transaction)
 				} catch {
 					if let topController = getTheMostTopController() {
-						ErrorHandler.shared.showSubsritionAlertError(for: .verificationError, at: topController)
+						ErrorHandler.shared.showSubsriptionAlertError(for: .verificationError, at: topController)
 					}
 				}
 			}
@@ -84,6 +84,12 @@ class Subscription {
 
 	public func restorePurchase() async throws -> Bool {
 		return ((try? await AppStore.sync()) != nil)
+	}
+	
+	public func isLifeTimeSubscription() async throws -> Bool {
+		let productID = try await self.getCurrentSubscription()
+		let subscription = Subscriptions.allCases.first(where: {$0.rawValue == productID.first})
+		return subscription == Subscriptions.lifeTime
 	}
 	
 	private func getCurrentSubscription(renewable: Bool = true) async throws -> [String] {
@@ -125,13 +131,16 @@ class Subscription {
 			
 			if !ids.isEmpty, let purchasedProductID = ids.first, try await service.isProductPurchased(productId: purchasedProductID) {
 				
-				if let _ = self.products.first(where: {$0.id == purchasedProductID}) {
+				if let product = self.products.first(where: {$0.id == purchasedProductID}) {
+					let subscription = Subscriptions.allCases.first(where: {$0.rawValue == product.id})
+					manager.saveSubscription(subscription)
 					self.manager.setPurchasePremium(true)
 					return true
 				}
 			}
 			 
 			self.manager.setPurchasePremium(false)
+			manager.saveSubscription(nil)
 			return false
 		} catch {
 			debugPrint("error for cant load")
@@ -193,7 +202,6 @@ extension Subscription {
 												description: description, id: product.id)
 		return model
 	}
-	
 	
 	public func getDescription(for product: Product) -> ProductStoreDesriptionModel {
 

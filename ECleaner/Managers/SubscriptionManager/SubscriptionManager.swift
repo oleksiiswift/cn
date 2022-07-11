@@ -23,16 +23,33 @@ class SubscriptionManager: NSObject {
 	
 	private var purchasedPremium: Bool {
 		get {
-			return U.userDefaults.bool(forKey: C.key.inApPurchse.purchasePremium)
+			return U.userDefaults.bool(forKey: C.key.subscription.purchasePremium)
 		} set {
 			if purchasedPremium != newValue {
 				debugPrint("****")
 				debugPrint("premium status did change -> \(newValue)")
 				debugPrint("*****")
-				let userInfo = [C.key.inApPurchse.purchasePremium: newValue]
-				U.userDefaults.set(newValue, forKey: C.key.inApPurchse.purchasePremium)
+				let userInfo = [C.key.subscription.purchasePremium: newValue]
+				U.userDefaults.set(newValue, forKey: C.key.subscription.purchasePremium)
 				do {
 					U.notificationCenter.post(name: .premiumDidChange, object: nil, userInfo: userInfo)
+				}
+			}
+		}
+	}
+	
+	private var currentSubscription: Subscriptions? {
+		get {
+			let subscriptionID = U.userDefaults.string(forKey: C.key.subscription.subscriptionID)
+			if let subcription = Subscriptions.allCases.first(where: {$0.rawValue == subscriptionID}) {
+				return subcription
+			} else {
+				return nil
+			}
+		} set {
+			if currentSubscription != newValue {
+				if let value = currentSubscription?.rawValue {
+					U.userDefaults.set(value, forKey: C.key.subscription.subscriptionID)
 				}
 			}
 		}
@@ -53,6 +70,22 @@ class SubscriptionManager: NSObject {
 	
 	public func purchasePremiumHandler() -> Bool {
 		return self.purchasedPremium
+	}
+	
+	public func saveSubscription(_ currentSubscription: Subscriptions?) {
+		self.currentSubscription = currentSubscription
+	}
+								 
+	private func getCurrentSubscription() -> Subscriptions? {
+		return self.currentSubscription
+	}
+
+	public func isLifeTimeSubscription() -> Bool {
+		if let currentSubscription = currentSubscription {
+			return currentSubscription.rawValue == Subscriptions.lifeTime.rawValue
+		} else {
+			return false
+		}
 	}
 }
 
@@ -108,6 +141,7 @@ extension SubscriptionManager {
 					do {
 						let purchase = try await subscription.purchase(product: product)
 						if purchase.finishTransaction {
+							self.saveSubscription(type)
 							completionHadnler(true)
 						} else {
 							let isPurchasePremium = try await subscription.purchaseProductsStatus()
@@ -122,6 +156,9 @@ extension SubscriptionManager {
 			}
 		} else {
 			self.iapSubscription.purchaseProduct(productType: type) { purchased in
+				if purchased {
+					self.saveSubscription(type)
+				}
 				completionHadnler(purchased)
 				self.iapSubscription.updateSubscriptionStatus()
 			}
@@ -188,6 +225,17 @@ extension SubscriptionManager {
 		} else {
 			iapSubscription.getProductDescription { models in
 				completionHandler(models)
+			}
+		}
+	}
+	
+	public func getLifeTimeDescription(completionHandler: @escaping (_ model: ProductStoreDesriptionModel?) -> Void) {
+		if #available(iOS 15.0, *) {
+			let model = subscription.getProductDesctiption(for: .lifeTime)
+			completionHandler(model)
+		} else {
+			iapSubscription.getDescriptionForProduct(.lifeTime) { model in
+				completionHandler(model)
 			}
 		}
 	}

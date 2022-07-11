@@ -162,6 +162,7 @@ struct Localization {
 		struct Title {
 			static var premium = "Premium".localized()
 			static var restore = "Restore Purchase".localized()
+			static var lifeTime = "Lifetime".localized()
 			static var subscription = "Subscription".localized()
 			static var largeVideo = "Large Video Size".localized()
 			static var storage = "Storage".localized()

@@ -78,7 +78,7 @@ extension ErrorHandler {
 		}
 	}
 	
-	public func showSubsritionAlertError(for key: SubscriptionError, at viewController: UIViewController, expreDate: String? = nil) {
+	public func showSubsriptionAlertError(for key: SubscriptionError, at viewController: UIViewController, expreDate: String? = nil) {
 		AlertManager.showPurchaseAlert(of: key, at: viewController)
 	}
 

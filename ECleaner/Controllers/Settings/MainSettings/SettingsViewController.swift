@@ -34,6 +34,8 @@ class SettingsViewController: UIViewController, Storyboarded {
 		 switch segue.identifier {
 			 case C.identifiers.segue.showSizeSelector:
 				 self.setupShowVideoSizeSelectorController(segue: segue)
+			 case C.identifiers.segue.lifeTime:
+				 self.setupShowLifeTimeSubscriptionController(segue: segue)
 			  default:
 				   break
 		 }
@@ -58,8 +60,8 @@ extension SettingsViewController {
 	private func setupViewModel() {
 		
 		let premiumSectionCell = SettingsSection(cells: [.premium])
-		let restoreSectionCell = SettingsSection(cells: [.restore], headetHeight: 20)
-		
+		let subscriptionSection = SettingsSection(cells: [.restore, .lifetime], headetHeight: 20)
+		let lifeTimeSection = SettingsSection(cells: [.lifetime], headetHeight: 20)
 		
 		let permissionSectionCell = SettingsSection(cells: [.largeVideos,
 														 .permissions],
@@ -73,13 +75,16 @@ extension SettingsViewController {
 														 .termsOfUse],
 												 headerTitle: "Support?",
 												 headetHeight: 20)
-	
-		
+
 		var sections: [SettingsSection] {
 			if self.subscriptionManager.purchasePremiumHandler() {
-				return [premiumSectionCell, permissionSectionCell, supportSectionCells]
+				if self.subscriptionManager.isLifeTimeSubscription() {
+					return [premiumSectionCell, permissionSectionCell, supportSectionCells]
+				} else {
+					return [premiumSectionCell,lifeTimeSection, permissionSectionCell, supportSectionCells]
+				}
 			} else {
-				return [premiumSectionCell, restoreSectionCell, permissionSectionCell, supportSectionCells]
+				return [premiumSectionCell, subscriptionSection, permissionSectionCell, supportSectionCells]
 			}
 		}
 		
@@ -173,6 +178,18 @@ extension SettingsViewController {
 			
 		}
 	}
+	
+	private func setupShowLifeTimeSubscriptionController(segue: UIStoryboardSegue) {
+		
+		guard let segue = segue as? SwiftMessagesSegue else { return }
+		
+		segue.configure(layout: .bottomMessage)
+		segue.dimMode = .gray(interactive: true)
+		segue.interactiveHide = true
+		segue.messageView.configureNoDropShadow()
+		
+		segue.messageView.backgroundHeight = AppDimensions.Subscription.Features.lifeTimeConttolerHeigh
+	}
 }
 
 extension SettingsViewController: SettingActionsDelegate {
@@ -187,6 +204,8 @@ extension SettingsViewController: SettingActionsDelegate {
 				self.showDataStorageInfo()
 			case .permissions:
 				self.showPermissionController()
+			case .lifetime:
+				self.showLifeTimeSubscription()
 			case .restore:
 				self.showRestorePurchaseAction()
 			case .support:
@@ -232,6 +251,10 @@ extension SettingsViewController: SettingActionsDelegate {
 		self.coordinator?.showPermissionViewController(from: self.navigationController)
 	}
 	
+	private func showLifeTimeSubscription() {
+		performSegue(withIdentifier: Constants.identifiers.segue.lifeTime, sender: self)
+	}
+	
 	private func showRestorePurchaseAction() {
 	
 		Network.theyLive { isAlive in
@@ -246,9 +269,9 @@ extension SettingsViewController: SettingActionsDelegate {
 					if !restored {
 						if let date = date {
 							let dateString = Utils.getString(from: date, format: Constants.dateFormat.expiredDateFormat)
-							ErrorHandler.shared.showSubsritionAlertError(for: .restoreError, at: self, expreDate: dateString)
+							ErrorHandler.shared.showSubsriptionAlertError(for: .restoreError, at: self, expreDate: dateString)
 						} else {
-							ErrorHandler.shared.showSubsritionAlertError(for: .restoreError, at: self)
+							ErrorHandler.shared.showSubsriptionAlertError(for: .restoreError, at: self)
 						}
 					}
 				}
