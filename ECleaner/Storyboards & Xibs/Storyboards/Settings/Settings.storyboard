@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19455" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="3Ac-Ky-Gjy">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="3Ac-Ky-Gjy">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19454"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -61,7 +61,8 @@
                     <connections>
                         <outlet property="navigationBar" destination="agV-Qi-8Eb" id="4tH-PM-KgS"/>
                         <outlet property="tableView" destination="E2E-he-Gnh" id="bQa-eq-n7r"/>
-                        <segue destination="1Ga-p1-W0d" kind="show" identifier="ShowVideoSizeSelectorSegue" customClass="ShowVideoSizeSelectorViewControllerSegue" customModule="ECleaner" customModuleProvider="target" id="ibr-mT-Ofx"/>
+                        <segue destination="1Ga-p1-W0d" kind="show" identifier="ShowVideoSizeSelectorSegue" customClass="ShowVideoSizeSelectorViewControllerSegue" customModule="ECleaner" id="ibr-mT-Ofx"/>
+                        <segue destination="LFg-dX-Uz9" kind="show" identifier="ShowLifeTimeViewControllerSegue" customClass="ShowLifeTimeViewControllerSegue" customModule="ECleaner" customModuleProvider="target" id="Xgo-7K-o3M"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ief-a0-LHa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -77,6 +78,16 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cMg-ut-QpI" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2199" y="117"/>
+        </scene>
+        <!--LifeTimeSubscriptionViewController-->
+        <scene sceneID="DcG-yq-NC9">
+            <objects>
+                <viewControllerPlaceholder storyboardName="Subscription" referencedIdentifier="LifeTimeSubscriptionViewController" id="LFg-dX-Uz9" sceneMemberID="viewController">
+                    <navigationItem key="navigationItem" id="b9Q-lH-UBZ"/>
+                </viewControllerPlaceholder>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Mk4-C1-anY" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2199" y="225"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="eTH-fa-MLM">

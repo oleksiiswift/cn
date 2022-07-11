@@ -15,7 +15,7 @@ class InAppSubscription: NSObject {
 	
 	private var settings = SettingsManager.sharedInstance
 	private var accountSecretKey = C.project.storeSecretKey
-	public var priducts: [SKProduct] = []
+	public var products: [SKProduct] = []
 	private var restoreExpire = false
 	private var purchseProduct = false
 	
@@ -34,14 +34,166 @@ extension InAppSubscription {
 		let products: Set<String> = Set(Subscriptions.allCases.map({$0.rawValue}))
 		
 		SwiftyStoreKit.retrieveProductsInfo(products) { result in
-			self.priducts.append(contentsOf: Array(result.retrievedProducts))
-			debugPrint(self.priducts)
+			self.products = Array(result.retrievedProducts)
+			debugPrint(self.products)
 		}
 	}
 	
-	private func updateSubscriptionStatus(startApp: Bool = false) {
+	public func updateSubscriptionStatus(startApp: Bool = false) {
 		self.checkSubscriptionAvailability { purchasePremium in
 			SubscriptionManager.instance.setPurchasePremium(purchasePremium)
+		}
+	}
+	
+	public func checkForCurrentSubscription(completionHandler: @escaping (_ isPurchasePremium: Bool) -> Void) {
+		self.checkSubscriptionAvailability { purchasePremium in
+			SubscriptionManager.instance.setPurchasePremium(purchasePremium)
+			completionHandler(purchasePremium)
+		}
+	}
+	
+	public func getProductDescription(completionHandler: @escaping (_ models: [ProductStoreDesriptionModel]) -> Void) {
+		
+		if !self.products.isEmpty {
+			let models = self.getDescriptionFrom(products: self.products)
+			completionHandler(models)
+		} else {
+			let products: Set<String> = Set(Subscriptions.allCases.map({$0.rawValue}))
+			
+			SwiftyStoreKit.retrieveProductsInfo(products) { result in
+				self.products = []
+				self.products.append(contentsOf: Array(result.retrievedProducts))
+				let models = self.getDescriptionFrom(products: self.products)
+				completionHandler(models)
+			}
+		}
+	}
+	
+	public func getDescriptionForProduct(_ subscription: Subscriptions, completionHandler: @escaping (_ model: ProductStoreDesriptionModel?) -> Void) {
+		
+		let product = Subscriptions.lifeTime.rawValue
+		SwiftyStoreKit.retrieveProductsInfo(Set([product])) { results in
+			if let lifeTime = results.retrievedProducts.first(where: {$0.productIdentifier == Subscriptions.lifeTime.rawValue}) {
+				let model = self.getDescriptionFrom(product: lifeTime)
+				completionHandler(model)
+			} else {
+				completionHandler(nil)
+			}
+		}
+	}
+	
+	
+	private func getDescriptionFrom(products: [SKProduct]) -> [ProductStoreDesriptionModel] {
+		var descriptionsModel: [ProductStoreDesriptionModel] = []
+		
+		if !products.isEmpty {
+			for product in products {
+				if product.productIdentifier != Subscriptions.lifeTime.rawValue {
+					let model = getDescriptionFrom(product: product)
+					descriptionsModel.append(model)
+				}
+			}
+		}
+		return descriptionsModel
+	}
+	
+	private func getDescriptionFrom(product: SKProduct) ->  ProductStoreDesriptionModel {
+		
+		var description = product.localizedDescription
+		var period = ""
+		var localizedPrice: String {
+			if let price = product.localizedPrice {
+				return price
+				
+			} else {
+				return ""
+			}
+		}
+		
+		if let subscriptionPeriod = product.subscriptionPeriod {
+			if let unitName = getUnitName(unit: subscriptionPeriod.unit, value: subscriptionPeriod.numberOfUnits) {
+				period = unitName
+			}
+		}
+		
+		if let introductionPeriod = product.introductoryPrice?.subscriptionPeriod.numberOfUnits {
+			if let unit = product.introductoryPrice?.subscriptionPeriod.unit {
+				let name = getUnitName(unit: unit, isMultiply: introductionPeriod != 1)
+					description = "\(introductionPeriod) \(name) \nFree Trial"
+			}
+		}
+		
+		let model = ProductStoreDesriptionModel(name: product.localizedTitle,
+												price: localizedPrice,
+												period: period,
+												description: description,
+												id: product.productIdentifier
+		)
+		return model
+	}
+	
+	
+	public func getCurrentSubscriptionModel(completionHandler: @escaping (_  model: CurrentSubscriptionModel?) -> Void) {
+		
+		let name: String = SettingsManager.subscripton.currentSubscriptionName
+		let date: String = SettingsManager.subscripton.currentExprireSubscriptionDate
+		
+		if !date.isEmpty {
+			let model = CurrentSubscriptionModel(expireDate: date, name: name)
+			completionHandler(model)
+		} else {
+			let appleValidator = AppleReceiptValidator(service: .production, sharedSecret: self.accountSecretKey)
+			
+			SwiftyStoreKit.verifyReceipt(using: appleValidator) { [unowned self] result in
+				
+				switch result {
+					case .success(receipt: let receipt):
+						
+						let productIDs = Set(Subscriptions.allCases.map({$0.rawValue}))
+						let purchaseResult = SwiftyStoreKit.verifySubscriptions(productIds: productIDs, inReceipt: receipt)
+						
+						switch purchaseResult {
+							case .purchased(let expireDate,_):
+								self.restoreExpire = false
+								SettingsManager.subscripton.expiredSubscription = true
+								let date = Utils.getString(from: expireDate, format: Constants.dateFormat.expiredDateFormat)
+								SettingsManager.subscripton.currentExprireSubscriptionDate = date
+								let model = CurrentSubscriptionModel(expireDate: date, name: "")
+								completionHandler(model)
+							case .expired(expiryDate: let expireDate, items: _):
+								SettingsManager.subscripton.expiredSubscription = false
+								let date = Utils.getString(from: expireDate, format: Constants.dateFormat.expiredDateFormat)
+								SettingsManager.subscripton.currentExprireSubscriptionDate = date
+								SubscriptionManager.instance.setPurchasePremium(false)
+								completionHandler(nil)
+							default:
+								completionHandler(nil)
+						}
+					case .error(let error):
+						debugPrint(error.localizedDescription)
+						completionHandler(nil)
+				}
+			}
+		}
+	}
+
+	
+	private func getUnitName(unit: SKProduct.PeriodUnit, value: Int) -> String? {
+		
+		switch unit {
+			case .day:
+				if value == 7 {
+					return Localization.Subscription.Description.week
+				}
+				return Localization.Subscription.Description.day
+			case .week:
+				return Localization.Subscription.Description.week
+			case .month:
+				return Localization.Subscription.Description.month
+			case .year:
+				return Localization.Subscription.Description.year
+			default:
+				return nil
 		}
 	}
 }
@@ -61,8 +213,7 @@ extension InAppSubscription {
 			switch result {
 				case .success(_):
 					updateExpireSubscription()
-					SubscriptionManager.instance.setPurchasePremium(true)
-					SettingsManager.inAppPurchase.expiredSubscription = true
+					SettingsManager.subscripton.expiredSubscription = true
 					completion(true)
 				case .error(error: let error):
 					completion(false)
@@ -71,7 +222,7 @@ extension InAppSubscription {
 		}
 	}
 	
-	public func restoreSubscription(_ completionHandler: @escaping (_ restored: Bool) -> Void) {
+	public func restoreSubscription(_ completionHandler: @escaping (_ restored: Bool, _ expireDate: Date?) -> Void) {
 		
 		SwiftyStoreKit.restorePurchases { [unowned self] result in
 			for purchase in result.restoredPurchases {
@@ -83,9 +234,8 @@ extension InAppSubscription {
 				}
 			}
 			
-			if !result.restoreFailedPurchases.isEmpty {
-#warning(" TODO")
-				/// create alert restore purchse failed
+			if result.restoreFailedPurchases.isEmpty {
+				completionHandler(false, nil)
 			} else if !result.restoredPurchases.isEmpty {
 				
 				let appleValidator = AppleReceiptValidator(service: .sandbox, sharedSecret: self.accountSecretKey)
@@ -95,56 +245,37 @@ extension InAppSubscription {
 						case .success(receipt: let receipt):
 							let productIDs = Set(Subscriptions.allCases.map({$0.rawValue}))
 							let purchaseResultSubscription = SwiftyStoreKit.verifySubscriptions(productIds: productIDs, inReceipt: receipt)
-							
 							switch purchaseResultSubscription {
-								case .purchased(expiryDate: let exprireDate, items: _):
-									
-									SettingsManager.inAppPurchase.expiredSubscription = true
-									SettingsManager.inAppPurchase.expireDateSubscription = exprireDate
+								case .purchased(expiryDate: let exprireDate, items: let items):
+									SettingsManager.subscripton.expiredSubscription = true
+									let date = Utils.getString(from: exprireDate, format: Constants.dateFormat.expiredDateFormat)
+									SettingsManager.subscripton.currentExprireSubscriptionDate = date
 									SubscriptionManager.instance.setPurchasePremium(true)
-									completionHandler(true)
+									let subscription = Subscriptions.allCases.first(where: {$0.rawValue == items.first?.productId})
+									SubscriptionManager.instance.saveSubscription(subscription)
+									completionHandler(true, nil)
 								case .expired(expiryDate: let expireDate, items: _):
-									SettingsManager.inAppPurchase.expiredSubscription = false
-									SettingsManager.inAppPurchase.expireDateSubscription = expireDate
+									let date = Utils.getString(from: expireDate, format: Constants.dateFormat.expiredDateFormat)
+									SettingsManager.subscripton.currentExprireSubscriptionDate = date
 									SubscriptionManager.instance.setPurchasePremium(false)
-									completionHandler(false)
-									U.delay(0.2) {
-#warning("TODO")
-										/// show alert
-//										let message = "\(L.iap.alertMessages.expire): \(self.dateLocale.string(from: expireDate))"
-//										A.showDefaultAler(message: message)
-									}
+									SubscriptionManager.instance.saveSubscription(nil)
+									completionHandler(false, expireDate)
 								default:
-#warning("showAlert")
-//									A.showDefaultAler(L.iap.alertTitles.restoreFail, message: L.iap.alertMessages.restoreFailed)
-									completionHandler(false)
+									completionHandler(false, nil)
 							}
 						case .error(error: let error):
-							completionHandler(false)
+							completionHandler(false, nil)
 							debugPrint(error)
 					}
 				}
 			} else {
-				completionHandler(false)
-#warning("showAlert")
-//				A.showDefaultAler(L.iap.alertTitles.nothingRestore, message: L.iap.alertMessages.noPrevious)
+				completionHandler(false, nil)
 			}
 		}
 	}
 }
 
 extension InAppSubscription {
-	
-	func checkState() {
-		if let _ = SwiftyStoreKit.localReceiptData {
-#warning("TODO")
-				//					Network.theyLive { (isAlive) in
-				//						if isAlive {
-				//							self.updateSubscriptionStatus()
-				//						}
-				//					}
-		}
-	}
 	
 	private func completePurchaseTransAction() {
 		
@@ -179,7 +310,7 @@ extension InAppSubscription {
 				return Subscriptions.allCases.contains(addingProduct)
 			}
 			
-			if SettingsManager.inAppPurchase.isVerificationPassed, let _ = SwiftyStoreKit.localReceiptData {
+			if SettingsManager.subscripton.isVerificationPassed, let _ = SwiftyStoreKit.localReceiptData {
 				self.updateSubscriptionStatus(startApp: true)
 			}
 		}
@@ -200,12 +331,13 @@ extension InAppSubscription {
 					switch purchaseResult {
 						case .purchased(let expireDate,_):
 							self.restoreExpire = false
-							SettingsManager.inAppPurchase.expiredSubscription = true
-							SettingsManager.inAppPurchase.expireDateSubscription = expireDate
+							SettingsManager.subscripton.expiredSubscription = true
+							let date = Utils.getString(from: expireDate, format: Constants.dateFormat.expiredDateFormat)
+							SettingsManager.subscripton.currentExprireSubscriptionDate = date
 							completionHandler(true)
 							
 						case .expired(expiryDate: let expireDate, items: _):
-							SettingsManager.inAppPurchase.expiredSubscription = false
+							SettingsManager.subscripton.expiredSubscription = false
 							SubscriptionManager.instance.setPurchasePremium(false)
 							debugPrint(expireDate)
 							completionHandler(false)
@@ -232,9 +364,11 @@ extension InAppSubscription {
 					
 					switch purchaseResult {
 						case .purchased(let expireDate, _):
-							SettingsManager.inAppPurchase.expireDateSubscription = expireDate
+							let date = Utils.getString(from: expireDate, format: Constants.dateFormat.expiredDateFormat)
+							SettingsManager.subscripton.currentExprireSubscriptionDate = date
 						case .expired(expiryDate: let expireDate, _):
-							SettingsManager.inAppPurchase.expireDateSubscription = expireDate
+							let date = Utils.getString(from: expireDate, format: Constants.dateFormat.expiredDateFormat)
+							SettingsManager.subscripton.currentExprireSubscriptionDate = date
 						default:
 							debugPrint("hello chao)")
 					}
@@ -246,19 +380,10 @@ extension InAppSubscription {
 }
 
 extension InAppSubscription {
-	
-#warning("TODO")
-//	public func getProductInfo(by type: Subscriptions) -> ProductStoreDesriptionModel? {
-//
-//		guard let product = self.getProduct(by: type) else { return nil }
-//
-//		let price = getProductPrice(for: type)
-//
-//	}
-	
+		
 	private func getProduct(by type: Subscriptions) -> SKProduct? {
 		
-		if let product = self.priducts.first(where: {$0.productIdentifier == type.rawValue}) {
+		if let product = self.products.first(where: {$0.productIdentifier == type.rawValue}) {
 			return product
 		}
 		return nil
@@ -290,27 +415,22 @@ extension InAppSubscription {
 	private func getUnitName(unit: SKProduct.PeriodUnit?, isMultiply: Bool) -> String {
 		
 		guard let unit = unit else { return "" }
-		var name = String()
 		
 		switch unit {
 			case .day:
-				name = "day"
+				if unit.hashValue == 7 {
+					return Localization.Subscription.DescriptionSK.week
+				}
+				return Localization.Subscription.DescriptionSK.day
 			case .week:
-				name = "week"
+				return Localization.Subscription.DescriptionSK.week
 			case .month:
-				name = "month"
+				return Localization.Subscription.DescriptionSK.month
 			case .year:
-				name = "year"
+				return Localization.Subscription.DescriptionSK.year
 			default:
 				return ""
 		}
-		
-		if isMultiply {
-			if Locale.current.languageCode == "en" {
-				name.append("s")
-			}
-		}
-		return name
 	}
 }
 
@@ -335,23 +455,6 @@ extension InAppSubscription {
 		} catch {
 			debugPrint("error")
 			return false
-		}
-	}
-}
-
-extension InAppSubscription {
-	
-	func lifeCicleIAPExpireChecker() {
-		
-		if let date = SettingsManager.inAppPurchase.expireDateSubscription, date.timeIntervalSince1970 < Date.getCurrentDate() {
-			if SubscriptionManager.instance.purchasePremium() {
-				self.checkSubscriptionAvailability { (isSubscriptionAvail) in
-					if !isSubscriptionAvail {
-						debugPrint("subsctiption expired")
-						debugPrint(SettingsManager.inAppPurchase.expiredSubscription)
-					}
-				}
-			}
 		}
 	}
 }

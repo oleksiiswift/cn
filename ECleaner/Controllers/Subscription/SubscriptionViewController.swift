@@ -7,16 +7,23 @@
 
 import UIKit
 
+enum SubscriptionActionProcessingState {
+	case processing
+	case active
+	case disabled
+}
+
 class SubscriptionViewController: UIViewController, Storyboarded {
 	
 	@IBOutlet weak var backgroundView: UIView!
 	@IBOutlet weak var backgroundImageView: UIImageView!
+	@IBOutlet weak var premiumImageView: UIImageView!
 	@IBOutlet weak var navigationBar: PremiumNavigationBar!
 	@IBOutlet weak var dimmerView: UIView!
 	@IBOutlet weak var titleContainerView: UIView!
 	@IBOutlet weak var featuresContainerView: UIView!
 	@IBOutlet weak var subscriptionItemsContainerView: UIView!
-	@IBOutlet weak var subcribeContainerView: BottomButtonBarView!
+	@IBOutlet weak var subscribeContainerView: BottomButtonBarView!
 	@IBOutlet weak var linksContainerView: UIView!
 	@IBOutlet weak var infoContainerView: UIView!
 	
@@ -27,7 +34,9 @@ class SubscriptionViewController: UIViewController, Storyboarded {
 	@IBOutlet weak var subscribeContainerMultiplyerHeightConstraint: NSLayoutConstraint!
 	@IBOutlet weak var linksContainerMultiplyerHeightConstraint: NSLayoutConstraint!
 	
-	@IBOutlet weak var backggroundImageViewTopConstraint: NSLayoutConstraint!
+	@IBOutlet weak var titleStackContainerTopConstraint: NSLayoutConstraint!
+	@IBOutlet weak var titleStackContainerBottomConstraint: NSLayoutConstraint!
+	@IBOutlet weak var backgroundImageViewTopConstraint: NSLayoutConstraint!
 	@IBOutlet weak var backgroundImageViewLeadingConstraint: NSLayoutConstraint!
 	
 	@IBOutlet weak var termsOfUseButton: UIButton!
@@ -48,6 +57,7 @@ class SubscriptionViewController: UIViewController, Storyboarded {
 	
 	private var subscriptionManager =  SubscriptionManager.instance
 	private var currentSubscription: Subscriptions = .year
+	private var statusSegmentLoaded: SubscriptionSegmentStatus = .willLoading
 	
 	override public var preferredStatusBarStyle: UIStatusBarStyle {
 		return .darkContent
@@ -57,20 +67,21 @@ class SubscriptionViewController: UIViewController, Storyboarded {
         super.viewDidLoad()
 		
 		setupLayout()
-		loadProducts()
+		loadSubscriptionProducts()
 		setupUI()
 		setupNavigation()
 		setupTitle()
 		setupPremiumFeautiresViewModel()
 		setupTableView()
 		updateColors()
+		setupObserver()
+		setupDelegate()
     }
     
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 		
 		self.navigationController?.setNavigationBarHidden(true, animated: animated)
-		self.selectPriorytySubscription()
 	}
 	
 	@IBAction func didTapShowPrivacyActionButton(_ sender: Any) {
@@ -86,32 +97,104 @@ extension SubscriptionViewController: BottomActionButtonDelegate {
 	
 	func didTapActionButton() {
 		
-		subscriptionManager.purchasePremium(of: self.currentSubscription, with: .sandbox)
+		guard statusSegmentLoaded != .disable else { return }
+		
+		self.purchaseProcessingHandler(for: .processing)
+		
+		Network.theyLive { isAlive in
+			if isAlive {
+				self.didTapPurchasePremium()
+			} else {
+				ErrorHandler.shared.showNetworkErrorAlert(.networkError, at: self)
+				self.purchaseProcessingHandler(for: .active)
+			}
+		}
 	}
 }
 
 extension SubscriptionViewController {
 	
-	private func loadProducts() {
-		
-		var model = subscriptionManager.descriptionModel()
-		
-		if let monthlyIndex = model.firstIndex(where: {$0.id == Subscriptions.month.rawValue}) {
-			model.move(from: monthlyIndex, to: 0)
-		}
-		
-		if let yearlyIndex = model.firstIndex(where: {$0.id == Subscriptions.year.rawValue}) {
-			model.move(from: yearlyIndex, to: 1)
-		}
-		
-		if !model.isEmpty {
-			segmentControll.setSubscription(subscriptions: model)
-			setupSubscriptionSegment()
-		} else {
-			
+	private func didTapPurchasePremium() {
+		self.subscriptionManager.purchasePremium(of: self.currentSubscription) { purchased in
+			self.purchaseProcessingHandler(for: .active)
+			if purchased {
+				self.closeSubscriptionController()
+			} else {
+				ErrorHandler.shared.showSubsriptionAlertError(for: .purchaseError, at: self)
+			}
 		}
 	}
 	
+	private func didTapRestorePurchase() {
+		
+		self.subscriptionManager.restorePurchase { restored, requested, date in
+			
+			self.setLeftButtonAnimateButton(status: .stop)
+			self.restoreProcessingHandler(for: .active)
+		
+			guard requested else { return }
+			
+			if !restored {
+				if let date = date {
+					let dateString = Utils.getString(from: date, format: Constants.dateFormat.expiredDateFormat)
+					ErrorHandler.shared.showSubsriptionAlertError(for: .restoreError, at: self, expreDate: dateString)
+				} else {
+					ErrorHandler.shared.showSubsriptionAlertError(for: .restoreError, at: self)
+				}
+			} else {
+				self.closeSubscriptionController()
+			}
+		}
+	}
+		
+	private func loadSubscriptionProducts() {
+		
+		self.segmentControll.setSegment(status: .willLoading)
+		
+		Network.theyLive { isAlive in
+			Utils.UI {
+				if isAlive {
+					self.tryLoadingProducts { status in
+						self.statusSegmentLoaded = status
+						self.segmentControll.setSegment(status: status)
+						self.subscribeContainerView.setLockButtonAnimate(state: .active)
+					}
+				} else {
+					self.segmentControll.setSegment(status: .disable)
+					self.subscribeContainerView.setLockButtonAnimate(state: .disabled)
+					self.statusSegmentLoaded = .disable
+				}
+			}
+		}
+	}
+	
+	private func tryLoadingProducts(completionHandler: @escaping (_ status: SubscriptionSegmentStatus) -> Void) {
+		
+		subscriptionManager.descriptionModel { model in
+			
+			var currentModel = model
+			if let monthlyIndex = model.firstIndex(where: {$0.id == Subscriptions.month.rawValue}) {
+				currentModel.move(from: monthlyIndex, to: 0)
+			}
+			
+			if let yearlyIndex = model.firstIndex(where: {$0.id == Subscriptions.year.rawValue}) {
+				currentModel.move(from: yearlyIndex, to: 1)
+			}
+			
+			if model.isEmpty {
+				completionHandler(.empty)
+				Utils.delay(1) {
+					self.loadSubscriptionProducts()
+				}
+			} else {
+				self.segmentControll.setSubscription(subscriptions: currentModel)
+				self.setupSubscriptionSegment()
+				completionHandler(.didLoad)
+				self.selectPriorytySubscription()
+			}
+		}
+	}
+
 	private func selectPriorytySubscription() {
 		
 		guard segmentControll.subscriptions != nil else { return }
@@ -120,21 +203,68 @@ extension SubscriptionViewController {
 			segmentControll.setupDefaultIndex(index: index)
 		}
 	}
-}
-
-extension SubscriptionViewController: PremiumNavigationBarDelegate {
 	
-	func didTapLeftBarButton(_sender: UIButton) {
-		debugPrint("restore")
-	}
-	
-	func didTapRightBarButton(_sender: UIButton) {
-		if coordinator?.currentState == .onboarding {
+	private func closeSubscriptionController() {
+		if coordinator?.currentState == .onboarding || coordinator?.currentState == .subscription {
 			coordinator?.currentState = .application
 			UIPresenter.closePresentedWindow()
 		} else {
 			UIPresenter.closePresentedWindow()
 		}
+	}
+	
+	@objc func networkStatusDidChange() {
+		loadSubscriptionProducts()
+	}
+}
+
+extension SubscriptionViewController {
+	
+	private func restoreProcessingHandler(for state: SubscriptionActionProcessingState) {
+		
+		setActionButtonProcessingFor(state: state)
+		Utils.UI {
+			self.subscribeContainerView.actionButton.isEnabled = state == .active
+		}
+	}
+	
+	private func purchaseProcessingHandler(for state: SubscriptionActionProcessingState) {
+		
+		self.subscribeContainerView.setLockButtonAnimate(state: state)
+		self.setActionButtonProcessingFor(state: state)
+	}
+	
+	private func setActionButtonProcessingFor(state: SubscriptionActionProcessingState) {
+		Utils.UI {
+			self.navigationBar.leftBarButton.isEnabled = state == .active
+			self.navigationBar.rightBarButton.isEnabled = state == .active
+			self.termsOfUseButton.isEnabled = state == .active
+			self.policyButton.isEnabled = state == .active
+		}
+	}
+}
+
+extension SubscriptionViewController: PremiumNavigationBarDelegate {
+	
+	func didTapLeftBarButton(_sender: UIButton) {
+		
+		self.setLeftButtonAnimateButton(status: .start)
+		self.restoreProcessingHandler(for: .processing)
+		
+		Network.theyLive { isAlive in
+			if isAlive {
+				self.didTapRestorePurchase()
+			} else {
+				ErrorHandler.shared.showNetworkErrorAlert(.networkError, at: self)
+				
+				self.setLeftButtonAnimateButton(status: .stop)
+				self.restoreProcessingHandler(for: .active)
+			}
+		}
+	}
+	
+	func didTapRightBarButton(_sender: UIButton) {
+		self.closeSubscriptionController()
 	}
 }
 
@@ -149,7 +279,6 @@ extension SubscriptionViewController {
 		segmentControll.setTextColorForTitle(theme.subscribeTitleTextColor)
 		segmentControll.setTextGradientColorsforPrice(theme.subscribeGradientColors, font: FontManager.subscriptionFont(of: .buttonPrice))
 		segmentControll.setTextColorForSubtitle(theme.subscribeDescriptionTextColor)
-		segmentControll.delegate = self
 	}
 	
 	private func setupTitle() {
@@ -157,19 +286,22 @@ extension SubscriptionViewController {
 		let titleString = Localization.Subscription.Main.getPremium.components(separatedBy: " ")
 		let first = titleString.first
 		let second = titleString.last
-		
-		let firstColor = [UIColor().colorFromHexString("FF685C"), UIColor().colorFromHexString("764040")]
-		let secondColor = [UIColor().colorFromHexString("687EAF"), UIColor().colorFromHexString("47526B")]
-	
+			
 		if let topTitle = first {
-			topTitlteTextLabel.contentInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0)
-			topTitlteTextLabel.addGradientText(string: topTitle, with: firstColor, font: FontManager.subscriptionFont(of: .title))
+			topTitlteTextLabel.font = FontManager.subscriptionFont(of: .title)
+			topTitlteTextLabel.textColor = theme.premiumColor
+			topTitlteTextLabel.text = topTitle
 		}
 		
 		if let bottomTitle = second {
-			bottomTitleTextLabel.contentInsets = UIEdgeInsets(top: 0, left: 30, bottom: 0, right: 0)
-			bottomTitleTextLabel.addGradientText(string: bottomTitle, with: secondColor, font: FontManager.subscriptionFont(of: .title))
+			bottomTitleTextLabel.font = FontManager.subscriptionFont(of: .title)
+			bottomTitleTextLabel.textColor = theme.titleTextColor
+			bottomTitleTextLabel.text = bottomTitle
 		}
+	}
+	
+	private func setLeftButtonAnimateButton(status: AnimationStatus) {
+		navigationBar.setLeftButton(animation: status)
 	}
 	
 	private func setupPremiumFeautiresViewModel() {
@@ -190,6 +322,16 @@ extension SubscriptionViewController: SubscriptionSegmentControllDelegate {
 }
 
 extension SubscriptionViewController: Themeble {
+	
+	private func setupObserver() {
+		
+		U.notificationCenter.addObserver(self, selector: #selector(networkStatusDidChange), name: .ReachabilityDidChange, object: nil)
+	}
+	
+	private func setupDelegate() {
+		
+		segmentControll.delegate = self
+	}
 	
 	private func setupNavigation() {
 		
@@ -212,11 +354,12 @@ extension SubscriptionViewController: Themeble {
 	
 	private func setupUI() {
 		
+		premiumImageView.isHidden = true
 		backgroundImageView.image = Images.subsctiption.rocket
 		
-		subcribeContainerView.delegate = self
-		subcribeContainerView.setButtonSideOffset(25)
-		subcribeContainerView.title(LocalizationService.Buttons.getButtonTitle(of: .activate).uppercased())
+		subscribeContainerView.delegate = self
+		subscribeContainerView.setButtonSideOffset(25)
+		subscribeContainerView.title(LocalizationService.Buttons.getButtonTitle(of: .activate).uppercased())
 		termsOfUseButton.setTitle(Localization.Subscription.Helper.termsOfUse, for: .normal)
 		termsOfUseButton.titleLabel?.font = FontManager.subscriptionFont(of: .links)
 		policyButton.setTitle(Localization.Subscription.Helper.privicy, for: .normal)
@@ -235,11 +378,11 @@ extension SubscriptionViewController: Themeble {
 		self.view.backgroundColor = .clear
 		self.backgroundView.backgroundColor = theme.backgroundColor
 		
-		subcribeContainerView.configureShadow = true
-		subcribeContainerView.addButtonShadow()
-		subcribeContainerView.addButtonGradientBackground(colors: theme.onboardingButtonColors)
-		subcribeContainerView.buttonTintColor = theme.activeTitleTextColor
-		subcribeContainerView.updateColorsSettings()
+		subscribeContainerView.configureShadow = true
+		subscribeContainerView.addButtonShadow()
+		subscribeContainerView.addButtonGradientBackground(colors: theme.onboardingButtonColors)
+		subscribeContainerView.buttonTintColor = theme.activeTitleTextColor
+		subscribeContainerView.updateColorsSettings()
 		termsTitleTextLabel.textColor = theme.featureTitleTextColor
 		termsTitleTextLabel.font = FontManager.subscriptionFont(of: .helperText)
 		
@@ -261,41 +404,51 @@ extension SubscriptionViewController {
 				
 			case .small:
 				dimmerVewHeightConstraint.constant = 85
+				titleContainerMultiplyerHeightConstraint = titleContainerMultiplyerHeightConstraint.setMultiplier(multiplier: 0.8)
 				subscribeContainerMultiplyerHeightConstraint = subscribeContainerMultiplyerHeightConstraint.setMultiplier(multiplier: 0.7)
 				subscriptionItemsContainerMultiplyerHeightConstraint = subscriptionItemsContainerMultiplyerHeightConstraint.setMultiplier(multiplier: 1.5)
-				backggroundImageViewTopConstraint.constant = -180
+				
+				titleStackContainerBottomConstraint.constant = -10
+				titleStackContainerTopConstraint.constant = 0
+				
+				backgroundImageViewTopConstraint.constant = -180
 				backgroundImageViewLeadingConstraint.constant = -60
 			case .medium:
 				dimmerVewHeightConstraint.constant = 103
+				titleContainerMultiplyerHeightConstraint = titleContainerMultiplyerHeightConstraint.setMultiplier(multiplier: 0.8)
 				subscribeContainerMultiplyerHeightConstraint = subscribeContainerMultiplyerHeightConstraint.setMultiplier(multiplier: 0.6)
 				subscriptionItemsContainerMultiplyerHeightConstraint = subscriptionItemsContainerMultiplyerHeightConstraint.setMultiplier(multiplier: 1.4)
-				backggroundImageViewTopConstraint.constant = -210
+				
+				titleStackContainerBottomConstraint.constant = -10
+				titleStackContainerTopConstraint.constant = 0
+				
+				backgroundImageViewTopConstraint.constant = -240
 				backgroundImageViewLeadingConstraint.constant = -90
 			case .plus:
 				dimmerVewHeightConstraint.constant = 120
 				subscriptionItemsContainerMultiplyerHeightConstraint = subscriptionItemsContainerMultiplyerHeightConstraint.setMultiplier(multiplier: 1.3)
-				backggroundImageViewTopConstraint.constant = -240
+				backgroundImageViewTopConstraint.constant = -260
 				backgroundImageViewLeadingConstraint.constant = -100
 			case .large:
 				dimmerVewHeightConstraint.constant = 135
 				
-				backggroundImageViewTopConstraint.constant = -150
+				backgroundImageViewTopConstraint.constant = -170
 				backgroundImageViewLeadingConstraint.constant = -80
 			case .modern:
 				dimmerVewHeightConstraint.constant = 140
 				
-				backggroundImageViewTopConstraint.constant = -170
+				backgroundImageViewTopConstraint.constant = -190
 				backgroundImageViewLeadingConstraint.constant = -90
 			case .max:
 				dimmerVewHeightConstraint.constant = 153
 				
-				backggroundImageViewTopConstraint.constant = -175
+				backgroundImageViewTopConstraint.constant = -195
 				backgroundImageViewLeadingConstraint.constant = -100
 				
 			case .madMax:
 				dimmerVewHeightConstraint.constant = 155
 				
-				backggroundImageViewTopConstraint.constant = -180
+				backgroundImageViewTopConstraint.constant = -200
 				backgroundImageViewLeadingConstraint.constant = -100
 		}
 	}

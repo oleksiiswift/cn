@@ -110,11 +110,13 @@
 "Next" = "Next";
 "Restore" = "Restore";
 "Activate" = "Activate";
+"Change Plan" = "Change Plan";
 
 	//		MARK: - settings -
 	// MARK: title
 "Premium" = "Premium";
 "Restore Purchase" = "Restore Purchase";
+"Lifetime" = "Lifetime";
 "Subscription" = "Subscription";
 "Large Video Size" = "Large Video Size";
 "Storage" = "Storage";
@@ -296,6 +298,7 @@
 "Operation is Canceling!" = "Operation is Canceling!";
 "Stop search process?" = "Stop search process?";
 "Notice!" = "Notice!";
+"Error! No network connection!" =  "Error! No Network Connection!";
 	// MARK: AlertMessage
 "Video compression is successfully completed! filesize: " = "Video compression is successfully completed! filesize: ";
 "Thess contacts will be merged. After the merging process is completed, unnecessary contacts will be automatically deleted." = "Thess contacts will be merged. After the merging process is completed, unnecessary contacts will be automatically deleted.";
@@ -372,6 +375,8 @@
 //	MARK: Subscription
 //	MARK: MAIN
 "Get Premium" = "Get Premium";
+"With Premium" = "With Premium";
+"Unlock All Features" = "Unlock All Features";
 //	MARK: PremiumFeatures
 "Deep Clean" = "Deep Clean";
 "Multiselect Elements" = "Multiselect Elements";
@@ -382,3 +387,11 @@
 "per week" = "per week";
 "per month" = "per month";
 "per year" = "per year";
+
+"day" = "day";
+"week" = "week";
+"month" = "month";
+"year" = "year";
+// MARK: Premium
+"Subscription Expire on:" = "Subscription Expire on:";
+"Already Premium" = "Already Premium";

@@ -101,6 +101,21 @@ struct  LocalizationService {
 			}
 		}
 		
+		struct Networking {
+			
+			static func alertDescription(for error: ErrorHandler.NetworkError) -> AlertDescription {
+				switch error {
+					case .networkError:
+						return AlertDescription(title: Localization.ErrorsHandler.Title.noNetwork,
+												description: Localization.ErrorsHandler.PurchaseError.networkError,
+												action: LocalizationService.Buttons.getButtonTitle(of: .ok),
+												cancel: Localization.empty)
+				}
+			}
+			
+		}
+		
+		
 		struct DeleteAlerts {
 			
 			static func alertDescriptionFor(alert: AlertType) -> AlertDescription {

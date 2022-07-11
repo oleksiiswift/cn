@@ -16,6 +16,15 @@ extension ErrorHandler {
 		case verificationError
 		case error
 		case productsError
+		case restoreError
+		case purchaseError
+		
+		var alertDescription: AlertDescription {
+			return AlertDescription(title: "Subsctiption Error!",
+									description: ErrorHandler.shared.loadError(for: self),
+									action: LocalizationService.Buttons.getButtonTitle(of: .ok),
+									cancel: Localization.empty)
+		}
 	}
 	
 	@available(iOS 15, *)
@@ -39,6 +48,10 @@ extension ErrorHandler {
 				return Localization.ErrorsHandler.PurchaseError.error
 			case .productsError:
 				return Localization.ErrorsHandler.PurchaseError.productsError
+			case .restoreError:
+				return Localization.ErrorsHandler.PurchaseError.restorePurchseFailed
+			case .purchaseError:
+				return Localization.ErrorsHandler.PurchaseError.defaultPurchseError
 		}
 	}
 	
@@ -65,15 +78,10 @@ extension ErrorHandler {
 		}
 	}
 	
-	public func showSubsritionAlertError(for key: SubscriptionError) {
-		debugPrint("show error alert with key \(self.loadError(for: key))")
-		let errorAction = UIAlertAction(title: "Ok", style: .default) { _ in }
-		
-		#warning("TODO ALERT Subscript")
-//
-//		A.showAlert("store error", message: self.loadError(for: key), actions: [errorAction], withCancel: false, style: .alert) {}
+	public func showSubsriptionAlertError(for key: SubscriptionError, at viewController: UIViewController, expreDate: String? = nil) {
+		AlertManager.showPurchaseAlert(of: key, at: viewController)
 	}
-	
+
 	@available(iOS 15.0, *)
 	public func showSubscriptionStoreError(for key: StoreError) {
 		debugPrint("show error alert with key \(self.loadStoreError(for: key))")

@@ -7,6 +7,11 @@
 
 import UIKit
 
+enum AdvertisementStatus {
+	case active
+	case hiden
+}
+
 class AdvertisementViewController: UIViewController {
     
     @IBOutlet weak var advertisementView: UIView!
@@ -18,9 +23,10 @@ class AdvertisementViewController: UIViewController {
         super.viewDidLoad()
         
         setupUI()
-		setupAdvertisementView()
+		subscriptionDidChange()
         updateColors()
         setupNavigation()
+		addSubscriptionChangeObserver()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -28,29 +34,26 @@ class AdvertisementViewController: UIViewController {
     }
 }
 
-extension AdvertisementViewController: UpdateColorsDelegate {
+extension AdvertisementViewController: SubscriptionObserver {
+	
+	func subscriptionDidChange() {
+		
+		if SubscriptionManager.instance.purchasePremiumHandler() {
+			self.advertisementHandler(status: .hiden)
+		} else {
+			#warning("TODO hide")
+			self.advertisementHandler(status: .hiden)
+		}
+	}
+}
+
+extension AdvertisementViewController: Themeble {
     
-    private func setupUI() {
-        
-//        TODO:
-		
-		
-		
-		
-		
-        
-        // if device has top notch and no premium users
-//        containerViewBottomConstraint.constant = -U.bottomSafeAreaHeight ???
-        self.view.layoutIfNeeded()
-        // else {
-//      advertisementBottomConstraint.constant = 0
-//
-//        if not premium  with advetisement
-//        need show container advertisment higer than other
-    }
-    
+    private func setupUI() {}
+	
     func updateColors() {
         self.view.backgroundColor = theme.backgroundColor
+		
     }
     
     func setupNavigation() {
@@ -60,14 +63,24 @@ extension AdvertisementViewController: UpdateColorsDelegate {
 
 extension AdvertisementViewController {
 	
-	private func setupAdvertisementView() {
+	private func advertisementHandler(status: AdvertisementStatus) {
 		
-		let advertisementHeigh: CGFloat = S.inAppPurchase.allowAdvertisementBanner ? 50 : -U.bottomSafeAreaHeight
-		let containerHeignt = advertisementHeigh + U.bottomSafeAreaHeight
-		advertisementHightConstraint.constant = containerHeignt
+		Utils.UI {
+			var advertisemntContaineHeight: CGFloat {
+				switch status {
+					case .active:
+						return 45 + U.bottomSafeAreaHeight
+					case .hiden:
+						return 0
+				}
+			}
+			
+			self.advertisementHightConstraint.constant = advertisemntContaineHeight
+			
+			UIView.animate(withDuration: 0.3) {
+				self.view.layoutIfNeeded()
+			}
+		}
 	}
 }
-extension AdvertisementViewController {
-	
-	
-}
+

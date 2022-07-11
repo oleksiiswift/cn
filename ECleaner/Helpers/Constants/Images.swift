@@ -55,6 +55,7 @@ struct Images {
 			static let info = UIImage(named: "infoItem")!
 			static let arrowLeft = UIImage(named: "arrowLeftItem")!
 			static let circleArrow = UIImage(named: "circleRoundedThin")!
+			
         }
 		
 		struct helpersItems {
@@ -122,7 +123,6 @@ struct Images {
 	}
 
     struct navigationItems {
-    
         static let elipseBurger = UIImage(systemName: "ellipsis.circle.fill")
         static let leftShevronBack = UIImage(systemName: "chevron.left")
     }
@@ -137,6 +137,8 @@ struct Images {
 		static let trashBtn = UIImage(systemName: "trash")
 		static let share = UIImage(systemName: "square.and.arrow.up")
 		static let arrowRight = UIImage(systemName: "arrow.right")!
+		static let connectionLost = UIImage(systemName: "wifi.slash")
+		static let noContent = UIImage(systemName: "exclamationmark.circle")
 	}
 	
 	struct onboarding {
@@ -155,6 +157,10 @@ struct Images {
 	struct subsctiption {
 		
 		public static var rocket = UIImage(named: "rocket")
+		public static var crown = UIImage(named: "crown")
+		public static var rocketPocket = UIImage(named: "rocketPocket")
+		public static var colorRocket = UIImage(named: "colorRocket")
+		public static var flyingRocket = UIImage(named: "rocketFlyingPocket")
 		
 		public static func getFeaturesImages(for type: PremiumFeature) -> UIImage {
 			switch type {
@@ -185,13 +191,15 @@ extension Images {
 				return UIImage(systemName: "hand.raised")!
 			case .restore:
 				return UIImage(systemName: "purchased")!
+			case .lifetime:
+				return UIImage(systemName: "crown")!
 			case .support:
 				return UIImage(systemName: "captions.bubble")!
 			case .share:
 				return UIImage(systemName: "square.and.arrow.up.on.square")!
 			case .rate:
 				if #available(iOS 15.0, *) {
-					return UIImage(systemName: "star.bubble.fill")!
+					return UIImage(systemName: "star.bubble")!
 				} else {
 					return UIImage(systemName: "star")!
 				}
@@ -208,7 +216,6 @@ extension Images {
 		}
 	}
 }
-
 
 extension Images {
 	
@@ -268,7 +275,6 @@ extension Images {
 		}
 	}
 }
-
 
 extension Images {
 	

@@ -153,6 +153,7 @@ struct Localization {
 			static var next = "Next".localized()
 			static var restore = "Restore".localized()
 			static var activate = "Activate".localized()
+			static var changePlan = "Change Plan".localized()
 		}
 	}
 	
@@ -161,6 +162,7 @@ struct Localization {
 		struct Title {
 			static var premium = "Premium".localized()
 			static var restore = "Restore Purchase".localized()
+			static var lifeTime = "Lifetime".localized()
 			static var subscription = "Subscription".localized()
 			static var largeVideo = "Large Video Size".localized()
 			static var storage = "Storage".localized()
@@ -414,6 +416,7 @@ struct Localization {
 			static var fatalError = "Fatal Error!".localized()
 			static var atention = "Atention!".localized()
 			static var notice = "Notice!".localized()
+			static var noNetwork = "Error! No network connection!".localized()
 		}
 		
 		struct EmptyResultsError {
@@ -490,6 +493,8 @@ struct Localization {
 		
 		struct Main {
 			static var getPremium = "Get Premium".localized()
+			static var withPremium = "With Premium".localized()
+			static var unlockFeatures = "Unlock All Features".localized()
 		}
 		
 		struct PremiumFeautures {
@@ -506,9 +511,21 @@ struct Localization {
 			static var year = "per year".localized()
 		}
 		
+		struct DescriptionSK {
+			static var day = "day".localized()
+			static var week = "week".localized()
+			static var month = "month".localized()
+			static var year = "year".localized()
+		}
+		
 		struct Helper {
 			static var termsOfUse = "Terms of Use".localized()
 			static var privicy = "Privacy Policy".localized()
+		}
+		
+		struct Premium {
+			static var expireSubscription = "Subscription Expire on:".localized()
+			static var alreadyPremium = "Already Premium".localized()
 		}
 	}
 }

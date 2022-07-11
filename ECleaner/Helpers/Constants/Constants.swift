@@ -54,11 +54,14 @@ class Constants {
 			static let aplicationValue 	    = "com.cleaner.tryAplication.key"
 		}
 		
-		struct inApPurchse {
+		struct subscription {
 			static let purchasePremium = "purchasePremium"
-			static let verificationPassed = "verificationPassed"
-			static let expireDate = "expireDate"
+			static let subscriptionExpireDate = "subscriptionExpireDate"
+			static let subscriptionCurrentName = "subscriptionCurrentName"
 			static let expiredSubscription = "expiredSubscription"
+			static let verificationPassed = "verificationPassed"
+			static let currentSubscription = "currentSubscription"
+			static let subscriptionID = "currentSubscriptionID"
 		}
 		
 		struct permissions {
@@ -131,6 +134,7 @@ class Constants {
 			
 			static let permissionDidChange = "permissionDidChange"
 			static let forceStopProcessing = "forceStopProcessingStartHandleReciveRemoteCleanAction"
+			static let networking = "networkingStatusDidChange"
             
                 /// `deep clean update progress notification name`
             struct deepClean {
@@ -472,6 +476,7 @@ class Constants {
 			static let onboarding = "OnboardingViewController"
 			static let onboardingPage = "OnboardingPageViewController"
 			static let subscription = "SubscriptionViewController"
+			static let lifeTime = "LifeTimeSubscriptionViewController"
         }
         
         struct cells {
@@ -492,6 +497,9 @@ class Constants {
 			static let permissionBannerCell = "PermissionBannerTableViewCell"
 			static let permissionContinueCell = "PermissionContinueTableViewCell"
 			static let premiumFeature = "PremiumFeatureTableViewCell"
+			static let currentSubscription = "CurrentSubscriptionTableViewCell"
+			static let premiumFeaturesSubcription = "PremiumFeaturesSubscriptionTableViewCell"
+			static let featuresSubscription = "FeaturesSubscriptionTableViewCell"
         }
         
         struct views {
@@ -521,6 +529,9 @@ class Constants {
 			static let permissionBannerCell = "PermissionBannerTableViewCell"
 			static let permissionContinueCell = "PermissionContinueTableViewCell"
 			static let premiumFeature = "PremiumFeatureTableViewCell"
+			static let currentSubscription = "CurrentSubscriptionTableViewCell"
+			static let premiumFeaturesSubcription = "PremiumFeaturesSubscriptionTableViewCell"
+			static let featuresSubscription = "FeaturesSubscriptionTableViewCell"
             /// `views`
             static let groupHeader = "GroupedAssetsReusableHeaderView"
             static let groupFooter = "GroupedAssetsReusableFooterView"
@@ -552,6 +563,7 @@ class Constants {
             static let showExportContacts = "ShowExportContactsViewControllerSegue"
 			static let showSizeSelector = "ShowVideoSizeSelectorSegue"
 			static let showCustomCompression = "ShowCustomCompressionSegue"
+			static let lifeTime = "ShowLifeTimeViewControllerSegue"
         }
     }
 	

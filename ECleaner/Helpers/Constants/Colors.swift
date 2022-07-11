@@ -764,6 +764,61 @@ extension Theme {
 
 extension Theme {
 	
+	var premiumColor: UIColor {
+		
+		switch self {
+			case .light:
+				return UIColor().colorFromHexString("FF685C")
+			case .dark:
+				return UIColor().colorFromHexString("FF685C")
+		}
+	}
+	
+	var premiumCrownGradientColor: [UIColor] {
+		let startColor = UIColor().colorFromHexString("FF7890")
+		let endColor = UIColor ().colorFromHexString("FF822F")
+		return [startColor, endColor]
+	}
+	
+	var bunneTitleGradienColors: [UIColor] {
+		switch self {
+			case .light:
+				let startColor = UIColor().colorFromHexString("69C5FF")
+				let endColor = UIColor ().colorFromHexString("5CA4FF")
+				return [startColor, endColor]
+			case .dark:
+				let startColor = UIColor().colorFromHexString("69C5FF")
+				let endColor = UIColor ().colorFromHexString("5CA4FF")
+				return [startColor, endColor]
+		}
+	}
+	
+	var changeSubscriptionbuttonGradientColors: [UIColor] {
+		switch self {
+			case .light:
+				let startColor = UIColor().colorFromHexString("16C08A")
+				let endColor = UIColor ().colorFromHexString("1BC0AE")
+				return [startColor, endColor]
+			case .dark:
+				let startColor = UIColor().colorFromHexString("16C08A")
+				let endColor = UIColor ().colorFromHexString("1BC0AE")
+				return [startColor, endColor]
+		}
+	}
+	
+	
+	var premiumSubtitleTextColor: UIColor {
+		switch self {
+			case .light:
+				return UIColor().colorFromHexString("5A688C")
+			case .dark:
+				return UIColor().colorFromHexString("5A688C")
+		}
+	}
+}
+
+extension Theme {
+	
 	public func getColorsGradient(for settings: SettingsModel) -> [UIColor] {
 		switch settings {
 			case .premium:
@@ -785,6 +840,10 @@ extension Theme {
 			case .restore:
 				let startColor = UIColor().colorFromHexString("6773B4")
 				let endColor = UIColor ().colorFromHexString("A7B3EF")
+				return [startColor, endColor]
+			case .lifetime:
+				let startColor = UIColor().colorFromHexString("F5C62C")
+				let endColor = UIColor ().colorFromHexString("FD8000")
 				return [startColor, endColor]
 			case .support:
 				let startColor = UIColor().colorFromHexString("4FAA47")

@@ -172,3 +172,38 @@ extension AlertManager {
 	}
 }
 
+
+extension AlertManager {
+	
+	public static func showPurchaseAlert(of errorType: ErrorHandler.SubscriptionError, at viewController: UIViewController, expireDate: String? = nil) {
+		
+		let alertDescription = errorType.alertDescription
+		let confirmAction = UIAlertAction(title: alertDescription.action, style: .default) { _ in }
+		
+		var message: String {
+			if let expireDate = expireDate {
+				return Localization.Subscription.Premium.expireSubscription + " " + expireDate
+			} else {
+				return alertDescription.description
+			}
+		}
+		
+		let alertController = UIAlertController(title: alertDescription.title, message: message, preferredStyle: .alert)
+		alertController.addAction(confirmAction)
+		DispatchQueue.main.async {
+			viewController.present(alertController, animated: true)
+		}
+	}
+}
+
+extension AlertManager {
+	
+	public static func showNetworkError(with description: AlertDescription, at viewController: UIViewController) {
+		let alertController = UIAlertController(title: description.title, message: description.description, preferredStyle: .alert)
+		let action = UIAlertAction(title: description.action, style: .default) { _ in }
+		alertController.addAction(action)
+		DispatchQueue.main.async {
+			viewController.present(alertController, animated: true)
+		}
+	}
+}

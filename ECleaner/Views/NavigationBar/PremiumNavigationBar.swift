@@ -8,6 +8,11 @@
 import Foundation
 import SwiftUI
 
+enum AnimationStatus {
+	case start
+	case stop
+}
+
 enum NavigationButtonState {
 	case notAvailible
 	case imageWithoutTitle
@@ -214,5 +219,32 @@ class PremiumNavigationBar: UIView {
 	@objc func didTapRightBarButton(sender: UIButton) {
 		self.rightBarButton.animateButtonTransform()
 		delegate?.didTapRightBarButton(_sender: sender)
+	}
+}
+
+
+extension PremiumNavigationBar {
+	
+	public func setLeftButton(animation: AnimationStatus) {
+		
+		Utils.UI {
+			switch animation {
+				case .start:
+					self.leftBarButton.animateProgress()
+				case .stop:
+					self.leftBarButton.removeAnimateProgress()
+			}
+		}
+	}
+	
+	public func setRightButton(animation: AnimationStatus) {
+		Utils.UI {
+			switch animation {
+				case .start:
+					self.rightBarButton.animateProgress()
+				case .stop:
+					self.rightBarButton.removeAnimateProgress()
+			}
+		}
 	}
 }

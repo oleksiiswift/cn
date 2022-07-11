@@ -39,39 +39,47 @@ class SettingsManager {
 		}
 	}
 	
-	struct inAppPurchase {
+	struct subscripton {
 		
-		 static var allowAdvertisementBanner: Bool {
+		static var currentSubscriptionName: String {
 			get {
-				U.userDefaults.bool(forKey: C.key.advertisement.bannerIsShow)
+				U.userDefaults.string(forKey: C.key.subscription.subscriptionCurrentName) ?? ""
 			} set {
-				U.userDefaults.set(newValue, forKey: C.key.advertisement.bannerIsShow)
+				U.userDefaults.set(newValue, forKey: C.key.subscription.subscriptionCurrentName)
 			}
 		}
 		
-		static var isVerificationPassed: Bool {
+		static var currentExprireSubscriptionDate: String {
 			get {
-				return U.userDefaults.bool(forKey: C.key.inApPurchse.verificationPassed)
+				U.userDefaults.string(forKey: C.key.subscription.subscriptionExpireDate) ?? ""
 			} set {
-				U.userDefaults.set(newValue, forKey: C.key.inApPurchse.verificationPassed)
+				U.userDefaults.set(newValue, forKey: C.key.subscription.subscriptionExpireDate)
 			}
 		}
 		
-		static var expiredSubscription: Bool {
-			get {
-				return U.userDefaults.bool(forKey: C.key.inApPurchse.expiredSubscription)
-			} set {
-				U.userDefaults.setValue(newValue, forKey: C.key.inApPurchse.expiredSubscription)
-			}
-		}
-		
-		static var expireDateSubscription: Date? {
-			get {
-				return U.userDefaults.object(forKey: C.key.inApPurchse.expireDate) as? Date
-			} set {
-				U.userDefaults.set(newValue, forKey: C.key.inApPurchse.expireDate)
-			}
-		}
+		static var allowAdvertisementBanner: Bool {
+		   get {
+			   U.userDefaults.bool(forKey: C.key.advertisement.bannerIsShow)
+		   } set {
+			   U.userDefaults.set(newValue, forKey: C.key.advertisement.bannerIsShow)
+		   }
+	   }
+	   
+	   static var isVerificationPassed: Bool {
+		   get {
+			   return U.userDefaults.bool(forKey: C.key.subscription.verificationPassed)
+		   } set {
+			   U.userDefaults.set(newValue, forKey: C.key.subscription.verificationPassed)
+		   }
+	   }
+	   
+	   static var expiredSubscription: Bool {
+		   get {
+			   return U.userDefaults.bool(forKey: C.key.subscription.expiredSubscription)
+		   } set {
+			   U.userDefaults.setValue(newValue, forKey: C.key.subscription.expiredSubscription)
+		   }
+	   }
 	}
 	
 	struct permissions {
@@ -274,3 +282,36 @@ extension SettingsManager {
     }
 }
 
+
+extension SettingsManager {
+	
+	public var changePremiumBunner: String {
+		get {
+			if let value = U.userDefaults.string(forKey: "changePremiumBunner") {
+				return value
+			} else {
+				self.changePremiumBunner = "premiumFeaturesSubcription"
+				return self.changePremiumBunner
+			}
+		} set {
+			U.userDefaults.set(newValue, forKey: "changePremiumBunner")
+		}
+	}
+}
+
+enum PremiumAdvBunnerType {
+	case stack
+	case horizontal
+	case alreadyPremium
+	
+	var rowValue: String {
+		switch self {
+			case .stack:
+				return "premiumFeaturesSubcription"
+			case .horizontal:
+				return "featuresSubscription"
+			case .alreadyPremium:
+				return "currentSubscription"
+		}
+	}
+}

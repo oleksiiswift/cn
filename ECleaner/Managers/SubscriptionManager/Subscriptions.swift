@@ -35,3 +35,15 @@ struct Purchase {
 		await transaction.finish()
 	}
 }
+
+
+struct CurrentSubscriptionModel {
+	
+	var expireDate: String
+	var name: String
+	
+	init(expireDate: String, name: String) {
+		self.expireDate = expireDate
+		self.name = name
+	}
+}

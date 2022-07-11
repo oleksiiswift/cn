@@ -84,7 +84,6 @@ extension FontManager {
 				case .modern, .max, .madMax:
 					return .systemFont(ofSize: 13, weight: .bold)
 			}
-			
 		}
 	}
 }

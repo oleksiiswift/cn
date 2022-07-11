@@ -8,11 +8,6 @@
 import Foundation
 import StoreKit
 
-enum ProductValidator {
-	case production
-	case sandbox
-}
-
 @available(iOS 15.0, *)
 typealias UpdateTransActionBlock = ((Transaction) async -> ())
 @available(iOS 15.0, *)
@@ -25,12 +20,23 @@ class Subscription {
 	
 	public var products: [Product] = []
 	
-	private var service = SubscriptionService()
+	public var service = SubscriptionService()
+	private var manager = SubscriptionManager.instance
 	private var updateListener: Task <(), Never>? = nil
 	
 	public func initialize() {
 		Task {
-			try await self.loadProducts()
+			do {
+				let products = try await self.loadProducts()
+				if !products.isEmpty {
+					let isPurchased = try await self.purchaseProductsStatus()
+					debugPrint("****")
+					debugPrint("products is purchased -> \(isPurchased)")
+					debugPrint("****")
+				}
+			} catch {
+				debugPrint("error load keys and subcription")
+			}
 		}
 		self.setListener(finishTransaction: false) { transaction in
 			await transaction.finish()
@@ -43,8 +49,14 @@ class Subscription {
 		return products
 	}
 		
-	public func purchase(product: Product, validator: ProductValidator) async throws -> Purchase {
-		try await self.service.purchase(product: product, service: validator)
+	public func purchase(product: Product) async throws -> Purchase {
+		let purchase = try await self.service.purchase(product: product)
+		return purchase
+	}
+	
+	public func handleStatus(with product: Product) async throws -> Bool{
+			let isPurchased = try await self.service.handleStatus(with: product)
+			return isPurchased
 	}
 	
 	public func getPurchaseProducts(from ids: Set<String>) async throws -> [Product] {
@@ -61,7 +73,9 @@ class Subscription {
 					finishTransaction ? await transaction.finish() : ()
 					await updateBlock?(transaction)
 				} catch {
-					ErrorHandler.shared.showSubsritionAlertError(for: .verificationError)
+					if let topController = getTheMostTopController() {
+						ErrorHandler.shared.showSubsriptionAlertError(for: .verificationError, at: topController)
+					}
 				}
 			}
 		}
@@ -72,8 +86,66 @@ class Subscription {
 		return ((try? await AppStore.sync()) != nil)
 	}
 	
-	public func getCurrentSubscription(renewable: Bool = true) async throws -> [String] {
+	public func isLifeTimeSubscription() async throws -> Bool {
+		let productID = try await self.getCurrentSubscription()
+		let subscription = Subscriptions.allCases.first(where: {$0.rawValue == productID.first})
+		return subscription == Subscriptions.lifeTime
+	}
+	
+	private func getCurrentSubscription(renewable: Bool = true) async throws -> [String] {
 		return try await self.service.getCurrentSubsctiption(renewable: renewable).map({$0.productID})
+	}
+	
+	public func getCurrentSubscriptionModel() async throws -> CurrentSubscriptionModel? {
+		
+		var name: String = SettingsManager.subscripton.currentSubscriptionName
+		var date: String = SettingsManager.subscripton.currentExprireSubscriptionDate
+	
+		do {
+			let productID = try await self.getCurrentSubscription()
+			let subscription = Subscriptions.allCases.first(where: {$0.rawValue == productID.first})
+			
+			if let currentSubscription = subscription, let productDescription = self.getProductDesctiption(for: currentSubscription) {
+				SettingsManager.subscripton.currentSubscriptionName = productDescription.productName
+				name = productDescription.productName
+			}
+			
+			let currentTransaction = try await self.service.getCurrentSubsctiption()
+			
+			if let expireDate = currentTransaction.first?.expirationDate {
+				let stringdate = Utils.getString(from: expireDate, format: Constants.dateFormat.expiredDateFormat)
+				SettingsManager.subscripton.currentExprireSubscriptionDate = stringdate
+				date = stringdate
+			}
+			return CurrentSubscriptionModel(expireDate: date, name: name)
+		} catch {
+			debugPrint(error)
+		}
+		return CurrentSubscriptionModel(expireDate: date, name: name)
+	}
+	
+	public func purchaseProductsStatus() async throws -> Bool {
+		
+		do {
+			let ids = try await self.getCurrentSubscription()
+			
+			if !ids.isEmpty, let purchasedProductID = ids.first, try await service.isProductPurchased(productId: purchasedProductID) {
+				
+				if let product = self.products.first(where: {$0.id == purchasedProductID}) {
+					let subscription = Subscriptions.allCases.first(where: {$0.rawValue == product.id})
+					manager.saveSubscription(subscription)
+					self.manager.setPurchasePremium(true)
+					return true
+				}
+			}
+			 
+			self.manager.setPurchasePremium(false)
+			manager.saveSubscription(nil)
+			return false
+		} catch {
+			debugPrint("error for cant load")
+		}
+		return false
 	}
 	
 	public static func manageSubscription(in scene: UIWindowScene) async throws {
@@ -92,7 +164,7 @@ extension Subscription {
 		return nil
 	}
 	
-	public func getProductDescription() -> [ProductStoreDesriptionModel] {
+	public func getProductDescription(completionHandler: @escaping (_ model: [ProductStoreDesriptionModel]) -> Void) {
 		
 		var descriptionsModel: [ProductStoreDesriptionModel] = []
 		
@@ -104,7 +176,7 @@ extension Subscription {
 				}
 			}
 		}
-		return descriptionsModel
+		completionHandler(descriptionsModel)
 	}
 	
 	public func getProductDesctiption(for type: Subscriptions) -> ProductStoreDesriptionModel? {
@@ -130,7 +202,6 @@ extension Subscription {
 												description: description, id: product.id)
 		return model
 	}
-	
 	
 	public func getDescription(for product: Product) -> ProductStoreDesriptionModel {
 

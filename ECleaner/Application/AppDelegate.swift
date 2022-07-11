@@ -17,7 +17,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setDefaults()
 		developmentSettings()
 		setupObserver()
-		runDevelopmentElmtn()
 
         return true
     }
@@ -38,7 +37,8 @@ extension AppDelegate {
     
     private func configureApplication(with launchOptions: [UIApplication.LaunchOptionsKey: Any]?) {
         
-		SubscriptionManager.instance.initialize()
+		Network.start()
+		self.initializeSubscriptions()
 		ECFileManager().deleteAllFiles(at: AppDirectories.temp) {
 			debugPrint("deleted all files from temp")
 		}
@@ -48,6 +48,14 @@ extension AppDelegate {
 }
 
 extension AppDelegate {
+	
+	private func initializeSubscriptions() {
+
+		Network.theyLive { isAlive in
+			guard isAlive else { return }
+			SubscriptionManager.instance.initialize()
+		}
+	}
 
     private func setDefaults() {
 		
@@ -69,12 +77,13 @@ extension AppDelegate {
 	
 	private func developmentSettings() {
 		
-		S.inAppPurchase.allowAdvertisementBanner = false
+		S.subscripton.allowAdvertisementBanner = false
 	}
 	
 	private func setupObserver() {
 		
 		NotificationCenter.default.addObserver(self, selector: #selector(checkPermissionStatus), name: UIApplication.didBecomeActiveNotification, object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(networkingStatusDidChange), name: .ReachabilityDidChange, object: nil)
 	}
 	
 	@objc func checkPermissionStatus() {
@@ -84,20 +93,10 @@ extension AppDelegate {
 		SettingsManager.permissions.photoPermissionSavedValue = PhotoLibraryPermissions().authorized
 		SettingsManager.permissions.contactsPermissionSavedValue = ContactsPermissions().authorized
 	}
+	
+	@objc func networkingStatusDidChange() {
+		self.initializeSubscriptions()
+	}
 }
 
-extension AppDelegate {
-	
-	private func printAllNotifications() {
-		
-		NotificationCenter.default.addObserver(forName: nil, object: nil, queue: nil) { notification in
-			debugPrint(notification)
-		}
-	}
-		
-	private func runDevelopmentElmtn() {
-		
-			//		printAllNotifications()
-	}
-}
 

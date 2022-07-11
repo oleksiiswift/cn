@@ -8,7 +8,6 @@
 import UIKit
 import SwiftUI
 
-
 var currentScene: UIScene?
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
@@ -38,7 +37,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func sceneDidBecomeActive(_ scene: UIScene) {
-
+		SubscriptionManager.instance.checkForCurrentSubscription { isSubscribe in
+			debugPrint("is subscribe -> \(isSubscribe)")
+			if !isSubscribe {
+				SubscriptionManager.instance.saveSubscription(nil)
+			}
+		}
 	}
 
     func sceneWillResignActive(_ scene: UIScene) {
@@ -67,7 +71,6 @@ extension SceneDelegate {
 	
 		let navController = UINavigationController()
 		coordinator = ApplicationCoordinator(navigationController: navController)
-		#warning("DEVELOP")
 		devopmentEnviroment()
 		
 		coordinator?.start()
@@ -77,7 +80,24 @@ extension SceneDelegate {
 extension SceneDelegate {
 	
 	private func devopmentEnviroment() {
+//		coordinator?.currentState = .onboarding
+//		printAllNotifications()
 		
-		coordinator?.currentState = .onboarding
+		Utils.delay(5) {
+			debugPrint("****")
+			debugPrint("is purchase premium -> \(SubscriptionManager.instance.purchasePremiumHandler())")
+			debugPrint("****")
+		}
 	}
 }
+
+extension SceneDelegate {
+	
+	private func printAllNotifications() {
+		
+		NotificationCenter.default.addObserver(forName: nil, object: nil, queue: nil) { notification in
+			debugPrint(notification)
+		}
+	}
+}
+

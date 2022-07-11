@@ -98,6 +98,30 @@ class BottomButtonBarView: UIView {
 		}
     }
 	
+	public func setLockButtonAnimate(state: SubscriptionActionProcessingState) {
+		Utils.UI {
+			switch state {
+				case .processing:
+					self.setButtonProcess(true)
+					self.actionButton.isEnabled = false
+					UIView.animate(withDuration: 0.3) {
+						self.actionButton.alpha = 0.5
+					}
+				case .active:
+					self.setButtonProcess(false)
+					self.actionButton.isEnabled = true
+					UIView.animate(withDuration: 0.3) {
+						self.actionButton.alpha = 1.0
+					}
+				case .disabled:
+					self.actionButton.isEnabled = false
+					UIView.animate(withDuration: 0.3) {
+						self.actionButton.alpha = 0.5
+					}
+			}
+		}
+	}
+	
 	private func setActivityIndicator(_ isStarting: Bool) {
 		
 		if isStarting {
@@ -275,29 +299,6 @@ extension BottomButtonBarView {
 	public func addButtonGradientBackground(colors: [UIColor]) {
 		let gradientColors = colors.compactMap({$0.cgColor})
 		actionButton.layerGradient(startPoint: .centerLeft, endPoint: .centerRight, colors: gradientColors , type: .axial)
-	}
-}
-
-extension BottomBarButtonItem {
-	
-	public func animateProgress() {
-		
-		let animation = CABasicAnimation(keyPath: "transform.rotation")
-		animation.fromValue = 0
-		animation.toValue =  Double.pi * 2.0
-		animation.duration = 2
-		animation.repeatCount = .infinity
-		animation.isRemovedOnCompletion = false
-		if let imageView = self.subviews.first(where: {$0.tag == 66613}) {
-			imageView.layer.add(animation, forKey: "spin")
-		}
-	}
-
-	public func removeAnimateProgress() {
-		
-		if let imageView = self.subviews.first(where: {$0.tag == 66613}) {
-			imageView.layer.removeAnimation(forKey: "spin")
-		}
 	}
 }
 

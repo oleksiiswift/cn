@@ -57,8 +57,8 @@
             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <connections>
                 <outlet property="thumbnailView" destination="FNZ-B0-2sN" id="Xc1-HH-36m"/>
+                <outlet property="thumbnailViewHeightConstraint" destination="mtv-f8-fCp" id="VwN-tV-L4T"/>
                 <outlet property="thumbnailViewLeadingConstraint" destination="1o2-pl-Phx" id="4AN-fR-bDH"/>
-                <outlet property="thumnailViewHeightConstraint" destination="mtv-f8-fCp" id="VwN-tV-L4T"/>
                 <outlet property="titleTextLabel" destination="cwl-87-dLZ" id="XNP-rK-0Fo"/>
             </connections>
             <point key="canvasLocation" x="167.39130434782609" y="94.754464285714278"/>

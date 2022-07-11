@@ -182,8 +182,22 @@ class FontManager {
 				return SubscriptionFontSize.buttonTitle
 			case .buttonPrice:
 				return SubscriptionFontSize.buttonPrice
+			case .lifeTimeTitle:
+				return SubscriptionFontSize.lifeTimeTitle
 			case .buttonDescription:
 				return SubscriptionFontSize.buttonDescription
+			case .premimBannerTitle:
+				return SubscriptionFontSize.premiumBannerTitle
+			case .permiumBannerSubtitle:
+				return SubscriptionFontSize.permiumBannerSubtitle
+			case .premiumBannerDateSubtitle:
+				return SubscriptionFontSize.premiumBannerDateSubtitle
+			case .premiumFeatureBannerTitle:
+				return SubscriptionFontSize.premiumFeatureBannerTitle
+			case .premiumFeatureBannerSubtitle:
+				return SubscriptionFontSize.premiumFeatureBannerSubtitle
+			case .premiumFeatureBannerSubtitleTitle:
+				return SubscriptionFontSize.premiumFeatureBannerSubtitleTitle
 		}
 	}
 }

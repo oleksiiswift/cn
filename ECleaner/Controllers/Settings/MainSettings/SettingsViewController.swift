@@ -14,6 +14,7 @@ class SettingsViewController: UIViewController, Storyboarded {
 	@IBOutlet weak var tableView: UITableView!
 	
 	weak var coordinator: ApplicationCoordinator?
+	private var subscriptionManager = SubscriptionManager.instance
 	
 	private var settingsViewModel: SettingsViewModel!
 	private var settingsDataSource: SettingsDataSource!
@@ -26,15 +27,31 @@ class SettingsViewController: UIViewController, Storyboarded {
 		setupTableView()
 		setupDelegate()
 		updateColors()
+		addSubscriptionChangeObserver()
     }
 		
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
 		 switch segue.identifier {
 			 case C.identifiers.segue.showSizeSelector:
 				 self.setupShowVideoSizeSelectorController(segue: segue)
+			 case C.identifiers.segue.lifeTime:
+				 self.setupShowLifeTimeSubscriptionController(segue: segue)
 			  default:
 				   break
 		 }
+	}
+}
+
+extension SettingsViewController: SubscriptionObserver {
+	
+	func subscriptionDidChange() {
+	
+		Utils.delay(0.3) {
+			self.setupViewModel()
+			self.tableView.delegate = self.settingsDataSource
+			self.tableView.dataSource = self.settingsDataSource
+			self.tableView.reloadDataWithoutAnimation()
+		}
 	}
 }
 
@@ -42,27 +59,46 @@ extension SettingsViewController {
 	
 	private func setupViewModel() {
 		
-		let firstSectionCells =  SettingsSection(cells: [.premium])
-		let secondSectionCells = SettingsSection(cells: [.restore], headetHeight: 40)
+		let premiumSectionCell = SettingsSection(cells: [.premium])
+		let subscriptionSection = SettingsSection(cells: [.restore, .lifetime], headetHeight: 20)
+		let lifeTimeSection = SettingsSection(cells: [.lifetime], headetHeight: 20)
 		
-		let thirdSectionsCells = SettingsSection(cells: [.largeVideos,
-														 .dataStorage,
+		let permissionSectionCell = SettingsSection(cells: [.largeVideos,
 														 .permissions],
-												 headerTitle: "settings optional first sections title",
-												 headetHeight: 40)
+												 headerTitle: "Settings",
+												 headetHeight: 20)
 		
-		let fouthSectionsCells = SettingsSection(cells: [.support,
+		let supportSectionCells = SettingsSection(cells: [.support,
 														 .share,
 														 .rate,
 														 .privacypolicy,
 														 .termsOfUse],
-												 headerTitle: "settings optional second section title",
-												 headetHeight: 40)
-		
-		let sections: [SettingsSection] = [firstSectionCells, secondSectionCells, thirdSectionsCells, fouthSectionsCells]
+												 headerTitle: "Support?",
+												 headetHeight: 20)
+
+		var sections: [SettingsSection] {
+			if self.subscriptionManager.purchasePremiumHandler() {
+				if self.subscriptionManager.isLifeTimeSubscription() {
+					return [premiumSectionCell, permissionSectionCell, supportSectionCells]
+				} else {
+					return [premiumSectionCell,lifeTimeSection, permissionSectionCell, supportSectionCells]
+				}
+			} else {
+				return [premiumSectionCell, subscriptionSection, permissionSectionCell, supportSectionCells]
+			}
+		}
 		
 		self.settingsViewModel = SettingsViewModel(sections: sections)
 		self.settingsDataSource = SettingsDataSource(settingsViewModel: self.settingsViewModel)
+		
+		self.settingsDataSource.didSelectedSettings = { settingModel in
+			
+			if settingModel == .premium {
+				if self.subscriptionManager.purchasePremiumHandler() {
+					self.changeCurrentSubscription()
+				}
+			}
+		}
 	}
 }
 
@@ -80,9 +116,10 @@ extension SettingsViewController {
 	
 	private func setupTableView() {
 		
-		self.tableView.register(UINib(nibName: C.identifiers.xibs.bannerCell, bundle: nil), forCellReuseIdentifier: C.identifiers.cells.helperBannerCell)
 		self.tableView.register(UINib(nibName: C.identifiers.xibs.contentTypeCell, bundle: nil), forCellReuseIdentifier: C.identifiers.cells.contentTypeCell)
-		
+		self.tableView.register(UINib(nibName: C.identifiers.xibs.currentSubscription, bundle: nil), forCellReuseIdentifier: C.identifiers.cells.currentSubscription)
+		self.tableView.register(UINib(nibName: C.identifiers.xibs.premiumFeaturesSubcription, bundle: nil), forCellReuseIdentifier: C.identifiers.cells.premiumFeaturesSubcription)
+	
 		self.tableView.delegate = settingsDataSource
 		self.tableView.dataSource = settingsDataSource
 		
@@ -141,21 +178,34 @@ extension SettingsViewController {
 			
 		}
 	}
+	
+	private func setupShowLifeTimeSubscriptionController(segue: UIStoryboardSegue) {
+		
+		guard let segue = segue as? SwiftMessagesSegue else { return }
+		
+		segue.configure(layout: .bottomMessage)
+		segue.dimMode = .gray(interactive: true)
+		segue.interactiveHide = true
+		segue.messageView.configureNoDropShadow()
+		
+		segue.messageView.backgroundHeight = AppDimensions.Subscription.Features.lifeTimeConttolerHeigh
+	}
 }
-
 
 extension SettingsViewController: SettingActionsDelegate {
 	
 	public func setAction(at cell: SettingsModel) {
 		switch cell {
 			case .premium:
-				self.showPremiumController()
+				subscriptionManager.purchasePremiumHandler() ? self.changeCurrentSubscription() : self.showPremiumController()
 			case .largeVideos:
 				self.showLargeVideoSettings()
 			case .dataStorage:
 				self.showDataStorageInfo()
 			case .permissions:
 				self.showPermissionController()
+			case .lifetime:
+				self.showLifeTimeSubscription()
 			case .restore:
 				self.showRestorePurchaseAction()
 			case .support:
@@ -173,8 +223,19 @@ extension SettingsViewController: SettingActionsDelegate {
 		}
 	}
 	
+	private func changeCurrentSubscription() {
+	
+		Network.theyLive { isAlive in
+			if isAlive {
+				self.subscriptionManager.changeCurrentSubscription()
+			} else {
+				ErrorHandler.shared.showNetworkErrorAlert(.networkError, at: self)
+			}
+		}
+	}
+	
 	private func showPremiumController() {
-		debugPrint("showPremiumController")
+		UIPresenter.showViewController(of: .subscription)
 	}
 	
 	private func showLargeVideoSettings() {
@@ -190,8 +251,34 @@ extension SettingsViewController: SettingActionsDelegate {
 		self.coordinator?.showPermissionViewController(from: self.navigationController)
 	}
 	
+	private func showLifeTimeSubscription() {
+		performSegue(withIdentifier: Constants.identifiers.segue.lifeTime, sender: self)
+	}
+	
 	private func showRestorePurchaseAction() {
-		SubscriptionManager.instance.restorePurchase()
+	
+		Network.theyLive { isAlive in
+			if isAlive {
+				UIPresenter.showIndicator(in: self)
+				self.subscriptionManager.restorePurchase { restored, requested, date in
+					
+					UIPresenter.hideIndicator()
+					
+					guard requested else { return }
+					
+					if !restored {
+						if let date = date {
+							let dateString = Utils.getString(from: date, format: Constants.dateFormat.expiredDateFormat)
+							ErrorHandler.shared.showSubsriptionAlertError(for: .restoreError, at: self, expreDate: dateString)
+						} else {
+							ErrorHandler.shared.showSubsriptionAlertError(for: .restoreError, at: self)
+						}
+					}
+				}
+			} else {
+				ErrorHandler.shared.showNetworkErrorAlert(.networkError, at: self)
+			}
+		}
 	}
 	
 	private func showSupportAction() {
@@ -219,6 +306,10 @@ extension SettingsViewController {
 	
 	private func showWebView(with url: URL) {
 		
+		Network.theyLive { isAlive in
+			
+			
+		}
 	}
 }
 
