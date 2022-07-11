@@ -140,6 +140,10 @@ extension SubscriptionSegmentControll {
 		
 		switch status {
 			case .empty:
+				self.loadMessageTextLabel.text = Localization.ErrorsHandler.PurchaseError.unknown
+				self.loadMessageTextLabel.isHidden = false
+			case .disable:
+				self.loadMessageTextLabel.text =  Localization.ErrorsHandler.PurchaseError.networkError
 				self.loadMessageTextLabel.isHidden = false
 			default:
 				self.loadMessageTextLabel.isHidden = true
@@ -189,7 +193,7 @@ extension SubscriptionSegmentControll {
 	private func setupConnectionLostImageView() {
 		
 		self.contentDisabledImageView.isHidden = true
-		self.contentDisabledImageView.frame = CGRect(origin: .zero, size: CGSize(width: 40, height: 40))
+		self.contentDisabledImageView.frame = CGRect(origin: .zero, size: CGSize(width: 40, height: 30))
 		self.disabledView.addSubview(self.contentDisabledImageView)
 		self.contentDisabledImageView.translatesAutoresizingMaskIntoConstraints = false
 		self.contentDisabledImageView.centerXAnchor.constraint(equalTo: self.disabledView.centerXAnchor).isActive = true
@@ -197,6 +201,7 @@ extension SubscriptionSegmentControll {
 		self.contentDisabledImageView.widthAnchor.constraint(equalToConstant: 40).isActive = true
 		self.contentDisabledImageView.heightAnchor.constraint(equalToConstant: 40).isActive = true
 		self.contentDisabledImageView.tintColor = theme.subTitleTextColor
+		self.contentDisabledImageView.contentMode = .scaleAspectFit
 		self.contentDisabledImageView.layoutIfNeeded()
 	}
 	
@@ -242,7 +247,6 @@ extension SubscriptionSegmentControll {
 		self.loadMessageTextLabel.numberOfLines = 0
 		self.loadMessageTextLabel.textAlignment = .center
 		self.loadMessageTextLabel.font = .systemFont(ofSize: 10, weight: .medium)
-		self.loadMessageTextLabel.text = Localization.ErrorsHandler.PurchaseError.networkError
 	}
 }
 

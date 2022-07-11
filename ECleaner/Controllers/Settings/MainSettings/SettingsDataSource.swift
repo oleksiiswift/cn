@@ -70,17 +70,10 @@ extension SettingsDataSource: UITableViewDelegate, UITableViewDataSource {
 					self.subscriptionCellConfiguration(cell: cell)
 					return cell
 				} else {
-					if SettingsManager.sharedInstance.changePremiumBunner == PremiumAdvBunnerType.stack.rowValue {
-						SettingsManager.sharedInstance.changePremiumBunner = PremiumAdvBunnerType.horizontal.rowValue
-						let cell = tableView.dequeueReusableCell(withIdentifier: C.identifiers.cells.premiumFeaturesSubcription, for: indexPath) as! PremiumFeaturesSubscriptionTableViewCell
-						self.featuresCellConfigure(cell: cell)
-						return cell
-					} else {
-						SettingsManager.sharedInstance.changePremiumBunner = PremiumAdvBunnerType.stack.rowValue
-						let cell = tableView.dequeueReusableCell(withIdentifier: C.identifiers.cells.featuresSubscription, for: indexPath) as! FeaturesSubscriptionTableViewCell
-						self.featuresCellConfigure(cell: cell)
-						return cell
-					}
+					SettingsManager.sharedInstance.changePremiumBunner = PremiumAdvBunnerType.horizontal.rowValue
+					let cell = tableView.dequeueReusableCell(withIdentifier: C.identifiers.cells.premiumFeaturesSubcription, for: indexPath) as! PremiumFeaturesSubscriptionTableViewCell
+					self.featuresCellConfigure(cell: cell)
+					return cell
 				}
 			default:
 				let cell = tableView.dequeueReusableCell(withIdentifier: C.identifiers.cells.contentTypeCell, for: indexPath) as! ContentTypeTableViewCell
