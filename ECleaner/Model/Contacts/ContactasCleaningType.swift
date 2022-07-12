@@ -19,6 +19,8 @@ enum ContactasCleaningType {
     case duplicatedPhoneNumnber
     case duplicatedContactName
     case duplicatedEmail
+	
+	case telegram
     
     var rawValue: String {
         switch self {
@@ -36,7 +38,7 @@ enum ContactasCleaningType {
                 return ""
         }
     }
-    
+		
     var notificationType: SingleContentSearchNotificationType {
         switch self {
             case .duplicatedPhoneNumnber:
