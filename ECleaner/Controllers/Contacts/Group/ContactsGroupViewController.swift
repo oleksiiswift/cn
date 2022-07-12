@@ -450,9 +450,10 @@ extension ContactsGroupViewController: SelectDropDownMenuDelegate {
 	func getDropDownItems() -> [MenuItem] {
 		
 		let selectAllItem: MenuItem = .init(type: .select, selected: true)
-		let deselectAllItem: MenuItem = .init(type: .delete, selected: true)
+		let deselectAllItem: MenuItem = .init(type: .deselect, selected: true)
 		let shareItem: MenuItem = .init(type: .share, selected: !self.contactGroupListDataSource.selectedSections.isEmpty)
-		return [isSelectedAllItems ? deselectAllItem : selectAllItem, shareItem]
+		let deleteItem: MenuItem = .init(type: .delete, selected: !self.contactGroupListDataSource.selectedSections.isEmpty)
+		return [isSelectedAllItems ? deselectAllItem : selectAllItem, shareItem, deleteItem]
 	}
 	
 	private func performMenu(from items: [MenuItem]) -> UIMenu {

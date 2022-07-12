@@ -340,6 +340,11 @@ extension ContactsViewController {
 	
 	private func handleEdit() {
 		contactContentIsEditing = !contactContentIsEditing
+		
+		if #available(iOS 14.0, *) {
+			contactContentIsEditing ? deInitdropDownSetup() : dropDownSetup()
+		}
+	
 		if contentType == .allContacts {
 			self.contactListDataSource.contactContentIsEditing = contactContentIsEditing
 		} else if contentType == .emptyContacts {
@@ -399,6 +404,12 @@ extension ContactsViewController {
 			self.navigationBar.rightBarButtonItem.menu = self.performMenu(from: updatedItems)
 			return menu
 		}
+	}
+	
+	@available(iOS 14.0, *)
+	func deInitdropDownSetup() {
+		navigationBar.rightBarButtonItem.showsMenuAsPrimaryAction = false
+		navigationBar.rightBarButtonItem.menu = nil
 	}
 	
 	private func performMenu(from items: [MenuItem]) -> UIMenu {
