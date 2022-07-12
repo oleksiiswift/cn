@@ -195,6 +195,16 @@
 "Medium Quality" = "Medium Quality";
 "Hight Quality" = "Hight Quality";
 "Custom Settings" = "Custom Settings";
+
+"Missing Contact Data" = "Missing Contact Data";
+"Only Phone Number" = "Only Phone Number";
+"Only Email" = "Only Email";
+"Missing Name" = "Missing Name";
+"Missing All Contact Info" = "Missing All Contact Info";
+
+"Terms & Support" = "Terms & Support";
+"System" = "System";
+
 	// MARK: Descriptions
 "These are the permissions the app requires to work properly. Please see description for each permission." = "These are the permissions the app requires to work properly. Please see description for each permission.";
 "Permissions are necessary for the application to work and perform correctly." = "Permissions are necessary for the application to work and perform correctly.";

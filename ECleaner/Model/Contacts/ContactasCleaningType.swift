@@ -38,6 +38,23 @@ enum ContactasCleaningType {
                 return ""
         }
     }
+	
+	var name: String {
+		switch self {
+			case .onlyName:
+				return Localization.Main.HeaderTitle.onlyName
+			case .onlyPhone:
+				return Localization.Main.HeaderTitle.onlyPhoneNumber
+			case .onlyEmail:
+				return Localization.Main.HeaderTitle.onlyEmail
+			case .emptyName:
+				return Localization.Main.HeaderTitle.emptyName
+			case .wholeEmpty:
+				return Localization.Main.HeaderTitle.wholeEmpty
+			default:
+				return ""
+		}
+	}
 		
     var notificationType: SingleContentSearchNotificationType {
         switch self {
