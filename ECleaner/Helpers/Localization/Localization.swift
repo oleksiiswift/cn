@@ -254,6 +254,15 @@ struct Localization {
 			static let mediumQuality = "Medium Quality".localized()
 			static let highQuality = "Hight Quality".localized()
 			static let customSettings = "Custom Settings".localized()
+			
+			static let onlyName = "Missing Contact Data".localized()
+			static let onlyPhoneNumber = "Only Phone Number".localized()
+			static let onlyEmail = "Only Email".localized()
+			static let emptyName = "Missing Name".localized()
+			static let wholeEmpty = "Missing All Contact Info".localized()
+			
+			static let termsSupport = "Terms & Support".localized()
+			static let system = "System".localized()
 		}
 		
 		struct Descriptions {

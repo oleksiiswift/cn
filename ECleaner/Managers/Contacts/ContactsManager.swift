@@ -466,7 +466,7 @@ extension ContactsManager {
 				completionHandler([], operation.isCancelled)
 				return
 			}
-			
+		
 			let deleyInterval: Double = cleanProcessingType == .background ? 0 : 1
 			let sleepInterval: UInt32 = cleanProcessingType == .background ? 0 : 1
 			
@@ -476,8 +476,14 @@ extension ContactsManager {
 			var contactsGroup: [ContactsGroup] = []
 			let emptyIdentifier = ContactsCountryIdentifier(region: "", countryCode: "")
 			
+//			///`try handle telegram` - handle telegram contacts
+//			let onlyTelegramContacts = contacts.filter({$0.urlAddresses.contains(where: {$0.label == C.key.keyDescriptor.telegram})})
+//			let onlyTelegramContactsName =  ContactasCleaningType.telegram.rawValue
+//			let onlyTelegramGroup = ContactsGroup(name: onlyTelegramContactsName, contacts: onlyTelegramContacts, groupType: .telegram, countryIdentifier: emptyIdentifier)
+//			onlyTelegramContacts.count != 0 ? contactsGroup.append(onlyTelegramGroup) : ()
+			
 				/// `only name` group
-			let onlyNameContacts = contacts.filter({ $0.phoneNumbers.count == 0 && $0.emailAddresses.count == 0})
+			let onlyNameContacts = contacts.filter({ $0.phoneNumbers.count == 0 && $0.emailAddresses.count == 0 && !$0.urlAddresses.contains(where: {$0.label == C.key.keyDescriptor.telegram})})
 			let onlyNameGroupName = ContactasCleaningType.onlyName.rawValue
 			let onlyNameGroup = ContactsGroup(name: onlyNameGroupName, contacts: onlyNameContacts, groupType: .onlyName, countryIdentifier: emptyIdentifier)
 			

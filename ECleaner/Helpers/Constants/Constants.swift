@@ -38,6 +38,10 @@ class Constants {
     
     struct key {
 		
+		struct keyDescriptor {
+			static let telegram = "Telegram"
+		}
+		
 		struct advertisement {
 			static let bannerIsShow = "advertisementBannerDidShow"
 		}
@@ -85,6 +89,7 @@ class Constants {
 				static let mail = "com.cleaner.contactsGroup.mail"
 				static let emptyName = "com.cleaner.contactsGroup.emptyName"
 				static let empty = "com.cleaner.contactsGroup.empty"
+				static let telegram = "com.cleaner.contactsGroup.telegram"
 			}
 		}
 		
