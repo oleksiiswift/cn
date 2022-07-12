@@ -283,7 +283,9 @@ struct  LocalizationService {
 						return Localization.ErrorsHandler.EmptyResultsError.deepCleanResultsIsEmpty
 				}
 			}
-			return ErrorDescription(title: title, message: message, buttonTitle: buttonTitle)
+			
+			let description = ErrorDescription(title: title, message: message, buttonTitle: buttonTitle)
+			return description
 		}
 		
 		public static func getCompressionErrorDescriptionForKey(_ compressionError: ErrorHandler.CompressionError, error: Error?) -> ErrorDescription {

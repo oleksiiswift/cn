@@ -396,7 +396,7 @@ struct Localization {
 			static var deletePhoto = "_deletingPhotos".localized()
 			static var deleteVideo = "_deletingVideos".localized()
 			static var deleteContact = "_deletingContacts".localized()
-			static var mergeContacts = "Thess contacts will be merged. After the merging process is completed, unnecessary contacts will be automatically deleted.".localized()
+			static var mergeContacts = "These contacts will be merged. After the merging process is completed, unnecessary contacts will be automatically deleted.".localized()
 			static var mergeCompleted = "Merge contacts successfully completed!".localized()
 			static var deleteContactsCompleted = "Delete successfully completed!".localized()
 			static var deepCleanComplete = "Deep Clean processing complete successfully!".localized()
