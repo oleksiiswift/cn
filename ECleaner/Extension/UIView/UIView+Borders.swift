@@ -41,3 +41,14 @@ extension UIView {
         addSubview(border)
     }
 }
+
+
+extension UIView{
+
+	func setBorder(radius: CGFloat, color: UIColor, width: CGFloat) {
+		self.layer.cornerRadius = radius
+		layer.borderWidth = width
+		layer.borderColor = color.cgColor
+		self.clipsToBounds = true
+	}
+}
