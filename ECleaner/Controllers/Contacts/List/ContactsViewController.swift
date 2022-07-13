@@ -500,7 +500,7 @@ extension ContactsViewController {
 		} completionHandler: { errorsCount in
 			U.delay(0.5) {
 				if errorsCount != contacts.count {
-					AlertManager.showDeleteAlert(with: .userContacts, of: .getRaw(from: contacts.count)) {}
+//					AlertManager.showDeleteAlert(with: .userContacts, of: .getRaw(from: contacts.count)) {}
 				} else {
 					ErrorHandler.shared.showDeleteAlertError(.errorDeleteContacts)
 				}
