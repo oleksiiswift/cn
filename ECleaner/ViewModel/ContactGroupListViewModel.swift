@@ -37,7 +37,7 @@ extension ContactGroupListViewModel {
     }
     
     public func setSectionTitle(for section: Int) -> String {
-        return groupSection[section].groupType.rawValue
+        return groupSection[section].groupType.name
     }
     
     public func getContactOnRow(at indexPath: IndexPath) -> CNContact? {
@@ -56,3 +56,9 @@ extension ContactGroupListViewModel {
         return cont
     }
  }
+extension Array {
+	
+	subscript(safe index: Int) -> Element? {
+		return indices ~= index ? self[index] : nil
+	}
+}

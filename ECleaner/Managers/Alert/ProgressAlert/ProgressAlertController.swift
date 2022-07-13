@@ -49,7 +49,7 @@ class ProgressAlertController: Themeble {
     func updateColors() {
         
         alertController.view.tintColor = theme.titleTextColor
-		self.progressBar.borderColor = theme.separatorMainColor//theme.alertProgressBorderColor
+		self.progressBar.borderColor = theme.bordersColor//theme.separatorMainColor//theme.alertProgressBorderColor
 		self.progressBar.mainBackgroundColor = theme.cellBackGroundColor//theme.alertProgressBackgroundColor
         self.progressBar.progressColor = progressBarTintColor
         self.progressBar.updateColors()
@@ -81,7 +81,7 @@ class ProgressAlertController: Themeble {
         progressBar.leadingAnchor.constraint(equalTo: self.alertController.view.leadingAnchor, constant: margin).isActive = true
         progressBar.trailingAnchor.constraint(equalTo: self.alertController.view.trailingAnchor, constant: -margin).isActive = true
         progressBar.topAnchor.constraint(equalTo: self.alertController.view.topAnchor, constant: topMargin).isActive = true
-        progressBar.heightAnchor.constraint(equalToConstant: 10).isActive = true
+		progressBar.heightAnchor.constraint(equalToConstant: 8.0).isActive = true
     
         if let topController = topController() {
 			topController.present(alertController, animated: true) {
@@ -104,13 +104,15 @@ class ProgressAlertController: Themeble {
 		self.alertController.view.addSubview(self.animatedProgressBar)
 		animatedProgressBar.translatesAutoresizingMaskIntoConstraints = false
 		let margin: CGFloat = 16
-		let rect = CGRect(x: margin, y: 56, width: self.alertController.view.frame.width - margin * 2.0, height: 2.0)
+		let rect = CGRect(x: margin, y: 46, width: self.alertController.view.frame.width - margin * 2.0, height: 10.0)
 		self.animatedProgressBar.frame = rect
+		
+		self.animatedProgressBar.setBorder(radius: 6, color: theme.bordersColor, width: 2)
 		
 		self.animatedProgressBar.leadingAnchor.constraint(equalTo: self.alertController.view.leadingAnchor, constant: margin).isActive = true
 		self.animatedProgressBar.trailingAnchor.constraint(equalTo: self.alertController.view.trailingAnchor, constant: -margin).isActive = true
-		self.animatedProgressBar.topAnchor.constraint(equalTo: self.alertController.view.topAnchor, constant: 56).isActive = true
-		self.animatedProgressBar.heightAnchor.constraint(equalToConstant: 2.0).isActive = true
+		self.animatedProgressBar.topAnchor.constraint(equalTo: self.alertController.view.topAnchor, constant: 46).isActive = true
+		self.animatedProgressBar.heightAnchor.constraint(equalToConstant: 8.0).isActive = true
 	
 		U.UI {
 			self.animatedProgressBar.performAnimation()
@@ -166,7 +168,7 @@ class ProgressAlertController: Themeble {
 extension ProgressAlertController {
 
     public func showDeleteContactsProgressAlert() {
-		setProgress(controllerType: .userContacts, title: Localization.AlertController.AlertTitle.deleteContact)
+		setProgress(controllerType: .userContacts, title: Localization.AlertController.AlertTitle.deletingContact)
     }
     
     public func showMergeContactsProgressAlert() {

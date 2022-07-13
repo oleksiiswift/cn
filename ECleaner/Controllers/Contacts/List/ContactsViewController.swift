@@ -335,11 +335,16 @@ extension ContactsViewController {
 			
 		tableView.allowsMultipleSelection = enabled
 		tableView.allowsSelection = enabled
-		self.tableView.reloadData()
+		self.tableView.reloadDataWithoutAnimation()
 	}
 	
 	private func handleEdit() {
 		contactContentIsEditing = !contactContentIsEditing
+		
+		if #available(iOS 14.0, *) {
+			contactContentIsEditing ? deInitdropDownSetup() : dropDownSetup()
+		}
+	
 		if contentType == .allContacts {
 			self.contactListDataSource.contactContentIsEditing = contactContentIsEditing
 		} else if contentType == .emptyContacts {
@@ -399,6 +404,12 @@ extension ContactsViewController {
 			self.navigationBar.rightBarButtonItem.menu = self.performMenu(from: updatedItems)
 			return menu
 		}
+	}
+	
+	@available(iOS 14.0, *)
+	func deInitdropDownSetup() {
+		navigationBar.rightBarButtonItem.showsMenuAsPrimaryAction = false
+		navigationBar.rightBarButtonItem.menu = nil
 	}
 	
 	private func performMenu(from items: [MenuItem]) -> UIMenu {
@@ -489,7 +500,7 @@ extension ContactsViewController {
 		} completionHandler: { errorsCount in
 			U.delay(0.5) {
 				if errorsCount != contacts.count {
-					AlertManager.showDeleteAlert(with: .userContacts, of: .getRaw(from: contacts.count)) {}
+//					AlertManager.showDeleteAlert(with: .userContacts, of: .getRaw(from: contacts.count)) {}
 				} else {
 					ErrorHandler.shared.showDeleteAlertError(.errorDeleteContacts)
 				}
@@ -502,52 +513,55 @@ extension ContactsViewController {
 		
 		P.showIndicator()
 		contactContentIsEditing ? self.handleEdit() : ()
-		if self.searchBarView.searchBarIsActive {
-			self.resetSearchBarState()
-			self.setActiveSearchBar(setActive: false)
-		}
-	
-		self.contactStoreDidChange = true
-		
-		if contentType == .allContacts {
-			self.tableView.performBatchUpdates {
-				self.contactManager.getAllContacts { allContacts in
-					U.UI {
-						if allContacts.count != 0 {
-							defer {
-								self.smoothReloadData(with: 0.25)
+		U.delay(0.33) {
+			
+			if self.searchBarView.searchBarIsActive {
+				self.resetSearchBarState()
+				self.setActiveSearchBar(setActive: false)
+			}
+			
+			self.contactStoreDidChange = true
+			
+			if self.contentType == .allContacts {
+				self.tableView.performBatchUpdates {
+					self.contactManager.getAllContacts { allContacts in
+						U.UI {
+							if allContacts.count != 0 {
+								defer {
+									self.smoothReloadData(with: 0.25)
+								}
+								
+								self.setupViewModel(contacts: allContacts, reloadData: false)
+								self.tableView.delegate = self.contactListDataSource
+								self.tableView.dataSource = self.contactListDataSource
+								
+								P.hideIndicator()
+								self.handleBottomButtonChangeAppearence()
+							} else {
+								P.hideIndicator()
+								self.closeController()
 							}
-							
-							self.setupViewModel(contacts: allContacts, reloadData: false)
-							self.tableView.delegate = self.contactListDataSource
-							self.tableView.dataSource = self.contactListDataSource
-							
-							P.hideIndicator()
-							self.handleBottomButtonChangeAppearence()
-						} else {
-							P.hideIndicator()
-							self.closeController()
 						}
 					}
 				}
-			}
-		} else if contentType == .emptyContacts {
+			} else if self.contentType == .emptyContacts {
 				self.contactGroup.forEach { group in
-				let removableIndicates = group.contacts.map({deletedContacts.firstIndex(of: $0)}).compactMap { $0 }
-				_ = group.contacts.remove(elementsAtIndices: removableIndicates)
-			}
-			U.UI {
-				if self.contactGroup.flatMap({$0.contacts}).count != 0 {
-					self.contactGroup = self.contactGroup.filter({!$0.contacts.isEmpty})
-					self.setupGroupViemodel(contacts: self.contactGroup)
-					self.tableView.delegate = self.emptyContactGroupListDataSource
-					self.tableView.dataSource = self.emptyContactGroupListDataSource
-					self.tableView.reloadData()
-					P.hideIndicator()
-					self.handleBottomButtonChangeAppearence()
-				} else {
-					P.hideIndicator()
-					self.closeController()
+					let removableIndicates = group.contacts.map({deletedContacts.firstIndex(of: $0)}).compactMap { $0 }
+					_ = group.contacts.remove(elementsAtIndices: removableIndicates)
+				}
+				U.UI {
+					if self.contactGroup.flatMap({$0.contacts}).count != 0 {
+						self.contactGroup = self.contactGroup.filter({!$0.contacts.isEmpty})
+						self.setupGroupViemodel(contacts: self.contactGroup)
+						self.tableView.delegate = self.emptyContactGroupListDataSource
+						self.tableView.dataSource = self.emptyContactGroupListDataSource
+						self.smoothReloadData(with: 0.25)
+						P.hideIndicator()
+						self.handleBottomButtonChangeAppearence()
+					} else {
+						P.hideIndicator()
+						self.closeController()
+					}
 				}
 			}
 		}

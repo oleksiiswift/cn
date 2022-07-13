@@ -144,6 +144,7 @@
 		97238A0F2689EE2700C523DC /* CustomDoneHud.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97238A0E2689EE2700C523DC /* CustomDoneHud.swift */; };
 		97238A112689EECE00C523DC /* UIView+BlurView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97238A102689EECE00C523DC /* UIView+BlurView.swift */; };
 		97238A132689EF6E00C523DC /* Presenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97238A122689EF6E00C523DC /* Presenter.swift */; };
+		97267759287EB04300D603DC /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97267758287EB04300D603DC /* File.swift */; };
 		972A29F2280572FC00D6F54A /* CompressingSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972A29F1280572FC00D6F54A /* CompressingSection.swift */; };
 		972A29F52805733800D6F54A /* CompressingSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972A29F42805733800D6F54A /* CompressingSettingsViewModel.swift */; };
 		972A29F728057B7300D6F54A /* CompressingSettingsDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972A29F628057B7300D6F54A /* CompressingSettingsDataSource.swift */; };
@@ -184,6 +185,7 @@
 		97420C0B2841186000B0E134 /* FontManager+Permission.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97420C0A2841186000B0E134 /* FontManager+Permission.swift */; };
 		97420C0D28411EA000B0E134 /* AppDimensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97420C0C28411EA000B0E134 /* AppDimensions.swift */; };
 		9742C3C52864745D00ADCE1A /* OnbordingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9742C3C42864745D00ADCE1A /* OnbordingViewController.swift */; };
+		97458D1A287F3AB3004446E2 /* Utils+Levenshtein.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97458D19287F3AB3004446E2 /* Utils+Levenshtein.swift */; };
 		9745CC1B280765DA00335C04 /* VideoCompressionCustomSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9745CC1A280765D900335C04 /* VideoCompressionCustomSettingsViewController.swift */; };
 		975617D8273BC32A00E07A62 /* ReuseShadowRoundedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 975617D7273BC32A00E07A62 /* ReuseShadowRoundedView.swift */; };
 		975AF43127281DF700744E3B /* ContactListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 975AF43027281DF700744E3B /* ContactListViewModel.swift */; };
@@ -544,6 +546,7 @@
 		97238A0E2689EE2700C523DC /* CustomDoneHud.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomDoneHud.swift; sourceTree = "<group>"; };
 		97238A102689EECE00C523DC /* UIView+BlurView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+BlurView.swift"; sourceTree = "<group>"; };
 		97238A122689EF6E00C523DC /* Presenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Presenter.swift; sourceTree = "<group>"; };
+		97267758287EB04300D603DC /* File.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
 		972A29F1280572FC00D6F54A /* CompressingSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompressingSection.swift; sourceTree = "<group>"; };
 		972A29F42805733800D6F54A /* CompressingSettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompressingSettingsViewModel.swift; sourceTree = "<group>"; };
 		972A29F628057B7300D6F54A /* CompressingSettingsDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompressingSettingsDataSource.swift; sourceTree = "<group>"; };
@@ -584,6 +587,7 @@
 		97420C0A2841186000B0E134 /* FontManager+Permission.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FontManager+Permission.swift"; sourceTree = "<group>"; };
 		97420C0C28411EA000B0E134 /* AppDimensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDimensions.swift; sourceTree = "<group>"; };
 		9742C3C42864745D00ADCE1A /* OnbordingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnbordingViewController.swift; sourceTree = "<group>"; };
+		97458D19287F3AB3004446E2 /* Utils+Levenshtein.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Utils+Levenshtein.swift"; sourceTree = "<group>"; };
 		9745CC1A280765D900335C04 /* VideoCompressionCustomSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoCompressionCustomSettingsViewController.swift; sourceTree = "<group>"; };
 		975617D7273BC32A00E07A62 /* ReuseShadowRoundedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReuseShadowRoundedView.swift; sourceTree = "<group>"; };
 		975AF43027281DF700744E3B /* ContactListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactListViewModel.swift; sourceTree = "<group>"; };
@@ -988,6 +992,7 @@
 			isa = PBXGroup;
 			children = (
 				04E5836E267A47FB00EDC3A3 /* Utils.swift */,
+				97458D19287F3AB3004446E2 /* Utils+Levenshtein.swift */,
 				97B53A07281831D70054B826 /* Utils+UIHelper.swift */,
 				97238A122689EF6E00C523DC /* Presenter.swift */,
 				9701D27127BE4C910078E39F /* AudioToolBoxVibration.swift */,
@@ -2003,6 +2008,7 @@
 		9781313B28192E93001478D3 /* TempFolder */ = {
 			isa = PBXGroup;
 			children = (
+				97267758287EB04300D603DC /* File.swift */,
 			);
 			path = TempFolder;
 			sourceTree = "<group>";
@@ -2931,6 +2937,7 @@
 				977AC3A02869DC490074DCCE /* Onboarding.swift in Sources */,
 				97CC2F3E268743A80072EF8C /* SegueManager.swift in Sources */,
 				978D8C2C28397D7000F65D79 /* FontManager+Contacts.swift in Sources */,
+				97267759287EB04300D603DC /* File.swift in Sources */,
 				978FEF1A274C1C5400ADE1D9 /* UIAlertController+Colors.swift in Sources */,
 				9789D18A27F48C660035539C /* CollectionShadowView.swift in Sources */,
 				97420BF0283EAB6100B0E134 /* PhotoLibraryPermissions.swift in Sources */,
@@ -2966,6 +2973,7 @@
 				976D8E4328046EDF005004F4 /* VideoCompressionErrorHandler.swift in Sources */,
 				049CC22426831B800002F988 /* UIColor+Hex.swift in Sources */,
 				97B53A06281803750054B826 /* String+Size.swift in Sources */,
+				97458D1A287F3AB3004446E2 /* Utils+Levenshtein.swift in Sources */,
 				97A57476280C7C9B00B76BD0 /* ProgressBar.swift in Sources */,
 				975AF4372728279900744E3B /* String+Numeric.swift in Sources */,
 				970B208D27F604D300B5AF7D /* String+Secionds.swift in Sources */,

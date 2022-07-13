@@ -65,7 +65,7 @@ extension SettingsViewController {
 		
 		let permissionSectionCell = SettingsSection(cells: [.largeVideos,
 														 .permissions],
-												 headerTitle: "Settings",
+													headerTitle: Localization.Main.HeaderTitle.system,
 												 headetHeight: 20)
 		
 		let supportSectionCells = SettingsSection(cells: [.support,
@@ -73,7 +73,7 @@ extension SettingsViewController {
 														 .rate,
 														 .privacypolicy,
 														 .termsOfUse],
-												 headerTitle: "Support?",
+												  headerTitle: Localization.Main.HeaderTitle.termsSupport,
 												 headetHeight: 20)
 
 		var sections: [SettingsSection] {

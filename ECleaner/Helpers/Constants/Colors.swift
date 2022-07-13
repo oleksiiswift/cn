@@ -733,6 +733,15 @@ enum Theme: Int {
 				return UIColor().colorFromHexString("434F69")
 		}
 	}
+	
+	var bordersColor: UIColor {
+		switch self {
+			case .light:
+				return UIColor().colorFromHexString("DCDEE0")
+			case .dark:
+				return UIColor().colorFromHexString("DCDEE0")
+		}
+	}
 }
 
 extension Theme {

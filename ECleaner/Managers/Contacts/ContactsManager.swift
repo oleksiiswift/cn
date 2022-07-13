@@ -466,7 +466,7 @@ extension ContactsManager {
 				completionHandler([], operation.isCancelled)
 				return
 			}
-			
+		
 			let deleyInterval: Double = cleanProcessingType == .background ? 0 : 1
 			let sleepInterval: UInt32 = cleanProcessingType == .background ? 0 : 1
 			
@@ -476,8 +476,14 @@ extension ContactsManager {
 			var contactsGroup: [ContactsGroup] = []
 			let emptyIdentifier = ContactsCountryIdentifier(region: "", countryCode: "")
 			
+//			///`try handle telegram` - handle telegram contacts
+//			let onlyTelegramContacts = contacts.filter({$0.urlAddresses.contains(where: {$0.label == C.key.keyDescriptor.telegram})})
+//			let onlyTelegramContactsName =  ContactasCleaningType.telegram.rawValue
+//			let onlyTelegramGroup = ContactsGroup(name: onlyTelegramContactsName, contacts: onlyTelegramContacts, groupType: .telegram, countryIdentifier: emptyIdentifier)
+//			onlyTelegramContacts.count != 0 ? contactsGroup.append(onlyTelegramGroup) : ()
+			
 				/// `only name` group
-			let onlyNameContacts = contacts.filter({ $0.phoneNumbers.count == 0 && $0.emailAddresses.count == 0})
+			let onlyNameContacts = contacts.filter({ $0.phoneNumbers.count == 0 && $0.emailAddresses.count == 0 && !$0.urlAddresses.contains(where: {$0.label == C.key.keyDescriptor.telegram})})
 			let onlyNameGroupName = ContactasCleaningType.onlyName.rawValue
 			let onlyNameGroup = ContactsGroup(name: onlyNameGroupName, contacts: onlyNameContacts, groupType: .onlyName, countryIdentifier: emptyIdentifier)
 			
@@ -879,7 +885,40 @@ extension ContactsManager {
 				mutableContact.jobTitle = jobTitle.bestElement ?? ""
 				mutableContact.departmentName = departmentName.bestElement ?? ""
 				
-				phoneNumbers.forEach { mutableContact.phoneNumbers.append($0) }
+				var uniqPhoneNumbers = phoneNumbers.unique(map: {$0.value.stringValue})
+				
+				if uniqPhoneNumbers.count > 1 {
+					
+					for (lhs,rhs) in zip(uniqPhoneNumbers, uniqPhoneNumbers.dropFirst()) {
+						let left = lhs.value.stringValue
+						let right = rhs.value.stringValue
+						
+						let distance = Utils.levenshtein(aStr: lhs.value.stringValue.removeNonNumeric(), bStr: rhs.value.stringValue.removeNonNumeric())
+						
+						if distance == 0 {
+							if left.count > right.count {
+								if let index = uniqPhoneNumbers.firstIndex(of: rhs) {
+									uniqPhoneNumbers.remove(at: index)
+								}
+							} else {
+								if let index = uniqPhoneNumbers.firstIndex(of: lhs) {
+									uniqPhoneNumbers.remove(at: index)
+								}
+							}
+						} else if left.count > right.count && distance < 4 {
+							if let index = uniqPhoneNumbers.firstIndex(of: rhs) {
+								uniqPhoneNumbers.remove(at: index)
+							}
+						} else if left.count < right.count && distance < 4 {
+							if let index = uniqPhoneNumbers.firstIndex(of: lhs) {
+								uniqPhoneNumbers.remove(at: index)
+							}
+						}
+					}
+				}
+			
+				mutableContact.phoneNumbers = uniqPhoneNumbers.map({ CNLabeledValue(label: $0.label, value: $0.value )})
+
 				emailAddresses.forEach { mutableContact.emailAddresses.append($0) }
 				postalAddresses.forEach { mutableContact.postalAddresses.append($0) }
 				urlAddresses.forEach { mutableContact.urlAddresses.append($0) }
@@ -1310,3 +1349,4 @@ extension ContactsManager {
 		self.progressSearchNotificationManager.sendSingleSearchProgressNotification(notificationtype: type, status: state, totalProgressItems: 0, currentProgressItem: 0)
 	}
 }
+
