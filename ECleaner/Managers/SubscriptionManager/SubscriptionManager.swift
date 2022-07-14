@@ -48,8 +48,8 @@ class SubscriptionManager: NSObject {
 			}
 		} set {
 			if currentSubscription != newValue {
-				if let value = currentSubscription?.rawValue {
-					U.userDefaults.set(value, forKey: C.key.subscription.subscriptionID)
+				if let value = newValue {
+					U.userDefaults.set(value.rawValue, forKey: C.key.subscription.subscriptionID)
 				}
 			}
 		}
@@ -76,7 +76,7 @@ class SubscriptionManager: NSObject {
 		self.currentSubscription = currentSubscription
 	}
 								 
-	private func getCurrentSubscription() -> Subscriptions? {
+	public func getCurrentSubscription() -> Subscriptions? {
 		return self.currentSubscription
 	}
 

@@ -21,6 +21,7 @@ class CurrentSubscriptionTableViewCell: UITableViewCell {
 	@IBOutlet weak var stackView: UIStackView!
 	@IBOutlet weak var thumnailHeightConstraint: NSLayoutConstraint!
 	@IBOutlet weak var actionButton: GradientButton!
+	@IBOutlet weak var changePlanView: UIView!
 	
 	var delegate: CurrentSubscriptionChangeDelegate?
 	
@@ -41,12 +42,12 @@ extension CurrentSubscriptionTableViewCell {
 	
 	public func configure(model: CurrentSubscriptionModel) {
 	
-		if model.expireDate.isEmpty {
-			if SettingsManager.subscripton.currentSubscriptionName == Subscriptions.lifeTime.rawValue {
-				setupExpireDateSubtitle(with: Localization.Settings.Title.lifeTime)
-			}
-		} else {
-			setupExpireDateSubtitle(with: model.expireDate)
+		switch model.subscription {
+			
+		case .lifeTime:
+			setupExpireDateSubtitle(with: Localization.Settings.Title.lifeTime, islifeTimeSubscription: true)
+		default:
+			setupExpireDateSubtitle(with: model.expireDate, islifeTimeSubscription: false)
 		}
 	}
 }
@@ -57,14 +58,21 @@ extension CurrentSubscriptionTableViewCell: Themeble {
 		
 		self.selectionStyle = .none
 		
-		setupExpireDateSubtitle(with: SettingsManager.subscripton.currentExprireSubscriptionDate)
+		if SettingsManager.subscripton.currentSubscriptionID == Subscriptions.lifeTime.rawValue {
+			setupExpireDateSubtitle(with: Localization.Settings.Title.lifeTime, islifeTimeSubscription: true)
+			changePlanView.isHidden = true
+		} else {
+			setupExpireDateSubtitle(with: SettingsManager.subscripton.currentExprireSubscriptionDate, islifeTimeSubscription: false)
+		}
+		
 		
 		thumbnailView.layoutIfNeeded()
 		thumbnailView.setImageWithCustomBackground(image: Images.subsctiption.crown!,
 												   tintColor: .white,
 												   size: CGSize(width: thumbnailView.frame.height / 2,
 																height: thumbnailView.frame.height / 2),
-												   colors: theme.premiumCrownGradientColor)
+												   colors: theme.premiumCrownGradientColor,
+												   imageViewSize: CGSize(width: 13, height: 10))
 		
 		actionButton.buttonTitle = LocalizationService.Buttons.getButtonTitle(of: .changePlan)
 		actionButton.titleLabel?.font = .systemFont(ofSize: 12, weight: .medium)
@@ -94,16 +102,28 @@ extension CurrentSubscriptionTableViewCell: Themeble {
 		}
 	}
 	
-	private func setupExpireDateSubtitle(with text: String) {
+	private func setupExpireDateSubtitle(with text: String, islifeTimeSubscription: Bool) {
 		
 		let date = text.replacingOccurrences(of: "\\", with: "/")
-		
+	
 		let dateAttributes: [NSAttributedString.Key: Any] = [.font: FontManager.subscriptionFont(of: .premiumBannerDateSubtitle), .foregroundColor: theme.premiumSubtitleTextColor]
 		let expireDateAttributes: [NSAttributedString.Key: Any] = [.font: FontManager.subscriptionFont(of: .permiumBannerSubtitle), .foregroundColor: theme.premiumSubtitleTextColor]
 		
-		let attributedString = NSMutableAttributedString(string: Localization.Subscription.Premium.expireSubscription, attributes: expireDateAttributes)
-		attributedString.append(NSAttributedString(string: " "))
-		attributedString.append(NSAttributedString(string: date, attributes: dateAttributes))
+		var attributedString: NSMutableAttributedString {
+			if islifeTimeSubscription {
+				let string = NSMutableAttributedString(string: Localization.Subscription.Premium.currentSubscription, attributes: expireDateAttributes)
+				string.append(NSAttributedString(string: " "))
+				string.append(NSAttributedString(string: text, attributes: dateAttributes))
+				return string
+			} else {
+				let string = NSMutableAttributedString(string: Localization.Subscription.Premium.expireSubscription, attributes: expireDateAttributes)
+				string.append(NSAttributedString(string: " "))
+				string.append(NSAttributedString(string: date, attributes: dateAttributes))
+				return string
+			}
+		}
+		
+		debugPrint(attributedString)
 		subtitleTextLabel.attributedText = attributedString
 	}
 

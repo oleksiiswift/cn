@@ -111,6 +111,7 @@
             <connections>
                 <outlet property="actionButton" destination="Jjo-Zu-cBd" id="GNw-3y-mbU"/>
                 <outlet property="baseView" destination="7ep-Xt-o6U" id="7HB-Vc-J0n"/>
+                <outlet property="changePlanView" destination="rqD-Ra-ITW" id="6Iv-9H-Z0Y"/>
                 <outlet property="reuseShadowView" destination="Dro-L2-DwM" id="TAI-ae-hhw"/>
                 <outlet property="stackView" destination="HdW-n2-nWQ" id="abz-gw-UON"/>
                 <outlet property="subtitleTextLabel" destination="UEd-wF-GEj" id="mT6-fo-a4w"/>

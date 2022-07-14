@@ -35,7 +35,7 @@ class GradientShadowView: UIView {
 		self.backgroundColor = .clear
 	}
 
-	public func setImageWithCustomBackground(image: UIImage, tintColor: UIColor, size: CGSize, colors: [UIColor]) {
+	public func setImageWithCustomBackground(image: UIImage, tintColor: UIColor, size: CGSize, colors: [UIColor], imageViewSize: CGSize? = nil) {
 		
 		helperImageView.image = image
 		helperImageView.tintColor = tintColor
@@ -44,9 +44,15 @@ class GradientShadowView: UIView {
 		helperImageView.translatesAutoresizingMaskIntoConstraints = false
 		helperImageView.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
 		helperImageView.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
-		helperImageView.heightAnchor.constraint(equalToConstant: size.width).isActive = true
-		helperImageView.widthAnchor.constraint(equalToConstant: size.height).isActive = true
 		
+		if let imageViewSize = imageViewSize {
+			helperImageView.heightAnchor.constraint(equalToConstant: imageViewSize.height).isActive = true
+			helperImageView.widthAnchor.constraint(equalToConstant: imageViewSize.width).isActive = true
+		} else {
+			helperImageView.heightAnchor.constraint(equalToConstant: size.width).isActive = true
+			helperImageView.widthAnchor.constraint(equalToConstant: size.height).isActive = true
+		}
+
 		self.layoutIfNeeded()
 		let gradientColors = colors.compactMap({$0.cgColor})
 		let gradientBaseView = UIView(frame: CGRect(x: 0, y: 0, width: self.frame.size.width, height: self.frame.size.height))

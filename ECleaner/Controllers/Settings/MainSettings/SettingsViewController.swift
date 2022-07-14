@@ -188,7 +188,7 @@ extension SettingsViewController {
 		segue.interactiveHide = true
 		segue.messageView.configureNoDropShadow()
 		
-		segue.messageView.backgroundHeight = AppDimensions.Subscription.Features.lifeTimeConttolerHeigh
+		segue.messageView.backgroundHeight = AppDimensions.Subscription.Features.lifeTimeConttolerHeigh - 50
 	}
 }
 
@@ -197,7 +197,7 @@ extension SettingsViewController: SettingActionsDelegate {
 	public func setAction(at cell: SettingsModel) {
 		switch cell {
 			case .premium:
-				subscriptionManager.purchasePremiumHandler() ? self.changeCurrentSubscription() : self.showPremiumController()
+				subscriptionManager.getCurrentSubscription() != .lifeTime ? subscriptionManager.purchasePremiumHandler() ? self.changeCurrentSubscription() : self.showPremiumController() : ()
 			case .largeVideos:
 				self.showLargeVideoSettings()
 			case .dataStorage:

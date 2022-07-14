@@ -87,22 +87,22 @@ extension PermissionsViewController {
 		
 		SettingsManager.application.firstTimeApplicationStart = true
 		
-		U.delay(1) {
+		U.delay(0.5) {
 			NotificationsPermissions().requestForPermission { _, _ in
-				U.delay(1) {
+				U.delay(0.5) {
 					PhotoLibraryPermissions().requestForPermission { _, _ in
-						U.delay(1) {
+						U.delay(0.5) {
 							ContactsPermissions().requestForPermission { _, _ in
 								if #available(iOS 14.5, *) {
-									U.delay(1) {
+									U.delay(0.5) {
 										AppTrackerPermissions().requestForPermission { _, _ in
-											U.delay(1) {
+											U.delay(0.5) {
 												self.permissionWillPass()
 											}
 										}
 									}
 								} else {
-									U.delay(1) {
+									U.delay(0.5) {
 										self.permissionWillPass()
 									}
 								}

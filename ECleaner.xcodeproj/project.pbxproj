@@ -1829,8 +1829,8 @@
 			isa = PBXGroup;
 			children = (
 				97601583286F9442006965BB /* SubscriptionViewController.swift */,
-				9760158F28702350006965BB /* PremiumFeatures */,
 				979CBF08287C742500BB459D /* LifeTimeSubscriptionViewController.swift */,
+				9760158F28702350006965BB /* PremiumFeatures */,
 			);
 			path = Subscription;
 			sourceTree = "<group>";
@@ -3269,7 +3269,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.01.5;
+				MARKETING_VERSION = 0.01.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.phone.clean.cache;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "ECleaner/ECleaner-Bridging-Header.h";
@@ -3295,7 +3295,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.01.5;
+				MARKETING_VERSION = 0.01.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.phone.clean.cache;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "ECleaner/ECleaner-Bridging-Header.h";

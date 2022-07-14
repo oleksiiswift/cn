@@ -78,9 +78,7 @@ extension SubscriptionService {
 		switch purchaseResult {
 			case .success(let verification):
 				let transaction = try self.checkVerificationResult(verification)
-				
 				finishTransaction ? await transaction.finish() : ()
-				
 				return Purchase(product: product, transaction: transaction, finishTransaction: !finishTransaction)
 			case .userCancelled:
 				throw ErrorHandler.SubscriptionError.refundsCanceled
@@ -99,7 +97,11 @@ extension SubscriptionService {
 			do {
 				let transaction = try self.checkVerificationResult(result)
 				
-				transaction.productType == .autoRenewable || (!renewable && transaction.productType == .nonRenewable) ? transactions.append(transaction) : ()
+				if transaction.productID == Subscriptions.lifeTime.rawValue {
+					transactions.append(transaction)
+				} else {
+					transaction.productType == .autoRenewable || (!renewable && transaction.productType == .nonRenewable) ? transactions.append(transaction) : ()
+				}
 			} catch {
 				throw error
 			}
