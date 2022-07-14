@@ -40,10 +40,12 @@ struct Purchase {
 struct CurrentSubscriptionModel {
 	
 	var expireDate: String
-	var name: String
+	var id: String
+	var subscription: Subscriptions
 	
-	init(expireDate: String, name: String) {
+	init(expireDate: String, id: String, subscription: Subscriptions) {
 		self.expireDate = expireDate
-		self.name = name
+		self.id = id
+		self.subscription = subscription
 	}
 }

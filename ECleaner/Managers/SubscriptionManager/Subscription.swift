@@ -98,7 +98,7 @@ class Subscription {
 	
 	public func getCurrentSubscriptionModel() async throws -> CurrentSubscriptionModel? {
 		
-		var name: String = SettingsManager.subscripton.currentSubscriptionName
+		var id: String = SettingsManager.subscripton.currentSubscriptionID
 		var date: String = SettingsManager.subscripton.currentExprireSubscriptionDate
 	
 		do {
@@ -106,8 +106,8 @@ class Subscription {
 			let subscription = Subscriptions.allCases.first(where: {$0.rawValue == productID.first})
 			
 			if let currentSubscription = subscription, let productDescription = self.getProductDesctiption(for: currentSubscription) {
-				SettingsManager.subscripton.currentSubscriptionName = productDescription.productName
-				name = productDescription.productName
+				SettingsManager.subscripton.currentSubscriptionID = productDescription.id
+				id = productDescription.productName
 			}
 			
 			let currentTransaction = try await self.service.getCurrentSubsctiption()
@@ -117,11 +117,13 @@ class Subscription {
 				SettingsManager.subscripton.currentExprireSubscriptionDate = stringdate
 				date = stringdate
 			}
-			return CurrentSubscriptionModel(expireDate: date, name: name)
+			if let currebtSubscription = subscription {
+				return CurrentSubscriptionModel(expireDate: date, id: id, subscription: currebtSubscription)
+			}
 		} catch {
 			debugPrint(error)
 		}
-		return CurrentSubscriptionModel(expireDate: date, name: name)
+		return nil
 	}
 	
 	public func purchaseProductsStatus() async throws -> Bool {
@@ -129,9 +131,11 @@ class Subscription {
 		do {
 			let ids = try await self.getCurrentSubscription()
 			
+			let products = try await self.loadProducts()
+			
 			if !ids.isEmpty, let purchasedProductID = ids.first, try await service.isProductPurchased(productId: purchasedProductID) {
 				
-				if let product = self.products.first(where: {$0.id == purchasedProductID}) {
+				if let product = products.first(where: {$0.id == purchasedProductID}) {
 					let subscription = Subscriptions.allCases.first(where: {$0.rawValue == product.id})
 					manager.saveSubscription(subscription)
 					self.manager.setPurchasePremium(true)

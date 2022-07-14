@@ -61,10 +61,8 @@ class Constants {
 		struct subscription {
 			static let purchasePremium = "purchasePremium"
 			static let subscriptionExpireDate = "subscriptionExpireDate"
-			static let subscriptionCurrentName = "subscriptionCurrentName"
 			static let expiredSubscription = "expiredSubscription"
 			static let verificationPassed = "verificationPassed"
-			static let currentSubscription = "currentSubscription"
 			static let subscriptionID = "currentSubscriptionID"
 		}
 		

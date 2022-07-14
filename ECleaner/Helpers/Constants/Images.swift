@@ -192,7 +192,11 @@ extension Images {
 			case .restore:
 				return UIImage(systemName: "purchased")!
 			case .lifetime:
-				return UIImage(systemName: "crown")!
+				if #available(iOS 14.0, *) {
+					return UIImage(systemName: "crown")!
+				} else {
+					return UIImage(named: "crownLower")!
+				}
 			case .support:
 				return UIImage(systemName: "captions.bubble")!
 			case .share:
@@ -240,7 +244,6 @@ extension Images {
 			default:
 				if #available(iOS 15.0, *) {
 					return UIImage(systemName: "hand.raised.fill")!
-//					return UIImage(systemName: "rectangle.and.hand.point.up.left.fill")!
 				} else {
 					return UIImage(systemName: "hand.raised.fill")!
 				}
