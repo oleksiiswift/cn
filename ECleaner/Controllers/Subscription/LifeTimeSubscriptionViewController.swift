@@ -22,6 +22,7 @@ class LifeTimeSubscriptionViewController: UIViewController {
 	@IBOutlet weak var mainContaintainerHeightConstraint: NSLayoutConstraint!
 	@IBOutlet weak var bottomContainerHeightConstraint: NSLayoutConstraint!
 	
+	@IBOutlet weak var bottomContainerView: UIView!
 	@IBOutlet weak var actionButtonContainerView: UIView!
 	@IBOutlet weak var actionButtonContainerStackView: UIStackView!
 	@IBOutlet weak var actionButtonHeightConstraint: NSLayoutConstraint!
@@ -33,6 +34,7 @@ class LifeTimeSubscriptionViewController: UIViewController {
 	@IBOutlet weak var subscribePriceInfoTextLabel: UILabel!
 	@IBOutlet weak var actionButtonContainerViewWidthConstraint: NSLayoutConstraint!
 	
+	private let buttonShadow = ReuseShadowView()
 	private lazy var activityIndicatorView = UIActivityIndicatorView(style: .medium)
 	
 	private var statusSubscriptionLoaded: SubscriptionSegmentStatus = .willLoading
@@ -62,7 +64,7 @@ class LifeTimeSubscriptionViewController: UIViewController {
 		guard statusSubscriptionLoaded != .disable else { return }
 		
 		self.actionButtonContainerView.animateButtonTransform()
-		
+		self.buttonShadow.animateButtonTransform()
 		self.actionButtonHandler(for: .processing)
 		
 		Network.theyLive { isAlive in
@@ -81,11 +83,13 @@ extension LifeTimeSubscriptionViewController {
 	private func didTapPurchasePremium() {
 		
 		self.subscriptionManager.purchasePremium(of: .lifeTime) { purchased in
-			self.actionButtonHandler(for: .active)
-			if purchased {
-				self.dismiss(animated: true)
-			} else {
-				ErrorHandler.shared.showSubsriptionAlertError(for: .purchaseError, at: self)
+			Utils.UI {
+				self.actionButtonHandler(for: .active)
+				if purchased {
+					self.dismiss(animated: true)
+				} else {
+					ErrorHandler.shared.showSubsriptionAlertError(for: .purchaseError, at: self)
+				}
 			}
 		}
 	}
@@ -217,10 +221,9 @@ extension LifeTimeSubscriptionViewController: Themeble {
 		titleTextLabel.font = FontManager.subscriptionFont(of: .lifeTimeTitle)
 		
 		titleTextLabel.text = Localization.Settings.Title.lifeTime
-
-		let colors = theme.getColorsGradient(for: .lifetime).compactMap({$0.cgColor})
-		crownImageView.image = Images.subsctiption.crown?.tintedWithLinearGradientColors(colorsArr: colors.reversed())
+		crownImageView.image = I.systemItems.navigationBarItems.premium
 		crownImageView.contentMode = .scaleAspectFit
+		crownImageView.setupForShadow(shadowColor: theme.bottomShadowColor, cornerRadius: 14, shadowOffcet: CGSize(width: 3, height: 3), shadowOpacity: 10, shadowRadius: 14)
 	}
 	
 	func updateColors() {
@@ -236,9 +239,60 @@ extension LifeTimeSubscriptionViewController: Themeble {
 		actionButtonContainerView.layerGradient(startPoint: .topLeft, endPoint: .bottomRight, colors: colors, type: .axial)
 		
 		
+		self.bottomContainerView.insertSubview(buttonShadow, at: 0)
+		buttonShadow.translatesAutoresizingMaskIntoConstraints = false
+		buttonShadow.leadingAnchor.constraint(equalTo: self.actionButtonContainerView.leadingAnchor).isActive = true
+		buttonShadow.trailingAnchor.constraint(equalTo: self.actionButtonContainerView.trailingAnchor).isActive = true
+		buttonShadow.bottomAnchor.constraint(equalTo: self.actionButtonContainerView.bottomAnchor).isActive = true
+		buttonShadow.topAnchor.constraint(equalTo: self.actionButtonContainerView.topAnchor).isActive = true
+		
 		subscribeTitleTextLabel.textColor = theme.activeTitleTextColor
 		subscribeSubtitleTextLabel.textColor = theme.activeTitleTextColor
 		subscribePriceTextLabel.textColor = theme.activeTitleTextColor
 		subscribePriceInfoTextLabel.textColor = theme.activeTitleTextColor
+	}
+}
+
+
+extension UIImage {
+	/// Returns a new image with the specified shadow properties.
+	/// This will increase the size of the image to fit the shadow and the original image.
+	func withShadow(blur: CGFloat = 6, offset: CGSize = .zero, color: UIColor = UIColor(white: 0, alpha: 0.8)) -> UIImage {
+
+		let shadowRect = CGRect(
+			x: offset.width - blur,
+			y: offset.height - blur,
+			width: size.width + blur * 2,
+			height: size.height + blur * 2
+		)
+		
+		UIGraphicsBeginImageContextWithOptions(
+			CGSize(
+				width: max(shadowRect.maxX, size.width) - min(shadowRect.minX, 0),
+				height: max(shadowRect.maxY, size.height) - min(shadowRect.minY, 0)
+			),
+			false, 0
+		)
+		
+		let context = UIGraphicsGetCurrentContext()!
+
+		context.setShadow(
+			offset: offset,
+			blur: blur,
+			color: color.cgColor
+		)
+		
+		draw(
+			in: CGRect(
+				x: max(0, -shadowRect.origin.x),
+				y: max(0, -shadowRect.origin.y),
+				width: size.width,
+				height: size.height
+			)
+		)
+		let image = UIGraphicsGetImageFromCurrentImageContext()!
+		
+		UIGraphicsEndImageContext()
+		return image
 	}
 }

@@ -39,8 +39,8 @@
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="FNZ-B0-2sN" firstAttribute="leading" secondItem="SZZ-tU-SEA" secondAttribute="leading" constant="70" id="1o2-pl-Phx"/>
-                            <constraint firstItem="cwl-87-dLZ" firstAttribute="centerY" secondItem="SZZ-tU-SEA" secondAttribute="centerY" id="2Wg-VB-jmZ"/>
                             <constraint firstItem="cwl-87-dLZ" firstAttribute="leading" secondItem="FNZ-B0-2sN" secondAttribute="trailing" constant="20" id="XES-d6-y36"/>
+                            <constraint firstItem="cwl-87-dLZ" firstAttribute="centerY" secondItem="FNZ-B0-2sN" secondAttribute="centerY" id="fFG-4w-MKd"/>
                             <constraint firstItem="FNZ-B0-2sN" firstAttribute="centerY" secondItem="SZZ-tU-SEA" secondAttribute="centerY" id="r4Y-hL-b6M"/>
                             <constraint firstAttribute="trailing" secondItem="cwl-87-dLZ" secondAttribute="trailing" constant="20" id="sqI-mH-w66"/>
                         </constraints>

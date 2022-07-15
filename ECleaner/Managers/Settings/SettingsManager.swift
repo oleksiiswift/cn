@@ -41,11 +41,11 @@ class SettingsManager {
 	
 	struct subscripton {
 		
-		static var currentSubscriptionName: String {
+		static var currentSubscriptionID: String {
 			get {
-				U.userDefaults.string(forKey: C.key.subscription.subscriptionCurrentName) ?? ""
+				U.userDefaults.string(forKey: C.key.subscription.subscriptionID) ?? ""
 			} set {
-				U.userDefaults.set(newValue, forKey: C.key.subscription.subscriptionCurrentName)
+				U.userDefaults.set(newValue, forKey: C.key.subscription.subscriptionID)
 			}
 		}
 		

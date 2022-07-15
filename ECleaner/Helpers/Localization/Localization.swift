@@ -535,6 +535,7 @@ struct Localization {
 		struct Premium {
 			static var expireSubscription = "Subscription Expire on:".localized()
 			static var alreadyPremium = "Already Premium".localized()
+			static var currentSubscription = "Current Subscription Status:".localized()
 		}
 	}
 }
