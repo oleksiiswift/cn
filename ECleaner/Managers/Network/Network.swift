@@ -7,6 +7,11 @@
 
 import Connectivity
 
+enum NetworkStatus {
+	case connedcted
+	case unreachable
+}
+
 class Network {
 	
 	static var connectivity = Connectivity()
@@ -26,37 +31,37 @@ class Network {
 		connectivity.startNotifier()
 	}
 	
-	static func theyLive(_ completion: @escaping(_ isAlive: Bool) -> Void) {
+	static func theyLive(_ completion: @escaping(_ status: NetworkStatus) -> Void) {
 	
 		connectivity.checkConnectivity { (checkedConnectivity) in
 			switch checkedConnectivity.status {
 				case .connected:
 					debugPrint("connected")
 					debugPrint("this is the way")
-					completion(true)
+					completion(.connedcted)
 				case .connectedViaCellular:
 					debugPrint("connectedViaCellular")
 					debugPrint("this is the way")
-					completion(true)
+					completion(.connedcted)
 				case .connectedViaCellularWithoutInternet:
 					debugPrint("connectedViaCellularWithoutInternet")
 					debugPrint("i've got a bad feellings about this")
-					completion(false)
+					completion(.unreachable)
 				case .connectedViaWiFi:
 					debugPrint("connectedViaWiFi")
 					debugPrint("this is the way")
-					completion(true)
+					completion(.connedcted)
 				case .connectedViaWiFiWithoutInternet:
 					debugPrint("connectedViaWiFiWithoutInternet")
 					debugPrint("i've got a bad feellings about this")
-					completion(false)
+					completion(.unreachable)
 				case .determining:
 					debugPrint("keep going")
 					debugPrint("determining")
 				case .notConnected:
 					debugPrint("i've got a bad feellings about this")
 					debugPrint("notConnected")
-					completion(false)
+					completion(.unreachable)
 			}
 		}
 	}

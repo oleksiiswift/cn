@@ -21,6 +21,24 @@ class SettingsDataSource: NSObject {
 
 extension SettingsDataSource {
 	
+	private func getCurrentSubscriptionCell(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> CurrentSubscriptionTableViewCell {
+		let cell = tableView.dequeueReusableCell(withIdentifier: C.identifiers.cells.currentSubscription, for: indexPath) as! CurrentSubscriptionTableViewCell
+		self.subscriptionCellConfiguration(cell: cell)
+		return cell
+	}
+	
+	private func getPremiumFeatureSubscriptionCell(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> PremiumFeaturesSubscriptionTableViewCell {
+		let cell = tableView.dequeueReusableCell(withIdentifier: C.identifiers.cells.premiumFeaturesSubcription, for: indexPath) as! PremiumFeaturesSubscriptionTableViewCell
+		self.featuresCellConfigure(cell: cell)
+		return cell
+	}
+	
+	private func getContentTypeCell(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> ContentTypeTableViewCell {
+		let cell = tableView.dequeueReusableCell(withIdentifier: C.identifiers.cells.contentTypeCell, for: indexPath) as! ContentTypeTableViewCell
+		self.cellConfigure(cell: cell, at: indexPath)
+		return cell
+	}
+	
 	private func cellConfigure(cell: ContentTypeTableViewCell, at indexPath: IndexPath) {
 		
 		let settingsModel = settingsViewModel.getSettingsModel(at: indexPath)
@@ -63,22 +81,20 @@ extension SettingsDataSource: UITableViewDelegate, UITableViewDataSource {
 	}
 	
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		switch indexPath.section {
-			case 0:
-				if SubscriptionManager.instance.purchasePremiumHandler() {
-					let cell = tableView.dequeueReusableCell(withIdentifier: C.identifiers.cells.currentSubscription, for: indexPath) as! CurrentSubscriptionTableViewCell
-					self.subscriptionCellConfiguration(cell: cell)
-					return cell
-				} else {
-					SettingsManager.sharedInstance.changePremiumBunner = PremiumAdvBunnerType.horizontal.rowValue
-					let cell = tableView.dequeueReusableCell(withIdentifier: C.identifiers.cells.premiumFeaturesSubcription, for: indexPath) as! PremiumFeaturesSubscriptionTableViewCell
-					self.featuresCellConfigure(cell: cell)
-					return cell
-				}
-			default:
-				let cell = tableView.dequeueReusableCell(withIdentifier: C.identifiers.cells.contentTypeCell, for: indexPath) as! ContentTypeTableViewCell
-				self.cellConfigure(cell: cell, at: indexPath)
-				return cell
+		
+		if SubscriptionManager.instance.isLifeTimeSubscription() {
+			return getContentTypeCell(tableView, cellForRowAt: indexPath)
+		} else  {
+			switch indexPath.section {
+				case 0:
+					if SubscriptionManager.instance.purchasePremiumHandler() {
+						return getCurrentSubscriptionCell(tableView, cellForRowAt: indexPath)
+					} else {
+						return getPremiumFeatureSubscriptionCell(tableView, cellForRowAt: indexPath)
+					}
+				default:
+					return getContentTypeCell(tableView, cellForRowAt: indexPath)
+			}
 		}
 	}
 	

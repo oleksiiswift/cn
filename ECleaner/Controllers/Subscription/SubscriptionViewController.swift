@@ -101,12 +101,13 @@ extension SubscriptionViewController: BottomActionButtonDelegate {
 		
 		self.purchaseProcessingHandler(for: .processing)
 		
-		Network.theyLive { isAlive in
-			if isAlive {
-				self.didTapPurchasePremium()
-			} else {
-				ErrorHandler.shared.showNetworkErrorAlert(.networkError, at: self)
-				self.purchaseProcessingHandler(for: .active)
+		Network.theyLive { status in
+			switch status {
+				case .connedcted:
+					self.didTapPurchasePremium()
+				case .unreachable:
+					ErrorHandler.shared.showNetworkErrorAlert(.networkError, at: self)
+					self.purchaseProcessingHandler(for: .active)
 			}
 		}
 	}
@@ -151,18 +152,19 @@ extension SubscriptionViewController {
 		
 		self.segmentControll.setSegment(status: .willLoading)
 		
-		Network.theyLive { isAlive in
+		Network.theyLive { status in
 			Utils.UI {
-				if isAlive {
-					self.tryLoadingProducts { status in
-						self.statusSegmentLoaded = status
-						self.segmentControll.setSegment(status: status)
-						self.subscribeContainerView.setLockButtonAnimate(state: .active)
-					}
-				} else {
-					self.segmentControll.setSegment(status: .disable)
-					self.subscribeContainerView.setLockButtonAnimate(state: .disabled)
-					self.statusSegmentLoaded = .disable
+				switch status {
+					case .connedcted:
+						self.tryLoadingProducts { status in
+							self.statusSegmentLoaded = status
+							self.segmentControll.setSegment(status: status)
+							self.subscribeContainerView.setLockButtonAnimate(state: .active)
+						}
+					case .unreachable:
+						self.segmentControll.setSegment(status: .disable)
+						self.subscribeContainerView.setLockButtonAnimate(state: .disabled)
+						self.statusSegmentLoaded = .disable
 				}
 			}
 		}
@@ -251,14 +253,14 @@ extension SubscriptionViewController: PremiumNavigationBarDelegate {
 		self.setLeftButtonAnimateButton(status: .start)
 		self.restoreProcessingHandler(for: .processing)
 		
-		Network.theyLive { isAlive in
-			if isAlive {
-				self.didTapRestorePurchase()
-			} else {
-				ErrorHandler.shared.showNetworkErrorAlert(.networkError, at: self)
-				
-				self.setLeftButtonAnimateButton(status: .stop)
-				self.restoreProcessingHandler(for: .active)
+		Network.theyLive { status in
+			switch status {
+				case .connedcted:
+					self.didTapRestorePurchase()
+				case .unreachable:
+					ErrorHandler.shared.showNetworkErrorAlert(.networkError, at: self)
+					self.setLeftButtonAnimateButton(status: .stop)
+					self.restoreProcessingHandler(for: .active)
 			}
 		}
 	}
