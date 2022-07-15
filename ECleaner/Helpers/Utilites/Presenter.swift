@@ -24,6 +24,7 @@ class UIPresenter {
 	
 	public static func closePresentedWindow() {
 		guard let _ = currentScene as? UIWindowScene else { return }
+		Utils.sceneDelegate.presentedWindow?.frame = .zero
 		Utils.sceneDelegate.presentedWindow = nil
 	}
 }
