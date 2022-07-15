@@ -83,11 +83,13 @@ extension LifeTimeSubscriptionViewController {
 	private func didTapPurchasePremium() {
 		
 		self.subscriptionManager.purchasePremium(of: .lifeTime) { purchased in
-			self.actionButtonHandler(for: .active)
-			if purchased {
-				self.dismiss(animated: true)
-			} else {
-				ErrorHandler.shared.showSubsriptionAlertError(for: .purchaseError, at: self)
+			Utils.UI {
+				self.actionButtonHandler(for: .active)
+				if purchased {
+					self.dismiss(animated: true)
+				} else {
+					ErrorHandler.shared.showSubsriptionAlertError(for: .purchaseError, at: self)
+				}
 			}
 		}
 	}
