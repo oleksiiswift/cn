@@ -160,7 +160,6 @@ extension SettingsViewController: NavigationBarDelegate {
 	func didTapRightBarButton(_ sender: UIButton) {}
 }
 
-
 extension SettingsViewController {
 	
 	
@@ -184,10 +183,9 @@ extension SettingsViewController {
 		guard let segue = segue as? SwiftMessagesSegue else { return }
 		
 		segue.configure(layout: .bottomMessage)
-		segue.dimMode = .gray(interactive: true)
+		segue.dimMode = .gray(interactive: false)
 		segue.interactiveHide = true
 		segue.messageView.configureNoDropShadow()
-		
 		segue.messageView.backgroundHeight = AppDimensions.Subscription.Features.lifeTimeConttolerHeigh - 50
 	}
 }
@@ -307,13 +305,7 @@ extension SettingsViewController: SettingActionsDelegate {
 
 extension SettingsViewController {
 	
-	private func showWebView(with url: URL) {
-		
-		Network.theyLive { isAlive in
-			
-			
-		}
-	}
+	private func showWebView(with url: URL) {}
 }
 
 

@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SwiftMessages
 
 class LifeTimeSubscriptionViewController: UIViewController {
 	
@@ -38,14 +39,16 @@ class LifeTimeSubscriptionViewController: UIViewController {
 	
 	private var lostConnectionImageView = UIImageView()
 	private var lostConnetctionMessage = UILabel()
-	
 	private let buttonShadow = ReuseShadowView()
 	private lazy var activityIndicatorView = UIActivityIndicatorView(style: .medium)
+	private var dissmissGestureRecognizer = UIPanGestureRecognizer()
 	
 	private var statusSubscriptionLoaded: SubscriptionSegmentStatus = .willLoading
-	
+	private var subscriptionActionProcessingState: SubscriptionActionProcessingState = .active
 	private var subscriptionManager = SubscriptionManager.instance
-	
+
+	private var tapOutsideRecognizer: UITapGestureRecognizer!
+
 	override func viewDidLoad() {
         super.viewDidLoad()
 		
@@ -57,8 +60,15 @@ class LifeTimeSubscriptionViewController: UIViewController {
 		setupUI()
         updateColors()
 		setupObserver()
+		setupGestureRecognizers()
     }
 	
+	override func viewDidAppear(_ animated: Bool) {
+		super.viewDidAppear(animated)
+		
+		self.setupDissmissGestureRecognizer()
+	}
+
 	override func viewDidLayoutSubviews() {
 		super.viewDidLayoutSubviews()
 		
@@ -95,7 +105,7 @@ extension LifeTimeSubscriptionViewController {
 			Utils.UI {
 				self.actionButtonHandler(for: .active)
 				if purchased {
-					self.dismiss(animated: true)
+					self.closeController(sender: self.actionButton)
 				} else {
 					ErrorHandler.shared.showSubsriptionAlertError(for: .purchaseError, at: self)
 				}
@@ -104,6 +114,8 @@ extension LifeTimeSubscriptionViewController {
 	}
 	
 	private func actionButtonHandler(for state: SubscriptionActionProcessingState) {
+		
+		self.subscriptionActionProcessingState = state
 		
 		Utils.UI {
 			switch state {
@@ -243,6 +255,57 @@ extension LifeTimeSubscriptionViewController {
 	}
 }
 
+extension LifeTimeSubscriptionViewController {
+	
+	private func setupDissmissGestureRecognizer() {
+		
+		guard self.tapOutsideRecognizer == nil else { return }
+		
+		self.tapOutsideRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.handleTapBehind))
+		self.tapOutsideRecognizer.numberOfTapsRequired = 1
+		self.tapOutsideRecognizer.cancelsTouchesInView = false
+		self.tapOutsideRecognizer.delegate = self
+		U.sceneDelegate.window?.addGestureRecognizer(self.tapOutsideRecognizer)
+	}
+	
+	private func removeDissmissGestureRecognizer() {
+		
+		guard self.tapOutsideRecognizer != nil else { return }
+		
+		Utils.sceneDelegate.window?.removeGestureRecognizer(self.tapOutsideRecognizer)
+		self.tapOutsideRecognizer = nil
+	}
+	
+	private func setupGestureRecognizers() {
+		
+		let animator = TopBottomAnimation(style: .bottom)
+		dissmissGestureRecognizer = animator.panGestureRecognizer
+		dissmissGestureRecognizer.cancelsTouchesInView = false
+		animator.panGestureRecognizer.delegate = self
+		self.view.addGestureRecognizer(dissmissGestureRecognizer)
+	}
+	
+	@objc func handleTapBehind(sender: UITapGestureRecognizer) {
+		
+		if sender.state == UIGestureRecognizer.State.ended {
+			
+			let location: CGPoint = sender.location(in: nil)
+
+			if !self.view.point(inside: self.view.convert(location, from: self.view.window), with: nil) {
+				self.view.window?.removeGestureRecognizer(sender)
+				self.closeController(sender: sender)
+			}
+		}
+	}
+	
+	private func closeController(sender: AnyObject) {
+		guard self.subscriptionActionProcessingState != .processing else { return }
+		self.dismiss(animated: true) {
+			self.removeDissmissGestureRecognizer()
+		}
+	}
+}
+
 extension LifeTimeSubscriptionViewController: Themeble {
 	
 	private func actionButtonSetup() {
@@ -331,7 +394,6 @@ extension LifeTimeSubscriptionViewController: Themeble {
 		self.view.backgroundColor = .clear
 		mainContainerView.backgroundColor = theme.backgroundColor
 		
-		
 		topShevronView.backgroundColor = theme.subTitleTextColor
 		titleTextLabel.textColor = theme.titleTextColor
 		
@@ -354,5 +416,39 @@ extension LifeTimeSubscriptionViewController: Themeble {
 	private func setupObserver() {
 		
 		U.notificationCenter.addObserver(self, selector: #selector(networkStatusDidChange), name: .ReachabilityDidChange, object: nil)
+	}
+}
+
+extension LifeTimeSubscriptionViewController: UIGestureRecognizerDelegate {
+	
+	func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldBeRequiredToFailBy otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+		return gestureRecognizer is UISwipeGestureRecognizer && otherGestureRecognizer is UIPanGestureRecognizer
+	}
+	
+	func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+	
+		if gestureRecognizer == dissmissGestureRecognizer && self.subscriptionActionProcessingState == .processing {
+			let point = gestureRecognizer.location(in: self.view)
+			if self.view.bounds.contains(point) {
+				return false
+			}
+		}
+		return true
+	}
+	
+	func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+	
+		if gestureRecognizer == dissmissGestureRecognizer && self.subscriptionActionProcessingState == .processing {
+			let point = gestureRecognizer.location(in: self.view)
+			
+			if self.view.bounds.contains(point) {
+				return true
+			}
+		}
+		return true
+	}
+	
+	func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+		return true
 	}
 }
