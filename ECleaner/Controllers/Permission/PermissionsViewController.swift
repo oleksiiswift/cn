@@ -17,6 +17,7 @@ class PermissionsViewController: UIViewController, Storyboarded {
 	private var permissionDataSource: PermissionsDataSource!
 	
 	public var fromRootViewController: Bool = true
+	private var didTapContinueButton: Bool = false
 	
 	weak var coordinator: ApplicationCoordinator?
 	
@@ -42,7 +43,7 @@ class PermissionsViewController: UIViewController, Storyboarded {
 extension PermissionsViewController {
 	
 	private func handleContineButton() {
-		
+	
 		if #available(iOS 14.5, *) {
 			if AppTrackerPermissions().notDetermined {
 				AlertManager.showPermissionAlert(of: .appTracker, at: self) {
@@ -61,6 +62,9 @@ extension PermissionsViewController {
 		if PhotoLibraryPermissions().notDetermined && ContactsPermissions().notDetermined || PhotoLibraryPermissions().denied && ContactsPermissions().denied {
 			AlertManager.showPermissionAlert(of: .onePermissionRule, at: self)
 		} else {
+			guard !didTapContinueButton else { return }
+			didTapContinueButton = !didTapContinueButton
+			
 			self.permissionWillPass()
 		}
 	}
@@ -115,7 +119,7 @@ extension PermissionsViewController {
 	}
 	
 	private func permissionWillPass() {
-		
+	
 		SubscriptionManager.instance.checkForCurrentSubscription { isSubscribe in
 						
 			DispatchQueue.main.async {
