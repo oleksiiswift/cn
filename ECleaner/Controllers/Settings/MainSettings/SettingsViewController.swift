@@ -79,7 +79,7 @@ extension SettingsViewController {
 		var sections: [SettingsSection] {
 			if self.subscriptionManager.purchasePremiumHandler() {
 				if self.subscriptionManager.isLifeTimeSubscription() {
-					return [premiumSectionCell, permissionSectionCell, supportSectionCells]
+					return [permissionSectionCell, supportSectionCells]
 				} else {
 					return [premiumSectionCell,lifeTimeSection, permissionSectionCell, supportSectionCells]
 				}
@@ -160,7 +160,6 @@ extension SettingsViewController: NavigationBarDelegate {
 	func didTapRightBarButton(_ sender: UIButton) {}
 }
 
-
 extension SettingsViewController {
 	
 	
@@ -184,10 +183,9 @@ extension SettingsViewController {
 		guard let segue = segue as? SwiftMessagesSegue else { return }
 		
 		segue.configure(layout: .bottomMessage)
-		segue.dimMode = .gray(interactive: true)
+		segue.dimMode = .gray(interactive: false)
 		segue.interactiveHide = true
 		segue.messageView.configureNoDropShadow()
-		
 		segue.messageView.backgroundHeight = AppDimensions.Subscription.Features.lifeTimeConttolerHeigh - 50
 	}
 }
@@ -224,12 +222,14 @@ extension SettingsViewController: SettingActionsDelegate {
 	}
 	
 	private func changeCurrentSubscription() {
-	
-		Network.theyLive { isAlive in
-			if isAlive {
-				self.subscriptionManager.changeCurrentSubscription()
-			} else {
-				ErrorHandler.shared.showNetworkErrorAlert(.networkError, at: self)
+		
+		
+		Network.theyLive { status in
+			switch status {
+				case .connedcted:
+					self.subscriptionManager.changeCurrentSubscription()
+				case .unreachable:
+					ErrorHandler.shared.showNetworkErrorAlert(.networkError, at: self)
 			}
 		}
 	}
@@ -257,26 +257,27 @@ extension SettingsViewController: SettingActionsDelegate {
 	
 	private func showRestorePurchaseAction() {
 	
-		Network.theyLive { isAlive in
-			if isAlive {
-				UIPresenter.showIndicator(in: self)
-				self.subscriptionManager.restorePurchase { restored, requested, date in
-					
-					UIPresenter.hideIndicator()
-					
-					guard requested else { return }
-					
-					if !restored {
-						if let date = date {
-							let dateString = Utils.getString(from: date, format: Constants.dateFormat.expiredDateFormat)
-							ErrorHandler.shared.showSubsriptionAlertError(for: .restoreError, at: self, expreDate: dateString)
-						} else {
-							ErrorHandler.shared.showSubsriptionAlertError(for: .restoreError, at: self)
+		Network.theyLive { status in
+			switch status {
+				case .connedcted:
+					UIPresenter.showIndicator(in: self)
+					self.subscriptionManager.restorePurchase { restored, requested, date in
+						
+						UIPresenter.hideIndicator()
+						
+						guard requested else { return }
+						
+						if !restored {
+							if let date = date {
+								let dateString = Utils.getString(from: date, format: Constants.dateFormat.expiredDateFormat)
+								ErrorHandler.shared.showSubsriptionAlertError(for: .restoreError, at: self, expreDate: dateString)
+							} else {
+								ErrorHandler.shared.showSubsriptionAlertError(for: .restoreError, at: self)
+							}
 						}
 					}
-				}
-			} else {
-				ErrorHandler.shared.showNetworkErrorAlert(.networkError, at: self)
+				case .unreachable:
+					ErrorHandler.shared.showNetworkErrorAlert(.networkError, at: self)
 			}
 		}
 	}
@@ -304,13 +305,7 @@ extension SettingsViewController: SettingActionsDelegate {
 
 extension SettingsViewController {
 	
-	private func showWebView(with url: URL) {
-		
-		Network.theyLive { isAlive in
-			
-			
-		}
-	}
+	private func showWebView(with url: URL) {}
 }
 
 

@@ -50,9 +50,9 @@ extension AppDelegate {
 extension AppDelegate {
 	
 	private func initializeSubscriptions() {
-
-		Network.theyLive { isAlive in
-			guard isAlive else { return }
+		
+		Network.theyLive { status in
+			guard status == .connedcted else { return }
 			SubscriptionManager.instance.initialize()
 		}
 	}
