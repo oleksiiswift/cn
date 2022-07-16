@@ -548,18 +548,18 @@ extension SimpleAssetsListViewController: UICollectionViewDelegate, UICollection
 	
 	func collectionView(_ collectionView: UICollectionView, previewForHighlightingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview? {
 		
-		guard let indexPath = configuration.identifier as? IndexPath,  let cell = collectionView.cellForItem(at: indexPath) else { return nil}
+		guard let indexPath = configuration.identifier as? IndexPath,  let cell = collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell else { return nil}
 		
-		let targetPreview = UITargetedPreview(view: cell)
+		let targetPreview = UITargetedPreview(view: cell.photoThumbnailImageView)
 		targetPreview.parameters.backgroundColor = .clear
 		
 		return targetPreview
 	}
 	
 	func collectionView(_ collectionView: UICollectionView, previewForDismissingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview? {
-		guard let indexPath = configuration.identifier as? IndexPath, let cell = collectionView.cellForItem(at: indexPath) else { return nil}
+		guard let indexPath = configuration.identifier as? IndexPath, let cell = collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell else { return nil}
 		
-		let targetPreview = UITargetedPreview(view: cell)
+		let targetPreview = UITargetedPreview(view: cell.photoThumbnailImageView)
 		targetPreview.parameters.backgroundColor = .clear
 		return targetPreview
 	}
