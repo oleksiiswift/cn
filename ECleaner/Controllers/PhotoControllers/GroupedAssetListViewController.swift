@@ -749,9 +749,9 @@ extension GroupedAssetListViewController: UICollectionViewDelegate, UICollection
 	
 	func collectionView(_ collectionView: UICollectionView, previewForHighlightingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview? {
 		
-		guard let indexPath = configuration.identifier as? IndexPath,  let cell = collectionView.cellForItem(at: indexPath) else { return nil}
+		guard let indexPath = configuration.identifier as? IndexPath,  let cell = collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell else { return nil}
 		
-		let targetPreview = UITargetedPreview(view: cell)
+		let targetPreview = UITargetedPreview(view: cell.photoThumbnailImageView)
 		targetPreview.parameters.backgroundColor = theme.backgroundColor
 		targetPreview.view.backgroundColor = theme.backgroundColor
 		
