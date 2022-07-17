@@ -1346,5 +1346,17 @@ extension MediaContentViewController {
 	
 	private func openContactExportBackupController() {
 		
+		ContactsExportManager.shared.contactsBackup { status in
+			switch status {
+				case .empty:
+					debugPrint("empty")
+				case .filesCreated(let destinationURL):
+					debugPrint("destination url")
+				case .archived(let url):
+					debugPrint(url)
+				case .error(let error):
+					debugPrint(error)
+			}
+		}
 	}
 }

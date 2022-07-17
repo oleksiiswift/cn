@@ -39,9 +39,7 @@ extension AppDelegate {
         
 		Network.start()
 		self.initializeSubscriptions()
-		ECFileManager().deleteAllFiles(at: AppDirectories.temp) {
-			debugPrint("deleted all files from temp")
-		}
+		self.cleanTempCache()
 		PermissionManager.shared.checkForStartingPemissions()
 		UserNotificationService.sharedInstance.registerRemoteNotification()
     }
@@ -74,6 +72,14 @@ extension AppDelegate {
 			CompressionSettingsConfiguretion.setDefaultConfiguration()
 		}
     }
+	
+	private func cleanTempCache() {
+		
+		var fileManager = ECFileManager()
+		fileManager.deleteAllFiles(at: .temp) {}
+		fileManager.deleteAllFiles(at: .contactsArcive) {}
+		fileManager.deleteAllFiles(at: .systemTemp) {}
+	}
 	
 	private func developmentSettings() {
 		

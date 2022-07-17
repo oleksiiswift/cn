@@ -109,8 +109,17 @@ extension ErrorHandler {
 	}
 }
 
-//	MARK: - Video Compression Errors Handler -
+extension ErrorHandler {
+	
+	enum ShareError: Error {
+		case errorSavedFile
+		case errorBackupFile
+	}
+}
 
+
+
+//	MARK: - Video Compression Errors Handler -
 extension ErrorHandler {
 	
 	enum CompressionError: Error {

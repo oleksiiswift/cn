@@ -229,16 +229,16 @@ extension PhotoManager {
 //										estimatedComplitionHandler(photoLibrararyPhotosSize, index, result.count)
 //									} else {
 										let fileSize = object.imageSize
-									debugPrint(fileSize, index)
+//									debugPrint(fileSize, index)
 										photoLibrararyPhotosSize += fileSize
 										estimatedComplitionHandler(photoLibrararyPhotosSize, index, result.count)
 //									}
 									currentProcessingIndex += 1
 									if currentProcessingIndex == result.count {
-										debugPrint("time -> \(timer.stop()), totalPhotoSize: \(U.getSpaceFromInt(photoLibrararyPhotosSize))")
+//										debugPrint("time -> \(timer.stop()), totalPhotoSize: \(U.getSpaceFromInt(photoLibrararyPhotosSize))")
 										completionHandler(photoLibrararyPhotosSize)
 									} else if index == result.count {
-										debugPrint("time -> \(timer.stop()), totalPhotoSize: \(U.getSpaceFromInt(photoLibrararyPhotosSize))")
+//										debugPrint("time -> \(timer.stop()), totalPhotoSize: \(U.getSpaceFromInt(photoLibrararyPhotosSize))")
 										completionHandler(photoLibrararyPhotosSize)
 									}
 								}
@@ -311,7 +311,7 @@ extension PhotoManager {
 //									}
 //								} else {
 									let filetSize = object.imageSize
-									debugPrint(filetSize, index)
+//									debugPrint(filetSize, index)
 									photoLibrararyVideosSize += filetSize
 									estimatedComplition(photoLibrararyVideosSize, index, result.count)
 //								}
@@ -319,10 +319,10 @@ extension PhotoManager {
 								currentProcessingIndex += 1
 								
 								if currentProcessingIndex == result.count {
-									debugPrint("timer -> \(timer.stop()), totalVideoSize: \(U.getSpaceFromInt(photoLibrararyVideosSize))")
+//									debugPrint("timer -> \(timer.stop()), totalVideoSize: \(U.getSpaceFromInt(photoLibrararyVideosSize))")
 									completionHandler(photoLibrararyVideosSize)
 								} else if index == result.count {
-									debugPrint("timer -> \(timer.stop()), totalVideoSize: \(U.getSpaceFromInt(photoLibrararyVideosSize))")
+//									debugPrint("timer -> \(timer.stop()), totalVideoSize: \(U.getSpaceFromInt(photoLibrararyVideosSize))")
 									completionHandler(photoLibrararyVideosSize)
 								}
 //							}
@@ -1682,9 +1682,9 @@ extension PhotoManager {
     
     public func sizeForAsset(_ asset: PHAsset, scale: CGFloat = 1) -> CGSize {
         
-        let assetPropotion = CGFloat(asset.pixelWidth) / CGFloat(asset.pixelHeight)
+        let assetProportion = CGFloat(asset.pixelWidth) / CGFloat(asset.pixelHeight)
         let imageHeight: CGFloat = 400
-        let imageWidth = floor(assetPropotion * imageHeight)
+        let imageWidth = floor(assetProportion * imageHeight)
         
         return CGSize(width: imageWidth * scale, height: imageHeight * scale)
     }

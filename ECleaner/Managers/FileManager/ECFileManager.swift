@@ -11,6 +11,7 @@ enum FileFormat {
     case vcf
     case csv
 	case mp4
+	case zip
     
     var fileExtension: String {
         switch self {
@@ -20,11 +21,14 @@ enum FileFormat {
                 return "csv"
 			case .mp4:
 				return "mp4"
+			case .zip:
+				return "zip"
         }
     }
 }
 
 enum AppDirectories: String {
+	case systemTemp = "tmp"
     case temp = "temp"
     case contactsArcive = "contactsArcive"
 	case compressedVideo  = "compressedVideo"
@@ -134,18 +138,19 @@ class ECFileManager {
         
         do {
             let folderContent = try fileManager.contentsOfDirectory(atPath: folderPath)
-            folderContent.forEach { urlStringPath in
-                if let url = URL(string: urlStringPath) {
-                    try? self.fileManager.removeItem(at: url)
-                }
-            }
+			for stringPath in folderContent {
+				let filePath = folderPath.appendingPathComponent(stringPath)
+				try? self.fileManager.removeItem(atPath: filePath)
+			}
             completion()
         } catch {
+			completion()
             debugPrint(error.localizedDescription)
         }
+		
     }
     
-    func copyFileTemoDdirectory(from url: URL, with name: String, file extensionFormat: FileFormat,_ completion: @escaping (URL?) -> Void) {
+    func copyFileTempDirectory(from url: URL, with name: String, file extensionFormat: FileFormat,_ completion: @escaping (URL?) -> Void) {
 
         if let tempURL = getDirectoryURL(.temp)?.appendingPathComponent(name).appendingPathExtension(extensionFormat.fileExtension) {
             do {

@@ -97,9 +97,7 @@ extension ShareManager {
     
     private func shareContacts(of format: FileFormat, with url: URL) {
         
-            //        TODO: generate file name
-        
-        fileManager.copyFileTemoDdirectory(from: url, with: "contacts", file: format) { url in
+		self.fileManager.copyFileTempDirectory(from: url, with: Localization.Main.Title.contactsTitle, file: format) { url in
             
             if let tempURL = url, self.fileManager.isFileExiest(at: tempURL) {
                 
