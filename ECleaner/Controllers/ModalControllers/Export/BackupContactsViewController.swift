@@ -7,21 +7,18 @@
 
 import UIKit
 
-
 class BackupContactsViewController: UIViewController {
 
 	@IBOutlet weak var mainContainerView: UIView!
 	@IBOutlet weak var mainContainerHeightConstraint: NSLayoutConstraint!
 	@IBOutlet weak var titleTextLabel: UILabel!
 	@IBOutlet weak var topShevronView: UIView!
-	@IBOutlet weak var stackView: UIStackView!
 	@IBOutlet weak var bottomButtonView: BottomButtonBarView!
 	@IBOutlet weak var bottomButtonHeightConststraint: NSLayoutConstraint!
 	@IBOutlet weak var currentProgressContactTextLabel: UILabel!
-	@IBOutlet weak var progressContainerView: UIView!
 	
 	private var progressBar = ProgressAlertBar()
-	
+	private var progressTitleTextLabel = UILabel()
 	private lazy var circleprogress = CircleProgressView()
 	
 	override func viewDidLoad() {
@@ -30,7 +27,6 @@ class BackupContactsViewController: UIViewController {
 		setupUI()
 		updateColors()
 		setupObseervers()
-		setupProgressBar()
 		setContainer(status: .initial)
     }
 	
@@ -47,36 +43,51 @@ extension BackupContactsViewController: BottomActionButtonDelegate {
 		
 		switch status {
 			case .initial:
-//				self.progressBar.isHidden = true
 				self.currentProgressContactTextLabel.isHidden = true
+				self.circleprogress.setProgress(progress: 0 , animated: false)
 			case .prepare:
-//				self.progressBar.isHidden = true
 				self.currentProgressContactTextLabel.isHidden = false
 				self.setCurrenProgressName(name: "", status: .prepare)
 				self.bottomButtonView.startAnimatingButton()
+				self.circleprogress.setProgress(progress: 0 , animated: false)
+				self.bottomButtonView.actionButton.setbuttonAvailible(false)
 			case .processing:
-//				self.progressBar.isHidden = false
 				self.currentProgressContactTextLabel.isHidden = false
+				self.bottomButtonView.actionButton.setbuttonAvailible(false)
 			case .empty:
-//				self.progressBar.isHidden = true
 				self.currentProgressContactTextLabel.isHidden = true
 				self.setCurrenProgressName(name: "", status: .empty)
+				self.circleprogress.setProgress(progress: 0 , animated: false)
+				self.bottomButtonView.actionButton.setbuttonAvailible(true)
 			case .filesCreated(_):
-//				self.progressBar.isHidden = true
 				self.currentProgressContactTextLabel.isHidden = false
 				self.setCurrenProgressName(name: "", status: status)
-			case .archived(_):
-//				self.progressBar.isHidden = true
+				self.circleprogress.setProgress(progress: 0 , animated: false)
+				self.bottomButtonView.actionButton.setbuttonAvailible(false)
+			case .archived(url: let url):
 				self.currentProgressContactTextLabel.isHidden = false
-				self.setCurrenProgressName(name: "file name MB", status: status)
-				
+				let size = Utils.getSpaceFromInt(Int64(url.fileSize))
+				let fileName = Localization.Main.Title.contactsTitle.lowercased() + ".zip"
+				self.setCurrenProgressName(name: fileName + ", " + size, status: status)
 				self.bottomButtonView.stopAnimatingButton()
+				self.circleprogress.setProgress(progress: 0 , animated: false)
+				
+				Utils.delay(1) {
+					self.bottomButtonView.actionButton.setbuttonAvailible(true)
+					self.shareContacsBackup(with: url)
+				}
 			case .error(_):
-//				self.progressBar.isHidden = true
 				self.currentProgressContactTextLabel.isHidden = false
 				self.setCurrenProgressName(name: "", status: status)
-				
 				self.bottomButtonView.stopAnimatingButton()
+				self.circleprogress.setProgress(progress: 0 , animated: false)
+				self.bottomButtonView.actionButton.setbuttonAvailible(true)
+		}
+	}
+	
+	private func shareContacsBackup(with url: URL) {
+		
+		ShareManager.shared.shareContacts(with: url) {
 			
 		}
 	}
@@ -118,7 +129,7 @@ extension BackupContactsViewController {
 				case .initial:
 					return NSMutableAttributedString.init(string: "")
 				case .prepare:
-					let string = NSMutableAttributedString(string: "prepare", attributes: expireDateAttributes)
+					let string = NSMutableAttributedString(string: "prepare...contacts", attributes: expireDateAttributes)
 					return string
 				case .empty:
 					let string = NSMutableAttributedString(string: "contact store is empty", attributes: expireDateAttributes)
@@ -129,10 +140,10 @@ extension BackupContactsViewController {
 					string.append(NSAttributedString(string: name, attributes: dateAttributes))
 					return string
 				case .filesCreated(_):
-					let string = NSMutableAttributedString(string: "archived", attributes: expireDateAttributes)
+					let string = NSMutableAttributedString(string: "archived processing", attributes: expireDateAttributes)
 					return string
 				case .archived(_):
-					let string = NSMutableAttributedString(string: "archive created", attributes: expireDateAttributes)
+					let string = NSMutableAttributedString(string: "backup created:", attributes: expireDateAttributes)
 					string.append(NSAttributedString(string: " "))
 					string.append(NSAttributedString(string: name, attributes: dateAttributes))
 					return string
@@ -151,19 +162,17 @@ extension BackupContactsViewController {
 		
 		U.animate(1) {
 			self.circleprogress.isHidden = !(0.01...0.99).contains(progress)
+			self.progressTitleTextLabel.isHidden = !(0.01...0.99).contains(progress)
 		}
-		
-		circleprogress.setProgress(progress: progress , animated: true)
-		self.circleprogress.layoutIfNeeded()
+		self.progressTitleTextLabel.text = String("\(Int((progress * 100).rounded()))%")
+		self.circleprogress.setProgress(progress: progress , animated: true)
 	}
 }
 
 extension BackupContactsViewController: Themeble {
 	
 	private func setupUI() {
-		
-		progressContainerView.isHidden = true
-		
+			
 		let containerHeight: CGFloat = AppDimensions.ContactsController.ExportModalController.controllerHeight
 		self.view.frame = CGRect(x: 0, y: 0, width: U.screenWidth, height: containerHeight)
 		mainContainerHeightConstraint.constant = containerHeight
@@ -182,7 +191,7 @@ extension BackupContactsViewController: Themeble {
 		let instricticSize = image.getPreservingAspectRationScaleImageSize(from: size)
 		bottomButtonView.actionButton.imageSize = instricticSize
 		bottomButtonView.setImage(image, with: instricticSize)
-		bottomButtonView.title("start backup")
+		bottomButtonView.title("start backup".uppercased())
 		bottomButtonView.setButtonHeight(AppDimensions.BottomButton.bottomBarButtonDefaultHeight)
 		
 		
@@ -190,7 +199,7 @@ extension BackupContactsViewController: Themeble {
 
 		mainContainerView.insertSubview(backgroundImageView, at: 0)
 		backgroundImageView.translatesAutoresizingMaskIntoConstraints = false
-		backgroundImageView.centerXAnchor.constraint(equalTo: mainContainerView.centerXAnchor).isActive = true
+		backgroundImageView.centerXAnchor.constraint(equalTo: mainContainerView.centerXAnchor, constant: -3).isActive = true
 		backgroundImageView.centerYAnchor.constraint(equalTo: mainContainerView.centerYAnchor, constant: -70).isActive = true
 		
 		backgroundImageView.widthAnchor.constraint(equalToConstant: 200).isActive = true
@@ -203,7 +212,7 @@ extension BackupContactsViewController: Themeble {
 		circleprogress.centerYAnchor.constraint(equalTo: mainContainerView.centerYAnchor, constant: -50).isActive = true
 		circleprogress.widthAnchor.constraint(equalToConstant: 150).isActive = true
 		circleprogress.heightAnchor.constraint(equalToConstant: 150).isActive = true
-
+		
 		circleprogress.isHidden = true
 		circleprogress.disableBackgrounShadow = true
 		circleprogress.lineWidth = 3
@@ -212,19 +221,15 @@ extension BackupContactsViewController: Themeble {
 		circleprogress.endColor = MediaContentType.userContacts.screeAcentGradientUICoror.last!
 		circleprogress.percentLabel.isHidden = true
 		circleprogress.alpha = 0.7
-	}
-	
-	private func setupProgressBar() {
 		
-		progressContainerView.addSubview(progressBar)
-		progressBar.translatesAutoresizingMaskIntoConstraints = false
-		
-		progressBar.leadingAnchor.constraint(equalTo: progressContainerView.leadingAnchor).isActive = true
-		progressBar.trailingAnchor.constraint(equalTo: progressContainerView.trailingAnchor).isActive = true
-		progressBar.centerYAnchor.constraint(equalTo: progressContainerView.centerYAnchor).isActive = true
-		progressBar.heightAnchor.constraint(equalToConstant: 8).isActive = true
+		progressTitleTextLabel.isHidden = true
+		progressTitleTextLabel.font = .systemFont(ofSize: 10, weight: .bold).monospacedDigitFont
+		mainContainerView.addSubview(progressTitleTextLabel)
+		progressTitleTextLabel.translatesAutoresizingMaskIntoConstraints = false
+		progressTitleTextLabel.centerXAnchor.constraint(equalTo: mainContainerView.centerXAnchor).isActive = true
+		progressTitleTextLabel.centerYAnchor.constraint(equalTo: mainContainerView.centerYAnchor, constant: -25).isActive = true
 	}
-	
+		
 	func updateColors() {
 		
 		self.view.backgroundColor = .clear
@@ -242,6 +247,8 @@ extension BackupContactsViewController: Themeble {
 		progressBar.mainBackgroundColor = theme.cellBackGroundColor
 		progressBar.progressColor = theme.contactsTintColor
 		progressBar.updateColors()
+		
+		progressTitleTextLabel.textColor = theme.subTitleTextColor.withAlphaComponent(0.3)
 	}
 	
 	private func setupObseervers() {

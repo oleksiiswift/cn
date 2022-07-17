@@ -194,7 +194,6 @@ extension ContactsExportManager {
 												self.fileManager.copyFileTempDirectory(from: url, with: Localization.Main.Title.contactsTitle.lowercased(), file: .zip) { url in
 													if let url = url {
 														completionHandler(.archived(url: url))
-														self.setStatus(.archived(url: url))
 													} else {
 														let error = ErrorHandler.ShareError.errorSavedFile
 														completionHandler(.error(error: error))

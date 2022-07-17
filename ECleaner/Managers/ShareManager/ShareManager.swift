@@ -117,6 +117,25 @@ extension ShareManager {
             }
         }
     }
+	
+	public func shareContacts(with url: URL, completion: @escaping (() -> Void)) {
+		
+		let activityViewController = UIActivityViewController(activityItems: [url], applicationActivities: [])
+		activityViewController.completionWithItemsHandler = { (_, _, _, _) -> Void in
+			self.fileManager.deletefile(at: url)
+			completion()
+		}
+		
+		if !MFMailComposeViewController.canSendMail() {
+			activityViewController.excludedActivityTypes = [UIActivity.ActivityType.mail]
+		}
+		
+		U.UI {
+			if let topController = topController() {
+				topController.present(activityViewController, animated: true, completion: nil)
+			}
+		}
+	}
 }
 
 extension ShareManager {

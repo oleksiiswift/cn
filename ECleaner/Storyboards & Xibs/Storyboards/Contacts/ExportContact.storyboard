@@ -210,50 +210,28 @@
                                             <constraint firstItem="d5N-ys-zTE" firstAttribute="centerX" secondItem="re7-2k-y4V" secondAttribute="centerX" id="pEi-ML-azS"/>
                                         </constraints>
                                     </view>
-                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="8pb-My-zMX">
-                                        <rect key="frame" x="30" y="202" width="354" height="40"/>
-                                        <subviews>
-                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nT2-uK-zFc">
-                                                <rect key="frame" x="0.0" y="0.0" width="354" height="20"/>
-                                                <subviews>
-                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="X15-D8-FuV">
-                                                        <rect key="frame" x="0.0" y="0.0" width="354" height="20"/>
-                                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                        <nil key="textColor"/>
-                                                        <nil key="highlightedColor"/>
-                                                    </label>
-                                                </subviews>
-                                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="bottom" secondItem="X15-D8-FuV" secondAttribute="bottom" id="O7o-sX-mxR"/>
-                                                    <constraint firstAttribute="trailing" secondItem="X15-D8-FuV" secondAttribute="trailing" id="UbU-lL-1NR"/>
-                                                    <constraint firstItem="X15-D8-FuV" firstAttribute="leading" secondItem="nT2-uK-zFc" secondAttribute="leading" id="biw-Mi-GU8"/>
-                                                    <constraint firstItem="X15-D8-FuV" firstAttribute="top" secondItem="nT2-uK-zFc" secondAttribute="top" id="g7T-Fd-KFL"/>
-                                                </constraints>
-                                            </view>
-                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="27G-My-Ghp">
-                                                <rect key="frame" x="0.0" y="20" width="354" height="20"/>
-                                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                            </view>
-                                        </subviews>
-                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9sV-rC-c6F">
+                                        <rect key="frame" x="20" y="222" width="374" height="30"/>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="40" id="X9j-uk-FD3"/>
+                                            <constraint firstAttribute="height" constant="30" id="vn1-Jd-nZp"/>
                                         </constraints>
-                                    </stackView>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
-                                    <constraint firstAttribute="trailing" secondItem="8pb-My-zMX" secondAttribute="trailing" constant="30" id="E0K-FW-zrz"/>
+                                    <constraint firstItem="9sV-rC-c6F" firstAttribute="leading" secondItem="dvb-Zl-I9a" secondAttribute="leading" constant="20" id="0sf-A5-6mD"/>
+                                    <constraint firstAttribute="trailing" secondItem="9sV-rC-c6F" secondAttribute="trailing" constant="20" id="AoS-s8-hpi"/>
                                     <constraint firstItem="re7-2k-y4V" firstAttribute="leading" secondItem="dvb-Zl-I9a" secondAttribute="leading" id="Eyu-v2-fQU"/>
                                     <constraint firstAttribute="trailing" secondItem="y73-8R-xxW" secondAttribute="trailing" id="KBM-Td-Xlb"/>
                                     <constraint firstItem="y73-8R-xxW" firstAttribute="leading" secondItem="dvb-Zl-I9a" secondAttribute="leading" id="YqP-TJ-xH2"/>
                                     <constraint firstItem="re7-2k-y4V" firstAttribute="top" secondItem="dvb-Zl-I9a" secondAttribute="top" id="a3v-UJ-qOP"/>
                                     <constraint firstAttribute="height" constant="381" id="jnK-1F-YuU"/>
                                     <constraint firstAttribute="bottom" secondItem="y73-8R-xxW" secondAttribute="bottom" id="pPR-0Q-l6S"/>
-                                    <constraint firstItem="8pb-My-zMX" firstAttribute="leading" secondItem="dvb-Zl-I9a" secondAttribute="leading" constant="30" id="wWD-KI-A6x"/>
+                                    <constraint firstItem="y73-8R-xxW" firstAttribute="top" secondItem="9sV-rC-c6F" secondAttribute="bottom" constant="20" id="vE1-Un-n4i"/>
                                     <constraint firstAttribute="trailing" secondItem="re7-2k-y4V" secondAttribute="trailing" id="xig-zS-vzk"/>
-                                    <constraint firstItem="y73-8R-xxW" firstAttribute="top" secondItem="8pb-My-zMX" secondAttribute="bottom" constant="30" id="zgd-Od-k2l"/>
                                 </constraints>
                             </view>
                         </subviews>
@@ -270,11 +248,9 @@
                     <connections>
                         <outlet property="bottomButtonHeightConststraint" destination="ukp-UC-7Ep" id="wmo-Ni-tAJ"/>
                         <outlet property="bottomButtonView" destination="y73-8R-xxW" id="Wgo-KK-LQd"/>
-                        <outlet property="currentProgressContactTextLabel" destination="X15-D8-FuV" id="H1y-aK-C4m"/>
+                        <outlet property="currentProgressContactTextLabel" destination="9sV-rC-c6F" id="yzQ-II-mVM"/>
                         <outlet property="mainContainerHeightConstraint" destination="jnK-1F-YuU" id="3vy-UA-tcr"/>
                         <outlet property="mainContainerView" destination="dvb-Zl-I9a" id="110-Xc-JOB"/>
-                        <outlet property="progressContainerView" destination="27G-My-Ghp" id="2V8-Hr-1oO"/>
-                        <outlet property="stackView" destination="8pb-My-zMX" id="Wx1-oI-joW"/>
                         <outlet property="titleTextLabel" destination="d5N-ys-zTE" id="gZG-kC-e85"/>
                         <outlet property="topShevronView" destination="qAy-pC-FAg" id="9ls-na-LNT"/>
                     </connections>
