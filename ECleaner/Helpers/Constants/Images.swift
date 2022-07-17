@@ -81,6 +81,7 @@ struct Images {
             static let unavailibleThumb = UIImage(named: "contactsThumbUnselect")!
 			static let backupContacts = UIImage(named: "backupContactsItem")!
 			static let bannerHelperImage = UIImage(named: "cloudSyncConatactItem")!
+			static let cloud = UIImage(named: "cloud-sync")
         }
         
         struct photo {

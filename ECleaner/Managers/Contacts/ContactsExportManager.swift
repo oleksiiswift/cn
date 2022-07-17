@@ -153,7 +153,10 @@ extension ContactsExportManager {
 }
 
 enum ContactsBackupStatus {
+	case initial
+	case prepare
 	case empty
+	case processing
 	case filesCreated(destinationURL: URL?)
 	case archived(url: URL)
 	case error(error: Error)
@@ -163,39 +166,58 @@ extension ContactsExportManager {
 	
 	public func contactsBackup(completionHandler: @escaping (_ status: ContactsBackupStatus) -> Void) {
 		
-		self.prepareForBackUp {
-			self.filesCreateSeparated { status in
-				switch status {
-					case .empty:
-						completionHandler(.empty)
-					case .filesCreated(destinationURL: let directory):
-						if let archivedDirectory = directory {
-							self.createZip(from: archivedDirectory) { status in
-								switch status {
-									case .archived(let url):
-										self.fileManager.copyFileTempDirectory(from: url, with: Localization.Main.Title.contactsTitle.lowercased(), file: .zip) { url in
-											if let url = url {
-												completionHandler(.archived(url: url))
-											} else {
-												completionHandler(.error(error: ErrorHandler.ShareError.errorSavedFile))
-											}
-											self.fileManager.deleteAllFiles(at: .systemTemp) {}
+		self.setStatus(.prepare)
+		
+		Utils.delay(0.5) {
+			
+			self.prepareForBackUp {
+				
+				Utils.delay(0.5) {
+					
+				    self.setStatus(.processing)
+					
+					self.filesCreateSeparated { status in
+						
+						switch status {
+							case .empty:
+								completionHandler(.empty)
+							case .filesCreated(destinationURL: let directory):
+								
+								self.setStatus(.filesCreated(destinationURL: directory))
+								
+								if let archivedDirectory = directory {
+									
+									self.createZip(from: archivedDirectory) { status in
+										
+										switch status {
+											case .archived(let url):
+												self.fileManager.copyFileTempDirectory(from: url, with: Localization.Main.Title.contactsTitle.lowercased(), file: .zip) { url in
+													if let url = url {
+														completionHandler(.archived(url: url))
+														self.setStatus(.archived(url: url))
+													} else {
+														let error = ErrorHandler.ShareError.errorSavedFile
+														completionHandler(.error(error: error))
+													}
+													self.fileManager.deleteAllFiles(at: .systemTemp) {}
+												}
+											case .error(let error):
+												completionHandler(.error(error: error))
+											default:
+												return
 										}
-									case .error(let error):
-										completionHandler(.error(error: error))
-									default:
-										return
+									}
 								}
-							}
+							default:
+								return
 						}
-					default:
-						return
+					}
 				}
 			}
 		}
 	}
 	
-	public func prepareForBackUp(completionHandler: @escaping () -> Void) {
+	private func prepareForBackUp(completionHandler: @escaping () -> Void) {
 		
 		let group = DispatchGroup()
 		let queue = DispatchQueue.global(qos: .background)
@@ -218,7 +240,7 @@ extension ContactsExportManager {
 		}
 	}
 	
-	public func filesCreateSeparated(completionHandler: @escaping (_ status: ContactsBackupStatus) -> Void) {
+	private func filesCreateSeparated(completionHandler: @escaping (_ status: ContactsBackupStatus) -> Void) {
 		
 		let pathExtension = CNContactFileType.vcf.extensionName
 		
@@ -257,9 +279,12 @@ extension ContactsExportManager {
 									newName = String("\(name) (\(counter))")
 									guard let newURL = contactsArchiveDirectory?.appendingPathComponent(newName).appendingPathExtension(pathExtension) else { return }
 									writebleURL = newURL
+									debugPrint(newURL)
 								}
 								try data.write(to: writebleURL)
 								contactsPosition += 1
+								debugPrint(contactsPosition, name)
+								ContactsBackupUpdateMediator.instance.updateProgres(with: name, currentIndex: contactsPosition, total: contacts.count)
 							}
 						} catch {
 							debugPrint(error.localizedDescription)
@@ -298,4 +323,42 @@ extension ContactsExportManager {
 			self.fileManager.deleteAllFiles(at: .contactsArcive) {}
 		}
 	}
+	
+	private func setStatus(_ status: ContactsBackupStatus) {
+		ContactsBackupUpdateMediator.instance.updateStatus(with: status)
+	}
 }
+
+
+protocol ContactsBackupUpdateListener {
+	func didUpdateStatus(_ status: ContactsBackupStatus)
+	func didUpdateProgress(with name: String, progress: CGFloat)
+}
+
+
+class ContactsBackupUpdateMediator {
+	
+	class var instance: ContactsBackupUpdateMediator {
+		struct Static {
+			static let instance: ContactsBackupUpdateMediator = ContactsBackupUpdateMediator()
+		}
+		return Static.instance
+	}
+	
+	private var listener: ContactsBackupUpdateListener?
+	private init() {}
+	
+	func setListener(listener: ContactsBackupUpdateListener) {
+		self.listener = listener
+	}
+
+	func updateStatus(with status: ContactsBackupStatus) {
+		listener?.didUpdateStatus(status)
+	}
+	
+	func updateProgres(with name: String, currentIndex: Int, total files: Int) {
+		let progress = CGFloat(Double(currentIndex) / Double(files))
+		listener?.didUpdateProgress(with: name, progress: progress)
+	}
+}
+

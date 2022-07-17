@@ -153,7 +153,7 @@ extension MediaTypeCollectionViewCell: Themeble {
 		}
 
 		guard self.circleprogress.progress < progress else { return }
-			self.circleprogress.setProgress(progress: progress, animated: false)
+			self.circleprogress.setProgress(progress: progress, animated: true)
 			self.circleprogress.layoutIfNeeded()
 	}
 	
