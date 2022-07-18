@@ -196,6 +196,10 @@ class BottomButtonBarView: UIView {
 		self.actionButton.insertSubview(gradientBaseView, at: 0)
 		gradientBaseView.layerGradient(startPoint: .topLeft, endPoint: .bottomRight, colors: gradientColors , type: .axial)
 	}
+	
+	public func isSetImage(_ image: UIImage) -> Bool {
+		return actionButton.isSetImageSame(with: image)
+	}
 }
 
 //      MARK: -bottom action button -
@@ -267,6 +271,14 @@ class BottomBarButtonItem: UIButton {
 	public func setbuttonAvailible(_ availible: Bool) {
 		self.isEnabled = availible
 		self.alpha = availible ? 1.0 : 0.6
+	}
+	
+	public func isSetImageSame(with image: UIImage) -> Bool {
+		if let settingImage = self.subviews.first(where: {$0.tag == 66613}) as? UIImageView {
+			return settingImage.image == image
+		} else {
+			return false
+		}
 	}
 }
 

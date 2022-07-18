@@ -89,10 +89,7 @@ extension SceneDelegate {
 		}
 		
 		
-		ECFileManager().deleteAllFiles(at: .contactsArcive) {
-			
-			
-		}
+		ECFileManager().deleteAllFiles(at: .contactsArcive) {}
 	}
 }
 

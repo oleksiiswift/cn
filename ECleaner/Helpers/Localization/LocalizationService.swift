@@ -382,39 +382,39 @@ struct  LocalizationService {
 		public static func getContentName(of type: PhotoMediaType) -> String {
 			switch type {
 				case .similarPhotos:
-					return Localization.Main.MediaCcontentTitle.similarPhoto
+					return Localization.Main.MediaContentTitle.similarPhoto
 				case .duplicatedPhotos:
-					return Localization.Main.MediaCcontentTitle.duplicatePhoto
+					return Localization.Main.MediaContentTitle.duplicatePhoto
 				case .singleScreenShots:
-					return Localization.Main.MediaCcontentTitle.singleScreenShots
+					return Localization.Main.MediaContentTitle.singleScreenShots
 				case .singleLivePhotos:
-					return Localization.Main.MediaCcontentTitle.singleLivePhotos
+					return Localization.Main.MediaContentTitle.singleLivePhotos
 				case .similarLivePhotos:
-					return Localization.Main.MediaCcontentTitle.similarLivePhoto
+					return Localization.Main.MediaContentTitle.similarLivePhoto
 				case .similarSelfies:
-					return Localization.Main.MediaCcontentTitle.similarSelfies
+					return Localization.Main.MediaContentTitle.similarSelfies
 				case .singleLargeVideos:
-					return Localization.Main.MediaCcontentTitle.largeVideo
+					return Localization.Main.MediaContentTitle.largeVideo
 				case .duplicatedVideos:
-					return Localization.Main.MediaCcontentTitle.duplicatedVideos
+					return Localization.Main.MediaContentTitle.duplicatedVideos
 				case .similarVideos:
-					return Localization.Main.MediaCcontentTitle.similarVideo
+					return Localization.Main.MediaContentTitle.similarVideo
 				case .singleScreenRecordings:
-					return Localization.Main.MediaCcontentTitle.singleScreenRecordings
+					return Localization.Main.MediaContentTitle.singleScreenRecordings
 				case .compress:
-					return Localization.Main.MediaCcontentTitle.compression
+					return Localization.Main.MediaContentTitle.compression
 				case .allContacts:
-					return Localization.Main.MediaCcontentTitle.allContacts
+					return Localization.Main.MediaContentTitle.allContacts
 				case .emptyContacts:
-					return Localization.Main.MediaCcontentTitle.emptyContacts
+					return Localization.Main.MediaContentTitle.emptyContacts
 				case .duplicatedContacts:
-					return Localization.Main.MediaCcontentTitle.duplicatedContacts
+					return Localization.Main.MediaContentTitle.duplicatedContacts
 				case .duplicatedPhoneNumbers:
-					return Localization.Main.MediaCcontentTitle.duplicatedPhoneNumbers
+					return Localization.Main.MediaContentTitle.duplicatedPhoneNumbers
 				case .duplicatedEmails:
-					return Localization.Main.MediaCcontentTitle.duplucatedEmails
+					return Localization.Main.MediaContentTitle.duplucatedEmails
 				case .backup:
-					return Localization.Main.MediaCcontentTitle.backup
+					return Localization.Main.MediaContentTitle.backup
 				default:
 					return L.empty
 			}

@@ -417,7 +417,6 @@ class Constants {
 				static let videoFileSizeValue = "videoFileSizeValue"
 			}
 			
-            
             struct scroll {
                     /// contact scroll delegate scriklkub
                 static let scrollViewInset = "scrollViewInset"
@@ -480,6 +479,7 @@ class Constants {
 			static let onboardingPage = "OnboardingPageViewController"
 			static let subscription = "SubscriptionViewController"
 			static let lifeTime = "LifeTimeSubscriptionViewController"
+			static let contactBackup = "BackupContactsViewController"
         }
         
         struct cells {
@@ -567,6 +567,7 @@ class Constants {
 			static let showSizeSelector = "ShowVideoSizeSelectorSegue"
 			static let showCustomCompression = "ShowCustomCompressionSegue"
 			static let lifeTime = "ShowLifeTimeViewControllerSegue"
+			static let backupContacts = "ShowContactsBackupViewControllerSegue"
         }
     }
 	

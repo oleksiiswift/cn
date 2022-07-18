@@ -55,7 +55,7 @@ struct Images {
 			static let info = UIImage(named: "infoItem")!
 			static let arrowLeft = UIImage(named: "arrowLeftItem")!
 			static let circleArrow = UIImage(named: "circleRoundedThin")!
-			
+			static let save = UIImage(systemName: "tray.and.arrow.up")!
         }
 		
 		struct helpersItems {
@@ -81,6 +81,8 @@ struct Images {
             static let unavailibleThumb = UIImage(named: "contactsThumbUnselect")!
 			static let backupContacts = UIImage(named: "backupContactsItem")!
 			static let bannerHelperImage = UIImage(named: "cloudSyncConatactItem")!
+			static let cloud = UIImage(named: "cloud-sync")
+			static let archiveBox = UIImage(systemName: "archivebox")!
         }
         
         struct photo {
