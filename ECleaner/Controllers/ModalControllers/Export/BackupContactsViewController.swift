@@ -125,10 +125,8 @@ extension BackupContactsViewController {
 			case .archived(url: let url):
 				self.savedURL = url
 				self.bottomButtonView.stopAnimatingButton()
-				Utils.delay(1) {
-					self.bottomButtonView.actionButton.setbuttonAvailible(true)
-					self.shareContacsBackup(with: url)
-				}
+				self.bottomButtonView.actionButton.setbuttonAvailible(true)
+				self.shareContacsBackup(with: url)
 			case .error(_):
 				self.bottomButtonView.stopAnimatingButton()
 				self.bottomButtonView.actionButton.setbuttonAvailible(true)
@@ -244,13 +242,11 @@ extension BackupContactsViewController {
 				case .prepare:
 					self.setCloudBackgroundImage()
 				case .processing:
-					U.delay(0.5) {
-						self.setArchiveBackgroundImage()
-					}
+					self.setProcessingBackgroundImage()
 				case .filesCreated(_):
 					self.setArchiveBackgroundImage()
 				case .archived(_):
-					UIView.transition(with: self.circleprogress, duration: 1.0, options: .transitionCrossDissolve) {
+					UIView.transition(with: self.circleprogress, duration: 0.5, options: .transitionCrossDissolve) {
 						if self.circleprogress.isHidden == false {
 							self.circleprogress.isHidden = true
 						}
@@ -269,15 +265,7 @@ extension BackupContactsViewController {
 		let size = CGSize(width: 150, height: 150)
 		let instricticSize = initialImage.getPreservingAspectRationScaleImageSize(from: size)
 		
-		self.backgroundImageView.widthAnchor.constraint(equalToConstant: instricticSize.width).isActive = true
-		self.backgroundImageView.heightAnchor.constraint(equalToConstant: instricticSize.height).isActive = true
-		
-		UIView.animate(withDuration: 1, delay: 0, options: .transitionCrossDissolve) {
-			self.backgroundImageView.image = initialImage
-			self.backgroundImageView.layoutIfNeeded()
-		} completion: { _ in
-			debugPrint("initialImage")
-		}
+		self.setBackground(image: initialImage, with: instricticSize)
 	}
 	
 	private func setArchiveBackgroundImage() {
@@ -288,27 +276,57 @@ extension BackupContactsViewController {
 		
 		let size = CGSize(width: 80, height: 80)
 		let instricticSize = archiveImage.getPreservingAspectRationScaleImageSize(from: size)
-		self.backgroundImageView.widthAnchor.constraint(equalToConstant: instricticSize.width).isActive = true
-		self.backgroundImageView.heightAnchor.constraint(equalToConstant: instricticSize.height).isActive = true
-		UIView.animate(withDuration: 1, delay: 0, options: .transitionCrossDissolve) {
-			self.backgroundImageView.image = archiveImage
+		
+		self.setBackground(image: archiveImage, with: instricticSize)
+	}
+	
+	private func setProcessingBackgroundImage() {
+		
+		let processingImage = Images.personalisation.contacts.processing
+		
+		guard self.backgroundImageView.image != processingImage else { return }
+		
+		let size = CGSize(width: 80, height: 80)
+		let instricticSize = processingImage.getPreservingAspectRationScaleImageSize(from: size)
+		
+		self.setBackground(image: processingImage, with: instricticSize)
+	}
+	
+	private func setBackground(image: UIImage, with size: CGSize) {
+		
+		for constraint in self.backgroundImageView.constraints {
+			if constraint.firstAttribute == .width {
+				constraint.isActive = false
+			}
+			if constraint.firstAttribute == .height {
+				constraint.isActive = false
+			}
+		}
+		
+		self.backgroundImageView.widthAnchor.constraint(equalToConstant: size.width).isActive = true
+		self.backgroundImageView.heightAnchor.constraint(equalToConstant: size.height).isActive = true
+		UIView.animate(withDuration: 0.3, delay: 0, options: .transitionCrossDissolve) {
+			self.backgroundImageView.image = image
 			self.backgroundImageView.layoutIfNeeded()
 		} completion: { _ in
-			debugPrint("archiveImage")
+			debugPrint("remove image")
 		}
 	}
 	
 	private func setProgress(progress: CGFloat) {
 		
-		let isHiden = (0.001...0.999).contains(progress)
-		
+		let isHiden = (0.01...0.99).contains(progress)
 		if self.circleprogress.isHidden == isHiden {
-			UIView.transition(with: self.circleprogress, duration: 1.0, options: .transitionCrossDissolve) {
+			UIView.transition(with: self.circleprogress, duration: 0.5, options: .transitionCrossDissolve) {
 				self.circleprogress.isHidden = !isHiden
 				self.backgroundImageView.isHidden = isHiden
 			}
 		} else {
 			self.circleprogress.setProgress(progress: progress , animated: true)
+		}
+		
+		if progress == 0.9 {
+			self.setArchiveBackgroundImage()
 		}
 		
 		self.progressTitleTextLabel.text = String("\(Int((progress * 100).rounded()))%")

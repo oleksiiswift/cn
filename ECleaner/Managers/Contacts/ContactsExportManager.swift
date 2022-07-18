@@ -278,7 +278,6 @@ extension ContactsExportManager {
 									newName = String("\(name) (\(counter))")
 									guard let newURL = contactsArchiveDirectory?.appendingPathComponent(newName).appendingPathExtension(pathExtension) else { return }
 									writebleURL = newURL
-									debugPrint(newURL)
 								}
 								try data.write(to: writebleURL)
 								contactsPosition += 1
@@ -286,10 +285,8 @@ extension ContactsExportManager {
 								ContactsBackupUpdateMediator.instance.updateProgres(with: name, currentIndex: contactsPosition, total: contacts.count)
 								if contacts.count < 1000 {
 									usleep(1000) //will sleep
-									debugPrint(contactsPosition)
-								} else {
+								} else if contacts.count < 10000{
 									usleep(100) //will sleep
-									debugPrint(contactsPosition)
 								}
 							}
 						} catch {
