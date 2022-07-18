@@ -102,8 +102,8 @@ extension ShareManager {
             if let tempURL = url, self.fileManager.isFileExiest(at: tempURL) {
                 
                 let activityViewController = UIActivityViewController(activityItems: [tempURL], applicationActivities: [])
-                activityViewController.completionWithItemsHandler = { (_, _, _, _) -> Void in
-                    self.fileManager.deletefile(at: tempURL)
+				activityViewController.completionWithItemsHandler = { (activityType, completed: Bool, returnedItems: [Any]?, error: Error?) -> Void in
+					
                 }
                 
                 if !MFMailComposeViewController.canSendMail() {
@@ -118,12 +118,11 @@ extension ShareManager {
         }
     }
 	
-	public func shareContacts(with url: URL, completion: @escaping (() -> Void)) {
+	public func shareContacts(with url: URL, completion: @escaping ((_ completed: Bool) -> Void)) {
 		
 		let activityViewController = UIActivityViewController(activityItems: [url], applicationActivities: [])
-		activityViewController.completionWithItemsHandler = { (_, _, _, _) -> Void in
-			self.fileManager.deletefile(at: url)
-			completion()
+		activityViewController.completionWithItemsHandler = { (activityType, completed: Bool, returnedItems: [Any]?, error: Error?) -> Void in
+			completion(completed)
 		}
 		
 		if !MFMailComposeViewController.canSendMail() {

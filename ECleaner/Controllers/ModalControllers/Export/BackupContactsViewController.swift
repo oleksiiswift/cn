@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SwiftMessages
 
 class BackupContactsViewController: UIViewController {
 
@@ -17,9 +18,12 @@ class BackupContactsViewController: UIViewController {
 	@IBOutlet weak var bottomButtonHeightConststraint: NSLayoutConstraint!
 	@IBOutlet weak var currentProgressContactTextLabel: UILabel!
 	
-	private let backgroundImageView = UIImageView(image: Images.personalisation.contacts.cloud)
-	private var progressTitleTextLabel = UILabel()
 	private lazy var circleprogress = CircleProgressView()
+	private let backgroundImageView = UIImageView()
+	private var progressTitleTextLabel = UILabel()
+	
+	private var tapOutsideRecognizer: UITapGestureRecognizer!
+	private var dissmissGestureRecognizer = UIPanGestureRecognizer()
 	
 	private var currentProgress: ContactsBackupStatus = .initial
 	private var savedURL: URL?
@@ -31,7 +35,14 @@ class BackupContactsViewController: UIViewController {
 		updateColors()
 		setupObseervers()
 		setContainer(status: .initial)
+		setupGestureRecognizers()
     }
+	
+	override func viewDidAppear(_ animated: Bool) {
+		super.viewDidAppear(animated)
+		
+		self.setupDissmissGestureRecognizer()
+	}
 	
 	override func viewDidLayoutSubviews() {
 		super.viewDidLayoutSubviews()
@@ -40,73 +51,23 @@ class BackupContactsViewController: UIViewController {
 	}
 }
 
-extension BackupContactsViewController: BottomActionButtonDelegate {
-	
-	private func setContainer(status: ContactsBackupStatus) {
-		
-		switch status {
-			case .initial:
-				self.currentProgressContactTextLabel.isHidden = true
-				self.circleprogress.setProgress(progress: 0 , animated: false)
-				self.setCurrenProgressName(name: "", status: .initial)
-			case .prepare:
-				self.currentProgressContactTextLabel.isHidden = false
-				self.setCurrenProgressName(name: "", status: .prepare)
-				self.bottomButtonView.startAnimatingButton()
-				self.circleprogress.setProgress(progress: 0 , animated: false)
-				self.bottomButtonView.actionButton.setbuttonAvailible(false)
-			case .processing:
-				self.currentProgressContactTextLabel.isHidden = false
-				self.bottomButtonView.actionButton.setbuttonAvailible(false)
-			case .empty:
-				self.currentProgressContactTextLabel.isHidden = true
-				self.setCurrenProgressName(name: "", status: .empty)
-				self.circleprogress.setProgress(progress: 0 , animated: false)
-				self.bottomButtonView.actionButton.setbuttonAvailible(true)
-			case .filesCreated(_):
-				self.currentProgressContactTextLabel.isHidden = false
-				self.setCurrenProgressName(name: "", status: status)
-				self.circleprogress.setProgress(progress: 0 , animated: false)
-				self.bottomButtonView.actionButton.setbuttonAvailible(false)
-				
-				let image = UIImage(systemName: "archivebox")!
-				let size = CGSize(width: 100, height: 100)
-				let instricticSize = image.getPreservingAspectRationScaleImageSize(from: size)
-				self.backgroundImageView.image = image
-				self.backgroundImageView.widthAnchor.constraint(equalToConstant: instricticSize.width).isActive = true
-				self.backgroundImageView.heightAnchor.constraint(equalToConstant: instricticSize.height).isActive = true
-				self.backgroundImageView.centerYAnchor.constraint(equalTo: mainContainerView.centerYAnchor, constant: -50).isActive = true
-				self.backgroundImageView.layoutIfNeeded()
-				
-				
-			case .archived(url: let url):
-				self.savedURL = url
-				self.currentProgressContactTextLabel.isHidden = false
-				let size = Utils.getSpaceFromInt(Int64(url.fileSize))
-				let fileName = Localization.Main.Title.contactsTitle.lowercased() + ".zip"
-				self.setCurrenProgressName(name: fileName + ", " + size, status: status)
-				self.bottomButtonView.stopAnimatingButton()
-				self.circleprogress.setProgress(progress: 0 , animated: false)
-				
-				Utils.delay(1) {
-					self.bottomButtonView.actionButton.setbuttonAvailible(true)
-					self.shareContacsBackup(with: url)
-				}
-			case .error(_):
-				self.currentProgressContactTextLabel.isHidden = false
-				self.setCurrenProgressName(name: "", status: status)
-				self.bottomButtonView.stopAnimatingButton()
-				self.circleprogress.setProgress(progress: 0 , animated: false)
-				self.bottomButtonView.actionButton.setbuttonAvailible(true)
-		}
-	}
+extension BackupContactsViewController {
 	
 	private func shareContacsBackup(with url: URL) {
-		
-		ShareManager.shared.shareContacts(with: url) {
-			
+		ShareManager.shared.shareContacts(with: url) { completed in
+			if completed {
+				self.closeController(sender: self)
+			}
 		}
 	}
+	
+	private func clearFolders() {
+		ECFileManager().deleteAllFiles(at: .contactsArcive) {}
+		ECFileManager().deleteAllFiles(at: .systemTemp) {}
+	}
+}
+
+extension BackupContactsViewController: BottomActionButtonDelegate {
 	
 	func didTapActionButton() {
 		
@@ -121,10 +82,6 @@ extension BackupContactsViewController: BottomActionButtonDelegate {
 				}
 		}
 	}
-	
-	private func clearFolders() {
-		
-	}
 }
 
 extension BackupContactsViewController: ContactsBackupUpdateListener {
@@ -137,7 +94,7 @@ extension BackupContactsViewController: ContactsBackupUpdateListener {
 	
 	func didUpdateProgress(with name: String, progress: CGFloat) {
 		Utils.UI {
-			self.setCurrenProgressName(name: name, status: .processing)
+			self.handleCurrentProgressTitle(with: .processing, name: name)
 			self.setProgress(progress: progress)
 		}
 	}
@@ -145,42 +102,86 @@ extension BackupContactsViewController: ContactsBackupUpdateListener {
 
 extension BackupContactsViewController {
 	
-	private func setCurrenProgressName(name: String, status: ContactsBackupStatus) {
+	private func setContainer(status: ContactsBackupStatus) {
+		
+		currentProgress = status
+		handleBackroundImage(with: status)
+		handleCurrentProgressTitle(with: status)
+		handleBackroundImage(with: status)
+		handleBottomButton(with: status)
+
+		switch status {
+			case .initial:
+				return
+			case .prepare:
+				self.bottomButtonView.startAnimatingButton()
+				self.bottomButtonView.actionButton.setbuttonAvailible(false)
+			case .processing:
+				self.bottomButtonView.actionButton.setbuttonAvailible(false)
+			case .empty:
+				self.bottomButtonView.actionButton.setbuttonAvailible(true)
+			case .filesCreated(_):
+				self.bottomButtonView.actionButton.setbuttonAvailible(false)
+			case .archived(url: let url):
+				self.savedURL = url
+				self.bottomButtonView.stopAnimatingButton()
+				Utils.delay(1) {
+					self.bottomButtonView.actionButton.setbuttonAvailible(true)
+					self.shareContacsBackup(with: url)
+				}
+			case .error(_):
+				self.bottomButtonView.stopAnimatingButton()
+				self.bottomButtonView.actionButton.setbuttonAvailible(true)
+		}
+	}
+	
+	private func handleCurrentProgressTitle(with status: ContactsBackupStatus, name: String = "") {
 				
+		if case .initial = status {
+			self.currentProgressContactTextLabel.isHidden = true
+		} else {
+			self.currentProgressContactTextLabel.isHidden = false
+		}
+		
 		let dateAttributes: [NSAttributedString.Key: Any] = [.font: FontManager.subscriptionFont(of: .premiumBannerDateSubtitle), .foregroundColor: theme.premiumSubtitleTextColor]
 		let expireDateAttributes: [NSAttributedString.Key: Any] = [.font: FontManager.subscriptionFont(of: .permiumBannerSubtitle), .foregroundColor: theme.premiumSubtitleTextColor]
 		var attributedString: NSMutableAttributedString {
 			switch status {
 				case .initial:
-					return NSMutableAttributedString.init(string: "")
+					return NSMutableAttributedString.init(string: L.empty)
 				case .prepare:
-					let string = NSMutableAttributedString(string: "", attributes: expireDateAttributes)
+					let string = NSMutableAttributedString(string: L.empty, attributes: expireDateAttributes)
 					return string
 				case .empty:
-					let string = NSMutableAttributedString(string: "contact store is empty", attributes: expireDateAttributes)
+					let string = NSMutableAttributedString(string: Localization.ErrorsHandler.EmptyResultsError.contactsIsEmpty, attributes: expireDateAttributes)
 					return string
 				case .processing:
-					let string = NSMutableAttributedString(string: "current contact:", attributes: expireDateAttributes)
-					string.append(NSAttributedString(string: " "))
+					let string = NSMutableAttributedString(string: Localization.Backup.currentContact, attributes: expireDateAttributes)
+					string.append(NSAttributedString(string: L.whitespace))
 					string.append(NSAttributedString(string: name, attributes: dateAttributes))
 					return string
 				case .filesCreated(_):
-					let string = NSMutableAttributedString(string: "archived processing", attributes: expireDateAttributes)
+					let string = NSMutableAttributedString(string: Localization.Backup.archiveProcessing, attributes: expireDateAttributes)
 					return string
-				case .archived(_):
-					let string = NSMutableAttributedString(string: "backup created:", attributes: expireDateAttributes)
-					string.append(NSAttributedString(string: " "))
-					string.append(NSAttributedString(string: name, attributes: dateAttributes))
+				case .archived(let url):
+					let size = Utils.getSpaceFromInt(Int64(url.fileSize))
+					let fileName = Localization.Main.Title.contactsTitle.lowercased() + ".zip"
+					let string = NSMutableAttributedString(string: Localization.Backup.backupCreated, attributes: expireDateAttributes)
+					string.append(NSAttributedString(string: L.whitespace))
+					string.append(NSAttributedString(string: fileName + ", " + size, attributes: dateAttributes))
 					return string
 				case .error(let error):
-					let string = NSMutableAttributedString(string: "backup error", attributes: expireDateAttributes)
-					string.append(NSAttributedString(string: " "))
+					let string = NSMutableAttributedString(string: Localization.Backup.error, attributes: expireDateAttributes)
+					string.append(NSAttributedString(string: L.whitespace))
 					string.append(NSAttributedString(string: error.localizedDescription, attributes: dateAttributes))
 					return string
 			}
 		}
 		
 		currentProgressContactTextLabel.attributedText = attributedString
+	}
+	
+	private func handleBottomButton(with status: ContactsBackupStatus) {
 		
 		let refreshImage = I.systemItems.defaultItems.refresh
 		let saveImage = I.systemItems.defaultItems.save
@@ -206,10 +207,10 @@ extension BackupContactsViewController {
 			bottomButtonView.setImage(buttonImage, with: instricticSize)
 		}
 		
-		let statrtTitle = "Start Backup"
-		let processing = "processing"
-		let archiving = "archiving"
-		let save = "save"
+		let statrtTitle = LocalizationService.Buttons.getButtonTitle(of: .startBackup)
+		let processing = Localization.Main.ProcessingState.processing
+		let archiving = Localization.Main.ProcessingState.archiving
+		let save = LocalizationService.Buttons.getButtonTitle(of: .save)
 		
 		var buttonTitle: String {
 			switch status {
@@ -229,23 +230,145 @@ extension BackupContactsViewController {
 					return statrtTitle
 			}
 		}
-		
 		bottomButtonView.title(buttonTitle.uppercased())
+	}
+	
+	private func handleBackroundImage(with state: ContactsBackupStatus) {
+
+		self.backgroundImageView.centerXAnchor.constraint(equalTo: mainContainerView.centerXAnchor, constant: -3).isActive = true
+		self.backgroundImageView.centerYAnchor.constraint(equalTo: mainContainerView.centerYAnchor, constant: -50).isActive = true
+	
+			switch state {
+				case .initial, .empty:
+					self.setCloudBackgroundImage()
+				case .prepare:
+					self.setCloudBackgroundImage()
+				case .processing:
+					U.delay(0.5) {
+						self.setArchiveBackgroundImage()
+					}
+				case .filesCreated(_):
+					self.setArchiveBackgroundImage()
+				case .archived(_):
+					UIView.transition(with: self.circleprogress, duration: 1.0, options: .transitionCrossDissolve) {
+						if self.circleprogress.isHidden == false {
+							self.circleprogress.isHidden = true
+						}
+					}
+				case .error(_):
+					self.setCloudBackgroundImage()
+			}
+	}
+	
+	private func setCloudBackgroundImage() {
+		
+		let initialImage = Images.personalisation.contacts.cloud!
+		
+		guard self.backgroundImageView.image != initialImage else { return }
+		
+		let size = CGSize(width: 150, height: 150)
+		let instricticSize = initialImage.getPreservingAspectRationScaleImageSize(from: size)
+		
+		self.backgroundImageView.widthAnchor.constraint(equalToConstant: instricticSize.width).isActive = true
+		self.backgroundImageView.heightAnchor.constraint(equalToConstant: instricticSize.height).isActive = true
+		
+		UIView.animate(withDuration: 1, delay: 0, options: .transitionCrossDissolve) {
+			self.backgroundImageView.image = initialImage
+			self.backgroundImageView.layoutIfNeeded()
+		} completion: { _ in
+			debugPrint("initialImage")
+		}
+	}
+	
+	private func setArchiveBackgroundImage() {
+		
+		let archiveImage = Images.personalisation.contacts.archiveBox
+		
+		guard self.backgroundImageView.image != archiveImage else { return }
+		
+		let size = CGSize(width: 80, height: 80)
+		let instricticSize = archiveImage.getPreservingAspectRationScaleImageSize(from: size)
+		self.backgroundImageView.widthAnchor.constraint(equalToConstant: instricticSize.width).isActive = true
+		self.backgroundImageView.heightAnchor.constraint(equalToConstant: instricticSize.height).isActive = true
+		UIView.animate(withDuration: 1, delay: 0, options: .transitionCrossDissolve) {
+			self.backgroundImageView.image = archiveImage
+			self.backgroundImageView.layoutIfNeeded()
+		} completion: { _ in
+			debugPrint("archiveImage")
+		}
 	}
 	
 	private func setProgress(progress: CGFloat) {
 		
-		let isHiden = (0.01...0.99).contains(progress)
+		let isHiden = (0.001...0.999).contains(progress)
 		
 		if self.circleprogress.isHidden == isHiden {
-			UIView.transition(with: self.circleprogress, duration: 0.5, options: .transitionCrossDissolve) {
+			UIView.transition(with: self.circleprogress, duration: 1.0, options: .transitionCrossDissolve) {
 				self.circleprogress.isHidden = !isHiden
 				self.backgroundImageView.isHidden = isHiden
 			}
+		} else {
+			self.circleprogress.setProgress(progress: progress , animated: true)
 		}
 		
 		self.progressTitleTextLabel.text = String("\(Int((progress * 100).rounded()))%")
-		self.circleprogress.setProgress(progress: progress , animated: true)
+	}
+}
+
+extension BackupContactsViewController {
+	
+	private func setupDissmissGestureRecognizer() {
+		
+		guard self.tapOutsideRecognizer == nil else { return }
+		
+		self.tapOutsideRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.handleTapBehind))
+		self.tapOutsideRecognizer.numberOfTapsRequired = 1
+		self.tapOutsideRecognizer.cancelsTouchesInView = false
+		self.tapOutsideRecognizer.delegate = self
+		U.sceneDelegate.window?.addGestureRecognizer(self.tapOutsideRecognizer)
+	}
+	
+	private func removeDissmissGestureRecognizer() {
+		
+		guard self.tapOutsideRecognizer != nil else { return }
+		
+		Utils.sceneDelegate.window?.removeGestureRecognizer(self.tapOutsideRecognizer)
+		self.tapOutsideRecognizer = nil
+	}
+	
+	private func setupGestureRecognizers() {
+		
+		let animator = TopBottomAnimation(style: .bottom)
+		dissmissGestureRecognizer = animator.panGestureRecognizer
+		dissmissGestureRecognizer.cancelsTouchesInView = false
+		animator.panGestureRecognizer.delegate = self
+		self.view.addGestureRecognizer(dissmissGestureRecognizer)
+	}
+	
+	@objc func handleTapBehind(sender: UITapGestureRecognizer) {
+		
+		if sender.state == UIGestureRecognizer.State.ended {
+			
+			let location: CGPoint = sender.location(in: nil)
+
+			if !self.view.point(inside: self.view.convert(location, from: self.view.window), with: nil) {
+				self.view.window?.removeGestureRecognizer(sender)
+				self.closeController(sender: sender)
+			}
+		}
+	}
+	
+	private func closeController(sender: AnyObject) {
+		
+		switch self.currentProgress {
+			case .filesCreated(_), .processing, .prepare:
+				return
+			default:
+				self.dismiss(animated: true) {
+					self.removeDissmissGestureRecognizer()
+					self.clearFolders()
+				}
+		}
 	}
 }
 
@@ -261,20 +384,15 @@ extension BackupContactsViewController: Themeble {
 		topShevronView.setCorner(3)
 		topShevronView.backgroundColor = theme.subTitleTextColor
 		
-		titleTextLabel.text = "Backup"
+		titleTextLabel.text = Localization.Main.MediaContentTitle.backup
 		titleTextLabel.font = FontManager.exportModalFont(of: .title)
 		
 		currentProgressContactTextLabel.font = FontManager.exportModalFont(of: .title).monospacedDigitFont
 		bottomButtonView.setButtonHeight(AppDimensions.BottomButton.bottomBarButtonDefaultHeight)
-		
+				
 		mainContainerView.insertSubview(backgroundImageView, at: 0)
 		backgroundImageView.translatesAutoresizingMaskIntoConstraints = false
-		backgroundImageView.centerXAnchor.constraint(equalTo: mainContainerView.centerXAnchor, constant: -3).isActive = true
-		backgroundImageView.centerYAnchor.constraint(equalTo: mainContainerView.centerYAnchor, constant: -70).isActive = true
-		
-		backgroundImageView.widthAnchor.constraint(equalToConstant: 200).isActive = true
-		backgroundImageView.heightAnchor.constraint(equalToConstant: 180).isActive = true
-		
+
 		mainContainerView.addSubview(circleprogress)
 		circleprogress.translatesAutoresizingMaskIntoConstraints = false
 		circleprogress.centerXAnchor.constraint(equalTo: mainContainerView.centerXAnchor).isActive = true
@@ -294,7 +412,7 @@ extension BackupContactsViewController: Themeble {
 		circleprogress.lineCap = .round
 		circleprogress.clockwise = true
 		circleprogress.percentLabelFormat = "%.f%%"
-		circleprogress.percentLabel.font = FontManager.deepCleanScreenFont(of: .progress)
+		circleprogress.percentLabel.font = .systemFont(ofSize: 16, weight: .medium)
 		circleprogress.lineWidth = AppDimensions.CircleProgress.circleProgressInfoLineWidth
 		
 		progressTitleTextLabel.isHidden = true
@@ -309,7 +427,7 @@ extension BackupContactsViewController: Themeble {
 		
 		self.view.backgroundColor = .clear
 		
-		backgroundImageView.tintColor = UIColor().colorFromHexString("C9D3E2")
+		backgroundImageView.tintColor = theme.backupTintColor
 		
 		mainContainerView.backgroundColor = theme.backgroundColor
 		
@@ -326,12 +444,12 @@ extension BackupContactsViewController: Themeble {
 	
 		circleprogress.progressShapeColor = theme.tintColor
 		circleprogress.backgroundShapeColor = theme.topShadowColor.withAlphaComponent(0.2)
-		circleprogress.startColor = theme.circleStarterGradientColor
-		circleprogress.endColor = theme.circleEndingGradientColor
+		circleprogress.startColor = theme.contactsGradientStarterColor
+		circleprogress.endColor = theme.contactsGradientEndingColor
 		circleprogress.backgroundShadowColor = theme.bottomShadowColor
 		
 		let titleLabelBounds = circleprogress.percentLabel.bounds
-		let titleGradient = Utils.Manager.getGradientLayer(bounds: titleLabelBounds, colors: theme.titleCircleGradientTitleColorSet)
+		let titleGradient = Utils.Manager.getGradientLayer(bounds: titleLabelBounds, colors: [theme.contactsGradientStarterColor.cgColor, theme.contactsGradientEndingColor.cgColor])
 		let color = Utils.Manager.gradientColor(bounds: titleLabelBounds, gradientLayer: titleGradient)
 		circleprogress.percentColor = color ?? theme.titleTextColor
 	}
@@ -340,5 +458,49 @@ extension BackupContactsViewController: Themeble {
 		
 		ContactsBackupUpdateMediator.instance.setListener(listener: self)
 		bottomButtonView.delegate = self
+	}
+}
+
+extension BackupContactsViewController: UIGestureRecognizerDelegate {
+	
+	func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldBeRequiredToFailBy otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+		return gestureRecognizer is UISwipeGestureRecognizer && otherGestureRecognizer is UIPanGestureRecognizer
+	}
+	
+	func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+	
+		switch self.currentProgress {
+			case .filesCreated(_), .processing, .prepare:
+				if gestureRecognizer == dissmissGestureRecognizer {
+					let point = gestureRecognizer.location(in: self.view)
+					if self.view.bounds.contains(point) {
+						return false
+					}
+				}
+			default:
+				return true
+		}
+		return true
+	}
+	
+	func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+	
+		switch self.currentProgress {
+			case .filesCreated(_), .processing, .prepare:
+				if gestureRecognizer == dissmissGestureRecognizer {
+					let point = gestureRecognizer.location(in: self.view)
+					
+					if self.view.bounds.contains(point) {
+						return true
+					}
+				}
+			default:
+				return true
+		}
+		return true
+	}
+	
+	func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+		return true
 	}
 }

@@ -75,7 +75,7 @@ extension AppDelegate {
 	
 	private func cleanTempCache() {
 		
-		var fileManager = ECFileManager()
+		let fileManager = ECFileManager()
 		fileManager.deleteAllFiles(at: .temp) {}
 		fileManager.deleteAllFiles(at: .contactsArcive) {}
 		fileManager.deleteAllFiles(at: .systemTemp) {}

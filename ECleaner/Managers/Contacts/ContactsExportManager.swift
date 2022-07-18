@@ -284,6 +284,13 @@ extension ContactsExportManager {
 								contactsPosition += 1
 								debugPrint(contactsPosition, name)
 								ContactsBackupUpdateMediator.instance.updateProgres(with: name, currentIndex: contactsPosition, total: contacts.count)
+								if contacts.count < 1000 {
+									usleep(1000) //will sleep
+									debugPrint(contactsPosition)
+								} else {
+									usleep(100) //will sleep
+									debugPrint(contactsPosition)
+								}
 							}
 						} catch {
 							debugPrint(error.localizedDescription)
@@ -327,37 +334,3 @@ extension ContactsExportManager {
 		ContactsBackupUpdateMediator.instance.updateStatus(with: status)
 	}
 }
-
-
-protocol ContactsBackupUpdateListener {
-	func didUpdateStatus(_ status: ContactsBackupStatus)
-	func didUpdateProgress(with name: String, progress: CGFloat)
-}
-
-
-class ContactsBackupUpdateMediator {
-	
-	class var instance: ContactsBackupUpdateMediator {
-		struct Static {
-			static let instance: ContactsBackupUpdateMediator = ContactsBackupUpdateMediator()
-		}
-		return Static.instance
-	}
-	
-	private var listener: ContactsBackupUpdateListener?
-	private init() {}
-	
-	func setListener(listener: ContactsBackupUpdateListener) {
-		self.listener = listener
-	}
-
-	func updateStatus(with status: ContactsBackupStatus) {
-		listener?.didUpdateStatus(status)
-	}
-	
-	func updateProgres(with name: String, currentIndex: Int, total files: Int) {
-		let progress = CGFloat(Double(currentIndex) / Double(files))
-		listener?.didUpdateProgress(with: name, progress: progress)
-	}
-}
-

@@ -82,6 +82,7 @@ struct Images {
 			static let backupContacts = UIImage(named: "backupContactsItem")!
 			static let bannerHelperImage = UIImage(named: "cloudSyncConatactItem")!
 			static let cloud = UIImage(named: "cloud-sync")
+			static let archiveBox = UIImage(systemName: "archivebox")!
         }
         
         struct photo {
