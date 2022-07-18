@@ -78,7 +78,9 @@ extension BackupContactsViewController: BottomActionButtonDelegate {
 				}
 			default:
 				ContactsExportManager.shared.contactsBackup { status in
-					self.setContainer(status: status)
+					Utils.UI {
+						self.setContainer(status: status)						
+					}
 				}
 		}
 	}
@@ -119,6 +121,7 @@ extension BackupContactsViewController {
 			case .processing:
 				self.bottomButtonView.actionButton.setbuttonAvailible(false)
 			case .empty:
+				self.bottomButtonView.stopAnimatingButton()
 				self.bottomButtonView.actionButton.setbuttonAvailible(true)
 			case .filesCreated(_):
 				self.bottomButtonView.actionButton.setbuttonAvailible(false)
