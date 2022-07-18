@@ -97,15 +97,13 @@ extension ShareManager {
     
     private func shareContacts(of format: FileFormat, with url: URL) {
         
-            //        TODO: generate file name
-        
-        fileManager.copyFileTemoDdirectory(from: url, with: "contacts", file: format) { url in
+		self.fileManager.copyFileTempDirectory(from: url, with: Localization.Main.Title.contactsTitle, file: format) { url in
             
             if let tempURL = url, self.fileManager.isFileExiest(at: tempURL) {
                 
                 let activityViewController = UIActivityViewController(activityItems: [tempURL], applicationActivities: [])
-                activityViewController.completionWithItemsHandler = { (_, _, _, _) -> Void in
-                    self.fileManager.deletefile(at: tempURL)
+				activityViewController.completionWithItemsHandler = { (activityType, completed: Bool, returnedItems: [Any]?, error: Error?) -> Void in
+					
                 }
                 
                 if !MFMailComposeViewController.canSendMail() {
@@ -119,6 +117,24 @@ extension ShareManager {
             }
         }
     }
+	
+	public func shareContacts(with url: URL, completion: @escaping ((_ completed: Bool) -> Void)) {
+		
+		let activityViewController = UIActivityViewController(activityItems: [url], applicationActivities: [])
+		activityViewController.completionWithItemsHandler = { (activityType, completed: Bool, returnedItems: [Any]?, error: Error?) -> Void in
+			completion(completed)
+		}
+		
+		if !MFMailComposeViewController.canSendMail() {
+			activityViewController.excludedActivityTypes = [UIActivity.ActivityType.mail]
+		}
+		
+		U.UI {
+			if let topController = topController() {
+				topController.present(activityViewController, animated: true, completion: nil)
+			}
+		}
+	}
 }
 
 extension ShareManager {

@@ -580,7 +580,6 @@ enum Theme: Int {
 		}
 	}
 	
-	
 	var photoGradientStarterColor: UIColor {
 		switch self {
 			case .light:
@@ -661,6 +660,15 @@ enum Theme: Int {
 				return [contactsGradientStarterColor, contactsGradientEndingColor]
 			case .dark:
 				return [contactsGradientStarterColor, contactsGradientEndingColor]
+		}
+	}
+	
+	var backupTintColor: UIColor {
+		switch self {
+			case .light:
+				return UIColor().colorFromHexString("C9D3E2")
+			case .dark:
+				return UIColor().colorFromHexString("C9D3E2")
 		}
 	}
 	

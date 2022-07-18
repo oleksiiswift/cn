@@ -87,6 +87,9 @@ extension SceneDelegate {
 			debugPrint("is purchase premium -> \(SubscriptionManager.instance.purchasePremiumHandler())")
 			debugPrint("****")
 		}
+		
+		
+		ECFileManager().deleteAllFiles(at: .contactsArcive) {}
 	}
 }
 

@@ -90,6 +90,8 @@ class MediaContentViewController: UIViewController {
 				self.setupShowDatePickerSelectorController(segue: segue, selectedType: .lowerDateSelectable)
 			case C.identifiers.segue.showUpperDatePicker:
 				self.setupShowDatePickerSelectorController(segue: segue, selectedType: .upperDateSelectable)
+			case C.identifiers.segue.backupContacts:
+				self.setupShowContactsBackupController(segue: segue)
 			default:
 				break
 		}
@@ -1340,11 +1342,27 @@ extension MediaContentViewController: Themeble {
 			}
 		}
 	}
+	
+	private func setupShowContactsBackupController(segue: UIStoryboardSegue) {
+		
+		guard let segue = segue as? SwiftMessagesSegue else { return }
+		
+		segue.configure(layout: .bottomMessage)
+		segue.dimMode = .gray(interactive: false)
+		segue.interactiveHide = true
+		segue.messageView.setupForShadow(shadowColor: theme.bottomShadowColor, cornerRadius: 14, shadowOffcet: CGSize(width: 6, height: 6), shadowOpacity: 10, shadowRadius: 14)
+		segue.messageView.configureNoDropShadow()
+	}
 }
 
 extension MediaContentViewController {
 	
 	private func openContactExportBackupController() {
 		
+		if SubscriptionManager.instance.purchasePremiumHandler() {
+			self.performSegue(withIdentifier: C.identifiers.segue.backupContacts, sender: self)
+		} else {
+			UIPresenter.showViewController(of: .subscription)
+		}
 	}
 }

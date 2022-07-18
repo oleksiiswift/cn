@@ -28,7 +28,7 @@ class ContactsExportManager {
 		return instance
 	}()
 	
-	private var fileManager = FileManager.default
+	private var fileManager = ECFileManager()
 	private var contactsManager = ContactsManager.shared
 	
 }
@@ -76,13 +76,17 @@ extension ContactsExportManager {
 			var data = Data()
 			try data = CNContactVCardSerialization.dataWithImage(contacts: contacts)
 			do {
-				let documentDirectory = try fileManager.url(for: .documentDirectory, in: .userDomainMask, appropriateFor:nil, create:false)
-				let fileURL = documentDirectory.appendingPathComponent("someName").appendingPathExtension(CNContactFileType.vcf.extensionName)
-				if self.fileManager.fileExists(atPath: fileURL.absoluteString) {
-					try self.fileManager.removeItem(at: fileURL)
+				if let tempDirectory = self.fileManager.getDirectoryURL(.temp) {
+					let fileURL = tempDirectory.appendingPathComponent(Localization.Main.Title.contactsTitle).appendingPathExtension(CNContactFileType.vcf.extensionName)
+					
+					if fileManager.isFileExiest(at: fileURL) {
+						fileManager.deletefile(at: fileURL)
+					}
+					try data.write(to: fileURL)
+					completionHandler(fileURL)
+				} else {
+					completionHandler(nil)
 				}
-				try data.write(to: fileURL)
-				completionHandler(fileURL)
 			} catch {
 				completionHandler(nil)
 				debugPrint(error.localizedDescription)
@@ -100,19 +104,25 @@ extension ContactsExportManager {
 		
 		do {
 			try vCardData = CNContactVCardSerialization.data(with: contacts)
-			let documentDirectory = try fileManager.url(for: .documentDirectory, in: .userDomainMask, appropriateFor:nil, create:false)
-			let fileURL = documentDirectory.appendingPathComponent("someName").appendingPathExtension(CNContactFileType.csv.extensionName)
-			if fileManager.fileExists(atPath: fileURL.absoluteString) {
-				try fileManager.removeItem(at: fileURL)
+			
+			if let tempDirectory = self.fileManager.getDirectoryURL(.temp) {
+				let fileURL = tempDirectory.appendingPathComponent(Localization.Main.Title.contactsTitle).appendingPathExtension(CNContactFileType.csv.extensionName)
+				
+				if fileManager.isFileExiest(at: fileURL) {
+					fileManager.deletefile(at: fileURL)
+				}
+				
+				try vCardData.write(to: fileURL)
+				completionHandler(fileURL)
+			} else {
+				completionHandler(nil)
 			}
-			try vCardData.write(to: fileURL)
-			completionHandler(fileURL)
 		} catch {
 			debugPrint(error.localizedDescription)
+			completionHandler(nil)
 		}
 	}
 }
-
 
 	//	MARK: - CONTACTS ARCHIVE -
 extension ContactsExportManager {
@@ -139,5 +149,188 @@ extension ContactsExportManager {
 		} catch {
 			completionHandler([])
 		}
+	}
+}
+
+enum ContactsBackupStatus {
+	case initial
+	case prepare
+	case empty
+	case processing
+	case filesCreated(destinationURL: URL?)
+	case archived(url: URL)
+	case error(error: Error)
+}
+
+extension ContactsExportManager {
+	
+	public func contactsBackup(completionHandler: @escaping (_ status: ContactsBackupStatus) -> Void) {
+		
+		self.setStatus(.prepare)
+		
+		Utils.delay(0.5) {
+			
+			self.prepareForBackUp {
+				
+				Utils.delay(0.5) {
+					
+				    self.setStatus(.processing)
+					
+					self.filesCreateSeparated { status in
+						
+						switch status {
+							case .empty:
+								completionHandler(.empty)
+							case .filesCreated(destinationURL: let directory):
+								
+								self.setStatus(.filesCreated(destinationURL: directory))
+								
+								if let archivedDirectory = directory {
+									
+									self.createZip(from: archivedDirectory) { status in
+										
+										switch status {
+											case .archived(let url):
+												self.fileManager.copyFileTempDirectory(from: url, with: Localization.Main.Title.contactsTitle.lowercased(), file: .zip) { url in
+													if let url = url {
+														completionHandler(.archived(url: url))
+													} else {
+														let error = ErrorHandler.ShareError.errorSavedFile
+														completionHandler(.error(error: error))
+													}
+													self.fileManager.deleteAllFiles(at: .systemTemp) {}
+												}
+											case .error(let error):
+												completionHandler(.error(error: error))
+											default:
+												return
+										}
+									}
+								}
+							default:
+								return
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	private func prepareForBackUp(completionHandler: @escaping () -> Void) {
+		
+		let group = DispatchGroup()
+		let queue = DispatchQueue.global(qos: .background)
+		
+		queue.async {
+			group.enter()
+			
+			self.fileManager.deleteAllFiles(at: .contactsArcive) {
+				group.leave()
+			}
+			
+			group.enter()
+			self.fileManager.deleteAllFiles(at: .temp) {
+				group.leave()
+			}
+			
+			group.notify(queue: DispatchQueue.main) {
+				completionHandler()
+			}
+		}
+	}
+	
+	private func filesCreateSeparated(completionHandler: @escaping (_ status: ContactsBackupStatus) -> Void) {
+		
+		let pathExtension = CNContactFileType.vcf.extensionName
+		
+		self.contactsManager.getAllContacts { contacts in
+			
+			if !contacts.isEmpty {
+				
+				let dispatchGroup = DispatchGroup()
+				let dispatchQueue = DispatchQueue.global(qos: .background)
+				let dispatchSemaphore = DispatchSemaphore(value: 5)
+				
+				let contactsArchiveDirectory = self.fileManager.getDirectoryURL(.contactsArcive)
+				
+				var contactsPosition = 0
+				
+				for contact in contacts {
+					
+					dispatchGroup.enter()
+					
+					let contactFullName = CNContactFormatter.string(from: contact, style: .fullName)
+					
+					do {
+						var data = Data()
+						try data = CNContactVCardSerialization.dataWithImage(contacts: [contact])
+						
+						do {
+							var newName: String = ""
+							if let name = contactFullName,
+							   let fileURL = contactsArchiveDirectory?.appendingPathComponent(name).appendingPathExtension(pathExtension) {
+								
+								var counter = 0
+								var writebleURL = fileURL
+								
+								while self.fileManager.isFileExiest(at: writebleURL) {
+									counter += 1
+									newName = String("\(name) (\(counter))")
+									guard let newURL = contactsArchiveDirectory?.appendingPathComponent(newName).appendingPathExtension(pathExtension) else { return }
+									writebleURL = newURL
+									debugPrint(newURL)
+								}
+								try data.write(to: writebleURL)
+								contactsPosition += 1
+								debugPrint(contactsPosition, name)
+								ContactsBackupUpdateMediator.instance.updateProgres(with: name, currentIndex: contactsPosition, total: contacts.count)
+								if contacts.count < 1000 {
+									usleep(1000) //will sleep
+									debugPrint(contactsPosition)
+								} else {
+									usleep(100) //will sleep
+									debugPrint(contactsPosition)
+								}
+							}
+						} catch {
+							debugPrint(error.localizedDescription)
+						}
+					} catch {
+						debugPrint(error.localizedDescription)
+					}
+					
+					dispatchSemaphore.signal()
+					dispatchGroup.leave()
+				}
+				
+				dispatchGroup.notify(queue: dispatchQueue) {
+					completionHandler(.filesCreated(destinationURL: contactsArchiveDirectory))
+				}
+			} else {
+				completionHandler(.empty)
+			}
+		}
+	}
+
+	private func createZip(from directory: URL, completionHandler: @escaping (_ status: ContactsBackupStatus) -> Void) {
+		
+		let coordinator = NSFileCoordinator()
+		
+		let zipIntent = NSFileAccessIntent.readingIntent(with: directory, options: [.forUploading])
+		
+		coordinator.coordinate(with: [zipIntent], queue: .main) { errorQ in
+			if let error = errorQ {
+				completionHandler(.error(error: error))
+			} else {
+				let zipURL = zipIntent.url
+				completionHandler(.archived(url: zipURL))
+			}
+			
+			self.fileManager.deleteAllFiles(at: .contactsArcive) {}
+		}
+	}
+	
+	private func setStatus(_ status: ContactsBackupStatus) {
+		ContactsBackupUpdateMediator.instance.updateStatus(with: status)
 	}
 }
