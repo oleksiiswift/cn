@@ -105,7 +105,6 @@ struct Images {
     }
 	
 	struct setting {
-		static let premiumBanner = UIImage(named: "settingsPremiumBanner")!
 		static let largeVideo = UIImage(named: "photoProcessingEmptyItem")!
 		static let storage = UIImage(named: "photoProcessingEmptyItem")!
 		static let permission = UIImage(named: "photoProcessingEmptyItem")!
@@ -142,6 +141,7 @@ struct Images {
 		static let arrowRight = UIImage(systemName: "arrow.right")!
 		static let connectionLost = UIImage(systemName: "wifi.slash")
 		static let noContent = UIImage(systemName: "exclamationmark.circle")
+		static let persons = UIImage(systemName: "person.2.square.stack")!
 	}
 	
 	struct onboarding {

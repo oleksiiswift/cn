@@ -1196,6 +1196,8 @@ extension MediaContentViewController {
 	
 		switch indexPath.section {
 			case 1:
+				guard searchingProcessingType == .clearSearchingProcessingQueue else { return}
+				
 				switch self.mediaContentType {
 					case .userVideo:
 						self.showVideoContentForCompressingOperation()

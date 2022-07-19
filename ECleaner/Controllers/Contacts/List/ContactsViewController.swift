@@ -1021,6 +1021,12 @@ extension ContactsViewController: Themeble {
             exportContactsViewController.selectExportFormatCompletion = { format in
 				self.contactContentIsEditing ? self.exportSelectedContacts(with: format) : self.exportAllContacts(with: format)
             }
+			
+			exportContactsViewController.selectExtraOptionalOption = {
+				Utils.delay(1) {
+					self.contactContentIsEditing ? self.didTapCancelEditingButton() : ()
+				}
+			}
         }
     }
 }

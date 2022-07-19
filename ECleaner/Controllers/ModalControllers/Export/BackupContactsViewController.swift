@@ -28,6 +28,8 @@ class BackupContactsViewController: UIViewController {
 	private var currentProgress: ContactsBackupStatus = .initial
 	private var savedURL: URL?
 	
+	public var didSeceltCloseController: (() -> Void)?
+	
 	override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -57,6 +59,7 @@ extension BackupContactsViewController {
 		ShareManager.shared.shareContacts(with: url) { completed in
 			if completed {
 				self.closeController(sender: self)
+				self.didSeceltCloseController?()
 			}
 		}
 	}
