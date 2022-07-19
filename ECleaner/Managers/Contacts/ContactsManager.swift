@@ -893,24 +893,35 @@ extension ContactsManager {
 						let left = lhs.value.stringValue
 						let right = rhs.value.stringValue
 						
-						let distance = Utils.levenshtein(aStr: lhs.value.stringValue.removeNonNumeric(), bStr: rhs.value.stringValue.removeNonNumeric())
-						
-						if distance == 0 {
-							if left.count > right.count {
+						if !left.removeNonNumeric().isEmpty && !right.removeNonNumeric().isEmpty {
+							
+							let distance = Utils.levenshtein(aStr: lhs.value.stringValue.removeNonNumeric(), bStr: rhs.value.stringValue.removeNonNumeric())
+							
+							if distance == 0 {
+								if left.count > right.count {
+									if let index = uniqPhoneNumbers.firstIndex(of: rhs) {
+										uniqPhoneNumbers.remove(at: index)
+									}
+								} else {
+									if let index = uniqPhoneNumbers.firstIndex(of: lhs) {
+										uniqPhoneNumbers.remove(at: index)
+									}
+								}
+							} else if left.count > right.count && distance < 4 {
 								if let index = uniqPhoneNumbers.firstIndex(of: rhs) {
 									uniqPhoneNumbers.remove(at: index)
 								}
-							} else {
+							} else if left.count < right.count && distance < 4 {
 								if let index = uniqPhoneNumbers.firstIndex(of: lhs) {
 									uniqPhoneNumbers.remove(at: index)
 								}
 							}
-						} else if left.count > right.count && distance < 4 {
-							if let index = uniqPhoneNumbers.firstIndex(of: rhs) {
+						} else if left.removeNonNumeric().isEmpty {
+							if let index = uniqPhoneNumbers.firstIndex(of: lhs) {
 								uniqPhoneNumbers.remove(at: index)
 							}
-						} else if left.count < right.count && distance < 4 {
-							if let index = uniqPhoneNumbers.firstIndex(of: lhs) {
+						} else if right.removeNonNumeric().isEmpty {
+							if let index = uniqPhoneNumbers.firstIndex(of: rhs) {
 								uniqPhoneNumbers.remove(at: index)
 							}
 						}
@@ -1098,7 +1109,7 @@ extension ContactsManager {
 			for contact in contacts {
 				dispatchGroup.enter()
 				self.deleteContact(contact) { success in
-					
+					debugPrint(CNContactFormatter.string(from: contact, style: .fullName) ?? "no contact name")
 					if deleteContactsOperation.isCancelled {
 						completionHandler(errorsCount)
 						return
@@ -1155,12 +1166,12 @@ extension ContactsManager {
 	public func deleteAllContatsFromStore() {
 		self.getAllContacts { contacts in
 			var cont = 0
-			for contact in contacts {
-				self.deleteContact(contact) { success in
-					cont += 1
-					debugPrint("deleting is \(success)")
-					debugPrint("deleted \(cont) contacts")
-				}
+			self.deleteAsyncContacts(contacts) { currentDeletingContactIndex in
+				cont += 1
+				debugPrint("")
+				debugPrint("deleting is success, deleted \(cont) contacts")
+			} completionHandler: { errorsCount in
+				debugPrint(errorsCount)
 			}
 		}
 	}
