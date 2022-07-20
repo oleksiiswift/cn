@@ -21,7 +21,7 @@ enum ProcessingProgressOperationState {
 	func getTitle(by mediaType: PhotoMediaType, files: Int, selected: Int, progress: CGFloat) -> String {
 		switch self {
 			case .sleeping:
-				return Localization.dash
+				return Localization.Main.ProcessingState.tap
 			case .prepare:
 				return Localization.Main.ProcessingState.prepareForScanning
 			case .analyzing:

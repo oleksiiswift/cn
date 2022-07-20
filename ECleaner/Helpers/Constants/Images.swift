@@ -83,6 +83,7 @@ struct Images {
 			static let bannerHelperImage = UIImage(named: "cloudSyncConatactItem")!
 			static let cloud = UIImage(named: "cloud-sync")
 			static let archiveBox = UIImage(systemName: "archivebox")!
+			static let processing = UIImage(systemName: "person.3")!
         }
         
         struct photo {
@@ -104,7 +105,6 @@ struct Images {
     }
 	
 	struct setting {
-		static let premiumBanner = UIImage(named: "settingsPremiumBanner")!
 		static let largeVideo = UIImage(named: "photoProcessingEmptyItem")!
 		static let storage = UIImage(named: "photoProcessingEmptyItem")!
 		static let permission = UIImage(named: "photoProcessingEmptyItem")!
@@ -141,6 +141,7 @@ struct Images {
 		static let arrowRight = UIImage(systemName: "arrow.right")!
 		static let connectionLost = UIImage(systemName: "wifi.slash")
 		static let noContent = UIImage(systemName: "exclamationmark.circle")
+		static let persons = UIImage(systemName: "person.2.square.stack")!
 	}
 	
 	struct onboarding {

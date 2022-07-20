@@ -151,17 +151,26 @@ public extension Array {
 }
 
 extension Array {
-    mutating func remove(elementsAtIndices indicesToRemove: [Int]) -> [Element] {
+	
+	subscript(safe index: Int) -> Element? {
+		return indices ~= index ? self[index] : nil
+	}
+}
+
+extension Array {
+	
+    mutating func remove(elementsAtIndices indicesToRemove: [Int]) -> [Element?] {
+		
         guard !indicesToRemove.isEmpty else {
             return []
         }
-        
-        // Copy the removed elements in the specified order.
-        let removedElements = indicesToRemove.map { self[$0] }
-        
+	
+        // Copy the removed elements in the specified order. UPD // alexey sorochan /// use safe for index erropr
+		let removedElements = indicesToRemove.map({ self[safe: $0]})
+
         // Sort the indices to remove.
         let indicesToRemove = indicesToRemove.sorted()
-        
+
         // Shift the elements we want to keep to the left.
         var destIndex = indicesToRemove.first!
         var srcIndex = destIndex + 1
@@ -177,10 +186,10 @@ extension Array {
             shiftLeft(untilIndex: removeIndex)
         }
         shiftLeft(untilIndex: self.endIndex)
-        
+
         // Remove the extra elements from the end of the array.
         self.removeLast(indicesToRemove.count)
-        
+		
         return removedElements
     }
 }
@@ -224,3 +233,56 @@ extension Array {
 		return arrayOrdered
 	}
 }
+
+extension MutableCollection where Self: RangeReplaceableCollection {
+	private mutating func removeSopted<C>(elementsAtSortedIndices indicesToRemove: C) where C: Collection, C.Element == Index {
+			// Shift the elements we want to keep to the left.
+		var destIndex = indicesToRemove.first!
+		precondition(indices.contains(destIndex), "Index out of range")
+		var srcIndex = index(after: destIndex)
+		var previousRemovalIndex = destIndex
+		func shiftLeft(untilIndex index: Index) {
+			precondition(index != previousRemovalIndex, "Duplicate indices")
+			while srcIndex < index {
+				swapAt(destIndex, srcIndex)
+				formIndex(after: &destIndex)
+				formIndex(after: &srcIndex)
+			}
+			formIndex(after: &srcIndex)
+		}
+		
+		let secondIndex = indicesToRemove.index(after: indicesToRemove.startIndex)
+		for removeIndex in indicesToRemove[secondIndex...] {
+			precondition(indices.contains(removeIndex), "Index out of range")
+			shiftLeft(untilIndex: removeIndex)
+		}
+		shiftLeft(untilIndex: endIndex)
+		
+			// Remove the extra elements from the end of the collection.
+		removeSubrange(destIndex..<endIndex)
+	}
+	mutating func remove<C>(elementsAtIndices indicesToRemove: C) where C: Collection, C.Element == Index {
+		guard !indicesToRemove.isEmpty else { return }
+		
+		// Check if the indices are sorted.
+		var isSorted = true
+		var prevIndex = indicesToRemove.first!
+		let secondIndex = indicesToRemove.index(after: indicesToRemove.startIndex)
+		for index in indicesToRemove[secondIndex...] {
+			if index < prevIndex {
+				isSorted = false
+				break
+			}
+			prevIndex = index
+		}
+		
+		if isSorted {
+			removeSopted(elementsAtSortedIndices: indicesToRemove)
+		} else {
+			removeSopted(elementsAtSortedIndices: indicesToRemove.sorted())
+		}
+	}
+}
+
+
+

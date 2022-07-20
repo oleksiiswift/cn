@@ -159,6 +159,7 @@
                         <outlet property="rightButton" destination="7qb-0B-rjQ" id="o05-3i-wrd"/>
                         <outlet property="rightButtonView" destination="U24-Sw-nPE" id="ewR-e7-8mU"/>
                         <outlet property="topShevronView" destination="tkA-eO-eas" id="veO-Ik-4uo"/>
+                        <segue destination="TcQ-mO-NyY" kind="show" identifier="ShowContactsBackupViewControllerSegue" customClass="ShowContactsBackupViewControllerSegue" customModule="ECleaner" customModuleProvider="target" id="NUk-73-cQT"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ief-a0-LHa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -244,6 +245,7 @@
                             <constraint firstItem="dvb-Zl-I9a" firstAttribute="leading" secondItem="CEF-cV-Vyd" secondAttribute="leading" id="yA1-7q-ByR"/>
                         </constraints>
                     </view>
+                    <navigationItem key="navigationItem" id="7mt-c2-ORs"/>
                     <size key="freeformSize" width="414" height="381"/>
                     <connections>
                         <outlet property="bottomButtonHeightConststraint" destination="ukp-UC-7Ep" id="wmo-Ni-tAJ"/>
@@ -257,7 +259,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="FFQ-Pf-QLF" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="902.89855072463774" y="110.82589285714285"/>
+            <point key="canvasLocation" x="1149" y="111"/>
         </scene>
     </scenes>
     <resources>

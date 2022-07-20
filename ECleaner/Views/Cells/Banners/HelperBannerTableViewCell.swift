@@ -22,8 +22,7 @@ class HelperBannerTableViewCell: UITableViewCell {
 extension HelperBannerTableViewCell {
 	
 	public func cellConfigure(with model: SettingsModel) {
-		let image = model.optionalBannerImage
-		bannerImageView.image = image
+
 	}
 	
 	public func cellConfigure(with image: UIImage) {

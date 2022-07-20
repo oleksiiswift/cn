@@ -77,7 +77,7 @@ extension ContactsExportManager {
 			try data = CNContactVCardSerialization.dataWithImage(contacts: contacts)
 			do {
 				if let tempDirectory = self.fileManager.getDirectoryURL(.temp) {
-					let fileURL = tempDirectory.appendingPathComponent(Localization.Main.Title.contactsTitle).appendingPathExtension(CNContactFileType.vcf.extensionName)
+					let fileURL = tempDirectory.appendingPathComponent("exportFile").appendingPathExtension(CNContactFileType.vcf.extensionName)
 					
 					if fileManager.isFileExiest(at: fileURL) {
 						fileManager.deletefile(at: fileURL)
@@ -106,7 +106,7 @@ extension ContactsExportManager {
 			try vCardData = CNContactVCardSerialization.data(with: contacts)
 			
 			if let tempDirectory = self.fileManager.getDirectoryURL(.temp) {
-				let fileURL = tempDirectory.appendingPathComponent(Localization.Main.Title.contactsTitle).appendingPathExtension(CNContactFileType.csv.extensionName)
+				let fileURL = tempDirectory.appendingPathComponent("exportFile").appendingPathExtension(CNContactFileType.csv.extensionName)
 				
 				if fileManager.isFileExiest(at: fileURL) {
 					fileManager.deletefile(at: fileURL)
@@ -278,7 +278,6 @@ extension ContactsExportManager {
 									newName = String("\(name) (\(counter))")
 									guard let newURL = contactsArchiveDirectory?.appendingPathComponent(newName).appendingPathExtension(pathExtension) else { return }
 									writebleURL = newURL
-									debugPrint(newURL)
 								}
 								try data.write(to: writebleURL)
 								contactsPosition += 1
@@ -286,10 +285,8 @@ extension ContactsExportManager {
 								ContactsBackupUpdateMediator.instance.updateProgres(with: name, currentIndex: contactsPosition, total: contacts.count)
 								if contacts.count < 1000 {
 									usleep(1000) //will sleep
-									debugPrint(contactsPosition)
-								} else {
+								} else if contacts.count < 10000{
 									usleep(100) //will sleep
-									debugPrint(contactsPosition)
 								}
 							}
 						} catch {

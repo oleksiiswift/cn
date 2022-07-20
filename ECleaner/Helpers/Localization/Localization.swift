@@ -296,6 +296,7 @@ struct Localization {
 			static let searchingComplete = "Searching complete!".localized()
 			static let archiving = "Archiving".localized()
 			static let processing = "Processing".localized()
+			static let tap = "Tap to scan".localized()
 			
 			struct ByGrouping {
 				static let similarGroups = "similar groups".localized()
