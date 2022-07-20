@@ -233,6 +233,7 @@
 "Searching complete!" = "Searching complete!";
 "Archiving" = "Archiving";
 "Processing" = "Processing";
+"Tap to scan" = "Tap to scan";
 
 	// MARK: ByGrouping
 "similar groups" = "similar groups";

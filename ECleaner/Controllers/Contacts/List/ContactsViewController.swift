@@ -1023,9 +1023,7 @@ extension ContactsViewController: Themeble {
             }
 			
 			exportContactsViewController.selectExtraOptionalOption = {
-				Utils.delay(1) {
-					self.contactContentIsEditing ? self.didTapCancelEditingButton() : ()
-				}
+				self.contactContentIsEditing ? self.didTapCancelEditingButton() : ()
 			}
         }
     }

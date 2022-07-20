@@ -486,7 +486,8 @@ extension ContactsManager {
 			let onlyNameContacts = contacts.filter({ $0.phoneNumbers.count == 0 && $0.emailAddresses.count == 0 && !$0.urlAddresses.contains(where: {$0.label == C.key.keyDescriptor.telegram})})
 			let onlyNameGroupName = ContactasCleaningType.onlyName.rawValue
 			let onlyNameGroup = ContactsGroup(name: onlyNameGroupName, contacts: onlyNameContacts, groupType: .onlyName, countryIdentifier: emptyIdentifier)
-			
+			debugPrint("cont \(contactsGroup)")
+			debugPrint("onlyNameGroup -> \(onlyNameGroup) \(onlyNameGroup.contacts.count)")
 			onlyNameContacts.count != 0 ? contactsGroup.append(onlyNameGroup) : ()
 		
 				/// `incomplete name` group
@@ -495,6 +496,8 @@ extension ContactsManager {
 			let incompleteNameContacts = emptyNameContacts.filter({$0.phoneNumbers.count != 0 && $0.emailAddresses.count != 0} )
 			
 			let emptyNameGroup = ContactsGroup(name: emptyNameGroupName, contacts: incompleteNameContacts, groupType: .emptyName, countryIdentifier: emptyIdentifier)
+			debugPrint("cont \(contactsGroup)")
+			debugPrint("emptyNameGroup -> \(emptyNameGroup) \(emptyNameGroup.contacts.count)")
 			
 			emptyNameContacts.count != 0 ? contactsGroup.append(emptyNameGroup) : ()
 			
@@ -502,6 +505,9 @@ extension ContactsManager {
 			let onlyEmailsContacts = emptyNameContacts.filter({$0.phoneNumbers.count == 0 && $0.emailAddresses.count != 0})
 			let onlyEmailGroupName = ContactasCleaningType.onlyEmail.rawValue
 			let onlyEmailGroup = ContactsGroup(name: onlyEmailGroupName, contacts: onlyEmailsContacts, groupType: .onlyEmail, countryIdentifier: emptyIdentifier)
+			debugPrint("cont \(contactsGroup)")
+			debugPrint("onlyEmailGroup -> \(onlyEmailGroup) \(onlyEmailGroup.contacts.count)")
+			
 			
 			onlyEmailsContacts.count != 0 ? contactsGroup.append(onlyEmailGroup) : ()
 			
@@ -509,6 +515,8 @@ extension ContactsManager {
 			let onlyPhoneNumbersContacts = emptyNameContacts.filter({$0.phoneNumbers.count != 0 && $0.emailAddresses.count == 0})
 			let onlyPhoneNumbersGroupName = ContactasCleaningType.onlyPhone.rawValue
 			let onlyPhoneNumbersGroup = ContactsGroup(name: onlyPhoneNumbersGroupName, contacts: onlyPhoneNumbersContacts, groupType: .onlyPhone, countryIdentifier: emptyIdentifier)
+			debugPrint("cont \(contactsGroup)")
+			debugPrint("onlyPhoneNumbersGroup -> \(onlyPhoneNumbersGroup) \(onlyPhoneNumbersGroup.contacts.count)")
 			
 			onlyPhoneNumbersContacts.count != 0 ? contactsGroup.append(onlyPhoneNumbersGroup) : ()
 			
@@ -516,6 +524,8 @@ extension ContactsManager {
 			let wholeEmptyContacts = emptyNameContacts.filter({$0.phoneNumbers.count == 0 && $0.emailAddresses.count == 0})
 			let wholeEmptyContactsName = ContactasCleaningType.wholeEmpty.rawValue
 			let wholeEmptyGroup = ContactsGroup(name: wholeEmptyContactsName, contacts: wholeEmptyContacts, groupType: .wholeEmpty, countryIdentifier: emptyIdentifier)
+			debugPrint("cont \(contactsGroup)")
+			debugPrint("wholeEmptyGroup -> \(wholeEmptyGroup) \(wholeEmptyGroup.contacts.count)")
 			
 			wholeEmptyContacts.count != 0 ? contactsGroup.append(wholeEmptyGroup) : ()
 			
@@ -526,13 +536,23 @@ extension ContactsManager {
 			}
 			
 			sleep(sleepInterval)
+			
+			let dispatchGroup = DispatchGroup()
+			let dispatchQueue = DispatchQueue(label: "fake loop")
+			
 			for i in 0...contacts.count - 1 {
+				dispatchGroup.enter()
 				self.sendNotification(processing: cleanProcessingType, deepCleanType: .emptyContacts, singleCleanType: .emptyContacts, status: .progress, totalItems: contacts.count, currentIndex: i)
+				dispatchGroup.leave()
 			}
 			
-			self.sendNotification(processing: cleanProcessingType, deepCleanType: .emptyContacts, singleCleanType: .emptyContacts, status: .result, totalItems: contacts.count, currentIndex: contacts.count)
-			U.delay(deleyInterval) {
-				completionHandler(contactsGroup, operation.isCancelled)
+			dispatchGroup.notify(queue: dispatchQueue) {
+				U.delay(1) {
+					self.sendNotification(processing: cleanProcessingType, deepCleanType: .emptyContacts, singleCleanType: .emptyContacts, status: .result, totalItems: contacts.count, currentIndex: contacts.count)
+					U.delay(deleyInterval) {
+						completionHandler(contactsGroup, operation.isCancelled)
+					}
+				}
 			}
 		}
 		emptyContactsOperation.name = COT.emptyContactOperation.rawValue
@@ -1317,7 +1337,7 @@ extension ContactsManager {
 
 extension ContactsManager {
 	
-	private func sendNotification(processing: CleanProcessingPresentType, deepCleanType: DeepCleanNotificationType = .none, singleCleanType: SingleContentSearchNotificationType = .none, status: ProcessingProgressOperationState, totalItems: Int, currentIndex: Int) {
+	public func sendNotification(processing: CleanProcessingPresentType, deepCleanType: DeepCleanNotificationType = .none, singleCleanType: SingleContentSearchNotificationType = .none, status: ProcessingProgressOperationState, totalItems: Int, currentIndex: Int) {
 		
 		switch processing {
 			case .deepCleen:
