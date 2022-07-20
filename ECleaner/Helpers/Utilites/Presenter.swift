@@ -67,3 +67,43 @@ extension UIPresenter {
 	}
 }
 
+
+enum ToastType {
+	case waitBackup
+	
+	var toastTitle: String {
+		switch self {
+			case .waitBackup:
+				return "Wait, until backup end"
+		}
+	}
+}
+
+extension UIPresenter {
+	
+	public static func showToast(_ type: ToastType, duration: Double = 3.0) {
+		
+		let style = ToastStyle()
+		
+		U.UI {
+			if let topViewController = getTheMostTopController() {
+				topViewController.view.hideAllToasts()
+				topViewController.view.clearToastQueue()
+				topViewController.view.makeToast(type.toastTitle, duration: duration, position: .top, style: style)
+			}
+		}
+	}
+
+	public static func showToastIn(customPoint: CGPoint, type: ToastType) {
+	
+		U.UI {
+			if let presentController = getTheMostTopController() {
+				presentController.view.hideAllToasts()
+				presentController.view.clearToastQueue()
+				presentController.view.makeToastInPoint(type.toastTitle, duration: 3.0, position: customPoint)
+			}
+		}
+	}
+}
+
+	

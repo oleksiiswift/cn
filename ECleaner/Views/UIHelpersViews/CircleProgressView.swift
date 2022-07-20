@@ -436,15 +436,7 @@ class CircleProgressView: UIView {
 		backgroundShape.path = pathForShape(rect: rect, degree: backgrounSpaceDegree).cgPath
 		progressShape.path   = pathForShape(rect: rect, degree: spaceDegree).cgPath
         gradientLayer.frame = bounds
-		
-//		let colors = [UIColor().colorFromHexString("FF0018"),
-//					  UIColor().colorFromHexString("FFA52C"),
-//					  UIColor().colorFromHexString("FFFF41"),
-//					  UIColor().colorFromHexString("008018"),
-//					  UIColor().colorFromHexString("0000F9"),
-//					  UIColor().colorFromHexString("86007D")]
-//					gradientLayer.colors = colors.map({$0.cgColor})
-		
+				
         gradientLayer.colors = [startColor, endColor].map { $0.cgColor }
 		
 		if !disableBackgrounShadow {

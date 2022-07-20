@@ -19,6 +19,7 @@ class BackupContactsViewController: UIViewController {
 	@IBOutlet weak var currentProgressContactTextLabel: UILabel!
 	
 	private lazy var circleprogress = CircleProgressView()
+	private lazy var checkmarkView = CheckmarkView()
 	private let backgroundImageView = UIImageView()
 	private var progressTitleTextLabel = UILabel()
 	
@@ -44,6 +45,7 @@ class BackupContactsViewController: UIViewController {
 		super.viewDidAppear(animated)
 		
 		self.setupDissmissGestureRecognizer()
+		
 	}
 	
 	override func viewDidLayoutSubviews() {
@@ -77,14 +79,21 @@ extension BackupContactsViewController: BottomActionButtonDelegate {
 		switch self.currentProgress {
 			case .archived(_):
 				if let url = savedURL {
-					self.shareContacsBackup(with: url)
+					#warning("Disable foe a wile")
+//					self.shareContacsBackup(with: url)
 				}
-			default:
+			case .initial:
 				ContactsExportManager.shared.contactsBackup { status in
 					Utils.UI {
 						self.setContainer(status: status)						
 					}
 				}
+			default:
+				self.bottomButtonView.title("Wait.....")
+				U.delay(1) {
+					self.handleBottomButton(with: self.currentProgress)
+				}
+				return
 		}
 	}
 }
@@ -112,7 +121,6 @@ extension BackupContactsViewController {
 		currentProgress = status
 		handleBackroundImage(with: status)
 		handleCurrentProgressTitle(with: status)
-		handleBackroundImage(with: status)
 		handleBottomButton(with: status)
 
 		switch status {
@@ -120,22 +128,19 @@ extension BackupContactsViewController {
 				return
 			case .prepare:
 				self.bottomButtonView.startAnimatingButton()
-				self.bottomButtonView.actionButton.setbuttonAvailible(false)
 			case .processing:
-				self.bottomButtonView.actionButton.setbuttonAvailible(false)
+				return
 			case .empty:
 				self.bottomButtonView.stopAnimatingButton()
-				self.bottomButtonView.actionButton.setbuttonAvailible(true)
 			case .filesCreated(_):
-				self.bottomButtonView.actionButton.setbuttonAvailible(false)
+				return
 			case .archived(url: let url):
 				self.savedURL = url
 				self.bottomButtonView.stopAnimatingButton()
-				self.bottomButtonView.actionButton.setbuttonAvailible(true)
-				self.shareContacsBackup(with: url)
+				#warning("Disavle for avail")
+//				self.shareContacsBackup(with: url)
 			case .error(_):
 				self.bottomButtonView.stopAnimatingButton()
-				self.bottomButtonView.actionButton.setbuttonAvailible(true)
 		}
 	}
 	
@@ -248,15 +253,11 @@ extension BackupContactsViewController {
 				case .prepare:
 					self.setCloudBackgroundImage()
 				case .processing:
-					self.setProcessingBackgroundImage()
+					self.setCloudBackgroundImage()
 				case .filesCreated(_):
 					self.setArchiveBackgroundImage()
 				case .archived(_):
-					UIView.transition(with: self.circleprogress, duration: 0.5, options: .transitionCrossDissolve) {
-						if self.circleprogress.isHidden == false {
-							self.circleprogress.isHidden = true
-						}
-					}
+					self.setProgress(progress: 1)
 				case .error(_):
 					self.setCloudBackgroundImage()
 			}
@@ -321,20 +322,35 @@ extension BackupContactsViewController {
 	
 	private func setProgress(progress: CGFloat) {
 		
-		let isHiden = (0.01...0.99).contains(progress)
-		if self.circleprogress.isHidden == isHiden {
-			UIView.transition(with: self.circleprogress, duration: 0.5, options: .transitionCrossDissolve) {
-				self.circleprogress.isHidden = !isHiden
-				self.backgroundImageView.isHidden = isHiden
-			}
-		} else {
-			self.circleprogress.setProgress(progress: progress , animated: true)
+		switch progress {
+			case 0.0:
+				self.circleprogress.isHidden = true
+			case 0.01...0.9:
+				if self.circleprogress.isHidden == true {
+					UIView.transition(with: self.circleprogress, duration: 0.5, options: .transitionCrossDissolve) {
+						self.circleprogress.isHidden = false
+						self.backgroundImageView.isHidden = true
+					}
+				}
+			case 1:
+				UIView.transition(with: self.circleprogress, duration: 0.5, options: .transitionCrossDissolve) {
+					self.circleprogress.percentLabel.isHidden = true
+					self.checkmarkView.showCheckmark(true, animated: true, animationType: .stroke)
+					self.checkmarkView.removeprogressBar = {
+						UIView.animate(withDuration: 10, delay: 0, options: .transitionCrossDissolve) {
+							self.circleprogress.isHidden = true
+							self.backgroundImageView.isHidden = false
+							self.checkmarkView.isHidden = true
+						} completion: { _ in
+							debugPrint("completed")
+						}
+					}
+				}
+			default:
+				debugPrint("progress \(progress)")
 		}
 		
-		if progress == 0.9 {
-			self.setArchiveBackgroundImage()
-		}
-		
+		self.circleprogress.setProgress(progress: progress , animated: true)
 		self.progressTitleTextLabel.text = String("\(Int((progress * 100).rounded()))%")
 	}
 }
@@ -445,6 +461,16 @@ extension BackupContactsViewController: Themeble {
 		progressTitleTextLabel.translatesAutoresizingMaskIntoConstraints = false
 		progressTitleTextLabel.centerXAnchor.constraint(equalTo: mainContainerView.centerXAnchor).isActive = true
 		progressTitleTextLabel.centerYAnchor.constraint(equalTo: mainContainerView.centerYAnchor, constant: -25).isActive = true
+		
+		mainContainerView.addSubview(checkmarkView)
+		checkmarkView.translatesAutoresizingMaskIntoConstraints = false
+		checkmarkView.centerXAnchor.constraint(equalTo: mainContainerView.centerXAnchor).isActive = true
+		checkmarkView.centerYAnchor.constraint(equalTo: mainContainerView.centerYAnchor, constant: -50).isActive = true
+		checkmarkView.widthAnchor.constraint(equalToConstant: 150).isActive = true
+		checkmarkView.heightAnchor.constraint(equalToConstant: 150).isActive = true
+		checkmarkView.layoutIfNeeded()
+		checkmarkView.configure()
+		self.checkmarkView.showCheckmark(false, animated: false, animationType: .stroke)
 	}
 		
 	func updateColors() {
@@ -528,3 +554,6 @@ extension BackupContactsViewController: UIGestureRecognizerDelegate {
 		return true
 	}
 }
+
+
+
