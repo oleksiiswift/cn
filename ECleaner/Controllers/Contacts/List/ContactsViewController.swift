@@ -547,7 +547,9 @@ extension ContactsViewController {
 			} else if self.contentType == .emptyContacts {
 				self.contactGroup.forEach { group in
 					let removableIndicates = group.contacts.map({deletedContacts.firstIndex(of: $0)}).compactMap { $0 }
-					_ = group.contacts.remove(elementsAtIndices: removableIndicates)
+					if !removableIndicates.isEmpty {
+						_ = group.contacts.remove(elementsAtIndices: removableIndicates)
+					}
 				}
 				U.UI {
 					if self.contactGroup.flatMap({$0.contacts}).count != 0 {
@@ -1019,6 +1021,10 @@ extension ContactsViewController: Themeble {
             exportContactsViewController.selectExportFormatCompletion = { format in
 				self.contactContentIsEditing ? self.exportSelectedContacts(with: format) : self.exportAllContacts(with: format)
             }
+			
+			exportContactsViewController.selectExtraOptionalOption = {
+				self.contactContentIsEditing ? self.didTapCancelEditingButton() : ()
+			}
         }
     }
 }

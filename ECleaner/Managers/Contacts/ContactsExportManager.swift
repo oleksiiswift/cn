@@ -77,7 +77,7 @@ extension ContactsExportManager {
 			try data = CNContactVCardSerialization.dataWithImage(contacts: contacts)
 			do {
 				if let tempDirectory = self.fileManager.getDirectoryURL(.temp) {
-					let fileURL = tempDirectory.appendingPathComponent(Localization.Main.Title.contactsTitle).appendingPathExtension(CNContactFileType.vcf.extensionName)
+					let fileURL = tempDirectory.appendingPathComponent("exportFile").appendingPathExtension(CNContactFileType.vcf.extensionName)
 					
 					if fileManager.isFileExiest(at: fileURL) {
 						fileManager.deletefile(at: fileURL)
@@ -106,7 +106,7 @@ extension ContactsExportManager {
 			try vCardData = CNContactVCardSerialization.data(with: contacts)
 			
 			if let tempDirectory = self.fileManager.getDirectoryURL(.temp) {
-				let fileURL = tempDirectory.appendingPathComponent(Localization.Main.Title.contactsTitle).appendingPathExtension(CNContactFileType.csv.extensionName)
+				let fileURL = tempDirectory.appendingPathComponent("exportFile").appendingPathExtension(CNContactFileType.csv.extensionName)
 				
 				if fileManager.isFileExiest(at: fileURL) {
 					fileManager.deletefile(at: fileURL)

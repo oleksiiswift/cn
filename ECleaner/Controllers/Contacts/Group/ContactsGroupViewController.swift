@@ -377,6 +377,12 @@ extension ContactsGroupViewController {
 			exportContactsViewController.selectExportFormatCompletion = { format in
 				self.isSelectedAllItems ? self.shareAllItems(with: format) : self.shareSelectedItems(with: format)
 			}
+			
+			exportContactsViewController.selectExtraOptionalOption = {
+				Utils.delay(1) {
+					debugPrint("do nothing")
+				}
+			}
 		}
 	}
 }
