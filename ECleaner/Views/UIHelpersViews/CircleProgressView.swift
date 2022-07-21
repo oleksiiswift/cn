@@ -263,9 +263,6 @@ class CircleProgressView: UIView {
     private let gradientLayer: CAGradientLayer = {
         let gradientLayer = CAGradientLayer()
 		gradientLayer.type = .conic
-//        gradientLayer.locations = [0.2,0.5,0.75,1]
-//        gradientLayer.startPoint = CGPoint(x: 0.0, y: 0.0)
-//        gradientLayer.endPoint = CGPoint(x: 1.0, y: 0.0)
 		gradientLayer.startPoint = CGPoint(x: 0.5, y: 0.5)
 		gradientLayer.endPoint = CGPoint(x: 0.5, y: 1.0)
         return gradientLayer
@@ -292,8 +289,6 @@ class CircleProgressView: UIView {
 
         progressShape = CAShapeLayer()
         progressShape.fillColor   = nil
-//        progressShape.strokeStart = 0.0
-//        progressShape.strokeEnd   = 0.1
 		progressShape.strokeStart = self.progressShapeStart
 		progressShape.strokeEnd = self.progressShapeEnd
 
@@ -436,15 +431,7 @@ class CircleProgressView: UIView {
 		backgroundShape.path = pathForShape(rect: rect, degree: backgrounSpaceDegree).cgPath
 		progressShape.path   = pathForShape(rect: rect, degree: spaceDegree).cgPath
         gradientLayer.frame = bounds
-		
-//		let colors = [UIColor().colorFromHexString("FF0018"),
-//					  UIColor().colorFromHexString("FFA52C"),
-//					  UIColor().colorFromHexString("FFFF41"),
-//					  UIColor().colorFromHexString("008018"),
-//					  UIColor().colorFromHexString("0000F9"),
-//					  UIColor().colorFromHexString("86007D")]
-//					gradientLayer.colors = colors.map({$0.cgColor})
-		
+				
         gradientLayer.colors = [startColor, endColor].map { $0.cgColor }
 		
 		if !disableBackgrounShadow {
