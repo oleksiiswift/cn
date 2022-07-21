@@ -36,12 +36,6 @@ class CheckmarkView: UIView {
 		return gradientLayer
 	}()
 
-	@objc override dynamic class var layerClass: AnyClass {
-	get {
-			return CAShapeLayer.self
-		}
-	}
-	
 	override required init(frame: CGRect) {
 		super.init(frame: frame)
 		
@@ -54,13 +48,47 @@ class CheckmarkView: UIView {
 		configure()
 	}
 	
+	override func layoutSubviews() {
+		super.layoutSubviews()
+		
+		setupSubviews()
+	}
+	
+	func configure() {
+		
+		checkMarkrShape = CAShapeLayer()
+		checkMarkrShape.lineWidth = checkmarkWidth
+		checkMarkrShape.fillColor = UIColor.clear.cgColor
+		checkMarkrShape.strokeColor = theme.contactsGradientStarterColor.cgColor
+		checkMarkrShape.lineCap = .round
+	
+		layer.addSublayer(checkMarkrShape)
+		layer.addSublayer(gradientLayer)
+	}
+	
+	func setupSubviews() {
+		
+		checkMarkrShape.frame = bounds
+		checkMarkrShape.path = checkmarkPath().cgPath
+		
+		let path = checkMarkrShape.path
+		
+		gradientLayer.colors = checkmarkGradient.map({$0.cgColor})
+		gradientLayer.frame = bounds
+		
+		if let mask = checkMarkrShape {
+			mask.fillColor = UIColor.clear.cgColor
+			mask.strokeColor = UIColor.white.cgColor
+			mask.lineWidth = checkmarkWidth
+			mask.path = path
+			gradientLayer.mask = mask
+		}
+	}
+	
 	public func animateCheckmarkStrokeEnd(_ show: Bool) {
-		
-		guard let layer = layer as? CAShapeLayer else { return }
-		
 		let newStrokeEnd: CGFloat = show ? 1.0 : 0.0
 		let oldStrokeEnd: CGFloat = show ? 0.0 : 1.0
-
+		
 		let keyPath = "strokeEnd"
 		let animation = CABasicAnimation(keyPath: keyPath)
 		animation.delegate = self
@@ -75,10 +103,8 @@ class CheckmarkView: UIView {
 			timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
 		}
 		animation.timingFunction = timingFunction
-		layer.add(animation, forKey: nil)
-		DispatchQueue.main.async {
-			layer.strokeEnd = newStrokeEnd
-		}
+		self.checkMarkrShape.strokeEnd = newStrokeEnd
+		checkMarkrShape.add(animation, forKey: nil)
 		self.checked = show
 	}
 
@@ -96,28 +122,25 @@ class CheckmarkView: UIView {
 	}
 
 	public func showCheckmark(_ checked: Bool, animated: Bool, animationType: AnimationType) {
-		guard let layer = layer as? CAShapeLayer else { return }
 		let newStrokeEnd: CGFloat = checked ?  1.0 : 0.0
-		
 		let oldStrokeEnd: CGFloat = checked ? 0.0 : 1.0
-
 		switch animationType {
-		case .opacity:
-			layer.strokeEnd = 1.0
-			alpha = oldStrokeEnd
-		case .stroke:
-			alpha = 1.0
-			layer.strokeEnd = oldStrokeEnd
+			case .opacity:
+				checkMarkrShape.strokeEnd = 1.0
+				alpha = oldStrokeEnd
+			case .stroke:
+				alpha = 1.0
+				checkMarkrShape.strokeEnd = oldStrokeEnd
 		}
 		
 		if !animated {
 			alpha = newStrokeEnd
-			layer.strokeEnd = newStrokeEnd
+			checkMarkrShape.strokeEnd = newStrokeEnd
 		} else {
 			if animationType == .stroke {
 				animateCheckmarkStrokeEnd(checked)
 			} else {
-
+				debugPrint("else")
 				animateCheckmarkAlpha(checked)
 			}
 		}
@@ -134,7 +157,7 @@ class CheckmarkView: UIView {
 		path.move(to: CGPoint(x: centerX - 23 * scale, y: centerY - 1 * scale))
 		path.addLine(to: CGPoint(x: centerX - 6 * scale, y: centerY + 15.9 * scale))
 		path.addLine(to: CGPoint(x: centerX + 22.8 * scale, y: centerY - 13.4 * scale))
-
+		debugPrint(path)
 		return path
 	}
 	
@@ -144,37 +167,11 @@ class CheckmarkView: UIView {
 		self.gradientLayer.endPoint = endPoint
 		self.gradientLayer.type = gradientType
 	}
-
-	func configure() {
-		
-		guard let layer = layer as? CAShapeLayer, bounds.size.height >= 50, bounds.size.width >= 50 else { return }
-		layer.lineWidth = checkmarkWidth
-		layer.fillColor = UIColor.clear.cgColor
-		layer.strokeColor = theme.contactsGradientStarterColor.cgColor
-		layer.lineCap = .round
-		layer.path = checkmarkPath().cgPath
-		
-		gradientLayer.frame = layer.bounds
-		gradientLayer.bounds = layer.bounds
-	}
-	
-	func updateGradient() {
-//		not working as is with path and animation
-		gradientLayer.colors = checkmarkGradient.map { $0.cgColor }
-		let shapeMask = CAShapeLayer()
-		shapeMask.fillColor = UIColor.clear.cgColor
-		shapeMask.strokeColor = UIColor.white.cgColor
-		shapeMask.lineWidth = checkmarkWidth
-		shapeMask.path = checkmarkPath().cgPath
-		gradientLayer.mask = shapeMask
-//		layer.addSublayer(gradientLayer)
-	}
 }
 
 extension CheckmarkView: CAAnimationDelegate {
 	
 	func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
-		debugPrint("animation stop")
 		removeprogressBar?()
 	}
 }

@@ -263,9 +263,6 @@ class CircleProgressView: UIView {
     private let gradientLayer: CAGradientLayer = {
         let gradientLayer = CAGradientLayer()
 		gradientLayer.type = .conic
-//        gradientLayer.locations = [0.2,0.5,0.75,1]
-//        gradientLayer.startPoint = CGPoint(x: 0.0, y: 0.0)
-//        gradientLayer.endPoint = CGPoint(x: 1.0, y: 0.0)
 		gradientLayer.startPoint = CGPoint(x: 0.5, y: 0.5)
 		gradientLayer.endPoint = CGPoint(x: 0.5, y: 1.0)
         return gradientLayer
@@ -292,8 +289,6 @@ class CircleProgressView: UIView {
 
         progressShape = CAShapeLayer()
         progressShape.fillColor   = nil
-//        progressShape.strokeStart = 0.0
-//        progressShape.strokeEnd   = 0.1
 		progressShape.strokeStart = self.progressShapeStart
 		progressShape.strokeEnd = self.progressShapeEnd
 

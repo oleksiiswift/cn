@@ -79,8 +79,7 @@ extension BackupContactsViewController: BottomActionButtonDelegate {
 		switch self.currentProgress {
 			case .archived(_):
 				if let url = savedURL {
-					#warning("Disable foe a wile")
-//					self.shareContacsBackup(with: url)
+					self.shareContacsBackup(with: url)
 				}
 			case .initial:
 				ContactsExportManager.shared.contactsBackup { status in
@@ -89,7 +88,7 @@ extension BackupContactsViewController: BottomActionButtonDelegate {
 					}
 				}
 			default:
-				self.bottomButtonView.title("Wait.....")
+				self.bottomButtonView.title(Localization.Main.ProcessingState.pleaseWait)
 				U.delay(1) {
 					self.handleBottomButton(with: self.currentProgress)
 				}
@@ -137,8 +136,10 @@ extension BackupContactsViewController {
 			case .archived(url: let url):
 				self.savedURL = url
 				self.bottomButtonView.stopAnimatingButton()
-				#warning("Disavle for avail")
-//				self.shareContacsBackup(with: url)
+				Utils.delay(1) {
+					debugPrint("share contacts archive")
+					self.shareContacsBackup(with: url)
+				}
 			case .error(_):
 				self.bottomButtonView.stopAnimatingButton()
 		}
@@ -327,23 +328,27 @@ extension BackupContactsViewController {
 				self.circleprogress.isHidden = true
 			case 0.01...0.9:
 				if self.circleprogress.isHidden == true {
-					UIView.transition(with: self.circleprogress, duration: 0.5, options: .transitionCrossDissolve) {
+					UIView.transition(with: self.circleprogress, duration: 1.0, options: .transitionCrossDissolve) {
 						self.circleprogress.isHidden = false
 						self.backgroundImageView.isHidden = true
 					}
 				}
 			case 1:
-				UIView.transition(with: self.circleprogress, duration: 0.5, options: .transitionCrossDissolve) {
+				self.checkmarkView.showCheckmark(true, animated: true, animationType: .stroke)
+				
+				UIView.transition(with: self.circleprogress, duration: 1.0, options: .transitionCrossDissolve) {
 					self.circleprogress.percentLabel.isHidden = true
-					self.checkmarkView.showCheckmark(true, animated: true, animationType: .stroke)
 					self.checkmarkView.removeprogressBar = {
-						UIView.animate(withDuration: 10, delay: 0, options: .transitionCrossDissolve) {
-							self.circleprogress.isHidden = true
-							self.backgroundImageView.isHidden = false
-							self.checkmarkView.isHidden = true
-						} completion: { _ in
-							debugPrint("completed")
+						Utils.delay(1) {
+							UIView.transition(with: self.circleprogress, duration: 1, options: .transitionCrossDissolve) {
+								self.circleprogress.isHidden = true
+								self.backgroundImageView.isHidden = false
+								self.checkmarkView.isHidden = true
+							} completion: { _ in
+								debugPrint("completed")
+							}
 						}
+					
 					}
 				}
 			default:
@@ -441,9 +446,7 @@ extension BackupContactsViewController: Themeble {
 		circleprogress.heightAnchor.constraint(equalToConstant: 150).isActive = true
 		
 		circleprogress.isHidden = true
-		let startPoint = CGPoint(x: 0.0, y: 0.0)
-		let endPoint = CGPoint(x: 1.0, y: 0.0)
-		circleprogress.gradientSetup(startPoint: startPoint, endPoint: endPoint, gradientType: .axial)
+		circleprogress.gradientSetup(startPoint: CAGradientPoint.topLeft.point, endPoint: CAGradientPoint.topRight.point, gradientType: .axial)
 		
 		circleprogress.disableBackgrounShadow = false
 		circleprogress.titleLabelTextAligement = .center
@@ -469,6 +472,9 @@ extension BackupContactsViewController: Themeble {
 		checkmarkView.widthAnchor.constraint(equalToConstant: 150).isActive = true
 		checkmarkView.heightAnchor.constraint(equalToConstant: 150).isActive = true
 		checkmarkView.layoutIfNeeded()
+		
+		checkmarkView.gradientSetup(startPoint: CAGradientPoint.topLeft.point, endPoint: CAGradientPoint.topRight.point, gradientType: .axial)
+		
 		checkmarkView.configure()
 		self.checkmarkView.showCheckmark(false, animated: false, animationType: .stroke)
 	}
@@ -502,6 +508,8 @@ extension BackupContactsViewController: Themeble {
 		let titleGradient = Utils.Manager.getGradientLayer(bounds: titleLabelBounds, colors: [theme.contactsGradientStarterColor.cgColor, theme.contactsGradientEndingColor.cgColor])
 		let color = Utils.Manager.gradientColor(bounds: titleLabelBounds, gradientLayer: titleGradient)
 		circleprogress.percentColor = color ?? theme.titleTextColor
+		
+		checkmarkView.checkmarkGradient = theme.contactsGradient
 	}
 	
 	private func setupObseervers() {
