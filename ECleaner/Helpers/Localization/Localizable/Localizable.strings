@@ -234,6 +234,7 @@
 "Archiving" = "Archiving";
 "Processing" = "Processing";
 "Tap to scan" = "Tap to scan";
+"Please, wait..." = "Please, wait...";
 
 	// MARK: ByGrouping
 "similar groups" = "similar groups";
