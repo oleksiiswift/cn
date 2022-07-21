@@ -297,6 +297,7 @@ struct Localization {
 			static let archiving = "Archiving".localized()
 			static let processing = "Processing".localized()
 			static let tap = "Tap to scan".localized()
+			static let pleaseWait = "Please, wait...".localized()
 			
 			struct ByGrouping {
 				static let similarGroups = "similar groups".localized()
