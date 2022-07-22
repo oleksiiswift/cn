@@ -480,6 +480,7 @@ class Constants {
 			static let subscription = "SubscriptionViewController"
 			static let lifeTime = "LifeTimeSubscriptionViewController"
 			static let contactBackup = "BackupContactsViewController"
+			static let contactsInfo = "ContactsInfoViewController"
         }
         
         struct cells {
@@ -503,6 +504,8 @@ class Constants {
 			static let currentSubscription = "CurrentSubscriptionTableViewCell"
 			static let premiumFeaturesSubcription = "PremiumFeaturesSubscriptionTableViewCell"
 			static let featuresSubscription = "FeaturesSubscriptionTableViewCell"
+			static let contactInfo = "ContactInfoTableViewCell"
+			static let contactThumbnail = "ContactThumbnailTableViewCell"
         }
         
         struct views {
@@ -535,6 +538,8 @@ class Constants {
 			static let currentSubscription = "CurrentSubscriptionTableViewCell"
 			static let premiumFeaturesSubcription = "PremiumFeaturesSubscriptionTableViewCell"
 			static let featuresSubscription = "FeaturesSubscriptionTableViewCell"
+			static let contactInfo = "ContactInfoTableViewCell"
+			static let contactThumbnail = "ContactThumbnailTableViewCell"
             /// `views`
             static let groupHeader = "GroupedAssetsReusableHeaderView"
             static let groupFooter = "GroupedAssetsReusableFooterView"

@@ -56,6 +56,7 @@ struct Images {
 			static let arrowLeft = UIImage(named: "arrowLeftItem")!
 			static let circleArrow = UIImage(named: "circleRoundedThin")!
 			static let save = UIImage(systemName: "tray.and.arrow.up")!
+			static let xmark = UIImage(systemName: "xmark")!
         }
 		
 		struct helpersItems {

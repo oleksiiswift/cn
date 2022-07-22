@@ -923,6 +923,14 @@ extension ContactsViewController: Themeble {
             _ = self.contactListViewModel.contactsArray
 			reloadData ? self.smoothReloadData() : ()
         }
+		
+		self.contactListDataSource.didSelectViewContactInfo = { contact in
+			let storyboard = UIStoryboard(name: Constants.identifiers.storyboards.contacts, bundle: nil)
+			let viewController = storyboard.instantiateViewController(withIdentifier: Constants.identifiers.viewControllers.contactsInfo) as! ContactsInfoViewController
+			viewController.modalPresentationStyle = .overFullScreen
+			viewController.contact = contact
+			self.present(viewController, animated: true)
+		}
     }
     
     private func setupGroupViemodel(contacts: [ContactsGroup]) {

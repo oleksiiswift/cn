@@ -18,7 +18,7 @@ class ContactListDataSource: NSObject {
     public var contactListViewModel: ContactListViewModel
     
     public var isContactAvailable: ((Bool) -> (Void)) = {_ in}
-    public var didSelectContact: ((ContactListViewModel) -> Void) = {_ in}
+    public var didSelectViewContactInfo: ((CNContact) -> Void) = {_ in}
 	public var delegate: ContactDataSourceDelegate?
 
     public var contactContentIsEditing: Bool = false
@@ -52,6 +52,13 @@ extension ContactListDataSource {
     private func didSelectDeselectContact() {
         U.notificationCenter.post(name: .selectedContactsCountDidChange, object: nil)
     }
+	
+	private func didSelectViewContactInfo(at indexPath: IndexPath) {
+		
+		if let contact = contactListViewModel.getContactOnRow(at: indexPath) {
+			didSelectViewContactInfo(contact)
+		}
+	}
 }
 
 extension ContactListDataSource: UITableViewDelegate, UITableViewDataSource {
@@ -107,7 +114,9 @@ extension ContactListDataSource: UITableViewDelegate, UITableViewDataSource {
             self.didSelectDeselectContact()
         } else if searchBarIsFirstResponder {
             U.notificationCenter.post(name: .searchBarShouldResign, object: nil, userInfo: nil)
-        }
+		} else {
+			self.didSelectViewContactInfo(at: indexPath)
+		}
     }
     
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
@@ -119,7 +128,7 @@ extension ContactListDataSource: UITableViewDelegate, UITableViewDataSource {
 		if contactContentIsEditing {
 			return indexPath
 		} else {
-			return nil
+			return indexPath
 		}
 	}
 	

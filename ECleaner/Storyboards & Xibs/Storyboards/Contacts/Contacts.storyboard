@@ -91,6 +91,63 @@
             </objects>
             <point key="canvasLocation" x="1042.0289855072465" y="116.51785714285714"/>
         </scene>
+        <!--Contacts Info View Controller-->
+        <scene sceneID="NNI-zB-EoO">
+            <objects>
+                <viewController storyboardIdentifier="ContactsInfoViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="uSB-Gx-V5F" customClass="ContactsInfoViewController" customModule="ECleaner" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="QRf-gf-CUS">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="KJ8-YX-RdU">
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            </tableView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ezo-Im-m5O">
+                                <rect key="frame" x="0.0" y="44" width="414" height="60"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cTp-lr-tEx">
+                                        <rect key="frame" x="334" y="0.0" width="80" height="60"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="80" id="fMY-HI-UbO"/>
+                                        </constraints>
+                                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                        <connections>
+                                            <action selector="didTapCloseActionButton:" destination="uSB-Gx-V5F" eventType="touchUpInside" id="9Lw-IX-VnM"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="cTp-lr-tEx" secondAttribute="trailing" id="4ZB-d7-DPT"/>
+                                    <constraint firstAttribute="bottom" secondItem="cTp-lr-tEx" secondAttribute="bottom" id="J4P-TW-UrZ"/>
+                                    <constraint firstAttribute="height" constant="60" id="Rdf-XF-9H2"/>
+                                    <constraint firstItem="cTp-lr-tEx" firstAttribute="top" secondItem="ezo-Im-m5O" secondAttribute="top" id="saR-PF-kGM"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="2wI-yP-jN5"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="2wI-yP-jN5" firstAttribute="trailing" secondItem="KJ8-YX-RdU" secondAttribute="trailing" id="EQY-ao-ymF"/>
+                            <constraint firstItem="ezo-Im-m5O" firstAttribute="top" secondItem="2wI-yP-jN5" secondAttribute="top" id="KJf-f5-xuH"/>
+                            <constraint firstItem="KJ8-YX-RdU" firstAttribute="top" secondItem="QRf-gf-CUS" secondAttribute="top" id="Ku8-H7-Tle"/>
+                            <constraint firstItem="ezo-Im-m5O" firstAttribute="leading" secondItem="2wI-yP-jN5" secondAttribute="leading" id="Kvr-Ry-9mK"/>
+                            <constraint firstAttribute="bottom" secondItem="KJ8-YX-RdU" secondAttribute="bottom" id="OKv-yo-IU2"/>
+                            <constraint firstItem="2wI-yP-jN5" firstAttribute="trailing" secondItem="ezo-Im-m5O" secondAttribute="trailing" id="TtD-wT-a3l"/>
+                            <constraint firstItem="KJ8-YX-RdU" firstAttribute="leading" secondItem="2wI-yP-jN5" secondAttribute="leading" id="Ul6-sC-MrV"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="closeButton" destination="cTp-lr-tEx" id="oqO-dB-eRV"/>
+                        <outlet property="navigationBarHeightConstraint" destination="Rdf-XF-9H2" id="KzC-fS-z7R"/>
+                        <outlet property="tableView" destination="KJ8-YX-RdU" id="lm7-43-EZY"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="lfD-qJ-eln" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2456.521739130435" y="110.49107142857143"/>
+        </scene>
         <!--ExportContact-->
         <scene sceneID="r61-ol-v1H">
             <objects>
