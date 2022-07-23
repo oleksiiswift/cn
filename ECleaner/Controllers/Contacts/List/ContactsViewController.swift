@@ -487,6 +487,7 @@ extension ContactsViewController {
 		}
 		self.deleteContacts(removableContacts, updatebleIndexPath: indexPaths) {
 			U.delay(0.5) {
+				debugPrint("reload after defactor")
 				self.reloadContactsAfterRefactor(of: removableContacts, from: indexPaths)
 			}
 		}
@@ -844,9 +845,7 @@ extension ContactsViewController {
 		viewController.contact = contact
 		
 		viewController.deleteContact = {
-			Utils.delay(0.33) {
-				self.deleteSelectedContacts(at: [indexPath])
-			}
+			self.deleteSelectedContacts(at: [indexPath])
 		}
 		
 		self.present(viewController, animated: true)

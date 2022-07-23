@@ -31,7 +31,7 @@ class ContactsInfoViewController: UIViewController {
     }
 	
 	@IBAction func didTapCloseActionButton(_ sender: Any) {
-		self.closeController()
+		self.closeController {}
 	}
 }
 
@@ -93,8 +93,9 @@ extension ContactsInfoViewController {
 			
 			self.contactDataSource.didTapSelectDeleteContact = {
 				AlertManager.showDeleteAlert(with: .userContacts, of: .getRaw(from: 1)) {
-					self.deleteContact()
-					self.closeController()
+					self.closeController {
+						self.deleteContact()
+					}
 				}
 			}
 			
@@ -105,8 +106,11 @@ extension ContactsInfoViewController {
 		}
 	}
 	
-	private func closeController() {
+	private func closeController(with completionHandler: @escaping () -> Void) {
 		self.dismiss(animated: true)
+		self.dismiss(animated: true) {
+			completionHandler()
+		}
 	}
 }
 
