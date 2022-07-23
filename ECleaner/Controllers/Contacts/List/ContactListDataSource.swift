@@ -11,6 +11,7 @@ import Contacts
 protocol ContactDataSourceDelegate {
 	func shareContact(at indexPath: IndexPath)
 	func deleteContact(at indexPath: IndexPath)
+	func viewContact(at indexPath: IndexPath)
 }
 
 class ContactListDataSource: NSObject {
@@ -18,7 +19,7 @@ class ContactListDataSource: NSObject {
     public var contactListViewModel: ContactListViewModel
     
     public var isContactAvailable: ((Bool) -> (Void)) = {_ in}
-    public var didSelectViewContactInfo: ((CNContact) -> Void) = {_ in}
+	public var didSelectViewContactInfo: ((_ contact: CNContact,_ indexPath: IndexPath) -> Void) = {_,_ in}
 	public var delegate: ContactDataSourceDelegate?
 
     public var contactContentIsEditing: Bool = false
@@ -56,7 +57,7 @@ extension ContactListDataSource {
 	private func didSelectViewContactInfo(at indexPath: IndexPath) {
 		
 		if let contact = contactListViewModel.getContactOnRow(at: indexPath) {
-			didSelectViewContactInfo(contact)
+			didSelectViewContactInfo(contact, indexPath)
 		}
 	}
 }
@@ -114,8 +115,6 @@ extension ContactListDataSource: UITableViewDelegate, UITableViewDataSource {
             self.didSelectDeselectContact()
         } else if searchBarIsFirstResponder {
             U.notificationCenter.post(name: .searchBarShouldResign, object: nil, userInfo: nil)
-		} else {
-			self.didSelectViewContactInfo(at: indexPath)
 		}
     }
     
@@ -128,7 +127,8 @@ extension ContactListDataSource: UITableViewDelegate, UITableViewDataSource {
 		if contactContentIsEditing {
 			return indexPath
 		} else {
-			return indexPath
+			self.didSelectViewContactInfo(at: indexPath)
+			return nil
 		}
 	}
 	
@@ -219,9 +219,14 @@ extension ContactListDataSource {
 	}
 
 	private func createCellContextMenu(for contactac: CNContact, at indexPath: IndexPath) -> UIMenu {
-		
+		let viewActionImage = I.systemElementsItems.person
 		let shareActionImage = I.systemElementsItems.share
 		let deleteActionImage = I.systemElementsItems.trashBtn
+		
+		let viewAction = UIAction(title: LocalizationService.Buttons.getButtonTitle(of: .view), image: viewActionImage) { _ in
+			self.delegate?.viewContact(at: indexPath)
+		}
+		
 		let shareAction = UIAction(title: LocalizationService.Buttons.getButtonTitle(of: .share), image: shareActionImage) { _ in
 			self.delegate?.shareContact(at: indexPath)
 		}
@@ -230,7 +235,7 @@ extension ContactListDataSource {
 			self.delegate?.deleteContact(at: indexPath)
 		}
 		
-		return UIMenu(title: "", children: [shareAction, deleteAction])
+		return UIMenu(title: "", children: [viewAction, shareAction, deleteAction])
 	}
 }
 

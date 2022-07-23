@@ -11,6 +11,8 @@ class ContactDataSource: NSObject {
 	
 	private var contactViewModel: ContactViewModel
 	
+	public var didTapSelectDeleteContact: (() -> Void) = {}
+	
 	init(viewModel: ContactViewModel) {
 		self.contactViewModel = viewModel
 	}
@@ -48,6 +50,11 @@ extension ContactDataSource: UITableViewDelegate, UITableViewDataSource {
 				let cell = tableView.dequeueReusableCell(withIdentifier: Constants.identifiers.cells.contactThumbnail, for: indexPath) as! ContactThumbnailTableViewCell
 				self.configureThumbnail(cell, at: indexPath)
 				return cell
+			case self.contactViewModel.numberOfSections() - 1:
+				let cell = tableView.dequeueReusableCell(withIdentifier: Constants.identifiers.cells.actionCell, for: indexPath) as! ActionTableViewCell
+				cell.delegate = self
+				cell.configureButton(with: .deleteContact)
+				return cell
 			default:
 				let cell = tableView.dequeueReusableCell(withIdentifier: Constants.identifiers.cells.contactInfo, for: indexPath) as! ContactInfoTableViewCell
 				self.configure(cell, at: indexPath)
@@ -69,5 +76,12 @@ extension ContactDataSource: UITableViewDelegate, UITableViewDataSource {
 	
 	func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
 		return self.contactViewModel.getHeightForRow(at: indexPath)
+	}
+}
+
+extension ContactDataSource: ActionTableCellDelegate {
+	
+	func didTapActionButton(at cell: ActionTableViewCell) {
+		self.didTapSelectDeleteContact()
 	}
 }

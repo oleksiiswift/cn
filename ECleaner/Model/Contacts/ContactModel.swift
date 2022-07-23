@@ -14,13 +14,14 @@ enum ContactModel {
 	case phoneNumbers(CNLabeledValue<CNPhoneNumber>)
 	case emailAddresses(CNLabeledValue<NSString>)
 	case urlAddresses(CNLabeledValue<NSString>)
+	case action
 	
 	var heightForRow: CGFloat {
 		switch self {
 			case .thumbnailImageData(_):
 				return 200
 			default:
-				return UITableView.automaticDimension
+				return AppDimensions.ContenTypeCells.heightOfRowOfMediaContentType 
 		}
 	}
 }

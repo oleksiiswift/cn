@@ -9,7 +9,7 @@ import Foundation
 
 class ContactViewModel {
 	
-	private var contactSection: [ContactSection]
+	public var contactSection: [ContactSection]
 	
 	init(contactSection: [ContactSection]) {
 		self.contactSection = contactSection

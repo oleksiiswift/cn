@@ -18,6 +18,8 @@ class ContactsInfoViewController: UIViewController {
 	public var contactViewModel: ContactViewModel!
 	public var contactDataSource: ContactDataSource!
 	
+	public var deleteContact: (() -> Void) = {}
+	
 	override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -29,7 +31,7 @@ class ContactsInfoViewController: UIViewController {
     }
 	
 	@IBAction func didTapCloseActionButton(_ sender: Any) {
-		self.dismiss(animated: true)
+		self.closeController()
 	}
 }
 
@@ -58,37 +60,53 @@ extension ContactsInfoViewController {
 			   sections.append(thumbnailSection)
 			
 			let fullName = CNContactFormatter.string(from: contact, style: .fullName)
-			let modelName: ContactModel = .fullName(fullName ?? "empty name")
-			let nameSection = ContactSection(contactModelFields: [modelName], headerTitle: "contact localized name", headerHeight: 60)
-			sections.append(nameSection)
+			if let name = fullName {
+				let modelName: ContactModel = .fullName(name)
+				let nameSection = ContactSection(contactModelFields: [modelName], headerTitle: Localization.Main.HeaderTitle.contactName, headerHeight: 40)
+				sections.append(nameSection)
+			}
 			
 			if !contact.phoneNumbers.isEmpty {
 			
 				let phoneNumbers: [ContactModel] = contact.phoneNumbers.map({.phoneNumbers($0)})
-				let phoneSection = ContactSection(contactModelFields: phoneNumbers, headerTitle: "phone numbers", headerHeight: 60)
+				let phoneSection = ContactSection(contactModelFields: phoneNumbers, headerTitle: Localization.Main.HeaderTitle.numbers, headerHeight: 40)
 				sections.append(phoneSection)
 			}
 			
 			if !contact.emailAddresses.isEmpty {
 				let emails: [ContactModel] = contact.emailAddresses.map({.emailAddresses($0)})
-				let emailSection = ContactSection(contactModelFields: emails, headerTitle: "emails", headerHeight: 60)
+				let emailSection = ContactSection(contactModelFields: emails, headerTitle: Localization.Main.HeaderTitle.mail, headerHeight: 40)
 				sections.append(emailSection)
 			}
 			
 			if !contact.urlAddresses.isEmpty {
 				let urls: [ContactModel] = contact.urlAddresses.map({.urlAddresses($0)})
-				let urlsSection = ContactSection(contactModelFields: urls, headerTitle: "urls", headerHeight: 60)
+				let urlsSection = ContactSection(contactModelFields: urls, headerTitle: Localization.Main.HeaderTitle.links, headerHeight: 40)
 				sections.append(urlsSection)
 			}
+			let actionModel: [ContactModel] = [ContactModel.action]
+			let actionSection: ContactSection = ContactSection.init(contactModelFields: actionModel, headerTitle: "", headerHeight: 20)
+			sections.append(actionSection)
 			
 			self.contactViewModel = ContactViewModel(contactSection: sections)
 			self.contactDataSource = ContactDataSource(viewModel: self.contactViewModel)
+			
+			self.contactDataSource.didTapSelectDeleteContact = {
+				AlertManager.showDeleteAlert(with: .userContacts, of: .getRaw(from: 1)) {
+					self.deleteContact()
+					self.closeController()
+				}
+			}
 			
 		} else {
 			self.dismiss(animated: true) {
 				debugPrint("Show Error Alert")
 			}
 		}
+	}
+	
+	private func closeController() {
+		self.dismiss(animated: true)
 	}
 }
 
@@ -97,13 +115,13 @@ extension ContactsInfoViewController {
 	private func tableViewSetup() {
 		
 		self.tableView.register(UINib(nibName: Constants.identifiers.xibs.contactThumbnail, bundle: nil), forCellReuseIdentifier: Constants.identifiers.cells.contactThumbnail)
-		
 		self.tableView.register(UINib(nibName: Constants.identifiers.xibs.contactInfo, bundle: nil), forCellReuseIdentifier: Constants.identifiers.cells.contactInfo)
+		self.tableView.register(UINib(nibName: Constants.identifiers.xibs.actionCell, bundle: nil), forCellReuseIdentifier: Constants.identifiers.cells.actionCell)
 		
 		self.tableView.delegate = self.contactDataSource
 		self.tableView.dataSource = self.contactDataSource
 		
-		self.tableView.contentInset = UIEdgeInsets(top: 60, left: 0, bottom: 0, right: 0)
+		self.tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
 		
 		if #available(iOS 15.0, *) {
 			self.tableView.sectionHeaderTopPadding = 0
@@ -126,9 +144,7 @@ extension ContactsInfoViewController: Themeble {
 		closeButton.tintColor = theme.contactsTintColor
 	}
 	
-	private func setupDelegate() {
-		
-	}
+	private func setupDelegate() {}
 	
 	func updateColors() {
 		

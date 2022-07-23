@@ -143,6 +143,7 @@ struct Images {
 		static let connectionLost = UIImage(systemName: "wifi.slash")
 		static let noContent = UIImage(systemName: "exclamationmark.circle")
 		static let persons = UIImage(systemName: "person.2.square.stack")!
+		static let person = UIImage(systemName: "person.circle")!
 	}
 	
 	struct onboarding {

@@ -156,6 +156,7 @@ struct Localization {
 			static var activate = "Activate".localized()
 			static var changePlan = "Change Plan".localized()
 			static var startBackup = "Start Backup".localized()
+			static var view = "View".localized()
 		}
 	}
 	
@@ -240,6 +241,9 @@ struct Localization {
 			static let memmory = "memmory".localized()
 			static let keepOriginResolution = "keep origin resolution".localized()
 			static let originResolution = "origin resolution".localized()
+			static let email = "Email".localized()
+			static let phone = "Phone Number".localized()
+			static let url = "Url".localized()
 		}
 		
 		struct HeaderTitle {
@@ -272,6 +276,11 @@ struct Localization {
 			
 			static let termsSupport = "Terms & Support".localized()
 			static let system = "System".localized()
+	
+			static let links = "Links".localized()
+			static let contactName = "Contact Name".localized()
+			static let numbers = "Phone Numbers".localized()
+			static let mail = "Email".localized()
 		}
 		
 		struct Descriptions {

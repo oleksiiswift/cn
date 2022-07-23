@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Contacts
 
 class ContactInfoTableViewCell: UITableViewCell {
 	
@@ -32,13 +33,24 @@ extension ContactInfoTableViewCell {
 				fieldTitleTextLabel.isHidden = true
 				fieldValueTextLabel.text = name
 			case .phoneNumbers(let phoneNumber):
-				fieldTitleTextLabel.text = phoneNumber.label ?? ""
+				if let label = phoneNumber.label {
+					let localizedLabel = CNLabeledValue<NSString>.localizedString(forLabel: label)
+					fieldTitleTextLabel.text = localizedLabel
+				} else {
+					fieldTitleTextLabel.text = Localization.Main.Subtitles.phone
+				}
+				
 				fieldValueTextLabel.text = phoneNumber.value.stringValue
 			case .emailAddresses(let emailAddress):
-				fieldTitleTextLabel.text = emailAddress.label
-				fieldValueTextLabel.text = emailAddress.label ?? ""
+				if let label = emailAddress.label {
+					let localizedLabel = CNLabeledValue<NSString>.localizedString(forLabel: label)
+					fieldTitleTextLabel.text = localizedLabel
+				} else {
+					fieldTitleTextLabel.text = Localization.Main.Subtitles.email
+				}
+				fieldValueTextLabel.text = emailAddress.value as String
 			case .urlAddresses(let url):
-				fieldTitleTextLabel.text = url.label ?? ""
+				fieldTitleTextLabel.text = url.label ?? Localization.Main.Subtitles.url
 				fieldValueTextLabel.text = url.value as String
 			default:
 				return
@@ -55,6 +67,13 @@ extension ContactInfoTableViewCell: Themeble {
 		
 		fieldValueTextLabel.font = FontManager.contentTypeFont(of: .title)
 		fieldTitleTextLabel.font = FontManager.contentTypeFont(of: .subtitle)
+		
+		reuseShadowView.topShadowOffsetOriginY = -2
+		reuseShadowView.topShadowOffsetOriginX = -2
+		reuseShadowView.viewShadowOffsetOriginX = 6
+		reuseShadowView.viewShadowOffsetOriginY = 6
+		reuseShadowView.topBlurValue = 15
+		reuseShadowView.shadowBlurValue = 5
 	}
 	
 	func updateColors() {

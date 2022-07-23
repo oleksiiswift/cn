@@ -16,7 +16,6 @@ class ContactThumbnailTableViewCell: UITableViewCell {
 		
 		setupUI()
 		updateColors()
-        
     }
 }
 
@@ -30,11 +29,11 @@ extension ContactThumbnailTableViewCell {
 	}
 }
 
-
 extension ContactThumbnailTableViewCell: Themeble {
 	
-	private func setupUI() {
+	func setupUI() {
 		
+		self.selectionStyle = .none
 	}
 	
 	func updateColors() {

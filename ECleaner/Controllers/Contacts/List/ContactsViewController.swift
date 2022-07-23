@@ -835,7 +835,37 @@ extension ContactsViewController: SelectDropDownMenuDelegate {
 	}
 }
 
+extension ContactsViewController {
+	
+	private func selectContactInfo(with contact: CNContact, at indexPath: IndexPath) {
+		let storyboard = UIStoryboard(name: Constants.identifiers.storyboards.contacts, bundle: nil)
+		let viewController = storyboard.instantiateViewController(withIdentifier: Constants.identifiers.viewControllers.contactsInfo) as! ContactsInfoViewController
+		viewController.modalPresentationStyle = .overFullScreen
+		viewController.contact = contact
+		
+		viewController.deleteContact = {
+			Utils.delay(0.33) {
+				self.deleteSelectedContacts(at: [indexPath])
+			}
+		}
+		
+		self.present(viewController, animated: true)
+	}
+}
+
 extension ContactsViewController: ContactDataSourceDelegate {
+	func viewContact(at indexPath: IndexPath) {
+		
+		if self.contentType == .allContacts {
+			if let contact = self.contactListViewModel.getContactOnRow(at: indexPath) {
+				self.selectContactInfo(with: contact, at: indexPath)
+			}
+		} else if self.contentType == .emptyContacts {
+			if let contact = self.emptyContactGroupListViewModel.getContactOnRow(at: indexPath) {
+				self.selectContactInfo(with: contact, at: indexPath)
+			}
+		}
+	}
 	
 	func shareContact(at indexPath: IndexPath) {
 		self.shareSingleContact(at: indexPath)
@@ -924,18 +954,18 @@ extension ContactsViewController: Themeble {
 			reloadData ? self.smoothReloadData() : ()
         }
 		
-		self.contactListDataSource.didSelectViewContactInfo = { contact in
-			let storyboard = UIStoryboard(name: Constants.identifiers.storyboards.contacts, bundle: nil)
-			let viewController = storyboard.instantiateViewController(withIdentifier: Constants.identifiers.viewControllers.contactsInfo) as! ContactsInfoViewController
-			viewController.modalPresentationStyle = .overFullScreen
-			viewController.contact = contact
-			self.present(viewController, animated: true)
+		self.contactListDataSource.didSelectViewContactInfo = { contact, indexPath in
+			self.selectContactInfo(with: contact, at: indexPath)
 		}
     }
     
     private func setupGroupViemodel(contacts: [ContactsGroup]) {
         self.emptyContactGroupListViewModel = ContactGroupListViewModel(contactsGroup: contacts)
         self.emptyContactGroupListDataSource = EmptyContactListDataSource(viewModel: self.emptyContactGroupListViewModel, contentType: self.contentType)
+		self.emptyContactGroupListDataSource.delegate = self
+		self.emptyContactGroupListDataSource.didSelectViewContactInfo = { contact, indexPath in
+			self.selectContactInfo(with: contact, at: indexPath)
+		}
     }
     
     func updateColors() {
