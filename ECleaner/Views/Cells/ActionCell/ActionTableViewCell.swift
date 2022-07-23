@@ -49,6 +49,7 @@ class ActionTableViewCell: UITableViewCell {
     }
 
 	@IBAction func didTapActionButtoon(_ sender: Any) {
+		actionButton.animateButtonTransform()
 		delegate?.didTapActionButton(at: self)
 	}
 }
