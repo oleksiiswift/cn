@@ -125,7 +125,8 @@ extension MediaContentViewController {
 		}
 	}
 	
-	private func updateContactsSingleChanged(contacts: [CNContact], content type: PhotoMediaType, completionHandler: @escaping () -> Void) {
+	private func updateContactsSingleChanged(contacts: [CNContact], content type: PhotoMediaType, cleanType: ContactasCleaningType, completionHandler: @escaping () -> Void) {
+		self.singleCleanModel.objects[type]?.contactCleanType = cleanType
 		self.singleCleanModel.objects[type]?.contacts = contacts
 		self.singleCleanModel.objects[type]?.cleanProgress = 100.0
 		self.singleCleanModel.objects[type]?.checkForCleanState()
@@ -137,7 +138,8 @@ extension MediaContentViewController {
 		}
 	}
 	
-	private func updateGroupedContacts(contacts group: [ContactsGroup], media type: PhotoMediaType, completionHandler: @escaping () ->Void) {
+	private func updateGroupedContacts(contacts group: [ContactsGroup], media type: PhotoMediaType, cleanType: ContactasCleaningType, completionHandler: @escaping () ->Void) {
+		self.singleCleanModel.objects[type]?.contactCleanType = cleanType
 		self.singleCleanModel.objects[type]?.contactsGroup = group
 		self.singleCleanModel.objects[type]?.cleanProgress = 100.0
 		self.singleCleanModel.objects[type]?.checkForCleanState()
@@ -237,16 +239,61 @@ extension MediaContentViewController {
 		
 		switch photoMediaType.collectionType {
 			case .single:
-				if let collection = self.singleCleanModel.objects[photoMediaType]?.phassets, !collection.isEmpty {
-					self.showAssetViewController(collection: collection, photoContent: photoMediaType, media: selectedType)
-				} else {
-					ErrorHandler.shared.showEmptySearchResultsFor(photoMediaType.emptyContentError)
+				
+				switch mediaContentType {
+					case .userContacts:
+						if let object = self.singleCleanModel.objects[photoMediaType] {
+							
+							if object.contactCleanType == .emptyContacts {
+								let contactactGroup = object.contactsGroup
+								
+								if !contactactGroup.isEmpty {
+									self.showContactViewController(contacts: [], contactGroup: contactactGroup, contentType: .emptyContacts)
+								} else {
+									ErrorHandler.shared.showEmptySearchResultsFor(photoMediaType.emptyContentError)
+								}
+							} else {
+								let collection = object.contacts
+								if !collection.isEmpty {
+									self.showContactViewController(contacts: collection, contentType: photoMediaType)
+								} else {
+									ErrorHandler.shared.showEmptySearchResultsFor(photoMediaType.emptyContentError)
+								}
+							}
+							
+						}
+					case .userPhoto, .userVideo:
+						if let collection = self.singleCleanModel.objects[photoMediaType]?.phassets, !collection.isEmpty {
+							self.showAssetViewController(collection: collection, photoContent: photoMediaType, media: selectedType)
+						} else {
+							ErrorHandler.shared.showEmptySearchResultsFor(photoMediaType.emptyContentError)
+						}
+					default:
+						return
 				}
 			case .grouped:
-				if let phassetGroups = self.singleCleanModel.objects[photoMediaType]?.phassetGroup, !phassetGroups.isEmpty {
-					self.showGropedContoller(grouped: phassetGroups, photoContent: photoMediaType, media: selectedType)
-				} else {
-					ErrorHandler.shared.showEmptySearchResultsFor(photoMediaType.emptyContentError)
+				
+				switch mediaContentType {
+					case .userContacts:
+						if let objects = self.singleCleanModel.objects[photoMediaType] {
+							let collectionGroup = objects.contactsGroup
+							
+							if !collectionGroup.isEmpty {
+								self.showGroupedContactsViewController(contacts: collectionGroup, group: objects.contactCleanType, content: photoMediaType)
+							} else {
+								ErrorHandler.shared.showEmptySearchResultsFor(photoMediaType.emptyContentError)
+							}
+						} else {
+							ErrorHandler.shared.showEmptySearchResultsFor(photoMediaType.emptyContentError)
+						}
+					case .userPhoto, .userVideo:
+						if let phassetGroups = self.singleCleanModel.objects[photoMediaType]?.phassetGroup, !phassetGroups.isEmpty {
+							self.showGropedContoller(grouped: phassetGroups, photoContent: photoMediaType, media: selectedType)
+						} else {
+							ErrorHandler.shared.showEmptySearchResultsFor(photoMediaType.emptyContentError)
+						}
+					default:
+						return
 				}
 			default:
 				return
@@ -561,7 +608,7 @@ extension MediaContentViewController {
 		
 		P.showIndicator()
 		self.contactsManager.getAllContacts { contacts in
-			self.updateContactsSingleChanged(contacts: contacts, content: .allContacts) {
+			self.updateContactsSingleChanged(contacts: contacts, content: .allContacts, cleanType: .none) {
 				U.delay(0.4) {
 					P.hideIndicator()
 					self.searchingProcessingType = .clearSearchingProcessingQueue
@@ -584,7 +631,7 @@ extension MediaContentViewController {
 		self.contactsManager.getSingleDuplicatedCleaningContacts(of: .emptyContacts) { contactsGroup, isCancelled in
 			let totalContacts = contactsGroup.map({$0.contacts}).count
 			let group = contactsGroup.filter({!$0.contacts.isEmpty})
-			self.updateGroupedContacts(contacts: group, media: .emptyContacts) {
+			self.updateGroupedContacts(contacts: group, media: .emptyContacts, cleanType: .emptyContacts) {
 				U.delay(0.5) {
 					self.searchingProcessingType = .clearSearchingProcessingQueue
 					self.currentlyScanningProcess = .none
@@ -617,7 +664,7 @@ extension MediaContentViewController {
 		self.contactsManager.getSingleDuplicatedCleaningContacts(of: cleanType) { contactsGroup, isCancelled in
 			let mediaType = cleanType.photoMediaType
 			
-			self.updateGroupedContacts(contacts: contactsGroup, media: mediaType) {
+			self.updateGroupedContacts(contacts: contactsGroup, media: mediaType, cleanType: cleanType) {
 				
 				U.delay(0.5) {
 					self.searchingProcessingType = .clearSearchingProcessingQueue
@@ -701,13 +748,14 @@ extension MediaContentViewController {
 			
 			guard storeDidChange else { return }
 			
+			self.smartCleaningDidFinishWithResults = false
 			switch currentChangedMediaType {
 					
 				case .allContacts:
-					self.updateContactsSingleChanged(contacts: changedContacts, content: currentChangedMediaType) {}
+					self.updateContactsSingleChanged(contacts: changedContacts, content: currentChangedMediaType, cleanType: .none) {}
 					self.updateContacts {}
 				default:
-					self.updateGroupedContacts(contacts: changedContactsGroups, media: currentChangedMediaType) {}
+					self.updateGroupedContacts(contacts: changedContactsGroups, media: currentChangedMediaType, cleanType: .none) {}
 					self.updateContacts {}
 			}
 		}
@@ -727,7 +775,10 @@ extension MediaContentViewController {
 	
 			guard storeDidChange else { return}
 			
-			self.updateGroupedContacts(contacts: changedContactsGroup, media: currentChangedMediaType) {}
+			self.smartCleaningDidFinishWithResults = false
+			
+			self.updateGroupedContacts(contacts: changedContactsGroup, media: currentChangedMediaType, cleanType: type) {}
+			
 			self.updateContacts {}
 		}
 
@@ -798,16 +849,16 @@ extension MediaContentViewController {
 		self.contactsManager.getUpdatingContactsAfterContainerDidChange(cleanProcessingType: .background) { _ in
 			completionHandler()
 		} allContacts: { contacts in
-			self.updateContactsSingleChanged(contacts: contacts, content: .allContacts) {}
+			self.updateContactsSingleChanged(contacts: contacts, content: .allContacts, cleanType: .none) {}
 		} emptyContacts: { emptyContactsGroup in
 			let group = emptyContactsGroup.filter({!$0.contacts.isEmpty})
-			self.updateGroupedContacts(contacts: group, media: .emptyContacts) {}
+			self.updateGroupedContacts(contacts: group, media: .emptyContacts, cleanType: .emptyContacts) {}
 		} duplicatedNames: { duplicatedContacts in
-			self.updateGroupedContacts(contacts: duplicatedContacts, media: .duplicatedContacts) {}
+			self.updateGroupedContacts(contacts: duplicatedContacts, media: .duplicatedContacts, cleanType: .duplicatedContactName) {}
 		} duplicatedPhoneNumbers: { duplicatedPhoneNumbers in
-			self.updateGroupedContacts(contacts: duplicatedPhoneNumbers, media: .duplicatedPhoneNumbers) {}
+			self.updateGroupedContacts(contacts: duplicatedPhoneNumbers, media: .duplicatedPhoneNumbers, cleanType: .duplicatedPhoneNumnber) {}
 		} duplicatedEmailGrops: { duplicatedEmailGroups in
-			self.updateGroupedContacts(contacts: duplicatedEmailGroups, media: .duplicatedEmails) {}
+			self.updateGroupedContacts(contacts: duplicatedEmailGroups, media: .duplicatedEmails, cleanType: .duplicatedEmail) {}
 		}
 	}
 }
@@ -1038,6 +1089,29 @@ extension MediaContentViewController {
 		}
 	}
 	
+	private func startSmartContactsCleanProcessing() {
+		
+		self.searchingProcessingType = .smartGroupSearchProcess
+		
+		smartCleanManager.startSmartContactCleanFetch {
+			debugPrint("handler?")
+		} fetchAllContacts: { contacts in
+			self.updateContactsSingleChanged(contacts: contacts, content: .allContacts, cleanType: .none) {}
+		} emptyContacts: { emptyContacts in
+			let group = emptyContacts.filter({!$0.contacts.isEmpty})
+			self.updateGroupedContacts(contacts: group, media: .emptyContacts, cleanType: .emptyContacts) {}
+		} duplicatedNames: { duplicatedNames in
+			self.updateGroupedContacts(contacts: duplicatedNames, media: .duplicatedContacts, cleanType: .duplicatedContactName) {}
+		} duplicatedPhoneNumbers: { duplicatedPhoneNumbers in
+			self.updateGroupedContacts(contacts: duplicatedPhoneNumbers, media: .duplicatedPhoneNumbers, cleanType: .duplicatedPhoneNumnber) {}
+		} duplicatedEmail: { duplicatedEmails in
+			self.updateGroupedContacts(contacts: duplicatedEmails, media: .duplicatedEmails, cleanType: .duplicatedEmail) {}
+		} completionHandler: { isCanceled in
+			self.searchingProcessingType = .clearSearchingProcessingQueue
+			self.smartCleaningDidFinishWithResults = !isCanceled
+		}
+	}
+	
 	private func handleChangeSmartCleanProcessing() {
 		
 		switch searchingProcessingType {
@@ -1095,11 +1169,7 @@ extension MediaContentViewController: NavigationBarDelegate {
 		switch searchingProcessingType {
 			case .clearSearchingProcessingQueue:
 				if self.mediaContentType == .userContacts {
-					self.searchingProcessingType = .smartGroupSearchProcess
-					self.updateContacts {
-						self.searchingProcessingType = .clearSearchingProcessingQueue
-						self.smartCleaningDidFinishWithResults = true
-					}
+					self.startSmartContactsCleanProcessing()
 				} else {
 					startSmartCleanProcessing()
 				}
@@ -1111,11 +1181,7 @@ extension MediaContentViewController: NavigationBarDelegate {
 				SearchOperationStateHandler.alertHandler(for: .resetSingleCleanSearch) {
 					self.setCancelActiveOperation() {
 						if self.mediaContentType == .userContacts {
-							self.searchingProcessingType = .smartGroupSearchProcess
-							self.updateContacts {
-								self.searchingProcessingType = .clearSearchingProcessingQueue
-								self.smartCleaningDidFinishWithResults = true
-							}
+							self.startSmartContactsCleanProcessing()
 						} else {
 							self.startSmartCleanProcessing()
 						}
@@ -1227,11 +1293,7 @@ extension MediaContentViewController {
 				}
 			default:
 				if self.smartCleaningDidFinishWithResults {
-					if self.mediaContentType == .userContacts {
-						self.showMediaContent(by: self.mediaContentType, selected: indexPath.row)
-					} else {
-						self.showPrescanMediaContent(by: self.mediaContentType, selected: indexPath.row)
-					}
+					self.showPrescanMediaContent(by: self.mediaContentType, selected: indexPath.row)
 				} else {
 					self.showMediaContent(by: self.mediaContentType, selected: indexPath.row)
 				}

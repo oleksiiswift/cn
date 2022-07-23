@@ -69,7 +69,7 @@ class SubscriptionManager: NSObject {
 	}
 	
 	public func purchasePremiumHandler() -> Bool {
-		return true
+//		return true
 		return self.purchasedPremium
 	}
 	
