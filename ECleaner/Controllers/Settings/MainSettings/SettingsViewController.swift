@@ -223,7 +223,6 @@ extension SettingsViewController: SettingActionsDelegate {
 	
 	private func changeCurrentSubscription() {
 		
-		
 		Network.theyLive { status in
 			switch status {
 				case .connedcted:

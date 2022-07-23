@@ -56,6 +56,7 @@ struct Images {
 			static let arrowLeft = UIImage(named: "arrowLeftItem")!
 			static let circleArrow = UIImage(named: "circleRoundedThin")!
 			static let save = UIImage(systemName: "tray.and.arrow.up")!
+			static let xmark = UIImage(systemName: "xmark")!
         }
 		
 		struct helpersItems {
@@ -142,6 +143,7 @@ struct Images {
 		static let connectionLost = UIImage(systemName: "wifi.slash")
 		static let noContent = UIImage(systemName: "exclamationmark.circle")
 		static let persons = UIImage(systemName: "person.2.square.stack")!
+		static let person = UIImage(systemName: "person.circle")!
 	}
 	
 	struct onboarding {

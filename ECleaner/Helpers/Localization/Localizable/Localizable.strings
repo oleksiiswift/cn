@@ -112,6 +112,7 @@
 "Activate" = "Activate";
 "Change Plan" = "Change Plan";
 "Start Backup" = "Start Backup";
+"View" = "View";
 
 	//		MARK: - settings -
 	// MARK: title
@@ -183,6 +184,8 @@
 "memmory" = "memmory";
 "keep origin resolution" = "keep origin resolution";
 "origin resolution" = "origin resolution";
+"Phone Number" = "Phone Number";
+"Url" = "Url";
 	// MARK: HeaderTitle
 "Compression Settings" = "Compression Settings";
 "select compression settings" = "select compression settings";
@@ -212,6 +215,10 @@
 
 "Terms & Support" = "Terms & Support";
 "System" = "System";
+"Links" = "Links";
+"Contact Name" = "Contact Name";
+"Phone Numbers" = "Phone Numbers";
+"Emails" = "Emails";
 
 	// MARK: Descriptions
 "These are the permissions the app requires to work properly. Please see description for each permission." = "These are the permissions the app requires to work properly. Please see description for each permission.";
