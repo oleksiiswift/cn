@@ -541,3 +541,16 @@ extension PHAssetFetchManager {
 	}
 }
 
+extension PHAssetFetchManager {
+	
+	public func locationFetch(completionHandler: @escaping ((_ result: PHFetchResult<PHAsset>) -> Void)) {
+		let fetchOptions = PHFetchOptions()
+		let collectionType: PHAssetCollectionSubtype = .smartAlbumUserLibrary
+		let albumPhoto: PHFetchResult<PHAssetCollection> = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: collectionType, options: fetchOptions)
+		fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
+		
+		albumPhoto.enumerateObjects { collection, index, object in
+			completionHandler(PHAsset.fetchAssets(in: collection, options: fetchOptions))
+		}
+	}
+}

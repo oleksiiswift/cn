@@ -325,7 +325,12 @@ extension MainViewController {
     }
     
     private func openSettingsController() {
-		coordinator?.showSettingsViewController(from: self.navigationController)
+//		coordinator?.showSettingsViewController(from: self.navigationController)
+		
+		let storyboard = UIStoryboard(name: "Location", bundle: nil)
+		let viewController = storyboard.instantiateViewController(withIdentifier: "LocationViewController") as! LocationViewController
+		
+		self.navigationController?.pushViewController(viewController, animated: true)
 	}
     
     private func openSubscriptionController() {

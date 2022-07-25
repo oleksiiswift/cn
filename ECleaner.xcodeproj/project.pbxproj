@@ -163,6 +163,8 @@
 		972E0256274105B300C236C7 /* SingleContactsGroupOperationsMediator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972E0255274105B300C236C7 /* SingleContactsGroupOperationsMediator.swift */; };
 		972ED06B2808E09000096502 /* CompressionSettingsConfiguretion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972ED06A2808E09000096502 /* CompressionSettingsConfiguretion.swift */; };
 		97346485284789DE00BE0DE1 /* Localize+Count.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97346484284789DE00BE0DE1 /* Localize+Count.swift */; };
+		973ACB02288D89D2004B79EF /* Location.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 973ACB01288D89D2004B79EF /* Location.storyboard */; };
+		973ACB04288D8A12004B79EF /* LocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973ACB03288D8A12004B79EF /* LocationViewController.swift */; };
 		9740EB7D280EFDB000B8E63C /* TableView+ReoloadRows.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9740EB7C280EFDB000B8E63C /* TableView+ReoloadRows.swift */; };
 		97410502286B950A00277E86 /* FontManager+Onboarding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97410501286B950A00277E86 /* FontManager+Onboarding.swift */; };
 		97420BDF283E5A2200B0E134 /* PresentedControllerModelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97420BDE283E5A2200B0E134 /* PresentedControllerModelType.swift */; };
@@ -580,6 +582,8 @@
 		972E0255274105B300C236C7 /* SingleContactsGroupOperationsMediator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleContactsGroupOperationsMediator.swift; sourceTree = "<group>"; };
 		972ED06A2808E09000096502 /* CompressionSettingsConfiguretion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompressionSettingsConfiguretion.swift; sourceTree = "<group>"; };
 		97346484284789DE00BE0DE1 /* Localize+Count.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Localize+Count.swift"; sourceTree = "<group>"; };
+		973ACB01288D89D2004B79EF /* Location.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Location.storyboard; sourceTree = "<group>"; };
+		973ACB03288D8A12004B79EF /* LocationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationViewController.swift; sourceTree = "<group>"; };
 		9740EB7C280EFDB000B8E63C /* TableView+ReoloadRows.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TableView+ReoloadRows.swift"; sourceTree = "<group>"; };
 		97410501286B950A00277E86 /* FontManager+Onboarding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FontManager+Onboarding.swift"; sourceTree = "<group>"; };
 		97420BDE283E5A2200B0E134 /* PresentedControllerModelType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresentedControllerModelType.swift; sourceTree = "<group>"; };
@@ -1402,6 +1406,8 @@
 				97EC82F128690EBB00A32A21 /* PErmission */,
 				97EC82F028690EAF00A32A21 /* Onboarding */,
 				97EC82EF28690EA700A32A21 /* Subscription */,
+				973ACB01288D89D2004B79EF /* Location.storyboard */,
+				973ACB03288D8A12004B79EF /* LocationViewController.swift */,
 			);
 			path = Storyboards;
 			sourceTree = "<group>";
@@ -2766,6 +2772,7 @@
 				9760158E286FACD7006965BB /* PremiumFeatureTableViewCell.xib in Resources */,
 				97A05B762743D4C200968459 /* SearchBarView.xib in Resources */,
 				04CF00012685F0C3000CA850 /* ContentTypeTableViewCell.xib in Resources */,
+				973ACB02288D89D2004B79EF /* Location.storyboard in Resources */,
 				049CC230268337310002F988 /* MediaTypeCollectionViewCell.xib in Resources */,
 				9701D27B27BE78B40078E39F /* SizeSelector.storyboard in Resources */,
 				04467CE6270DA3B200DBBB39 /* DateSelectebleView.xib in Resources */,
@@ -2992,6 +2999,7 @@
 				97A17F652836701300591409 /* FontManager+BottomButton.swift in Sources */,
 				97DC111427A2BA6C00D10FE4 /* MediaViewController.swift in Sources */,
 				97EF1445286F145B00564065 /* PremiumNavigationBar.swift in Sources */,
+				973ACB04288D8A12004B79EF /* LocationViewController.swift in Sources */,
 				97DE2732288A90A400514097 /* ContactDataSource.swift in Sources */,
 				972AAACD27F7524A00F3A1D2 /* UIView+AnimateButtonsAndViews.swift in Sources */,
 				97CC2F3C26873A7D0072EF8C /* DateSelectorViewController.swift in Sources */,

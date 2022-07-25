@@ -91,6 +91,8 @@ extension SceneDelegate {
 			debugPrint("****")
 		}
 		
+		self.handleTestLocation()
+		
 		///  `remove all contacts from store`
 //		ContactsManager.shared.deleteAllContatsFromStore()
 	}
@@ -102,6 +104,20 @@ extension SceneDelegate {
 		
 		NotificationCenter.default.addObserver(forName: nil, object: nil, queue: nil) { notification in
 			debugPrint(notification)
+		}
+	}
+}
+
+extension SceneDelegate {
+	
+	private func handleTestLocation() {
+		
+		PHAssetFetchManager.shared.locationFetch { result in
+			
+			result.enumerateObjects { asset, index, object in
+			 	debugPrint(asset.location)
+			}
+			
 		}
 	}
 }
