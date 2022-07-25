@@ -245,7 +245,6 @@ extension MediaViewController {
 	private func setAsBest(phasset: PHAsset, at indexPath: IndexPath) {
 		
 		guard let cell = self.collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell else { return }
-		
 		let bestPHAssetIndexPath = IndexPath(row: 0, section: indexPath.section)
 		self.assetGroups[indexPath.section].assets.move(at: indexPath.row, to: 0)
 		
@@ -255,18 +254,10 @@ extension MediaViewController {
 			self.collectionView.moveItem(at: indexPath, to: bestPHAssetIndexPath)
 			self.collectionView.scrollToItem(at: bestPHAssetIndexPath, at: [.centeredVertically, .centeredHorizontally], animated: true)
 		} completion: { _ in
-			U.delay(0.3) {
 				self.collectionView.reloadDataWithotAnimationKeepSelect(at: [bestPHAssetIndexPath, IndexPath(row: 1, section: indexPath.section)])
 				self.handleSelectAssetsNavigationCount()
-			}
 		}
-		self.previewCollectionView.performBatchUpdates {
-			self.previewCollectionView.moveItem(at: indexPath, to: bestPHAssetIndexPath)
-		} completion: { _ in
-			U.delay(0.3) {
-				self.previewCollectionView.scrollToItem(at: bestPHAssetIndexPath, at: [.centeredVertically, .centeredHorizontally], animated: true)
-			}
-		}
+		self.previewCollectionView.moveItem(at: indexPath, to: bestPHAssetIndexPath)
 	}
 }
 
@@ -318,27 +309,22 @@ extension MediaViewController {
 					self.checkForEmptyCollection()
 				}
 			case .grouped:
+				collectionView.collectionViewLayout.invalidateLayout()
 				if self.assetGroups[indexPath.section].assets.count == 2 {
 					self.assetGroups.remove(at: indexPath.section)
-					self.collectionView.performBatchUpdates {
-						self.collectionView.deleteSections(IndexSet(integer: indexPath.section))
-					} completion: { _ in }
-					self.previewCollectionView.performBatchUpdates {
-						self.previewCollectionView.deleteSections(IndexSet(integer: indexPath.section))
-					} completion: { _ in
-						self.checkForEmptyCollection()
+					if indexPath.section != 0 {
+						self.collectionView.scrollToItem(at: IndexPath(row: 0, section: indexPath.section - 1), at: [.centeredHorizontally, .centeredVertically], animated: true)
 					}
+					self.collectionView.deleteSections(IndexSet(integer: indexPath.section))
+					self.previewCollectionView.deleteSections(IndexSet(integer: indexPath.section))
+					self.checkForEmptyCollection()
 				} else {
 					self.assetGroups[indexPath.section].assets.remove(at: indexPath.item)
-					self.collectionView.performBatchUpdates {
-						self.collectionView.deleteItems(at: [indexPath])
-					} completion: { _ in }
-					self.previewCollectionView.performBatchUpdates {
-						self.previewCollectionView.deleteItems(at: [indexPath])
-					} completion: { _ in
-						self.checkForEmptyCollection()
-					}
+					self.collectionView.deleteItems(at: [indexPath])
+					self.previewCollectionView.deleteItems(at: [indexPath])
+					self.checkForEmptyCollection()
 				}
+				collectionView.layoutIfNeeded()
 			default:
 				return
 		}
@@ -695,10 +681,12 @@ extension MediaViewController: UIScrollViewDelegate {
 
 	public func scrollViewDidScroll(_ scrollView: UIScrollView) {
 		if scrollView === previewCollectionView {
+			debugPrint(" scrollView === previewCollectionView")
 			handleTrackCollection(from: previewCollectionView, to: collectionView)
 		}
 
 		if scrollView === collectionView {
+			debugPrint("scrollView === collectionView")
 			handleTrackCollection(from: collectionView, to: previewCollectionView)
 		}
 	}
