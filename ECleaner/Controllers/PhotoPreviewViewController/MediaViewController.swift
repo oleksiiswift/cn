@@ -77,6 +77,12 @@ class MediaViewController: UIViewController {
 		
 		handleFocusAndSelect()
 	}
+	
+	override func viewDidDisappear(_ animated: Bool) {
+		super.viewDidDisappear(animated)
+		
+		self.deinitPlayer()
+	}
 }
 
 extension MediaViewController {
@@ -106,6 +112,17 @@ extension MediaViewController {
 					collectionCell.carouselCollectionCellIsPlaying = cell.isPlaying
 				}
 			}
+		}
+	}
+	
+	private func deinitPlayer() {
+		
+		let centerPoint = CGPoint(x: self.collectionView.contentOffset.x + self.collectionView.frame.width / 2,
+								  y: self.collectionView.frame.height / 2)
+		guard let centerIndexPath = self.collectionView.indexPathForItem(at: centerPoint) else {return }
+		
+		if let cell = self.previewCollectionView.cellForItem(at: centerIndexPath) as? PhotoPreviewCollectionViewCell {
+			cell.setDeinitMediaPlayer()
 		}
 	}
 }
