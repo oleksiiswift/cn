@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 51;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -81,7 +81,6 @@
 		04E5837E267B60F600EDC3A3 /* AlertManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04E5837D267B60F600EDC3A3 /* AlertManager.swift */; };
 		04E58380267B9F6B00EDC3A3 /* PhassetFetchManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04E5837F267B9F6B00EDC3A3 /* PhassetFetchManager.swift */; };
 		04EE29FB269891F30013837D /* PHasset+Thumbnail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04EE29FA269891F30013837D /* PHasset+Thumbnail.swift */; };
-		2001A0C2915698B9A225961C /* Pods_ECleaner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E6C6CFFC143ABD3817A81249 /* Pods_ECleaner.framework */; };
 		4F4A17B9271D812400CAF157 /* StartingNavigationBar.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4F4A17B8271D812400CAF157 /* StartingNavigationBar.xib */; };
 		4F4A17BB271D819F00CAF157 /* StartingNavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F4A17BA271D819F00CAF157 /* StartingNavigationBar.swift */; };
 		4F56073A27205AF300CA19E9 /* GradientCircularProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F56072427205AF100CA19E9 /* GradientCircularProgress.swift */; };
@@ -163,6 +162,12 @@
 		972E0256274105B300C236C7 /* SingleContactsGroupOperationsMediator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972E0255274105B300C236C7 /* SingleContactsGroupOperationsMediator.swift */; };
 		972ED06B2808E09000096502 /* CompressionSettingsConfiguretion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972ED06A2808E09000096502 /* CompressionSettingsConfiguretion.swift */; };
 		97346485284789DE00BE0DE1 /* Localize+Count.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97346484284789DE00BE0DE1 /* Localize+Count.swift */; };
+		973ACB07288FEF0F004B79EF /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 973ACB06288FEF0F004B79EF /* Lottie */; };
+		973ACB0A288FEF5B004B79EF /* Connectivity in Frameworks */ = {isa = PBXBuildFile; productRef = 973ACB09288FEF5B004B79EF /* Connectivity */; };
+		973ACB0D288FEF9C004B79EF /* SwiftyStoreKit in Frameworks */ = {isa = PBXBuildFile; productRef = 973ACB0C288FEF9C004B79EF /* SwiftyStoreKit */; };
+		973ACB10288FF01A004B79EF /* SwiftMessages in Frameworks */ = {isa = PBXBuildFile; productRef = 973ACB0F288FF01A004B79EF /* SwiftMessages */; };
+		973ACB1A288FF19D004B79EF /* CocoaImageHashing in Frameworks */ = {isa = PBXBuildFile; productRef = 973ACB19288FF19D004B79EF /* CocoaImageHashing */; };
+		973ACB1F288FFE97004B79EF /* PhoneNumberKit in Frameworks */ = {isa = PBXBuildFile; productRef = 973ACB1E288FFE97004B79EF /* PhoneNumberKit */; };
 		9740EB7D280EFDB000B8E63C /* TableView+ReoloadRows.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9740EB7C280EFDB000B8E63C /* TableView+ReoloadRows.swift */; };
 		97410502286B950A00277E86 /* FontManager+Onboarding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97410501286B950A00277E86 /* FontManager+Onboarding.swift */; };
 		97420BDF283E5A2200B0E134 /* PresentedControllerModelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97420BDE283E5A2200B0E134 /* PresentedControllerModelType.swift */; };
@@ -419,6 +424,19 @@
 		97FDA09C27FB5A0A002BC233 /* SliderShadowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97FDA09B27FB5A0A002BC233 /* SliderShadowView.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		973ACB1C288FFB11004B79EF /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		0405AA58269D77A5004AC07A /* CMtime+StringDuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CMtime+StringDuration.swift"; sourceTree = "<group>"; };
 		0405AA5A269D9BD6004AC07A /* PreviewAVController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewAVController.swift; sourceTree = "<group>"; };
@@ -515,7 +533,6 @@
 		4F56073627205AF200CA19E9 /* OrangeClearStyle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrangeClearStyle.swift; sourceTree = "<group>"; };
 		4F56073727205AF200CA19E9 /* Style.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Style.swift; sourceTree = "<group>"; };
 		4F56073927205AF300CA19E9 /* ColorUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorUtil.swift; sourceTree = "<group>"; };
-		81D1B9EBAF1D92CCA563E435 /* Pods-ECleaner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ECleaner.debug.xcconfig"; path = "Target Support Files/Pods-ECleaner/Pods-ECleaner.debug.xcconfig"; sourceTree = "<group>"; };
 		97011E1527ECCBA600663C8E /* DeepCleanSelectableAssetsDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepCleanSelectableAssetsDelegate.swift; sourceTree = "<group>"; };
 		97011E1927ECCBED00663C8E /* GroupSelectableAssetsDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupSelectableAssetsDelegate.swift; sourceTree = "<group>"; };
 		97011E1B27ECCC0500663C8E /* SimpleSelectableAssetsDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleSelectableAssetsDelegate.swift; sourceTree = "<group>"; };
@@ -834,8 +851,6 @@
 		97FC789F2688E5E8000D7F26 /* PhotoCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCollectionViewCell.swift; sourceTree = "<group>"; };
 		97FC78A02688E5E8000D7F26 /* PhotoCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PhotoCollectionViewCell.xib; sourceTree = "<group>"; };
 		97FDA09B27FB5A0A002BC233 /* SliderShadowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderShadowView.swift; sourceTree = "<group>"; };
-		D5E1E3293C3C186D5078FB52 /* Pods-ECleaner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ECleaner.release.xcconfig"; path = "Target Support Files/Pods-ECleaner/Pods-ECleaner.release.xcconfig"; sourceTree = "<group>"; };
-		E6C6CFFC143ABD3817A81249 /* Pods_ECleaner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ECleaner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -843,7 +858,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2001A0C2915698B9A225961C /* Pods_ECleaner.framework in Frameworks */,
+				973ACB0A288FEF5B004B79EF /* Connectivity in Frameworks */,
+				973ACB0D288FEF9C004B79EF /* SwiftyStoreKit in Frameworks */,
+				973ACB1A288FF19D004B79EF /* CocoaImageHashing in Frameworks */,
+				973ACB1F288FFE97004B79EF /* PhoneNumberKit in Frameworks */,
+				973ACB07288FEF0F004B79EF /* Lottie in Frameworks */,
+				973ACB10288FF01A004B79EF /* SwiftMessages in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1167,8 +1187,6 @@
 			children = (
 				04E0946E267A06B500A69956 /* ECleaner */,
 				04E0946D267A06B500A69956 /* Products */,
-				78535D8DFC85B5DF1D785ED7 /* Pods */,
-				9C660DF0569619D661857567 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -1501,15 +1519,6 @@
 				4F56073927205AF300CA19E9 /* ColorUtil.swift */,
 			);
 			path = Utils;
-			sourceTree = "<group>";
-		};
-		78535D8DFC85B5DF1D785ED7 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				81D1B9EBAF1D92CCA563E435 /* Pods-ECleaner.debug.xcconfig */,
-				D5E1E3293C3C186D5078FB52 /* Pods-ECleaner.release.xcconfig */,
-			);
-			path = Pods;
 			sourceTree = "<group>";
 		};
 		97011E1227ECAD8200663C8E /* PhotoCells */ = {
@@ -2688,14 +2697,6 @@
 			path = ContentType;
 			sourceTree = "<group>";
 		};
-		9C660DF0569619D661857567 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				E6C6CFFC143ABD3817A81249 /* Pods_ECleaner.framework */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -2703,17 +2704,24 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 04E09480267A06B900A69956 /* Build configuration list for PBXNativeTarget "ECleaner" */;
 			buildPhases = (
-				7D0FB6662DD590996CCD79B8 /* [CP] Check Pods Manifest.lock */,
 				04E09468267A06B500A69956 /* Sources */,
 				04E09469267A06B500A69956 /* Frameworks */,
 				04E0946A267A06B500A69956 /* Resources */,
-				90C56291C67FB1C8A719E008 /* [CP] Embed Pods Frameworks */,
+				973ACB1C288FFB11004B79EF /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = ECleaner;
+			packageProductDependencies = (
+				973ACB06288FEF0F004B79EF /* Lottie */,
+				973ACB09288FEF5B004B79EF /* Connectivity */,
+				973ACB0C288FEF9C004B79EF /* SwiftyStoreKit */,
+				973ACB0F288FF01A004B79EF /* SwiftMessages */,
+				973ACB19288FF19D004B79EF /* CocoaImageHashing */,
+				973ACB1E288FFE97004B79EF /* PhoneNumberKit */,
+			);
 			productName = ECleaner;
 			productReference = 04E0946C267A06B500A69956 /* ECleaner.app */;
 			productType = "com.apple.product-type.application";
@@ -2741,6 +2749,15 @@
 				en,
 			);
 			mainGroup = 04E09463267A06B500A69956;
+			packageReferences = (
+				973ACB05288FEF0F004B79EF /* XCRemoteSwiftPackageReference "lottie-ios" */,
+				973ACB08288FEF5B004B79EF /* XCRemoteSwiftPackageReference "Connectivity" */,
+				973ACB0B288FEF9C004B79EF /* XCRemoteSwiftPackageReference "SwiftyStoreKit" */,
+				973ACB0E288FF01A004B79EF /* XCRemoteSwiftPackageReference "SwiftMessages" */,
+				973ACB11288FF11F004B79EF /* XCRemoteSwiftPackageReference "PhoneNumberKit" */,
+				973ACB18288FF19D004B79EF /* XCRemoteSwiftPackageReference "cocoaimagehashing" */,
+				973ACB1D288FFE97004B79EF /* XCRemoteSwiftPackageReference "PhoneNumberKit" */,
+			);
 			productRefGroup = 04E0946D267A06B500A69956 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -2814,48 +2831,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		7D0FB6662DD590996CCD79B8 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-ECleaner-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		90C56291C67FB1C8A719E008 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ECleaner/Pods-ECleaner-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ECleaner/Pods-ECleaner-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ECleaner/Pods-ECleaner-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		04E09468267A06B500A69956 /* Sources */ = {
@@ -3355,7 +3330,6 @@
 		};
 		04E09481267A06B900A69956 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 81D1B9EBAF1D92CCA563E435 /* Pods-ECleaner.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -3381,7 +3355,6 @@
 		};
 		04E09482267A06B900A69956 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D5E1E3293C3C186D5078FB52 /* Pods-ECleaner.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -3426,6 +3399,98 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		973ACB05288FEF0F004B79EF /* XCRemoteSwiftPackageReference "lottie-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/airbnb/lottie-ios";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.0.0;
+			};
+		};
+		973ACB08288FEF5B004B79EF /* XCRemoteSwiftPackageReference "Connectivity" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/rwbutler/Connectivity";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.0;
+			};
+		};
+		973ACB0B288FEF9C004B79EF /* XCRemoteSwiftPackageReference "SwiftyStoreKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/bizz84/SwiftyStoreKit";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.9.3;
+			};
+		};
+		973ACB0E288FF01A004B79EF /* XCRemoteSwiftPackageReference "SwiftMessages" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SwiftKickMobile/SwiftMessages";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 9.0.0;
+			};
+		};
+		973ACB11288FF11F004B79EF /* XCRemoteSwiftPackageReference "PhoneNumberKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/marmelroy/PhoneNumberKit";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.0.0;
+			};
+		};
+		973ACB18288FF19D004B79EF /* XCRemoteSwiftPackageReference "cocoaimagehashing" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ameingast/cocoaimagehashing";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
+		973ACB1D288FFE97004B79EF /* XCRemoteSwiftPackageReference "PhoneNumberKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/marmelroy/PhoneNumberKit";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		973ACB06288FEF0F004B79EF /* Lottie */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 973ACB05288FEF0F004B79EF /* XCRemoteSwiftPackageReference "lottie-ios" */;
+			productName = Lottie;
+		};
+		973ACB09288FEF5B004B79EF /* Connectivity */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 973ACB08288FEF5B004B79EF /* XCRemoteSwiftPackageReference "Connectivity" */;
+			productName = Connectivity;
+		};
+		973ACB0C288FEF9C004B79EF /* SwiftyStoreKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 973ACB0B288FEF9C004B79EF /* XCRemoteSwiftPackageReference "SwiftyStoreKit" */;
+			productName = SwiftyStoreKit;
+		};
+		973ACB0F288FF01A004B79EF /* SwiftMessages */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 973ACB0E288FF01A004B79EF /* XCRemoteSwiftPackageReference "SwiftMessages" */;
+			productName = SwiftMessages;
+		};
+		973ACB19288FF19D004B79EF /* CocoaImageHashing */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 973ACB18288FF19D004B79EF /* XCRemoteSwiftPackageReference "cocoaimagehashing" */;
+			productName = CocoaImageHashing;
+		};
+		973ACB1E288FFE97004B79EF /* PhoneNumberKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 973ACB1D288FFE97004B79EF /* XCRemoteSwiftPackageReference "PhoneNumberKit" */;
+			productName = PhoneNumberKit;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 04E09464267A06B500A69956 /* Project object */;
 }
