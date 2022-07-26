@@ -225,7 +225,11 @@ extension MediaViewController {
 		switch collectionType {
 			case .grouped:
 				if !isDeepCleaningSelectableFlow {
+					if indexPath.row == 0 {
+						return deleteMenuCollection
+					} else {
 						return deleteAndSetAsBestCollection
+					}
 				} else {
 					return setAsBestMenuCollection
 				}
@@ -320,8 +324,15 @@ extension MediaViewController {
 					self.checkForEmptyCollection()
 				} else {
 					self.assetGroups[indexPath.section].assets.remove(at: indexPath.item)
+					
 					self.collectionView.deleteItems(at: [indexPath])
 					self.previewCollectionView.deleteItems(at: [indexPath])
+					
+					if indexPath.row == 0 {
+						self.collectionView.scrollToItem(at: IndexPath(row: 0, section: indexPath.section), at: [.centeredVertically, .centeredHorizontally], animated: true)
+						self.collectionView.reloadDataWithotAnimationKeepSelect(at: [IndexPath(row: 0, section: indexPath.section)])
+					}
+					
 					self.checkForEmptyCollection()
 				}
 				collectionView.layoutIfNeeded()
@@ -524,15 +535,9 @@ extension MediaViewController: UICollectionViewDelegate, UICollectionViewDataSou
 				case .single:
 					return nil
 				case .grouped:
-					if indexPath.row == 0 {
-						return nil
-					}
+					fallthrough
 				default:
 					return nil
-			}
-		} else {
-			if collectionType == .grouped && indexPath.row == 0 {
-				return nil
 			}
 		}
 		
