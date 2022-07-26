@@ -908,6 +908,9 @@ extension GroupedAssetListViewController {
 							}
 						}
 					}
+					if indexPath.row == 0 {
+						self.collectionView.reloadDataWithotAnimationKeepSelect(at: [IndexPath(row: 0, section: indexPath.section)])
+					}
 				}
 			}
 		}
@@ -992,11 +995,15 @@ extension GroupedAssetListViewController {
 			self.deleteAsset(at: indexPath)
 		}
 		
-		if indexPath.row == 0 {
-			return UIMenu(title: "", children: [fullScreenPreviewAction])
-		} else {
-			return UIMenu(title: "", children: [fullScreenPreviewAction, setAsBestAction, deleteAssetAction])
+		var menu: UIMenu {
+			switch indexPath.row {
+				case 0:
+					return UIMenu(title: "", children: [fullScreenPreviewAction, deleteAssetAction])
+				default:
+					return UIMenu(title: "", children: [fullScreenPreviewAction, setAsBestAction, deleteAssetAction])
+			}
 		}
+		return menu
 	}
 }
 

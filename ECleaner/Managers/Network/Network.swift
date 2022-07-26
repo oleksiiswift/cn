@@ -47,6 +47,14 @@ class Network {
 					debugPrint("connectedViaCellularWithoutInternet")
 					debugPrint("i've got a bad feellings about this")
 					completion(.unreachable)
+				case .connectedViaEthernet:
+					debugPrint("connectedViaEthernet")
+					debugPrint("this is the way")
+					completion(.connedcted)
+				case .connectedViaEthernetWithoutInternet:
+					debugPrint("connectedViaEthernetWithoutInternet")
+					debugPrint("i've got a bad feellings about this")
+					completion(.unreachable)
 				case .connectedViaWiFi:
 					debugPrint("connectedViaWiFi")
 					debugPrint("this is the way")
