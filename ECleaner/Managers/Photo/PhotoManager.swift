@@ -682,7 +682,9 @@ extension PhotoManager {
 							
 							if groupAssets.count >= 2 {
 								let assets = Array(Set(groupAssets))
-								duplicateVideoGroups.append(PhassetGroup(name: "", assets: assets, creationDate: assets.first?.creationDate))
+								if assets.count >= 2 {
+									duplicateVideoGroups.append(PhassetGroup(name: "", assets: assets, creationDate: assets.first?.creationDate))
+								}
 							}
 							
 							self.sendNotification(processing: cleanProcessingType, deepCleanType: .duplicateVideo, singleCleanType: .duplicatedVideo, status: .compare, totalItems: duplicateVideoIDasTuples.count, currentIndex: duplicateVideoIDasTuples.count)

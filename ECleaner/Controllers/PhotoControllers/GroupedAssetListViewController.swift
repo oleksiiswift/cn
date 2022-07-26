@@ -887,6 +887,9 @@ extension GroupedAssetListViewController {
 					let oldGropsValue = self.assetGroups.count
 					let newGroupsValue = self.assetGroups.filter({$0.assets.count != 1})
 					if oldGropsValue != newGroupsValue.count {
+						for asset in self.assetGroups[indexPath.section].assets {
+							self.selectedAssets.removeAll(asset)
+						}
 						self.collectionView.performBatchUpdates {
 							self.collectionView.deleteSections(IndexSet(integer: indexPath.section))
 							self.assetGroups.remove(at: indexPath.section)
@@ -946,12 +949,9 @@ extension GroupedAssetListViewController {
 								self.collectionView.deleteSections(IndexSet(integer: indexPath.section))
 							} completion: { _ in
 								U.delay(1) {
-									
-								
-								self.handleSelectAllButtonSection(indexPath)
-								self.checkForSelectedSection()
-								self.handleActionButtons()
-								
+									self.handleSelectAllButtonSection(indexPath)
+									self.checkForSelectedSection()
+									self.handleActionButtons()
 									self.progressAlertController.closeProgressAnimatedController()
 								}
 							}
