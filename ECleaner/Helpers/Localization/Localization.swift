@@ -12,6 +12,7 @@ struct Localization {
 	
 	static var empty = ""
 	static var dash = "-"
+	static var whitespace = " "
 	static var none = "none"
 	static var replacingString = "%@"
 	
@@ -154,6 +155,8 @@ struct Localization {
 			static var restore = "Restore".localized()
 			static var activate = "Activate".localized()
 			static var changePlan = "Change Plan".localized()
+			static var startBackup = "Start Backup".localized()
+			static var view = "View".localized()
 		}
 	}
 	
@@ -183,6 +186,13 @@ struct Localization {
 		}
 	}
 	
+	struct Backup {
+		static let currentContact = "Current contact:".localized()
+		static let archiveProcessing = "Archived processing...".localized()
+		static let backupCreated = "Backup created:".localized()
+		static let error = "Backup Error".localized()
+	}
+	
 	struct Main {
 		
 		struct Title {
@@ -198,7 +208,7 @@ struct Localization {
 			static let videoCompresion = "Video Compression".localized()
 		}
 		
-		struct MediaCcontentTitle {
+		struct MediaContentTitle {
 			static let similarPhoto = "Similar Photo".localized()
 			static let duplicatePhoto = "Duplicate Photo".localized()
 			static let singleScreenShots = "Screenshots".localized()
@@ -231,6 +241,9 @@ struct Localization {
 			static let memmory = "memmory".localized()
 			static let keepOriginResolution = "keep origin resolution".localized()
 			static let originResolution = "origin resolution".localized()
+			static let email = "Email".localized()
+			static let phone = "Phone Number".localized()
+			static let url = "Url".localized()
 		}
 		
 		struct HeaderTitle {
@@ -263,6 +276,11 @@ struct Localization {
 			
 			static let termsSupport = "Terms & Support".localized()
 			static let system = "System".localized()
+	
+			static let links = "Links".localized()
+			static let contactName = "Contact Name".localized()
+			static let numbers = "Phone Numbers".localized()
+			static let mail = "Email".localized()
 		}
 		
 		struct Descriptions {
@@ -285,6 +303,10 @@ struct Localization {
 			static let compare = "Compare results".localized()
 			static let anayzing = "analyzing".localized()
 			static let searchingComplete = "Searching complete!".localized()
+			static let archiving = "Archiving".localized()
+			static let processing = "Processing".localized()
+			static let tap = "Tap to scan".localized()
+			static let pleaseWait = "Please, wait...".localized()
 			
 			struct ByGrouping {
 				static let similarGroups = "similar groups".localized()

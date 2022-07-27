@@ -80,6 +80,8 @@ enum ButtonType {
 	case restore
 	case activate
 	case changePlan
+	case startBackup
+	case view
 		
 	var rawValue: String {
 		switch self {
@@ -151,6 +153,10 @@ enum ButtonType {
 				return L.Standart.Buttons.activate
 			case .changePlan:
 				return L.Standart.Buttons.changePlan
+			case .startBackup:
+				return L.Standart.Buttons.startBackup
+			case .view:
+				return L.Standart.Buttons.view
 		}
 	}
 }

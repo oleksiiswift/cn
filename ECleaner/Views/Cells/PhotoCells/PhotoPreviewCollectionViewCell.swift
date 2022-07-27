@@ -220,6 +220,10 @@ extension PhotoPreviewCollectionViewCell {
 		self.delegate?.currentPlaingIndexPath(self.indexPath, isPlaying: false)
 	}
 	
+	public func setDeinitMediaPlayer() {
+		self.resetAVPHAssetPreview()
+	}
+	
 	private func handlePlayerButton() {
 		
 		let playerCurrentImage = isPlaying ? I.player.pause : I.player.play

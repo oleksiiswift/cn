@@ -55,7 +55,8 @@ struct Images {
 			static let info = UIImage(named: "infoItem")!
 			static let arrowLeft = UIImage(named: "arrowLeftItem")!
 			static let circleArrow = UIImage(named: "circleRoundedThin")!
-			
+			static let save = UIImage(systemName: "tray.and.arrow.up")!
+			static let xmark = UIImage(systemName: "xmark")!
         }
 		
 		struct helpersItems {
@@ -81,6 +82,9 @@ struct Images {
             static let unavailibleThumb = UIImage(named: "contactsThumbUnselect")!
 			static let backupContacts = UIImage(named: "backupContactsItem")!
 			static let bannerHelperImage = UIImage(named: "cloudSyncConatactItem")!
+			static let cloud = UIImage(named: "cloud-sync")
+			static let archiveBox = UIImage(systemName: "archivebox")!
+			static let processing = UIImage(systemName: "person.3")!
         }
         
         struct photo {
@@ -102,7 +106,6 @@ struct Images {
     }
 	
 	struct setting {
-		static let premiumBanner = UIImage(named: "settingsPremiumBanner")!
 		static let largeVideo = UIImage(named: "photoProcessingEmptyItem")!
 		static let storage = UIImage(named: "photoProcessingEmptyItem")!
 		static let permission = UIImage(named: "photoProcessingEmptyItem")!
@@ -139,6 +142,8 @@ struct Images {
 		static let arrowRight = UIImage(systemName: "arrow.right")!
 		static let connectionLost = UIImage(systemName: "wifi.slash")
 		static let noContent = UIImage(systemName: "exclamationmark.circle")
+		static let persons = UIImage(systemName: "person.2.square.stack")!
+		static let person = UIImage(systemName: "person.circle")!
 	}
 	
 	struct onboarding {

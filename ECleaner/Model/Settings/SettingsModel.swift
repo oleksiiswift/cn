@@ -59,18 +59,7 @@ enum SettingsModel {
 	var gradientColorsForSettings: [UIColor] {
 		return ThemeManager.theme.getColorsGradient(for: self)
 	}
-	
-	var optionalBannerImage: UIImage {
-		switch self {
-			case .premium:
-				return I.setting.premiumBanner
-			case .videoCompress:
-				return I.setting.premiumBanner
-			default:
-				return UIImage()
-		}
-	}
-	
+		
 	var heightForRow: CGFloat {
 		switch self {
 			case .premium:

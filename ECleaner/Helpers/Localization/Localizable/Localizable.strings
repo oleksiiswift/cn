@@ -111,6 +111,8 @@
 "Restore" = "Restore";
 "Activate" = "Activate";
 "Change Plan" = "Change Plan";
+"Start Backup" = "Start Backup";
+"View" = "View";
 
 	//		MARK: - settings -
 	// MARK: title
@@ -132,6 +134,13 @@
 "Facebook" = "Facebook";
 "Telegram" = "Telegram";
 "Email" = "Email";
+
+	// MARK: Backup
+"Current contact:" = "Current contact:";
+"Archived processing..." = "Archived processing...";
+"Backup created:" = "Backup created:";
+"Backup Error" = "Backup Error";
+
 	//		MARK: - main -
 	// MARK: title
 "Settings" = "Settings";
@@ -144,7 +153,7 @@
 "Onboarding" = "Onboarding";
 "Main" = "Main";
 "Video Compression" = "Video Compression";
-	// MARK: MediaCcontentTitle
+	// MARK: MediaContentTitle
 "Similar Photo" = "Similar Photo";
 "Duplicate Photo" = "Duplicate Photo";
 "Screenshots" = "Screenshots";
@@ -175,6 +184,8 @@
 "memmory" = "memmory";
 "keep origin resolution" = "keep origin resolution";
 "origin resolution" = "origin resolution";
+"Phone Number" = "Phone Number";
+"Url" = "Url";
 	// MARK: HeaderTitle
 "Compression Settings" = "Compression Settings";
 "select compression settings" = "select compression settings";
@@ -204,6 +215,10 @@
 
 "Terms & Support" = "Terms & Support";
 "System" = "System";
+"Links" = "Links";
+"Contact Name" = "Contact Name";
+"Phone Numbers" = "Phone Numbers";
+"Emails" = "Emails";
 
 	// MARK: Descriptions
 "These are the permissions the app requires to work properly. Please see description for each permission." = "These are the permissions the app requires to work properly. Please see description for each permission.";
@@ -223,6 +238,11 @@
 "Compare results" = "Compare results";
 "analyzing" = "analyzing";
 "Searching complete!" = "Searching complete!";
+"Archiving" = "Archiving";
+"Processing" = "Processing";
+"Tap to scan" = "Tap to scan";
+"Please, wait..." = "Please, wait...";
+
 	// MARK: ByGrouping
 "similar groups" = "similar groups";
 "duplicated groups" = "duplicated groups";

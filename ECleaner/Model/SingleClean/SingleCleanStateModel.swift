@@ -21,6 +21,7 @@ class SingleCleanStateModel {
 	var mediaType: PhotoMediaType
 	var cleanState: ProcessingProgressOperationState = .sleeping
 	var cleanProgress: CGFloat = 0
+	var contactCleanType: ContactasCleaningType = .none
 	
 	var indexPath: IndexPath {
 		return self.mediaType.singleSearchIndexPath

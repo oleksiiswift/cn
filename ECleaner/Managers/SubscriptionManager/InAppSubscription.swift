@@ -247,6 +247,8 @@ extension InAppSubscription {
 				case .error(error: let error):
 					completion(false)
 					debugPrint(error.localizedDescription)
+				case .deferred(purchase: let detals):
+					debugPrint(detals)
 			}
 		}
 	}

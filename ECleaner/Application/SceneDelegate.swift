@@ -79,7 +79,10 @@ extension SceneDelegate {
 extension SceneDelegate {
 	
 	private func devopmentEnviroment() {
+		/// `handle staring from onboarding`
 //		coordinator?.currentState = .onboarding
+		
+		/// `handle print all notification`
 //		printAllNotifications()
 		
 		Utils.delay(5) {
@@ -87,6 +90,9 @@ extension SceneDelegate {
 			debugPrint("is purchase premium -> \(SubscriptionManager.instance.purchasePremiumHandler())")
 			debugPrint("****")
 		}
+		
+		///  `remove all contacts from store`
+//		ContactsManager.shared.deleteAllContatsFromStore()
 	}
 }
 
