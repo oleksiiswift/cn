@@ -512,6 +512,7 @@ extension GroupedAssetListViewController {
 				self.didSelectAllAssets(at: indexPath, in: sectionHeader)
 			}
 		}
+		self.handleDeleteAssetsButton()
 	}
 	
 	private func checkForEmptyCollection() {
