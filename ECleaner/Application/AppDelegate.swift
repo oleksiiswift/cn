@@ -15,7 +15,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	
         configureApplication(with: launchOptions)
         setDefaults()
-		developmentSettings()
 		setupObserver()
 
         return true
@@ -79,11 +78,6 @@ extension AppDelegate {
 		fileManager.deleteAllFiles(at: .temp) {}
 		fileManager.deleteAllFiles(at: .contactsArcive) {}
 		fileManager.deleteAllFiles(at: .systemTemp) {}
-	}
-	
-	private func developmentSettings() {
-		
-		S.subscripton.allowAdvertisementBanner = false
 	}
 	
 	private func setupObserver() {

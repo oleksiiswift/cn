@@ -173,7 +173,7 @@ extension SettingsViewController {
 		segue.messageView.configureNoDropShadow()
 		segue.messageView.backgroundHeight = Device.isSafeAreaiPhone ? 358 : 338
 		
-		if let destinationViewController = segue.destination as? VideoSpaceSelectorViewController {
+		if let _ = segue.destination as? VideoSpaceSelectorViewController {
 			
 		}
 	}

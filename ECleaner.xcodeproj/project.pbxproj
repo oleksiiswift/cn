@@ -405,6 +405,8 @@
 		97EBE76428927ADF000B3CD3 /* SwiftyStoreKit in Frameworks */ = {isa = PBXBuildFile; productRef = 97EBE76328927ADF000B3CD3 /* SwiftyStoreKit */; };
 		97EBE76728927AF8000B3CD3 /* SwiftMessages in Frameworks */ = {isa = PBXBuildFile; productRef = 97EBE76628927AF8000B3CD3 /* SwiftMessages */; };
 		97EBE76A28927B0C000B3CD3 /* Connectivity in Frameworks */ = {isa = PBXBuildFile; productRef = 97EBE76928927B0C000B3CD3 /* Connectivity */; };
+		97EBE76C2892DDEC000B3CD3 /* test.m4r in Resources */ = {isa = PBXBuildFile; fileRef = 97EBE76B2892DDEC000B3CD3 /* test.m4r */; };
+		97EBE76E2892DF1F000B3CD3 /* mixkit-flock-of-wild-geese-20.wav in Resources */ = {isa = PBXBuildFile; fileRef = 97EBE76D2892DF1F000B3CD3 /* mixkit-flock-of-wild-geese-20.wav */; };
 		97EC82E528685A4A00A32A21 /* ApplicationStartupStateCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97EC82E428685A4A00A32A21 /* ApplicationStartupStateCoordinator.swift */; };
 		97EC82E72868726300A32A21 /* Array+Repeated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97EC82E62868726300A32A21 /* Array+Repeated.swift */; };
 		97EC82E92868EC3E00A32A21 /* Onboarding.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97EC82E82868EC3E00A32A21 /* Onboarding.storyboard */; };
@@ -834,6 +836,8 @@
 		97EB665027B1A4AE00B21EF5 /* CGSize+pixel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGSize+pixel.swift"; sourceTree = "<group>"; };
 		97EB665227B1BC1F00B21EF5 /* UICollectionView+NextItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UICollectionView+NextItem.swift"; sourceTree = "<group>"; };
 		97EBB0232888913E00C1A0C9 /* CheckmarkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckmarkView.swift; sourceTree = "<group>"; };
+		97EBE76B2892DDEC000B3CD3 /* test.m4r */ = {isa = PBXFileReference; lastKnownFileType = file; path = test.m4r; sourceTree = "<group>"; };
+		97EBE76D2892DF1F000B3CD3 /* mixkit-flock-of-wild-geese-20.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "mixkit-flock-of-wild-geese-20.wav"; sourceTree = "<group>"; };
 		97EC82E428685A4A00A32A21 /* ApplicationStartupStateCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationStartupStateCoordinator.swift; sourceTree = "<group>"; };
 		97EC82E62868726300A32A21 /* Array+Repeated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Repeated.swift"; sourceTree = "<group>"; };
 		97EC82E82868EC3E00A32A21 /* Onboarding.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Onboarding.storyboard; sourceTree = "<group>"; };
@@ -2063,6 +2067,8 @@
 		9781313B28192E93001478D3 /* TempFolder */ = {
 			isa = PBXGroup;
 			children = (
+				97EBE76D2892DF1F000B3CD3 /* mixkit-flock-of-wild-geese-20.wav */,
+				97EBE76B2892DDEC000B3CD3 /* test.m4r */,
 				97267758287EB04300D603DC /* File.swift */,
 			);
 			path = TempFolder;
@@ -2790,11 +2796,13 @@
 				97A05B762743D4C200968459 /* SearchBarView.xib in Resources */,
 				04CF00012685F0C3000CA850 /* ContentTypeTableViewCell.xib in Resources */,
 				049CC230268337310002F988 /* MediaTypeCollectionViewCell.xib in Resources */,
+				97EBE76E2892DF1F000B3CD3 /* mixkit-flock-of-wild-geese-20.wav in Resources */,
 				9701D27B27BE78B40078E39F /* SizeSelector.storyboard in Resources */,
 				04467CE6270DA3B200DBBB39 /* DateSelectebleView.xib in Resources */,
 				97B575D12876F2F2000D8FE9 /* CurrentSubscriptionTableViewCell.xib in Resources */,
 				040E288B26A98C790019F372 /* DeepClean.storyboard in Resources */,
 				97DC111127A2B1E000D10FE4 /* MediaPreview.storyboard in Resources */,
+				97EBE76C2892DDEC000B3CD3 /* test.m4r in Resources */,
 				972A2A062805F01E00D6F54A /* VideoPreviewTableViewCell.xib in Resources */,
 				977FE23B273072A2004DE4C3 /* ContactsGroup.storyboard in Resources */,
 				0459DF9326A56DB20085EEDF /* CarouselItemView.xib in Resources */,

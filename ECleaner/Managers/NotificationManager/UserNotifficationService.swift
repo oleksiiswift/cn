@@ -6,6 +6,15 @@
 //
 
 import Foundation
+import UserNotifications
+
+enum NotificationRepeatPattern {
+	case seconds
+	case daily
+	case weekly
+	case monthly
+	case none
+}
 
 class UserNotificationService: NSObject {
 	
@@ -174,6 +183,7 @@ extension UserNotificationService {
 		content.categoryIdentifier = type.identifier
 		content.userInfo = userInfo
 		content.sound = .default
+//		UNNotificationSound(named: UNNotificationSoundName("mixkit-flock-of-wild-geese-20.wav"))
 		
 		let categories = self.cleanNotificationCategory(of: type)
 		let notificationRequest = UNNotificationRequest(identifier: type.request,
@@ -184,18 +194,14 @@ extension UserNotificationService {
 	}
 
 	public func registerNotificationTriger(with rawValue: Int) {
-		
-		var dateComponents = DateComponents()
-		dateComponents.hour = Date().getHour()
-		dateComponents.minute = Date().getMinute()
-		
-		let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
+				
+		let trigger = getRepeatedTrigger(of: .daily)
 		
 		guard let type = UserNotificationType.allCases.first(where: {$0.rawValue == rawValue}) else { return }
 	
 		SettingsManager.notification.setNewRemoteNotificationVaule(value: rawValue + 1)
 		
-		debugPrint("register new notification from \(dateComponents) of type \(type)")
+		debugPrint("register new notification from \(trigger.dateComponents) of type \(type)")
 		
 		self.sendCleanNotification(of: type, with: trigger)
 	}
@@ -207,4 +213,28 @@ extension UserNotificationService {
 		let lastRegisteredNotificationRawValue = SettingsManager.notification.localUserNotificationRawValue
 		self.registerNotificationTriger(with: lastRegisteredNotificationRawValue)
 	}
+	
+	public func getRepeatedTrigger(of type: NotificationRepeatPattern) -> UNCalendarNotificationTrigger {
+		
+		let triggerDate = Date() - 5 * 60
+		
+		switch type {
+			case .seconds:
+				let date = Date().addingTimeInterval(10)
+				return UNCalendarNotificationTrigger(dateMatching: Calendar.current.dateComponents([.second], from: date), repeats: true)
+			case .daily:
+				return UNCalendarNotificationTrigger(dateMatching: Calendar.current.dateComponents([.second], from: triggerDate), repeats: true)
+			case .weekly:
+				return UNCalendarNotificationTrigger(dateMatching: Calendar.current.dateComponents([.timeZone, .weekday, .hour, .minute, .second], from: triggerDate), repeats: true)
+			case .monthly:
+				return UNCalendarNotificationTrigger(dateMatching: Calendar.current.dateComponents([.timeZone, .weekOfMonth, .weekday, .hour, .minute, .second], from: triggerDate), repeats: true)
+			case .none:
+				return UNCalendarNotificationTrigger(dateMatching: Calendar.current.dateComponents([.timeZone, .year, .month, .day, .hour, .minute], from: triggerDate), repeats: true)
+		}
+	}
 }
+
+
+
+
+
