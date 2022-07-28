@@ -23,8 +23,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/airbnb/lottie-ios",
       "state" : {
-        "revision" : "246bab7ef72bad56abefb88e84a08871cecf9cb8",
-        "version" : "3.4.0"
+        "revision" : "b04b773957e3e359730590c2e7c16d8c3874ec50",
+        "version" : "3.4.1"
       }
     },
     {
@@ -32,8 +32,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/marmelroy/PhoneNumberKit",
       "state" : {
-        "branch" : "master",
-        "revision" : "e58be4e8efcd468bd6236791080ec75a330a8f2a"
+        "revision" : "e58be4e8efcd468bd6236791080ec75a330a8f2a",
+        "version" : "3.4.4"
       }
     },
     {
