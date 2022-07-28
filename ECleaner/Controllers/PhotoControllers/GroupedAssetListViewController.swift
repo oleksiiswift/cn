@@ -753,11 +753,68 @@ extension GroupedAssetListViewController: UICollectionViewDelegate, UICollection
 		guard let indexPath = configuration.identifier as? IndexPath,  let cell = collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell else { return nil}
 		
 		let targetPreview = UITargetedPreview(view: cell.photoThumbnailImageView)
-		targetPreview.parameters.backgroundColor = theme.backgroundColor
-		targetPreview.view.backgroundColor = theme.backgroundColor
+		targetPreview.parameters.backgroundColor = .clear
+		targetPreview.view.backgroundColor = .clear
 		
 		return targetPreview
 	}
+	
+	func collectionView(_ collectionView: UICollectionView, willDisplayContextMenu configuration: UIContextMenuConfiguration, animator: UIContextMenuInteractionAnimating?) {
+		DispatchQueue.main.async {
+			if let window = U.application.windows.first {
+				if let view = Utils.Manager.viewByClassName(view: window, className: "_UICutoutShadowView") {
+					view.isHidden = true
+				}
+				if let view = Utils.Manager.viewByClassName(view: window, className: "_UIPortalView") {
+					view.backgroundColor = .clear
+				}
+				if let view = Utils.Manager.viewByClassName(view: window, className: "_UIPlatterTransformView") {
+					view.backgroundColor = .clear
+				}
+				if let view = Utils.Manager.viewByClassName(view: window, className: "_UIPlatterClippingView") {
+					view.backgroundColor = .clear
+				}
+				if let view = Utils.Manager.viewByClassName(view: window, className: "_UIPlatterTransformView") {
+					view.backgroundColor = .clear
+				}
+			}
+		}
+	}
+	
+	func collectionView(_ collectionView: UICollectionView, willEndContextMenuInteraction configuration: UIContextMenuConfiguration, animator: UIContextMenuInteractionAnimating?) {
+		
+		DispatchQueue.main.async {
+			if let window = U.application.windows.first {
+				if let view = Utils.Manager.viewByClassName(view: window, className: "_UICutoutShadowView") {
+					view.isHidden = true
+				}
+				if let view = Utils.Manager.viewByClassName(view: window, className: "_UIPortalView") {
+					view.backgroundColor = .clear
+				}
+				if let view = Utils.Manager.viewByClassName(view: window, className: "_UIPlatterTransformView") {
+					view.backgroundColor = .clear
+				}
+				if let view = Utils.Manager.viewByClassName(view: window, className: "_UIPlatterClippingView") {
+					view.backgroundColor = .clear
+				}
+				if let view = Utils.Manager.viewByClassName(view: window, className: "_UIPlatterTransformView") {
+					view.backgroundColor = .clear
+				}
+			}
+		}
+	}
+	
+	func collectionView(_ collectionView: UICollectionView, previewForDismissingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview? {
+		
+		guard let indexPath = configuration.identifier as? IndexPath,  let cell = collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell else { return nil}
+		
+		let targetPreview = UITargetedPreview(view: cell.photoThumbnailImageView)
+		targetPreview.parameters.backgroundColor = .clear
+		targetPreview.view.backgroundColor = .clear
+		
+		return targetPreview
+	}
+	
 	
 	private func smoothReloadData() {
 		UIView.transition(with: self.collectionView, duration: 0.35, options: .transitionCrossDissolve) {
