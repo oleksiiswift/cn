@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import SwiftMessages
 
 enum Theme: Int {
     case light

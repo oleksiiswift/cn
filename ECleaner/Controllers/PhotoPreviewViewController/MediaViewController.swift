@@ -1,9 +1,9 @@
-//
-//  MediaViewController.swift
-//  ECleaner
-//
-//  Created by alexey sorochan on 27.01.2022.
-//
+	//
+	//  MediaViewController.swift
+	//  ECleaner
+	//
+	//  Created by alexey sorochan on 27.01.2022.
+	//
 
 import UIKit
 import Photos
@@ -35,7 +35,7 @@ class MediaViewController: UIViewController {
 		/// `transition`
 	private lazy var transitionController = ZoomTransitionController()
 	private var currentImage = UIImageView()
-
+	
 	var scrollView = UIScrollView()
 	private var shouldTrackScrolling = true
 	private var currentActivePlayIndexPath: IndexPath?
@@ -62,16 +62,16 @@ class MediaViewController: UIViewController {
 	public var mediaType: PhotoMediaType = .none
 	public var contentType: MediaContentType = .none
 	
-    override func viewDidLoad() {
-        super.viewDidLoad()
+	override func viewDidLoad() {
+		super.viewDidLoad()
 		
 		setupUI()
 		setupCollectionView()
 		updateColors()
 		setupNavigationBar()
 		setupDelegate()
-    }
-
+	}
+	
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 		
@@ -127,7 +127,7 @@ extension MediaViewController {
 	}
 }
 
-//		MARK: - select delegate -
+	//		MARK: - select delegate -
 extension MediaViewController: PhotoCollectionViewCellDelegate {
 	
 	func didShowFullScreenPHasset(at cell: PhotoCollectionViewCell) {}
@@ -211,7 +211,9 @@ extension MediaViewController {
 		let deleteActionImage =    I.systemItems.defaultItems.trashBin.withTintColor(theme.actionTintColor).withRenderingMode(.alwaysTemplate)
 		
 		let setAsBestAction = UIAction(title: LocalizationService.Buttons.getButtonTitle(of: .setAsBest), image: setAsBestActionImage) { _ in
-			self.setAsBest(phasset: phasset, at: indexPath)
+			Utils.delay(0.33) {
+				self.setAsBest(phasset: phasset, at: indexPath)
+			}
 		}
 		
 		let deletePHAssetAction = UIAction(title: LocalizationService.Buttons.getButtonTitle(of: .delete), image: deleteActionImage, attributes: .destructive) { _ in
@@ -225,7 +227,11 @@ extension MediaViewController {
 		switch collectionType {
 			case .grouped:
 				if !isDeepCleaningSelectableFlow {
+					if indexPath.row == 0 {
+						return deleteMenuCollection
+					} else {
 						return deleteAndSetAsBestCollection
+					}
 				} else {
 					return setAsBestMenuCollection
 				}
@@ -245,28 +251,36 @@ extension MediaViewController {
 	private func setAsBest(phasset: PHAsset, at indexPath: IndexPath) {
 		
 		guard let cell = self.collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell else { return }
-		
-		let bestPHAssetIndexPath = IndexPath(row: 0, section: indexPath.section)
+		let bestIndexPath = IndexPath(row: 0, section: indexPath.section)
+		let oldIndexPath = IndexPath(row: 1, section: indexPath.section)
 		self.assetGroups[indexPath.section].assets.move(at: indexPath.row, to: 0)
 		
 		cell.isSelected ? cell.delegate?.didSelect(cell: cell) : ()
 		
+		self.collectionView.scrollToItem(at: bestIndexPath, at: [.centeredVertically, .centeredHorizontally], animated: true)
+		
 		self.collectionView.performBatchUpdates {
-			self.collectionView.moveItem(at: indexPath, to: bestPHAssetIndexPath)
-			self.collectionView.scrollToItem(at: bestPHAssetIndexPath, at: [.centeredVertically, .centeredHorizontally], animated: true)
+			self.collectionView.moveItem(at: indexPath, to: bestIndexPath)
 		} completion: { _ in
-			U.delay(0.3) {
-				self.collectionView.reloadDataWithotAnimationKeepSelect(at: [bestPHAssetIndexPath, IndexPath(row: 1, section: indexPath.section)])
-				self.handleSelectAssetsNavigationCount()
+			Utils.delay(0.3) {
+				if let bestCell = self.collectionView.cellForItem(at: bestIndexPath) as? PhotoCollectionViewCell, let secondCell = self.collectionView.cellForItem(at: oldIndexPath) as? PhotoCollectionViewCell {
+					UIView.transition(with: cell, duration: 0.3, options: .curveEaseInOut) {
+						bestCell.setSelectable(availible: false)
+						bestCell.setupBestView()
+						bestCell.setBestView(availible: true)
+						
+						secondCell.setSelectable(availible: true)
+						secondCell.setBestView(availible: false)
+						
+					} completion: { _ in
+						UIView.performWithoutAnimation {
+							self.previewCollectionView.moveItem(at: indexPath, to: bestIndexPath)
+						}
+					}
+				}
 			}
 		}
-		self.previewCollectionView.performBatchUpdates {
-			self.previewCollectionView.moveItem(at: indexPath, to: bestPHAssetIndexPath)
-		} completion: { _ in
-			U.delay(0.3) {
-				self.previewCollectionView.scrollToItem(at: bestPHAssetIndexPath, at: [.centeredVertically, .centeredHorizontally], animated: true)
-			}
-		}
+		self.handleSelectAssetsNavigationCount()
 	}
 }
 
@@ -291,7 +305,7 @@ extension MediaViewController {
 					return PHAsset()
 			}
 		}
-			
+		
 		let deletePHAssetOperation = self.photoManager.deleteSelectedOperation(assets: [selectedPHAsset], completion: { deleted in
 			if deleted {
 				U.UI {
@@ -305,7 +319,7 @@ extension MediaViewController {
 	}
 	
 	private func updateCollection(with removablePHAsset: PHAsset, at indexPath: IndexPath) {
-	
+		
 		switch collectionType {
 			case .single:
 				self.assetCollection.remove(at: indexPath.row)
@@ -318,27 +332,29 @@ extension MediaViewController {
 					self.checkForEmptyCollection()
 				}
 			case .grouped:
+				collectionView.collectionViewLayout.invalidateLayout()
 				if self.assetGroups[indexPath.section].assets.count == 2 {
 					self.assetGroups.remove(at: indexPath.section)
-					self.collectionView.performBatchUpdates {
-						self.collectionView.deleteSections(IndexSet(integer: indexPath.section))
-					} completion: { _ in }
-					self.previewCollectionView.performBatchUpdates {
-						self.previewCollectionView.deleteSections(IndexSet(integer: indexPath.section))
-					} completion: { _ in
-						self.checkForEmptyCollection()
+					if indexPath.section != 0 {
+						self.collectionView.scrollToItem(at: IndexPath(row: 0, section: indexPath.section - 1), at: [.centeredHorizontally, .centeredVertically], animated: true)
 					}
+					self.collectionView.deleteSections(IndexSet(integer: indexPath.section))
+					self.previewCollectionView.deleteSections(IndexSet(integer: indexPath.section))
+					self.checkForEmptyCollection()
 				} else {
 					self.assetGroups[indexPath.section].assets.remove(at: indexPath.item)
-					self.collectionView.performBatchUpdates {
-						self.collectionView.deleteItems(at: [indexPath])
-					} completion: { _ in }
-					self.previewCollectionView.performBatchUpdates {
-						self.previewCollectionView.deleteItems(at: [indexPath])
-					} completion: { _ in
-						self.checkForEmptyCollection()
+					
+					self.collectionView.deleteItems(at: [indexPath])
+					self.previewCollectionView.deleteItems(at: [indexPath])
+					
+					if indexPath.row == 0 {
+						self.collectionView.scrollToItem(at: IndexPath(row: 0, section: indexPath.section), at: [.centeredVertically, .centeredHorizontally], animated: true)
+						self.collectionView.reloadDataWithotAnimationKeepSelect(at: [IndexPath(row: 0, section: indexPath.section)])
 					}
+					
+					self.checkForEmptyCollection()
 				}
+				collectionView.layoutIfNeeded()
 			default:
 				return
 		}
@@ -367,7 +383,7 @@ extension MediaViewController {
 	}
 }
 
-//		MARK: - collection view setup - and configure -
+	//		MARK: - collection view setup - and configure -
 extension MediaViewController  {
 	
 	private func setupCollectionView() {
@@ -375,7 +391,7 @@ extension MediaViewController  {
 		self.collectionView.register(UINib(nibName: C.identifiers.xibs.photoSimpleCell,
 										   bundle: nil),
 									 forCellWithReuseIdentifier: C.identifiers.cells.photoSimpleCell)
-	
+		
 		self.previewCollectionView.register(UINib(nibName: C.identifiers.xibs.photoPreviewCell, bundle: nil),
 											forCellWithReuseIdentifier: C.identifiers.cells.photoPreviewCell)
 		
@@ -385,7 +401,7 @@ extension MediaViewController  {
 		self.previewCollectionView.showsVerticalScrollIndicator = false
 		self.previewCollectionView.showsHorizontalScrollIndicator = false
 		self.previewCollectionView.contentInset = .zero
-
+		
 		let heightOffset = U.bottomSafeAreaHeight + U.bottomSafeAreaHeight + navigationBarHeightConstraint.constant + carouselCllectionViewHeightConstraint.constant
 		let collectionViewHeight = U.screenHeight - heightOffset
 		let itemInset = AppDimensions.CollectionItemSize.previewCollectionViewItemInset
@@ -398,7 +414,7 @@ extension MediaViewController  {
 		self.previewColletionFlowLayput.headerReferenceSize = .zero
 		
 		self.previewCollectionView.collectionViewLayout = previewColletionFlowLayput
-
+		
 		self.collectionView.dataSource = self
 		self.collectionView.delegate = self
 		self.collectionView.prefetchDataSource = self
@@ -419,7 +435,7 @@ extension MediaViewController  {
 	}
 	
 	private func configure(_ cell: PhotoCollectionViewCell, at indexPath: IndexPath) {
-
+		
 		var asset: PHAsset {
 			switch collectionType {
 				case .grouped:
@@ -476,9 +492,9 @@ extension MediaViewController  {
 	}
 }
 
-//		MARK: - collection view delegate -
+	//		MARK: - collection view delegate -
 extension MediaViewController: UICollectionViewDelegate, UICollectionViewDataSource {
-
+	
 	func numberOfSections(in collectionView: UICollectionView) -> Int {
 		switch collectionType {
 			case .grouped:
@@ -513,6 +529,7 @@ extension MediaViewController: UICollectionViewDelegate, UICollectionViewDataSou
 	}
 	
 	func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
+		self.collectionView.scrollToItem(at: indexPath, at: [.centeredVertically, .centeredHorizontally], animated: true)
 		self.didTapHandlePlayItem(at: indexPath)
 		return false
 	}
@@ -530,23 +547,17 @@ extension MediaViewController: UICollectionViewDelegate, UICollectionViewDataSou
 	}
 	
 	func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
-	
+		
 		guard collectionView == self.collectionView else { return nil }
-				
+		
 		if isDeepCleaningSelectableFlow {
 			switch collectionType {
 				case .single:
 					return nil
 				case .grouped:
-					if indexPath.row == 0 {
-						return nil
-					}
+					fallthrough
 				default:
 					return nil
-			}
-		} else {
-			if collectionType == .grouped && indexPath.row == 0 {
-				return nil
 			}
 		}
 		
@@ -573,16 +584,70 @@ extension MediaViewController: UICollectionViewDelegate, UICollectionViewDataSou
 	
 	func collectionView(_ collectionView: UICollectionView, previewForHighlightingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview? {
 		
-		guard let indexPath = configuration.identifier as? IndexPath, let cell = self.collectionView.cellForItem(at: indexPath) else { return nil}
+		guard let indexPath = configuration.identifier as? IndexPath, let cell = self.collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell else { return nil}
 		
 		let targetPreview = UITargetedPreview(view: cell)
 		targetPreview.parameters.backgroundColor = theme.backgroundColor
 		targetPreview.view.backgroundColor = theme.backgroundColor
 		return targetPreview
 	}
+	
+	func collectionView(_ collectionView: UICollectionView, previewForDismissingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview? {
+		guard let indexPath = configuration.identifier as? IndexPath, let cell = collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell else { return nil}
+		
+		let targetPreview = UITargetedPreview(view: cell)
+		targetPreview.parameters.backgroundColor = theme.backgroundColor
+		targetPreview.view.backgroundColor = theme.backgroundColor
+		return targetPreview
+	}
+	
+	func collectionView(_ collectionView: UICollectionView, willDisplayContextMenu configuration: UIContextMenuConfiguration, animator: UIContextMenuInteractionAnimating?) {
+		DispatchQueue.main.async {
+			if let window = U.application.windows.first {
+				if let view = Utils.Manager.viewByClassName(view: window, className: "_UICutoutShadowView") {
+					view.isHidden = true
+				}
+				if let view = Utils.Manager.viewByClassName(view: window, className: "_UIPortalView") {
+					view.backgroundColor = .clear
+				}
+				if let view = Utils.Manager.viewByClassName(view: window, className: "_UIPlatterTransformView") {
+					view.backgroundColor = .clear
+				}
+				if let view = Utils.Manager.viewByClassName(view: window, className: "_UIPlatterClippingView") {
+					view.backgroundColor = .clear
+				}
+				if let view = Utils.Manager.viewByClassName(view: window, className: "_UIPlatterTransformView") {
+					view.backgroundColor = .clear
+				}
+			}
+		}
+	}
+	
+	func collectionView(_ collectionView: UICollectionView, willEndContextMenuInteraction configuration: UIContextMenuConfiguration, animator: UIContextMenuInteractionAnimating?) {
+		
+		DispatchQueue.main.async {
+			if let window = U.application.windows.first {
+				if let view = Utils.Manager.viewByClassName(view: window, className: "_UICutoutShadowView") {
+					view.isHidden = true
+				}
+				if let view = Utils.Manager.viewByClassName(view: window, className: "_UIPortalView") {
+					view.backgroundColor = .clear
+				}
+				if let view = Utils.Manager.viewByClassName(view: window, className: "_UIPlatterTransformView") {
+					view.backgroundColor = .clear
+				}
+				if let view = Utils.Manager.viewByClassName(view: window, className: "_UIPlatterClippingView") {
+					view.backgroundColor = .clear
+				}
+				if let view = Utils.Manager.viewByClassName(view: window, className: "_UIPlatterTransformView") {
+					view.backgroundColor = .clear
+				}
+			}
+		}
+	}
 }
 
-//		MARK: - prefetch collection view -
+	//		MARK: - prefetch collection view -
 extension MediaViewController: UICollectionViewDataSourcePrefetching {
 	
 	func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
@@ -611,7 +676,7 @@ extension MediaViewController: UICollectionViewDataSourcePrefetching {
 	}
 }
 
-//		MARK: - navigation delegate -
+	//		MARK: - navigation delegate -
 extension MediaViewController: NavigationBarDelegate {
 	
 	func didTapLeftBarButton(_ sender: UIButton) {
@@ -621,12 +686,12 @@ extension MediaViewController: NavigationBarDelegate {
 	func didTapRightBarButton(_ sender: UIButton) {}
 }
 
-//		MARK: - handle track carousel -
+	//		MARK: - handle track carousel -
 extension MediaViewController {
 	
 	private func handleTrackCollection(from: UICollectionView, to: UICollectionView) {
 		let centerPoint = CGPoint(x: from.contentOffset.x + (from.frame.width / 2), y: from.frame.height / 2)
-
+		
 		if shouldTrackScrolling {
 			if let indexPath = from.indexPathForItem(at: centerPoint) {
 				shouldTrackScrolling = false
@@ -682,40 +747,42 @@ extension MediaViewController: PreviewCollectionCellDelegate {
 	}
 }
 
-//		MARK: - scroll view carousel delegate -
+	//		MARK: - scroll view carousel delegate -
 extension MediaViewController: UIScrollViewDelegate {
-
+	
 	public func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-//		if let indexPath = visibleCellIndex, !decelerate {
-//			handleDecelerateScrollCollection(at: indexPath)
-//		}
+			//		if let indexPath = visibleCellIndex, !decelerate {
+			//			handleDecelerateScrollCollection(at: indexPath)
+			//		}
 	}
-
+	
 	public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {}
-
+	
 	public func scrollViewDidScroll(_ scrollView: UIScrollView) {
 		if scrollView === previewCollectionView {
+			debugPrint(" scrollView === previewCollectionView")
 			handleTrackCollection(from: previewCollectionView, to: collectionView)
 		}
-
+		
 		if scrollView === collectionView {
+			debugPrint("scrollView === collectionView")
 			handleTrackCollection(from: collectionView, to: previewCollectionView)
 		}
 	}
 	
 	public func scrollViewWillBeginDecelerating(_ scrollView: UIScrollView) {}
 	
-
+	
 	public func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
 		shouldTrackScrolling = true
 	}
-
+	
 	public func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
 		self.handleActivePlayerIndexPath()
 	}
 }
 
-//		MARK: - setup ui -
+	//		MARK: - setup ui -
 extension MediaViewController {
 	
 	private func setupUI() {
@@ -740,8 +807,8 @@ extension MediaViewController {
 		navigationBar.delegate = self
 		scrollView.delegate = self
 	}
-
-	/// hide transition setup 
+	
+		/// hide transition setup
 	public func setupTransitionConfiguration(from controller: UIViewController, referenceImageView: @escaping ReferenceImageView, referenceImageViewFrameInTransitioningView: @escaping ReferenceImageViewFrame) {
 		
 		controller.navigationController?.delegate = transitionController

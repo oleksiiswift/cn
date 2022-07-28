@@ -512,6 +512,7 @@ extension GroupedAssetListViewController {
 				self.didSelectAllAssets(at: indexPath, in: sectionHeader)
 			}
 		}
+		self.handleDeleteAssetsButton()
 	}
 	
 	private func checkForEmptyCollection() {
@@ -752,11 +753,68 @@ extension GroupedAssetListViewController: UICollectionViewDelegate, UICollection
 		guard let indexPath = configuration.identifier as? IndexPath,  let cell = collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell else { return nil}
 		
 		let targetPreview = UITargetedPreview(view: cell.photoThumbnailImageView)
-		targetPreview.parameters.backgroundColor = theme.backgroundColor
-		targetPreview.view.backgroundColor = theme.backgroundColor
+		targetPreview.parameters.backgroundColor = .clear
+		targetPreview.view.backgroundColor = .clear
 		
 		return targetPreview
 	}
+	
+	func collectionView(_ collectionView: UICollectionView, willDisplayContextMenu configuration: UIContextMenuConfiguration, animator: UIContextMenuInteractionAnimating?) {
+		DispatchQueue.main.async {
+			if let window = U.application.windows.first {
+				if let view = Utils.Manager.viewByClassName(view: window, className: "_UICutoutShadowView") {
+					view.isHidden = true
+				}
+				if let view = Utils.Manager.viewByClassName(view: window, className: "_UIPortalView") {
+					view.backgroundColor = .clear
+				}
+				if let view = Utils.Manager.viewByClassName(view: window, className: "_UIPlatterTransformView") {
+					view.backgroundColor = .clear
+				}
+				if let view = Utils.Manager.viewByClassName(view: window, className: "_UIPlatterClippingView") {
+					view.backgroundColor = .clear
+				}
+				if let view = Utils.Manager.viewByClassName(view: window, className: "_UIPlatterTransformView") {
+					view.backgroundColor = .clear
+				}
+			}
+		}
+	}
+	
+	func collectionView(_ collectionView: UICollectionView, willEndContextMenuInteraction configuration: UIContextMenuConfiguration, animator: UIContextMenuInteractionAnimating?) {
+		
+		DispatchQueue.main.async {
+			if let window = U.application.windows.first {
+				if let view = Utils.Manager.viewByClassName(view: window, className: "_UICutoutShadowView") {
+					view.isHidden = true
+				}
+				if let view = Utils.Manager.viewByClassName(view: window, className: "_UIPortalView") {
+					view.backgroundColor = .clear
+				}
+				if let view = Utils.Manager.viewByClassName(view: window, className: "_UIPlatterTransformView") {
+					view.backgroundColor = .clear
+				}
+				if let view = Utils.Manager.viewByClassName(view: window, className: "_UIPlatterClippingView") {
+					view.backgroundColor = .clear
+				}
+				if let view = Utils.Manager.viewByClassName(view: window, className: "_UIPlatterTransformView") {
+					view.backgroundColor = .clear
+				}
+			}
+		}
+	}
+	
+	func collectionView(_ collectionView: UICollectionView, previewForDismissingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview? {
+		
+		guard let indexPath = configuration.identifier as? IndexPath,  let cell = collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell else { return nil}
+		
+		let targetPreview = UITargetedPreview(view: cell.photoThumbnailImageView)
+		targetPreview.parameters.backgroundColor = .clear
+		targetPreview.view.backgroundColor = .clear
+		
+		return targetPreview
+	}
+	
 	
 	private func smoothReloadData() {
 		UIView.transition(with: self.collectionView, duration: 0.35, options: .transitionCrossDissolve) {
@@ -887,6 +945,9 @@ extension GroupedAssetListViewController {
 					let oldGropsValue = self.assetGroups.count
 					let newGroupsValue = self.assetGroups.filter({$0.assets.count != 1})
 					if oldGropsValue != newGroupsValue.count {
+						for asset in self.assetGroups[indexPath.section].assets {
+							self.selectedAssets.removeAll(asset)
+						}
 						self.collectionView.performBatchUpdates {
 							self.collectionView.deleteSections(IndexSet(integer: indexPath.section))
 							self.assetGroups.remove(at: indexPath.section)
@@ -907,6 +968,9 @@ extension GroupedAssetListViewController {
 								self.progressAlertController.closeProgressAnimatedController()
 							}
 						}
+					}
+					if indexPath.row == 0 {
+						self.collectionView.reloadDataWithotAnimationKeepSelect(at: [IndexPath(row: 0, section: indexPath.section)])
 					}
 				}
 			}
@@ -943,12 +1007,9 @@ extension GroupedAssetListViewController {
 								self.collectionView.deleteSections(IndexSet(integer: indexPath.section))
 							} completion: { _ in
 								U.delay(1) {
-									
-								
-								self.handleSelectAllButtonSection(indexPath)
-								self.checkForSelectedSection()
-								self.handleActionButtons()
-								
+									self.handleSelectAllButtonSection(indexPath)
+									self.checkForSelectedSection()
+									self.handleActionButtons()
 									self.progressAlertController.closeProgressAnimatedController()
 								}
 							}
@@ -992,11 +1053,15 @@ extension GroupedAssetListViewController {
 			self.deleteAsset(at: indexPath)
 		}
 		
-		if indexPath.row == 0 {
-			return UIMenu(title: "", children: [fullScreenPreviewAction])
-		} else {
-			return UIMenu(title: "", children: [fullScreenPreviewAction, setAsBestAction, deleteAssetAction])
+		var menu: UIMenu {
+			switch indexPath.row {
+				case 0:
+					return UIMenu(title: "", children: [fullScreenPreviewAction, deleteAssetAction])
+				default:
+					return UIMenu(title: "", children: [fullScreenPreviewAction, setAsBestAction, deleteAssetAction])
+			}
 		}
+		return menu
 	}
 }
 

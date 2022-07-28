@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 51;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -81,7 +81,6 @@
 		04E5837E267B60F600EDC3A3 /* AlertManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04E5837D267B60F600EDC3A3 /* AlertManager.swift */; };
 		04E58380267B9F6B00EDC3A3 /* PhassetFetchManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04E5837F267B9F6B00EDC3A3 /* PhassetFetchManager.swift */; };
 		04EE29FB269891F30013837D /* PHasset+Thumbnail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04EE29FA269891F30013837D /* PHasset+Thumbnail.swift */; };
-		2001A0C2915698B9A225961C /* Pods_ECleaner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E6C6CFFC143ABD3817A81249 /* Pods_ECleaner.framework */; };
 		4F4A17B9271D812400CAF157 /* StartingNavigationBar.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4F4A17B8271D812400CAF157 /* StartingNavigationBar.xib */; };
 		4F4A17BB271D819F00CAF157 /* StartingNavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F4A17BA271D819F00CAF157 /* StartingNavigationBar.swift */; };
 		4F56073A27205AF300CA19E9 /* GradientCircularProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F56072427205AF100CA19E9 /* GradientCircularProgress.swift */; };
@@ -400,6 +399,14 @@
 		97EB665127B1A4AE00B21EF5 /* CGSize+pixel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97EB665027B1A4AE00B21EF5 /* CGSize+pixel.swift */; };
 		97EB665327B1BC1F00B21EF5 /* UICollectionView+NextItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97EB665227B1BC1F00B21EF5 /* UICollectionView+NextItem.swift */; };
 		97EBB0242888913E00C1A0C9 /* CheckmarkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97EBB0232888913E00C1A0C9 /* CheckmarkView.swift */; };
+		97EBE75B28927A9A000B3CD3 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 97EBE75A28927A9A000B3CD3 /* Lottie */; };
+		97EBE75E28927AAE000B3CD3 /* CocoaImageHashing in Frameworks */ = {isa = PBXBuildFile; productRef = 97EBE75D28927AAE000B3CD3 /* CocoaImageHashing */; };
+		97EBE76128927AC7000B3CD3 /* PhoneNumberKit in Frameworks */ = {isa = PBXBuildFile; productRef = 97EBE76028927AC7000B3CD3 /* PhoneNumberKit */; };
+		97EBE76428927ADF000B3CD3 /* SwiftyStoreKit in Frameworks */ = {isa = PBXBuildFile; productRef = 97EBE76328927ADF000B3CD3 /* SwiftyStoreKit */; };
+		97EBE76728927AF8000B3CD3 /* SwiftMessages in Frameworks */ = {isa = PBXBuildFile; productRef = 97EBE76628927AF8000B3CD3 /* SwiftMessages */; };
+		97EBE76A28927B0C000B3CD3 /* Connectivity in Frameworks */ = {isa = PBXBuildFile; productRef = 97EBE76928927B0C000B3CD3 /* Connectivity */; };
+		97EBE76C2892DDEC000B3CD3 /* test.m4r in Resources */ = {isa = PBXBuildFile; fileRef = 97EBE76B2892DDEC000B3CD3 /* test.m4r */; };
+		97EBE76E2892DF1F000B3CD3 /* mixkit-flock-of-wild-geese-20.wav in Resources */ = {isa = PBXBuildFile; fileRef = 97EBE76D2892DF1F000B3CD3 /* mixkit-flock-of-wild-geese-20.wav */; };
 		97EC82E528685A4A00A32A21 /* ApplicationStartupStateCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97EC82E428685A4A00A32A21 /* ApplicationStartupStateCoordinator.swift */; };
 		97EC82E72868726300A32A21 /* Array+Repeated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97EC82E62868726300A32A21 /* Array+Repeated.swift */; };
 		97EC82E92868EC3E00A32A21 /* Onboarding.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97EC82E82868EC3E00A32A21 /* Onboarding.storyboard */; };
@@ -418,6 +425,19 @@
 		97FC78A22688E5E8000D7F26 /* PhotoCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 97FC78A02688E5E8000D7F26 /* PhotoCollectionViewCell.xib */; };
 		97FDA09C27FB5A0A002BC233 /* SliderShadowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97FDA09B27FB5A0A002BC233 /* SliderShadowView.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		973ACB1C288FFB11004B79EF /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		0405AA58269D77A5004AC07A /* CMtime+StringDuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CMtime+StringDuration.swift"; sourceTree = "<group>"; };
@@ -515,7 +535,6 @@
 		4F56073627205AF200CA19E9 /* OrangeClearStyle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrangeClearStyle.swift; sourceTree = "<group>"; };
 		4F56073727205AF200CA19E9 /* Style.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Style.swift; sourceTree = "<group>"; };
 		4F56073927205AF300CA19E9 /* ColorUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorUtil.swift; sourceTree = "<group>"; };
-		81D1B9EBAF1D92CCA563E435 /* Pods-ECleaner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ECleaner.debug.xcconfig"; path = "Target Support Files/Pods-ECleaner/Pods-ECleaner.debug.xcconfig"; sourceTree = "<group>"; };
 		97011E1527ECCBA600663C8E /* DeepCleanSelectableAssetsDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepCleanSelectableAssetsDelegate.swift; sourceTree = "<group>"; };
 		97011E1927ECCBED00663C8E /* GroupSelectableAssetsDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupSelectableAssetsDelegate.swift; sourceTree = "<group>"; };
 		97011E1B27ECCC0500663C8E /* SimpleSelectableAssetsDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleSelectableAssetsDelegate.swift; sourceTree = "<group>"; };
@@ -817,6 +836,8 @@
 		97EB665027B1A4AE00B21EF5 /* CGSize+pixel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGSize+pixel.swift"; sourceTree = "<group>"; };
 		97EB665227B1BC1F00B21EF5 /* UICollectionView+NextItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UICollectionView+NextItem.swift"; sourceTree = "<group>"; };
 		97EBB0232888913E00C1A0C9 /* CheckmarkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckmarkView.swift; sourceTree = "<group>"; };
+		97EBE76B2892DDEC000B3CD3 /* test.m4r */ = {isa = PBXFileReference; lastKnownFileType = file; path = test.m4r; sourceTree = "<group>"; };
+		97EBE76D2892DF1F000B3CD3 /* mixkit-flock-of-wild-geese-20.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "mixkit-flock-of-wild-geese-20.wav"; sourceTree = "<group>"; };
 		97EC82E428685A4A00A32A21 /* ApplicationStartupStateCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationStartupStateCoordinator.swift; sourceTree = "<group>"; };
 		97EC82E62868726300A32A21 /* Array+Repeated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Repeated.swift"; sourceTree = "<group>"; };
 		97EC82E82868EC3E00A32A21 /* Onboarding.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Onboarding.storyboard; sourceTree = "<group>"; };
@@ -834,8 +855,6 @@
 		97FC789F2688E5E8000D7F26 /* PhotoCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCollectionViewCell.swift; sourceTree = "<group>"; };
 		97FC78A02688E5E8000D7F26 /* PhotoCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PhotoCollectionViewCell.xib; sourceTree = "<group>"; };
 		97FDA09B27FB5A0A002BC233 /* SliderShadowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderShadowView.swift; sourceTree = "<group>"; };
-		D5E1E3293C3C186D5078FB52 /* Pods-ECleaner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ECleaner.release.xcconfig"; path = "Target Support Files/Pods-ECleaner/Pods-ECleaner.release.xcconfig"; sourceTree = "<group>"; };
-		E6C6CFFC143ABD3817A81249 /* Pods_ECleaner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ECleaner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -843,7 +862,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2001A0C2915698B9A225961C /* Pods_ECleaner.framework in Frameworks */,
+				97EBE76128927AC7000B3CD3 /* PhoneNumberKit in Frameworks */,
+				97EBE76428927ADF000B3CD3 /* SwiftyStoreKit in Frameworks */,
+				97EBE75B28927A9A000B3CD3 /* Lottie in Frameworks */,
+				97EBE76A28927B0C000B3CD3 /* Connectivity in Frameworks */,
+				97EBE75E28927AAE000B3CD3 /* CocoaImageHashing in Frameworks */,
+				97EBE76728927AF8000B3CD3 /* SwiftMessages in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1167,8 +1191,6 @@
 			children = (
 				04E0946E267A06B500A69956 /* ECleaner */,
 				04E0946D267A06B500A69956 /* Products */,
-				78535D8DFC85B5DF1D785ED7 /* Pods */,
-				9C660DF0569619D661857567 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -1501,15 +1523,6 @@
 				4F56073927205AF300CA19E9 /* ColorUtil.swift */,
 			);
 			path = Utils;
-			sourceTree = "<group>";
-		};
-		78535D8DFC85B5DF1D785ED7 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				81D1B9EBAF1D92CCA563E435 /* Pods-ECleaner.debug.xcconfig */,
-				D5E1E3293C3C186D5078FB52 /* Pods-ECleaner.release.xcconfig */,
-			);
-			path = Pods;
 			sourceTree = "<group>";
 		};
 		97011E1227ECAD8200663C8E /* PhotoCells */ = {
@@ -2054,6 +2067,8 @@
 		9781313B28192E93001478D3 /* TempFolder */ = {
 			isa = PBXGroup;
 			children = (
+				97EBE76D2892DF1F000B3CD3 /* mixkit-flock-of-wild-geese-20.wav */,
+				97EBE76B2892DDEC000B3CD3 /* test.m4r */,
 				97267758287EB04300D603DC /* File.swift */,
 			);
 			path = TempFolder;
@@ -2688,14 +2703,6 @@
 			path = ContentType;
 			sourceTree = "<group>";
 		};
-		9C660DF0569619D661857567 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				E6C6CFFC143ABD3817A81249 /* Pods_ECleaner.framework */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -2703,17 +2710,24 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 04E09480267A06B900A69956 /* Build configuration list for PBXNativeTarget "ECleaner" */;
 			buildPhases = (
-				7D0FB6662DD590996CCD79B8 /* [CP] Check Pods Manifest.lock */,
 				04E09468267A06B500A69956 /* Sources */,
 				04E09469267A06B500A69956 /* Frameworks */,
 				04E0946A267A06B500A69956 /* Resources */,
-				90C56291C67FB1C8A719E008 /* [CP] Embed Pods Frameworks */,
+				973ACB1C288FFB11004B79EF /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = ECleaner;
+			packageProductDependencies = (
+				97EBE75A28927A9A000B3CD3 /* Lottie */,
+				97EBE75D28927AAE000B3CD3 /* CocoaImageHashing */,
+				97EBE76028927AC7000B3CD3 /* PhoneNumberKit */,
+				97EBE76328927ADF000B3CD3 /* SwiftyStoreKit */,
+				97EBE76628927AF8000B3CD3 /* SwiftMessages */,
+				97EBE76928927B0C000B3CD3 /* Connectivity */,
+			);
 			productName = ECleaner;
 			productReference = 04E0946C267A06B500A69956 /* ECleaner.app */;
 			productType = "com.apple.product-type.application";
@@ -2741,6 +2755,21 @@
 				en,
 			);
 			mainGroup = 04E09463267A06B500A69956;
+			packageReferences = (
+				973ACB05288FEF0F004B79EF /* XCRemoteSwiftPackageReference "lottie-ios" */,
+				973ACB08288FEF5B004B79EF /* XCRemoteSwiftPackageReference "Connectivity" */,
+				973ACB0E288FF01A004B79EF /* XCRemoteSwiftPackageReference "SwiftMessages" */,
+				973ACB18288FF19D004B79EF /* XCRemoteSwiftPackageReference "cocoaimagehashing" */,
+				97EBE74E28927366000B3CD3 /* XCRemoteSwiftPackageReference "SwiftyStoreKit" */,
+				97EBE751289273AD000B3CD3 /* XCRemoteSwiftPackageReference "PhoneNumberKit" */,
+				97EBE7582892792F000B3CD3 /* XCRemoteSwiftPackageReference "cocoaimagehashing" */,
+				97EBE75928927A9A000B3CD3 /* XCRemoteSwiftPackageReference "lottie-ios" */,
+				97EBE75C28927AAE000B3CD3 /* XCRemoteSwiftPackageReference "cocoaimagehashing" */,
+				97EBE75F28927AC7000B3CD3 /* XCRemoteSwiftPackageReference "PhoneNumberKit" */,
+				97EBE76228927ADF000B3CD3 /* XCRemoteSwiftPackageReference "SwiftyStoreKit" */,
+				97EBE76528927AF8000B3CD3 /* XCRemoteSwiftPackageReference "SwiftMessages" */,
+				97EBE76828927B0C000B3CD3 /* XCRemoteSwiftPackageReference "Connectivity" */,
+			);
 			productRefGroup = 04E0946D267A06B500A69956 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -2767,11 +2796,13 @@
 				97A05B762743D4C200968459 /* SearchBarView.xib in Resources */,
 				04CF00012685F0C3000CA850 /* ContentTypeTableViewCell.xib in Resources */,
 				049CC230268337310002F988 /* MediaTypeCollectionViewCell.xib in Resources */,
+				97EBE76E2892DF1F000B3CD3 /* mixkit-flock-of-wild-geese-20.wav in Resources */,
 				9701D27B27BE78B40078E39F /* SizeSelector.storyboard in Resources */,
 				04467CE6270DA3B200DBBB39 /* DateSelectebleView.xib in Resources */,
 				97B575D12876F2F2000D8FE9 /* CurrentSubscriptionTableViewCell.xib in Resources */,
 				040E288B26A98C790019F372 /* DeepClean.storyboard in Resources */,
 				97DC111127A2B1E000D10FE4 /* MediaPreview.storyboard in Resources */,
+				97EBE76C2892DDEC000B3CD3 /* test.m4r in Resources */,
 				972A2A062805F01E00D6F54A /* VideoPreviewTableViewCell.xib in Resources */,
 				977FE23B273072A2004DE4C3 /* ContactsGroup.storyboard in Resources */,
 				0459DF9326A56DB20085EEDF /* CarouselItemView.xib in Resources */,
@@ -2814,48 +2845,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		7D0FB6662DD590996CCD79B8 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-ECleaner-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		90C56291C67FB1C8A719E008 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ECleaner/Pods-ECleaner-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ECleaner/Pods-ECleaner-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ECleaner/Pods-ECleaner-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		04E09468267A06B500A69956 /* Sources */ = {
@@ -3355,7 +3344,6 @@
 		};
 		04E09481267A06B900A69956 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 81D1B9EBAF1D92CCA563E435 /* Pods-ECleaner.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -3369,7 +3357,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.01.6;
+				MARKETING_VERSION = 0.01.7;
 				PRODUCT_BUNDLE_IDENTIFIER = com.phone.clean.cache;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "ECleaner/ECleaner-Bridging-Header.h";
@@ -3381,7 +3369,6 @@
 		};
 		04E09482267A06B900A69956 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D5E1E3293C3C186D5078FB52 /* Pods-ECleaner.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -3395,7 +3382,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.01.6;
+				MARKETING_VERSION = 0.01.7;
 				PRODUCT_BUNDLE_IDENTIFIER = com.phone.clean.cache;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "ECleaner/ECleaner-Bridging-Header.h";
@@ -3426,6 +3413,146 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		973ACB05288FEF0F004B79EF /* XCRemoteSwiftPackageReference "lottie-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/airbnb/lottie-ios";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.0.0;
+			};
+		};
+		973ACB08288FEF5B004B79EF /* XCRemoteSwiftPackageReference "Connectivity" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/rwbutler/Connectivity";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.0;
+			};
+		};
+		973ACB0E288FF01A004B79EF /* XCRemoteSwiftPackageReference "SwiftMessages" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SwiftKickMobile/SwiftMessages";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 9.0.0;
+			};
+		};
+		973ACB18288FF19D004B79EF /* XCRemoteSwiftPackageReference "cocoaimagehashing" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ameingast/cocoaimagehashing";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
+		97EBE74E28927366000B3CD3 /* XCRemoteSwiftPackageReference "SwiftyStoreKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/bizz84/SwiftyStoreKit";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.9.3;
+			};
+		};
+		97EBE751289273AD000B3CD3 /* XCRemoteSwiftPackageReference "PhoneNumberKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/marmelroy/PhoneNumberKit";
+			requirement = {
+				kind = upToNextMinorVersion;
+				minimumVersion = 3.4.0;
+			};
+		};
+		97EBE7582892792F000B3CD3 /* XCRemoteSwiftPackageReference "cocoaimagehashing" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ameingast/cocoaimagehashing";
+			requirement = {
+				kind = upToNextMinorVersion;
+				minimumVersion = 1.9.0;
+			};
+		};
+		97EBE75928927A9A000B3CD3 /* XCRemoteSwiftPackageReference "lottie-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/airbnb/lottie-ios";
+			requirement = {
+				kind = upToNextMinorVersion;
+				minimumVersion = 3.4.0;
+			};
+		};
+		97EBE75C28927AAE000B3CD3 /* XCRemoteSwiftPackageReference "cocoaimagehashing" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ameingast/cocoaimagehashing";
+			requirement = {
+				kind = upToNextMinorVersion;
+				minimumVersion = 1.9.0;
+			};
+		};
+		97EBE75F28927AC7000B3CD3 /* XCRemoteSwiftPackageReference "PhoneNumberKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/marmelroy/PhoneNumberKit";
+			requirement = {
+				kind = upToNextMinorVersion;
+				minimumVersion = 3.4.0;
+			};
+		};
+		97EBE76228927ADF000B3CD3 /* XCRemoteSwiftPackageReference "SwiftyStoreKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/bizz84/SwiftyStoreKit";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.9.3;
+			};
+		};
+		97EBE76528927AF8000B3CD3 /* XCRemoteSwiftPackageReference "SwiftMessages" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SwiftKickMobile/SwiftMessages";
+			requirement = {
+				kind = upToNextMinorVersion;
+				minimumVersion = 9.0.0;
+			};
+		};
+		97EBE76828927B0C000B3CD3 /* XCRemoteSwiftPackageReference "Connectivity" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/rwbutler/Connectivity";
+			requirement = {
+				kind = upToNextMinorVersion;
+				minimumVersion = 5.3.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		97EBE75A28927A9A000B3CD3 /* Lottie */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 97EBE75928927A9A000B3CD3 /* XCRemoteSwiftPackageReference "lottie-ios" */;
+			productName = Lottie;
+		};
+		97EBE75D28927AAE000B3CD3 /* CocoaImageHashing */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 97EBE7582892792F000B3CD3 /* XCRemoteSwiftPackageReference "cocoaimagehashing" */;
+			productName = CocoaImageHashing;
+		};
+		97EBE76028927AC7000B3CD3 /* PhoneNumberKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 97EBE751289273AD000B3CD3 /* XCRemoteSwiftPackageReference "PhoneNumberKit" */;
+			productName = PhoneNumberKit;
+		};
+		97EBE76328927ADF000B3CD3 /* SwiftyStoreKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 97EBE74E28927366000B3CD3 /* XCRemoteSwiftPackageReference "SwiftyStoreKit" */;
+			productName = SwiftyStoreKit;
+		};
+		97EBE76628927AF8000B3CD3 /* SwiftMessages */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 97EBE76528927AF8000B3CD3 /* XCRemoteSwiftPackageReference "SwiftMessages" */;
+			productName = SwiftMessages;
+		};
+		97EBE76928927B0C000B3CD3 /* Connectivity */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 97EBE76828927B0C000B3CD3 /* XCRemoteSwiftPackageReference "Connectivity" */;
+			productName = Connectivity;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 04E09464267A06B500A69956 /* Project object */;
 }

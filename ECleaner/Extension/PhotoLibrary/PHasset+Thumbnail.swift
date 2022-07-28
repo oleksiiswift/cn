@@ -49,4 +49,18 @@ extension PHAsset {
         }
         return result
     }
+	
+	func getVideoData(completionHandler: @escaping (_ data: NSData?) -> Void) {
+		  let manager = PHCachingImageManager.default
+		  let option = PHImageRequestOptions()
+		  option.isSynchronous = true
+			  
+		  manager().requestAVAsset(forVideo: self, options: nil) { (asset, audioMix, info) in
+			  if let asset = asset as? AVURLAsset, let data = NSData(contentsOf: asset.url) {
+				  completionHandler(data)
+			  } else {
+				  completionHandler(nil)
+			  }
+		  }
+	  }
 }

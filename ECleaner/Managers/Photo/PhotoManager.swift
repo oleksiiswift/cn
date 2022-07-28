@@ -383,9 +383,6 @@ extension PhotoManager {
 		self.clearPHAssetRequests()
 	}
 
-	
-	
-	
 	public func getPHAssetFileSizeFromData(_ asset: PHAsset, completionHandler: @escaping (_ fileSize: Int64) -> Void) {
 		
 		let options = PHImageRequestOptions()
@@ -684,7 +681,10 @@ extension PhotoManager {
 							})
 							
 							if groupAssets.count >= 2 {
-								duplicateVideoGroups.append(PhassetGroup(name: "", assets: groupAssets, creationDate: groupAssets.first?.creationDate))
+								let assets = Array(Set(groupAssets))
+								if assets.count >= 2 {
+									duplicateVideoGroups.append(PhassetGroup(name: "", assets: assets, creationDate: assets.first?.creationDate))
+								}
 							}
 							
 							self.sendNotification(processing: cleanProcessingType, deepCleanType: .duplicateVideo, singleCleanType: .duplicatedVideo, status: .compare, totalItems: duplicateVideoIDasTuples.count, currentIndex: duplicateVideoIDasTuples.count)
