@@ -19,11 +19,6 @@ class SubscriptionService {
 				return Subscription.shared.products
 			} else {
 				let products = try await Product.products(for: productsIDs)
-				
-				for product in products {
-					debugPrint(product)
-				}
-				
 				Subscription.shared.products = products
 				return products
 			}

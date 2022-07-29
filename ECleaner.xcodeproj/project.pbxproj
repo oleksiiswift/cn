@@ -368,6 +368,7 @@
 		97CE4499273D305900DF6114 /* NavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CE4498273D305900DF6114 /* NavigationBar.swift */; };
 		97CE449B273D307700DF6114 /* NavigationBar.xib in Resources */ = {isa = PBXBuildFile; fileRef = 97CE449A273D307700DF6114 /* NavigationBar.xib */; };
 		97CE449D273D311400DF6114 /* NavigationBarDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CE449C273D311400DF6114 /* NavigationBarDelegate.swift */; };
+		97D030302893F6ED002181DC /* fading-colourized-percussion_150bpm_B_major.wav in Resources */ = {isa = PBXBuildFile; fileRef = 97D0302F2893F6ED002181DC /* fading-colourized-percussion_150bpm_B_major.wav */; };
 		97D0BABD2680AD6E0067A3A6 /* String+NSDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97D0BABC2680AD6E0067A3A6 /* String+NSDate.swift */; };
 		97D2BEC6275A292E002082EB /* OperationProcessingQueuer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97D2BEC5275A292E002082EB /* OperationProcessingQueuer.swift */; };
 		97D2BEC8275A2AA2002082EB /* OperationServiceQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97D2BEC7275A2AA2002082EB /* OperationServiceQueue.swift */; };
@@ -405,8 +406,6 @@
 		97EBE76428927ADF000B3CD3 /* SwiftyStoreKit in Frameworks */ = {isa = PBXBuildFile; productRef = 97EBE76328927ADF000B3CD3 /* SwiftyStoreKit */; };
 		97EBE76728927AF8000B3CD3 /* SwiftMessages in Frameworks */ = {isa = PBXBuildFile; productRef = 97EBE76628927AF8000B3CD3 /* SwiftMessages */; };
 		97EBE76A28927B0C000B3CD3 /* Connectivity in Frameworks */ = {isa = PBXBuildFile; productRef = 97EBE76928927B0C000B3CD3 /* Connectivity */; };
-		97EBE76C2892DDEC000B3CD3 /* test.m4r in Resources */ = {isa = PBXBuildFile; fileRef = 97EBE76B2892DDEC000B3CD3 /* test.m4r */; };
-		97EBE76E2892DF1F000B3CD3 /* mixkit-flock-of-wild-geese-20.wav in Resources */ = {isa = PBXBuildFile; fileRef = 97EBE76D2892DF1F000B3CD3 /* mixkit-flock-of-wild-geese-20.wav */; };
 		97EC82E528685A4A00A32A21 /* ApplicationStartupStateCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97EC82E428685A4A00A32A21 /* ApplicationStartupStateCoordinator.swift */; };
 		97EC82E72868726300A32A21 /* Array+Repeated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97EC82E62868726300A32A21 /* Array+Repeated.swift */; };
 		97EC82E92868EC3E00A32A21 /* Onboarding.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97EC82E82868EC3E00A32A21 /* Onboarding.storyboard */; };
@@ -805,6 +804,7 @@
 		97CE4498273D305900DF6114 /* NavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationBar.swift; sourceTree = "<group>"; };
 		97CE449A273D307700DF6114 /* NavigationBar.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NavigationBar.xib; sourceTree = "<group>"; };
 		97CE449C273D311400DF6114 /* NavigationBarDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationBarDelegate.swift; sourceTree = "<group>"; };
+		97D0302F2893F6ED002181DC /* fading-colourized-percussion_150bpm_B_major.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "fading-colourized-percussion_150bpm_B_major.wav"; sourceTree = "<group>"; };
 		97D0BABC2680AD6E0067A3A6 /* String+NSDate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+NSDate.swift"; sourceTree = "<group>"; };
 		97D2BEC5275A292E002082EB /* OperationProcessingQueuer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperationProcessingQueuer.swift; sourceTree = "<group>"; };
 		97D2BEC7275A2AA2002082EB /* OperationServiceQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperationServiceQueue.swift; sourceTree = "<group>"; };
@@ -836,8 +836,6 @@
 		97EB665027B1A4AE00B21EF5 /* CGSize+pixel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGSize+pixel.swift"; sourceTree = "<group>"; };
 		97EB665227B1BC1F00B21EF5 /* UICollectionView+NextItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UICollectionView+NextItem.swift"; sourceTree = "<group>"; };
 		97EBB0232888913E00C1A0C9 /* CheckmarkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckmarkView.swift; sourceTree = "<group>"; };
-		97EBE76B2892DDEC000B3CD3 /* test.m4r */ = {isa = PBXFileReference; lastKnownFileType = file; path = test.m4r; sourceTree = "<group>"; };
-		97EBE76D2892DF1F000B3CD3 /* mixkit-flock-of-wild-geese-20.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "mixkit-flock-of-wild-geese-20.wav"; sourceTree = "<group>"; };
 		97EC82E428685A4A00A32A21 /* ApplicationStartupStateCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationStartupStateCoordinator.swift; sourceTree = "<group>"; };
 		97EC82E62868726300A32A21 /* Array+Repeated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Repeated.swift"; sourceTree = "<group>"; };
 		97EC82E82868EC3E00A32A21 /* Onboarding.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Onboarding.storyboard; sourceTree = "<group>"; };
@@ -1396,6 +1394,7 @@
 		04E58367267A3F8F00EDC3A3 /* Assets */ = {
 			isa = PBXGroup;
 			children = (
+				97D0302F2893F6ED002181DC /* fading-colourized-percussion_150bpm_B_major.wav */,
 				97879B29286A667C0040A8F7 /* LottieAnimation */,
 				04E09478267A06B900A69956 /* Assets.xcassets */,
 			);
@@ -2067,8 +2066,6 @@
 		9781313B28192E93001478D3 /* TempFolder */ = {
 			isa = PBXGroup;
 			children = (
-				97EBE76D2892DF1F000B3CD3 /* mixkit-flock-of-wild-geese-20.wav */,
-				97EBE76B2892DDEC000B3CD3 /* test.m4r */,
 				97267758287EB04300D603DC /* File.swift */,
 			);
 			path = TempFolder;
@@ -2756,17 +2753,10 @@
 			);
 			mainGroup = 04E09463267A06B500A69956;
 			packageReferences = (
-				973ACB05288FEF0F004B79EF /* XCRemoteSwiftPackageReference "lottie-ios" */,
-				973ACB08288FEF5B004B79EF /* XCRemoteSwiftPackageReference "Connectivity" */,
-				973ACB0E288FF01A004B79EF /* XCRemoteSwiftPackageReference "SwiftMessages" */,
-				973ACB18288FF19D004B79EF /* XCRemoteSwiftPackageReference "cocoaimagehashing" */,
 				97EBE74E28927366000B3CD3 /* XCRemoteSwiftPackageReference "SwiftyStoreKit" */,
 				97EBE751289273AD000B3CD3 /* XCRemoteSwiftPackageReference "PhoneNumberKit" */,
 				97EBE7582892792F000B3CD3 /* XCRemoteSwiftPackageReference "cocoaimagehashing" */,
 				97EBE75928927A9A000B3CD3 /* XCRemoteSwiftPackageReference "lottie-ios" */,
-				97EBE75C28927AAE000B3CD3 /* XCRemoteSwiftPackageReference "cocoaimagehashing" */,
-				97EBE75F28927AC7000B3CD3 /* XCRemoteSwiftPackageReference "PhoneNumberKit" */,
-				97EBE76228927ADF000B3CD3 /* XCRemoteSwiftPackageReference "SwiftyStoreKit" */,
 				97EBE76528927AF8000B3CD3 /* XCRemoteSwiftPackageReference "SwiftMessages" */,
 				97EBE76828927B0C000B3CD3 /* XCRemoteSwiftPackageReference "Connectivity" */,
 			);
@@ -2796,13 +2786,11 @@
 				97A05B762743D4C200968459 /* SearchBarView.xib in Resources */,
 				04CF00012685F0C3000CA850 /* ContentTypeTableViewCell.xib in Resources */,
 				049CC230268337310002F988 /* MediaTypeCollectionViewCell.xib in Resources */,
-				97EBE76E2892DF1F000B3CD3 /* mixkit-flock-of-wild-geese-20.wav in Resources */,
 				9701D27B27BE78B40078E39F /* SizeSelector.storyboard in Resources */,
 				04467CE6270DA3B200DBBB39 /* DateSelectebleView.xib in Resources */,
 				97B575D12876F2F2000D8FE9 /* CurrentSubscriptionTableViewCell.xib in Resources */,
 				040E288B26A98C790019F372 /* DeepClean.storyboard in Resources */,
 				97DC111127A2B1E000D10FE4 /* MediaPreview.storyboard in Resources */,
-				97EBE76C2892DDEC000B3CD3 /* test.m4r in Resources */,
 				972A2A062805F01E00D6F54A /* VideoPreviewTableViewCell.xib in Resources */,
 				977FE23B273072A2004DE4C3 /* ContactsGroup.storyboard in Resources */,
 				0459DF9326A56DB20085EEDF /* CarouselItemView.xib in Resources */,
@@ -2832,6 +2820,7 @@
 				972A2A0128057D6700D6F54A /* CompressionSettingsTableViewCell.xib in Resources */,
 				97FC78A22688E5E8000D7F26 /* PhotoCollectionViewCell.xib in Resources */,
 				975AF43E2728987500744E3B /* Contacts.storyboard in Resources */,
+				97D030302893F6ED002181DC /* fading-colourized-percussion_150bpm_B_major.wav in Resources */,
 				97C4D72627F3825000C476FE /* PhotoPreviewCollectionViewCell.xib in Resources */,
 				97879B16286A411F0040A8F7 /* video.json in Resources */,
 				97420C03283EC76400B0E134 /* PermissionBannerTableViewCell.xib in Resources */,
@@ -3415,38 +3404,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		973ACB05288FEF0F004B79EF /* XCRemoteSwiftPackageReference "lottie-ios" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/airbnb/lottie-ios";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 3.0.0;
-			};
-		};
-		973ACB08288FEF5B004B79EF /* XCRemoteSwiftPackageReference "Connectivity" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/rwbutler/Connectivity";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 5.0.0;
-			};
-		};
-		973ACB0E288FF01A004B79EF /* XCRemoteSwiftPackageReference "SwiftMessages" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/SwiftKickMobile/SwiftMessages";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 9.0.0;
-			};
-		};
-		973ACB18288FF19D004B79EF /* XCRemoteSwiftPackageReference "cocoaimagehashing" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/ameingast/cocoaimagehashing";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.0;
-			};
-		};
 		97EBE74E28927366000B3CD3 /* XCRemoteSwiftPackageReference "SwiftyStoreKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/bizz84/SwiftyStoreKit";
@@ -3477,30 +3434,6 @@
 			requirement = {
 				kind = upToNextMinorVersion;
 				minimumVersion = 3.4.0;
-			};
-		};
-		97EBE75C28927AAE000B3CD3 /* XCRemoteSwiftPackageReference "cocoaimagehashing" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/ameingast/cocoaimagehashing";
-			requirement = {
-				kind = upToNextMinorVersion;
-				minimumVersion = 1.9.0;
-			};
-		};
-		97EBE75F28927AC7000B3CD3 /* XCRemoteSwiftPackageReference "PhoneNumberKit" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/marmelroy/PhoneNumberKit";
-			requirement = {
-				kind = upToNextMinorVersion;
-				minimumVersion = 3.4.0;
-			};
-		};
-		97EBE76228927ADF000B3CD3 /* XCRemoteSwiftPackageReference "SwiftyStoreKit" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/bizz84/SwiftyStoreKit";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.9.3;
 			};
 		};
 		97EBE76528927AF8000B3CD3 /* XCRemoteSwiftPackageReference "SwiftMessages" */ = {

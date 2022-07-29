@@ -40,8 +40,8 @@ extension UserNotificationService: UNUserNotificationCenterDelegate {
 	func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification) async -> UNNotificationPresentationOptions {
 		let lastUsageDay = SettingsManager.application.lastApplicationUsage.getDay()
 		let today = Date().getDay()
-		
-		if lastUsageDay == today {
+		self.registerRemoteNotification()
+		if lastUsageDay != today {
 			return UNNotificationPresentationOptions(arrayLiteral: [.alert, .sound, .badge])
 		} else {
 			return []
@@ -182,8 +182,7 @@ extension UserNotificationService {
 		content.body = type.notificationBodyText.body
 		content.categoryIdentifier = type.identifier
 		content.userInfo = userInfo
-		content.sound = .default
-//		UNNotificationSound(named: UNNotificationSoundName("mixkit-flock-of-wild-geese-20.wav"))
+		content.sound = UNNotificationSound(named: UNNotificationSoundName("fading-colourized-percussion_150bpm_B_major.wav"))
 		
 		let categories = self.cleanNotificationCategory(of: type)
 		let notificationRequest = UNNotificationRequest(identifier: type.request,
@@ -194,7 +193,7 @@ extension UserNotificationService {
 	}
 
 	public func registerNotificationTriger(with rawValue: Int) {
-				
+		/// `set notification period`
 		let trigger = getRepeatedTrigger(of: .daily)
 		
 		guard let type = UserNotificationType.allCases.first(where: {$0.rawValue == rawValue}) else { return }
@@ -216,25 +215,28 @@ extension UserNotificationService {
 	
 	public func getRepeatedTrigger(of type: NotificationRepeatPattern) -> UNCalendarNotificationTrigger {
 		
-		let triggerDate = Date() - 5 * 60
-		
 		switch type {
 			case .seconds:
 				let date = Date().addingTimeInterval(10)
 				return UNCalendarNotificationTrigger(dateMatching: Calendar.current.dateComponents([.second], from: date), repeats: true)
 			case .daily:
-				return UNCalendarNotificationTrigger(dateMatching: Calendar.current.dateComponents([.second], from: triggerDate), repeats: true)
+				var dayComponent = DateComponents()
+				dayComponent.day = 1
+				let nexDay = Calendar.current.date(byAdding: dayComponent, to: Date())
+				var triggerDay = Calendar.current.dateComponents(in: .current, from: nexDay!)
+				triggerDay.hour = .random(in: 10...20)
+				triggerDay.minute = .random(in: 1...50)
+				return UNCalendarNotificationTrigger(dateMatching: triggerDay, repeats: true)
 			case .weekly:
+				let triggerDate = Date() - 5 * 60
 				return UNCalendarNotificationTrigger(dateMatching: Calendar.current.dateComponents([.timeZone, .weekday, .hour, .minute, .second], from: triggerDate), repeats: true)
 			case .monthly:
+				let triggerDate = Date() - 5 * 60
 				return UNCalendarNotificationTrigger(dateMatching: Calendar.current.dateComponents([.timeZone, .weekOfMonth, .weekday, .hour, .minute, .second], from: triggerDate), repeats: true)
 			case .none:
+				let triggerDate = Date() - 5 * 60
 				return UNCalendarNotificationTrigger(dateMatching: Calendar.current.dateComponents([.timeZone, .year, .month, .day, .hour, .minute], from: triggerDate), repeats: true)
 		}
 	}
 }
-
-
-
-
 
