@@ -248,7 +248,7 @@ struct Localization {
 		
 		struct HeaderTitle {
 			static let compressionSettings = "Compression Settings".localized()
-			static let selectCompressionSettings = "select compression settings".localized()
+			static let selectCompressionSettings = "Select Compression Settings".localized()
 			static let selectFileFormat = "Select Format of File".localized()
 			static let sinceLastClean = "Since the Last Cleaning".localized()
 			static let selectLower = "Select Lower Date".localized()
