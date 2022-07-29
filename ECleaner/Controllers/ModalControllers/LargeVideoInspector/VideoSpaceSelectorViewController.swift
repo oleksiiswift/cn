@@ -35,17 +35,17 @@ enum LargeVideoSize: CaseIterable {
 	var titleForValue: String {
 		switch self {
 			case .superLow:
-				return "300 MB"
+				return "300MB"
 			case .low:
-				return "550 MB"
+				return "550MB"
 			case .medium:
-				return "750 MB"
+				return "750MB"
 			case .midleHight:
-				return "1.5 GB"
+				return "1.5GB"
 			case .hight:
-				return "2 GB"
+				return "2GB"
 			case .superHight:
-				return "3 GB"
+				return "3GB"
 		}
 	}
 }
@@ -180,22 +180,21 @@ extension VideoSpaceSelectorViewController {
 	private func stepSliderSetup() {
 		
 		let sizeValues: [String] = LargeVideoSize.allCases.map({$0.titleForValue})
-		
+	
 		sizeControll.maxCount = 6
 		sizeControll.enableHapticFeedback = true
 		
 		sizeControll.setTrackCircleImage(I.systemItems.helpersItems.segmentDotSlider, for: .selected)
 		sizeControll.setTrackCircleImage(I.systemItems.helpersItems.segmentDotSlider, for: .normal)
-		sizeControll.sliderCircleRadius = 10
-		sizeControll.trackCircleRadius = 12
+		sizeControll.sliderCircleRadius = 6
+		sizeControll.trackCircleRadius = 0
 		
 		sizeControll.trackHeight = 4
-		sizeControll.labelColor = theme.titleTextColor
-		sizeControll.labelFont = .systemFont(ofSize: 12, weight: .medium)
+		sizeControll.labelFont = FontManager.modalSettingsFont(of: .subTitle)
 
 		sizeControll.labels = sizeValues
 		sizeControll.labelOffset = CGFloat(5)
-	
+		
 		sliderContainerView.addSubview(sizeControll)
 		sizeControll.translatesAutoresizingMaskIntoConstraints = false
 		
@@ -230,9 +229,10 @@ extension VideoSpaceSelectorViewController: Themeble {
 		bottomButtonView.updateColorsSettings()
 		
 		sizeControll.trackColor = theme.sliderUntrackBackgroundColor
-		sizeControll.tintColor = theme.sliderUntrackBackgroundColor
+		sizeControll.tintColor = theme.videosTintColor
 		sizeControll.backgroundColor = .clear
 		sizeControll.sliderCircleColor = theme.sliderCircleBackroundColor
+		sizeControll.labelColor = theme.subTitleTextColor
 	}
 }
 

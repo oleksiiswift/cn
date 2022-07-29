@@ -104,7 +104,7 @@
 "Submit" = "Submit";
 "Reset to Default" = "Reset to Default";
 "Remove Audio" = "Remove Audio";
-"origin" = "Remove Audio";
+"origin" = "origin";
 "manual" = "manual";
 "Skip" = "Skip";
 "Next" = "Next";
@@ -188,7 +188,7 @@
 "Url" = "Url";
 	// MARK: HeaderTitle
 "Compression Settings" = "Compression Settings";
-"select compression settings" = "select compression settings";
+"Select Compression Settings" = "Select Compression Settings";
 "Select Format of File" = "Select Format of File";
 "Since the Last Cleaning" = "Since the Last Cleaning";
 "Select Lower Date" = "Select Lower Date";
