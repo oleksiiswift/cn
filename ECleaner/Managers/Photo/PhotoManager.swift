@@ -1440,6 +1440,23 @@ extension PhotoManager {
 			completionHandler(videoPHAssets)
 		}
 	}
+	
+	public func getVideoCollection(with key: SortingDesriptionKey, completionHandler: @escaping (_ phassets: [PHAsset]) -> Void) {
+		
+		switch key {
+				
+			case .creationDate, .modificationDate, .duration:
+				self.fetchManager.fetchVideo(with: key) { videoPhassets in
+					completionHandler(videoPhassets)
+				}
+			case .pixelWidth, .pixelHeight:
+				debugPrint("selected pixel")
+			case .fileSize:
+				debugPrint("selected file size")
+			default:
+				return
+		}
+	}
 }
 
 	/// `notification sections`

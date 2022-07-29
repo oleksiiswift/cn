@@ -369,6 +369,9 @@
 		97CE449B273D307700DF6114 /* NavigationBar.xib in Resources */ = {isa = PBXBuildFile; fileRef = 97CE449A273D307700DF6114 /* NavigationBar.xib */; };
 		97CE449D273D311400DF6114 /* NavigationBarDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CE449C273D311400DF6114 /* NavigationBarDelegate.swift */; };
 		97D030302893F6ED002181DC /* fading-colourized-percussion_150bpm_B_major.wav in Resources */ = {isa = PBXBuildFile; fileRef = 97D0302F2893F6ED002181DC /* fading-colourized-percussion_150bpm_B_major.wav */; };
+		97D03032289482D7002181DC /* VideoCollectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97D03031289482D7002181DC /* VideoCollectionViewModel.swift */; };
+		97D0303428948400002181DC /* VideoCollectionDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97D0303328948400002181DC /* VideoCollectionDataSource.swift */; };
+		97D030362894918B002181DC /* SortingType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97D030352894918B002181DC /* SortingType.swift */; };
 		97D0BABD2680AD6E0067A3A6 /* String+NSDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97D0BABC2680AD6E0067A3A6 /* String+NSDate.swift */; };
 		97D2BEC6275A292E002082EB /* OperationProcessingQueuer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97D2BEC5275A292E002082EB /* OperationProcessingQueuer.swift */; };
 		97D2BEC8275A2AA2002082EB /* OperationServiceQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97D2BEC7275A2AA2002082EB /* OperationServiceQueue.swift */; };
@@ -805,6 +808,9 @@
 		97CE449A273D307700DF6114 /* NavigationBar.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NavigationBar.xib; sourceTree = "<group>"; };
 		97CE449C273D311400DF6114 /* NavigationBarDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationBarDelegate.swift; sourceTree = "<group>"; };
 		97D0302F2893F6ED002181DC /* fading-colourized-percussion_150bpm_B_major.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "fading-colourized-percussion_150bpm_B_major.wav"; sourceTree = "<group>"; };
+		97D03031289482D7002181DC /* VideoCollectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoCollectionViewModel.swift; sourceTree = "<group>"; };
+		97D0303328948400002181DC /* VideoCollectionDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoCollectionDataSource.swift; sourceTree = "<group>"; };
+		97D030352894918B002181DC /* SortingType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortingType.swift; sourceTree = "<group>"; };
 		97D0BABC2680AD6E0067A3A6 /* String+NSDate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+NSDate.swift"; sourceTree = "<group>"; };
 		97D2BEC5275A292E002082EB /* OperationProcessingQueuer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperationProcessingQueuer.swift; sourceTree = "<group>"; };
 		97D2BEC7275A2AA2002082EB /* OperationServiceQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperationServiceQueue.swift; sourceTree = "<group>"; };
@@ -1623,9 +1629,12 @@
 			isa = PBXGroup;
 			children = (
 				9710284F28032602003CBF7E /* VideoCollectionCompressingViewController.swift */,
+				97D03031289482D7002181DC /* VideoCollectionViewModel.swift */,
+				97D0303328948400002181DC /* VideoCollectionDataSource.swift */,
 				9710285328038274003CBF7E /* VideoCompressingViewController.swift */,
 				972A29F628057B7300D6F54A /* CompressingSettingsDataSource.swift */,
 				9745CC1A280765D900335C04 /* VideoCompressionCustomSettingsViewController.swift */,
+				97D030352894918B002181DC /* SortingType.swift */,
 			);
 			path = VideoProcessing;
 			sourceTree = "<group>";
@@ -2750,6 +2759,7 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				Base,
 			);
 			mainGroup = 04E09463267A06B500A69956;
 			packageReferences = (
@@ -2929,6 +2939,7 @@
 				97410502286B950A00277E86 /* FontManager+Onboarding.swift in Sources */,
 				97C44FBD274EF959001B61AB /* ContactsContainerType.swift in Sources */,
 				97B575CC2876C8E9000D8FE9 /* PremiumFeaturesSubscriptionTableViewCell.swift in Sources */,
+				97D03032289482D7002181DC /* VideoCollectionViewModel.swift in Sources */,
 				97B01A7F2747CB8C00DDE03C /* ExportContactsViewController.swift in Sources */,
 				97B8CFED283CC54D00F3E4E6 /* Subscriptions.swift in Sources */,
 				97A17F5528363A4900591409 /* FontManager+ModalSettings.swift in Sources */,
@@ -3066,6 +3077,7 @@
 				049CC22F268337310002F988 /* MediaTypeCollectionViewCell.swift in Sources */,
 				049CC21D268225F80002F988 /* ThemeManager.swift in Sources */,
 				9793185A282163A200769BEB /* NSAttributedString.swift in Sources */,
+				97D030362894918B002181DC /* SortingType.swift in Sources */,
 				97DDCAB2280873EA0093D5F5 /* StepSlider+Extension.swift in Sources */,
 				979318582820857900769BEB /* ContentBannerInfoModel.swift in Sources */,
 				9785ED84288AD94D0026EFFD /* ContactSection.swift in Sources */,
@@ -3167,6 +3179,7 @@
 				972A29F2280572FC00D6F54A /* CompressingSection.swift in Sources */,
 				9745CC1B280765DA00335C04 /* VideoCompressionCustomSettingsViewController.swift in Sources */,
 				9701D27027BD39540078E39F /* SettingsDataSource.swift in Sources */,
+				97D0303428948400002181DC /* VideoCollectionDataSource.swift in Sources */,
 				97B8CFEB283CC4DE00F3E4E6 /* SubscriptionManager.swift in Sources */,
 				976D8BB52878A33700761830 /* UIImage+Rotate.swift in Sources */,
 				4F56074A27205AF300CA19E9 /* ColorUtil.swift in Sources */,
@@ -3346,7 +3359,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.01.7;
+				MARKETING_VERSION = 0.01.8;
 				PRODUCT_BUNDLE_IDENTIFIER = com.phone.clean.cache;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "ECleaner/ECleaner-Bridging-Header.h";
@@ -3371,7 +3384,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.01.7;
+				MARKETING_VERSION = 0.01.8;
 				PRODUCT_BUNDLE_IDENTIFIER = com.phone.clean.cache;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "ECleaner/ECleaner-Bridging-Header.h";

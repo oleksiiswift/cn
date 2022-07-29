@@ -755,7 +755,6 @@ extension GroupedAssetListViewController: UICollectionViewDelegate, UICollection
 		let targetPreview = UITargetedPreview(view: cell.photoThumbnailImageView)
 		targetPreview.parameters.backgroundColor = .clear
 		targetPreview.view.backgroundColor = .clear
-		
 		return targetPreview
 	}
 	

@@ -303,6 +303,16 @@ extension Images {
 				return UIImage(systemName: "trash")!
 			case .export:
 				return UIImage(systemName: "square.and.arrow.up")!
+			case .sortByDate:
+				return UIImage()
+			case .sortBySize:
+				return UIImage()
+			case .sortByDimension:
+				return UIImage()
+			case .sortByEdit:
+				return UIImage()
+			case .duration:
+				return UIImage()
 		}
 	}
 }

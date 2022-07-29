@@ -12,18 +12,22 @@ import PhotosUI
 typealias SDKey = SortingDesriptionKey
 enum SortingDesriptionKey {
     case creationDate
-    case modification
+    case modificationDate
     case mediaType
     case burstIdentifier
 	case singleMediaType
 	case allMediaType
-    
+	case duration
+	case pixelWidth
+	case pixelHeight
+	case localIdentifier
+	case fileSize
+	
     var value: String {
         switch self {
-          
             case .creationDate:
                 return "creationDate"
-            case .modification:
+            case .modificationDate:
                 return "modificationDate"
             case .burstIdentifier:
                 return "burstIdentifier"
@@ -33,7 +37,17 @@ enum SortingDesriptionKey {
 				return "mediaType = %d"
 			case .allMediaType:
 				return "mediaType = %d || mediaType = %d"
-        }
+			case .duration:
+				return "duration"
+			case .pixelWidth:
+				return "pixelWidth"
+			case .pixelHeight:
+				return "pixelHeight"
+			case .localIdentifier:
+				return "localIdentifier"
+			case .fileSize:
+				return "fileSize"
+		}
     }
 }
 
@@ -178,6 +192,18 @@ extension PHAssetFetchManager {
 		completionHandler(fetchedVideos)
 	}
 	
+	public func fetchVideo(with key: SortingDesriptionKey, completionHandler: @escaping (_ videoPhassets: [PHAsset]) -> Void) {
+		var fetchedVideos: [PHAsset] = []
+		let fetchOption = PHFetchOptions()
+		fetchOption.sortDescriptors = [NSSortDescriptor(key: key.value, ascending: false)]
+		fetchOption.predicate = NSPredicate(format: SDKey.singleMediaType.value, PHAssetMediaType.video.rawValue)
+		let result = PHAsset.fetchAssets(with: fetchOption)
+		result.enumerateObjects  { phasset, index, stopped in
+			fetchedVideos.append(phasset)
+		}
+		completionHandler(fetchedVideos)
+	}
+	
 	public func fetchPhotolibraryContent(by type: KeyMediaType, completionHandler: @escaping (_ result: PHFetchResult<PHAsset>) -> Void) {
 		let fetchOptions = PHFetchOptions()
 		fetchOptions.sortDescriptors = [NSSortDescriptor(key: SortingDesriptionKey.creationDate.value, ascending: false)]
@@ -201,7 +227,7 @@ extension PHAssetFetchManager {
 		var resultsDiskUssage: Int64 = 0
 		results.enumerateObjects { phasset, index, stopped in
 			let resource = PHAssetResource.assetResources(for: phasset)
-			let fileSize = resource.first?.value(forKey: "fileSize") as! Int64
+			let fileSize = resource.first?.value(forKey: SDKey.fileSize.value) as! Int64
 			debugPrint("file size: \(U.getSpaceFromInt(fileSize))")
 			resultsDiskUssage += fileSize
 			analyzingPhassets += 1

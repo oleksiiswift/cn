@@ -16,6 +16,12 @@ enum MenuItemType {
 	case delete
 	case export
 	
+	case sortByDate
+	case sortBySize
+	case sortByDimension
+	case sortByEdit
+	case duration
+	
 	var rawValue: String {
 		switch self {
 			case .select:
@@ -32,12 +38,33 @@ enum MenuItemType {
 				return LocalizationService.Buttons.getButtonTitle(of: .delete)
 			case .export:
 				return LocalizationService.Buttons.getButtonTitle(of: .export)
+			case .sortByDate:
+				return "Sort by date"
+			case .sortBySize:
+				return "Sort by size"
+			case .sortByDimension:
+				return "Sort by Dimension"
+			case .sortByEdit:
+				return "Sort By Edit"
+			case .duration:
+				return "Sort by Duration"
 		}
 	}
 	
 	var thumbnail: UIImage {
 		return Images.getMenuItemImages(self)
 	}
+	
+	var withCheckmark: Bool {
+		switch self {
+			case .sortByDate, .sortBySize, .sortByDimension, .edit, .duration:
+				return true
+			default:
+				return false
+		}
+	}
+	
+	
 }
 
 struct MenuItem {
@@ -45,14 +72,16 @@ struct MenuItem {
 	var thumbnail: UIImage
 	var selected: Bool
 	var type: MenuItemType
+	var isChecked: Bool
 	
 	var titleFont: UIFont = FontManager.drooDownMenuFont(of: .title)
 	
-	init(type: MenuItemType, selected: Bool) {
+	init(type: MenuItemType, selected: Bool, checkmark: Bool = false) {
 		self.title = type.rawValue
 		self.thumbnail = type.thumbnail
 		self.selected = selected
 		self.type = type
+		self.isChecked = checkmark
 	}
 }
 

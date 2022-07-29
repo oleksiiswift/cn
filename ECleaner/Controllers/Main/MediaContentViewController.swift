@@ -591,12 +591,16 @@ extension MediaContentViewController {
 	
 	private func showVideoContentForCompressingOperation() {
 		
-		self.photoManager.getVideoCollection { phassets in
-			if !phassets.isEmpty {
-				self.showCompressVideoPickerController(with: phassets)
-			} else {
-				ErrorHandler.shared.showEmptySearchResultsFor(.videoLibrararyIsEmpty)
+		if !SubscriptionManager.instance.purchasePremiumHandler() {
+			self.photoManager.getVideoCollection(with: .creationDate) { phassets in
+				if !phassets.isEmpty {
+					self.showCompressVideoPickerController(with: phassets)
+				} else {
+					ErrorHandler.shared.showEmptySearchResultsFor(.videoLibrararyIsEmpty)
+				}
 			}
+		} else {
+			UIPresenter.showViewController(of: .subscription)
 		}
 	}
 }
