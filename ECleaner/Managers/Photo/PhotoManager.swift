@@ -1449,10 +1449,14 @@ extension PhotoManager {
 				self.fetchManager.fetchVideo(with: key) { videoPhassets in
 					completionHandler(videoPhassets)
 				}
-			case .pixelWidth, .pixelHeight:
-				debugPrint("selected pixel")
+			case .pixelDimension:
+				self.fetchManager.fetchVideo(with: [.pixelWidth, .pixelHeight]) { videoPhasset in
+					completionHandler(videoPhasset)
+				}
 			case .fileSize:
-				debugPrint("selected file size")
+				self.fetchManager.fetchSortedVideoByFilesSize { videoPhasset in
+					completionHandler(videoPhasset)
+				}
 			default:
 				return
 		}

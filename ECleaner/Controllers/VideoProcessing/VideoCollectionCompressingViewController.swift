@@ -73,24 +73,36 @@ extension VideoCollectionCompressingViewController {
 		
 		self.collectionView.dataSource = self.videoCollectionDataSource
 		self.collectionView.delegate = self.videoCollectionDataSource
+		self.videoCollectionDataSource.delegate = self
 	}
 }
 
 extension VideoCollectionCompressingViewController {
 	
-	private func getVideoSorted(with key: SortingType) {
+	private func getVideoSorted(with key: SortingType, updatable: Bool = false) {
 		
-		guard self.sortingType != key else { return }
+		guard self.sortingType != key || updatable else { return }
 		
 		self.sortingType = key
 		
 		self.photoManager.getVideoCollection(with: self.sortingType.descriptorKey) { phassets in
-			self.assetCollection = phassets
-			self.setupDataSource(with: self.sortingType)
-			self.collectionView.setContentOffset(.zero, animated: false)
+			
+			if !phassets.isEmpty {
+				self.assetCollection = phassets
+				self.setupDataSource(with: self.sortingType)
+				self.collectionView.setContentOffset(.zero, animated: false)
+			} else {
+				ErrorHandler.shared.showEmptySearchResultsFor(.videoLibrararyIsEmpty) {
+					self.navigationController?.popViewController(animated: true)
+				}
+			}
 		}
-
 		self.setupSortDescriptionMenu()
+	}
+	
+	private func checkForNewPhasset() {
+		
+		
 	}
 	
 	private func openSotedMenu() {
@@ -183,10 +195,10 @@ extension VideoCollectionCompressingViewController: VideoCollectionDataSourceDel
 		let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.videoCompressing) as!
 		VideoCompressingViewController
 		viewController.processingPHAsset = phasset
-		viewController.updateCollectionWithNewCompressionPHAssets = { phassetCollection in
-			self.assetCollection = phassetCollection
-			self.collectionView.smoothReloadData()
+		viewController.updateCollectionWithNewCompressionPHAssets = {
+			self.getVideoSorted(with: self.sortingType, updatable: true)
 		}
+	
 		self.navigationController?.pushViewController(viewController, animated: true)
 	}
 	
@@ -341,7 +353,6 @@ extension VideoCollectionCompressingViewController {
 		self.navigationBar.delegate = self
 		self.bottomButtonView.delegate = self
 		self.scrollView.delegate = self
-		self.videoCollectionDataSource.delegate = self
 	}
 }
 

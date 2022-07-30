@@ -36,7 +36,7 @@ class VideoCompressingViewController: UIViewController {
 
 	private var popGesture: UIGestureRecognizer?
 	
-	public var updateCollectionWithNewCompressionPHAssets: ((_ updatedPHAssets: [PHAsset]) -> Void)?
+	public var updateCollectionWithNewCompressionPHAssets: (() -> Void) = {}
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -187,17 +187,8 @@ extension VideoCompressingViewController {
 	}
 	
 	private func showPHAssetCollectionController() {
-		self.photoManager.getVideoCollection { phassets in
-			if !phassets.isEmpty {
-				self.updateCollectionWithNewCompressionPHAssets?(phassets)
-				self.navigationController?.popViewController(animated: true, completion: {
-				})
-			} else {
-				ErrorHandler.shared.showEmptySearchResultsFor(.videoLibrararyIsEmpty) {
-					self.navigationController?.popViewController(animated: true)
-				}
-			}
-		}
+		self.updateCollectionWithNewCompressionPHAssets()
+		self.navigationController?.popViewController(animated: true)
 	}
 }
 

@@ -814,7 +814,6 @@ extension GroupedAssetListViewController: UICollectionViewDelegate, UICollection
 		return targetPreview
 	}
 	
-	
 	private func smoothReloadData() {
 		UIView.transition(with: self.collectionView, duration: 0.35, options: .transitionCrossDissolve) {
 			self.collectionView.reloadData()

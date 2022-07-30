@@ -21,7 +21,7 @@ enum SortingType: CaseIterable {
 			case .size:
 				return .fileSize
 			case .dimension:
-				return .pixelHeight
+				return .pixelDimension
 			case .edit:
 				return .modificationDate
 			case .duration:

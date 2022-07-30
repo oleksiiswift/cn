@@ -77,7 +77,6 @@ extension VideoCollectionDataSource: UICollectionViewDelegate, UICollectionViewD
 		return self.videoCollectionViewModel.numberOfRows(at: section)
 	}
 	
-	
 	func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: C.identifiers.cells.photoSimpleCell, for: indexPath) as! PhotoCollectionViewCell
 		self.configure(cell: cell, at: indexPath)
@@ -87,8 +86,6 @@ extension VideoCollectionDataSource: UICollectionViewDelegate, UICollectionViewD
 	func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
 		if !isBatchSelect {
 			self.delegate?.showComressionViewController(with: indexPath)
-			#warning("TODO: Handle select phasset")
-			sleep(UInt32(0.1))
 			return false
 		} else {
 			if let cell = collectionView.cellForItem(at: indexPath) {
@@ -96,6 +93,8 @@ extension VideoCollectionDataSource: UICollectionViewDelegate, UICollectionViewD
 					self.collectionView.deselectItem(at: indexPath, animated: true)
 					self.collectionView.delegate?.collectionView?(self.collectionView, didDeselectItemAt: indexPath)
 					return false
+				} else {
+					return true
 				}
 			}
 		}

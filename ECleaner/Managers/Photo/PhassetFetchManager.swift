@@ -18,6 +18,7 @@ enum SortingDesriptionKey {
 	case singleMediaType
 	case allMediaType
 	case duration
+	case pixelDimension
 	case pixelWidth
 	case pixelHeight
 	case localIdentifier
@@ -47,6 +48,8 @@ enum SortingDesriptionKey {
 				return "localIdentifier"
 			case .fileSize:
 				return "fileSize"
+			default:
+				return ""
 		}
     }
 }
@@ -204,6 +207,43 @@ extension PHAssetFetchManager {
 		completionHandler(fetchedVideos)
 	}
 	
+	public func fetchVideo(with keys: [SortingDesriptionKey], completionHandler: @escaping(_ videoPhasset: [PHAsset]) -> Void) {
+		var fetchedVideos: [PHAsset] = []
+		let fetchOption = PHFetchOptions()
+		var descriptors: [NSSortDescriptor] {
+			var descriptors: [NSSortDescriptor] = []
+			keys.forEach {
+				descriptors.append(NSSortDescriptor(key: $0.value, ascending: false))
+			}
+			return descriptors
+		}
+		fetchOption.sortDescriptors = descriptors
+		fetchOption.predicate = NSPredicate(format: SDKey.singleMediaType.value, PHAssetMediaType.video.rawValue)
+		let result = PHAsset.fetchAssets(with: fetchOption)
+		result.enumerateObjects  { phasset, index, stopped in
+			fetchedVideos.append(phasset)
+		}
+		completionHandler(fetchedVideos)
+	}
+	
+	public func fetchSortedVideoByFilesSize(completionHandler: @escaping(_ videoPhasset: [PHAsset]) -> Void) {
+		var fetchedVideoTuples: [(asset: PHAsset, fileSize: Int64)] = []
+		
+		let fetchOption = PHFetchOptions()
+		fetchOption.sortDescriptors = [NSSortDescriptor(key: SortingDesriptionKey.creationDate.value, ascending: false)]
+		fetchOption.predicate = NSPredicate(format: SDKey.singleMediaType.value, PHAssetMediaType.video.rawValue)
+		let result = PHAsset.fetchAssets(with: fetchOption)
+		result.enumerateObjects  { phasset, index, stopped in
+			debugPrint(phasset.imageSize)
+			let fileSize = phasset.imageSize
+			fetchedVideoTuples.append((asset: phasset, fileSize: fileSize))
+		}
+		
+		fetchedVideoTuples = fetchedVideoTuples.sorted(by: {$0.fileSize > $1.fileSize})
+		let phasset = fetchedVideoTuples.map({$0.asset})
+		completionHandler(phasset)
+	}
+
 	public func fetchPhotolibraryContent(by type: KeyMediaType, completionHandler: @escaping (_ result: PHFetchResult<PHAsset>) -> Void) {
 		let fetchOptions = PHFetchOptions()
 		fetchOptions.sortDescriptors = [NSSortDescriptor(key: SortingDesriptionKey.creationDate.value, ascending: false)]
