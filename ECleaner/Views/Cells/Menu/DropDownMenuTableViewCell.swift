@@ -9,10 +9,12 @@ import UIKit
 
 class DropDownMenuTableViewCell: UITableViewCell {
     
-    @IBOutlet weak var baseView: UIView!
+	@IBOutlet weak var checkmarkImageView: UIImageView!
+	@IBOutlet weak var baseView: UIView!
     @IBOutlet weak var thumbnailImageView: UIImageView!
     @IBOutlet weak var menuTitileTextLabel: UILabel!
-    
+	@IBOutlet weak var checkmarkWidthConstraint: NSLayoutConstraint!
+	
     lazy var simpleSeparatorView = UIView()
         
     override func awakeFromNib() {
@@ -35,6 +37,10 @@ extension DropDownMenuTableViewCell {
             setupSeparatorView()
         }
 		
+		if menuItem.isChecked {
+			
+		}
+		
 		menuTitileTextLabel.alpha = menuItem.selected ? 1 : 0.5
 		thumbnailImageView.alpha = menuItem.selected ? 1 : 0.5
     }
@@ -56,6 +62,7 @@ extension DropDownMenuTableViewCell: Themeble {
     private func setupUI() {
         
         selectionStyle = .none
+		checkmarkImageView.image = UIImage(systemName: "checkmark")!
     }
     
     func updateColors() {

@@ -227,21 +227,29 @@ extension PHAssetFetchManager {
 	}
 	
 	public func fetchSortedVideoByFilesSize(completionHandler: @escaping(_ videoPhasset: [PHAsset]) -> Void) {
-		var fetchedVideoTuples: [(asset: PHAsset, fileSize: Int64)] = []
 		
-		let fetchOption = PHFetchOptions()
-		fetchOption.sortDescriptors = [NSSortDescriptor(key: SortingDesriptionKey.creationDate.value, ascending: false)]
-		fetchOption.predicate = NSPredicate(format: SDKey.singleMediaType.value, PHAssetMediaType.video.rawValue)
-		let result = PHAsset.fetchAssets(with: fetchOption)
-		result.enumerateObjects  { phasset, index, stopped in
-			debugPrint(phasset.imageSize)
-			let fileSize = phasset.imageSize
-			fetchedVideoTuples.append((asset: phasset, fileSize: fileSize))
+
+		
+		DispatchQueue.global(qos: .utility).async {
+			
+			
+			
+			var fetchedVideoTuples: [(asset: PHAsset, fileSize: Int64)] = []
+			
+			let fetchOption = PHFetchOptions()
+			fetchOption.sortDescriptors = [NSSortDescriptor(key: SortingDesriptionKey.creationDate.value, ascending: false)]
+			fetchOption.predicate = NSPredicate(format: SDKey.singleMediaType.value, PHAssetMediaType.video.rawValue)
+			let result = PHAsset.fetchAssets(with: fetchOption)
+			result.enumerateObjects  { phasset, index, stopped in
+				debugPrint(phasset.imageSize)
+				let fileSize = phasset.imageSize
+				fetchedVideoTuples.append((asset: phasset, fileSize: fileSize))
+			}
+			
+			fetchedVideoTuples = fetchedVideoTuples.sorted(by: {$0.fileSize > $1.fileSize})
+			let phasset = fetchedVideoTuples.map({$0.asset})
+			completionHandler(phasset)
 		}
-		
-		fetchedVideoTuples = fetchedVideoTuples.sorted(by: {$0.fileSize > $1.fileSize})
-		let phasset = fetchedVideoTuples.map({$0.asset})
-		completionHandler(phasset)
 	}
 
 	public func fetchPhotolibraryContent(by type: KeyMediaType, completionHandler: @escaping (_ result: PHFetchResult<PHAsset>) -> Void) {

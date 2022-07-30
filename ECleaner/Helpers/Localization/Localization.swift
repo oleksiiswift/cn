@@ -158,6 +158,14 @@ struct Localization {
 			static var startBackup = "Start Backup".localized()
 			static var view = "View".localized()
 		}
+		
+		struct MenuItems {
+			static var sortByDate = "Sort by Creation Date".localized()
+			static var sortBySize = "Sort by File Size".localized()
+			static var sortByDimension = "Sort by Video Dimension".localized()
+			static var sortByEdit = "Sort by Last Edit".localized()
+			static var sortByDuration = "Sort by Duration".localized()
+		}
 	}
 	
 	struct Settings {

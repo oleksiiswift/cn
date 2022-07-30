@@ -30,6 +30,7 @@ struct Images {
             static let burgerDots = UIImage(named: "burgerDots")!
             static let magic = UIImage(named: "magicSparcle")!
 			static let stopMagic = UIImage(named: "stopMagicSearch")!
+			static let sort = UIImage(systemName: "arrow.up.arrow.down")!
         }
         
         struct selectItems {
@@ -304,15 +305,33 @@ extension Images {
 			case .export:
 				return UIImage(systemName: "square.and.arrow.up")!
 			case .sortByDate:
-				return UIImage()
+				return self.getSortingImage(of: .date)
 			case .sortBySize:
-				return UIImage()
+				return self.getSortingImage(of: .size)
 			case .sortByDimension:
-				return UIImage()
+				return self.getSortingImage(of: .dimension)
 			case .sortByEdit:
-				return UIImage()
+				return self.getSortingImage(of: .edit)
 			case .duration:
-				return UIImage()
+				return self.getSortingImage(of: .duration)
+		}
+	}
+}
+
+extension Images {
+	
+	public static func getSortingImage(of type: SortingType) -> UIImage {
+		switch type {
+			case .date:
+				return UIImage(systemName: "calendar")!
+			case .size:
+				return UIImage(systemName: "tray.full")!
+			case .dimension:
+				return UIImage(systemName: "ruler")!
+			case .edit:
+				return UIImage(systemName: "pencil.and.ellipsis.rectangle")!
+			case .duration:
+				return UIImage(systemName: "timer")!
 		}
 	}
 }

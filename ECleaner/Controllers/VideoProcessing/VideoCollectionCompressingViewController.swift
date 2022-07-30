@@ -28,6 +28,7 @@ class VideoCollectionCompressingViewController: UIViewController {
 	private var previousPreheatRect: CGRect = CGRect()
 	private var bottomMenuHeight: CGFloat = 80
 
+	private var progressAlert = ProgressAlertController.shared
 	private var sortingType: SortingType = .date
 	private var photoManager = PhotoManager.shared
 	private var prefetchCacheImageManager = PhotoManager.shared.prefetchManager
@@ -82,10 +83,14 @@ extension VideoCollectionCompressingViewController {
 	private func getVideoSorted(with key: SortingType, updatable: Bool = false) {
 		
 		guard self.sortingType != key || updatable else { return }
-		
+	
 		self.sortingType = key
 		
+		self.sortingType == .size ? self.progressAlert.showVideoSortingAnimateProgress(from: self) : ()
+		
 		self.photoManager.getVideoCollection(with: self.sortingType.descriptorKey) { phassets in
+		
+			self.sortingType == .size ? self.progressAlert.closeProgressAnimatedController() : ()
 			
 			if !phassets.isEmpty {
 				self.assetCollection = phassets
@@ -98,11 +103,6 @@ extension VideoCollectionCompressingViewController {
 			}
 		}
 		self.setupSortDescriptionMenu()
-	}
-	
-	private func checkForNewPhasset() {
-		
-		
 	}
 	
 	private func openSotedMenu() {
@@ -335,7 +335,7 @@ extension VideoCollectionCompressingViewController {
 		
 		self.navigationBar.setupNavigation(title: self.mediaType.mediaTypeName,
 										   leftBarButtonImage: I.systemItems.navigationBarItems.back,
-										   rightBarButtonImage: UIImage(systemName: "arrow.up.arrow.down"),
+										   rightBarButtonImage: I.systemItems.navigationBarItems.sort,
 										   contentType: self.contentType,
 										   leftButtonTitle: nil,
 										   rightButtonTitle: nil)

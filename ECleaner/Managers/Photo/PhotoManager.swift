@@ -1444,7 +1444,6 @@ extension PhotoManager {
 	public func getVideoCollection(with key: SortingDesriptionKey, completionHandler: @escaping (_ phassets: [PHAsset]) -> Void) {
 		
 		switch key {
-				
 			case .creationDate, .modificationDate, .duration:
 				self.fetchManager.fetchVideo(with: key) { videoPhassets in
 					completionHandler(videoPhassets)
@@ -1455,7 +1454,9 @@ extension PhotoManager {
 				}
 			case .fileSize:
 				self.fetchManager.fetchSortedVideoByFilesSize { videoPhasset in
-					completionHandler(videoPhasset)
+					DispatchQueue.main.async {
+						completionHandler(videoPhasset)
+					}
 				}
 			default:
 				return

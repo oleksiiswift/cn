@@ -39,15 +39,15 @@ enum MenuItemType {
 			case .export:
 				return LocalizationService.Buttons.getButtonTitle(of: .export)
 			case .sortByDate:
-				return "Sort by date"
+				return LocalizationService.Menu.getSortingTitle(of: .date)
 			case .sortBySize:
-				return "Sort by size"
+				return LocalizationService.Menu.getSortingTitle(of: .size)
 			case .sortByDimension:
-				return "Sort by Dimension"
+				return LocalizationService.Menu.getSortingTitle(of: .dimension)
 			case .sortByEdit:
-				return "Sort By Edit"
+				return LocalizationService.Menu.getSortingTitle(of: .edit)
 			case .duration:
-				return "Sort by Duration"
+				return LocalizationService.Menu.getSortingTitle(of: .duration)
 		}
 	}
 	
@@ -63,8 +63,6 @@ enum MenuItemType {
 				return false
 		}
 	}
-	
-	
 }
 
 struct MenuItem {

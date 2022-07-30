@@ -30,32 +30,10 @@ enum SortingType: CaseIterable {
 	}
 	
 	var title: String {
-		switch self {
-			case .date:
-				return "Sort by date"
-			case .size:
-				return "Sort by size"
-			case .dimension:
-				return "Sort by Dimension"
-			case .edit:
-				return "Sort By Edit"
-			case .duration:
-				return "Sort By Duration"
-		}
+		return LocalizationService.Menu.getSortingTitle(of: self)
 	}
 	
 	var image: UIImage {
-		switch self {
-			case .date:
-				return UIImage()
-			case .size:
-				return UIImage()
-			case .dimension:
-				return UIImage()
-			case .edit:
-				return UIImage()
-			case .duration:
-				return UIImage()
-		}
+		return Images.getSortingImage(of: self)
 	}
 }
