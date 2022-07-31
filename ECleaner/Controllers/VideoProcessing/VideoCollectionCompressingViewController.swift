@@ -118,11 +118,11 @@ extension VideoCollectionCompressingViewController {
 		dropDownViewController.delegate = self
 		
 		guard let popoverPresentationController = dropDownViewController.popoverPresentationController else { return }
-		
+
 		popoverPresentationController.delegate = self
 		popoverPresentationController.sourceView = navigationButton
-		popoverPresentationController.sourceRect = CGRect(x: navigationButton.bounds.midX, y: navigationButton.bounds.maxY - 13, width: 0, height: 0)
-		popoverPresentationController.permittedArrowDirections = .up
+		popoverPresentationController.sourceRect = CGRect(x: navigationButton.bounds.midX, y: navigationButton.bounds.maxY + 100, width: 0, height: 0)
+		popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirection(rawValue: 0)
 		self.present(dropDownViewController, animated: true, completion: nil)
 	}
 }

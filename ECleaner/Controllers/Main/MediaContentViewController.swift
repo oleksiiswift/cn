@@ -591,7 +591,7 @@ extension MediaContentViewController {
 	
 	private func showVideoContentForCompressingOperation() {
 		
-		if !SubscriptionManager.instance.purchasePremiumHandler() {
+		if SubscriptionManager.instance.purchasePremiumHandler() {
 			self.photoManager.getVideoCollection(with: .creationDate) { phassets in
 				if !phassets.isEmpty {
 					self.showCompressVideoPickerController(with: phassets)

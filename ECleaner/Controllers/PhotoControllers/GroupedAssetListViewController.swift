@@ -148,8 +148,8 @@ extension GroupedAssetListViewController {
 		
 		popoverPresentationController.delegate = self
 		popoverPresentationController.sourceView = navigationButton
-		popoverPresentationController.sourceRect = CGRect(x: navigationButton.bounds.midX, y: navigationButton.bounds.maxY - 13, width: 0, height: 0)
-		popoverPresentationController.permittedArrowDirections = .up
+		popoverPresentationController.sourceRect = CGRect(x: navigationButton.bounds.midX, y: navigationButton.bounds.maxY + 34, width: 0, height: 0)
+		popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirection(rawValue: 0)
 		self.present(dropDownViewController, animated: true, completion: nil)
 	}
 }

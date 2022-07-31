@@ -327,7 +327,11 @@ extension Images {
 			case .size:
 				return UIImage(systemName: "tray.full")!
 			case .dimension:
-				return UIImage(systemName: "ruler")!
+				if #available(iOS 14.0, *) {
+					return UIImage(systemName: "ruler")!
+				} else {
+					return UIImage(systemName: "aspectratio")!
+				}
 			case .edit:
 				return UIImage(systemName: "pencil.and.ellipsis.rectangle")!
 			case .duration:
