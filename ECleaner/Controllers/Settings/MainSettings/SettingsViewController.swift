@@ -77,14 +77,14 @@ extension SettingsViewController {
 												 headetHeight: 20)
 
 		var sections: [SettingsSection] {
-			if self.subscriptionManager.purchasePremiumHandler() {
-				if self.subscriptionManager.isLifeTimeSubscription() {
+			
+			switch self.subscriptionManager.purchasePremiumStatus() {
+				case .lifetime:
 					return [permissionSectionCell, supportSectionCells]
-				} else {
+				case .purchasedPremium:
 					return [premiumSectionCell,lifeTimeSection, permissionSectionCell, supportSectionCells]
-				}
-			} else {
-				return [premiumSectionCell, subscriptionSection, permissionSectionCell, supportSectionCells]
+				case .nonPurchased:
+					return [premiumSectionCell, subscriptionSection, permissionSectionCell, supportSectionCells]
 			}
 		}
 		
@@ -92,11 +92,8 @@ extension SettingsViewController {
 		self.settingsDataSource = SettingsDataSource(settingsViewModel: self.settingsViewModel)
 		
 		self.settingsDataSource.didSelectedSettings = { settingModel in
-			
 			if settingModel == .premium {
-				if self.subscriptionManager.purchasePremiumHandler() {
-					self.changeCurrentSubscription()
-				}
+				self.subscriptionManager.purchasePremiumStatus() == .purchasedPremium ? self.changeCurrentSubscription() : ()
 			}
 		}
 	}
@@ -195,7 +192,16 @@ extension SettingsViewController: SettingActionsDelegate {
 	public func setAction(at cell: SettingsModel) {
 		switch cell {
 			case .premium:
-				subscriptionManager.getCurrentSubscription() != .lifeTime ? subscriptionManager.purchasePremiumHandler() ? self.changeCurrentSubscription() : self.showPremiumController() : ()
+				subscriptionManager.purchasePremiumHandler { status in
+					switch status {
+						case .lifetime:
+							return
+						case .purchasedPremium:
+							self.changeCurrentSubscription()
+						case .nonPurchased:
+							self.showPermissionController()
+					}
+				}
 			case .largeVideos:
 				self.showLargeVideoSettings()
 			case .dataStorage:

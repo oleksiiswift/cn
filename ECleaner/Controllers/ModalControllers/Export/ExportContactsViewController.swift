@@ -135,10 +135,13 @@ extension ExportContactsViewController: Themeble {
 extension ExportContactsViewController: BottomActionButtonDelegate {
     
     func didTapActionButton() {
-		if SubscriptionManager.instance.purchasePremiumHandler() {
-			self.performSegue(withIdentifier: C.identifiers.segue.backupContacts, sender: self)
-		} else {
-			UIPresenter.showViewController(of: .subscription)
+		SubscriptionManager.instance.purchasePremiumHandler { status in
+			switch status {
+				case .lifetime, .purchasedPremium:
+					self.performSegue(withIdentifier: C.identifiers.segue.backupContacts, sender: self)
+				case .nonPurchased:
+					UIPresenter.showViewController(of: .subscription)
+			}
 		}
     }
 	

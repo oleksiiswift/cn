@@ -591,16 +591,19 @@ extension MediaContentViewController {
 	
 	private func showVideoContentForCompressingOperation() {
 		
-		if SubscriptionManager.instance.purchasePremiumHandler() {
-			self.photoManager.getVideoCollection(with: .creationDate) { phassets in
-				if !phassets.isEmpty {
-					self.showCompressVideoPickerController(with: phassets)
-				} else {
-					ErrorHandler.shared.showEmptySearchResultsFor(.videoLibrararyIsEmpty)
-				}
+		SubscriptionManager.instance.purchasePremiumHandler { status in
+			switch status {
+				case .purchasedPremium, .lifetime:
+					self.photoManager.getVideoCollection(with: .creationDate) { phassets in
+						if !phassets.isEmpty {
+							self.showCompressVideoPickerController(with: phassets)
+						} else {
+							ErrorHandler.shared.showEmptySearchResultsFor(.videoLibrararyIsEmpty)
+						}
+					}
+				case .nonPurchased:
+					UIPresenter.showViewController(of: .subscription)
 			}
-		} else {
-			UIPresenter.showViewController(of: .subscription)
 		}
 	}
 }
@@ -1445,11 +1448,13 @@ extension MediaContentViewController: Themeble {
 extension MediaContentViewController {
 	
 	private func openContactExportBackupController() {
-		
-		if SubscriptionManager.instance.purchasePremiumHandler() {
-			self.performSegue(withIdentifier: C.identifiers.segue.backupContacts, sender: self)
-		} else {
-			UIPresenter.showViewController(of: .subscription)
+		SubscriptionManager.instance.purchasePremiumHandler { status in
+			switch status {
+				case .lifetime, .purchasedPremium:
+					self.performSegue(withIdentifier: C.identifiers.segue.backupContacts, sender: self)
+				case .nonPurchased:
+					UIPresenter.showViewController(of: .subscription)
+			}
 		}
 	}
 }

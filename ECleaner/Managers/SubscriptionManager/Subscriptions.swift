@@ -8,6 +8,12 @@
 import Foundation
 import StoreKit
 
+enum StatusSubscription {
+	case lifetime
+	case purchasedPremium
+	case nonPurchased
+}
+
 enum Subscriptions: String, CaseIterable {
 
 	case month = 	"month_cleaner"
@@ -35,7 +41,6 @@ struct Purchase {
 		await transaction.finish()
 	}
 }
-
 
 struct CurrentSubscriptionModel {
 	

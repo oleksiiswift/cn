@@ -510,10 +510,13 @@ extension MainViewController: SubscriptionObserver {
 	func subscriptionDidChange() {
 		
 		Utils.UI {
-			if SubscriptionManager.instance.purchasePremiumHandler() {
-				self.navigationBar.setUpNavigation(title: nil, leftImage: nil, rightImage: I.systemItems.navigationBarItems.settings)
-			} else {
-				self.navigationBar.setUpNavigation(title: nil, leftImage: I.systemItems.navigationBarItems.premium, rightImage: I.systemItems.navigationBarItems.settings)
+			SubscriptionManager.instance.purchasePremiumHandler { status in
+				switch status {
+					case .lifetime, .purchasedPremium:
+						self.navigationBar.setUpNavigation(title: nil, leftImage: nil, rightImage: I.systemItems.navigationBarItems.settings)
+					case .nonPurchased:
+						self.navigationBar.setUpNavigation(title: nil, leftImage: I.systemItems.navigationBarItems.premium, rightImage: I.systemItems.navigationBarItems.settings)
+				}
 			}
 		}
 	}

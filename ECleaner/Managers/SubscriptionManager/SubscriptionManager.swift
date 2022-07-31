@@ -68,11 +68,14 @@ class SubscriptionManager: NSObject {
 		self.purchasedPremium = purchased
 	}
 	
-	public func purchasePremiumHandler() -> Bool {
-//		return true
-		return self.purchasedPremium
+	public func purchasePremiumHandler(_ completionHandler: (_ status: StatusSubscription) -> Void) {
+		completionHandler(self.isLifeTimeSubscription() ? .lifetime : self.purchasedPremium ? .purchasedPremium : .nonPurchased)
 	}
 	
+	public func purchasePremiumStatus() -> StatusSubscription {
+		return self.isLifeTimeSubscription() ? .lifetime : self.purchasedPremium ? .purchasedPremium : .nonPurchased
+	}
+
 	public func saveSubscription(_ currentSubscription: Subscriptions?) {
 		self.currentSubscription = currentSubscription
 	}

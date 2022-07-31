@@ -87,13 +87,12 @@ extension SceneDelegate {
 		
 		Utils.delay(5) {
 			debugPrint("****")
-			debugPrint("is purchase premium -> \(SubscriptionManager.instance.purchasePremiumHandler())")
+			debugPrint("is purchase premium -> \(SubscriptionManager.instance.purchasePremiumStatus())")
 			debugPrint("****")
 		}
 		
 		///  `remove all contacts from store`
 //		ContactsManager.shared.deleteAllContatsFromStore()
-		
 		
 		S.subscripton.allowAdvertisementBanner = false
 	}

@@ -87,10 +87,11 @@ extension SettingsDataSource: UITableViewDelegate, UITableViewDataSource {
 		} else  {
 			switch indexPath.section {
 				case 0:
-					if SubscriptionManager.instance.purchasePremiumHandler() {
-						return getCurrentSubscriptionCell(tableView, cellForRowAt: indexPath)
-					} else {
-						return getPremiumFeatureSubscriptionCell(tableView, cellForRowAt: indexPath)
+					switch SubscriptionManager.instance.purchasePremiumStatus() {
+						case .lifetime, .purchasedPremium:
+							return getCurrentSubscriptionCell(tableView, cellForRowAt: indexPath)
+						case .nonPurchased:
+							return getPremiumFeatureSubscriptionCell(tableView, cellForRowAt: indexPath)
 					}
 				default:
 					return getContentTypeCell(tableView, cellForRowAt: indexPath)

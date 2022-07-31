@@ -18,7 +18,7 @@ class AdvertisementViewController: UIViewController {
     @IBOutlet weak var advertisementHightConstraint: NSLayoutConstraint!
     @IBOutlet weak var advertisementBottomConstraint: NSLayoutConstraint!
     @IBOutlet weak var containerViewBottomConstraint: NSLayoutConstraint!
-    
+	
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -38,11 +38,13 @@ extension AdvertisementViewController: SubscriptionObserver {
 	
 	func subscriptionDidChange() {
 		
-		if SubscriptionManager.instance.purchasePremiumHandler() {
-			self.advertisementHandler(status: .hiden)
-		} else {
-			#warning("TODO hide")
-			self.advertisementHandler(status: .hiden)
+		SubscriptionManager.instance.purchasePremiumHandler { status in
+			switch status {
+				case .lifetime, .purchasedPremium:
+					self.advertisementHandler(status: .hiden)
+				case .nonPurchased:
+					self.advertisementHandler(status: .hiden)
+			}
 		}
 	}
 }
