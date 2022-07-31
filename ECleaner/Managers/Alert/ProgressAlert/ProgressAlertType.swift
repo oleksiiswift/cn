@@ -19,6 +19,7 @@ enum ProgressAlertType {
 	case selectingPhotos
 	case selectingVideos
 	case prepareDeepClean
+	case videoSorting
 	case blank
 	
 	var progressTitle: String {
@@ -43,6 +44,8 @@ enum ProgressAlertType {
 				return Localization.AlertController.AlertTitle.selectingVideosWait
 			case .prepareDeepClean:
 				return Localization.AlertController.AlertTitle.prepareSearching
+			case .videoSorting:
+				return "sorting video by file size"
 			case .blank:
 				return Localization.empty
 		}
@@ -57,6 +60,8 @@ enum ProgressAlertType {
 			case .compressing:
 				return true
 			case .selectingContacts, .selectingVideos, .selectingPhotos, .updatingContacts, .prepareDeepClean:
+				return false
+			case .videoSorting:
 				return false
 			case .blank:
 				return false
@@ -79,6 +84,7 @@ enum ProgressAlertType {
 			case .selectingVideos: 		return .userVideo
 			case .selectingPhotos: 		return .userPhoto
 			case .prepareDeepClean: 	return .userPhoto
+			case .videoSorting: 		return .userVideo
 			case .blank:				return .none
 		}
 	}

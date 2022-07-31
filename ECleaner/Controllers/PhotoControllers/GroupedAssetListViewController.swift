@@ -148,8 +148,8 @@ extension GroupedAssetListViewController {
 		
 		popoverPresentationController.delegate = self
 		popoverPresentationController.sourceView = navigationButton
-		popoverPresentationController.sourceRect = CGRect(x: navigationButton.bounds.midX, y: navigationButton.bounds.maxY - 13, width: 0, height: 0)
-		popoverPresentationController.permittedArrowDirections = .up
+		popoverPresentationController.sourceRect = CGRect(x: navigationButton.bounds.midX, y: navigationButton.bounds.maxY + 34, width: 0, height: 0)
+		popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirection(rawValue: 0)
 		self.present(dropDownViewController, animated: true, completion: nil)
 	}
 }
@@ -755,7 +755,6 @@ extension GroupedAssetListViewController: UICollectionViewDelegate, UICollection
 		let targetPreview = UITargetedPreview(view: cell.photoThumbnailImageView)
 		targetPreview.parameters.backgroundColor = .clear
 		targetPreview.view.backgroundColor = .clear
-		
 		return targetPreview
 	}
 	
@@ -814,7 +813,6 @@ extension GroupedAssetListViewController: UICollectionViewDelegate, UICollection
 		
 		return targetPreview
 	}
-	
 	
 	private func smoothReloadData() {
 		UIView.transition(with: self.collectionView, duration: 0.35, options: .transitionCrossDissolve) {

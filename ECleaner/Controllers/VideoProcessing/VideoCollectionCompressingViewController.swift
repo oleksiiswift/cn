@@ -15,39 +15,38 @@ class VideoCollectionCompressingViewController: UIViewController {
 	@IBOutlet weak var bottomButtonView: BottomButtonBarView!
 	@IBOutlet weak var bottomMenuHeightConstraint: NSLayoutConstraint!
 	@IBOutlet weak var navigationControllerHeightConstraint: NSLayoutConstraint!
-	
+
 	var scrollView = UIScrollView()
+	private var videoCollectionViewModel: VideoCollectionViewModel!
+	private var videoCollectionDataSource: VideoCollectionDataSource!
 	
 	private let flowLayout = SimpleColumnFlowLayout(cellsPerRow: 2,
 													minimumInterSpacing: 0,
 													minimumLineSpacing: 0,
 													inset: UIEdgeInsets(top: 10, left: 4, bottom: 0, right: 4))
 	
-	private var thumbnailSize: CGSize = .zero
 	private var previousPreheatRect: CGRect = CGRect()
 	private var bottomMenuHeight: CGFloat = 80
 
+	private var progressAlert = ProgressAlertController.shared
+	private var sortingType: SortingType = .date
 	private var photoManager = PhotoManager.shared
 	private var prefetchCacheImageManager = PhotoManager.shared.prefetchManager
 	public var mediaType: PhotoMediaType = .none
 	public var contentType: MediaContentType = .none
 	
-	private var isBatchSelect: Bool = false {
-		didSet {
-			
-		}
-	}
-
 	public var assetCollection: [PHAsset] = []
 	
     override func viewDidLoad() {
         super.viewDidLoad()
-
+		
         setupUI()
+		setupDataSource(with: self.sortingType)
 		updateColors()
 		setupNavigation()
 		setupDelegate()
 		setupCollectionView()
+		setupSortDescriptionMenu()
     }
 	
 	override func viewWillAppear(_ animated: Bool) {
@@ -65,11 +64,112 @@ class VideoCollectionCompressingViewController: UIViewController {
 
 extension VideoCollectionCompressingViewController {
 	
-	private func handleBottomButton() {
+	private func setupDataSource(with sort: SortingType) {
 		
+		self.videoCollectionViewModel = VideoCollectionViewModel(phassets: self.assetCollection)
+		self.videoCollectionDataSource = VideoCollectionDataSource(videoCollectionViewModel: self.videoCollectionViewModel,
+																   mediaType: self.mediaType,
+																   contentType: self.contentType,
+																   collectionView: self.collectionView)
+		
+		self.collectionView.dataSource = self.videoCollectionDataSource
+		self.collectionView.delegate = self.videoCollectionDataSource
+		self.videoCollectionDataSource.delegate = self
+	}
+}
+
+extension VideoCollectionCompressingViewController {
+	
+	private func getVideoSorted(with key: SortingType, updatable: Bool = false) {
+		
+		guard self.sortingType != key || updatable else { return }
+	
+		self.sortingType = key
+		
+		self.sortingType == .size ? self.progressAlert.showVideoSortingAnimateProgress(from: self) : ()
+		
+		self.photoManager.getVideoCollection(with: self.sortingType.descriptorKey) { phassets in
+		
+			self.sortingType == .size ? self.progressAlert.closeProgressAnimatedController() : ()
+			
+			if !phassets.isEmpty {
+				self.assetCollection = phassets
+				self.setupDataSource(with: self.sortingType)
+				self.collectionView.setContentOffset(.zero, animated: false)
+			} else {
+				ErrorHandler.shared.showEmptySearchResultsFor(.videoLibrararyIsEmpty) {
+					self.navigationController?.popViewController(animated: true)
+				}
+			}
+		}
+		self.setupSortDescriptionMenu()
 	}
 	
-	private func handleSelectPHAsset(at indexPath: IndexPath) {
+	private func openSotedMenu() {
+		if #available(iOS 14.0, *) {} else {
+			let menuItems = self.performPopUpDescriptorMenu()
+			self.presentDropDonwMenu(with: menuItems, from: self.navigationBar.rightBarButtonItem)
+		}
+	}
+	
+	private func presentDropDonwMenu(with items: [MenuItem], from navigationButton: UIButton) {
+		let dropDownViewController = DropDownMenuViewController()
+		dropDownViewController.menuSectionItems = items
+		dropDownViewController.delegate = self
+		
+		guard let popoverPresentationController = dropDownViewController.popoverPresentationController else { return }
+
+		popoverPresentationController.delegate = self
+		popoverPresentationController.sourceView = navigationButton
+		popoverPresentationController.sourceRect = CGRect(x: navigationButton.bounds.midX, y: navigationButton.bounds.maxY + 100, width: 0, height: 0)
+		popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirection(rawValue: 0)
+		self.present(dropDownViewController, animated: true, completion: nil)
+	}
+}
+
+extension VideoCollectionCompressingViewController: SelectDropDownMenuDelegate {
+	
+	func handleDropDownMenu(_ item: MenuItemType) {
+		switch item {
+			case .sortByDate:
+				self.getVideoSorted(with: .date)
+			case .sortBySize:
+				self.getVideoSorted(with: .size)
+			case .sortByDimension:
+				self.getVideoSorted(with: .dimension)
+			case .sortByEdit:
+				self.getVideoSorted(with: .edit)
+			case .duration:
+				self.getVideoSorted(with: .duration)
+			default:
+				return
+		}
+	}
+}
+
+extension VideoCollectionCompressingViewController {
+	
+	private func handleBottomButton() {}
+}
+
+extension VideoCollectionCompressingViewController {
+		
+	private func setupCollectionView() {
+		
+		flowLayout.isSquare = true
+		flowLayout.itemHieght = ((U.screenWidth - 30) / 3) / U.ratio
+		
+		self.collectionView.register(UINib(nibName: C.identifiers.xibs.photoSimpleCell, bundle: nil), forCellWithReuseIdentifier: C.identifiers.cells.photoSimpleCell)
+		
+		self.collectionView.collectionViewLayout = flowLayout
+		self.collectionView.allowsMultipleSelection = false
+		self.collectionView.contentInset.top = 20
+	}
+}
+
+extension VideoCollectionCompressingViewController: VideoCollectionDataSourceDelegate {
+	
+	func handleSelectPHAsset(at indexPath: IndexPath) {
 		
 		guard let selectedItems = self.collectionView.indexPathsForSelectedItems else { return }
 		
@@ -88,134 +188,52 @@ extension VideoCollectionCompressingViewController {
 			self.view.layoutIfNeeded()
 		}
 	}
-}
-
-extension VideoCollectionCompressingViewController {
 	
-	private func setupCollectionView() {
-		
-		flowLayout.isSquare = true
-		flowLayout.itemHieght = ((U.screenWidth - 30) / 3) / U.ratio
-		
-		self.collectionView.dataSource = self
-		self.collectionView.delegate = self
-		
-		self.collectionView.register(UINib(nibName: C.identifiers.xibs.photoSimpleCell, bundle: nil), forCellWithReuseIdentifier: C.identifiers.cells.photoSimpleCell)
-		
-		self.collectionView.collectionViewLayout = flowLayout
-		self.collectionView.allowsMultipleSelection = false
-		self.collectionView.contentInset.top = 20
-		self.collectionView.reloadData()
+	func showComressionViewController(with indexPath: IndexPath) {
+		let phasset = self.videoCollectionViewModel.getPhasset(at: indexPath)
+		let storyboard = UIStoryboard(name: C.identifiers.storyboards.videoProcessing, bundle: nil)
+		let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.videoCompressing) as!
+		VideoCompressingViewController
+		viewController.processingPHAsset = phasset
+		viewController.updateCollectionWithNewCompressionPHAssets = {
+			self.getVideoSorted(with: self.sortingType, updatable: true)
+		}
+	
+		self.navigationController?.pushViewController(viewController, animated: true)
 	}
 	
-	private func configure(cell: PhotoCollectionViewCell, at indexPath: IndexPath) {
-		
-		let videoPHAsset = self.assetCollection[indexPath.row]
-		cell.selectButtonSetup(by: self.mediaType, isNewConpress: videoPHAsset.localIdentifier == S.lastSavedLocalIdenifier)
-		cell.indexPath = indexPath
-		cell.tag = indexPath.section * 1000 + indexPath.row
-		cell.cellMediaType = self.mediaType
-		cell.cellContentType = self.contentType
-		cell.collectionType = .single
-		
-		if self.thumbnailSize.equalTo(CGSize.zero) {
-			self.thumbnailSize = self.collectionView.collectionViewLayout.layoutAttributesForItem(at: indexPath)!.size.toPixel()
-		}
-		
-		cell.loadCellThumbnail(videoPHAsset, imageManager: self.prefetchCacheImageManager, size: thumbnailSize)
-		cell.setupUI()
-		cell.updateColors()
-	
-		if let path = self.collectionView.indexPathsForSelectedItems, path.contains([indexPath]) {
-			cell.isSelected = true
-		} else {
-			cell.isSelected = false
-		}
-		cell.checkIsSelected()
-	}
-	
-	private func createCellContextMenu(for asset: PHAsset, at indexPath: IndexPath) -> UIMenu {
-		
-		let shareVideoActionImage = I.systemItems.defaultItems.share
-		let shareAction = UIAction(title: LocalizationService.Buttons.getButtonTitle(of: .share), image: shareVideoActionImage) { _ in
-			self.share(phasset: asset)
-		}
-		return UIMenu(title: "", children: [shareAction])
-	}
-	
-	private func share(phasset: PHAsset) {
+	func share(phasset: PHAsset) {
 		ShareManager.shared.shareVideoFile(from: phasset) {}
 	}
 }
 
-extension VideoCollectionCompressingViewController: UICollectionViewDelegate, UICollectionViewDataSource {
-	
-	func numberOfSections(in collectionView: UICollectionView) -> Int {
-		return 1
-	}
-	
-	func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-		return assetCollection.count
-	}
-	
-	
-	func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: C.identifiers.cells.photoSimpleCell, for: indexPath) as! PhotoCollectionViewCell
-		self.configure(cell: cell, at: indexPath)
-		return cell
-	}
-	
-	func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
-		if !isBatchSelect {
-			showComressionViewController(with: indexPath.row)
-			return false
-		} else {
-			if let cell = collectionView.cellForItem(at: indexPath) {
-				if cell.isSelected {
-					self.collectionView.deselectItem(at: indexPath, animated: true)
-					self.collectionView.delegate?.collectionView?(self.collectionView, didDeselectItemAt: indexPath)
-					return false
-				}
-			}
-		}
-		return true
-	}
-	
-	func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-		self.handleSelectPHAsset(at: indexPath)
-	}
-	
-	func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-		self.handleSelectPHAsset(at: indexPath)
-	}
-	
-	func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
-		let asset = self.assetCollection[indexPath.row]
-		let identifier = IndexPath(item: indexPath.item, section: indexPath.section) as NSCopying
-		
-		return UIContextMenuConfiguration(identifier: identifier) {
-			return PreviewAVController(asset: asset)
-		} actionProvider: { _ in
-			return self.createCellContextMenu(for: asset, at: indexPath)
-		}
-	}
+extension VideoCollectionCompressingViewController {
 
-	func collectionView(_ collectionView: UICollectionView, previewForHighlightingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview? {
+	@available(iOS 14.0, *)
+	private func performSordDescriptionMenu() {
 		
-		guard let indexPath = configuration.identifier as? IndexPath,  let cell = collectionView.cellForItem(at: indexPath) else { return nil}
+		var actions: [UIAction] = []
 		
-		let targetPreview = UITargetedPreview(view: cell)
-		targetPreview.parameters.backgroundColor = .clear
-		
-		return targetPreview
+		SortingType.allCases.forEach { key in
+			let action = UIAction(title: key.title,
+								  image: key.image,
+								  state: self.sortingType == key ? .on : .off) { _ in
+				self.getVideoSorted(with: key)
+			}
+			actions.append(action)
+		}
+		self.navigationBar.rightBarButtonItem.showsMenuAsPrimaryAction = true
+		self.navigationBar.rightBarButtonItem.menu = UIMenu(title: "", children: actions)
 	}
 	
-	func collectionView(_ collectionView: UICollectionView, previewForDismissingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview? {
-		guard let indexPath = configuration.identifier as? IndexPath, let cell = collectionView.cellForItem(at: indexPath) else { return nil}
+	private func performPopUpDescriptorMenu() -> [MenuItem]{
 		
-		let targetPreview = UITargetedPreview(view: cell)
-		targetPreview.parameters.backgroundColor = .clear
-		return targetPreview
+		let dateItem: MenuItem = .init(type: .sortByDate, selected: true, checkmark: self.sortingType == .date)
+		let sizeItem: MenuItem = .init(type: .sortBySize, selected: true, checkmark: self.sortingType == .size)
+		let dimensionItem: MenuItem = .init(type: .sortByDimension, selected: true, checkmark: self.sortingType == .dimension)
+		let editItem: MenuItem = .init(type: .sortByEdit, selected: true, checkmark: self.sortingType == .edit)
+		let durationItem: MenuItem = .init(type: .duration, selected: true, checkmark: self.sortingType == .duration)
+		return [dateItem, sizeItem, dimensionItem, editItem, durationItem]
 	}
 }
 
@@ -239,7 +257,7 @@ extension VideoCollectionCompressingViewController {
 			.flatMap { rect in collectionView!.indexPathsForElements(in: rect) }
 			.compactMap { indexPath in self.assetCollection[indexPath.row] }
 		
-		prefetchCacheImageManager.startCachingImages(for: addedAssets, targetSize: self.thumbnailSize, contentMode: .aspectFill, options: nil)
+		prefetchCacheImageManager.startCachingImages(for: addedAssets, targetSize: self.videoCollectionDataSource.thumbnailSize, contentMode: .aspectFill, options: nil)
 //		prefetchCacheImageManager.stopCachingImages(for: removedAssets, targetSize: self.thumbnailSize, contentMode: .aspectFill, options: nil)
 		previousPreheatRect = preheatRect
 	}
@@ -282,7 +300,9 @@ extension VideoCollectionCompressingViewController: NavigationBarDelegate {
 		self.navigationController?.popViewController(animated: true)
 	}
 	
-	func didTapRightBarButton(_ sender: UIButton) {}
+	func didTapRightBarButton(_ sender: UIButton) {
+		self.openSotedMenu()
+	}
 }
 
 extension VideoCollectionCompressingViewController: BottomActionButtonDelegate {
@@ -291,20 +311,7 @@ extension VideoCollectionCompressingViewController: BottomActionButtonDelegate {
 		
 		guard let selectedIndexPath = self.collectionView.indexPathsForSelectedItems?.first else { return }
 		
-		showComressionViewController(with: selectedIndexPath.row)
-	}
-	
-	private func showComressionViewController(with index: Int) {
-		let phasset = self.assetCollection[index]
-		let storyboard = UIStoryboard(name: C.identifiers.storyboards.videoProcessing, bundle: nil)
-		let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.videoCompressing) as!
-		VideoCompressingViewController
-		viewController.processingPHAsset = phasset
-		viewController.updateCollectionWithNewCompressionPHAssets = { phassetCollection in
-			self.assetCollection = phassetCollection
-			self.collectionView.smoothReloadData()
-		}
-		self.navigationController?.pushViewController(viewController, animated: true)
+		showComressionViewController(with: selectedIndexPath)
 	}
 }
 
@@ -328,10 +335,17 @@ extension VideoCollectionCompressingViewController {
 		
 		self.navigationBar.setupNavigation(title: self.mediaType.mediaTypeName,
 										   leftBarButtonImage: I.systemItems.navigationBarItems.back,
-										   rightBarButtonImage: nil,
+										   rightBarButtonImage: I.systemItems.navigationBarItems.sort,
 										   contentType: self.contentType,
 										   leftButtonTitle: nil,
 										   rightButtonTitle: nil)
+	}
+	
+	private func setupSortDescriptionMenu() {
+		
+		if #available(iOS 14.0, *) {
+			self.performSordDescriptionMenu()
+		}
 	}
 	
 	private func setupDelegate() {
@@ -354,5 +368,12 @@ extension VideoCollectionCompressingViewController: Themeble {
 		bottomButtonView.buttonTitleColor = theme.activeTitleTextColor
 		bottomButtonView.activityIndicatorColor = theme.backgroundColor
 		bottomButtonView.updateColorsSettings()
+	}
+}
+
+extension VideoCollectionCompressingViewController: UIPopoverPresentationControllerDelegate {
+	
+	func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
+		return .none
 	}
 }

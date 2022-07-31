@@ -9,10 +9,12 @@ import UIKit
 
 class DropDownMenuTableViewCell: UITableViewCell {
     
-    @IBOutlet weak var baseView: UIView!
+	@IBOutlet weak var checkmarkImageView: UIImageView!
+	@IBOutlet weak var baseView: UIView!
     @IBOutlet weak var thumbnailImageView: UIImageView!
     @IBOutlet weak var menuTitileTextLabel: UILabel!
-    
+	@IBOutlet weak var checkmarkWidthConstraint: NSLayoutConstraint!
+	
     lazy var simpleSeparatorView = UIView()
         
     override func awakeFromNib() {
@@ -26,7 +28,14 @@ class DropDownMenuTableViewCell: UITableViewCell {
 extension DropDownMenuTableViewCell {
     
     public func configure(with menuItem: MenuItem, row position: RowPosition) {
-        
+		
+		switch menuItem.type {
+			case .sortByDate, .sortBySize, .sortByDimension, .sortByEdit, .duration:
+				self.setCheckmark(visible: menuItem.isChecked)
+			default:
+				checkmarkWidthConstraint.constant = 0
+		}
+		
         thumbnailImageView.image = menuItem.thumbnail
         menuTitileTextLabel.text = menuItem.title
         menuTitileTextLabel.font = menuItem.titleFont
@@ -34,10 +43,14 @@ extension DropDownMenuTableViewCell {
         if position != .bottom {
             setupSeparatorView()
         }
-		
+	
 		menuTitileTextLabel.alpha = menuItem.selected ? 1 : 0.5
 		thumbnailImageView.alpha = menuItem.selected ? 1 : 0.5
     }
+	
+	public func setCheckmark(visible: Bool) {
+		checkmarkImageView.isHidden = !visible
+	}
     
     private func setupSeparatorView() {
         
@@ -56,6 +69,9 @@ extension DropDownMenuTableViewCell: Themeble {
     private func setupUI() {
         
         selectionStyle = .none
+		
+		checkmarkImageView.isHidden = true
+		checkmarkImageView.image = UIImage(systemName: "checkmark")!
     }
     
     func updateColors() {
@@ -63,5 +79,6 @@ extension DropDownMenuTableViewCell: Themeble {
         menuTitileTextLabel.textColor = theme.titleTextColor
         thumbnailImageView.tintColor = theme.titleTextColor
         simpleSeparatorView.backgroundColor = theme.separatorMainColor
+		checkmarkImageView.tintColor = theme.titleTextColor
     }
 }

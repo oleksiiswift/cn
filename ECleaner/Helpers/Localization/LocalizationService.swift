@@ -57,6 +57,24 @@ struct  LocalizationService {
 		}
 	}
 	
+	struct Menu {
+		
+		public static func getSortingTitle(of type: SortingType) -> String {
+			switch type {
+				case .date:
+					return Localization.Standart.MenuItems.sortByDate
+				case .size:
+					return Localization.Standart.MenuItems.sortBySize
+				case .dimension:
+					return Localization.Standart.MenuItems.sortByDimension
+				case .edit:
+					return Localization.Standart.MenuItems.sortByEdit
+				case .duration:
+					return Localization.Standart.MenuItems.sortByDuration
+			}
+		}
+	}
+	
 	struct Alert {
 		
 		struct Permissions {
@@ -488,16 +506,3 @@ struct  LocalizationService {
 		}
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

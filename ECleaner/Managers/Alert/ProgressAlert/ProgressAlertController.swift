@@ -187,6 +187,16 @@ extension ProgressAlertController {
 		let progress: ProgressAlertType = .compressing
 		presentAnimatedProgress(title: progress.progressTitle, progressDelegate: delegate, from: viewController, barColor: UIColor().colorFromHexString("3C82C8"), animatedColor: theme.videosTintColor )
 	}
+	
+	public func showVideoSortingAnimateProgress(from viewConstroller: UIViewController) {
+		let progress: ProgressAlertType = .videoSorting
+		presentAnimatedProgress(title: progress.progressTitle,
+								progressDelegate: nil,
+								from: viewConstroller,
+								barColor: theme.videosTintColor,
+								animatedColor: theme.videosTintColor,
+								withCancel: false)
+	}
 			
 	public func showSimpleProgressAlerControllerBar(of type: ProgressAlertType, from viewController: UIViewController, delegate: AnimatedProgressDelegate? = nil) {
 		presentAnimatedProgress(title: type.progressTitle, progressDelegate: delegate, from: viewController, barColor: .white, animatedColor: type.accentColor, withCancel: type.withCancel)

@@ -113,6 +113,12 @@
 "Change Plan" = "Change Plan";
 "Start Backup" = "Start Backup";
 "View" = "View";
+	// MARK: - Menu Items -
+"Sort by Creation Date" = "Sort by Creation Date";
+"Sort by File Size" = "Sort by File Size";
+"Sort by Video Dimension" = "Sort by Video Dimension";
+"Sort by Last Edit" = "Sort by Last Edit";
+"Sort by Duration" = "Sort by Duration";
 
 	//		MARK: - settings -
 	// MARK: title
