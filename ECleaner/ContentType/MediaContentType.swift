@@ -159,6 +159,8 @@ enum MediaContentType {
         /// `SECTION PROPERTIES`
     var numberOfSection: Int {
 		switch self {
+			case .userPhoto:
+				return 2
 			case .userVideo:
 				return 2
 			case .userContacts:
@@ -277,7 +279,7 @@ enum MediaContentType {
 	
 	public func getRowHeight(for section: Int) -> CGFloat {
 		switch self {
-			case .userVideo, .userContacts:
+			case .userPhoto, .userVideo, .userContacts:
 				switch section {
 					case 1:
 						return AppDimensions.ContenTypeCells.heightOfBottomHelperCellBanner

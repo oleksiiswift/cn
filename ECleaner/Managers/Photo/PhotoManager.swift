@@ -1462,6 +1462,12 @@ extension PhotoManager {
 				return
 		}
 	}
+	
+	public func getPHAssetCollectionWithLocation(_ completionHandler: @escaping (_ phassets: [PHAsset]) -> Void) {
+		self.fetchManager.fetchLocationsPhassets { phassets in
+			completionHandler(phassets)
+		}
+	}
 }
 
 	/// `notification sections`

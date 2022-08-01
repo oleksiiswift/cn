@@ -227,13 +227,7 @@ extension PHAssetFetchManager {
 	}
 	
 	public func fetchSortedVideoByFilesSize(completionHandler: @escaping(_ videoPhasset: [PHAsset]) -> Void) {
-		
-
-		
 		DispatchQueue.global(qos: .utility).async {
-			
-			
-			
 			var fetchedVideoTuples: [(asset: PHAsset, fileSize: Int64)] = []
 			
 			let fetchOption = PHFetchOptions()
@@ -250,6 +244,20 @@ extension PHAssetFetchManager {
 			let phasset = fetchedVideoTuples.map({$0.asset})
 			completionHandler(phasset)
 		}
+	}
+	
+	public func fetchLocationsPhassets(completionHandler: @escaping(_ phassets: [PHAsset]) -> Void) {
+		var fetchedPhasset: [PHAsset] = []
+		let fetchOption = PHFetchOptions()
+		fetchOption.sortDescriptors = [NSSortDescriptor(key: SortingDesriptionKey.creationDate.value , ascending: false)]
+		fetchOption.predicate = NSPredicate(format: SDKey.singleMediaType.value, PHAssetMediaType.image.rawValue)
+		let result = PHAsset.fetchAssets(with: fetchOption)
+		result.enumerateObjects  { phasset, index, stopped in
+			if phasset.location != nil {
+				fetchedPhasset.append(phasset)
+			}
+		}
+		completionHandler(fetchedPhasset)
 	}
 
 	public func fetchPhotolibraryContent(by type: KeyMediaType, completionHandler: @escaping (_ result: PHFetchResult<PHAsset>) -> Void) {

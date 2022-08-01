@@ -467,6 +467,7 @@ struct Localization {
 			static var similarSelfiesIsEmpty = "No similar selfies.".localized()
 			static var livePhotoIsEmpty = "No live photo.".localized()
 			static var similarLivePhotoIsEmpty = "No similar live photo.".localized()
+			static var photoWithLocationIsEmpty = "No photo with locations data.".localized()
 			static var largeVideoIsEmpty = "No large video.".localized()
 			static var duplicatedVideoIsEmpty = "No duplucated video.".localized()
 			static var similarVideoIsEmpty = "No similar video.".localized()

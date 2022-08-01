@@ -87,6 +87,7 @@ extension ErrorHandler {
 		case duplicatedPhotoIsEmpty
 		case screenShotsIsEmpty
 		case similarSelfiesIsEmpty
+		case photoWithLocationIsEmpty
 		case livePhotoIsEmpty
 		case similarLivePhotoIsEmpty
 		case largeVideoIsEmpty

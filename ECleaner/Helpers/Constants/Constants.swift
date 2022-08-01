@@ -455,6 +455,7 @@ class Constants {
 			static let permissions = "Permissions"
 			static let onboarding = "Onboarding"
 			static let subscription = "Subscription"
+			static let location = "Location"
         }
         
         struct viewControllers {
@@ -481,6 +482,7 @@ class Constants {
 			static let lifeTime = "LifeTimeSubscriptionViewController"
 			static let contactBackup = "BackupContactsViewController"
 			static let contactsInfo = "ContactsInfoViewController"
+			static let location = "LocationViewController"
         }
         
         struct cells {

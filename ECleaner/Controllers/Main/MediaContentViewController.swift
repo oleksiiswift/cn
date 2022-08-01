@@ -606,6 +606,34 @@ extension MediaContentViewController {
 			}
 		}
 	}
+	
+	private func openContactExportBackupController() {
+		SubscriptionManager.instance.purchasePremiumHandler { status in
+			switch status {
+				case .lifetime, .purchasedPremium:
+					self.performSegue(withIdentifier: C.identifiers.segue.backupContacts, sender: self)
+				case .nonPurchased:
+					UIPresenter.showViewController(of: .subscription)
+			}
+		}
+	}
+	
+	private func openLocationClenController() {
+		SubscriptionManager.instance.purchasePremiumHandler { status in
+			switch status {
+				case .lifetime, .purchasedPremium:
+					UIPresenter.showViewController(of: .subscription)
+				case .nonPurchased:
+					self.photoManager.getPHAssetCollectionWithLocation { phassets in
+						if !phassets.isEmpty {
+							self.showLocationViewController(with: phassets)
+						} else {
+							ErrorHandler.shared.showEmptySearchResultsFor(.photoWithLocationIsEmpty)
+						}
+					}
+			}
+		}
+	}
 }
 
 	//      MARK: - contacts content -
@@ -801,6 +829,20 @@ extension MediaContentViewController {
 		let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.videoCompressCollection) as! VideoCollectionCompressingViewController
 		viewController.title = type.mediaTypeName
 		viewController.assetCollection = videoPHAsset
+		viewController.mediaType = type
+		viewController.contentType = content
+		self.navigationController?.pushViewController(viewController, animated: true)
+	}
+	
+	private func showLocationViewController(with photoPHAsset: [PHAsset]) {
+		
+		let type: PhotoMediaType = .locationPhoto
+		let content: MediaContentType = .userPhoto
+		
+		let storyboard = UIStoryboard(name: C.identifiers.storyboards.location, bundle: nil)
+		let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.location) as! LocationViewController
+		viewController.title = type.mediaTypeName
+		viewController.assetCollection = photoPHAsset
 		viewController.mediaType = type
 		viewController.contentType = content
 		self.navigationController?.pushViewController(viewController, animated: true)
@@ -1291,6 +1333,8 @@ extension MediaContentViewController {
 				guard searchingProcessingType == .clearSearchingProcessingQueue else { return}
 				
 				switch self.mediaContentType {
+					case .userPhoto:
+						self.openLocationClenController()
 					case .userVideo:
 						self.showVideoContentForCompressingOperation()
 					case .userContacts:
@@ -1442,19 +1486,5 @@ extension MediaContentViewController: Themeble {
 		segue.interactiveHide = true
 		segue.messageView.setupForShadow(shadowColor: theme.bottomShadowColor, cornerRadius: 14, shadowOffcet: CGSize(width: 6, height: 6), shadowOpacity: 10, shadowRadius: 14)
 		segue.messageView.configureNoDropShadow()
-	}
-}
-
-extension MediaContentViewController {
-	
-	private func openContactExportBackupController() {
-		SubscriptionManager.instance.purchasePremiumHandler { status in
-			switch status {
-				case .lifetime, .purchasedPremium:
-					self.performSegue(withIdentifier: C.identifiers.segue.backupContacts, sender: self)
-				case .nonPurchased:
-					UIPresenter.showViewController(of: .subscription)
-			}
-		}
 	}
 }
