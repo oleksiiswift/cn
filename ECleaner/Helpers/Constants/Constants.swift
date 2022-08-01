@@ -518,6 +518,7 @@ class Constants {
             static let bottomButtonBarView = "BottomButtonBarView"
             static let bottomDoubleButtonBarView = "BottomDoubleButtonBarView"
             static let searchBar = "SearchBarView"
+			static let phassetAnnotation = "PHAssetAnnotationView"
         }
         
         struct xibs {
