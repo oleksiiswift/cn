@@ -249,7 +249,7 @@ extension VideoCollectionCompressingViewController {
 		let delta = abs(preheatRect.midY - previousPreheatRect.midY)
 		guard delta > view.bounds.height / 3 else { return }
 		
-		let (addedRects, removedRects) = differencesBetweenRects(previousPreheatRect, preheatRect)
+		let (addedRects, removedRects) = Utils.LayoutManager.differencesBetweenRects(previousPreheatRect, preheatRect)
 		let addedAssets = addedRects
 			.flatMap { rect in collectionView!.indexPathsForElements(in: rect) }
 			.compactMap { indexPath in self.assetCollection[indexPath.row] }

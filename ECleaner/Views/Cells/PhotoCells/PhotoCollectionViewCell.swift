@@ -8,8 +8,6 @@
 import UIKit
 import Photos
 
-
-
 protocol PhotoCollectionViewCellDelegate {
 	func didShowFullScreenPHasset(at cell: PhotoCollectionViewCell)
 	func didSelect(cell: PhotoCollectionViewCell)
@@ -134,6 +132,8 @@ extension PhotoCollectionViewCell: Themeble {
 				baseView.layoutIfNeeded()
 				reuseShadowView.layoutIfNeeded()
 				reuseShadowView.layoutSubviews()
+			case .locationPhoto:
+				buttonView.isHidden = true
 			default:
 				debugPrint("")
 		}
