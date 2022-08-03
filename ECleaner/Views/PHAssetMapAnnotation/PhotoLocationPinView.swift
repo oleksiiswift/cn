@@ -9,16 +9,15 @@ import UIKit
 import MapKit
 import Photos
 
-
 class PHAssetAnnotation: NSObject, MKAnnotation {
 	var coordinate: CLLocationCoordinate2D
-	var phasset: PHAsset?
+	var phasset: PHAsset
 	var title: String?
 	var image: UIImage?
 
 	override init() {
 		self.coordinate = CLLocationCoordinate2D()
-		self.phasset = nil
+		self.phasset = PHAsset()
 		self.title = nil
 		self.image = nil
 	}

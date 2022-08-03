@@ -234,6 +234,14 @@
 		977AC3A02869DC490074DCCE /* Onboarding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977AC39F2869DC480074DCCE /* Onboarding.swift */; };
 		977B7EE02898009A00735433 /* CLPlacemark.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977B7EDF2898009A00735433 /* CLPlacemark.swift */; };
 		977B7EE22898249500735433 /* PhotoLocationPinView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977B7EE12898249500735433 /* PhotoLocationPinView.swift */; };
+		977B7EE6289912C600735433 /* LocationGridViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977B7EE5289912C600735433 /* LocationGridViewController.swift */; };
+		977B7EE82899316A00735433 /* PHAssetLocationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977B7EE72899316A00735433 /* PHAssetLocationViewModel.swift */; };
+		977B7EEA2899356800735433 /* PHAssetLocationGridDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977B7EE92899356800735433 /* PHAssetLocationGridDataSource.swift */; };
+		977B7EEC2899435F00735433 /* LocationGridViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 977B7EEB2899435F00735433 /* LocationGridViewController.xib */; };
+		977B7EEF2899477500735433 /* MapView+VisibleRectAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977B7EEE2899477500735433 /* MapView+VisibleRectAnnotation.swift */; };
+		977B7EF428994BCA00735433 /* Utils+CoollectionViewDiff.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977B7EF328994BC900735433 /* Utils+CoollectionViewDiff.swift */; };
+		977B7EF7289972E700735433 /* LocationHeaderCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977B7EF5289972E700735433 /* LocationHeaderCollectionReusableView.swift */; };
+		977B7EF8289972E700735433 /* LocationHeaderCollectionReusableView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 977B7EF6289972E700735433 /* LocationHeaderCollectionReusableView.xib */; };
 		977BA04527328C4A0018DF53 /* Array+BestValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977BA04427328C4A0018DF53 /* Array+BestValue.swift */; };
 		977BA0472733171F0018DF53 /* CNContacts+FillRows.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977BA0462733171F0018DF53 /* CNContacts+FillRows.swift */; };
 		977FE23527302F57004DE4C3 /* ContactGroupListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977FE23427302F57004DE4C3 /* ContactGroupListViewModel.swift */; };
@@ -677,6 +685,14 @@
 		977AC39F2869DC480074DCCE /* Onboarding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Onboarding.swift; sourceTree = "<group>"; };
 		977B7EDF2898009A00735433 /* CLPlacemark.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLPlacemark.swift; sourceTree = "<group>"; };
 		977B7EE12898249500735433 /* PhotoLocationPinView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoLocationPinView.swift; sourceTree = "<group>"; };
+		977B7EE5289912C600735433 /* LocationGridViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationGridViewController.swift; sourceTree = "<group>"; };
+		977B7EE72899316A00735433 /* PHAssetLocationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PHAssetLocationViewModel.swift; sourceTree = "<group>"; };
+		977B7EE92899356800735433 /* PHAssetLocationGridDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PHAssetLocationGridDataSource.swift; sourceTree = "<group>"; };
+		977B7EEB2899435F00735433 /* LocationGridViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LocationGridViewController.xib; sourceTree = "<group>"; };
+		977B7EEE2899477500735433 /* MapView+VisibleRectAnnotation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MapView+VisibleRectAnnotation.swift"; sourceTree = "<group>"; };
+		977B7EF328994BC900735433 /* Utils+CoollectionViewDiff.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Utils+CoollectionViewDiff.swift"; sourceTree = "<group>"; };
+		977B7EF5289972E700735433 /* LocationHeaderCollectionReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationHeaderCollectionReusableView.swift; sourceTree = "<group>"; };
+		977B7EF6289972E700735433 /* LocationHeaderCollectionReusableView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LocationHeaderCollectionReusableView.xib; sourceTree = "<group>"; };
 		977BA04427328C4A0018DF53 /* Array+BestValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+BestValue.swift"; sourceTree = "<group>"; };
 		977BA0462733171F0018DF53 /* CNContacts+FillRows.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CNContacts+FillRows.swift"; sourceTree = "<group>"; };
 		977FE23427302F57004DE4C3 /* ContactGroupListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactGroupListViewModel.swift; sourceTree = "<group>"; };
@@ -957,6 +973,7 @@
 				04649B30268C507F00336FE4 /* GroupedAssetsReusableHeaderView.xib */,
 				04649B34268C52B100336FE4 /* GroupedAssetsReusableFooterView.xib */,
 				97DC39AB273BE9D300D487BE /* GroupedContactsHeaderView.xib */,
+				977B7EF6289972E700735433 /* LocationHeaderCollectionReusableView.xib */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -967,6 +984,7 @@
 				04649B33268C52B100336FE4 /* GroupedAssetsReusableFooterView.swift */,
 				04649B2F268C507F00336FE4 /* GroupedAssetsReusableHeaderView.swift */,
 				97DC39A9273BE9C800D487BE /* GroupedContactsHeaderView.swift */,
+				977B7EF5289972E700735433 /* LocationHeaderCollectionReusableView.swift */,
 			);
 			path = HeadersFootes;
 			sourceTree = "<group>";
@@ -1002,6 +1020,7 @@
 		049CC20F26821D3F0002F988 /* Strings */ = {
 			isa = PBXGroup;
 			children = (
+				97931859282163A200769BEB /* NSAttributedString.swift */,
 				97D0BABC2680AD6E0067A3A6 /* String+NSDate.swift */,
 				049CC2392683761B0002F988 /* String+ConvertInteger.swift */,
 				04CFFFF12684B1ED000CA850 /* String+Extension.swift */,
@@ -1058,6 +1077,7 @@
 			isa = PBXGroup;
 			children = (
 				04E5836E267A47FB00EDC3A3 /* Utils.swift */,
+				977B7EF328994BC900735433 /* Utils+CoollectionViewDiff.swift */,
 				97458D19287F3AB3004446E2 /* Utils+Levenshtein.swift */,
 				97B53A07281831D70054B826 /* Utils+UIHelper.swift */,
 				97238A122689EF6E00C523DC /* Presenter.swift */,
@@ -1287,12 +1307,9 @@
 				9785E54827DD6E66000B360C /* UINavigationController */,
 				976D8E4628049900005004F4 /* AVFileType */,
 				979BDF1C280AF77500B49ABB /* URL */,
-				9787576E281C768E00CE27A9 /* AVUrlAsset.swift */,
-				97AB3B28281E888F00187617 /* UIFont.swift */,
-				97931859282163A200769BEB /* NSAttributedString.swift */,
-				97601581286F9019006965BB /* NSLayoutConstraint.swift */,
+				977B7EF02899477900735433 /* MapView */,
+				977B7EED2899472800735433 /* NSLayoutConstraint */,
 				972C80692871FA9F00691271 /* CGPoint */,
-				97BE98C92874A68B00419C6A /* UIButton+Unerline.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -1369,6 +1386,7 @@
 		04E58364267A3F1600EDC3A3 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				977B7EF22899490100735433 /* PHAssetMapAnnotation */,
 				97BE98C8287442E700419C6A /* SubscriptionSegmentControll */,
 				9701D27927BE56E60078E39F /* StepSlider */,
 				97CA4242273ECB59001FEA15 /* BottomButtonBarView */,
@@ -1446,6 +1464,7 @@
 		04E5836B267A414C00EDC3A3 /* Xibs */ = {
 			isa = PBXGroup;
 			children = (
+				977B7EF1289948CF00735433 /* LocationGridViewController */,
 				9785ED93288B51A90026EFFD /* ActionButtonCell */,
 				97B01A56274501B300DDE03C /* SearchBar */,
 				97CE449E273D6AA300DF6114 /* NavigationBar */,
@@ -1613,6 +1632,7 @@
 		970D7787275B70D70048F41D /* PHAsset */ = {
 			isa = PBXGroup;
 			children = (
+				9787576E281C768E00CE27A9 /* AVUrlAsset.swift */,
 				970D7785275B70420048F41D /* PHAsset+FileSize.swift */,
 				9702443D27EA0F6900011743 /* PHAsset+URL.swift */,
 			);
@@ -1630,6 +1650,7 @@
 		970D7789275B70F60048F41D /* UIFont */ = {
 			isa = PBXGroup;
 			children = (
+				97AB3B28281E888F00187617 /* UIFont.swift */,
 				97B01A742746ED5D00DDE03C /* UIFont+Italic.swift */,
 			);
 			path = UIFont;
@@ -2071,6 +2092,39 @@
 				97D4273D2870378F006772A2 /* GradientShadowView.swift */,
 			);
 			path = ShadowView;
+			sourceTree = "<group>";
+		};
+		977B7EED2899472800735433 /* NSLayoutConstraint */ = {
+			isa = PBXGroup;
+			children = (
+				97601581286F9019006965BB /* NSLayoutConstraint.swift */,
+			);
+			path = NSLayoutConstraint;
+			sourceTree = "<group>";
+		};
+		977B7EF02899477900735433 /* MapView */ = {
+			isa = PBXGroup;
+			children = (
+				977B7EDF2898009A00735433 /* CLPlacemark.swift */,
+				977B7EEE2899477500735433 /* MapView+VisibleRectAnnotation.swift */,
+			);
+			path = MapView;
+			sourceTree = "<group>";
+		};
+		977B7EF1289948CF00735433 /* LocationGridViewController */ = {
+			isa = PBXGroup;
+			children = (
+				977B7EEB2899435F00735433 /* LocationGridViewController.xib */,
+			);
+			path = LocationGridViewController;
+			sourceTree = "<group>";
+		};
+		977B7EF22899490100735433 /* PHAssetMapAnnotation */ = {
+			isa = PBXGroup;
+			children = (
+				977B7EE12898249500735433 /* PhotoLocationPinView.swift */,
+			);
+			path = PHAssetMapAnnotation;
 			sourceTree = "<group>";
 		};
 		977BA0482733173B0018DF53 /* CNContacts */ = {
@@ -2580,6 +2634,7 @@
 		97E54A8A2690A9B100C7FD54 /* UIButton */ = {
 			isa = PBXGroup;
 			children = (
+				97BE98C92874A68B00419C6A /* UIButton+Unerline.swift */,
 				97CC2F3F268749CF0072EF8C /* UIButton+ImageAlign.swift */,
 				04649B3B268C98A900336FE4 /* UIButton+RemoveAnimation.swift */,
 			);
@@ -2634,8 +2689,9 @@
 			isa = PBXGroup;
 			children = (
 				97EC0FDA2897C14F0096F780 /* LocationViewController.swift */,
-				977B7EE12898249500735433 /* PhotoLocationPinView.swift */,
-				977B7EDF2898009A00735433 /* CLPlacemark.swift */,
+				977B7EE5289912C600735433 /* LocationGridViewController.swift */,
+				977B7EE72899316A00735433 /* PHAssetLocationViewModel.swift */,
+				977B7EE92899356800735433 /* PHAssetLocationGridDataSource.swift */,
 			);
 			path = Location;
 			sourceTree = "<group>";
@@ -2821,6 +2877,7 @@
 				97CA4241273EBC33001FEA15 /* BottomButtonBarView.xib in Resources */,
 				9763F4912847F50D004122A9 /* Localizable.stringsdict in Resources */,
 				9760158E286FACD7006965BB /* PremiumFeatureTableViewCell.xib in Resources */,
+				977B7EEC2899435F00735433 /* LocationGridViewController.xib in Resources */,
 				97A05B762743D4C200968459 /* SearchBarView.xib in Resources */,
 				04CF00012685F0C3000CA850 /* ContentTypeTableViewCell.xib in Resources */,
 				049CC230268337310002F988 /* MediaTypeCollectionViewCell.xib in Resources */,
@@ -2859,6 +2916,7 @@
 				972A2A0128057D6700D6F54A /* CompressionSettingsTableViewCell.xib in Resources */,
 				97FC78A22688E5E8000D7F26 /* PhotoCollectionViewCell.xib in Resources */,
 				975AF43E2728987500744E3B /* Contacts.storyboard in Resources */,
+				977B7EF8289972E700735433 /* LocationHeaderCollectionReusableView.xib in Resources */,
 				97D030302893F6ED002181DC /* fading-colourized-percussion_150bpm_B_major.wav in Resources */,
 				97C4D72627F3825000C476FE /* PhotoPreviewCollectionViewCell.xib in Resources */,
 				97879B16286A411F0040A8F7 /* video.json in Resources */,
@@ -2964,6 +3022,7 @@
 				97FC789A2688D907000D7F26 /* SimpleColumnFlowLayout.swift in Sources */,
 				977BA0472733171F0018DF53 /* CNContacts+FillRows.swift in Sources */,
 				9785ED86288AD9720026EFFD /* ContactModel.swift in Sources */,
+				977B7EEF2899477500735433 /* MapView+VisibleRectAnnotation.swift in Sources */,
 				978FEF12274BB73700ADE1D9 /* AlertType.swift in Sources */,
 				97410502286B950A00277E86 /* FontManager+Onboarding.swift in Sources */,
 				97C44FBD274EF959001B61AB /* ContactsContainerType.swift in Sources */,
@@ -3014,6 +3073,7 @@
 				972AAACD27F7524A00F3A1D2 /* UIView+AnimateButtonsAndViews.swift in Sources */,
 				97CC2F3C26873A7D0072EF8C /* DateSelectorViewController.swift in Sources */,
 				97EB665127B1A4AE00B21EF5 /* CGSize+pixel.swift in Sources */,
+				977B7EF428994BCA00735433 /* Utils+CoollectionViewDiff.swift in Sources */,
 				97420BF4283EB99D00B0E134 /* PermissionSectionModel.swift in Sources */,
 				04E09470267A06B500A69956 /* AppDelegate.swift in Sources */,
 				97A57478280C7CF100B76BD0 /* AnimatedProgressBar.swift in Sources */,
@@ -3058,6 +3118,7 @@
 				97A17F6128366E2300591409 /* FontManager+Picker.swift in Sources */,
 				970D778F275B9D170048F41D /* DeepCleanNotificationType.swift in Sources */,
 				97420C06283EC7A500B0E134 /* PermissionContinueTableViewCell.swift in Sources */,
+				977B7EF7289972E700735433 /* LocationHeaderCollectionReusableView.swift in Sources */,
 				97C70B52277634280033F466 /* ShadowButtonWithImage.swift in Sources */,
 				04649B35268C52B100336FE4 /* GroupedAssetsReusableFooterView.swift in Sources */,
 				97540C7828858C31001EFDB0 /* ContactsBackupUpdateListener.swift in Sources */,
@@ -3087,6 +3148,7 @@
 				97238A092689D01E00C523DC /* GroupedAssetListViewController.swift in Sources */,
 				976D8E4328046EDF005004F4 /* VideoCompressionErrorHandler.swift in Sources */,
 				97540C7A28858C4A001EFDB0 /* ContactsBackupUpdateMediator.swift in Sources */,
+				977B7EE6289912C600735433 /* LocationGridViewController.swift in Sources */,
 				049CC22426831B800002F988 /* UIColor+Hex.swift in Sources */,
 				97B53A06281803750054B826 /* String+Size.swift in Sources */,
 				97458D1A287F3AB3004446E2 /* Utils+Levenshtein.swift in Sources */,
@@ -3137,6 +3199,7 @@
 				977FE23527302F57004DE4C3 /* ContactGroupListViewModel.swift in Sources */,
 				04649B31268C507F00336FE4 /* GroupedAssetsReusableHeaderView.swift in Sources */,
 				97238A112689EECE00C523DC /* UIView+BlurView.swift in Sources */,
+				977B7EEA2899356800735433 /* PHAssetLocationGridDataSource.swift in Sources */,
 				04CFFFF92685BF01000CA850 /* MediaContentViewController.swift in Sources */,
 				97AB3B29281E888F00187617 /* UIFont.swift in Sources */,
 				4F56074327205AF300CA19E9 /* GradientArcWithClearColorView.swift in Sources */,
@@ -3164,6 +3227,7 @@
 				975AF43B2728306C00744E3B /* ContactListDataSource.swift in Sources */,
 				9787576F281C768E00CE27A9 /* AVUrlAsset.swift in Sources */,
 				972C80662871FA6200691271 /* UIView+GradientBorder.swift in Sources */,
+				977B7EE82899316A00735433 /* PHAssetLocationViewModel.swift in Sources */,
 				97A39FDE27649F0C007CB482 /* UIView+RecurciveSearch.swift in Sources */,
 				970A0F332814826F0071FCD9 /* CompressingInfoViewController.swift in Sources */,
 				97DDCAB0280822760093D5F5 /* CompressionResolution.swift in Sources */,

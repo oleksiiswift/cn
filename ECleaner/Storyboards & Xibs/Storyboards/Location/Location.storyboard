@@ -20,6 +20,9 @@
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="Yqq-s8-mc8">
                                 <rect key="frame" x="0.0" y="124" width="414" height="772"/>
                             </mapView>
+                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HWb-6E-NdN">
+                                <rect key="frame" x="0.0" y="124" width="414" height="772"/>
+                            </containerView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="sB4-Bw-sOw" customClass="NavigationBar" customModule="ECleaner" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="44" width="414" height="80"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -31,17 +34,22 @@
                         <viewLayoutGuide key="safeArea" id="vDu-zF-Fre"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="HWb-6E-NdN" secondAttribute="trailing" id="67b-Tl-zS9"/>
                             <constraint firstItem="sB4-Bw-sOw" firstAttribute="top" secondItem="vDu-zF-Fre" secondAttribute="top" id="6Nh-TR-304"/>
                             <constraint firstItem="sB4-Bw-sOw" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" id="I64-kM-YdY"/>
+                            <constraint firstItem="HWb-6E-NdN" firstAttribute="top" secondItem="sB4-Bw-sOw" secondAttribute="bottom" id="JbE-i9-j63"/>
                             <constraint firstAttribute="bottom" secondItem="Yqq-s8-mc8" secondAttribute="bottom" id="N48-Th-ueG"/>
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="Yqq-s8-mc8" secondAttribute="trailing" id="VQu-Nu-9cy"/>
+                            <constraint firstItem="HWb-6E-NdN" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" id="moN-10-Sdi"/>
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="sB4-Bw-sOw" secondAttribute="trailing" id="rAT-rv-evD"/>
                             <constraint firstItem="Yqq-s8-mc8" firstAttribute="top" secondItem="sB4-Bw-sOw" secondAttribute="bottom" id="xej-ul-sSB"/>
                             <constraint firstItem="Yqq-s8-mc8" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" id="yuh-dp-kHN"/>
+                            <constraint firstAttribute="bottom" secondItem="HWb-6E-NdN" secondAttribute="bottom" id="zPL-4R-B9y"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="g1A-8a-FAf"/>
                     <connections>
+                        <outlet property="containerView" destination="HWb-6E-NdN" id="XZD-8B-wLE"/>
                         <outlet property="mapView" destination="Yqq-s8-mc8" id="ayz-oK-zjR"/>
                         <outlet property="navigationBar" destination="sB4-Bw-sOw" id="BNP-w0-Bi9"/>
                     </connections>

@@ -519,6 +519,7 @@ class Constants {
             static let bottomDoubleButtonBarView = "BottomDoubleButtonBarView"
             static let searchBar = "SearchBarView"
 			static let phassetAnnotation = "PHAssetAnnotationView"
+			static let locationHeader = "LocationHeaderCollectionReusableView"
         }
         
         struct xibs {
@@ -552,6 +553,7 @@ class Constants {
             static let bottomButtonBarView = "BottomButtonBarView"
             static let bottomDoubleButtonBarView = "BottomDoubleButtonBarView"
             static let searchBar = "SearchBarView"
+			static let locationHeader = "LocationHeaderCollectionReusableView"
             
             static let carouselView = "CarouselItemView"
             static let datePickerContainer = "DateSelectebleView"
