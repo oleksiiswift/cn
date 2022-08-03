@@ -8,6 +8,7 @@
 import UIKit
 import Photos
 import MapKit
+import SwiftMessages
 
 enum LocationView {
 	case map
@@ -42,6 +43,15 @@ class LocationViewController: UIViewController {
 		updateColors()
 		self.containerView.isHidden = true
     }
+	
+	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+		switch segue.identifier {
+			case Constants.identifiers.segue.location:
+				self.setupShowLocationInfoController(segue: segue, sender: sender)
+			default:
+				return
+		}
+	}
 }
 
 extension LocationViewController: NavigationBarDelegate {
@@ -104,6 +114,23 @@ extension LocationViewController {
 				self.containerView.isHidden = false
 		}
 	}
+	
+	private func setupShowLocationInfoController(segue: UIStoryboardSegue, sender: Any?) {
+		
+		guard let segue = segue as? SwiftMessagesSegue else { return }
+		
+		segue.configure(layout: .bottomMessage)
+		segue.dimMode = .gray(interactive: true)
+		segue.interactiveHide = true
+		segue.messageView.setupForShadow(shadowColor: theme.bottomShadowColor, cornerRadius: 14, shadowOffcet: CGSize(width: 6, height: 6), shadowOpacity: 10, shadowRadius: 14)
+		segue.messageView.configureNoDropShadow()
+		
+		if let locationInfoViewController = segue.destination as? LocationInfoViewController {
+			if let phasset = sender as? PHAsset {
+				locationInfoViewController.currentPhasset = phasset
+			}
+		}
+	}
 }
 
 extension LocationViewController: LocationGridDelegate {
@@ -130,8 +157,10 @@ extension LocationViewController: MKMapViewDelegate {
 	
 	func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
 		if view.isKind(of: PHAssetAnnotationView.self) {
-			if let _ = view.annotation as? PHAssetAnnotation {
-				
+			if let annotationView = view.annotation as? PHAssetAnnotation {
+				let phasset = annotationView.phasset
+				let sender: PHAsset = phasset
+				self.performSegue(withIdentifier: Constants.identifiers.segue.location, sender: sender)
 			}
 		}
 	}
