@@ -242,6 +242,9 @@
 		977B7EF428994BCA00735433 /* Utils+CoollectionViewDiff.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977B7EF328994BC900735433 /* Utils+CoollectionViewDiff.swift */; };
 		977B7EF7289972E700735433 /* LocationHeaderCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977B7EF5289972E700735433 /* LocationHeaderCollectionReusableView.swift */; };
 		977B7EF8289972E700735433 /* LocationHeaderCollectionReusableView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 977B7EF6289972E700735433 /* LocationHeaderCollectionReusableView.xib */; };
+		977B7EFA289A771A00735433 /* LocationInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977B7EF9289A771A00735433 /* LocationInfoViewController.swift */; };
+		977B7EFC289AA9BC00735433 /* LocationInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977B7EFB289AA9BC00735433 /* LocationInfoView.swift */; };
+		977B7EFF289AC5CF00735433 /* CLLocationCoordinate2D+DMS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977B7EFE289AC5CF00735433 /* CLLocationCoordinate2D+DMS.swift */; };
 		977BA04527328C4A0018DF53 /* Array+BestValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977BA04427328C4A0018DF53 /* Array+BestValue.swift */; };
 		977BA0472733171F0018DF53 /* CNContacts+FillRows.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977BA0462733171F0018DF53 /* CNContacts+FillRows.swift */; };
 		977FE23527302F57004DE4C3 /* ContactGroupListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977FE23427302F57004DE4C3 /* ContactGroupListViewModel.swift */; };
@@ -410,6 +413,7 @@
 		97DE2732288A90A400514097 /* ContactDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97DE2731288A90A400514097 /* ContactDataSource.swift */; };
 		97E54A86268BB16A00C7FD54 /* SNCollectionViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97E54A85268BB16A00C7FD54 /* SNCollectionViewLayout.swift */; };
 		97E678462750F68A004E340B /* UsageDataNotificationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97E678452750F68A004E340B /* UsageDataNotificationType.swift */; };
+		97E7E8E4289BC634005DAE7E /* String+subsctrict.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97E7E8E3289BC634005DAE7E /* String+subsctrict.swift */; };
 		97EB665127B1A4AE00B21EF5 /* CGSize+pixel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97EB665027B1A4AE00B21EF5 /* CGSize+pixel.swift */; };
 		97EB665327B1BC1F00B21EF5 /* UICollectionView+NextItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97EB665227B1BC1F00B21EF5 /* UICollectionView+NextItem.swift */; };
 		97EBB0242888913E00C1A0C9 /* CheckmarkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97EBB0232888913E00C1A0C9 /* CheckmarkView.swift */; };
@@ -693,6 +697,9 @@
 		977B7EF328994BC900735433 /* Utils+CoollectionViewDiff.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Utils+CoollectionViewDiff.swift"; sourceTree = "<group>"; };
 		977B7EF5289972E700735433 /* LocationHeaderCollectionReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationHeaderCollectionReusableView.swift; sourceTree = "<group>"; };
 		977B7EF6289972E700735433 /* LocationHeaderCollectionReusableView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LocationHeaderCollectionReusableView.xib; sourceTree = "<group>"; };
+		977B7EF9289A771A00735433 /* LocationInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationInfoViewController.swift; sourceTree = "<group>"; };
+		977B7EFB289AA9BC00735433 /* LocationInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationInfoView.swift; sourceTree = "<group>"; };
+		977B7EFE289AC5CF00735433 /* CLLocationCoordinate2D+DMS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CLLocationCoordinate2D+DMS.swift"; sourceTree = "<group>"; };
 		977BA04427328C4A0018DF53 /* Array+BestValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+BestValue.swift"; sourceTree = "<group>"; };
 		977BA0462733171F0018DF53 /* CNContacts+FillRows.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CNContacts+FillRows.swift"; sourceTree = "<group>"; };
 		977FE23427302F57004DE4C3 /* ContactGroupListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactGroupListViewModel.swift; sourceTree = "<group>"; };
@@ -861,6 +868,7 @@
 		97DE2731288A90A400514097 /* ContactDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactDataSource.swift; sourceTree = "<group>"; };
 		97E54A85268BB16A00C7FD54 /* SNCollectionViewLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SNCollectionViewLayout.swift; sourceTree = "<group>"; };
 		97E678452750F68A004E340B /* UsageDataNotificationType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsageDataNotificationType.swift; sourceTree = "<group>"; };
+		97E7E8E3289BC634005DAE7E /* String+subsctrict.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+subsctrict.swift"; sourceTree = "<group>"; };
 		97EB665027B1A4AE00B21EF5 /* CGSize+pixel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGSize+pixel.swift"; sourceTree = "<group>"; };
 		97EB665227B1BC1F00B21EF5 /* UICollectionView+NextItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UICollectionView+NextItem.swift"; sourceTree = "<group>"; };
 		97EBB0232888913E00C1A0C9 /* CheckmarkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckmarkView.swift; sourceTree = "<group>"; };
@@ -1030,6 +1038,7 @@
 				970B208C27F604D300B5AF7D /* String+Secionds.swift */,
 				97B53A05281803750054B826 /* String+Size.swift */,
 				97346484284789DE00BE0DE1 /* Localize+Count.swift */,
+				97E7E8E3289BC634005DAE7E /* String+subsctrict.swift */,
 			);
 			path = Strings;
 			sourceTree = "<group>";
@@ -1310,6 +1319,7 @@
 				977B7EF02899477900735433 /* MapView */,
 				977B7EED2899472800735433 /* NSLayoutConstraint */,
 				972C80692871FA9F00691271 /* CGPoint */,
+				977B7F00289AC5D300735433 /* CLLocationCoordinate2D */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -1409,6 +1419,7 @@
 				97B288A6281D790D0020A235 /* SegementControll */,
 				97B288A9281D79340020A235 /* AnimatedProgressView */,
 				97EBB0252888914500C1A0C9 /* CheckmarkView */,
+				977B7EFD289AA9C000735433 /* LocationInfo */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -2127,6 +2138,22 @@
 			path = PHAssetMapAnnotation;
 			sourceTree = "<group>";
 		};
+		977B7EFD289AA9C000735433 /* LocationInfo */ = {
+			isa = PBXGroup;
+			children = (
+				977B7EFB289AA9BC00735433 /* LocationInfoView.swift */,
+			);
+			path = LocationInfo;
+			sourceTree = "<group>";
+		};
+		977B7F00289AC5D300735433 /* CLLocationCoordinate2D */ = {
+			isa = PBXGroup;
+			children = (
+				977B7EFE289AC5CF00735433 /* CLLocationCoordinate2D+DMS.swift */,
+			);
+			path = CLLocationCoordinate2D;
+			sourceTree = "<group>";
+		};
 		977BA0482733173B0018DF53 /* CNContacts */ = {
 			isa = PBXGroup;
 			children = (
@@ -2692,6 +2719,7 @@
 				977B7EE5289912C600735433 /* LocationGridViewController.swift */,
 				977B7EE72899316A00735433 /* PHAssetLocationViewModel.swift */,
 				977B7EE92899356800735433 /* PHAssetLocationGridDataSource.swift */,
+				977B7EF9289A771A00735433 /* LocationInfoViewController.swift */,
 			);
 			path = Location;
 			sourceTree = "<group>";
@@ -2945,6 +2973,7 @@
 				97EC82EE2869059C00A32A21 /* StoryBoarded.swift in Sources */,
 				97A39FE52764A040007CB482 /* SegmentDatePickerComponents.swift in Sources */,
 				0459DF8B26A55F360085EEDF /* CarouselCollectionViewCell.swift in Sources */,
+				977B7EFF289AC5CF00735433 /* CLLocationCoordinate2D+DMS.swift in Sources */,
 				977BA04527328C4A0018DF53 /* Array+BestValue.swift in Sources */,
 				97CC2F382683CF740072EF8C /* UpdateContentDataBaseMediator.swift in Sources */,
 				04E58379267B39AD00EDC3A3 /* PHPhotoLibrary+Auth.swift in Sources */,
@@ -3022,6 +3051,7 @@
 				97FC789A2688D907000D7F26 /* SimpleColumnFlowLayout.swift in Sources */,
 				977BA0472733171F0018DF53 /* CNContacts+FillRows.swift in Sources */,
 				9785ED86288AD9720026EFFD /* ContactModel.swift in Sources */,
+				977B7EFA289A771A00735433 /* LocationInfoViewController.swift in Sources */,
 				977B7EEF2899477500735433 /* MapView+VisibleRectAnnotation.swift in Sources */,
 				978FEF12274BB73700ADE1D9 /* AlertType.swift in Sources */,
 				97410502286B950A00277E86 /* FontManager+Onboarding.swift in Sources */,
@@ -3257,6 +3287,7 @@
 				04649B3E268DDDE700336FE4 /* UICollectionView+SelectAll.swift in Sources */,
 				97BE98CA2874A68B00419C6A /* UIButton+Unerline.swift in Sources */,
 				97A17F5728365A4F00591409 /* FontManager+NavigationSettings.swift in Sources */,
+				977B7EFC289AA9BC00735433 /* LocationInfoView.swift in Sources */,
 				976D8E39280468A3005004F4 /* VideoCompressionConfig.swift in Sources */,
 				04E5836F267A47FB00EDC3A3 /* Utils.swift in Sources */,
 				971AD5E927EAB72900811A3A /* ZoomTransitionController.swift in Sources */,
@@ -3264,6 +3295,7 @@
 				97879B24286A5F530040A8F7 /* OnboardingViewModel.swift in Sources */,
 				975C864228465035002E07DC /* PermissionManager.swift in Sources */,
 				047DE61926AAA53100733CD5 /* DeepCleanInfoTableViewCell.swift in Sources */,
+				97E7E8E4289BC634005DAE7E /* String+subsctrict.swift in Sources */,
 				97B53A08281831D70054B826 /* Utils+UIHelper.swift in Sources */,
 				97A17F5B283662DD00591409 /* FontManager+DefaultFonts.swift in Sources */,
 				9710285428038274003CBF7E /* VideoCompressingViewController.swift in Sources */,

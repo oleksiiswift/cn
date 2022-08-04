@@ -483,6 +483,8 @@ class Constants {
 			static let contactBackup = "BackupContactsViewController"
 			static let contactsInfo = "ContactsInfoViewController"
 			static let location = "LocationViewController"
+			static let locationGrid = "LocationGridViewController"
+			static let locationInfo = "LocationInfoViewController"
         }
         
         struct cells {
@@ -563,7 +565,7 @@ class Constants {
             static let navigationBar = "NavigationBar"
             
             /// controllers
-//            static let photoPreview = "PhotoPreviewViewControllerOLDVers"
+			static let location = "LocationGridViewController"
         }
 		
 		struct onboarding {
@@ -580,6 +582,7 @@ class Constants {
 			static let showCustomCompression = "ShowCustomCompressionSegue"
 			static let lifeTime = "ShowLifeTimeViewControllerSegue"
 			static let backupContacts = "ShowContactsBackupViewControllerSegue"
+			static let location = "ShowLocationInfoViewControllerSegue"
         }
     }
 	
@@ -602,6 +605,7 @@ class Constants {
         static let expiredDateFormat = "dd\\MM\\yyyy"
         static let fullDmy = "dd-MM-yyyy HH:mm:ss"
 		static let monthDateYear = "MMM d, yyyy"
+		static let readableFormat = "dd MMMM yyyy"
     }
     
     struct defaultValues {

@@ -8,8 +8,9 @@
 import UIKit
 import Photos
 import MapKit
+import SwiftMessages
 
-enum LocationView {
+enum LocationViewLayout {
 	case map
 	case grid
 }
@@ -22,7 +23,7 @@ class LocationViewController: UIViewController {
 	
 	private var locationGridViewController = LocationGridViewController()
 	
-	private var locationView: LocationView = .map
+	private var locationViewLayout: LocationViewLayout = .map
 	
 	public var mediaType: PhotoMediaType = .none
 	public var contentType: MediaContentType = .none
@@ -30,6 +31,7 @@ class LocationViewController: UIViewController {
 	public var assetCollection: [PHAsset] = []
 	public var visibleAssetCollection: [PHAsset] = []
 	private var locationManager = CLLocationManager()
+	private var photoManager = PhotoManager.shared
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,6 +44,15 @@ class LocationViewController: UIViewController {
 		updateColors()
 		self.containerView.isHidden = true
     }
+	
+	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+		switch segue.identifier {
+			case Constants.identifiers.segue.location:
+				self.setupShowLocationInfoController(segue: segue, sender: sender)
+			default:
+				return
+		}
+	}
 }
 
 extension LocationViewController: NavigationBarDelegate {
@@ -52,14 +63,15 @@ extension LocationViewController: NavigationBarDelegate {
 	
 	func didTapRightBarButton(_ sender: UIButton) {
 		
-		if locationView == .map {
-			setupGridLocationList(with: self.visibleAssetCollection)
-			locationView = .grid
-		} else {
-			setupGridLocationList(with: [])
-			locationView = .map
+		switch locationViewLayout {
+			case .map:
+				setupGridLocationList(with: self.visibleAssetCollection)
+				locationViewLayout = .grid
+			case .grid:
+				setupGridLocationList(with: [])
+				locationViewLayout = .map
 		}
-		setContainer(layout: locationView)
+		setContainer(layout: locationViewLayout)
 	}
 }
 
@@ -93,21 +105,52 @@ extension LocationViewController {
 		locationGridViewController.setupViewModel(with: assets)
 	}
 	
-	private func setContainer(layout view: LocationView) {
+	private func setContainer(layout view: LocationViewLayout) {
 		
 		setupNavigationBar()
 		
-		switch view {
-			case .map:
-				self.containerView.isHidden = true
-			case .grid:
-				self.containerView.isHidden = false
+		self.containerView.isHidden = view == .map
+	}
+	
+	private func setupShowLocationInfoController(segue: UIStoryboardSegue, sender: Any?) {
+		
+		guard let segue = segue as? SwiftMessagesSegue else { return }
+		
+		segue.configure(layout: .bottomMessage)
+		segue.dimMode = .gray(interactive: true)
+		segue.interactiveHide = true
+		segue.messageView.setupForShadow(shadowColor: theme.bottomShadowColor, cornerRadius: 14, shadowOffcet: CGSize(width: 6, height: 6), shadowOpacity: 10, shadowRadius: 14)
+		segue.messageView.configureNoDropShadow()
+		
+		if let locationInfoViewController = segue.destination as? LocationInfoViewController {
+			if let phasset = sender as? PHAsset {
+				locationInfoViewController.currentPhasset = phasset
+				if let date = phasset.creationDate {
+					locationInfoViewController.title = Utils.getString(from: date, format: Constants.dateFormat.readableFormat)
+				} else {
+					locationInfoViewController.title = Localization.Main.Title.location
+				}
+				
+				locationInfoViewController.removeSelectedPHAsset = { phasset in
+					self.removeLocationOperation(with: [phasset])
+				}
+			}
 		}
 	}
 }
 
 extension LocationViewController: LocationGridDelegate {
 	
+	
+	private func removeLocationOperation(with selectedPhassets: [PHAsset]) {
+		
+		let removeOperation = photoManager.removeeSelectedPhassetLocation(assets: selectedPhassets) { removed in
+			
+			debugPrint(removed)
+		}
+		
+		self.photoManager.serviceUtilityOperationsQueuer.addOperation(removeOperation)
+	}
 }
 
 extension LocationViewController: MKMapViewDelegate {
@@ -130,8 +173,10 @@ extension LocationViewController: MKMapViewDelegate {
 	
 	func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
 		if view.isKind(of: PHAssetAnnotationView.self) {
-			if let _ = view.annotation as? PHAssetAnnotation {
-				
+			if let annotationView = view.annotation as? PHAssetAnnotation {
+				let phasset = annotationView.phasset
+				let sender: PHAsset = phasset
+				self.performSegue(withIdentifier: Constants.identifiers.segue.location, sender: sender)
 			}
 		}
 	}
@@ -161,9 +206,9 @@ extension LocationViewController: Themeble {
 
 	func setupNavigationBar() {
 		
-		navigationBar.setIsDropShadow = self.locationView == .grid
-		let rightBarButtonScaleFactor: CGFloat = self.locationView == .grid ? 0.7 : 0.9
-		let rightBarButtonImage: UIImage = self.locationView == .grid ? UIImage(systemName: "map")! : UIImage(systemName: "rectangle.3.offgrid")!
+		navigationBar.setIsDropShadow = self.locationViewLayout == .grid
+		let rightBarButtonScaleFactor: CGFloat = self.locationViewLayout == .grid ? 0.7 : 0.9
+		let rightBarButtonImage: UIImage = self.locationViewLayout == .grid ? Images.location.map : Images.location.grid
 		navigationBar.setupNavigation(title: self.title,
 									  leftBarButtonImage: I.systemItems.navigationBarItems.back,
 									  rightBarButtonImage: rightBarButtonImage,

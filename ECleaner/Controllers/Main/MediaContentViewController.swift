@@ -622,8 +622,6 @@ extension MediaContentViewController {
 		SubscriptionManager.instance.purchasePremiumHandler { status in
 			switch status {
 				case .lifetime, .purchasedPremium:
-					UIPresenter.showViewController(of: .subscription)
-				case .nonPurchased:
 					self.photoManager.getPHAssetCollectionWithLocation { phassets in
 						if !phassets.isEmpty {
 							self.showLocationViewController(with: phassets)
@@ -631,6 +629,8 @@ extension MediaContentViewController {
 							ErrorHandler.shared.showEmptySearchResultsFor(.photoWithLocationIsEmpty)
 						}
 					}
+				case .nonPurchased:
+					UIPresenter.showViewController(of: .subscription)
 			}
 		}
 	}

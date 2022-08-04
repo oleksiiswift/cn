@@ -32,7 +32,7 @@ class LocationGridViewController: UIViewController {
 	public var assetCollection: [PHAsset] = []
 		
 	init() {
-		super.init(nibName: "LocationGridViewController", bundle: nil)
+		super.init(nibName: Constants.identifiers.xibs.location, bundle: nil)
 	}
 	
 	required init?(coder: NSCoder) {
@@ -96,7 +96,7 @@ extension LocationGridViewController {
 		let calculatedBottomButtonHeight: CGFloat = AppDimensions.BottomButton.bottomBarDefaultHeight
 		bottomButtonHeightConstraint.constant = phassetsCount == 0 ? 0 : calculatedBottomButtonHeight
 		
-		let buttonTitle: String = "delete locations".uppercased() + " (\(phassetsCount))"
+		let buttonTitle: String = "remove locations".uppercased() + " (\(phassetsCount))"
 		self.bottomButtonBarView.title(buttonTitle)
 		
 		if disableAnimation {

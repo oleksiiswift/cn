@@ -69,7 +69,9 @@ class SubscriptionManager: NSObject {
 	}
 	
 	public func purchasePremiumHandler(_ completionHandler: (_ status: StatusSubscription) -> Void) {
-		completionHandler(self.isLifeTimeSubscription() ? .lifetime : self.purchasedPremium ? .purchasedPremium : .nonPurchased)
+		completionHandler(.lifetime)
+		#warning("REMOVE")
+//		completionHandler(self.isLifeTimeSubscription() ? .lifetime : self.purchasedPremium ? .purchasedPremium : .nonPurchased)
 	}
 	
 	public func purchasePremiumStatus() -> StatusSubscription {
