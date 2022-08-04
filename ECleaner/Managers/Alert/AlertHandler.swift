@@ -26,6 +26,8 @@ extension AlertHandler {
 				return Localization.AlertController.AlertTitle.deleteContact.localizedWith(count: 1)
 			case .deleteContacts:
 				return Localization.AlertController.AlertTitle.deleteContact.localizedWith(count: 2)
+			case .deleteLocations:
+				return Localization.AlertController.AlertTitle.deleteLocation
 			case .compressionvideoFileComplete:
 				return L.AlertController.AlertTitle.compressionComplete
 			case .mergeContacts:
@@ -52,6 +54,8 @@ extension AlertHandler {
 				return Localization.AlertController.AlertMessage.deleteContact.localizedWith(count: 1)
 			case .deleteContacts:
 				return Localization.AlertController.AlertMessage.deleteContact.localizedWith(count: 2)
+			case .deleteLocations:
+				return Localization.AlertController.AlertMessage.deleteLocations
 			case .compressionvideoFileComplete:
 				return Localization.AlertController.AlertMessage.compresssionComplete
 			case .mergeContacts:

@@ -8,49 +8,6 @@
 import UIKit
 import Photos
 
-enum LocationInfo: CaseIterable {
-	case latitude
-	case longitude
-	case altitude
-	case location
-	
-	var title: String {
-		switch self {
-			case .latitude:
-				return "latitude"
-			case .longitude:
-				return "longitude"
-			case .altitude:
-				return "altitude"
-			case .location:
-				return "location"
-		}
-	}
-}
-
-class LocationInfoViewModel {
-	
-	let info: [LocationInfo]
-	
-	init(info: [LocationInfo]) {
-		self.info = info
-	}
-}
-
-class LocationDescriptionModel {
-	
-	var title: String
-	var info: String
-	
-	var locationInfo: LocationInfo
-	
-	init(title: String, info: String, locationInfo: LocationInfo) {
-		self.title = title
-		self.info = info
-		self.locationInfo = locationInfo
-	}
-}
-
 class LocationInfoViewController: UIViewController {
 
 	@IBOutlet weak var previewImageView: UIImageView!
@@ -219,8 +176,8 @@ extension LocationInfoViewController: Themeble {
 		mainContainerHeightConstraint.constant = containerHeight
 		
 		bottomButtonMenuHeightConstraint.constant = AppDimensions.BottomButton.bottomBarDefaultHeight
-		bottomButtonView.title("Remove Location".uppercased())
-		bottomButtonView.setImage(UIImage(systemName: "mappin.and.ellipse")!)
+		bottomButtonView.title(LocalizationService.Buttons.getButtonTitle(of: .removeLocation).uppercased())
+		bottomButtonView.setImage(Images.location.pin)
 		
 		bottomButtonView.delegate = self
 	}

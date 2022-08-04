@@ -19,8 +19,7 @@ class PHAssetLocationViewModel {
 		self.phassets = phassets
 		self.setupData(phassets)
 	}
-	
-	
+
 	public func getSortAndGroupAssets(_ assets: [PHAsset]) -> [DateComponents: [PHAsset]] {
 		return Dictionary(grouping: assets, by: {Calendar.current.dateComponents([.year, .day, .month], from: $0.creationDate!)})
 	}
@@ -58,6 +57,19 @@ extension PHAssetLocationViewModel {
 	
 	public func numberOfRows(at section: Int) -> Int {
 		return phassetsData[self.phassetsSection[section]]?.count ?? 0
+	}
+	
+	public func getPhassets(at indexPaths: [IndexPath]) -> [PHAsset] {
+		var assets: [PHAsset] = []
+		
+		indexPaths.forEach {
+			let key = self.phassetsSection[$0.section]
+			if let phassets = self.phassetsData[key] {
+				let asset = phassets[$0.row]
+				assets.append(asset)
+			}
+		}
+		return assets
 	}
 	
 	public func getPhasset(at indexPath: IndexPath) -> PHAsset? {
