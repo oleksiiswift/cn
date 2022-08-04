@@ -414,7 +414,7 @@ struct  LocalizationService {
 				case .similarSelfies:
 					return Localization.Main.MediaContentTitle.similarSelfies
 				case .locationPhoto:
-					return "Location cleaner:)"
+					return Localization.Main.Title.location
 				case .singleLargeVideos:
 					return Localization.Main.MediaContentTitle.largeVideo
 				case .duplicatedVideos:

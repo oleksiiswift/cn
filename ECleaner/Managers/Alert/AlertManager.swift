@@ -71,6 +71,12 @@ extension AlertManager {
 		}
 	}
 	
+	public static func showDeleteLocationsAlert(_ completionHandler: @escaping () -> Void) {
+		self.presentDeleteAlert(of: .deleteLocations) {
+			completionHandler()
+		}
+	}
+	
 	private static func presentDeleteAlert(of alertType: AlertType, completionHandler: @escaping () -> Void) {
 		
 		let description = alertType.deleteAlertDesctiprtion
@@ -80,7 +86,6 @@ extension AlertManager {
 		self.presentDefaultAlert(title: description.title, message: description.description, actions: [confirmAction], style: alertType.alertStyle, withCancel: alertType.withCancel)
 	}
 }
-
 
 extension AlertManager {
 	

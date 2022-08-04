@@ -1566,6 +1566,7 @@ extension PhotoManager {
 				}
 			} completionHandler: { success, error in
 				print("Finished updating asset. " + (success ? "Success." : error!.localizedDescription))
+				completionHandler(success)
 			}
 		}
 		

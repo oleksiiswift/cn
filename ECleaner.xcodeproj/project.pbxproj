@@ -414,6 +414,7 @@
 		97E54A86268BB16A00C7FD54 /* SNCollectionViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97E54A85268BB16A00C7FD54 /* SNCollectionViewLayout.swift */; };
 		97E678462750F68A004E340B /* UsageDataNotificationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97E678452750F68A004E340B /* UsageDataNotificationType.swift */; };
 		97E7E8E4289BC634005DAE7E /* String+subsctrict.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97E7E8E3289BC634005DAE7E /* String+subsctrict.swift */; };
+		97E7E8E7289C3636005DAE7E /* LocationInfoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97E7E8E6289C3636005DAE7E /* LocationInfoViewModel.swift */; };
 		97EB665127B1A4AE00B21EF5 /* CGSize+pixel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97EB665027B1A4AE00B21EF5 /* CGSize+pixel.swift */; };
 		97EB665327B1BC1F00B21EF5 /* UICollectionView+NextItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97EB665227B1BC1F00B21EF5 /* UICollectionView+NextItem.swift */; };
 		97EBB0242888913E00C1A0C9 /* CheckmarkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97EBB0232888913E00C1A0C9 /* CheckmarkView.swift */; };
@@ -869,6 +870,7 @@
 		97E54A85268BB16A00C7FD54 /* SNCollectionViewLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SNCollectionViewLayout.swift; sourceTree = "<group>"; };
 		97E678452750F68A004E340B /* UsageDataNotificationType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsageDataNotificationType.swift; sourceTree = "<group>"; };
 		97E7E8E3289BC634005DAE7E /* String+subsctrict.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+subsctrict.swift"; sourceTree = "<group>"; };
+		97E7E8E6289C3636005DAE7E /* LocationInfoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationInfoViewModel.swift; sourceTree = "<group>"; };
 		97EB665027B1A4AE00B21EF5 /* CGSize+pixel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGSize+pixel.swift"; sourceTree = "<group>"; };
 		97EB665227B1BC1F00B21EF5 /* UICollectionView+NextItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UICollectionView+NextItem.swift"; sourceTree = "<group>"; };
 		97EBB0232888913E00C1A0C9 /* CheckmarkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckmarkView.swift; sourceTree = "<group>"; };
@@ -2696,6 +2698,14 @@
 			name = SegueManager;
 			sourceTree = "<group>";
 		};
+		97E7E8E5289C3612005DAE7E /* LocationInfo */ = {
+			isa = PBXGroup;
+			children = (
+				97E7E8E6289C3636005DAE7E /* LocationInfoViewModel.swift */,
+			);
+			path = LocationInfo;
+			sourceTree = "<group>";
+		};
 		97EBB0252888914500C1A0C9 /* CheckmarkView */ = {
 			isa = PBXGroup;
 			children = (
@@ -2720,6 +2730,7 @@
 				977B7EE72899316A00735433 /* PHAssetLocationViewModel.swift */,
 				977B7EE92899356800735433 /* PHAssetLocationGridDataSource.swift */,
 				977B7EF9289A771A00735433 /* LocationInfoViewController.swift */,
+				97E7E8E5289C3612005DAE7E /* LocationInfo */,
 			);
 			path = Location;
 			sourceTree = "<group>";
@@ -3116,6 +3127,7 @@
 				979732862846207700034E49 /* LocalizationService.swift in Sources */,
 				972C80682871FA9100691271 /* CGPoint+Coordinate.swift in Sources */,
 				97708662276A283A003D0416 /* CommonOperationSearchType.swift in Sources */,
+				97E7E8E7289C3636005DAE7E /* LocationInfoViewModel.swift in Sources */,
 				4F56074227205AF300CA19E9 /* WindowBuilder.swift in Sources */,
 				970D778D275B9C9E0048F41D /* SingleContentSearchNotificationType.swift in Sources */,
 				97DE2730288A909400514097 /* ContactViewModel.swift in Sources */,

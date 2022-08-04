@@ -93,7 +93,7 @@ extension LocationHeaderCollectionReusableView {
 			dateComponentsTextLabel.text = ""
 		}
 		
-		removeAllLocationButton.setImage(Images.location.pin, enabled: true)
+		removeAllLocationButton.setImage(Images.location.slashPin, enabled: true)
 	}
 }
 

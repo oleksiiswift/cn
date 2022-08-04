@@ -23,7 +23,11 @@ class LocationViewController: UIViewController {
 	
 	private var locationGridViewController = LocationGridViewController()
 	
-	private var locationViewLayout: LocationViewLayout = .map
+	private var locationViewLayout: LocationViewLayout = .map {
+		didSet {
+			self.setContainer(layout: self.locationViewLayout)
+		}
+	}
 	
 	public var mediaType: PhotoMediaType = .none
 	public var contentType: MediaContentType = .none
@@ -62,16 +66,15 @@ extension LocationViewController: NavigationBarDelegate {
 	}
 	
 	func didTapRightBarButton(_ sender: UIButton) {
-		
 		switch locationViewLayout {
 			case .map:
+				guard !self.visibleAssetCollection.isEmpty else { return }
 				setupGridLocationList(with: self.visibleAssetCollection)
 				locationViewLayout = .grid
 			case .grid:
 				setupGridLocationList(with: [])
 				locationViewLayout = .map
 		}
-		setContainer(layout: locationViewLayout)
 	}
 }
 
@@ -132,7 +135,7 @@ extension LocationViewController {
 				}
 				
 				locationInfoViewController.removeSelectedPHAsset = { phasset in
-					self.removeLocationOperation(with: [phasset])
+					self.removeLocationOperation(with: [phasset]) { _ in }
 				}
 			}
 		}
@@ -141,12 +144,34 @@ extension LocationViewController {
 
 extension LocationViewController: LocationGridDelegate {
 	
+	func removeLocations(at phassets: [PHAsset], completionHandler: @escaping ((Bool) -> Void)) {
+		self.removeLocationOperation(with: phassets) { removed in
+			Utils.UI {
+				self.mapView.delegate?.mapViewDidChangeVisibleRegion?(self.mapView)
+				removed ? self.setupGridLocationList(with: self.visibleAssetCollection) : ()
+				
+				if self.visibleAssetCollection.isEmpty {
+					self.locationViewLayout = .map
+				}
+				completionHandler(removed)
+			}
+		}
+	}
 	
-	private func removeLocationOperation(with selectedPhassets: [PHAsset]) {
+	private func removeLocationOperation(with selectedPhassets: [PHAsset], completionHandler: @escaping (_ removed: Bool) -> Void) {
 		
 		let removeOperation = photoManager.removeeSelectedPhassetLocation(assets: selectedPhassets) { removed in
 			
-			debugPrint(removed)
+			if removed {
+				let mapAnnotations = self.mapView.annotations.compactMap({$0 as? PHAssetAnnotation}).map { $0}
+				let filteredAnnotation = mapAnnotations.enumerated().filter({selectedPhassets.contains($0.element.phasset)}).map({$0.element})
+				Utils.UI {
+					self.mapView.removeAnnotations(filteredAnnotation)
+					completionHandler(removed)
+				}
+			} else {
+				completionHandler(removed)
+			}
 		}
 		
 		self.photoManager.serviceUtilityOperationsQueuer.addOperation(removeOperation)
@@ -200,12 +225,10 @@ extension LocationViewController: Themeble {
 	}
 
 	func setupUI() {
-		
 		mapView.register(PHAssetAnnotation.self, forAnnotationViewWithReuseIdentifier: Constants.identifiers.views.phassetAnnotation)
 	}
 
 	func setupNavigationBar() {
-		
 		navigationBar.setIsDropShadow = self.locationViewLayout == .grid
 		let rightBarButtonScaleFactor: CGFloat = self.locationViewLayout == .grid ? 0.7 : 0.9
 		let rightBarButtonImage: UIImage = self.locationViewLayout == .grid ? Images.location.map : Images.location.grid
@@ -217,10 +240,7 @@ extension LocationViewController: Themeble {
 									  leftButtonTitle: nil, rightButtonTitle: nil)
 	}
 	
-	func updateColors() {
-		
-		self.overrideUserInterfaceStyle = .dark
-	}
+	func updateColors() {}
 	
 	func setupDelegate() {
 		

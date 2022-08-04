@@ -157,6 +157,7 @@ struct Localization {
 			static var changePlan = "Change Plan".localized()
 			static var startBackup = "Start Backup".localized()
 			static var view = "View".localized()
+			static var removeLocation = "Remove Location".localized()
 		}
 		
 		struct MenuItems {
@@ -290,6 +291,11 @@ struct Localization {
 			static let contactName = "Contact Name".localized()
 			static let numbers = "Phone Numbers".localized()
 			static let mail = "Email".localized()
+			
+			static let latitude = "latitude".localized()
+			static let longitude = "longitude".localized()
+			static let altitude = "altitude".localized()
+			static let location = "location".localized()
 		}
 		
 		struct Descriptions {
@@ -422,6 +428,7 @@ struct Localization {
 			static var deletePhoto = "_deletePhoto".localized()
 			static var deleteVideo = "_deleteVideo".localized()
 			static var deleteContact = "_deleteContact".localized()
+			static var deleteLocation = "Remove Locations?".localized()
 			static var mergeContacts = "Merge Contacts".localized()
 			static var mergeCompleted = "Merge Completed!".localized()
 			static var deleteContactsCompleted = "Delete Completed!".localized()
@@ -436,6 +443,7 @@ struct Localization {
 			static var deletePhoto = "_deletingPhotos".localized()
 			static var deleteVideo = "_deletingVideos".localized()
 			static var deleteContact = "_deletingContacts".localized()
+			static var deleteLocations = "Remove Locations at selected section?".localized()
 			static var mergeContacts = "These contacts will be merged. After the merging process is completed, unnecessary contacts will be automatically deleted.".localized()
 			static var mergeCompleted = "Merge contacts successfully completed!".localized()
 			static var deleteContactsCompleted = "Delete successfully completed!".localized()

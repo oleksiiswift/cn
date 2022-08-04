@@ -7,6 +7,11 @@
 
 import Photos
 
+protocol PHAssetLocationGridDelegate {
+	func share(phasset: PHAsset)
+	func removeLocation(at asset: PHAsset)
+}
+
 class PHAssetLocationGridDataSource: NSObject {
 	
 	private var phassetLocationViewModel: PHAssetLocationViewModel
@@ -19,6 +24,7 @@ class PHAssetLocationGridDataSource: NSObject {
 	
 	public var didSelectDeleteLocation: ((_ phassets:  [PHAsset]?) -> Void)?
 	public var didSelectedPhassets: ((_ phassets:  [PHAsset]?) -> Void)?
+	public var delegate: PHAssetLocationGridDelegate?
 	
 	init(phassetLocationViewModel: PHAssetLocationViewModel, mediaType: PhotoMediaType, contentType: MediaContentType, collectionView: UICollectionView) {
 		self.phassetLocationViewModel = phassetLocationViewModel
@@ -229,10 +235,15 @@ extension PHAssetLocationGridDataSource {
 	private func createCellContextMenu(for asset: PHAsset, at indexPath: IndexPath) -> UIMenu {
 		
 		let shareVideoActionImage = I.systemItems.defaultItems.share
-		let shareAction = UIAction(title: LocalizationService.Buttons.getButtonTitle(of: .share), image: shareVideoActionImage) { _ in
-//			self.delegate?.share(phasset: asset)
+		let _ = UIAction(title: LocalizationService.Buttons.getButtonTitle(of: .share), image: shareVideoActionImage) { _ in
+			self.delegate?.share(phasset: asset)
 		}
-		return UIMenu(title: "", children: [shareAction])
+		
+		let removeLocationActionImage = I.location.slashPin
+		let removeLocationAction = UIAction(title: LocalizationService.Buttons.getButtonTitle(of: .removeLocation), image: removeLocationActionImage, attributes: .destructive) { _ in
+			self.delegate?.removeLocation(at: asset)
+		}
+		return UIMenu(title: "", children: [removeLocationAction])
 	}
 }
 

@@ -9,7 +9,7 @@ import UIKit
 import Photos
 
 protocol LocationGridDelegate {
-	
+	func removeLocations(at phassets: [PHAsset], completionHandler:  @escaping ((_ completed: Bool) -> Void))
 }
 
 class LocationGridViewController: UIViewController {
@@ -61,10 +61,17 @@ extension LocationGridViewController {
 																		   collectionView: self.collectionView)
 		self.collectionView.dataSource = self.phassetLocationGridDataSource
 		self.collectionView.delegate = self.phassetLocationGridDataSource
+		
+		self.phassetLocationGridDataSource.delegate = self
+		
 		self.phassetLocationGridDataSource.collectionView = self.collectionView
 		
 		self.phassetLocationGridDataSource.didSelectDeleteLocation = { phassets in
-			
+			AlertManager.showDeleteLocationsAlert {
+				if let phassetsAtSection = phassets {
+					self.delegate?.removeLocations(at: phassetsAtSection, completionHandler: { _ in })
+				}
+			}
 		}
 		
 		self.phassetLocationGridDataSource.didSelectedPhassets = { phassets in
@@ -82,10 +89,25 @@ extension LocationGridViewController {
 		
 		self.collectionView.register(UINib(nibName: C.identifiers.xibs.photoSimpleCell, bundle: nil), forCellWithReuseIdentifier: C.identifiers.cells.photoSimpleCell)
 		self.collectionView.register(UINib(nibName: C.identifiers.xibs.locationHeader, bundle: nil), forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: C.identifiers.views.locationHeader)
-
+		self.collectionView.alwaysBounceVertical = true
 		self.collectionView.collectionViewLayout = flowLayout
 		self.collectionView.allowsMultipleSelection = true
 		self.collectionView.contentInset.top = 20
+	}
+}
+
+extension LocationGridViewController: BottomActionButtonDelegate {
+	
+	func didTapActionButton() {
+		guard let indexPaths = self.collectionView.indexPathsForSelectedItems, !indexPaths.isEmpty else { return }
+		let phassets = self.phassetLocationViewModel.getPhassets(at: indexPaths)
+		delegate?.removeLocations(at: phassets, completionHandler: { completed in
+			if !completed {
+				indexPaths.forEach {
+					self.collectionView.deselectItem(at: $0, animated: true)
+				}
+			}
+		})
 	}
 }
 
@@ -96,7 +118,7 @@ extension LocationGridViewController {
 		let calculatedBottomButtonHeight: CGFloat = AppDimensions.BottomButton.bottomBarDefaultHeight
 		bottomButtonHeightConstraint.constant = phassetsCount == 0 ? 0 : calculatedBottomButtonHeight
 		
-		let buttonTitle: String = "remove locations".uppercased() + " (\(phassetsCount))"
+		let buttonTitle: String = LocalizationService.Buttons.getButtonTitle(of: .removeLocation).uppercased() + " (\(phassetsCount))"
 		self.bottomButtonBarView.title(buttonTitle)
 		
 		if disableAnimation {
@@ -113,12 +135,18 @@ extension LocationGridViewController {
 	}
 }
 
+extension LocationGridViewController: PHAssetLocationGridDelegate {
+	func removeLocation(at asset: PHAsset) {
+		self.delegate?.removeLocations(at: [asset], completionHandler: { _ in })
+	}
+
+	func share(phasset: PHAsset) {}
+}
+
 extension LocationGridViewController: Themeble {
 		
 	func setupUI() {
-		
-		self.scrollView.delegate = self
-		bottomButtonBarView.setImage(UIImage(systemName: "mappin.and.ellipse")!)
+		bottomButtonBarView.setImage(Images.location.pin)
 	}
 	
 	func updateColors() {
@@ -132,15 +160,8 @@ extension LocationGridViewController: Themeble {
 	}
 	
 	private func setupDelegate() {
-		
+		self.scrollView.delegate = self
 		bottomButtonBarView.delegate = self
-	}
-}
-
-extension LocationGridViewController: BottomActionButtonDelegate {
-	
-	func didTapActionButton() {
-		
 	}
 }
 
