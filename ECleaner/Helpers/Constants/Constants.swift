@@ -605,6 +605,7 @@ class Constants {
         static let expiredDateFormat = "dd\\MM\\yyyy"
         static let fullDmy = "dd-MM-yyyy HH:mm:ss"
 		static let monthDateYear = "MMM d, yyyy"
+		static let readableFormat = "dd MMMM yyyy"
     }
     
     struct defaultValues {

@@ -413,6 +413,7 @@
 		97DE2732288A90A400514097 /* ContactDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97DE2731288A90A400514097 /* ContactDataSource.swift */; };
 		97E54A86268BB16A00C7FD54 /* SNCollectionViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97E54A85268BB16A00C7FD54 /* SNCollectionViewLayout.swift */; };
 		97E678462750F68A004E340B /* UsageDataNotificationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97E678452750F68A004E340B /* UsageDataNotificationType.swift */; };
+		97E7E8E4289BC634005DAE7E /* String+subsctrict.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97E7E8E3289BC634005DAE7E /* String+subsctrict.swift */; };
 		97EB665127B1A4AE00B21EF5 /* CGSize+pixel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97EB665027B1A4AE00B21EF5 /* CGSize+pixel.swift */; };
 		97EB665327B1BC1F00B21EF5 /* UICollectionView+NextItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97EB665227B1BC1F00B21EF5 /* UICollectionView+NextItem.swift */; };
 		97EBB0242888913E00C1A0C9 /* CheckmarkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97EBB0232888913E00C1A0C9 /* CheckmarkView.swift */; };
@@ -867,6 +868,7 @@
 		97DE2731288A90A400514097 /* ContactDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactDataSource.swift; sourceTree = "<group>"; };
 		97E54A85268BB16A00C7FD54 /* SNCollectionViewLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SNCollectionViewLayout.swift; sourceTree = "<group>"; };
 		97E678452750F68A004E340B /* UsageDataNotificationType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsageDataNotificationType.swift; sourceTree = "<group>"; };
+		97E7E8E3289BC634005DAE7E /* String+subsctrict.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+subsctrict.swift"; sourceTree = "<group>"; };
 		97EB665027B1A4AE00B21EF5 /* CGSize+pixel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGSize+pixel.swift"; sourceTree = "<group>"; };
 		97EB665227B1BC1F00B21EF5 /* UICollectionView+NextItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UICollectionView+NextItem.swift"; sourceTree = "<group>"; };
 		97EBB0232888913E00C1A0C9 /* CheckmarkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckmarkView.swift; sourceTree = "<group>"; };
@@ -1036,6 +1038,7 @@
 				970B208C27F604D300B5AF7D /* String+Secionds.swift */,
 				97B53A05281803750054B826 /* String+Size.swift */,
 				97346484284789DE00BE0DE1 /* Localize+Count.swift */,
+				97E7E8E3289BC634005DAE7E /* String+subsctrict.swift */,
 			);
 			path = Strings;
 			sourceTree = "<group>";
@@ -3292,6 +3295,7 @@
 				97879B24286A5F530040A8F7 /* OnboardingViewModel.swift in Sources */,
 				975C864228465035002E07DC /* PermissionManager.swift in Sources */,
 				047DE61926AAA53100733CD5 /* DeepCleanInfoTableViewCell.swift in Sources */,
+				97E7E8E4289BC634005DAE7E /* String+subsctrict.swift in Sources */,
 				97B53A08281831D70054B826 /* Utils+UIHelper.swift in Sources */,
 				97A17F5B283662DD00591409 /* FontManager+DefaultFonts.swift in Sources */,
 				9710285428038274003CBF7E /* VideoCompressingViewController.swift in Sources */,

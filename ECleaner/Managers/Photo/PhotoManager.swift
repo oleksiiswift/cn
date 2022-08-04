@@ -1550,6 +1550,27 @@ extension PhotoManager {
 		deletePhassetsOperation.name = C.key.operation.name.deletePhassetsOperation
 		return deletePhassetsOperation
 	}
+	
+	public func removeeSelectedPhassetLocation(assets: [PHAsset], completionHandler: @escaping ((Bool) -> Void)) -> ConcurrentProcessOperation {
+		
+		let removePhassetsLocationOperation = ConcurrentProcessOperation { operation in
+			
+			PHPhotoLibrary.shared().performChanges {
+				if operation.isCancelled {
+					return
+				}
+				
+				assets.forEach {
+					let request = PHAssetChangeRequest(for: $0)
+					request.location = nil
+				}
+			} completionHandler: { success, error in
+				print("Finished updating asset. " + (success ? "Success." : error!.localizedDescription))
+			}
+		}
+		
+		return removePhassetsLocationOperation
+	}
 }
 
 

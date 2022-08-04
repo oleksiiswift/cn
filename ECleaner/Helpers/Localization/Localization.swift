@@ -214,6 +214,7 @@ struct Localization {
 			static let onboarding = "Onboarding".localized()
 			static let main = "Main".localized()
 			static let videoCompresion = "Video Compression".localized()
+			static let location = "Location".localized()
 		}
 		
 		struct MediaContentTitle {

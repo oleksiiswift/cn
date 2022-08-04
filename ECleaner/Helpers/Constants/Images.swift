@@ -181,6 +181,14 @@ struct Images {
 			}
 		}
 	}
+	
+	struct location {
+		
+		public static var map = UIImage(systemName: "map")!
+		public static var grid = UIImage(systemName: "rectangle.3.offgrid")!
+		public static var pin = UIImage(systemName: "mappin.slash")!
+		
+	}
 }
 
 extension Images {

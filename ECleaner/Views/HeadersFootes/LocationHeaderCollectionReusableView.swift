@@ -26,6 +26,13 @@ class LocationHeaderCollectionReusableView: UICollectionReusableView {
 	
 	private var section: Int?
 	
+	override func prepareForReuse() {
+		super.prepareForReuse()
+		
+		locationTitleTextLabel.text = nil
+		dateComponentsTextLabel.text = nil
+	}
+	
     override func awakeFromNib() {
         super.awakeFromNib()
         
@@ -48,15 +55,34 @@ extension LocationHeaderCollectionReusableView {
 		self.section = section
 		
 		location?.placemark(completion: { placemark, error in
-			
+	
 			if let placemark = placemark {
-				
-				self.locationTitleTextLabel.text = placemark.postalAddress?.street ?? ""
+				debugPrint(placemark)
+				var fullAdrtess: String {
+					if let street = placemark.postalAddress?.street, !street.isEmpty, let city = placemark.city, !city.isEmpty {
+						return street + ", " + city
+					} else if let city = placemark.city, !city.isEmpty, let country = placemark.county, !country.isEmpty {
+						return city + ", " + country
+					} else if  let country = placemark.county, !country.isEmpty {
+						return country
+					} else {
+						if let location = location {
+							return location.coordinate.dms.longitude + L.whitespace + location.coordinate.dms.latitude
+						}
+					}
+					return L.empty
+				}
+				self.locationTitleTextLabel.text = fullAdrtess
  			} else {
-				self.locationTitleTextLabel.text = "empty"
+				if let location = location {
+					let readableCoordinates = location.coordinate.dms.latitude + " " + location.coordinate.dms.longitude
+					debugPrint(readableCoordinates)
+					self.locationTitleTextLabel.text = readableCoordinates
+				} else {
+					self.locationTitleTextLabel.text = L.empty
+				}
 			}
 		})
-		
 		
 		let date = calendar.date(from: dateComponents)
 		
@@ -67,7 +93,7 @@ extension LocationHeaderCollectionReusableView {
 			dateComponentsTextLabel.text = ""
 		}
 		
-		removeAllLocationButton.setImage(UIImage(systemName: "mappin.slash")!, enabled: true)
+		removeAllLocationButton.setImage(Images.location.pin, enabled: true)
 	}
 }
 

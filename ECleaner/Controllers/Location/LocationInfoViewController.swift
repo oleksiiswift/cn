@@ -62,6 +62,8 @@ class LocationInfoViewController: UIViewController {
 	
 	@IBOutlet weak var locationContainerView: UIView!
 	
+	public var removeSelectedPHAsset: ((_ phasset:  PHAsset) -> Void)?
+	
 	public var currentPhasset: PHAsset?
 	
     override func viewDidLoad() {
@@ -100,7 +102,18 @@ extension LocationInfoViewController {
 			models.append(latitudeModel)
 			let longitudeModel = LocationDescriptionModel(title: LocationInfo.longitude.title, info: longitude, locationInfo: .longitude)
 			models.append(longitudeModel)
-			let altitude = LocationDescriptionModel(title: LocationInfo.altitude.title, info: location.altitude.description, locationInfo: .altitude)
+			
+			var altStingValue: String {
+				let alt = location.altitude.description
+				if let index = alt.firstIndex(of: ".") {
+					let distanceIndex: Int = alt.distance(from: alt.description.startIndex, to: index) + 5
+					return alt == "0.0" ? alt : alt.chopSuffix(alt.description.count - distanceIndex)
+				} else {
+					return "0.0"
+				}
+			}
+					
+			let altitude = LocationDescriptionModel(title: LocationInfo.altitude.title, info: altStingValue, locationInfo: .altitude)
 			models.append(altitude)
 			
 			location.placemark { placemark, error in
@@ -174,6 +187,18 @@ extension LocationInfoViewController {
 	}
 }
 
+extension LocationInfoViewController: BottomActionButtonDelegate {
+	
+	func didTapActionButton() {
+		
+		guard let phasset = currentPhasset else { return }
+		
+		self.dismiss(animated: true) {
+			self.removeSelectedPHAsset?(phasset)
+		}
+	}
+}
+
 extension LocationInfoViewController: StartingNavigationBarDelegate {
 	
 	func didTapLeftBarButton(_sender: UIButton) {}
@@ -196,11 +221,13 @@ extension LocationInfoViewController: Themeble {
 		bottomButtonMenuHeightConstraint.constant = AppDimensions.BottomButton.bottomBarDefaultHeight
 		bottomButtonView.title("Remove Location".uppercased())
 		bottomButtonView.setImage(UIImage(systemName: "mappin.and.ellipse")!)
+		
+		bottomButtonView.delegate = self
 	}
 	
 	func setupNavigation() {
 		
-		navigationBar.setUpNavigation(title: "Location", rightImage: I.systemItems.navigationBarItems.dissmiss, targetImageScaleFactor: 0.4)
+		navigationBar.setUpNavigation(title: self.title, rightImage: I.systemItems.navigationBarItems.dissmiss, targetImageScaleFactor: 0.4)
 		navigationBar.topShevronEnable = true
 		navigationBar.delegate = self
 	}
