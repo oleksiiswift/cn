@@ -621,12 +621,11 @@ extension MediaContentViewController {
 	}
 	
 	private func openLocationClenController() {
-		debugPrint("onte")
 		SubscriptionManager.instance.purchasePremiumHandler { status in
 			switch status {
 				case .lifetime, .purchasedPremium:
 					self.progrssAlertController.showSimpleProgressAlerControllerBar(of: .parsingLocations, from: self)
-					U.delay(0.5) {
+					U.delay(0.1) {
 						self.photoManager.getPHAssetCollectionWithLocation { phassets, annotations in
 							self.progrssAlertController.closeProgressAnimatedController()
 							if !phassets.isEmpty {
@@ -1173,9 +1172,12 @@ extension MediaContentViewController {
 		switch searchingProcessingType {
 			case .clearSearchingProcessingQueue:
 				self.navigationBar.changeHotRightButton(with: I.systemItems.navigationBarItems.magic)
+				self.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
 			case .singleSearchProcess:
 				self.navigationBar.changeHotRightButton(with: I.systemItems.navigationBarItems.magic)
+				self.navigationController?.interactivePopGestureRecognizer?.isEnabled = false
 			case .smartGroupSearchProcess:
+				self.navigationController?.interactivePopGestureRecognizer?.isEnabled = false
 				self.navigationBar.changeHotRightButton(with: I.systemItems.navigationBarItems.stopMagic)
 		}
 	}
