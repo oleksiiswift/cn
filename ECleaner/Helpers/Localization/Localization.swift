@@ -376,11 +376,13 @@ struct Localization {
 			struct Title {
 				static let videoTitle = "Compress Videos".localized()
 				static let contactTitle = "Sync Contacts".localized()
+				static let locationTitle = "Clean GPS Coordinates".localized()
 			}
 			
 			struct Subtitle {
 				static let videoSubtitle = "Optimaze your IPhone data".localized()
 				static let contactsSubtitle = "Optimaze your IPhone data".localized()
+				static let locationSubtitle = "Batch clean multiply locations";
 			}
 			
 			struct Description {
@@ -391,6 +393,10 @@ struct Localization {
 				static let contactsDescription = "Save Your Contacts".localized()
 				static let contactsDescriptionOne = "With".localized()
 				static let contactsDescriptionTwo = "Back-Up".localized()
+				
+				static let locationDescription = "Remove".localized()
+				static let locationDesriptionOne = "Location".localized()
+				static let locationDescriptionTwo = "Data".localized()
 			}
 		}
 	}

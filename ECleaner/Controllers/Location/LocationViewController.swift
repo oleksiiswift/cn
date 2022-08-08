@@ -167,6 +167,9 @@ extension LocationViewController: LocationGridDelegate {
 				Utils.UI {
 					self.manager.remove(filteredAnnotation)
 					self.manager.reload(mapView: self.mapView)
+					
+					removed ? Vibration.success.vibrate() : Vibration.error.vibrate()
+					
 					U.delay(0.1) {
 						completionHandler(removed)
 					}

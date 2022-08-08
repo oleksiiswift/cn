@@ -948,20 +948,23 @@ extension DeepCleaningViewController {
 						 self.bottomButtonView.setButtonProcess(false)
 						 self.bottomButtonView.setImage(I.systemItems.defaultItems.deepClean, with: CGSize(width: 24, height: 22))
 						 self.bottomButtonView.title(LocalizationService.DeepClean.getButtonTitle(by: .startAnalyzing))
-						 
+						 self.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
 					case .willStartCleaning:
 						 self.bottomButtonView.stopAnimatingButton()
 						 self.bottomButtonView.setButtonProcess(true)
+						 self.navigationController?.interactivePopGestureRecognizer?.isEnabled = false
 					case .didCleaning:
 						 self.bottomButtonView.setImage(I.systemItems.defaultItems.refreshFull, with: CGSize(width: 24, height: 22))
 						 self.bottomButtonView.startAnimatingButton()
 						 self.bottomButtonView.title(LocalizationService.DeepClean.getButtonTitle(by: .stopAnalyzing))
 						 self.bottomButtonView.setButtonProcess(false)
+						 self.navigationController?.interactivePopGestureRecognizer?.isEnabled = false
 					case .willAvailibleDelete:
 						 self.bottomButtonView.stopAnimatingButton()
 						 self.bottomButtonView.title(LocalizationService.DeepClean.getButtonTitle(by: .startCleaning))
 						 self.bottomButtonView.setButtonProcess(false)
 						 self.bottomButtonView.setImage(I.systemItems.defaultItems.delete, with: CGSize(width: 18, height: 24))
+						 self.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
 					case .canclel:
 						 return
 			   }
