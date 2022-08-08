@@ -671,6 +671,19 @@ enum Theme: Int {
 		}
 	}
 	
+	var locationGradient: [UIColor] {
+		switch self {
+			case .light:
+				let startColor = UIColor().colorFromHexString("B578FF")
+				let endColor = UIColor ().colorFromHexString("FF2F2F")
+				return [startColor, endColor]
+			case .dark:
+				let startColor = UIColor().colorFromHexString("B578FF")
+				let endColor = UIColor ().colorFromHexString("FF2F2F")
+				return [startColor, endColor]
+		}
+	}
+	
 	var compressionGradient: [UIColor] {
 		switch self {
 			case .light:

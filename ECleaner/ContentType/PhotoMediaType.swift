@@ -348,13 +348,13 @@ enum PhotoMediaType: String {
 		var info: [PhotoMediaType: BannerInfo] = [:]
 		
 		let locationBannerInfo: BannerInfo = BannerInfo(infoImage: I.systemItems.defaultItems.compress,
-														title: Localization.Main.BannerHelpers.Title.videoTitle,
-														subtitle: Localization.Main.BannerHelpers.Subtitle.videoSubtitle,
-														descriptionTitle: Localization.Main.BannerHelpers.Description.videoDescription,
-														descriptitionFirstPartSubtitle: Localization.Main.BannerHelpers.Description.videoDescriptionOne,
-														descriptionSecondPartSubtitle: Localization.Main.BannerHelpers.Description.videoDescriptionTwo,
-														helperImage: I.personalisation.video.bannerHelperImage,
-														gradientColors: ThemeManager.theme.compressionGradient)
+														title: Localization.Main.BannerHelpers.Title.locationTitle,
+														subtitle: Localization.Main.BannerHelpers.Subtitle.locationSubtitle,
+														descriptionTitle: Localization.Main.BannerHelpers.Description.locationDescription,
+														descriptitionFirstPartSubtitle: Localization.Main.BannerHelpers.Description.locationDesriptionOne,
+														descriptionSecondPartSubtitle: Localization.Main.BannerHelpers.Description.locationDescriptionTwo,
+														helperImage: I.personalisation.photo.locationRemove,
+														gradientColors: ThemeManager.theme.locationGradient)
 		
 		let compressionBannerInfo: BannerInfo = BannerInfo(infoImage: I.systemItems.defaultItems.compress,
 														   title: Localization.Main.BannerHelpers.Title.videoTitle,

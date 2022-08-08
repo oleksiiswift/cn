@@ -298,8 +298,10 @@
 	// MARK: Title
 "Compress Videos" = "Compress Videos";
 "Sync Contacts" = "Sync Contacts";
+"Clean GPS Coordinates" = "Clean GPS Coordinates";
 	// MARK: Subtitle
 "Optimaze your IPhone data" = "Optimaze your IPhone data";
+"Batch clean multiply locations" = "Batch clean multiply locations";
 	// MARK: Description
 "Compression Level" = "Compression Level";
 "Ultra" = "Ultra";
@@ -307,6 +309,8 @@
 "Save Your Contacts" = "Save Your Contacts";
 "With" = "With";
 "Back-Up" = "Back-Up";
+"Data" = "Data";
+
 	// MARK: Onboarding
 	// MARK: Onboarding title
 "Clear Similar Photos" = "Clear Similar Photos";

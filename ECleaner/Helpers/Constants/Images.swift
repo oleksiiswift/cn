@@ -92,6 +92,7 @@ struct Images {
             static let processingThumb = UIImage(named: "photoProcessingEmptyItem")!
             static let unavailibleThumb = UIImage(named: "photoThumbUnselect")!
 			static let checkmark = UIImage(named: "photoSectionSelect")!
+			static let locationRemove = UIImage(named: "delete-loc")!
         }
         
         struct video {

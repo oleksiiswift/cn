@@ -251,14 +251,17 @@ extension BackupContactsViewController {
 			switch state {
 				case .initial, .empty:
 					self.setCloudBackgroundImage()
+					Vibration.light.vibrate()
 				case .prepare:
 					self.setCloudBackgroundImage()
 				case .processing:
 					self.setCloudBackgroundImage()
 				case .filesCreated(_):
 					self.setArchiveBackgroundImage()
+					Vibration.soft.vibrate()
 				case .archived(_):
 					self.setProgress(progress: 1)
+					Vibration.success.vibrate()
 				case .error(_):
 					self.setCloudBackgroundImage()
 			}
