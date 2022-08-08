@@ -144,7 +144,7 @@
 "latitude" = "latitude";
 "longitude" = "longitude";
 "altitude" = "altitude";
-"location" = "location"ж
+"location" = "location";
 
 	// MARK: Backup
 "Current contact:" = "Current contact:";
@@ -329,6 +329,8 @@
 "Selecting Videos, wait" = "Selecting Videos, wait";
 "Selecting Photos, wait" = "Selecting Photos, wait";
 "Prepare Searching, wait" = "Prepare Searching, wait";
+"Sort by File Size, wait" = "Sort by File Size, wait";
+"Parsing Locations, wait" = "Parsing Locations, wait";
 "Search complete!" = "Search complete!";
 "Deleting Contacts" = "Deleting Contacts";
 "Deleting Videos" = "Deleting Videos";

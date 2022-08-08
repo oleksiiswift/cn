@@ -1,30 +1,14 @@
 //
-//  PhotoLocationPinView.swift
+//  BubbleView.swift
 //  ECleaner
 //
-//  Created by alexey sorochan on 01.08.2022.
+//  Created by alexey sorochan on 06.08.2022.
 //
 
 import UIKit
-import MapKit
-import Photos
 
-class PHAssetAnnotation: NSObject, MKAnnotation {
-	var coordinate: CLLocationCoordinate2D
-	var phasset: PHAsset
-	var title: String?
-	var image: UIImage?
-
-	override init() {
-		self.coordinate = CLLocationCoordinate2D()
-		self.phasset = PHAsset()
-		self.title = nil
-		self.image = nil
-	}
-}
-
-class PHAssetAnnotationView: MKAnnotationView {
-	
+class BubbleView: UIView {
+		
 	let bubleSize: CGFloat = 70
 	let offset: CGFloat = 3
 	
@@ -36,8 +20,8 @@ class PHAssetAnnotationView: MKAnnotationView {
 	
 	private var imageView: UIImageView!
 	
-	override init(annotation: MKAnnotation?, reuseIdentifier: String?) {
-		super.init(annotation: annotation, reuseIdentifier: reuseIdentifier)
+	override init(frame: CGRect) {
+		super.init(frame: frame)
 		
 		configure()
 	}
@@ -48,14 +32,8 @@ class PHAssetAnnotationView: MKAnnotationView {
 	
 	private func configure() {
 		
-		self.frame = CGRect(x: 0, y: 0, width: bubleSize, height: bubleSize + 5)
 		self.backgroundColor = UIColor.clear
 		self.fillColor = theme.cellBackGroundColor
-
-		let imageSize: CGFloat = bubleSize - (offset * 2)
-		self.imageView = UIImageView(frame: CGRect(x: offset, y: offset, width: imageSize, height: imageSize))
-		self.addSubview(self.imageView)
-		self.imageView.setCorner(5)
 	}
 	
 	override func draw(_ rect: CGRect) {
@@ -97,14 +75,4 @@ class PHAssetAnnotationView: MKAnnotationView {
 		 path.lineWidth = lineWidth
 		 path.stroke()
 	 }
-		
-	override var image: UIImage? {
-		get {
-			return self.imageView.image
-		}
-
-		set {
-			self.imageView.image = newValue
-		}
-	}
 }
