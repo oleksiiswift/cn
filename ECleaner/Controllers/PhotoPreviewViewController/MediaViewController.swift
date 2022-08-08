@@ -760,12 +760,10 @@ extension MediaViewController: UIScrollViewDelegate {
 	
 	public func scrollViewDidScroll(_ scrollView: UIScrollView) {
 		if scrollView === previewCollectionView {
-			debugPrint(" scrollView === previewCollectionView")
 			handleTrackCollection(from: previewCollectionView, to: collectionView)
 		}
 		
 		if scrollView === collectionView {
-			debugPrint("scrollView === collectionView")
 			handleTrackCollection(from: collectionView, to: previewCollectionView)
 		}
 	}
