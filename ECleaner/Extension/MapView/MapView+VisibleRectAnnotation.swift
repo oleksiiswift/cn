@@ -8,11 +8,8 @@
 import MapKit
 
 extension MKMapView {
+	
 	func visibleAnnotations() -> [MKAnnotation] {
 		return self.annotations(in: self.visibleMapRect).map { obj -> MKAnnotation in return obj as! MKAnnotation }
-	}
-	
-	func visiblePHAssetAnnotation() -> [PHAssetAnnotation] {
-		return self.annotations(in: self.visibleMapRect).map { obj -> PHAssetAnnotation in return obj as! PHAssetAnnotation}
 	}
 }

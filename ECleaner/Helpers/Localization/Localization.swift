@@ -421,6 +421,8 @@ struct Localization {
 			static var selectingVideosWait = "Selecting Videos, wait".localized()
 			static var selectingPhotosWait = "Selecting Photos, wait".localized()
 			static var prepareSearching = "Prepare Searching, wait".localized()
+			static var sortByFileSize = "Sort by File Size, wait".localized()
+			static var parsingLocation = "Parsing Locations, wait".localized()
 			static var searchComplete = "Search complete!".localized()
 			static var deletingContact = "Deleting Contacts".localized()
 			static var deletingVideo = "Deleting Videos".localized()

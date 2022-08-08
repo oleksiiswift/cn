@@ -254,6 +254,8 @@ class Constants {
 			static let animatedProgressQueue = "com.progressAlert.progressBar_queue"
 			static let getPhotoFileSize = "com.photo.getFileSize_queue"
 			static let getVideoFileSize = "com.video.getFileSize_queue"
+			static let clusteringQueue = "com.photo.map_annotation_queue"
+			static let parsingLocations = "com.photo.locatioonsParsing"
 		}
 		
 		struct operation {
@@ -568,6 +570,11 @@ class Constants {
 			static let location = "LocationGridViewController"
         }
 		
+		struct mapAnnotation {
+			static let cluster = "ClusterAnnotation"
+			static let pin = "PinAnnotation"
+		}
+		
 		struct onboarding {
 			static let photo = "com.cleaner.onboarding.photo"
 			static let video = "com.cleaner.onboarding.video"
@@ -625,7 +632,5 @@ class Constants {
         }
     }
 	
-	struct video {
-	
-	}
+	struct video {}
 }

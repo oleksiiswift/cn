@@ -10,6 +10,7 @@ import PhotosUI
 import Photos
 import CocoaImageHashing
 import AVKit
+import MapKit
 
 enum AssetsGroupType {
 	case photo
@@ -1463,9 +1464,38 @@ extension PhotoManager {
 		}
 	}
 	
-	public func getPHAssetCollectionWithLocation(_ completionHandler: @escaping (_ phassets: [PHAsset]) -> Void) {
+	public func getPHAssetCollectionWithLocation(_ completionHandler: @escaping (_ phassets: [PHAsset],_ annotations: [MKAnnotation]) -> Void) {
 		self.fetchManager.fetchLocationsPhassets { phassets in
-			completionHandler(phassets)
+			
+			var annotations = [MKAnnotation]()
+			let dispatchGroup = DispatchGroup()
+			let dispatchQueue = DispatchQueue(label: C.key.dispatch.parsingLocations)
+			let dispatchSemephore = DispatchSemaphore(value: 0)
+			
+			dispatchQueue.async {
+			
+				for asset in phassets {
+					dispatchGroup.enter()
+					autoreleasepool {
+						if let location = asset.location?.coordinate {
+							let annotation = Annotation()
+							annotation.phasset = asset
+							annotation.annotationID = asset.localIdentifier
+							annotation.image = asset.thumbnail
+							annotation.coordinate = location
+							annotations.append(annotation)
+							dispatchSemephore.signal()
+							dispatchGroup.leave()
+						}
+					}
+				}
+			}
+			
+			dispatchGroup.notify(queue: dispatchQueue) {
+				DispatchQueue.main.async {
+					completionHandler(phassets, annotations)
+				}
+			}
 		}
 	}
 }
@@ -1551,7 +1581,7 @@ extension PhotoManager {
 		return deletePhassetsOperation
 	}
 	
-	public func removeeSelectedPhassetLocation(assets: [PHAsset], completionHandler: @escaping ((Bool) -> Void)) -> ConcurrentProcessOperation {
+	public func removeSelectedPhassetLocation(assets: [PHAsset], completionHandler: @escaping ((Bool) -> Void)) -> ConcurrentProcessOperation {
 		
 		let removePhassetsLocationOperation = ConcurrentProcessOperation { operation in
 			

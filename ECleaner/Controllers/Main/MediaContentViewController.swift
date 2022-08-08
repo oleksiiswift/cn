@@ -9,6 +9,7 @@ import UIKit
 import Photos
 import SwiftMessages
 import Contacts
+import MapKit
 
 enum SearchingProcessingType {
 	case singleSearchProcess
@@ -33,7 +34,8 @@ class MediaContentViewController: UIViewController {
 	private var photoManager = PhotoManager.shared
     private var contactsManager = ContactsManager.shared
 	private var smartCleanManager = SmartCleanManager()
-
+	private var progrssAlertController = ProgressAlertController.shared
+	
 	public let phassetProcessingOperationQueuer = OperationProcessingQueuer(name: Constants.key.operation.queue.phassets, maxConcurrentOperationCount: 5, qualityOfService: .userInitiated)
 	public let contactsProcessingOperationQueuer = ContactsManager.shared.contactsProcessingOperationQueuer
     
@@ -619,14 +621,19 @@ extension MediaContentViewController {
 	}
 	
 	private func openLocationClenController() {
+		debugPrint("onte")
 		SubscriptionManager.instance.purchasePremiumHandler { status in
 			switch status {
 				case .lifetime, .purchasedPremium:
-					self.photoManager.getPHAssetCollectionWithLocation { phassets in
-						if !phassets.isEmpty {
-							self.showLocationViewController(with: phassets)
-						} else {
-							ErrorHandler.shared.showEmptySearchResultsFor(.photoWithLocationIsEmpty)
+					self.progrssAlertController.showSimpleProgressAlerControllerBar(of: .parsingLocations, from: self)
+					U.delay(0.5) {
+						self.photoManager.getPHAssetCollectionWithLocation { phassets, annotations in
+							self.progrssAlertController.closeProgressAnimatedController()
+							if !phassets.isEmpty {
+								self.showLocationViewController(with: phassets, annotationCollection: annotations)
+							} else {
+								ErrorHandler.shared.showEmptySearchResultsFor(.photoWithLocationIsEmpty)
+							}
 						}
 					}
 				case .nonPurchased:
@@ -834,15 +841,15 @@ extension MediaContentViewController {
 		self.navigationController?.pushViewController(viewController, animated: true)
 	}
 	
-	private func showLocationViewController(with photoPHAsset: [PHAsset]) {
+	private func showLocationViewController(with photoPHAssets: [PHAsset], annotationCollection: [MKAnnotation]) {
 		
 		let type: PhotoMediaType = .locationPhoto
 		let content: MediaContentType = .userPhoto
-		
 		let storyboard = UIStoryboard(name: C.identifiers.storyboards.location, bundle: nil)
 		let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.location) as! LocationViewController
 		viewController.title = type.mediaTypeName
-		viewController.assetCollection = photoPHAsset
+		viewController.assetCollection = photoPHAssets
+		viewController.preloadedStartedAnnotations = annotationCollection
 		viewController.mediaType = type
 		viewController.contentType = content
 		self.navigationController?.pushViewController(viewController, animated: true)

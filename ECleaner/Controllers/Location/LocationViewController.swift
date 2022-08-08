@@ -33,10 +33,20 @@ class LocationViewController: UIViewController {
 	public var contentType: MediaContentType = .none
 	
 	public var assetCollection: [PHAsset] = []
+	public var preloadedStartedAnnotations: [MKAnnotation] = []
 	public var visibleAssetCollection: [PHAsset] = []
 	private var locationManager = CLLocationManager()
 	private var photoManager = PhotoManager.shared
-
+	
+	lazy var manager: ClusterManager = { [unowned self] in
+		let manager = ClusterManager()
+		manager.delegate = self
+		manager.maxZoomLevel = 17
+		manager.minCountForClustering = 2
+		manager.clusterPosition = .nearCenter
+		return manager
+	}()
+	
     override func viewDidLoad() {
         super.viewDidLoad()
 		
@@ -48,7 +58,7 @@ class LocationViewController: UIViewController {
 		updateColors()
 		self.containerView.isHidden = true
     }
-	
+		
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
 		switch segue.identifier {
 			case Constants.identifiers.segue.location:
@@ -82,21 +92,9 @@ extension LocationViewController {
 	
 	private func setupDataSource() {
 		
-		var annotations = [MKAnnotation]()
-
-		for asset in assetCollection {
-			autoreleasepool {
-				if let location = asset.location?.coordinate {
-					let annotation = PHAssetAnnotation()
-					annotation.phasset = asset
-					annotation.coordinate = location
-					annotation.image = asset.thumbnail
-					annotations.append(annotation)
-				}
-			}
-		}
+		manager.add(self.preloadedStartedAnnotations)
+		manager.reload(mapView: mapView)
 		
-		self.mapView.addAnnotations(annotations)
 		self.mapView.showAnnotations(self.mapView.annotations, animated: true)
 		
 		let currentMapRect = self.mapView.visibleMapRect
@@ -148,6 +146,7 @@ extension LocationViewController: LocationGridDelegate {
 		self.removeLocationOperation(with: phassets) { removed in
 			Utils.UI {
 				self.mapView.delegate?.mapViewDidChangeVisibleRegion?(self.mapView)
+				
 				removed ? self.setupGridLocationList(with: self.visibleAssetCollection) : ()
 				
 				if self.visibleAssetCollection.isEmpty {
@@ -160,20 +159,22 @@ extension LocationViewController: LocationGridDelegate {
 	
 	private func removeLocationOperation(with selectedPhassets: [PHAsset], completionHandler: @escaping (_ removed: Bool) -> Void) {
 		
-		let removeOperation = photoManager.removeeSelectedPhassetLocation(assets: selectedPhassets) { removed in
+		let removeOperation = photoManager.removeSelectedPhassetLocation(assets: selectedPhassets) { removed in
 			
 			if removed {
-				let mapAnnotations = self.mapView.annotations.compactMap({$0 as? PHAssetAnnotation}).map { $0}
-				let filteredAnnotation = mapAnnotations.enumerated().filter({selectedPhassets.contains($0.element.phasset)}).map({$0.element})
+				let annotations = self.manager.annotations.compactMap({$0 as? Annotation}).map({$0})
+				let filteredAnnotation = annotations.enumerated().filter({selectedPhassets.contains($0.element.phasset)}).map({$0.element})
 				Utils.UI {
-					self.mapView.removeAnnotations(filteredAnnotation)
-					completionHandler(removed)
+					self.manager.remove(filteredAnnotation)
+					self.manager.reload(mapView: self.mapView)
+					U.delay(0.1) {
+						completionHandler(removed)
+					}
 				}
 			} else {
 				completionHandler(removed)
 			}
 		}
-		
 		self.photoManager.serviceUtilityOperationsQueuer.addOperation(removeOperation)
 	}
 }
@@ -182,35 +183,72 @@ extension LocationViewController: MKMapViewDelegate {
 		
 	func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
 		
-		guard !annotation.isKind(of: MKUserLocation.self) else { return nil }
-
-		var annotationView: PHAssetAnnotationView? = mapView.dequeueReusableAnnotationView(withIdentifier: Constants.identifiers.views.phassetAnnotation) as? PHAssetAnnotationView
-		if annotationView == nil {
-			annotationView = PHAssetAnnotationView(annotation: annotation, reuseIdentifier: Constants.identifiers.views.phassetAnnotation)
+		if let annotation = annotation as? ClusterAnnotation {
+			let identifier = Constants.identifiers.mapAnnotation.cluster
+			let clusterAnnotationView = mapView.annotationView(of: ClusterAnnotationView.self, annotation: annotation, reuseIdentifier: identifier)
+			clusterAnnotationView.phassets = annotation.phassets
+			return clusterAnnotationView
+		} else {
+			let phassetAnnotation = annotation as! Annotation
+			let identifier = Constants.identifiers.mapAnnotation.pin
+			let annotationView = mapView.annotationView(of: PHAssetAnnotationView.self, annotation: phassetAnnotation, reuseIdentifier: identifier)
+			annotationView.image = phassetAnnotation.image
+			return annotationView
 		}
-
-		let annotation = annotation as! PHAssetAnnotation
-		annotationView?.image = annotation.image
-		annotationView?.annotation = annotation
-
-		return annotationView
+	}
+	
+	func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
+		manager.reload(mapView: mapView) { _ in }
 	}
 	
 	func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
-		if view.isKind(of: PHAssetAnnotationView.self) {
-			if let annotationView = view.annotation as? PHAssetAnnotation {
-				let phasset = annotationView.phasset
-				let sender: PHAsset = phasset
-				self.performSegue(withIdentifier: Constants.identifiers.segue.location, sender: sender)
+
+		if let phassetAnnotionView = view as? PHAssetAnnotationView {
+			if let annotation = phassetAnnotionView.annotation as? Annotation {
+				self.performSegue(withIdentifier: Constants.identifiers.segue.location, sender: annotation.phasset)
+				self.mapView.deselectAnnotation(annotation, animated: false)
+			}
+		} else if let clusterAnnotationView = view as? ClusterAnnotationView {
+			if let annotation = clusterAnnotationView.annotation as? ClusterAnnotation {
+				if !annotation.annotations.isEmpty {
+					let annotationCollection = annotation.annotations.compactMap({$0 as? Annotation}).map({$0})
+					let phassetCollectionInCluster = annotationCollection.map({$0.phasset})
+					self.setupGridLocationList(with: phassetCollectionInCluster)
+					self.locationViewLayout = .grid
+				}
+				self.mapView.deselectAnnotation(annotation, animated: false)
 			}
 		}
 	}
 	
 	func mapViewDidChangeVisibleRegion(_ mapView: MKMapView) {
+		let clusterAnnotationCollection = manager.visibleAnnotations.compactMap({$0 as? ClusterAnnotation}).map({$0})
+		let clusterViews = clusterAnnotationCollection.compactMap({mapView.view(for: $0) as? ClusterAnnotationView})
+		let clusterAnnotations = clusterViews.compactMap({$0.annotation as? ClusterAnnotation}).map({$0})
+		let clusterPHAssets = Array(clusterAnnotations.compactMap({$0.phassets}).joined())
 		
-		let visibleAnnotation = mapView.visiblePHAssetAnnotation()
-		let phassets = visibleAnnotation.map({$0.phasset})
-		self.visibleAssetCollection = phassets
+		let annotationCollection = manager.visibleAnnotations.compactMap({$0 as? Annotation}).map({$0})
+		let annotationViews = annotationCollection.compactMap({mapView.view(for: $0) as? PHAssetAnnotationView})
+		let annotations = annotationViews.compactMap({$0.annotation as? Annotation}).map({$0})
+		let phassets = annotations.compactMap({$0.phasset})
+		self.visibleAssetCollection = clusterPHAssets
+		self.visibleAssetCollection.append(contentsOf: phassets)
+	}
+
+	func mapView(_ mapView: MKMapView, didAdd views: [MKAnnotationView]) {
+		views.forEach { $0.alpha = 0 }
+		views.forEach { annotationView in
+			UIView.transition(with: annotationView, duration: 0.35, options: .curveEaseInOut) {
+				annotationView.alpha = 1
+			} completion: { _ in }
+		}
+	}
+}
+
+extension LocationViewController: ClusterManagerDelegate {
+
+	func shouldClusterAnnotation(_ annotation: MKAnnotation) -> Bool {
+		return !(annotation is ClusterAnnotation)
 	}
 }
 
@@ -225,8 +263,11 @@ extension LocationViewController: Themeble {
 	}
 
 	func setupUI() {
-		mapView.register(PHAssetAnnotation.self, forAnnotationViewWithReuseIdentifier: Constants.identifiers.views.phassetAnnotation)
+		mapView.showsCompass = false
+		mapView.showsUserLocation = false
+		mapView.overrideUserInterfaceStyle = .dark
 	}
+	func updateColors() {}
 
 	func setupNavigationBar() {
 		navigationBar.setIsDropShadow = self.locationViewLayout == .grid
@@ -240,8 +281,6 @@ extension LocationViewController: Themeble {
 									  leftButtonTitle: nil, rightButtonTitle: nil)
 	}
 	
-	func updateColors() {}
-	
 	func setupDelegate() {
 		
 		self.mapView.delegate = self
@@ -249,3 +288,4 @@ extension LocationViewController: Themeble {
 		self.locationGridViewController.delegate = self
 	}
 }
+
