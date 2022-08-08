@@ -15,6 +15,7 @@ enum AlertType {
 	case deleteVideos
 	case deleteContact
 	case deleteContacts
+	case deleteLocations
 	case mergeContacts
 	case mergeCompleted
 	case deleteContactsCompleted

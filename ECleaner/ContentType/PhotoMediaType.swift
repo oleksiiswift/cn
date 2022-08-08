@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import AVFoundation
 
 enum PhotoMediaType: String {
     
@@ -17,6 +18,7 @@ enum PhotoMediaType: String {
     case similarLivePhotos = 			"similarLivePhotos"
     case similarSelfies = 				"similarSelfies"
     case singleRecentlyDeletedPhotos = 	"singleRecentlyDeletedPhotos"
+	case locationPhoto =				"locationPhotos"
 
         /// `video section section`
     case singleLargeVideos = 			"singleLargeVideos"
@@ -38,7 +40,7 @@ enum PhotoMediaType: String {
 	
 	var contenType: MediaContentType {
 		switch self {
-			case .similarPhotos, .duplicatedPhotos, .singleScreenShots, .singleLivePhotos, .similarLivePhotos, .similarSelfies, .singleRecentlyDeletedPhotos:
+			case .similarPhotos, .duplicatedPhotos, .singleScreenShots, .singleLivePhotos, .similarLivePhotos, .similarSelfies, .singleRecentlyDeletedPhotos, .locationPhoto:
 				return .userPhoto
 			case .singleLargeVideos, .duplicatedVideos, .similarVideos, .singleScreenRecordings, .singleRecentlyDeletedVideos, .compress:
 				return .userVideo
@@ -108,6 +110,7 @@ enum PhotoMediaType: String {
 			case .singleLivePhotos: 		return .livePhotoIsEmpty
 			case .similarLivePhotos: 		return .similarLivePhotoIsEmpty
 			case .similarSelfies: 			return .similarSelfiesIsEmpty
+			case .locationPhoto:			return .photoWithLocationIsEmpty
 			case .singleLargeVideos: 		return .largeVideoIsEmpty
 			case .duplicatedVideos: 		return .duplicatedVideoIsEmpty
 			case .similarVideos: 			return .similarVideoIsEmpty
@@ -272,22 +275,27 @@ enum PhotoMediaType: String {
         
         switch type {
             case .userPhoto:
-                switch indexPath.row {
-                    case 0:
-                        return .similarPhotos
-                    case 1:
-                        return .duplicatedPhotos
-                    case 2:
-                        return .singleScreenShots
-                    case 3:
-                        return .similarSelfies
-                    case 4:
-                        return .singleLivePhotos
-                    case 5:
-                        return .singleRecentlyDeletedPhotos
-                    default:
-                        return .none
-                }
+				switch indexPath.section {
+					case 0:
+						switch indexPath.row {
+							case 0:
+								return .similarPhotos
+							case 1:
+								return .duplicatedPhotos
+							case 2:
+								return .singleScreenShots
+							case 3:
+								return .similarSelfies
+							case 4:
+								return .singleLivePhotos
+							default:
+								return .none
+						}
+					case 1:
+						return .locationPhoto
+					default:
+						return .none
+				}
             case .userVideo:
 				switch indexPath.section {
 					case 0:
@@ -339,6 +347,15 @@ enum PhotoMediaType: String {
 		
 		var info: [PhotoMediaType: BannerInfo] = [:]
 		
+		let locationBannerInfo: BannerInfo = BannerInfo(infoImage: I.systemItems.defaultItems.compress,
+														title: Localization.Main.BannerHelpers.Title.locationTitle,
+														subtitle: Localization.Main.BannerHelpers.Subtitle.locationSubtitle,
+														descriptionTitle: Localization.Main.BannerHelpers.Description.locationDescription,
+														descriptitionFirstPartSubtitle: Localization.Main.BannerHelpers.Description.locationDesriptionOne,
+														descriptionSecondPartSubtitle: Localization.Main.BannerHelpers.Description.locationDescriptionTwo,
+														helperImage: I.personalisation.photo.locationRemove,
+														gradientColors: ThemeManager.theme.locationGradient)
+		
 		let compressionBannerInfo: BannerInfo = BannerInfo(infoImage: I.systemItems.defaultItems.compress,
 														   title: Localization.Main.BannerHelpers.Title.videoTitle,
 														   subtitle: Localization.Main.BannerHelpers.Subtitle.videoSubtitle,
@@ -356,6 +373,7 @@ enum PhotoMediaType: String {
 															descriptionSecondPartSubtitle: Localization.Main.BannerHelpers.Description.contactsDescriptionTwo,
 															helperImage: I.personalisation.contacts.bannerHelperImage,
 															gradientColors: ThemeManager.theme.backupGradient)
+		info[.locationPhoto] = locationBannerInfo
 		info[.compress] = compressionBannerInfo
 		info[.backup] = syncContactsBannerInfo
 		return ContentBannerInfoModel(info: info)

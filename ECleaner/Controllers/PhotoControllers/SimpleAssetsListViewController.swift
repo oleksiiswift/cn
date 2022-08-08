@@ -623,7 +623,7 @@ extension SimpleAssetsListViewController {
 		let delta = abs(preheatRect.midY - previousPreheatRect.midY)
 		guard delta > view.bounds.height / 3 else { return }
 		
-		let (addedRects, removedRects) = differencesBetweenRects(previousPreheatRect, preheatRect)
+		let (addedRects, removedRects) = Utils.LayoutManager.differencesBetweenRects(previousPreheatRect, preheatRect)
 		let addedAssets = addedRects
 			.flatMap { rect in collectionView!.indexPathsForElements(in: rect) }
 			.compactMap { indexPath in self.assetCollection[indexPath.row] }
@@ -640,34 +640,7 @@ extension SimpleAssetsListViewController {
 		prefetchCacheImageManager.stopCachingImagesForAllAssets()
 		previousPreheatRect = .zero
 	}
-	
-	 private func differencesBetweenRects(_ old: CGRect, _ new: CGRect) -> (added: [CGRect], removed: [CGRect]) {
-		if old.intersects(new) {
-			var added = [CGRect]()
-			if new.maxY > old.maxY {
-				added += [CGRect(x: new.origin.x, y: old.maxY,
-								 width: new.width, height: new.maxY - old.maxY)]
-			}
-			if old.minY > new.minY {
-				added += [CGRect(x: new.origin.x, y: new.minY,
-								 width: new.width, height: old.minY - new.minY)]
-			}
-			var removed = [CGRect]()
-			if new.maxY < old.maxY {
-				removed += [CGRect(x: new.origin.x, y: new.maxY,
-								   width: new.width, height: old.maxY - new.maxY)]
-			}
-			if old.minY < new.minY {
-				removed += [CGRect(x: new.origin.x, y: old.minY,
-								   width: new.width, height: new.minY - old.minY)]
-			}
-			return (added, removed)
-		} else {
-			return ([new], [old])
-		}
-	}
 }
-
 
 //      MARK: - setup UI -
 extension SimpleAssetsListViewController: Themeble {

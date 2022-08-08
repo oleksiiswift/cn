@@ -787,12 +787,12 @@ extension ContactsManager {
 			var indexesForUpdate: [Int] = []
 			
 			let dispatchGroup = DispatchGroup()
-			let dispatchQuoue = DispatchQueue(label: C.key.dispatch.mergeContactsQueue)
+			let dispatchQueue = DispatchQueue(label: C.key.dispatch.mergeContactsQueue)
 			let dispatchSemaphore = DispatchSemaphore(value: 0)
 			
 			var currentMergeProcessingIndex = 0
 			
-			dispatchQuoue.async {
+			dispatchQueue.async {
 				for index in indexes {
 					dispatchGroup.enter()
 					self.contactsMerge(in: groups[index]) { mutableContactID, removebleContacts in
@@ -812,7 +812,7 @@ extension ContactsManager {
 				}
 			}
 			
-			dispatchGroup.notify(queue: dispatchQuoue) {
+			dispatchGroup.notify(queue: dispatchQueue) {
 				U.delay(0.3) {
 					let contacts = Array(Set(deletingContacts))
 					currentCompletionIndex(.deleteContacts, 0, contacts.count)

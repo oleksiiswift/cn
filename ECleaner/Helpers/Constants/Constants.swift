@@ -254,6 +254,8 @@ class Constants {
 			static let animatedProgressQueue = "com.progressAlert.progressBar_queue"
 			static let getPhotoFileSize = "com.photo.getFileSize_queue"
 			static let getVideoFileSize = "com.video.getFileSize_queue"
+			static let clusteringQueue = "com.photo.map_annotation_queue"
+			static let parsingLocations = "com.photo.locatioonsParsing"
 		}
 		
 		struct operation {
@@ -455,6 +457,7 @@ class Constants {
 			static let permissions = "Permissions"
 			static let onboarding = "Onboarding"
 			static let subscription = "Subscription"
+			static let location = "Location"
         }
         
         struct viewControllers {
@@ -481,6 +484,9 @@ class Constants {
 			static let lifeTime = "LifeTimeSubscriptionViewController"
 			static let contactBackup = "BackupContactsViewController"
 			static let contactsInfo = "ContactsInfoViewController"
+			static let location = "LocationViewController"
+			static let locationGrid = "LocationGridViewController"
+			static let locationInfo = "LocationInfoViewController"
         }
         
         struct cells {
@@ -516,6 +522,8 @@ class Constants {
             static let bottomButtonBarView = "BottomButtonBarView"
             static let bottomDoubleButtonBarView = "BottomDoubleButtonBarView"
             static let searchBar = "SearchBarView"
+			static let phassetAnnotation = "PHAssetAnnotationView"
+			static let locationHeader = "LocationHeaderCollectionReusableView"
         }
         
         struct xibs {
@@ -549,6 +557,7 @@ class Constants {
             static let bottomButtonBarView = "BottomButtonBarView"
             static let bottomDoubleButtonBarView = "BottomDoubleButtonBarView"
             static let searchBar = "SearchBarView"
+			static let locationHeader = "LocationHeaderCollectionReusableView"
             
             static let carouselView = "CarouselItemView"
             static let datePickerContainer = "DateSelectebleView"
@@ -558,8 +567,13 @@ class Constants {
             static let navigationBar = "NavigationBar"
             
             /// controllers
-//            static let photoPreview = "PhotoPreviewViewControllerOLDVers"
+			static let location = "LocationGridViewController"
         }
+		
+		struct mapAnnotation {
+			static let cluster = "ClusterAnnotation"
+			static let pin = "PinAnnotation"
+		}
 		
 		struct onboarding {
 			static let photo = "com.cleaner.onboarding.photo"
@@ -575,6 +589,7 @@ class Constants {
 			static let showCustomCompression = "ShowCustomCompressionSegue"
 			static let lifeTime = "ShowLifeTimeViewControllerSegue"
 			static let backupContacts = "ShowContactsBackupViewControllerSegue"
+			static let location = "ShowLocationInfoViewControllerSegue"
         }
     }
 	
@@ -597,6 +612,7 @@ class Constants {
         static let expiredDateFormat = "dd\\MM\\yyyy"
         static let fullDmy = "dd-MM-yyyy HH:mm:ss"
 		static let monthDateYear = "MMM d, yyyy"
+		static let readableFormat = "dd MMMM yyyy"
     }
     
     struct defaultValues {
@@ -616,7 +632,5 @@ class Constants {
         }
     }
 	
-	struct video {
-	
-	}
+	struct video {}
 }

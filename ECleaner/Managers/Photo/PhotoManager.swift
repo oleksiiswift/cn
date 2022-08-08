@@ -10,6 +10,7 @@ import PhotosUI
 import Photos
 import CocoaImageHashing
 import AVKit
+import MapKit
 
 enum AssetsGroupType {
 	case photo
@@ -1462,6 +1463,41 @@ extension PhotoManager {
 				return
 		}
 	}
+	
+	public func getPHAssetCollectionWithLocation(_ completionHandler: @escaping (_ phassets: [PHAsset],_ annotations: [MKAnnotation]) -> Void) {
+		self.fetchManager.fetchLocationsPhassets { phassets in
+			
+			var annotations = [MKAnnotation]()
+			let dispatchGroup = DispatchGroup()
+			let dispatchQueue = DispatchQueue(label: C.key.dispatch.parsingLocations)
+			let dispatchSemephore = DispatchSemaphore(value: 0)
+			
+			dispatchQueue.async {
+			
+				for asset in phassets {
+					dispatchGroup.enter()
+					autoreleasepool {
+						if let location = asset.location?.coordinate {
+							let annotation = Annotation()
+							annotation.phasset = asset
+							annotation.annotationID = asset.localIdentifier
+							annotation.image = asset.thumbnail
+							annotation.coordinate = location
+							annotations.append(annotation)
+							dispatchSemephore.signal()
+							dispatchGroup.leave()
+						}
+					}
+				}
+			}
+			
+			dispatchGroup.notify(queue: dispatchQueue) {
+				DispatchQueue.main.async {
+					completionHandler(phassets, annotations)
+				}
+			}
+		}
+	}
 }
 
 	/// `notification sections`
@@ -1543,6 +1579,28 @@ extension PhotoManager {
 		
 		deletePhassetsOperation.name = C.key.operation.name.deletePhassetsOperation
 		return deletePhassetsOperation
+	}
+	
+	public func removeSelectedPhassetLocation(assets: [PHAsset], completionHandler: @escaping ((Bool) -> Void)) -> ConcurrentProcessOperation {
+		
+		let removePhassetsLocationOperation = ConcurrentProcessOperation { operation in
+			
+			PHPhotoLibrary.shared().performChanges {
+				if operation.isCancelled {
+					return
+				}
+				
+				assets.forEach {
+					let request = PHAssetChangeRequest(for: $0)
+					request.location = nil
+				}
+			} completionHandler: { success, error in
+				print("Finished updating asset. " + (success ? "Success." : error!.localizedDescription))
+				completionHandler(success)
+			}
+		}
+		
+		return removePhassetsLocationOperation
 	}
 }
 

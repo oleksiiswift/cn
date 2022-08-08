@@ -113,6 +113,7 @@
 "Change Plan" = "Change Plan";
 "Start Backup" = "Start Backup";
 "View" = "View";
+"Remove Location" = "Remove Location";
 	// MARK: - Menu Items -
 "Sort by Creation Date" = "Sort by Creation Date";
 "Sort by File Size" = "Sort by File Size";
@@ -140,6 +141,10 @@
 "Facebook" = "Facebook";
 "Telegram" = "Telegram";
 "Email" = "Email";
+"latitude" = "latitude";
+"longitude" = "longitude";
+"altitude" = "altitude";
+"location" = "location";
 
 	// MARK: Backup
 "Current contact:" = "Current contact:";
@@ -159,6 +164,7 @@
 "Onboarding" = "Onboarding";
 "Main" = "Main";
 "Video Compression" = "Video Compression";
+"Location" = "Location";
 	// MARK: MediaContentTitle
 "Similar Photo" = "Similar Photo";
 "Duplicate Photo" = "Duplicate Photo";
@@ -292,8 +298,10 @@
 	// MARK: Title
 "Compress Videos" = "Compress Videos";
 "Sync Contacts" = "Sync Contacts";
+"Clean GPS Coordinates" = "Clean GPS Coordinates";
 	// MARK: Subtitle
 "Optimaze your IPhone data" = "Optimaze your IPhone data";
+"Batch clean multiply locations" = "Batch clean multiply locations";
 	// MARK: Description
 "Compression Level" = "Compression Level";
 "Ultra" = "Ultra";
@@ -301,6 +309,8 @@
 "Save Your Contacts" = "Save Your Contacts";
 "With" = "With";
 "Back-Up" = "Back-Up";
+"Data" = "Data";
+
 	// MARK: Onboarding
 	// MARK: Onboarding title
 "Clear Similar Photos" = "Clear Similar Photos";
@@ -323,10 +333,13 @@
 "Selecting Videos, wait" = "Selecting Videos, wait";
 "Selecting Photos, wait" = "Selecting Photos, wait";
 "Prepare Searching, wait" = "Prepare Searching, wait";
+"Sort by File Size, wait" = "Sort by File Size, wait";
+"Parsing Locations, wait" = "Parsing Locations, wait";
 "Search complete!" = "Search complete!";
 "Deleting Contacts" = "Deleting Contacts";
 "Deleting Videos" = "Deleting Videos";
 "Deletting Photos" = "Deletting Photos";
+"Remove Locations?" = "Remove Locations?";
 "Merge Contacts" = "Merge Contacts";
 "Merge Completed!" = "Merge Completed!";
 "Delete Completed!" = "Delete Completed!";
@@ -337,6 +350,7 @@
 "Error! No network connection!" =  "Error! No Network Connection!";
 	// MARK: AlertMessage
 "Video compression is successfully completed! filesize: " = "Video compression is successfully completed! filesize: ";
+"Remove Locations at selected section?" = "Remove Locations at selected section?";
 "These contacts will be merged. After the merging process is completed, unnecessary contacts will be automatically deleted." = "These contacts will be merged. After the merging process is completed, unnecessary contacts will be automatically deleted.";
 "Merge contacts successfully completed!" = "Merge contacts successfully completed!";
 "Delete successfully completed!" = "Delete successfully completed!";
@@ -363,6 +377,7 @@
 "No similar selfies." = "No similar selfies.";
 "No live photo." = "No live photo.";
 "No similar live photo." = "No similar live photo.";
+"No photo with locations data." = "No photo with locations data.";
 "No large video." = "No large video.";
 "No duplucated video." = "No duplucated video.";
 "No similar video." = "No similar video.";

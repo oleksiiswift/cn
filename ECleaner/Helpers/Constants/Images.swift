@@ -92,6 +92,7 @@ struct Images {
             static let processingThumb = UIImage(named: "photoProcessingEmptyItem")!
             static let unavailibleThumb = UIImage(named: "photoThumbUnselect")!
 			static let checkmark = UIImage(named: "photoSectionSelect")!
+			static let locationRemove = UIImage(named: "delete-loc")!
         }
         
         struct video {
@@ -180,6 +181,15 @@ struct Images {
 					return UIImage(systemName: "photo.fill")!
 			}
 		}
+	}
+	
+	struct location {
+		
+		public static var map = UIImage(systemName: "map")!
+		public static var grid = UIImage(systemName: "rectangle.3.offgrid")!
+		public static var slashPin = UIImage(systemName: "mappin.slash")!
+		public static var pin = UIImage(systemName: "mappin.and.ellipse")!
+		
 	}
 }
 

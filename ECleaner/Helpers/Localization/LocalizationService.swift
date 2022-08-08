@@ -279,6 +279,8 @@ struct  LocalizationService {
 						return Localization.ErrorsHandler.EmptyResultsError.livePhotoIsEmpty
 					case .similarLivePhotoIsEmpty:
 						return Localization.ErrorsHandler.EmptyResultsError.similarLivePhotoIsEmpty
+					case .photoWithLocationIsEmpty:
+						return Localization.ErrorsHandler.EmptyResultsError.photoWithLocationIsEmpty
 					case .largeVideoIsEmpty:
 						return Localization.ErrorsHandler.EmptyResultsError.largeVideoIsEmpty
 					case .duplicatedVideoIsEmpty:
@@ -411,6 +413,8 @@ struct  LocalizationService {
 					return Localization.Main.MediaContentTitle.similarLivePhoto
 				case .similarSelfies:
 					return Localization.Main.MediaContentTitle.similarSelfies
+				case .locationPhoto:
+					return Localization.Main.Title.location
 				case .singleLargeVideos:
 					return Localization.Main.MediaContentTitle.largeVideo
 				case .duplicatedVideos:

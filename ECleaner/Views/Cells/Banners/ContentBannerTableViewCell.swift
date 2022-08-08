@@ -23,6 +23,7 @@ class ContentBannerTableViewCell: UITableViewCell {
 	@IBOutlet weak var helperImageViewHeightConstraint: NSLayoutConstraint!
 	@IBOutlet weak var helperImageViewWidthConstraint: NSLayoutConstraint!
 	@IBOutlet weak var helperImageViewTrailingConstraint: NSLayoutConstraint!
+	@IBOutlet weak var helperImageViewBottomConstraint: NSLayoutConstraint!
 	@IBOutlet weak var helperImageView: UIImageView!
 
 	override func awakeFromNib() {
@@ -55,9 +56,37 @@ extension ContentBannerTableViewCell {
 		
 		descriptionSubtitleTextLabel.attributedText = attributedString
 		
+		var titleGradientStartPoint: CAGradientPoint {
+			switch content {
+				case .locationPhoto:
+					return .topCenter
+				case .compress:
+					return .topLeft
+				case .backup:
+					return .topLeft
+				default:
+					return .topLeft
+					
+			}
+		}
+		
+		var titleGradientEndPoint: CAGradientPoint {
+			switch content {
+				case .locationPhoto:
+					return .bottomCenter
+				case .compress:
+					return .bottomRight
+				case .backup:
+					return .bottomRight
+				default:
+					return .bottomRight
+					
+			}
+		}
+		
 		let gradientLayerTitle = Utils.Manager.getGradientLayer(bounds: descriptionTitleTextLabel.bounds,
 																colors: gradientColors,
-																startPoint: .topLeft, endPoint: .bottomRight)
+																startPoint: titleGradientStartPoint, endPoint: titleGradientEndPoint)
 		let gradientTitleColor = Utils.Manager.gradientColor(bounds: descriptionTitleTextLabel.bounds, gradientLayer: gradientLayerTitle)
 		descriptionTitleTextLabel.textColor = gradientTitleColor
 		titleTextLabel.text = info.title
@@ -77,11 +106,17 @@ extension ContentBannerTableViewCell {
 		reuseShadeoRoundedView.setImageWithCustomBackground(image: info.infoImage,
 															tineColor: theme.activeTitleTextColor,
 															size: imageSize,
-															colors: info.gradientColors)
+															colors: info.gradientColors,
+															startPoint: .topCenter,
+															endPoint: .bottomCenter)
 		helperImageView.image = info.helperImage
 		helperImageView.contentMode = .scaleToFill
 		
 		switch content {
+			case .locationPhoto:
+				setHelperImageSize(from: AppDimensions.HelperBanner.offsetHelperImageSize, of: info.helperImage)
+				helperImageViewTrailingConstraint.constant = 25
+				helperImageViewBottomConstraint.constant = -10
 			case .compress:
 				setHelperImageSize(from: AppDimensions.HelperBanner.cornerHelperImageSize, of: info.helperImage)
 				helperImageViewTrailingConstraint.constant = 0

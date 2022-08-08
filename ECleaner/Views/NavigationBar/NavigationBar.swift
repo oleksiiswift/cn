@@ -63,14 +63,14 @@ class NavigationBar: UIView {
 		leftBarButtonItem.titleLabel?.font = FontManager.navigationBarFont(of: .barButtonTitle)
     }
 
-    public func setupNavigation(title: String?, leftBarButtonImage: UIImage?, rightBarButtonImage: UIImage?, contentType: MediaContentType, leftButtonTitle: String? = nil, rightButtonTitle: String? = nil) {
+	public func setupNavigation(title: String?, leftBarButtonImage: UIImage?, letftImageScaleFactor: CGFloat = 0.4, rightBarButtonImage: UIImage?, rightImageScaleFactor: CGFloat = 0.5, contentType: MediaContentType, leftButtonTitle: String? = nil, rightButtonTitle: String? = nil) {
         
         self.setAccentColorFor(buttonsTintColor: contentType.screenAcentTintColor, title: theme.tintColor)
         setDropShadow(visible: setIsDropShadow)
 		
 		var leftTargetSize: CGSize {
 			if let leftBarButtonImage = leftBarButtonImage {
-				return self.getProportionalSize(of: leftBarButtonImage, targetImageScaleFactor: 0.4)
+				return self.getProportionalSize(of: leftBarButtonImage, targetImageScaleFactor: letftImageScaleFactor)
 			} else {
 				return .zero
 			}
@@ -78,7 +78,7 @@ class NavigationBar: UIView {
 		
 		var rigthTargetSize: CGSize {
 			if let rightBarButtonImage = rightBarButtonImage {
-				return self.getProportionalSize(of: rightBarButtonImage, targetImageScaleFactor: 0.5)
+				return self.getProportionalSize(of: rightBarButtonImage, targetImageScaleFactor: rightImageScaleFactor)
 			} else {
 				return .zero
 			}
@@ -130,7 +130,7 @@ class NavigationBar: UIView {
     
     public func setDropShadow(visible: Bool) {
         
-        visible ? layer.setShadow(color: theme.bottomShadowColor, alpha: 1, x: 3, y: 0, blur: 10, spread: 0) : ()
+		visible ? layer.setShadow(color: theme.bottomShadowColor, alpha: 1, x: 3, y: 0, blur: 10, spread: 0) : layer.removeShadow()
     }
     
     public func changeHotLeftTitle(newTitle: String) {

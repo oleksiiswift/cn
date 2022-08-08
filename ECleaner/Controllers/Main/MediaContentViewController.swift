@@ -9,6 +9,7 @@ import UIKit
 import Photos
 import SwiftMessages
 import Contacts
+import MapKit
 
 enum SearchingProcessingType {
 	case singleSearchProcess
@@ -33,7 +34,8 @@ class MediaContentViewController: UIViewController {
 	private var photoManager = PhotoManager.shared
     private var contactsManager = ContactsManager.shared
 	private var smartCleanManager = SmartCleanManager()
-
+	private var progrssAlertController = ProgressAlertController.shared
+	
 	public let phassetProcessingOperationQueuer = OperationProcessingQueuer(name: Constants.key.operation.queue.phassets, maxConcurrentOperationCount: 5, qualityOfService: .userInitiated)
 	public let contactsProcessingOperationQueuer = ContactsManager.shared.contactsProcessingOperationQueuer
     
@@ -606,6 +608,39 @@ extension MediaContentViewController {
 			}
 		}
 	}
+	
+	private func openContactExportBackupController() {
+		SubscriptionManager.instance.purchasePremiumHandler { status in
+			switch status {
+				case .lifetime, .purchasedPremium:
+					self.performSegue(withIdentifier: C.identifiers.segue.backupContacts, sender: self)
+				case .nonPurchased:
+					UIPresenter.showViewController(of: .subscription)
+			}
+		}
+	}
+	
+	private func openLocationClenController() {
+		debugPrint("onte")
+		SubscriptionManager.instance.purchasePremiumHandler { status in
+			switch status {
+				case .lifetime, .purchasedPremium:
+					self.progrssAlertController.showSimpleProgressAlerControllerBar(of: .parsingLocations, from: self)
+					U.delay(0.5) {
+						self.photoManager.getPHAssetCollectionWithLocation { phassets, annotations in
+							self.progrssAlertController.closeProgressAnimatedController()
+							if !phassets.isEmpty {
+								self.showLocationViewController(with: phassets, annotationCollection: annotations)
+							} else {
+								ErrorHandler.shared.showEmptySearchResultsFor(.photoWithLocationIsEmpty)
+							}
+						}
+					}
+				case .nonPurchased:
+					UIPresenter.showViewController(of: .subscription)
+			}
+		}
+	}
 }
 
 	//      MARK: - contacts content -
@@ -801,6 +836,20 @@ extension MediaContentViewController {
 		let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.videoCompressCollection) as! VideoCollectionCompressingViewController
 		viewController.title = type.mediaTypeName
 		viewController.assetCollection = videoPHAsset
+		viewController.mediaType = type
+		viewController.contentType = content
+		self.navigationController?.pushViewController(viewController, animated: true)
+	}
+	
+	private func showLocationViewController(with photoPHAssets: [PHAsset], annotationCollection: [MKAnnotation]) {
+		
+		let type: PhotoMediaType = .locationPhoto
+		let content: MediaContentType = .userPhoto
+		let storyboard = UIStoryboard(name: C.identifiers.storyboards.location, bundle: nil)
+		let viewController = storyboard.instantiateViewController(withIdentifier: C.identifiers.viewControllers.location) as! LocationViewController
+		viewController.title = type.mediaTypeName
+		viewController.assetCollection = photoPHAssets
+		viewController.preloadedStartedAnnotations = annotationCollection
 		viewController.mediaType = type
 		viewController.contentType = content
 		self.navigationController?.pushViewController(viewController, animated: true)
@@ -1291,6 +1340,8 @@ extension MediaContentViewController {
 				guard searchingProcessingType == .clearSearchingProcessingQueue else { return}
 				
 				switch self.mediaContentType {
+					case .userPhoto:
+						self.openLocationClenController()
 					case .userVideo:
 						self.showVideoContentForCompressingOperation()
 					case .userContacts:
@@ -1442,19 +1493,5 @@ extension MediaContentViewController: Themeble {
 		segue.interactiveHide = true
 		segue.messageView.setupForShadow(shadowColor: theme.bottomShadowColor, cornerRadius: 14, shadowOffcet: CGSize(width: 6, height: 6), shadowOpacity: 10, shadowRadius: 14)
 		segue.messageView.configureNoDropShadow()
-	}
-}
-
-extension MediaContentViewController {
-	
-	private func openContactExportBackupController() {
-		SubscriptionManager.instance.purchasePremiumHandler { status in
-			switch status {
-				case .lifetime, .purchasedPremium:
-					self.performSegue(withIdentifier: C.identifiers.segue.backupContacts, sender: self)
-				case .nonPurchased:
-					UIPresenter.showViewController(of: .subscription)
-			}
-		}
 	}
 }
