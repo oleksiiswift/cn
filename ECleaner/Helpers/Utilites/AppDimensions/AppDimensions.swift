@@ -195,7 +195,6 @@ extension AppDimensions {
 					return UIEdgeInsets(top: -20, left: 0, bottom: -20, right: 0)
 				default:
 					return UIEdgeInsets(top: -20, left: 0, bottom: -20, right: 0)
-					
 			}
 		}
 	}
@@ -267,7 +266,12 @@ extension AppDimensions {
 		}
 		
 		static var bottomCarouselViewCollectionInset: CGFloat {
-			return Device.isSafeAreaiPhone ? U.bottomSafeAreaHeight : 0
+			switch Advertisement.manager.advertisementBannerStatus {
+				case .active:
+					return 0
+				case .hiden:
+					return Device.isSafeAreaiPhone ? U.bottomSafeAreaHeight : 0
+			}
 		}
 		
 		static var carouselCollectionViewHeght: CGFloat {
@@ -826,7 +830,6 @@ extension AppDimensions {
 				}
 			}
 		}
-		
 		
 		struct Features {
 			

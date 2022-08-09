@@ -15,11 +15,10 @@ class MainViewController: UIViewController {
     @IBOutlet weak var navigationBar: StartingNavigationBar!
     @IBOutlet weak var bottomButtonBarView: BottomButtonBarView!
     @IBOutlet weak var scrollView: UIScrollView!
-    @IBOutlet weak var circleTotalSpaceView: CircleProgressView!
-    @IBOutlet weak var circleProgressView: MMTGradientArcView!
+	
+	@IBOutlet weak var circleTotalSpaceView: CircleProgressView!
     @IBOutlet weak var mediaCollectionView: UICollectionView!
 	@IBOutlet weak var sectionHeaderTextLabel: UILabel!
-	
 	@IBOutlet weak var navigationBarHeightConstraint: NSLayoutConstraint!
 	@IBOutlet weak var circleProgressBottomConstraint: NSLayoutConstraint!
 	@IBOutlet weak var circleProgressTopConstraint: NSLayoutConstraint!
@@ -520,6 +519,21 @@ extension MainViewController: SubscriptionObserver {
 			}
 		}
 	}
+	
+	@objc func advertisementDidChange() {
+		
+		UIView.animate(withDuration: 0.5) {
+			self.circleTotalSpaceView.isHidden = true
+			UIView.animate(withDuration: 0.5) {
+				self.setupProgressAndCollectionSize()
+				self.setupCircleProgressView()
+			} completion: { _ in
+				UIView.animate(withDuration: 0.5) {
+					self.circleTotalSpaceView.isHidden = false
+				}
+			}
+		}
+	}
 }
 
 extension MainViewController: UpdateColorsDelegate {
@@ -527,6 +541,7 @@ extension MainViewController: UpdateColorsDelegate {
     private func setupObserversAndDelegates() {
         UpdateContentDataBaseMediator.instance.setListener(listener: self)
 		RemoteLaunchServiceMediator.sharedInstance.setListener(listener: self)
+		
         bottomButtonBarView.delegate = self
         navigationBar.delegate = self
         
@@ -538,7 +553,7 @@ extension MainViewController: UpdateColorsDelegate {
 		U.notificationCenter.addObserver(self, selector: #selector(removeStoreObserver), name: .removeContactsStoreObserver, object: nil)
 		U.notificationCenter.addObserver(self, selector: #selector(addStoreObserver), name: .addContactsStoreObserver, object: nil)
 		U.notificationCenter.addObserver(self, selector: #selector(permissionDidChange(_:)), name: .permisionDidChange, object: nil)
-		
+		U.notificationCenter.addObserver(self, selector: #selector(advertisementDidChange), name: .bannerStatusDidChanged, object: nil)
 		U.notificationCenter.addObserver(self, selector: #selector(shortCutItemStartCleanProcess(_:)), name: .shortCutsItemsNavigationItemsNotification, object: nil)
     }
 	
@@ -602,147 +617,164 @@ extension MainViewController: UpdateColorsDelegate {
 
 		switch Screen.size {
 			case .small:
-				if S.subscripton.allowAdvertisementBanner {
-					circleTotalSpaceView.percentLabel.font = .systemFont(ofSize: 30, weight: .black)
-					circleTotalSpaceView.titleLabel.font = .systemFont(ofSize: 8, weight: .bold)
-					circleTotalSpaceView.lineWidth = 28
-					
-					circleProgressTopConstraint.constant = -25
-					circleProgressBottomConstraint.constant = 10
-					collectionViewHeightConstraint.constant = 180
-					bottomButtonHeightConstraint.constant = 70
-					
-					baseCarouselLayout.itemSize = CGSize(width: 160, height: 180)
-				} else {
-					circleTotalSpaceView.percentLabel.font = .systemFont(ofSize: 30, weight: .black)
-					circleTotalSpaceView.titleLabel.font = .systemFont(ofSize: 8, weight: .bold)
-					circleTotalSpaceView.lineWidth = 32
-					
-					circleProgressTopConstraint.constant = -10
-					circleProgressBottomConstraint.constant = 20
-					collectionViewHeightConstraint.constant = 190
-					bottomButtonHeightConstraint.constant = 75
-					
-					baseCarouselLayout.itemSize = CGSize(width: 160, height: 190)
+				
+				switch Advertisement.manager.advertisementBannerStatus {
+					case .active:
+						circleTotalSpaceView.percentLabel.font = .systemFont(ofSize: 30, weight: .black)
+						circleTotalSpaceView.titleLabel.font = .systemFont(ofSize: 8, weight: .bold)
+						circleTotalSpaceView.lineWidth = 28
+						
+						circleProgressTopConstraint.constant = -25
+						circleProgressBottomConstraint.constant = 10
+						collectionViewHeightConstraint.constant = 180
+						bottomButtonHeightConstraint.constant = 70
+						baseCarouselLayout.itemSize = CGSize(width: 160, height: 180)
+					case .hiden:
+						circleTotalSpaceView.percentLabel.font = .systemFont(ofSize: 30, weight: .black)
+						circleTotalSpaceView.titleLabel.font = .systemFont(ofSize: 8, weight: .bold)
+						circleTotalSpaceView.lineWidth = 32
+						circleProgressTopConstraint.constant = -10
+						circleProgressBottomConstraint.constant = 20
+						collectionViewHeightConstraint.constant = 190
+						bottomButtonHeightConstraint.constant = 75
+						baseCarouselLayout.itemSize = CGSize(width: 160, height: 190)
 				}
+	
 				circleTotalSpaceView.percentTitleLabelSpaceOffset = -5
 				baseCarouselLayout.spacing = -40
 				baseCarouselLayout.focusedSpacing = -40
 			case .medium:
-				if S.subscripton.allowAdvertisementBanner {
-					circleTotalSpaceView.percentLabel.font = .systemFont(ofSize: 40, weight: .black)
-					circleTotalSpaceView.titleLabel.font = .systemFont(ofSize: 11, weight: .bold)
-					circleTotalSpaceView.lineWidth = 34
-					circleProgressTopConstraint.constant = -10
-					circleProgressBottomConstraint.constant = 10
-					collectionViewHeightConstraint.constant = 230
-					bottomButtonHeightConstraint.constant = 75
-					baseCarouselLayout.itemSize = CGSize(width: 190, height: 230)
-				} else {
-					circleTotalSpaceView.percentLabel.font = .systemFont(ofSize: 44, weight: .black)
-					circleTotalSpaceView.titleLabel.font = .systemFont(ofSize: 11, weight: .bold)
-					circleTotalSpaceView.lineWidth = 36
-					circleProgressTopConstraint.constant = -5
-					circleProgressBottomConstraint.constant = 20
-					collectionViewHeightConstraint.constant = 240
-					bottomButtonHeightConstraint.constant = 85
-					baseCarouselLayout.itemSize = CGSize(width: 190, height: 235)
+				
+				switch Advertisement.manager.advertisementBannerStatus {
+					case .active:
+						circleTotalSpaceView.percentLabel.font = .systemFont(ofSize: 40, weight: .black)
+						circleTotalSpaceView.titleLabel.font = .systemFont(ofSize: 11, weight: .bold)
+						circleTotalSpaceView.lineWidth = 34
+						circleProgressTopConstraint.constant = -10
+						circleProgressBottomConstraint.constant = 10
+						collectionViewHeightConstraint.constant = 230
+						bottomButtonHeightConstraint.constant = 75
+						baseCarouselLayout.itemSize = CGSize(width: 190, height: 230)
+					case .hiden:
+						circleTotalSpaceView.percentLabel.font = .systemFont(ofSize: 44, weight: .black)
+						circleTotalSpaceView.titleLabel.font = .systemFont(ofSize: 11, weight: .bold)
+						circleTotalSpaceView.lineWidth = 36
+						circleProgressTopConstraint.constant = -5
+						circleProgressBottomConstraint.constant = 20
+						collectionViewHeightConstraint.constant = 240
+						bottomButtonHeightConstraint.constant = 85
+						baseCarouselLayout.itemSize = CGSize(width: 190, height: 235)
 				}
+				
 				circleTotalSpaceView.percentTitleLabelSpaceOffset = 8
 				baseCarouselLayout.spacing = -30
 				baseCarouselLayout.focusedSpacing = -30
 			case .plus:
-				if S.subscripton.allowAdvertisementBanner {
-					circleTotalSpaceView.percentLabel.font = .systemFont(ofSize: 44, weight: .black)
-					circleTotalSpaceView.titleLabel.font = .systemFont(ofSize: 11, weight: .bold)
-					circleTotalSpaceView.lineWidth = 36
-					circleProgressBottomConstraint.constant = 20
-					collectionViewHeightConstraint.constant = 240
-					bottomButtonHeightConstraint.constant = 80
-					baseCarouselLayout.itemSize = CGSize(width: 200, height: 240)
-				} else {
-					circleTotalSpaceView.percentLabel.font = .systemFont(ofSize: 46, weight: .black)
-					circleTotalSpaceView.titleLabel.font = .systemFont(ofSize: 12, weight: .bold)
-					circleTotalSpaceView.lineWidth = 40
-					circleProgressBottomConstraint.constant = 35
-					collectionViewHeightConstraint.constant = 250
-					bottomButtonHeightConstraint.constant = 90
-					baseCarouselLayout.itemSize = CGSize(width: 200, height: 250)
+				
+				switch Advertisement.manager.advertisementBannerStatus {
+					case .active:
+						circleTotalSpaceView.percentLabel.font = .systemFont(ofSize: 44, weight: .black)
+						circleTotalSpaceView.titleLabel.font = .systemFont(ofSize: 11, weight: .bold)
+						circleTotalSpaceView.lineWidth = 36
+						circleProgressBottomConstraint.constant = 20
+						collectionViewHeightConstraint.constant = 240
+						bottomButtonHeightConstraint.constant = 80
+						baseCarouselLayout.itemSize = CGSize(width: 200, height: 240)
+					case .hiden:
+						circleTotalSpaceView.percentLabel.font = .systemFont(ofSize: 46, weight: .black)
+						circleTotalSpaceView.titleLabel.font = .systemFont(ofSize: 12, weight: .bold)
+						circleTotalSpaceView.lineWidth = 40
+						circleProgressBottomConstraint.constant = 35
+						collectionViewHeightConstraint.constant = 250
+						bottomButtonHeightConstraint.constant = 90
+						baseCarouselLayout.itemSize = CGSize(width: 200, height: 250)
 				}
+
 				circleTotalSpaceView.percentTitleLabelSpaceOffset = 13
 				baseCarouselLayout.spacing = -25
 				baseCarouselLayout.focusedSpacing = -25
 			case .large:
-				if S.subscripton.allowAdvertisementBanner {
-					circleTotalSpaceView.percentLabel.font = .systemFont(ofSize: 46, weight: .black)
-					circleTotalSpaceView.titleLabel.font = .systemFont(ofSize: 12, weight: .bold)
-					circleTotalSpaceView.lineWidth = 38
-					circleProgressTopConstraint.constant = -10
-					circleProgressBottomConstraint.constant = 25
-					collectionViewHeightConstraint.constant = 260
-					bottomButtonHeightConstraint.constant = 80
-					baseCarouselLayout.itemSize = CGSize(width: 200, height: 250)
-				} else {
-					circleTotalSpaceView.percentLabel.font = .systemFont(ofSize: 46, weight: .black)
-					circleTotalSpaceView.titleLabel.font = .systemFont(ofSize: 13, weight: .bold)
-					circleTotalSpaceView.lineWidth = 40
-					circleProgressBottomConstraint.constant = 40
-					collectionViewHeightConstraint.constant = 270
-					bottomButtonHeightConstraint.constant = 110
-					baseCarouselLayout.itemSize = CGSize(width: 200, height: 260)
+				
+				switch Advertisement.manager.advertisementBannerStatus {
+					case .active:
+						circleTotalSpaceView.percentLabel.font = .systemFont(ofSize: 46, weight: .black)
+						circleTotalSpaceView.titleLabel.font = .systemFont(ofSize: 12, weight: .bold)
+						circleTotalSpaceView.lineWidth = 38
+						circleProgressTopConstraint.constant = -10
+						circleProgressBottomConstraint.constant = 25
+						collectionViewHeightConstraint.constant = 260
+						bottomButtonHeightConstraint.constant = 80
+						baseCarouselLayout.itemSize = CGSize(width: 200, height: 250)
+					case .hiden:
+						circleTotalSpaceView.percentLabel.font = .systemFont(ofSize: 46, weight: .black)
+						circleTotalSpaceView.titleLabel.font = .systemFont(ofSize: 13, weight: .bold)
+						circleTotalSpaceView.lineWidth = 40
+						circleProgressBottomConstraint.constant = 40
+						collectionViewHeightConstraint.constant = 270
+						bottomButtonHeightConstraint.constant = 110
+						baseCarouselLayout.itemSize = CGSize(width: 200, height: 260)
 				}
 				circleTotalSpaceView.percentTitleLabelSpaceOffset = 15
 				baseCarouselLayout.spacing = -35
 				baseCarouselLayout.focusedSpacing = -35
 			case .modern:
+				
 				circleTotalSpaceView.percentLabel.font = .systemFont(ofSize: 48, weight: .black)
 				circleTotalSpaceView.titleLabel.font = .systemFont(ofSize: 13, weight: .bold)
-				if S.subscripton.allowAdvertisementBanner {
-					circleTotalSpaceView.lineWidth = 40
-					circleProgressTopConstraint.constant = -10
-					circleProgressBottomConstraint.constant = 30
-					collectionViewHeightConstraint.constant = 270
-					bottomButtonHeightConstraint.constant = 80
-				} else {
-					circleTotalSpaceView.lineWidth = 44
-					circleProgressBottomConstraint.constant = 50
-					collectionViewHeightConstraint.constant = 280
-					bottomButtonHeightConstraint.constant = 110
+				
+				switch Advertisement.manager.advertisementBannerStatus {
+					case .active:
+						circleTotalSpaceView.lineWidth = 40
+						circleProgressTopConstraint.constant = -10
+						circleProgressBottomConstraint.constant = 30
+						collectionViewHeightConstraint.constant = 270
+						bottomButtonHeightConstraint.constant = 80
+					case .hiden:
+						circleTotalSpaceView.lineWidth = 44
+						circleProgressBottomConstraint.constant = 50
+						collectionViewHeightConstraint.constant = 280
+						bottomButtonHeightConstraint.constant = 110
 				}
 				baseCarouselLayout.itemSize = CGSize(width: 200, height: 270)
 				circleTotalSpaceView.percentTitleLabelSpaceOffset = 16
 				baseCarouselLayout.spacing = -35
 				baseCarouselLayout.focusedSpacing = -35
 			case .max:
+				
 				circleTotalSpaceView.percentLabel.font = .systemFont(ofSize: 50, weight: .black)
 				circleTotalSpaceView.titleLabel.font = .systemFont(ofSize: 14, weight: .bold)
-				if S.subscripton.allowAdvertisementBanner {
-					circleTotalSpaceView.lineWidth = 46
-					bottomButtonHeightConstraint.constant = 90
-					circleProgressBottomConstraint.constant = 35
-					collectionViewHeightConstraint.constant = 275
-				} else {
-					circleTotalSpaceView.lineWidth = 48
-					bottomButtonHeightConstraint.constant = 120
-					circleProgressBottomConstraint.constant = 60
-					collectionViewHeightConstraint.constant = 290
+				
+				switch Advertisement.manager.advertisementBannerStatus {
+					case .active:
+						circleTotalSpaceView.lineWidth = 46
+						bottomButtonHeightConstraint.constant = 90
+						circleProgressBottomConstraint.constant = 35
+						collectionViewHeightConstraint.constant = 275
+					case .hiden:
+						circleTotalSpaceView.lineWidth = 48
+						bottomButtonHeightConstraint.constant = 120
+						circleProgressBottomConstraint.constant = 60
+						collectionViewHeightConstraint.constant = 290
 				}
 				baseCarouselLayout.itemSize = CGSize(width: 210, height: 280)
 				circleTotalSpaceView.percentTitleLabelSpaceOffset = 20
 				baseCarouselLayout.spacing = -35
 				baseCarouselLayout.focusedSpacing = -35
 			case .madMax:
+				
 				circleTotalSpaceView.lineWidth = 50
 				circleTotalSpaceView.percentLabel.font = .systemFont(ofSize: 50, weight: .black)
 				circleTotalSpaceView.titleLabel.font = .systemFont(ofSize: 14, weight: .bold)
-				if S.subscripton.allowAdvertisementBanner {
-					circleProgressBottomConstraint.constant = 40
-					collectionViewHeightConstraint.constant = 280
-					bottomButtonHeightConstraint.constant = 90
-				} else {
-					circleProgressBottomConstraint.constant = 80
-					collectionViewHeightConstraint.constant = 300
-					bottomButtonHeightConstraint.constant = 120
+				
+				switch Advertisement.manager.advertisementBannerStatus {
+					case .active:
+						circleProgressBottomConstraint.constant = 40
+						collectionViewHeightConstraint.constant = 280
+						bottomButtonHeightConstraint.constant = 90
+					case .hiden:
+						circleProgressBottomConstraint.constant = 80
+						collectionViewHeightConstraint.constant = 300
+						bottomButtonHeightConstraint.constant = 120
 				}
 				circleTotalSpaceView.percentTitleLabelSpaceOffset = 20
 				baseCarouselLayout.itemSize = CGSize(width: 210, height: 280)
