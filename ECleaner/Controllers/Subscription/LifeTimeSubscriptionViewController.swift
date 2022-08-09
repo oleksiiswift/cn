@@ -415,7 +415,7 @@ extension LifeTimeSubscriptionViewController: Themeble {
 	
 	private func setupObserver() {
 		
-		U.notificationCenter.addObserver(self, selector: #selector(networkStatusDidChange), name: .ReachabilityDidChange, object: nil)
+		U.notificationCenter.addObserver(self, selector: #selector(networkStatusDidChange), name: .ConnectivityDidChange, object: nil)
 	}
 }
 
