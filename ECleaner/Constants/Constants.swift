@@ -31,9 +31,15 @@ class Constants {
         
         static let GADApplicationIdentifier = ""
         static let gadProductionKey = ""
+		static let gadInterstitialProductionKey = ""
+		static let gadRewardedIntProductionKey = ""
+		static let gadRewardedProductionKey = ""
         
         static let gadTestAppIdentifier = "ca-app-pub-3940256099942544~1458002511"
         static let gadTestKey = "ca-app-pub-3940256099942544/2934735716"
+		static let gadInterstitialTestKey = "ca-app-pub-3940256099942544/4411468910"
+		static let gadRewardedTestKey = "ca-app-pub-3940256099942544/1712485313"
+		static let gadRewardedIntTestKey = "ca-app-pub-3940256099942544/6978759866"
 		
 		static let advertisementViewTag: Int = 666
     }
