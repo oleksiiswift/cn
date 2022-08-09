@@ -83,7 +83,7 @@
                                                                     <constraint firstAttribute="width" secondItem="FiS-cX-K1W" secondAttribute="height" multiplier="1:1" id="VBl-5R-fGS"/>
                                                                 </constraints>
                                                             </view>
-                                                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="oeD-qr-sj7" customClass="MMTGradientArcView" customModule="ECleaner" customModuleProvider="target">
+                                                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="oeD-qr-sj7">
                                                                 <rect key="frame" x="0.0" y="0.0" width="414" height="308"/>
                                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                             </view>
@@ -206,7 +206,6 @@
                         <outlet property="bottomButtonHeightConstraint" destination="fAQ-ep-UWf" id="MbU-oQ-4BI"/>
                         <outlet property="circleProgressBottomConstraint" destination="Eea-6b-NMV" id="a77-YA-7B1"/>
                         <outlet property="circleProgressTopConstraint" destination="F4c-HT-a9R" id="tUx-Vj-kPa"/>
-                        <outlet property="circleProgressView" destination="oeD-qr-sj7" id="Jaj-lB-HAO"/>
                         <outlet property="circleTotalSpaceView" destination="FiS-cX-K1W" id="P5d-7m-G2J"/>
                         <outlet property="collectionViewHeightConstraint" destination="U1g-Ww-fyt" id="6u2-Dc-SMa"/>
                         <outlet property="mediaCollectionView" destination="Dg3-qT-o61" id="p6Y-t8-dtI"/>

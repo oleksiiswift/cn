@@ -28,6 +28,7 @@ class Network {
 	}
 	
 	static func start() {
+		connectivity.isPollingEnabled = true
 		connectivity.startNotifier()
 	}
 	

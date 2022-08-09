@@ -84,7 +84,6 @@ extension AdvertisementViewController: Themeble {
     func updateColors() {
         self.view.backgroundColor = theme.backgroundColor
 		self.advertisementView.backgroundColor = theme.backgroundColor
-		
     }
     
     func setupNavigation() {
@@ -92,13 +91,15 @@ extension AdvertisementViewController: Themeble {
     }
 	
 	func setupObserver() {
-		U.notificationCenter.addObserver(self, selector: #selector(networkStatusDidChange), name: .ReachabilityDidChange, object: nil)
+		U.notificationCenter.addObserver(self, selector: #selector(networkStatusDidChange), name: .ConnectivityDidChange, object: nil)
 	}
 }
 
 extension AdvertisementViewController {
 	
 	private func advertisementHandler(status: AdvertisementStatus) {
+		
+		Advertisement.manager.advertisementBannerStatus = status
 		
 		var advertisemntContaineHeight: CGFloat {
 			switch status {
@@ -109,22 +110,22 @@ extension AdvertisementViewController {
 			}
 		}
 		
+		self.advertisementHightConstraint.constant = advertisemntContaineHeight
+		
 		if status == .hiden {
 			if let view = self.advertisementView.viewWithTag(Advertisement.manager.advertimentBannerTag) {
 				view.removeFromSuperview()
 			}
 		}
 		
-		self.advertisementHightConstraint.constant = advertisemntContaineHeight
-		
 		UIView.animate(withDuration: 0.3) {
-			self.view.layoutIfNeeded()
-		}
+//			self.view.layoutIfNeeded()
+			self.advertisementView.layoutIfNeeded()
+		} completion: { _ in }
 	}
 }
 
 extension AdvertisementViewController: GADBannerViewDelegate {
-	
 	
 	func bannerViewDidReceiveAd(_ bannerView: GADBannerView) {
 	  print("bannerViewDidReceiveAd")

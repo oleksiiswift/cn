@@ -84,7 +84,7 @@ extension AppDelegate {
 	private func setupObserver() {
 		
 		NotificationCenter.default.addObserver(self, selector: #selector(checkPermissionStatus), name: UIApplication.didBecomeActiveNotification, object: nil)
-		NotificationCenter.default.addObserver(self, selector: #selector(networkingStatusDidChange), name: .ReachabilityDidChange, object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(networkingStatusDidChange), name: .ConnectivityDidChange, object: nil)
 	}
 	
 	@objc func checkPermissionStatus() {
