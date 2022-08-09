@@ -1373,6 +1373,7 @@
 			isa = PBXGroup;
 			children = (
 				97B8CFE7283C28AC00F3E4E6 /* SubscriptionManager */,
+				97A2E97928A309CD00AED237 /* Advertisement */,
 				97F8E64D2787047F00B01D6B /* DeepCleanManager */,
 				97A61EDF2726AB8B00F2E6DE /* Contacts */,
 				049CC21026821D560002F988 /* Photo */,
@@ -1630,7 +1631,6 @@
 			isa = PBXGroup;
 			children = (
 				049CC214268221D40002F988 /* AdvertisementViewController.swift */,
-				97DE8A4228A2651400E3954E /* AdvertisementManager.swift */,
 			);
 			path = Advertisement;
 			sourceTree = "<group>";
@@ -2302,6 +2302,14 @@
 				97D4273B287031B5006772A2 /* FontManager+Subscription.swift */,
 			);
 			path = FontManager;
+			sourceTree = "<group>";
+		};
+		97A2E97928A309CD00AED237 /* Advertisement */ = {
+			isa = PBXGroup;
+			children = (
+				97DE8A4228A2651400E3954E /* AdvertisementManager.swift */,
+			);
+			path = Advertisement;
 			sourceTree = "<group>";
 		};
 		97A39FDF27649F7C007CB482 /* DatePicker */ = {
