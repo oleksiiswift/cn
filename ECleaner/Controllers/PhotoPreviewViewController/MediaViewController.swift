@@ -403,7 +403,15 @@ extension MediaViewController  {
 		self.previewCollectionView.contentInset = .zero
 		
 		let heightOffset = U.bottomSafeAreaHeight + U.bottomSafeAreaHeight + navigationBarHeightConstraint.constant + carouselCllectionViewHeightConstraint.constant
-		let collectionViewHeight = U.screenHeight - heightOffset
+		var collectionViewHeight: CGFloat {
+			switch Advertisement.manager.advertisementBannerStatus {
+				case .active:
+					return (U.screenHeight - heightOffset)
+				case .hiden:
+					return U.screenHeight - heightOffset
+			}
+		}
+	
 		let itemInset = AppDimensions.CollectionItemSize.previewCollectionViewItemInset
 		let itemSize = CGSize(width: U.screenWidth, height: collectionViewHeight - itemInset)
 		

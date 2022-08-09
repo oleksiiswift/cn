@@ -57,33 +57,25 @@ class SettingsManager {
 			}
 		}
 		
-		static var allowAdvertisementBanner: Bool {
-		   get {
-			   U.userDefaults.bool(forKey: C.key.advertisement.bannerIsShow)
-		   } set {
-			   U.userDefaults.set(newValue, forKey: C.key.advertisement.bannerIsShow)
-		   }
-	   }
-	   
-	   static var isVerificationPassed: Bool {
-		   get {
-			   return U.userDefaults.bool(forKey: C.key.subscription.verificationPassed)
-		   } set {
-			   U.userDefaults.set(newValue, forKey: C.key.subscription.verificationPassed)
-		   }
-	   }
-	   
-	   static var expiredSubscription: Bool {
-		   get {
-			   return U.userDefaults.bool(forKey: C.key.subscription.expiredSubscription)
-		   } set {
-			   U.userDefaults.setValue(newValue, forKey: C.key.subscription.expiredSubscription)
-		   }
-	   }
+		static var isVerificationPassed: Bool {
+			get {
+				return U.userDefaults.bool(forKey: C.key.subscription.verificationPassed)
+			} set {
+				U.userDefaults.set(newValue, forKey: C.key.subscription.verificationPassed)
+			}
+		}
+		
+		static var expiredSubscription: Bool {
+			get {
+				return U.userDefaults.bool(forKey: C.key.subscription.expiredSubscription)
+			} set {
+				U.userDefaults.setValue(newValue, forKey: C.key.subscription.expiredSubscription)
+			}
+		}
 	}
 	
 	struct permissions {
-				
+		
 		static var photoPermissionSavedValue: Bool {
 			get {
 				return U.userDefaults.bool(forKey: C.key.permissions.settingsPhotoPermission)
@@ -281,7 +273,6 @@ extension SettingsManager {
         }
     }
 }
-
 
 extension SettingsManager {
 	

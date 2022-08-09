@@ -8,7 +8,7 @@
 import Foundation
 import GoogleMobileAds
 
-enum AdvertisementStatus {
+enum AdvertisementStatus: Int {
 	case active
 	case hiden
 }
@@ -26,6 +26,17 @@ class Advertisement {
 	
 	private static let shared = Advertisement()
 	
+	public var advertisementBannerStatus: AdvertisementStatus {
+		get {
+			let statusRawValue: Int = U.userDefaults.integer(forKey: C.key.advertisement.bannerStatus)
+			return AdvertisementStatus(rawValue: statusRawValue)!
+		} set {
+			U.userDefaults.set(newValue.rawValue, forKey: C.key.advertisement.bannerStatus)
+			let userInfo = [C.key.advertisement.bannerStatus: newValue]
+			U.notificationCenter.post(name: .bannerStatusDidChanged, object: nil, userInfo: userInfo)
+		}
+	}
+	
 	public var advertimentBannerTag: Int {
 		return Constants.gadAdvertisementKey.advertisementViewTag
 	}
@@ -39,8 +50,4 @@ class Advertisement {
 				return Constants.gadAdvertisementKey.gadTestKey
 		}
 	}
-	
-	
-
-	
 }

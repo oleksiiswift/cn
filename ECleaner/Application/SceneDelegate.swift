@@ -93,8 +93,6 @@ extension SceneDelegate {
 		
 		///  `remove all contacts from store`
 //		ContactsManager.shared.deleteAllContatsFromStore()
-		
-		S.subscripton.allowAdvertisementBanner = false
 	}
 }
 

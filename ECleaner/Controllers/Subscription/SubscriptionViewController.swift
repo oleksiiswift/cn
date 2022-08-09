@@ -207,11 +207,13 @@ extension SubscriptionViewController {
 	}
 	
 	private func closeSubscriptionController() {
-		if coordinator?.currentState == .onboarding || coordinator?.currentState == .subscription {
-			coordinator?.currentState = .application
-			UIPresenter.closePresentedWindow()
-		} else {
-			UIPresenter.closePresentedWindow()
+		Utils.UI {
+			if self.coordinator?.currentState == .onboarding || self.coordinator?.currentState == .subscription {
+				self.coordinator?.currentState = .application
+				UIPresenter.closePresentedWindow()
+			} else {
+				UIPresenter.closePresentedWindow()
+			}
 		}
 	}
 	
@@ -327,7 +329,7 @@ extension SubscriptionViewController: Themeble {
 	
 	private func setupObserver() {
 		
-		U.notificationCenter.addObserver(self, selector: #selector(networkStatusDidChange), name: .ReachabilityDidChange, object: nil)
+		U.notificationCenter.addObserver(self, selector: #selector(networkStatusDidChange), name: .ConnectivityDidChange, object: nil)
 	}
 	
 	private func setupDelegate() {

@@ -45,7 +45,8 @@ class Constants {
 		}
 		
 		struct advertisement {
-			static let bannerIsShow = "advertisementBannerDidShow"
+			static let bannerDidShow = "advertisementBannerDidShow"
+			static let bannerStatus = "advertisementBannerStatus"
 		}
 		
 		struct application {
@@ -140,6 +141,7 @@ class Constants {
 			static let permissionDidChange = "permissionDidChange"
 			static let forceStopProcessing = "forceStopProcessingStartHandleReciveRemoteCleanAction"
 			static let networking = "networkingStatusDidChange"
+			static let bannerStatus = "bannerStatusDidChange"
             
                 /// `deep clean update progress notification name`
             struct deepClean {
