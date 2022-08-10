@@ -34,6 +34,7 @@ class GroupedAssetListViewController: UIViewController {
 	private var prefetchCacheImageManager = PhotoManager.shared.prefetchManager
 	private var photoManager = PhotoManager.shared
 	private var progressAlertController = ProgressAlertController.shared
+	private var subscriptionManagger = SubscriptionManager.instance
 		/// `assets`
 	public var assetGroups: [PhassetGroup] = []
 	public var mediaType: PhotoMediaType = .none
@@ -158,14 +159,33 @@ extension GroupedAssetListViewController: SelectDropDownMenuDelegate {
 	
 	func handleDropDownMenu(_ item: MenuItemType) {
 		switch item {
-			case .select:
-				self.shouldSelectAllAssetsInSections(false)
-			case .deselect:
-				self.shouldSelectAllAssetsInSections(true)
+			case .select, .deselect:
+				self.handleSelectAll(of: item)
 			case .delete:
 				self.deleteSelectedAssets()
 			default:
 				return
+		}
+	}
+	
+	private func handleSelectAll(of type: MenuItemType) {
+		
+		self.subscriptionManagger.purchasePremiumHandler { status in
+			switch status {
+				case .lifetime, .purchasedPremium:
+					self.shouldSelectAllAssetsInSections(type != .select)
+				case .nonPurchased:
+					var limitType: LimitAccessType {
+						return self.contentType == .userPhoto ? .selectAllPhotos : .selectAllVideos
+					}
+					let asssetsCount = self.assetGroups.map({$0.assets}).joined().count - self.assetGroups.count
+					
+					if asssetsCount < limitType.selectAllLimit {
+						self.shouldSelectAllAssetsInSections(type != .select)
+					} else {
+						self.subscriptionManagger.limitVersionActionHandler(of: limitType, at: self)
+					}
+			}
 		}
 	}
 }

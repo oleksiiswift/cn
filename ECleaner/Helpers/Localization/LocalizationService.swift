@@ -510,3 +510,38 @@ struct  LocalizationService {
 		}
 	}
 }
+
+extension LocalizationService {
+	
+	
+	public static func getLimitAccessAlertDescription(for type: LimitAccessType) -> AlertDescription {
+		
+		var alertTitle: String {
+			switch type {
+				default:
+					return L.empty
+			}
+		}
+		
+		var alertDescription: String {
+			#warning("ADD Limit from file count")
+			switch type {
+				case .selectAllPhotos:
+					return "You can only select up to 10 photos in the free version. Select all contacts, remove ads, and premium features with the Pro version."
+				case .selectAllVideos:
+					return "You can only select up to 10 videos in the free version. Select all contacts, remove ads, and premium features with the Pro version."
+				case .selectAllContacts:
+					return "You can only select up to 10 contacts in the free version. Select all contacts, remove ads, and premium features with the Pro version."
+				case .selectAllContactsGroups:
+					return "You can only select up to 5 contacts groups in the free version. Select all contacts, remove ads, and premium features with the Pro version."
+				default:
+					return L.empty
+			}
+		}
+		
+		return AlertDescription(title: alertTitle,
+								description: alertDescription,
+								action: LocalizationService.Buttons.getButtonTitle(of: .learnMore),
+								cancel: LocalizationService.Buttons.getButtonTitle(of: .cancel))
+	}
+}

@@ -28,7 +28,7 @@ struct Images {
             static let premium = UIImage(named: "premium")!
             static let settings = UIImage(named: "settings")!
             static let burgerDots = UIImage(named: "burgerDots")!
-            static let magic = UIImage(named: "magicSparcle")!
+            static let magicBrush = UIImage(systemName: "paintbrush.fill")!
 			static let stopMagic = UIImage(named: "stopMagicSearch")!
 			static let sort = UIImage(systemName: "arrow.up.arrow.down")!
         }
@@ -61,7 +61,6 @@ struct Images {
         }
 		
 		struct helpersItems {
-			static let filledSegmentDotSlider = UIImage(named: "filledSegmentSlider")
 			static let segmentDotSlider = UIImage(named: "sigmentSlider")
 		}
         
@@ -81,7 +80,6 @@ struct Images {
             static let contactPhoto = UIImage(named: "contactWithoutPhoto")!
             static let processingThumb = UIImage(named: "contactsProcessingEmptyItem")!
             static let unavailibleThumb = UIImage(named: "contactsThumbUnselect")!
-			static let backupContacts = UIImage(named: "backupContactsItem")!
 			static let bannerHelperImage = UIImage(named: "cloudSyncConatactItem")!
 			static let cloud = UIImage(named: "cloud-sync")
 			static let archiveBox = UIImage(systemName: "archivebox")!
@@ -99,7 +97,6 @@ struct Images {
             static let processingThumb = UIImage(named: "videoProcessingEmptyItem")!
             static let unavailibleThumb = UIImage(named: "videoThumbUnselect")!
 			static let checkmark = UIImage(named: "videoSectionSelect")!
-			static let videoCompress = UIImage(named: "compressVideoItem")!
 			static let unselected = UIImage(named: "unselectedRoundedItem")!
 			static let selected = UIImage(named: "selectedRoundedItem")!
 			static let reset = UIImage(named: "resetBackwardItem")!

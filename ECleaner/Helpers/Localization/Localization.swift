@@ -158,6 +158,7 @@ struct Localization {
 			static var startBackup = "Start Backup".localized()
 			static var view = "View".localized()
 			static var removeLocation = "Remove Location".localized()
+			static var learnMore = "Learn More".localized()
 		}
 		
 		struct MenuItems {

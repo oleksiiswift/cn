@@ -55,6 +55,7 @@ class ContactsViewController: UIViewController {
     private var contactManager = ContactsManager.shared
     private var shareManager = ShareManager.shared
     private var progressAlert = ProgressAlertController.shared
+	private var subscriptionManager = SubscriptionManager.instance
 	private var contactStoreDidChange: Bool = false
 	public var updateContentAfterProcessing: ((_ contacts: [CNContact],_ contactsGroup: [ContactsGroup],_ type: PhotoMediaType,_ contactStoreDidChangeCompletion: Bool) -> Void)?
 	
@@ -122,7 +123,18 @@ extension ContactsViewController {
     
     private func didTapSelectDeselectNavigationButton() {
         
-        handleSelectDeselectAll(setSelect: !isSelectedAllItems)
+		self.subscriptionManager.purchasePremiumHandler { status in
+			switch status {
+				case .lifetime, .purchasedPremium:
+					self.handleSelectDeselectAll(setSelect: !isSelectedAllItems)
+				case .nonPurchased:
+					if self.contacts.count < LimitAccessType.selectAllContacts.selectAllLimit {
+						self.handleSelectDeselectAll(setSelect: !isSelectedAllItems)
+					}  else {
+						self.subscriptionManager.limitVersionActionHandler(of: .selectAllContacts, at: self)
+					}
+			}
+		}
     }
     
     private func handleSelectDeselectAll(setSelect: Bool) {
@@ -829,7 +841,14 @@ extension ContactsViewController: SelectDropDownMenuDelegate {
 			case .edit:
 				self.didTapSelectEditingMode()
 			case .export:
-				self.didTapExportAllContacts()
+				self.subscriptionManager.purchasePremiumHandler { status in
+					switch status {
+						case .lifetime, .purchasedPremium:
+							self.didTapExportAllContacts()
+						case .nonPurchased:
+							self.subscriptionManager.limitVersionActionHandler(of: .exportAllContacts, at: self)
+					}
+				}
 			default:
 				return
 		}

@@ -25,6 +25,7 @@ class SimpleAssetsListViewController: UIViewController {
 	var scrollView = UIScrollView()
 	
 	var selectedAssetsDelegate: DeepCleanSelectableAssetsDelegate?
+	private var subscriptionManager = SubscriptionManager.instance
 	private var photoManager = PhotoManager.shared
 	private var prefetchCacheImageManager = PhotoManager.shared.prefetchManager
 	private var progrssAlertController = ProgressAlertController.shared
@@ -672,14 +673,33 @@ extension SimpleAssetsListViewController: NavigationBarDelegate {
 	}
 
 	func didTapRightBarButton(_ sender: UIButton) {
-		self.setCollection(selected: !isSelectedAllPhassets)
+		
+		self.subscriptionManager.purchasePremiumHandler { status in
+			switch status {
+				case .lifetime, .purchasedPremium:
+					self.setCollection(selected: !isSelectedAllPhassets)
+				case .nonPurchased:
+					var limitContentType: LimitAccessType {
+						switch self.contentType {
+							case .userPhoto:
+								return .selectAllPhotos
+							default:
+								return .selectAllVideos
+						}
+					}
+					if self.assetCollection.count < limitContentType.selectAllLimit {
+						self.setCollection(selected: !isSelectedAllPhassets)
+					} else {
+						self.subscriptionManager.limitVersionActionHandler(of: limitContentType, at: self)
+					}
+			}
+		}
 	}
 }
 
 extension SimpleAssetsListViewController: BottomActionButtonDelegate {
 	
 	func didTapActionButton() {
-		
 		showDeleteSelectedAssetsAlert()
 	}
 }

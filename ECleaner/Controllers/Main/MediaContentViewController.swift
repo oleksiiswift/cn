@@ -30,6 +30,7 @@ class MediaContentViewController: UIViewController {
 		}
 	}
 
+	private var subscriptionManager = SubscriptionManager.instance
     public var mediaContentType: MediaContentType = .none
 	private var photoManager = PhotoManager.shared
     private var contactsManager = ContactsManager.shared
@@ -1168,17 +1169,18 @@ extension MediaContentViewController {
 	}
 	
 	private func handleChangeSmartCleanProcessing() {
-		
-		switch searchingProcessingType {
-			case .clearSearchingProcessingQueue:
-				self.navigationBar.changeHotRightButton(with: I.systemItems.navigationBarItems.magic)
-				self.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
-			case .singleSearchProcess:
-				self.navigationBar.changeHotRightButton(with: I.systemItems.navigationBarItems.magic)
-				self.navigationController?.interactivePopGestureRecognizer?.isEnabled = false
-			case .smartGroupSearchProcess:
-				self.navigationController?.interactivePopGestureRecognizer?.isEnabled = false
-				self.navigationBar.changeHotRightButton(with: I.systemItems.navigationBarItems.stopMagic)
+		Utils.UI {
+			switch self.searchingProcessingType {
+				case .clearSearchingProcessingQueue:
+					self.navigationBar.changeHotRightButton(with: I.systemItems.navigationBarItems.magicBrush)
+					self.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
+				case .singleSearchProcess:
+					self.navigationBar.changeHotRightButton(with: I.systemItems.navigationBarItems.magicBrush)
+					self.navigationController?.interactivePopGestureRecognizer?.isEnabled = false
+				case .smartGroupSearchProcess:
+					self.navigationController?.interactivePopGestureRecognizer?.isEnabled = false
+					self.navigationBar.changeHotRightButton(with: I.systemItems.navigationBarItems.stopMagic)
+			}
 		}
 	}
 }
@@ -1226,11 +1228,7 @@ extension MediaContentViewController: NavigationBarDelegate {
 		
 		switch searchingProcessingType {
 			case .clearSearchingProcessingQueue:
-				if self.mediaContentType == .userContacts {
-					self.startSmartContactsCleanProcessing()
-				} else {
-					startSmartCleanProcessing()
-				}
+				self.prepareStartSmartCleaningProcessing()
 			case .smartGroupSearchProcess:
 				SearchOperationStateHandler.alertHandler(for: .resetSmartSingleCleanSearch) {
 					self.setCancelSmartSearchOperationQueue() {}
@@ -1238,13 +1236,25 @@ extension MediaContentViewController: NavigationBarDelegate {
 			case .singleSearchProcess:
 				SearchOperationStateHandler.alertHandler(for: .resetSingleCleanSearch) {
 					self.setCancelActiveOperation() {
-						if self.mediaContentType == .userContacts {
-							self.startSmartContactsCleanProcessing()
-						} else {
-							self.startSmartCleanProcessing()
-						}
+						self.prepareStartSmartCleaningProcessing()
 					}
 				}
+		}
+	}
+	
+	private func prepareStartSmartCleaningProcessing() {
+		
+		self.subscriptionManager.purchasePremiumHandler { status in
+			switch status {
+				case .lifetime, .purchasedPremium:
+					if self.mediaContentType == .userContacts {
+						self.startSmartContactsCleanProcessing()
+					} else {
+						startSmartCleanProcessing()
+					}
+				case .nonPurchased:
+					self.subscriptionManager.limitVersionActionHandler(of: .multiplySearch, at: self)
+			}
 		}
 	}
 }
@@ -1382,14 +1392,14 @@ extension MediaContentViewController: Themeble {
 			
 			navigationBar.setupNavigation(title: mediaContentType.navigationTitle,
 										  leftBarButtonImage: I.systemItems.navigationBarItems.back,
-										  rightBarButtonImage: I.systemItems.navigationBarItems.magic,
+										  rightBarButtonImage: I.systemItems.navigationBarItems.magicBrush,
 										  contentType: mediaContentType,
 										  leftButtonTitle: nil,
 										  rightButtonTitle: nil)
 		} else {
 			navigationBar.setupNavigation(title: mediaContentType.navigationTitle,
 										  leftBarButtonImage: I.systemItems.navigationBarItems.back,
-										  rightBarButtonImage: I.systemItems.navigationBarItems.magic,
+										  rightBarButtonImage: I.systemItems.navigationBarItems.magicBrush,
 										  contentType: mediaContentType,
 										  leftButtonTitle: nil,
 										  rightButtonTitle: nil)

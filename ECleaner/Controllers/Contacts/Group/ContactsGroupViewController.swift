@@ -18,6 +18,7 @@ class ContactsGroupViewController: UIViewController {
     
 	public var selectedContactsDelegate: DeepCleanSelectableAssetsDelegate?
 	
+	private var subscriptionManager = SubscriptionManager.instance
     private var contactsManager = ContactsManager.shared
     private var progressAlert = ProgressAlertController.shared
 	private var shareManager = ShareManager.shared
@@ -514,7 +515,18 @@ extension ContactsGroupViewController: SelectDropDownMenuDelegate {
 	func handleDropDownMenu(_ item: MenuItemType) {
 		switch item {
 			case .select, .deselect:
-				self.didSelectDeselecAllItems()
+				self.subscriptionManager.purchasePremiumHandler { status in
+					switch status {
+						case .lifetime, .purchasedPremium:
+							self.didSelectDeselecAllItems()
+						case .nonPurchased:
+							if self.contactGroup.count < LimitAccessType.selectAllContactsGroups.selectAllLimit {
+								self.didSelectDeselecAllItems()
+							} else {
+								self.subscriptionManager.limitVersionActionHandler(of: .selectAllContacts, at: self)
+							}
+					}
+				}
 			case .share:
 				self.didTapSharePopUpMenuButton()
 			default:
