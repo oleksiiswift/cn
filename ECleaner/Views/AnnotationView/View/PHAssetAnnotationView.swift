@@ -11,6 +11,8 @@ class PHAssetAnnotationView: MKAnnotationView {
 	
 	private var imageView: UIImageView!
 	
+	public var delegate: AnnotationViewSelectDelegate?
+	
 	override var image: UIImage? {
 		get {
 			return self.imageView.image
@@ -56,5 +58,12 @@ class PHAssetAnnotationView: MKAnnotationView {
 		self.imageView.contentMode = .scaleAspectFill
 		self.imageView.setCorner(5)
 		self.addSubview(self.imageView)
+		
+		let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.didTapSelectAnnotation))
+		self.addGestureRecognizer(tapGestureRecognizer)
+	}
+	
+	@objc func didTapSelectAnnotation() {
+		self.delegate?.didSelectClusterAnnotation(self)
 	}
 }

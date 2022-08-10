@@ -182,34 +182,13 @@ extension LocationViewController: LocationGridDelegate {
 	}
 }
 
-extension LocationViewController: MKMapViewDelegate {
-		
-	func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-		
-		if let annotation = annotation as? ClusterAnnotation {
-			let identifier = Constants.identifiers.mapAnnotation.cluster
-			let clusterAnnotationView = mapView.annotationView(of: ClusterAnnotationView.self, annotation: annotation, reuseIdentifier: identifier)
-			clusterAnnotationView.phassets = annotation.phassets
-			return clusterAnnotationView
-		} else {
-			let phassetAnnotation = annotation as! Annotation
-			let identifier = Constants.identifiers.mapAnnotation.pin
-			let annotationView = mapView.annotationView(of: PHAssetAnnotationView.self, annotation: phassetAnnotation, reuseIdentifier: identifier)
-			annotationView.image = phassetAnnotation.image
-			return annotationView
-		}
-	}
+extension LocationViewController: AnnotationViewSelectDelegate {
 	
-	func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
-		manager.reload(mapView: mapView) { _ in }
-	}
-	
-	func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
-
+	func didSelectClusterAnnotation(_ view: MKAnnotationView) {
+		
 		if let phassetAnnotionView = view as? PHAssetAnnotationView {
 			if let annotation = phassetAnnotionView.annotation as? Annotation {
 				self.performSegue(withIdentifier: Constants.identifiers.segue.location, sender: annotation.phasset)
-				self.mapView.deselectAnnotation(annotation, animated: false)
 			}
 		} else if let clusterAnnotationView = view as? ClusterAnnotationView {
 			if let annotation = clusterAnnotationView.annotation as? ClusterAnnotation {
@@ -219,9 +198,33 @@ extension LocationViewController: MKMapViewDelegate {
 					self.setupGridLocationList(with: phassetCollectionInCluster)
 					self.locationViewLayout = .grid
 				}
-				self.mapView.deselectAnnotation(annotation, animated: false)
 			}
 		}
+	}
+}
+
+extension LocationViewController: MKMapViewDelegate {
+		
+	func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+		
+		if let annotation = annotation as? ClusterAnnotation {
+			let identifier = Constants.identifiers.mapAnnotation.cluster
+			let clusterAnnotationView = mapView.annotationView(of: ClusterAnnotationView.self, annotation: annotation, reuseIdentifier: identifier)
+			clusterAnnotationView.delegate = self
+			clusterAnnotationView.phassets = annotation.phassets
+			return clusterAnnotationView
+		} else {
+			let phassetAnnotation = annotation as! Annotation
+			let identifier = Constants.identifiers.mapAnnotation.pin
+			let annotationView = mapView.annotationView(of: PHAssetAnnotationView.self, annotation: phassetAnnotation, reuseIdentifier: identifier)
+			annotationView.delegate = self
+			annotationView.image = phassetAnnotation.image
+			return annotationView
+		}
+	}
+	
+	func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
+		manager.reload(mapView: mapView) { _ in }
 	}
 	
 	func mapViewDidChangeVisibleRegion(_ mapView: MKMapView) {
@@ -237,7 +240,7 @@ extension LocationViewController: MKMapViewDelegate {
 		self.visibleAssetCollection = clusterPHAssets
 		self.visibleAssetCollection.append(contentsOf: phassets)
 	}
-
+	
 	func mapView(_ mapView: MKMapView, didAdd views: [MKAnnotationView]) {
 		views.forEach { $0.alpha = 0 }
 		views.forEach { annotationView in
