@@ -65,6 +65,8 @@ class Constants {
 			static let permissionValue      = "com.cleaner.tryPassPermission.key"
 			static let subscriptionValue    = "com.cleaner.tryPassSubscription.key"
 			static let aplicationValue 	    = "com.cleaner.tryAplication.key"
+			
+			static let subscriptionDevelopmentStatus = "com.cleaner.development.applicationSubscription.status"
 		}
 		
 		struct subscription {

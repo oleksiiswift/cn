@@ -8,6 +8,13 @@
 import Foundation
 import StoreKit
 
+enum ApplicationSubscriptionStatus: Int {
+	case production
+	case premiumSimulated
+	case lifeTimeSimulated
+	case limitedSimulated
+}
+
 class SubscriptionManager: NSObject {
 	
 	static var instance: SubscriptionManager {
@@ -38,6 +45,17 @@ class SubscriptionManager: NSObject {
 		}
 	}
 	
+	private var applicationDevelopmentSubscriptionStatus: ApplicationSubscriptionStatus {
+		get {
+			let statusValue: Int = U.userDefaults.integer(forKey: C.key.application.subscriptionDevelopmentStatus)
+			return ApplicationSubscriptionStatus(rawValue: statusValue)!
+		} set {
+			if applicationDevelopmentSubscriptionStatus != newValue {
+				U.userDefaults.set(newValue.rawValue, forKey: C.key.application.subscriptionDevelopmentStatus)
+			}
+		}
+	}
+	
 	private var currentSubscription: Subscriptions? {
 		get {
 			let subscriptionID = U.userDefaults.string(forKey: C.key.subscription.subscriptionID)
@@ -63,17 +81,36 @@ class SubscriptionManager: NSObject {
 			self.iapSubscription.initialize()
 		}
 	}
-	
+	/// `SET PREMIUM`
 	public func setPurchasePremium(_ purchased: Bool) {
 		self.purchasedPremium = purchased
 	}
-	
+	/// `CHECK FOR PREMIUM STATUS COMPLETION`   /// *check only here*
 	public func purchasePremiumHandler(_ completionHandler: (_ status: StatusSubscription) -> Void) {
-		completionHandler(self.isLifeTimeSubscription() ? .lifetime : self.purchasedPremium ? .purchasedPremium : .nonPurchased)
+		switch self.applicationDevelopmentSubscriptionStatus {
+			case .production:
+				completionHandler(self.isLifeTimeSubscription() ? .lifetime : self.purchasedPremium ? .purchasedPremium : .nonPurchased)
+			case .premiumSimulated:
+				completionHandler(.purchasedPremium)
+			case .lifeTimeSimulated:
+				completionHandler(.lifetime)
+			case .limitedSimulated:
+				completionHandler(.nonPurchased)
+		}
+		
 	}
-	
+	/// `CHECK FOR PREMIUM STATUS VALUE` /// *check only here*
 	public func purchasePremiumStatus() -> StatusSubscription {
-		return self.isLifeTimeSubscription() ? .lifetime : self.purchasedPremium ? .purchasedPremium : .nonPurchased
+		switch self.applicationDevelopmentSubscriptionStatus {
+			case .production:
+				return self.isLifeTimeSubscription() ? .lifetime : self.purchasedPremium ? .purchasedPremium : .nonPurchased
+			case .premiumSimulated:
+				return .purchasedPremium
+			case .lifeTimeSimulated:
+				return .lifetime
+			case .limitedSimulated:
+				return .nonPurchased
+		}
 	}
 
 	public func saveSubscription(_ currentSubscription: Subscriptions?) {
@@ -242,5 +279,13 @@ extension SubscriptionManager {
 				completionHandler(model)
 			}
 		}
+	}
+}
+
+
+extension SubscriptionManager {
+	
+	public func setAplicationDevelopmentSubscription(status: ApplicationSubscriptionStatus) {
+		self.applicationDevelopmentSubscriptionStatus = status
 	}
 }

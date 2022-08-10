@@ -32,9 +32,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 		completionHandler(handled)
 	}
 
-    func sceneDidDisconnect(_ scene: UIScene) {
-  
-    }
+    func sceneDidDisconnect(_ scene: UIScene) {}
 
     func sceneDidBecomeActive(_ scene: UIScene) {
 		SubscriptionManager.instance.checkForCurrentSubscription { isSubscribe in
@@ -49,13 +47,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 		RemoteLaunchServiceMediator.sharedInstance.handlerRemoteShortcuts()
     }
 
-    func sceneWillEnterForeground(_ scene: UIScene) {
+    func sceneWillEnterForeground(_ scene: UIScene) {}
 
-    }
-
-    func sceneDidEnterBackground(_ scene: UIScene) {
-
-    }
+    func sceneDidEnterBackground(_ scene: UIScene) {}
 }
 
 extension SceneDelegate {
@@ -79,17 +73,20 @@ extension SceneDelegate {
 extension SceneDelegate {
 	
 	private func devopmentEnviroment() {
+		/// `handle subscription simulated status`
+		SubscriptionManager.instance.setAplicationDevelopmentSubscription(status: .lifeTimeSimulated)
+		
 		/// `handle staring from onboarding`
 //		coordinator?.currentState = .onboarding
 		
 		/// `handle print all notification`
 //		printAllNotifications()
 		
-		Utils.delay(5) {
-			debugPrint("****")
-			debugPrint("is purchase premium -> \(SubscriptionManager.instance.purchasePremiumStatus())")
-			debugPrint("****")
-		}
+//		Utils.delay(5) {
+//			debugPrint("****")
+//			debugPrint("is purchase premium -> \(SubscriptionManager.instance.purchasePremiumStatus())")
+//			debugPrint("****")
+//		}
 		
 		///  `remove all contacts from store`
 //		ContactsManager.shared.deleteAllContatsFromStore()

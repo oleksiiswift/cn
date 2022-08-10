@@ -8,11 +8,17 @@
 import MapKit
 import Photos
 
+protocol AnnotationViewSelectDelegate {
+	func didSelectClusterAnnotation(_ view: MKAnnotationView)
+}
+
 class ClusterAnnotationView: MKAnnotationView {
 	
 	private var imageView: UIImageView!
 	public var phassets: [PHAsset] = []
 	
+	public var delegate: AnnotationViewSelectDelegate?
+
 	override var image: UIImage? {
 		get {
 			return self.imageView.image
@@ -39,13 +45,13 @@ class ClusterAnnotationView: MKAnnotationView {
 	let bubleOffset: CGFloat = 5
 	let annotationSize: CGSize = CGSize(width: 80, height: 80)
 	
-	open override var annotation: MKAnnotation? {
+	override var annotation: MKAnnotation? {
 		didSet {
 			configure()
 		}
 	}
 	
-	open func configure() {
+	func configure() {
 		
 		guard let annotation = annotation as? ClusterAnnotation else { return }
 	
@@ -84,6 +90,13 @@ class ClusterAnnotationView: MKAnnotationView {
 		countLabel.bottomAnchor.constraint(equalTo: labelContainerview.bottomAnchor).isActive = true
 		countLabel.leadingAnchor.constraint(equalTo: labelContainerview.leadingAnchor).isActive = true
 		countLabel.trailingAnchor.constraint(equalTo: labelContainerview.trailingAnchor).isActive = true
+		
+		let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.didTapSelectAnnotation))
+		self.addGestureRecognizer(tapGestureRecognizer)
+	}
+	
+	@objc func didTapSelectAnnotation() {
+		self.delegate?.didSelectClusterAnnotation(self)
 	}
 }
 
