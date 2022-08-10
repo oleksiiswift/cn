@@ -29,6 +29,7 @@ class MainViewController: UIViewController {
 	
     private let baseCarouselLayout = BaseCarouselFlowLayout()
     
+	private var subscriptionManager = SubscriptionManager.instance
 	private var permissionManager = PermissionManager.shared
 	private var photoMenager = PhotoManager.shared
 	private var singleCleanModel: SingleCleanModel!
@@ -285,8 +286,18 @@ extension MainViewController {
 			return
 		}
 		
-		self.photoMenager.stopEstimatedSizeProcessingOperations()
-		self.openDeepCleanController(animated: animated)
+		self.subscriptionManager.purchasePremiumHandler { status in
+			switch status {
+				case .lifetime, .purchasedPremium:
+					self.photoMenager.stopEstimatedSizeProcessingOperations()
+					self.openDeepCleanController(animated: animated)
+				case .nonPurchased:
+					self.subscriptionManager.limitVersionActionHandler(of: .deepClean, at: self)
+			}
+		}
+		
+		
+		
 	}
     
 	private func openMediaController(type: MediaContentType, animated: Bool = true, cleanType: RemoteCleanType) {
@@ -423,7 +434,14 @@ extension MainViewController: RemoteLaunchServiceListener {
 			case .deepClean:
 				self.prepareDeepCleanController(animated: false)
 			default:
-				self.checkForAccessPermission(of: cleanType.mediaType, animated: false, cleanType: cleanType)
+				self.subscriptionManager.purchasePremiumHandler { status in
+					switch status {
+						case .lifetime, .purchasedPremium:
+							self.checkForAccessPermission(of: cleanType.mediaType, animated: false, cleanType: cleanType)
+						case .nonPurchased:
+							self.subscriptionManager.limitVersionActionHandler(of: .multiplySearch, at: self)
+					}
+				}
 		}
 	}
 }
@@ -509,7 +527,7 @@ extension MainViewController: SubscriptionObserver {
 	func subscriptionDidChange() {
 		
 		Utils.UI {
-			SubscriptionManager.instance.purchasePremiumHandler { status in
+			self.subscriptionManager.purchasePremiumHandler { status in
 				switch status {
 					case .lifetime, .purchasedPremium:
 						self.navigationBar.setUpNavigation(title: nil, leftImage: nil, rightImage: I.systemItems.navigationBarItems.settings)

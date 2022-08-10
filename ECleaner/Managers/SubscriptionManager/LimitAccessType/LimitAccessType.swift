@@ -15,6 +15,7 @@ enum LimitAccessType {
 	case selectAllContactsGroups
 	case exportAllContacts
 	case multiplySearch
+	case deepClean
 		
 	public var alertDescription: AlertDescription {
 		return LocalizationService.getLimitAccessAlertDescription(for: self)

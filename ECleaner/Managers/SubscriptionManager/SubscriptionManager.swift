@@ -294,7 +294,7 @@ extension SubscriptionManager {
 	public func limitVersionActionHandler(of type: LimitAccessType, at viewController: UIViewController) {
 		
 		switch type {
-			case .selectAllPhotos, .selectAllVideos, .selectAllContacts, .selectAllContactsGroups:
+			case .selectAllPhotos, .selectAllVideos, .selectAllContacts, .selectAllContactsGroups, .deepClean:
 				let description = type.alertDescription
 				
 				AlertManager.showLimitAccessAlert(with: description, at: viewController) {

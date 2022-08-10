@@ -524,7 +524,6 @@ extension LocalizationService {
 		}
 		
 		var alertDescription: String {
-			#warning("ADD Limit from file count")
 			switch type {
 				case .selectAllPhotos:
 					return "You can only select up to 10 photos in the free version. Select all contacts, remove ads, and premium features with the Pro version."
@@ -534,14 +533,34 @@ extension LocalizationService {
 					return "You can only select up to 10 contacts in the free version. Select all contacts, remove ads, and premium features with the Pro version."
 				case .selectAllContactsGroups:
 					return "You can only select up to 5 contacts groups in the free version. Select all contacts, remove ads, and premium features with the Pro version."
+				case .deepClean:
+					return "To use Deep Clean, Location Remover, Ads Free and other premium feautures use the Pro Verstion "
 				default:
 					return L.empty
 			}
 		}
 		
+		var action: String {
+			switch type {
+				case .deepClean:
+					return LocalizationService.Buttons.getButtonTitle(of: .ok)
+				default:
+					return LocalizationService.Buttons.getButtonTitle(of: .learnMore)
+			}
+		}
+		
+		var cancelAction: String {
+			switch type {
+				case .deepClean:
+					return L.empty
+				default:
+					return LocalizationService.Buttons.getButtonTitle(of: .cancel)
+			}
+		}
+		
 		return AlertDescription(title: alertTitle,
 								description: alertDescription,
-								action: LocalizationService.Buttons.getButtonTitle(of: .learnMore),
-								cancel: LocalizationService.Buttons.getButtonTitle(of: .cancel))
+								action: action,
+								cancel: cancelAction)
 	}
 }

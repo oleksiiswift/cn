@@ -227,8 +227,10 @@ extension AlertManager {
 		}
 		alertController.addAction(action)
 		
-		let cancel = UIAlertAction(title: description.cancel, style: .cancel) { _ in }
-		alertController.addAction(cancel)
+		if !description.cancel.isEmpty {
+			let cancel = UIAlertAction(title: description.cancel, style: .cancel) { _ in }
+			alertController.addAction(cancel)
+		}
 		
 		DispatchQueue.main.async {
 			viewController.present(alertController, animated: true)

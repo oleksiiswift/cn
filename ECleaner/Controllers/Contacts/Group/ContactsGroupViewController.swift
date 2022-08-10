@@ -292,7 +292,15 @@ extension ContactsGroupViewController {
 			return
 		}
 		
-		let calculatedBottomButtonHeight: CGFloat = AppDimensions.BottomButton.bottomBarDefaultHeight
+		var calculatedBottomButtonHeight: CGFloat {
+			switch Advertisement.manager.advertisementBannerStatus {
+				case .active:
+					return AppDimensions.BottomButton.bottomBarDefaultHeight - 20
+				case .hiden:
+					return AppDimensions.BottomButton.bottomBarDefaultHeight
+			}
+		}
+		
 		bottomButtonHeightConstraint.constant = !self.contactGroupListDataSource.selectedSections.isEmpty ? calculatedBottomButtonHeight : 0
 		
 		let buttonTitle: String = LocalizationService.Buttons.getButtonTitle(of: .mergeSelected).uppercased() + " (\(self.contactGroupListDataSource.selectedSections.count))"
@@ -323,6 +331,10 @@ extension ContactsGroupViewController {
 			let contacts = indexesForMergedSet.map({contactGroup[$0]}).flatMap({$0.contacts}).count
 			self.navigationBar.changeHotLeftTitleWithImage(newTitle: String(" (\(contacts))"), image: I.systemItems.navigationBarItems.back)
 		}
+	}
+	
+	@objc func advertisementDidChange() {
+		self.handleMergeContactsAppearButton(disableAnimation: true)
 	}
 }
 
@@ -654,6 +666,7 @@ extension ContactsGroupViewController: Themeble {
         U.notificationCenter.addObserver(self, selector: #selector(mergeContactsDidChange(_:)), name: .mergeContactsSelectionDidChange, object: nil)
         U.notificationCenter.addObserver(self, selector: #selector(progressDeleteAlertNotification(_:)), name: .progressDeleteContactsAlertDidChangeProgress, object: nil)
         U.notificationCenter.addObserver(self, selector: #selector(progressMergeAlertNotification(_:)), name: .progressMergeContactsAlertDidChangeProgress, object: nil)
+		U.notificationCenter.addObserver(self, selector: #selector(advertisementDidChange), name: .bannerStatusDidChanged, object: nil)
     }
     
     func updateColors() {

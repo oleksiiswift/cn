@@ -1093,18 +1093,31 @@ extension GroupedAssetListViewController {
 				return
 			}
 			
+			var bottomBarDefaultHeight: CGFloat {
+				switch Advertisement.manager.advertisementBannerStatus {
+					case .active:
+						return AppDimensions.BottomButton.bottomBarDefaultHeight - 20
+					case .hiden:
+						return AppDimensions.BottomButton.bottomBarDefaultHeight
+				}
+			}
+			
 				/// `bottom menu`
-			bottomMenuHeightConstraint.constant = !selectedAssets.isEmpty ? AppDimensions.BottomButton.bottomBarDefaultHeight  : 0
+			bottomMenuHeightConstraint.constant = !selectedAssets.isEmpty ? bottomBarDefaultHeight  : 0
 			
 			bottomButtonBarView.title("\(LocalizationService.Buttons.getButtonTitle(of: .deleteSelected)) (\(selectedAssets.count))")
 			
 			U.animate(0.5) {
-				self.collectionView.contentInset.bottom = !self.selectedAssets.isEmpty ? AppDimensions.BottomButton.bottomBarDefaultHeight + 10 + U.bottomSafeAreaHeight : 5
+				self.collectionView.contentInset.bottom = !self.selectedAssets.isEmpty ? bottomBarDefaultHeight + 10 + U.bottomSafeAreaHeight : 5
 			
 				self.photoContentContainerView.layoutIfNeeded()
 				self.view.layoutIfNeeded()
 			}
 		}
+	}
+	
+	@objc func advertisementDidChange() {
+		self.handleDeleteAssetsButton()
 	}
 }
 
@@ -1248,7 +1261,9 @@ extension GroupedAssetListViewController {
 									  rightButtonTitle: nil)
 	}
 	
-	private func setupObservers() {}
+	private func setupObservers() {
+		U.notificationCenter.addObserver(self, selector: #selector(advertisementDidChange), name: .bannerStatusDidChanged, object: nil)
+	}
 	
 	private func setupDelegate() {
 		

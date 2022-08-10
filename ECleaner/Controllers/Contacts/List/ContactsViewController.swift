@@ -276,7 +276,14 @@ extension ContactsViewController {
 	
 	private func handleBottomButtonChangeAppearence(disableAnimation: Bool = false) {
 	
-		let bottomButtonMenyHeight: CGFloat = AppDimensions.BottomButton.bottomBarDefaultHeight
+		var bottomButtonMenyHeight: CGFloat {
+			switch Advertisement.manager.advertisementBannerStatus {
+				case .active:
+					return AppDimensions.BottomButton.bottomBarDefaultHeight - 20
+				case .hiden:
+					return AppDimensions.BottomButton.bottomBarDefaultHeight
+			}
+		}
 		
 		switch contentType {
 			case .allContacts:
@@ -337,6 +344,10 @@ extension ContactsViewController {
 				self.tableView.contentInset.bottom = self.selectedItems() != 0 ? heigt : 34
 			}
 		}
+	}
+	
+	@objc func advertisementDidChange() {
+		self.handleBottomButtonChangeAppearence(disableAnimation: true)
 	}
 }
 
@@ -1058,6 +1069,7 @@ extension ContactsViewController: Themeble {
 		U.notificationCenter.addObserver(self, selector: #selector(didSelectDeselectContact), name: .selectedContactsCountDidChange, object: nil)
 		U.notificationCenter.addObserver(self, selector: #selector(searchBarResignFirstResponder), name: .searchBarShouldResign, object: nil)
 		U.notificationCenter.addObserver(self, selector: #selector(searchBarClearButtonClicked), name: .searchBarClearButtonClicked, object: nil)
+		U.notificationCenter.addObserver(self, selector: #selector(advertisementDidChange), name: .bannerStatusDidChanged, object: nil)
 	}
 
     private func setupShowExportContactController(segue: UIStoryboardSegue) {
