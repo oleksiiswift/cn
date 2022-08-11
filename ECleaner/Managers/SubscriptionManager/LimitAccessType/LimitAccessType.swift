@@ -22,7 +22,6 @@ enum LimitAccessType {
 	}
 	
 	public var selectAllLimit: Int {
-		
 		switch self {
 			case .selectAllPhotos:
 				return 10

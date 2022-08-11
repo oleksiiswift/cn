@@ -128,7 +128,15 @@ extension ContactsViewController {
 				case .lifetime, .purchasedPremium:
 					self.handleSelectDeselectAll(setSelect: !isSelectedAllItems)
 				case .nonPurchased:
-					if self.contacts.count < LimitAccessType.selectAllContacts.selectAllLimit {
+					var contactsCount: Int {
+						if self.contentType == .emptyContacts {
+							return self.contactGroup.map({$0.contacts}).joined().count
+						} else {
+							return self.contacts.count
+						}
+					}
+					
+					if contactsCount < LimitAccessType.selectAllContacts.selectAllLimit {
 						self.handleSelectDeselectAll(setSelect: !isSelectedAllItems)
 					}  else {
 						self.subscriptionManager.limitVersionActionHandler(of: .selectAllContacts, at: self)
@@ -883,6 +891,7 @@ extension ContactsViewController {
 }
 
 extension ContactsViewController: ContactDataSourceDelegate {
+		
 	func viewContact(at indexPath: IndexPath) {
 		
 		if self.contentType == .allContacts {
@@ -902,6 +911,14 @@ extension ContactsViewController: ContactDataSourceDelegate {
 	
 	func deleteContact(at indexPath: IndexPath) {
 		self.deleteSingleContact(at: indexPath)
+	}
+	
+	func showContacsLimitSelectExceededStatus() {
+		debugPrint("show limit status bar")
+	}
+	
+	func showEmptyContactsLimitSelectExceededStatus() {
+		debugPrint("show limit status bar")
 	}
 }
 

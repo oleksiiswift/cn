@@ -295,9 +295,6 @@ extension MainViewController {
 					self.subscriptionManager.limitVersionActionHandler(of: .deepClean, at: self)
 			}
 		}
-		
-		
-		
 	}
     
 	private func openMediaController(type: MediaContentType, animated: Bool = true, cleanType: RemoteCleanType) {
@@ -416,7 +413,7 @@ extension MainViewController: UpdateMediaStoreSizeDelegate {
 }
 
 extension MainViewController: RemoteLaunchServiceListener {
-
+	
 	private func handleShortcutItem() {
 		
 		guard let shortcutItem = U.sceneDelegate.shortCutItem else { return }
@@ -434,17 +431,11 @@ extension MainViewController: RemoteLaunchServiceListener {
 			case .deepClean:
 				self.prepareDeepCleanController(animated: false)
 			default:
-				self.subscriptionManager.purchasePremiumHandler { status in
-					switch status {
-						case .lifetime, .purchasedPremium:
-							self.checkForAccessPermission(of: cleanType.mediaType, animated: false, cleanType: cleanType)
-						case .nonPurchased:
-							self.subscriptionManager.limitVersionActionHandler(of: .multiplySearch, at: self)
-					}
-				}
+				self.checkForAccessPermission(of: cleanType.mediaType, animated: false, cleanType: cleanType)
 		}
 	}
 }
+
 
 extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     

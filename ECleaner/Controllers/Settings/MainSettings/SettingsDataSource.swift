@@ -82,7 +82,7 @@ extension SettingsDataSource: UITableViewDelegate, UITableViewDataSource {
 	
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		
-		if SubscriptionManager.instance.isLifeTimeSubscription() {
+		if SubscriptionManager.instance.purchasePremiumStatus() == .lifetime {
 			return getContentTypeCell(tableView, cellForRowAt: indexPath)
 		} else  {
 			switch indexPath.section {

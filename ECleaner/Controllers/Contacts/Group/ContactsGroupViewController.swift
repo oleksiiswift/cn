@@ -535,7 +535,7 @@ extension ContactsGroupViewController: SelectDropDownMenuDelegate {
 							if self.contactGroup.count < LimitAccessType.selectAllContactsGroups.selectAllLimit {
 								self.didSelectDeselecAllItems()
 							} else {
-								self.subscriptionManager.limitVersionActionHandler(of: .selectAllContacts, at: self)
+								self.subscriptionManager.limitVersionActionHandler(of: .selectAllContactsGroups, at: self)
 							}
 					}
 				}
@@ -625,6 +625,13 @@ extension ContactsGroupViewController: BottomActionButtonDelegate {
     }
 }
 
+extension ContactsGroupViewController: ContactsGroupDataSourceDelegate {
+	
+	func groupSelectLimiteExceededStatus() {
+		debugPrint("select limit exceeded status")
+	}
+}
+
 extension ContactsGroupViewController: Themeble {
     
     func setupUI() {
@@ -644,6 +651,7 @@ extension ContactsGroupViewController: Themeble {
         self.contactGroupListViewModel = ContactGroupListViewModel(contactsGroup: contacts)
         self.contactGroupListDataSource = ContactsGroupDataSource(viewModel: self.contactGroupListViewModel)
         self.contactGroupListDataSource.contentType = self.contentType
+		self.contactGroupListDataSource.delegate = self
     }
     
     private func setupTableView() {

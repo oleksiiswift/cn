@@ -285,6 +285,7 @@ extension GroupedAssetListViewController {
 	private func didSelectAllAssets(at indexPath: IndexPath, in sectionHeader: GroupedAssetsReusableHeaderView) {
 		
 		var addingSection: Bool = false
+		let indexesOfSection = self.collectionView.getAllIndexPathsInSection(section: indexPath.section)
 		
 			/// work with assets
 		if selectedSection.contains(indexPath.section) {
@@ -292,11 +293,47 @@ extension GroupedAssetListViewController {
 				self.selectedAssets.removeAll(asset)
 			}
 		} else {
-			for asset in self.assetGroups[indexPath.section].assets {
-				let index = self.assetGroups[indexPath.section].assets.indexes(of: asset)
-				if index != [0] {
-					self.selectedAssets.append(asset)
-					addingSection = true
+			if self.subscriptionManagger.purchasePremiumStatus() != .nonPurchased {
+				for asset in self.assetGroups[indexPath.section].assets {
+					let index = self.assetGroups[indexPath.section].assets.indexes(of: asset)
+					if index != [0] {
+						self.selectedAssets.append(asset)
+						addingSection = true
+					}
+				}
+			} else {
+				
+				var selectedLimit: Int {
+					switch self.contentType {
+						case .userPhoto:
+							return LimitAccessType.selectAllPhotos.selectAllLimit
+						default:
+							return LimitAccessType.selectAllVideos.selectAllLimit
+					}
+				}
+				
+				var accesstype: LimitAccessType {
+					switch self.contentType {
+						case .userPhoto:
+							return .selectAllPhotos
+						default:
+							return .selectAllVideos
+					}
+				}
+				
+				let count = self.collectionView.indexPathsForSelectedItems?.count
+				
+				if ((indexesOfSection.count - 1) + count!) <= selectedLimit {
+					for asset in self.assetGroups[indexPath.section].assets {
+						let index = self.assetGroups[indexPath.section].assets.indexes(of: asset)
+						if index != [0] {
+							self.selectedAssets.append(asset)
+							addingSection = true
+						}
+					}
+				} else {
+					subscriptionManagger.limitVersionActionHandler(of: accesstype, at: self)
+					return
 				}
 			}
 		}
@@ -310,7 +347,7 @@ extension GroupedAssetListViewController {
 			self.collectionView.deselectAllItems(in: indexPath.section, first: 0, animated: true)
 		}
 		
-		let indexesOfSection = self.collectionView.getAllIndexPathsInSection(section: indexPath.section)
+		
 		indexesOfSection.forEach { indexPath in
 			if let cell = self.collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell {
 				cell.checkIsSelected()
@@ -407,10 +444,43 @@ extension GroupedAssetListViewController: PhotoCollectionViewCellDelegate {
 				self.selectedAssets = self.selectedAssets.filter({$0 != phasset})
 			}
 		} else {
-			self.collectionView.selectItem(at: indexPath, animated: true, scrollPosition: [])
-			self.collectionView.delegate?.collectionView?(self.collectionView, didSelectItemAt: indexPath)
-			if !self.selectedAssets.contains(phasset) {
-				self.selectedAssets.append(phasset)
+			self.subscriptionManagger.purchasePremiumHandler { status in
+				switch status {
+					case .lifetime, .purchasedPremium:
+						self.collectionView.selectItem(at: indexPath, animated: true, scrollPosition: [])
+						self.collectionView.delegate?.collectionView?(self.collectionView, didSelectItemAt: indexPath)
+						if !self.selectedAssets.contains(phasset) {
+							self.selectedAssets.append(phasset)
+						}
+					case .nonPurchased:
+						var limitCount: Int {
+							switch self.contentType {
+								case .userPhoto:
+									return LimitAccessType.selectAllPhotos.selectAllLimit
+								default:
+									return LimitAccessType.selectAllVideos.selectAllLimit
+							}
+						}
+						
+						var accesstype: LimitAccessType {
+							switch self.contentType {
+								case .userPhoto:
+									return .selectAllPhotos
+								default:
+									return .selectAllVideos
+							}
+						}
+						
+						if self.collectionView.indexPathsForSelectedItems?.count == limitCount {
+							self.subscriptionManagger.limitVersionActionHandler(of: accesstype, at: self)
+						} else {
+							self.collectionView.selectItem(at: indexPath, animated: true, scrollPosition: [])
+							self.collectionView.delegate?.collectionView?(self.collectionView, didSelectItemAt: indexPath)
+							if !self.selectedAssets.contains(phasset) {
+								self.selectedAssets.append(phasset)
+							}
+						}
+				}
 			}
 		}
 		self.handleActionButtons(indexPath: indexPath)

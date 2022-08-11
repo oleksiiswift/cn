@@ -523,18 +523,20 @@ extension LocalizationService {
 			}
 		}
 		
+		let limitStringCount = String(type.selectAllLimit)
+		
 		var alertDescription: String {
 			switch type {
 				case .selectAllPhotos:
-					return "You can only select up to 10 photos in the free version. Select all contacts, remove ads, and premium features with the Pro version."
+					return Localization.Subscription.LimitAlertMessage.selectAllPhotos.replacingOccurrences(of: "%20", with: limitStringCount)
 				case .selectAllVideos:
-					return "You can only select up to 10 videos in the free version. Select all contacts, remove ads, and premium features with the Pro version."
+					return Localization.Subscription.LimitAlertMessage.selectAllVideos.replacingOccurrences(of: "%20", with: limitStringCount)
 				case .selectAllContacts:
-					return "You can only select up to 10 contacts in the free version. Select all contacts, remove ads, and premium features with the Pro version."
+					return Localization.Subscription.LimitAlertMessage.selectAllContacts.replacingOccurrences(of: "%20", with: limitStringCount)
 				case .selectAllContactsGroups:
-					return "You can only select up to 5 contacts groups in the free version. Select all contacts, remove ads, and premium features with the Pro version."
+					return Localization.Subscription.LimitAlertMessage.selectAllContactsGroup.replacingOccurrences(of: "%20", with: limitStringCount)
 				case .deepClean:
-					return "To use Deep Clean, Location Remover, Ads Free and other premium feautures use the Pro Verstion "
+					return Localization.Subscription.LimitAlertMessage.deepClean
 				default:
 					return L.empty
 			}

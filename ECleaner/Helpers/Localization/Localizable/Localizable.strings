@@ -70,7 +70,7 @@
 "Clean Up Storage ☁️" = "Clean Up Storage ☁️";
 	// MARK: subtitle
 	// MARK: body
-"Anazlize and delete empty and duplicated contacts" = "Anazlize and delete empty and duplicated contacts";
+"Analize and delete empty and duplicated contacts" = "Analize and delete empty and duplicated contacts";
 "Analize photo data for similar and duplicateds" = "Analize photo data for similar and duplicateds";
 "Analize video data for similar and duplicateds" = "Analize video data for similar and duplicateds";
 "Analize your photo and video, contacts" = "Analize your photo and video, contacts";
@@ -115,6 +115,8 @@
 "View" = "View";
 "Remove Location" = "Remove Location";
 "Learn More" = "Learn More";
+"Analize" = "Analize";
+"Export All" = "Export All";
 	// MARK: - Menu Items -
 "Sort by Creation Date" = "Sort by Creation Date";
 "Sort by File Size" = "Sort by File Size";
@@ -448,3 +450,9 @@
 "Subscription Expire on:" = "Subscription Expire on:";
 "Already Premium" = "Already Premium";
 "Current Subscription Status:" = "Current Subscription Status:";
+// MARK: LimitAlertMessage
+"selectAllPhotosMessage" = "You can only select up to %20 photos in the free version. Select all contacts, remove ads, and premium features with the Pro version.";
+"selectAllVideoMessage" = "You can only select up to %20 videos in the free version. Select all contacts, remove ads, and premium features with the Pro version.";
+"selectAllContactsMessage" = "You can only select up to %20 contacts in the free version. Select all contacts, remove ads, and premium features with the Pro version.";
+"selectAllContactsGroupsMessage" = "You can only select up to %20 contacts groups in the free version. Select all contacts, remove ads, and premium features with the Pro version.";
+"selectDeepCleanMessage" = "To use Deep Clean, Location Remover, Ads Free and other premium features use the Pro version ";

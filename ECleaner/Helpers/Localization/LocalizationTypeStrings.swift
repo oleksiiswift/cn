@@ -84,6 +84,8 @@ enum ButtonType {
 	case view
 	case removeLocation
 	case learnMore
+	case analize
+	case exportAll
 		
 	var rawValue: String {
 		switch self {
@@ -163,6 +165,10 @@ enum ButtonType {
 				return L.Standart.Buttons.removeLocation
 			case .learnMore:
 				return L.Standart.Buttons.learnMore
+			case .analize:
+				return L.Standart.Buttons.analize
+			case .exportAll:
+				return L.Standart.Buttons.exportAll
 		}
 	}
 }

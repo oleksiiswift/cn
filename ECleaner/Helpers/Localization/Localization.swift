@@ -159,6 +159,8 @@ struct Localization {
 			static var view = "View".localized()
 			static var removeLocation = "Remove Location".localized()
 			static var learnMore = "Learn More".localized()
+			static var analize = "Analize".localized()
+			static var exportAll = "Export All".localized()
 		}
 		
 		struct MenuItems {
@@ -585,6 +587,14 @@ struct Localization {
 			static var expireSubscription = "Subscription Expire on:".localized()
 			static var alreadyPremium = "Already Premium".localized()
 			static var currentSubscription = "Current Subscription Status:".localized()
+		}
+		
+		struct LimitAlertMessage {
+			static let selectAllPhotos = "selectAllPhotosMessage".localized()
+			static let selectAllVideos = "selectAllVideoMessage".localized()
+			static let selectAllContacts = "selectAllContactsMessage".localized()
+			static let selectAllContactsGroup = "selectAllContactsGroupsMessage".localized()
+			static let deepClean = "selectDeepCleanMessage".localized()
 		}
 	}
 }

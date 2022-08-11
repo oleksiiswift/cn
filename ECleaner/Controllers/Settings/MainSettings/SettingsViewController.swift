@@ -82,7 +82,7 @@ extension SettingsViewController {
 				case .lifetime:
 					return [permissionSectionCell, supportSectionCells]
 				case .purchasedPremium:
-					return [premiumSectionCell,lifeTimeSection, permissionSectionCell, supportSectionCells]
+					return [premiumSectionCell, lifeTimeSection, permissionSectionCell, supportSectionCells]
 				case .nonPurchased:
 					return [premiumSectionCell, subscriptionSection, permissionSectionCell, supportSectionCells]
 			}

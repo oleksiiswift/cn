@@ -1169,17 +1169,17 @@ extension MediaContentViewController {
 	}
 	
 	private func handleChangeSmartCleanProcessing() {
-		Utils.UI {
+		Utils.UI { [self] in
 			switch self.searchingProcessingType {
 				case .clearSearchingProcessingQueue:
-					self.navigationBar.changeHotRightButton(with: I.systemItems.navigationBarItems.magicBrush)
+					self.navigationBar.changeHotRightTitle(newTitle: LocalizationService.Buttons.getButtonTitle(of: .analize))
 					self.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
 				case .singleSearchProcess:
-					self.navigationBar.changeHotRightButton(with: I.systemItems.navigationBarItems.magicBrush)
+					self.navigationBar.changeHotRightTitle(newTitle: LocalizationService.Buttons.getButtonTitle(of: .analize))
 					self.navigationController?.interactivePopGestureRecognizer?.isEnabled = false
 				case .smartGroupSearchProcess:
-					self.navigationController?.interactivePopGestureRecognizer?.isEnabled = false
 					self.navigationBar.changeHotRightButton(with: I.systemItems.navigationBarItems.stopMagic)
+					self.navigationController?.interactivePopGestureRecognizer?.isEnabled = false
 			}
 		}
 	}
@@ -1244,20 +1244,14 @@ extension MediaContentViewController: NavigationBarDelegate {
 	
 	private func prepareStartSmartCleaningProcessing() {
 		
-		self.subscriptionManager.purchasePremiumHandler { status in
-			switch status {
-				case .lifetime, .purchasedPremium:
-					if self.mediaContentType == .userContacts {
-						self.startSmartContactsCleanProcessing()
-					} else {
-						startSmartCleanProcessing()
-					}
-				case .nonPurchased:
-					self.subscriptionManager.limitVersionActionHandler(of: .multiplySearch, at: self)
-			}
+		if self.mediaContentType == .userContacts {
+			self.startSmartContactsCleanProcessing()
+		} else {
+			startSmartCleanProcessing()
 		}
 	}
 }
+
 
 extension MediaContentViewController: ContentTypeCellDelegate {
 	
@@ -1392,17 +1386,17 @@ extension MediaContentViewController: Themeble {
 			
 			navigationBar.setupNavigation(title: mediaContentType.navigationTitle,
 										  leftBarButtonImage: I.systemItems.navigationBarItems.back,
-										  rightBarButtonImage: I.systemItems.navigationBarItems.magicBrush,
+										  rightBarButtonImage: nil,
 										  contentType: mediaContentType,
 										  leftButtonTitle: nil,
-										  rightButtonTitle: nil)
+										  rightButtonTitle: LocalizationService.Buttons.getButtonTitle(of: .analize))
 		} else {
 			navigationBar.setupNavigation(title: mediaContentType.navigationTitle,
 										  leftBarButtonImage: I.systemItems.navigationBarItems.back,
-										  rightBarButtonImage: I.systemItems.navigationBarItems.magicBrush,
+										  rightBarButtonImage: nil,
 										  contentType: mediaContentType,
 										  leftButtonTitle: nil,
-										  rightButtonTitle: nil)
+										  rightButtonTitle: LocalizationService.Buttons.getButtonTitle(of: .analize))
 		}
     }
     
