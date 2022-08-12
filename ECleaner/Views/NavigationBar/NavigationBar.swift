@@ -232,8 +232,6 @@ extension NavigationBar {
     }
 }
 
-
-
 extension UIControl {
 
 	/// Update the menu when the action is triggered,

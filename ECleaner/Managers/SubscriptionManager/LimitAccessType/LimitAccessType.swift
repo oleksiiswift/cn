@@ -16,20 +16,28 @@ enum LimitAccessType {
 	case exportAllContacts
 	case multiplySearch
 	case deepClean
+	case selectPhotos
+	case selectVideo
+	case selectContact
+	case selectContactGroup
 		
 	public var alertDescription: AlertDescription {
 		return LocalizationService.getLimitAccessAlertDescription(for: self)
 	}
 	
+	public var messageDescription: MessageDescription {
+		return LocalizationService.getLimitMessageDescription(for: self)
+	}
+	
 	public var selectAllLimit: Int {
 		switch self {
-			case .selectAllPhotos:
+			case .selectAllPhotos, .selectPhotos:
 				return 10
-			case .selectAllVideos:
+			case .selectAllVideos, .selectVideo:
 				return 10
-			case .selectAllContacts:
+			case .selectAllContacts, .selectContact:
 				return 10
-			case .selectAllContactsGroups:
+			case .selectAllContactsGroups, .selectContactGroup:
 				return 5
 			default:
 				return .max

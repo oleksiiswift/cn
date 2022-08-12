@@ -34,8 +34,8 @@ class PrimaryShadowImageWithTextButton: UIButton {
             layer.insertSublayer($0, at: 0)
         }
         
-        layer.applySketchShadow(color: theme.primaryButtonBottomShadowColor, alpha: 1.0, x: 6, y: 6, blur: 10, spread: 0)
-        topShadowLayer.applySketchShadow(color: theme.topShadowColor, alpha: 1.0, x: -2, y: -5, blur: 19, spread: -1)
+        layer.applyShadow(color: theme.primaryButtonBottomShadowColor, alpha: 1.0, x: 6, y: 6, blur: 10, spread: 0)
+        topShadowLayer.applyShadow(color: theme.topShadowColor, alpha: 1.0, x: -2, y: -5, blur: 19, spread: -1)
     }
     
     public func didset(lefty image: UIImage, with title: String) {

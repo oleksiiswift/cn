@@ -26,9 +26,9 @@ class ShadowView: UIView {
         
         self.insertSubview(topShadowView, at: 0)
         
-		layer.applySketchShadow(color: theme.primaryButtonBottomShadowColor, alpha: 1.0, x: 6, y: 6, blur: 10, spread: 0)
+		layer.applyShadow(color: theme.primaryButtonBottomShadowColor, alpha: 1.0, x: 6, y: 6, blur: 10, spread: 0)
         
-		topShadowView.layer.applySketchShadow(color: theme.primaryButtonTopShadowColor, alpha: 1.0, x: -2, y: -3, blur: 19, spread: 0)
+		topShadowView.layer.applyShadow(color: theme.primaryButtonTopShadowColor, alpha: 1.0, x: -2, y: -3, blur: 19, spread: 0)
     }
 }
 

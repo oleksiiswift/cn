@@ -914,11 +914,11 @@ extension ContactsViewController: ContactDataSourceDelegate {
 	}
 	
 	func showContacsLimitSelectExceededStatus() {
-		debugPrint("show limit status bar")
+		self.subscriptionManager.limitVersionActionHandler(of: .selectContact, at: self)
 	}
 	
 	func showEmptyContactsLimitSelectExceededStatus() {
-		debugPrint("show limit status bar")
+		self.subscriptionManager.limitVersionActionHandler(of: .selectContact, at: self)
 	}
 }
 

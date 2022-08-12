@@ -304,6 +304,12 @@ extension SubscriptionManager {
 				UIPresenter.showViewController(of: .subscription)
 			case .multiplySearch:
 				UIPresenter.showViewController(of: .subscription)
+			case .selectPhotos, .selectVideo:
+				let message = type.messageDescription
+				UIPresenter.showMessage(with: message, type: type)
+			case .selectContact, .selectContactGroup:
+				let message = type.messageDescription
+				UIPresenter.showMessage(with: message, type: type)
 		}
 	}
 }

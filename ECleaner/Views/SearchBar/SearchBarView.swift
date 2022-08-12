@@ -93,7 +93,7 @@ class SearchBarView: UIView {
         baseView.bringSubviewToFront(searchBar)
 		reuseShadowView.isHidden = true
 //		baseView.layer.setShadowAndCustomCorners(backgroundColor: .clear, shadow: .red, alpha: 1.0, x: 26, y: 3, blur: 10, corners: .allCorners, radius: 14)
-		baseView.layer.applySketchShadow(color: UIColor().colorFromHexString("D8DFEB"), alpha: 1.0, x: 6, y: 6, blur: 10, spread: 0)
+		baseView.layer.applyShadow(color: UIColor().colorFromHexString("D8DFEB"), alpha: 1.0, x: 6, y: 6, blur: 10, spread: 0)
         setShowCancelButton(false, animated: false)
 		
 		if let searchBar = self.searchBar.value(forKey: "searchField") as? UITextField, let clearButton = searchBar.value(forKey: "_clearButton") as? UIButton {

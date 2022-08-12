@@ -100,6 +100,7 @@
 		4F56074827205AF300CA19E9 /* OrangeClearStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F56073627205AF200CA19E9 /* OrangeClearStyle.swift */; };
 		4F56074927205AF300CA19E9 /* Style.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F56073727205AF200CA19E9 /* Style.swift */; };
 		4F56074A27205AF300CA19E9 /* ColorUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F56073927205AF300CA19E9 /* ColorUtil.swift */; };
+		9700389A28A666CB00CC1FD3 /* String+UIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9700389928A666CB00CC1FD3 /* String+UIImage.swift */; };
 		97011E1627ECCBA600663C8E /* DeepCleanSelectableAssetsDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97011E1527ECCBA600663C8E /* DeepCleanSelectableAssetsDelegate.swift */; };
 		97011E1A27ECCBED00663C8E /* GroupSelectableAssetsDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97011E1927ECCBED00663C8E /* GroupSelectableAssetsDelegate.swift */; };
 		97011E1C27ECCC0500663C8E /* SimpleSelectableAssetsDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97011E1B27ECCC0500663C8E /* SimpleSelectableAssetsDelegate.swift */; };
@@ -567,6 +568,7 @@
 		4F56073627205AF200CA19E9 /* OrangeClearStyle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrangeClearStyle.swift; sourceTree = "<group>"; };
 		4F56073727205AF200CA19E9 /* Style.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Style.swift; sourceTree = "<group>"; };
 		4F56073927205AF300CA19E9 /* ColorUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorUtil.swift; sourceTree = "<group>"; };
+		9700389928A666CB00CC1FD3 /* String+UIImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+UIImage.swift"; sourceTree = "<group>"; };
 		97011E1527ECCBA600663C8E /* DeepCleanSelectableAssetsDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepCleanSelectableAssetsDelegate.swift; sourceTree = "<group>"; };
 		97011E1927ECCBED00663C8E /* GroupSelectableAssetsDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupSelectableAssetsDelegate.swift; sourceTree = "<group>"; };
 		97011E1B27ECCC0500663C8E /* SimpleSelectableAssetsDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleSelectableAssetsDelegate.swift; sourceTree = "<group>"; };
@@ -1784,6 +1786,7 @@
 				976BA34F281FF1E100C71137 /* UIimageScale.swift */,
 				976D8BB22878A31E00761830 /* UIImage+Resize.swift */,
 				976D8BB42878A33700761830 /* UIImage+Rotate.swift */,
+				9700389928A666CB00CC1FD3 /* String+UIImage.swift */,
 			);
 			path = UIImage;
 			sourceTree = "<group>";
@@ -3354,6 +3357,7 @@
 				97CEA0C4289EC89800140F03 /* OperationQueue.swift in Sources */,
 				977FE23527302F57004DE4C3 /* ContactGroupListViewModel.swift in Sources */,
 				04649B31268C507F00336FE4 /* GroupedAssetsReusableHeaderView.swift in Sources */,
+				9700389A28A666CB00CC1FD3 /* String+UIImage.swift in Sources */,
 				97238A112689EECE00C523DC /* UIView+BlurView.swift in Sources */,
 				977B7EEA2899356800735433 /* PHAssetLocationGridDataSource.swift in Sources */,
 				04CFFFF92685BF01000CA850 /* MediaContentViewController.swift in Sources */,

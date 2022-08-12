@@ -465,9 +465,9 @@ extension GroupedAssetListViewController: PhotoCollectionViewCellDelegate {
 						var accesstype: LimitAccessType {
 							switch self.contentType {
 								case .userPhoto:
-									return .selectAllPhotos
+									return .selectPhotos
 								default:
-									return .selectAllVideos
+									return .selectVideo
 							}
 						}
 						

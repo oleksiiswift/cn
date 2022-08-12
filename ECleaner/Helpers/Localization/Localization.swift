@@ -596,6 +596,14 @@ struct Localization {
 			static let selectAllContactsGroup = "selectAllContactsGroupsMessage".localized()
 			static let deepClean = "selectDeepCleanMessage".localized()
 		}
+		
+		struct LimitMessage {
+			static let unlock = "Unlock Pro!".localized()
+			static let photoSelectExceeded = "photoSelectExceeded".localized()
+			static let videoSelectExceeded = "videoSelectExceeded".localized()
+			static let contactsSelectExceeded = "contactsSelectExceeded".localized()
+			static let contactsGroupSelectExceeded = "contactsGroupSelectExceeded".localized()
+		}
 	}
 }
 

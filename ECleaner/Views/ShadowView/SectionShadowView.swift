@@ -82,16 +82,16 @@ class SectionShadowView: UIView {
     public func prepareForReuse() {
         
         sectionRowPosition = .none
-        topShadowView.layer.removeSketchShadow()
-        sideShadowView.layer.removeSketchShadow()
-        bottomShadowView.layer.removeSketchShadow()
+        topShadowView.layer.removeShadow()
+        sideShadowView.layer.removeShadow()
+        bottomShadowView.layer.removeShadow()
 
-        topSideShadowView.layer.removeSketchShadow()
-        sidSideShadowView.layer.removeSketchShadow()
-        bottomSideShadowView.layer.removeSketchShadow()
+        topSideShadowView.layer.removeShadow()
+        sidSideShadowView.layer.removeShadow()
+        bottomSideShadowView.layer.removeShadow()
         
         self.layer.removeCornersSublayers()
-        self.layer.removeSketchShadow()
+        self.layer.removeShadow()
         topShadowView.removeFromSuperview()
         sideShadowView.removeFromSuperview()
         bottomShadowView.removeFromSuperview()

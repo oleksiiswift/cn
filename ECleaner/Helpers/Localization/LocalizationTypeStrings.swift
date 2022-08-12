@@ -33,6 +33,18 @@ struct NotificationBodyDescription {
 	}
 }
 
+struct MessageDescription {
+	var title: String
+	var message: String
+	var image: UIImage?
+	
+	init(title: String, message: String, image: UIImage?) {
+		self.title = title
+		self.message = message
+		self.image = image
+	}
+}
+
 struct ErrorDescription {
 	var title: String
 	var message: String

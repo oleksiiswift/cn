@@ -628,7 +628,7 @@ extension ContactsGroupViewController: BottomActionButtonDelegate {
 extension ContactsGroupViewController: ContactsGroupDataSourceDelegate {
 	
 	func groupSelectLimiteExceededStatus() {
-		debugPrint("select limit exceeded status")
+		self.subscriptionManager.limitVersionActionHandler(of: .selectContactGroup, at: self)
 	}
 }
 

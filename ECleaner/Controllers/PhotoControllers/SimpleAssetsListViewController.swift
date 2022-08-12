@@ -359,14 +359,23 @@ extension SimpleAssetsListViewController: PhotoCollectionViewCellDelegate {
 			self.collectionView.deselectItem(at: indexPath, animated: true)
 			self.collectionView.delegate?.collectionView?(self.collectionView, didDeselectItemAt: indexPath)
 		} else {
-			SubscriptionManager.instance.purchasePremiumHandler { status in
+			self.subscriptionManager.purchasePremiumHandler { status in
 				switch status {
 					case .lifetime, .purchasedPremium:
 						self.collectionView.selectItem(at: indexPath, animated: true, scrollPosition: [])
 						self.collectionView.delegate?.collectionView?(self.collectionView, didSelectItemAt: indexPath)
 					case .nonPurchased:
+						var limitType: LimitAccessType {
+							switch self.contentType {
+								case .userPhoto:
+									return .selectPhotos
+								default:
+									return .selectVideo
+							}
+						}
+						
 						if self.collectionView.indexPathsForSelectedItems?.count == LimitAccessType.selectAllPhotos.selectAllLimit {
-							SubscriptionManager.instance.limitVersionActionHandler(of: .selectAllPhotos, at: self)
+							self.subscriptionManager.limitVersionActionHandler(of: limitType, at: self)
 						} else {
 							self.collectionView.selectItem(at: indexPath, animated: true, scrollPosition: [])
 							self.collectionView.delegate?.collectionView?(self.collectionView, didSelectItemAt: indexPath)

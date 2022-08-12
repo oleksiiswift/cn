@@ -456,3 +456,11 @@
 "selectAllContactsMessage" = "You can only select up to %20 contacts in the free version. Select all contacts, remove ads, and premium features with the Pro version.";
 "selectAllContactsGroupsMessage" = "You can only select up to %20 contacts groups in the free version. Select all contacts, remove ads, and premium features with the Pro version.";
 "selectDeepCleanMessage" = "To use Deep Clean, Location Remover, Ads Free and other premium features use the Pro version ";
+//	MARK: LimitMessage
+"Unlock Pro!" = "Unlock Pro!";
+"photoSelectExceeded" = "Select photos limit is exceeded. You can either purchase a premium plan.";
+"videoSelectExceeded" = "Select videos limit is exceeded. You can either purchase a premium plan.";
+"contactsSelectExceeded" = "Select contacts limit is exceeded. You can either purchase a premium plan.";
+"contactsGroupSelectExceeded" = "Select contacts groups limit is exceeded. You can either purchase a premium plan.";
+
+

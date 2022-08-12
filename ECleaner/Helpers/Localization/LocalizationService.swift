@@ -513,7 +513,6 @@ struct  LocalizationService {
 
 extension LocalizationService {
 	
-	
 	public static func getLimitAccessAlertDescription(for type: LimitAccessType) -> AlertDescription {
 		
 		var alertTitle: String {
@@ -564,5 +563,31 @@ extension LocalizationService {
 								description: alertDescription,
 								action: action,
 								cancel: cancelAction)
+	}
+	
+	public static func getLimitMessageDescription(for type: LimitAccessType) -> MessageDescription {
+		
+		let title = Localization.Subscription.LimitMessage.unlock
+		
+		var message: String {
+			switch type {
+				case .selectPhotos:
+					return Localization.Subscription.LimitMessage.photoSelectExceeded
+				case .selectVideo:
+					return return Localization.Subscription.LimitMessage.videoSelectExceeded
+				case .selectContact:
+					return return Localization.Subscription.LimitMessage.contactsSelectExceeded
+				case .selectContactGroup:
+					return return Localization.Subscription.LimitMessage.contactsGroupSelectExceeded
+				default:
+					return L.empty
+			}
+		}
+		
+		var image: UIImage? {
+			return Images.messages.getLimitExceededImage(of: type, with: 50)
+		}
+		
+		return MessageDescription(title: title, message: message, image: image)
 	}
 }

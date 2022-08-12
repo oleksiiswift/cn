@@ -149,19 +149,19 @@ extension MediaViewController: PhotoCollectionViewCellDelegate {
 						var limit: Int {
 							switch self.contentType {
 								case .userPhoto:
-									return LimitAccessType.selectAllPhotos.selectAllLimit
+									return LimitAccessType.selectPhotos.selectAllLimit
 								case .userVideo:
-									return LimitAccessType.selectAllVideos.selectAllLimit
+									return LimitAccessType.selectVideo.selectAllLimit
 								default:
 									return .max
 							}
 						}
 						var accesstype: LimitAccessType {
 							switch self.contentType {
-								case .userVideo:
-									return .selectAllVideos
+								case .userPhoto:
+									return .selectPhotos
 								default:
-									return .selectAllPhotos
+									return .selectVideo
 							}
 						}
 						

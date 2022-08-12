@@ -186,7 +186,6 @@ struct Images {
 		public static var grid = UIImage(systemName: "rectangle.3.offgrid")!
 		public static var slashPin = UIImage(systemName: "mappin.slash")!
 		public static var pin = UIImage(systemName: "mappin.and.ellipse")!
-		
 	}
 }
 
@@ -346,3 +345,26 @@ extension Images {
 		}
 	}
 }
+
+extension Images {
+	
+	struct messages {
+		
+		public static func getLimitExceededImage(of type: LimitAccessType, with size: CGFloat) -> UIImage? {
+			
+			switch type {
+				case .selectPhotos:
+					return "⚠️".image(of: size)
+				case .selectVideo:
+					return "⚠️".image(of: size)
+				case .selectContact:
+					return "⚠️".image(of: size)
+				case .selectContactGroup:
+					return "⚠️".image(of: size)
+				default:
+					return "🦄".image(of: size)
+			}
+		}
+	}
+}
+
