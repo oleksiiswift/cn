@@ -93,7 +93,7 @@ extension ContentBannerTableViewCell {
 		subtitleTextLabel.text = info.subtitle
 		descriptionTitleTextLabel.text = info.descriptionTitle
 		descriptionTextLabelsCollection.forEach {
-			$0.layer.applySketchShadow(color: theme.bottomShadowColor, alpha: 0.6, x: 6, y: 6, blur: 12, spread: 0)
+			$0.layer.applyShadow(color: theme.bottomShadowColor, alpha: 0.6, x: 6, y: 6, blur: 12, spread: 0)
 		}
 		
 		/// `rounded view`

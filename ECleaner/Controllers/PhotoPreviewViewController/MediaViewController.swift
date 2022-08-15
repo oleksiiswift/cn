@@ -56,7 +56,7 @@ class MediaViewController: UIViewController {
 	
 	private var photoManager = PhotoManager.shared
 	private var prefetchCacheImageManager = PhotoManager.shared.prefetchManager
-	
+	private var subscriptionManager = SubscriptionManager.instance
 	public var assetCollection: [PHAsset] = []
 	public var assetGroups: [PhassetGroup] = []
 	public var mediaType: PhotoMediaType = .none
@@ -140,8 +140,39 @@ extension MediaViewController: PhotoCollectionViewCellDelegate {
 			self.collectionView.deselectItem(at: indexPath, animated: true)
 			self.collectionView.delegate?.collectionView?(self.collectionView, didSelectItemAt: indexPath)
 		} else {
-			self.collectionView.selectItem(at: indexPath, animated: true, scrollPosition: [])
-			self.collectionView.delegate?.collectionView?(self.collectionView, didDeselectItemAt: indexPath)
+			self.subscriptionManager.purchasePremiumHandler { status in
+				switch status {
+					case .lifetime, .purchasedPremium:
+						self.collectionView.selectItem(at: indexPath, animated: true, scrollPosition: [])
+						self.collectionView.delegate?.collectionView?(self.collectionView, didDeselectItemAt: indexPath)
+					case .nonPurchased:
+						var limit: Int {
+							switch self.contentType {
+								case .userPhoto:
+									return LimitAccessType.selectPhotos.selectAllLimit
+								case .userVideo:
+									return LimitAccessType.selectVideo.selectAllLimit
+								default:
+									return .max
+							}
+						}
+						var accesstype: LimitAccessType {
+							switch self.contentType {
+								case .userPhoto:
+									return .selectPhotos
+								default:
+									return .selectVideo
+							}
+						}
+						
+						if self.collectionView.indexPathsForSelectedItems?.count == limit {
+							self.subscriptionManager.limitVersionActionHandler(of: accesstype, at: self)
+						} else {
+							self.collectionView.selectItem(at: indexPath, animated: true, scrollPosition: [])
+							self.collectionView.delegate?.collectionView?(self.collectionView, didDeselectItemAt: indexPath)
+						}
+				}
+			}
 		}
 		cell.checkIsSelected()
 		self.handleSelectAssetsNavigationCount()

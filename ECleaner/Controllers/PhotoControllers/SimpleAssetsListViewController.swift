@@ -25,6 +25,7 @@ class SimpleAssetsListViewController: UIViewController {
 	var scrollView = UIScrollView()
 	
 	var selectedAssetsDelegate: DeepCleanSelectableAssetsDelegate?
+	private var subscriptionManager = SubscriptionManager.instance
 	private var photoManager = PhotoManager.shared
 	private var prefetchCacheImageManager = PhotoManager.shared.prefetchManager
 	private var progrssAlertController = ProgressAlertController.shared
@@ -304,7 +305,17 @@ extension SimpleAssetsListViewController {
 		guard !isDeepCleaningSelectableFlow else { return }
 		
 		if let selectedItems = collectionView.indexPathsForSelectedItems {
-			bottomMenuHeightConstraint.constant = selectedItems.count > 0 ? AppDimensions.BottomButton.bottomBarDefaultHeight : 0
+			
+			var bottomBarDefaultHeight: CGFloat {
+				switch Advertisement.manager.advertisementBannerStatus {
+					case .active:
+						return AppDimensions.BottomButton.bottomBarDefaultHeight - 20
+					case .hiden:
+						return AppDimensions.BottomButton.bottomBarDefaultHeight
+				}
+			}
+			
+			bottomMenuHeightConstraint.constant = selectedItems.count > 0 ? bottomBarDefaultHeight : 0
 			
 			switch mediaType {
 				case .singleRecentlyDeletedPhotos, .singleRecentlyDeletedVideos:
@@ -314,11 +325,15 @@ extension SimpleAssetsListViewController {
 			}
 			
 			U.animate(0.35) {
-				self.collectionView.contentInset.bottom = selectedItems.count > 0 ? AppDimensions.BottomButton.bottomBarDefaultHeight + 10 + U.bottomSafeAreaHeight : 5
+				self.collectionView.contentInset.bottom = selectedItems.count > 0 ? bottomBarDefaultHeight + 10 + U.bottomSafeAreaHeight : 5
 				self.collectionView.layoutIfNeeded()
 				self.view.layoutIfNeeded()
 			}
 		}
+	}
+	
+	@objc func advertisementDidChange() {
+		self.handleBottomButtonMenu()
 	}
 	
 	private func handleForEmptyCollection() {
@@ -344,8 +359,29 @@ extension SimpleAssetsListViewController: PhotoCollectionViewCellDelegate {
 			self.collectionView.deselectItem(at: indexPath, animated: true)
 			self.collectionView.delegate?.collectionView?(self.collectionView, didDeselectItemAt: indexPath)
 		} else {
-			self.collectionView.selectItem(at: indexPath, animated: true, scrollPosition: [])
-			self.collectionView.delegate?.collectionView?(self.collectionView, didSelectItemAt: indexPath)
+			self.subscriptionManager.purchasePremiumHandler { status in
+				switch status {
+					case .lifetime, .purchasedPremium:
+						self.collectionView.selectItem(at: indexPath, animated: true, scrollPosition: [])
+						self.collectionView.delegate?.collectionView?(self.collectionView, didSelectItemAt: indexPath)
+					case .nonPurchased:
+						var limitType: LimitAccessType {
+							switch self.contentType {
+								case .userPhoto:
+									return .selectPhotos
+								default:
+									return .selectVideo
+							}
+						}
+						
+						if self.collectionView.indexPathsForSelectedItems?.count == LimitAccessType.selectAllPhotos.selectAllLimit {
+							self.subscriptionManager.limitVersionActionHandler(of: limitType, at: self)
+						} else {
+							self.collectionView.selectItem(at: indexPath, animated: true, scrollPosition: [])
+							self.collectionView.delegate?.collectionView?(self.collectionView, didSelectItemAt: indexPath)
+						}
+				}
+			}
 		}
 		self.handleActionButtons()
 	}
@@ -440,6 +476,8 @@ extension SimpleAssetsListViewController {
 	
 	private func setupObservers() {
 		UpdatingChangesInOpenedScreensMediator.instance.setListener(listener: self)
+		
+		U.notificationCenter.addObserver(self, selector: #selector(advertisementDidChange), name: .bannerStatusDidChanged, object: nil)
 	}
 }
 
@@ -672,14 +710,33 @@ extension SimpleAssetsListViewController: NavigationBarDelegate {
 	}
 
 	func didTapRightBarButton(_ sender: UIButton) {
-		self.setCollection(selected: !isSelectedAllPhassets)
+		
+		self.subscriptionManager.purchasePremiumHandler { status in
+			switch status {
+				case .lifetime, .purchasedPremium:
+					self.setCollection(selected: !isSelectedAllPhassets)
+				case .nonPurchased:
+					var limitContentType: LimitAccessType {
+						switch self.contentType {
+							case .userPhoto:
+								return .selectAllPhotos
+							default:
+								return .selectAllVideos
+						}
+					}
+					if self.assetCollection.count < limitContentType.selectAllLimit {
+						self.setCollection(selected: !isSelectedAllPhassets)
+					} else {
+						self.subscriptionManager.limitVersionActionHandler(of: limitContentType, at: self)
+					}
+			}
+		}
 	}
 }
 
 extension SimpleAssetsListViewController: BottomActionButtonDelegate {
 	
 	func didTapActionButton() {
-		
 		showDeleteSelectedAssetsAlert()
 	}
 }

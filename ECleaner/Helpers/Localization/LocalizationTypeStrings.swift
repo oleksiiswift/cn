@@ -33,6 +33,18 @@ struct NotificationBodyDescription {
 	}
 }
 
+struct MessageDescription {
+	var title: String
+	var message: String
+	var image: UIImage?
+	
+	init(title: String, message: String, image: UIImage?) {
+		self.title = title
+		self.message = message
+		self.image = image
+	}
+}
+
 struct ErrorDescription {
 	var title: String
 	var message: String
@@ -83,6 +95,9 @@ enum ButtonType {
 	case startBackup
 	case view
 	case removeLocation
+	case learnMore
+	case analize
+	case exportAll
 		
 	var rawValue: String {
 		switch self {
@@ -160,6 +175,12 @@ enum ButtonType {
 				return L.Standart.Buttons.view
 			case .removeLocation:
 				return L.Standart.Buttons.removeLocation
+			case .learnMore:
+				return L.Standart.Buttons.learnMore
+			case .analize:
+				return L.Standart.Buttons.analize
+			case .exportAll:
+				return L.Standart.Buttons.exportAll
 		}
 	}
 }

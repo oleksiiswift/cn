@@ -164,7 +164,11 @@ class NavigationBar: UIView {
 	public func changeHotRightButton(with newImage: UIImage) {
 		DispatchQueue.main.async {
 			let imageSize = self.getProportionalSize(of: newImage)
+			self.rightButtonTrailingConstraint.constant = 5
+			self.rightBarButtonItem.setTitleWithoutAnimation(title: "")
 			self.rightBarButtonItem.addCenterImage(image: newImage, imageWidth: imageSize.height, imageHeight: imageSize.height)
+			self.rightButtonWidthConstraint.constant = 50
+			self.rightBarButtonItem.layoutIfNeeded()
 		}
 	}
 	
@@ -227,8 +231,6 @@ extension NavigationBar {
         changeHotRightTitle(newTitle: newtitle)
     }
 }
-
-
 
 extension UIControl {
 

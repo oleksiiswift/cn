@@ -29,6 +29,7 @@ class MainViewController: UIViewController {
 	
     private let baseCarouselLayout = BaseCarouselFlowLayout()
     
+	private var subscriptionManager = SubscriptionManager.instance
 	private var permissionManager = PermissionManager.shared
 	private var photoMenager = PhotoManager.shared
 	private var singleCleanModel: SingleCleanModel!
@@ -285,8 +286,15 @@ extension MainViewController {
 			return
 		}
 		
-		self.photoMenager.stopEstimatedSizeProcessingOperations()
-		self.openDeepCleanController(animated: animated)
+		self.subscriptionManager.purchasePremiumHandler { status in
+			switch status {
+				case .lifetime, .purchasedPremium:
+					self.photoMenager.stopEstimatedSizeProcessingOperations()
+					self.openDeepCleanController(animated: animated)
+				case .nonPurchased:
+					self.subscriptionManager.limitVersionActionHandler(of: .deepClean, at: self)
+			}
+		}
 	}
     
 	private func openMediaController(type: MediaContentType, animated: Bool = true, cleanType: RemoteCleanType) {
@@ -405,7 +413,7 @@ extension MainViewController: UpdateMediaStoreSizeDelegate {
 }
 
 extension MainViewController: RemoteLaunchServiceListener {
-
+	
 	private func handleShortcutItem() {
 		
 		guard let shortcutItem = U.sceneDelegate.shortCutItem else { return }
@@ -427,6 +435,7 @@ extension MainViewController: RemoteLaunchServiceListener {
 		}
 	}
 }
+
 
 extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     
@@ -509,7 +518,7 @@ extension MainViewController: SubscriptionObserver {
 	func subscriptionDidChange() {
 		
 		Utils.UI {
-			SubscriptionManager.instance.purchasePremiumHandler { status in
+			self.subscriptionManager.purchasePremiumHandler { status in
 				switch status {
 					case .lifetime, .purchasedPremium:
 						self.navigationBar.setUpNavigation(title: nil, leftImage: nil, rightImage: I.systemItems.navigationBarItems.settings)

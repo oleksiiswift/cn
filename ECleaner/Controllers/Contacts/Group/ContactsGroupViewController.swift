@@ -18,6 +18,7 @@ class ContactsGroupViewController: UIViewController {
     
 	public var selectedContactsDelegate: DeepCleanSelectableAssetsDelegate?
 	
+	private var subscriptionManager = SubscriptionManager.instance
     private var contactsManager = ContactsManager.shared
     private var progressAlert = ProgressAlertController.shared
 	private var shareManager = ShareManager.shared
@@ -291,7 +292,15 @@ extension ContactsGroupViewController {
 			return
 		}
 		
-		let calculatedBottomButtonHeight: CGFloat = AppDimensions.BottomButton.bottomBarDefaultHeight
+		var calculatedBottomButtonHeight: CGFloat {
+			switch Advertisement.manager.advertisementBannerStatus {
+				case .active:
+					return AppDimensions.BottomButton.bottomBarDefaultHeight - 20
+				case .hiden:
+					return AppDimensions.BottomButton.bottomBarDefaultHeight
+			}
+		}
+		
 		bottomButtonHeightConstraint.constant = !self.contactGroupListDataSource.selectedSections.isEmpty ? calculatedBottomButtonHeight : 0
 		
 		let buttonTitle: String = LocalizationService.Buttons.getButtonTitle(of: .mergeSelected).uppercased() + " (\(self.contactGroupListDataSource.selectedSections.count))"
@@ -322,6 +331,10 @@ extension ContactsGroupViewController {
 			let contacts = indexesForMergedSet.map({contactGroup[$0]}).flatMap({$0.contacts}).count
 			self.navigationBar.changeHotLeftTitleWithImage(newTitle: String(" (\(contacts))"), image: I.systemItems.navigationBarItems.back)
 		}
+	}
+	
+	@objc func advertisementDidChange() {
+		self.handleMergeContactsAppearButton(disableAnimation: true)
 	}
 }
 
@@ -514,7 +527,18 @@ extension ContactsGroupViewController: SelectDropDownMenuDelegate {
 	func handleDropDownMenu(_ item: MenuItemType) {
 		switch item {
 			case .select, .deselect:
-				self.didSelectDeselecAllItems()
+				self.subscriptionManager.purchasePremiumHandler { status in
+					switch status {
+						case .lifetime, .purchasedPremium:
+							self.didSelectDeselecAllItems()
+						case .nonPurchased:
+							if self.contactGroup.count < LimitAccessType.selectAllContactsGroups.selectAllLimit {
+								self.didSelectDeselecAllItems()
+							} else {
+								self.subscriptionManager.limitVersionActionHandler(of: .selectAllContactsGroups, at: self)
+							}
+					}
+				}
 			case .share:
 				self.didTapSharePopUpMenuButton()
 			default:
@@ -601,6 +625,13 @@ extension ContactsGroupViewController: BottomActionButtonDelegate {
     }
 }
 
+extension ContactsGroupViewController: ContactsGroupDataSourceDelegate {
+	
+	func groupSelectLimiteExceededStatus() {
+		self.subscriptionManager.limitVersionActionHandler(of: .selectContactGroup, at: self)
+	}
+}
+
 extension ContactsGroupViewController: Themeble {
     
     func setupUI() {
@@ -620,6 +651,7 @@ extension ContactsGroupViewController: Themeble {
         self.contactGroupListViewModel = ContactGroupListViewModel(contactsGroup: contacts)
         self.contactGroupListDataSource = ContactsGroupDataSource(viewModel: self.contactGroupListViewModel)
         self.contactGroupListDataSource.contentType = self.contentType
+		self.contactGroupListDataSource.delegate = self
     }
     
     private func setupTableView() {
@@ -642,6 +674,7 @@ extension ContactsGroupViewController: Themeble {
         U.notificationCenter.addObserver(self, selector: #selector(mergeContactsDidChange(_:)), name: .mergeContactsSelectionDidChange, object: nil)
         U.notificationCenter.addObserver(self, selector: #selector(progressDeleteAlertNotification(_:)), name: .progressDeleteContactsAlertDidChangeProgress, object: nil)
         U.notificationCenter.addObserver(self, selector: #selector(progressMergeAlertNotification(_:)), name: .progressMergeContactsAlertDidChangeProgress, object: nil)
+		U.notificationCenter.addObserver(self, selector: #selector(advertisementDidChange), name: .bannerStatusDidChanged, object: nil)
     }
     
     func updateColors() {

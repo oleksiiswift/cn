@@ -12,6 +12,8 @@ protocol ContactDataSourceDelegate {
 	func shareContact(at indexPath: IndexPath)
 	func deleteContact(at indexPath: IndexPath)
 	func viewContact(at indexPath: IndexPath)
+	func showContacsLimitSelectExceededStatus()
+	func showEmptyContactsLimitSelectExceededStatus()
 }
 
 class ContactListDataSource: NSObject {
@@ -109,6 +111,24 @@ extension ContactListDataSource: UITableViewDelegate, UITableViewDataSource {
 		return AppDimensions.ContactsController.Collection.contactsCellHeight
 	}
     
+	func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+		if contactContentIsEditing {
+			if SubscriptionManager.instance.purchasePremiumStatus() == .nonPurchased {
+				if tableView.indexPathsForSelectedRows?.count == LimitAccessType.selectAllContacts.selectAllLimit {
+					self.delegate?.showContacsLimitSelectExceededStatus()
+					return nil
+				} else {
+					return indexPath
+				}
+			} else {
+				return indexPath
+			}
+		} else {
+			self.didSelectViewContactInfo(at: indexPath)
+			return nil
+		}
+	}
+	
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if contactContentIsEditing != false {
             tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
@@ -122,15 +142,6 @@ extension ContactListDataSource: UITableViewDelegate, UITableViewDataSource {
         tableView.deselectRow(at: indexPath, animated: false)
         self.didSelectDeselectContact()
     }
-	
-	func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
-		if contactContentIsEditing {
-			return indexPath
-		} else {
-			self.didSelectViewContactInfo(at: indexPath)
-			return nil
-		}
-	}
 	
 	func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
 				

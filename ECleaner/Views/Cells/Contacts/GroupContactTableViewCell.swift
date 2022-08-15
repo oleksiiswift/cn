@@ -9,8 +9,7 @@ import UIKit
 import Contacts
 
 protocol GroupContactSelectableDelegate: AnyObject {
-    
-    func didSelecMeregeSection(at index: Int)
+	func didSelecMeregeSection(at index: Int, completionHandler: @escaping (_ isSeletable: Bool) -> Void)
 }
 
 class GroupContactTableViewCell: UITableViewCell {
@@ -60,9 +59,10 @@ class GroupContactTableViewCell: UITableViewCell {
     }
     
     @IBAction func didTapSelectSection(_ sender: Any) {
-    
-        delegate?.didSelecMeregeSection(at: tag)
-        checkSelecttion()
+		delegate?.didSelecMeregeSection(at: tag, completionHandler: { isSeletable in
+			guard isSeletable else { return }
+			self.checkSelecttion()
+		})
     }
 }
 

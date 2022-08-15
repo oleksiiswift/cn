@@ -158,6 +158,9 @@ struct Localization {
 			static var startBackup = "Start Backup".localized()
 			static var view = "View".localized()
 			static var removeLocation = "Remove Location".localized()
+			static var learnMore = "Learn More".localized()
+			static var analize = "Analize".localized()
+			static var exportAll = "Export All".localized()
 		}
 		
 		struct MenuItems {
@@ -584,6 +587,22 @@ struct Localization {
 			static var expireSubscription = "Subscription Expire on:".localized()
 			static var alreadyPremium = "Already Premium".localized()
 			static var currentSubscription = "Current Subscription Status:".localized()
+		}
+		
+		struct LimitAlertMessage {
+			static let selectAllPhotos = "selectAllPhotosMessage".localized()
+			static let selectAllVideos = "selectAllVideoMessage".localized()
+			static let selectAllContacts = "selectAllContactsMessage".localized()
+			static let selectAllContactsGroup = "selectAllContactsGroupsMessage".localized()
+			static let deepClean = "selectDeepCleanMessage".localized()
+		}
+		
+		struct LimitMessage {
+			static let unlock = "Unlock Pro!".localized()
+			static let photoSelectExceeded = "photoSelectExceeded".localized()
+			static let videoSelectExceeded = "videoSelectExceeded".localized()
+			static let contactsSelectExceeded = "contactsSelectExceeded".localized()
+			static let contactsGroupSelectExceeded = "contactsGroupSelectExceeded".localized()
 		}
 	}
 }

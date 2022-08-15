@@ -510,3 +510,84 @@ struct  LocalizationService {
 		}
 	}
 }
+
+extension LocalizationService {
+	
+	public static func getLimitAccessAlertDescription(for type: LimitAccessType) -> AlertDescription {
+		
+		var alertTitle: String {
+			switch type {
+				default:
+					return L.empty
+			}
+		}
+		
+		let limitStringCount = String(type.selectAllLimit)
+		
+		var alertDescription: String {
+			switch type {
+				case .selectAllPhotos:
+					return Localization.Subscription.LimitAlertMessage.selectAllPhotos.replacingOccurrences(of: "%20", with: limitStringCount)
+				case .selectAllVideos:
+					return Localization.Subscription.LimitAlertMessage.selectAllVideos.replacingOccurrences(of: "%20", with: limitStringCount)
+				case .selectAllContacts:
+					return Localization.Subscription.LimitAlertMessage.selectAllContacts.replacingOccurrences(of: "%20", with: limitStringCount)
+				case .selectAllContactsGroups:
+					return Localization.Subscription.LimitAlertMessage.selectAllContactsGroup.replacingOccurrences(of: "%20", with: limitStringCount)
+				case .deepClean:
+					return Localization.Subscription.LimitAlertMessage.deepClean
+				default:
+					return L.empty
+			}
+		}
+		
+		var action: String {
+			switch type {
+				case .deepClean:
+					return LocalizationService.Buttons.getButtonTitle(of: .ok)
+				default:
+					return LocalizationService.Buttons.getButtonTitle(of: .learnMore)
+			}
+		}
+		
+		var cancelAction: String {
+			switch type {
+				case .deepClean:
+					return L.empty
+				default:
+					return LocalizationService.Buttons.getButtonTitle(of: .cancel)
+			}
+		}
+		
+		return AlertDescription(title: alertTitle,
+								description: alertDescription,
+								action: action,
+								cancel: cancelAction)
+	}
+	
+	public static func getLimitMessageDescription(for type: LimitAccessType) -> MessageDescription {
+		
+		let title = Localization.Subscription.LimitMessage.unlock
+		
+		var message: String {
+			switch type {
+				case .selectPhotos:
+					return Localization.Subscription.LimitMessage.photoSelectExceeded
+				case .selectVideo:
+					return Localization.Subscription.LimitMessage.videoSelectExceeded
+				case .selectContact:
+					return Localization.Subscription.LimitMessage.contactsSelectExceeded
+				case .selectContactGroup:
+					return Localization.Subscription.LimitMessage.contactsGroupSelectExceeded
+				default:
+					return L.empty
+			}
+		}
+		
+		var image: UIImage? {
+			return Images.messages.getLimitExceededImage(of: type, with: 50)
+		}
+		
+		return MessageDescription(title: title, message: message, image: image)
+	}
+}

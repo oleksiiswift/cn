@@ -289,7 +289,7 @@ extension DateSelectorViewController: Themeble {
 		let checkMarkImage = I.systemItems.selectItems.checkBox.renderScalePreservingAspectRatio(from: CGSize(width: autoDateSelectSize / 2, height: autoDateSelectSize / 2))
         autoDatePickImageView.image = checkMarkImage
 		autoDatePickImageView.isHidden = true
-		autoDatePickBackgroundImageView.layer.applySketchShadow(color: UIColor().colorFromHexString("D8DFEB"), alpha: 1.0, x: 6, y: 6, blur: 10, spread: 0)
+		autoDatePickBackgroundImageView.layer.applyShadow(color: UIColor().colorFromHexString("D8DFEB"), alpha: 1.0, x: 6, y: 6, blur: 10, spread: 0)
     }
 	
 	private func setupDatePickers(with date: Date) {

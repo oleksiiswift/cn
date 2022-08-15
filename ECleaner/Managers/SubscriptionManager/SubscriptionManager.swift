@@ -253,7 +253,6 @@ extension SubscriptionManager {
 	}
 }
 
-
 //		MARK: product model helper
 extension SubscriptionManager {
 	
@@ -282,10 +281,35 @@ extension SubscriptionManager {
 	}
 }
 
-
 extension SubscriptionManager {
 	
 	public func setAplicationDevelopmentSubscription(status: ApplicationSubscriptionStatus) {
 		self.applicationDevelopmentSubscriptionStatus = status
+	}
+}
+
+
+extension SubscriptionManager {
+	
+	public func limitVersionActionHandler(of type: LimitAccessType, at viewController: UIViewController) {
+		
+		switch type {
+			case .selectAllPhotos, .selectAllVideos, .selectAllContacts, .selectAllContactsGroups, .deepClean:
+				let description = type.alertDescription
+				
+				AlertManager.showLimitAccessAlert(with: description, at: viewController) {
+					UIPresenter.showViewController(of: .subscription)
+				}
+			case .exportAllContacts:
+				UIPresenter.showViewController(of: .subscription)
+			case .multiplySearch:
+				UIPresenter.showViewController(of: .subscription)
+			case .selectPhotos, .selectVideo:
+				let message = type.messageDescription
+				UIPresenter.showMessage(with: message, type: type)
+			case .selectContact, .selectContactGroup:
+				let message = type.messageDescription
+				UIPresenter.showMessage(with: message, type: type)
+		}
 	}
 }

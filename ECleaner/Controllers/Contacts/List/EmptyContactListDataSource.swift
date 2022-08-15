@@ -48,7 +48,6 @@ extension EmptyContactListDataSource {
 	
 	private func didSelectViewContactInfo(at indexPath: IndexPath) {
 		if let contact = emptyContactGroupListViewModel.getContact(at: indexPath) {
-		
 			didSelectViewContactInfo(contact, indexPath)
 		}
 	}
@@ -96,6 +95,24 @@ extension EmptyContactListDataSource: UITableViewDelegate, UITableViewDataSource
 		return AppDimensions.ContactsController.Collection.contactsCellHeight
 	}
     
+	func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+		if contactContentIsEditing {
+			if SubscriptionManager.instance.purchasePremiumStatus() == .nonPurchased {
+				if tableView.indexPathsForSelectedRows?.count == LimitAccessType.selectAllContacts.selectAllLimit {
+					self.delegate?.showEmptyContactsLimitSelectExceededStatus()
+					return nil
+				} else {
+					return indexPath
+				}
+			} else {
+				return indexPath
+			}
+		} else {
+			self.didSelectViewContactInfo(at: indexPath)
+			return nil
+		}
+	}
+	
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
         self.didSelectDeselectContact()
@@ -105,15 +122,6 @@ extension EmptyContactListDataSource: UITableViewDelegate, UITableViewDataSource
         tableView.deselectRow(at: indexPath, animated: false)
         self.didSelectDeselectContact()
     }
-	
-	func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
-		if contactContentIsEditing {
-			return indexPath
-		} else {
-			self.didSelectViewContactInfo(at: indexPath)
-			return nil
-		}
-	}
 	
 	func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
 				

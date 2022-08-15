@@ -212,3 +212,28 @@ extension AlertManager {
 		}
 	}
 }
+
+extension AlertManager {
+	
+	public static func showLimitAccessAlert(with description: AlertDescription, at viewController: UIViewController, completionHandler: @escaping () -> Void) {
+		
+		let title = !description.title.isEmpty ? description.title : nil
+		
+		let alertController = UIAlertController(title: title,
+												message: description.description,
+												preferredStyle: .alert)
+		let action = UIAlertAction(title: description.action, style: .default) { _ in
+			completionHandler()
+		}
+		alertController.addAction(action)
+		
+		if !description.cancel.isEmpty {
+			let cancel = UIAlertAction(title: description.cancel, style: .cancel) { _ in }
+			alertController.addAction(cancel)
+		}
+		
+		DispatchQueue.main.async {
+			viewController.present(alertController, animated: true)
+		}
+	}
+}

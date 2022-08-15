@@ -37,7 +37,7 @@ enum MenuItemType {
 			case .delete:
 				return LocalizationService.Buttons.getButtonTitle(of: .delete)
 			case .export:
-				return LocalizationService.Buttons.getButtonTitle(of: .export)
+				return LocalizationService.Buttons.getButtonTitle(of: .exportAll)
 			case .sortByDate:
 				return LocalizationService.Menu.getSortingTitle(of: .date)
 			case .sortBySize:

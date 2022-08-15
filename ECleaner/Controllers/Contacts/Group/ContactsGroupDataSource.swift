@@ -14,12 +14,18 @@ enum RowPosition {
     case none
 }
 
+protocol ContactsGroupDataSourceDelegate {
+	func  groupSelectLimiteExceededStatus()
+}
+
 class ContactsGroupDataSource: NSObject {
 
     public var contactGroupListViewModel: ContactGroupListViewModel
     
     public var selectedSections: [Int] = []
     public var contentType: PhotoMediaType = .none
+	
+	public var delegate: ContactsGroupDataSourceDelegate?
 
     init(viewModel: ContactGroupListViewModel) {
         self.contactGroupListViewModel = viewModel
@@ -128,18 +134,35 @@ extension ContactsGroupDataSource {
 }
 
 extension ContactsGroupDataSource: GroupContactSelectableDelegate {
-    
-    func didSelecMeregeSection(at index: Int) {
-    
-        if selectedSections.contains(index) {
-            selectedSections.removeAll(index)
-        } else {
-            selectedSections.append(index)
-        }
-        
-        U.notificationCenter.post(name: .mergeContactsSelectionDidChange, object: nil)
-    }
-    
+	
+	
+	func didSelecMeregeSection(at index: Int, completionHandler: @escaping (_ isSeletable: Bool) -> Void) {
+		
+		if self.selectedSections.contains(index) {
+			self.selectedSections.removeAll(index)
+			completionHandler(true)
+			U.notificationCenter.post(name: .mergeContactsSelectionDidChange, object: nil)
+		} else {
+			SubscriptionManager.instance.purchasePremiumHandler { status in
+				switch status {
+					case .lifetime, .purchasedPremium:
+						selectedSections.append(index)
+						completionHandler(true)
+						U.notificationCenter.post(name: .mergeContactsSelectionDidChange, object: nil)
+					case .nonPurchased:
+						if selectedSections.count == LimitAccessType.selectAllContactsGroups.selectAllLimit {
+							self.delegate?.groupSelectLimiteExceededStatus()
+							completionHandler(false)
+						} else {
+							selectedSections.append(index)
+							completionHandler(true)
+							U.notificationCenter.post(name: .mergeContactsSelectionDidChange, object: nil)
+						}
+				}
+			}
+		}
+	}
+	
     private func checkIfSelectedSecetion(at index: Int) -> Bool {
         
         return selectedSections.contains(index)

@@ -55,6 +55,7 @@ class ContactsViewController: UIViewController {
     private var contactManager = ContactsManager.shared
     private var shareManager = ShareManager.shared
     private var progressAlert = ProgressAlertController.shared
+	private var subscriptionManager = SubscriptionManager.instance
 	private var contactStoreDidChange: Bool = false
 	public var updateContentAfterProcessing: ((_ contacts: [CNContact],_ contactsGroup: [ContactsGroup],_ type: PhotoMediaType,_ contactStoreDidChangeCompletion: Bool) -> Void)?
 	
@@ -122,7 +123,26 @@ extension ContactsViewController {
     
     private func didTapSelectDeselectNavigationButton() {
         
-        handleSelectDeselectAll(setSelect: !isSelectedAllItems)
+		self.subscriptionManager.purchasePremiumHandler { status in
+			switch status {
+				case .lifetime, .purchasedPremium:
+					self.handleSelectDeselectAll(setSelect: !isSelectedAllItems)
+				case .nonPurchased:
+					var contactsCount: Int {
+						if self.contentType == .emptyContacts {
+							return self.contactGroup.map({$0.contacts}).joined().count
+						} else {
+							return self.contacts.count
+						}
+					}
+					
+					if contactsCount < LimitAccessType.selectAllContacts.selectAllLimit {
+						self.handleSelectDeselectAll(setSelect: !isSelectedAllItems)
+					}  else {
+						self.subscriptionManager.limitVersionActionHandler(of: .selectAllContacts, at: self)
+					}
+			}
+		}
     }
     
     private func handleSelectDeselectAll(setSelect: Bool) {
@@ -264,7 +284,14 @@ extension ContactsViewController {
 	
 	private func handleBottomButtonChangeAppearence(disableAnimation: Bool = false) {
 	
-		let bottomButtonMenyHeight: CGFloat = AppDimensions.BottomButton.bottomBarDefaultHeight
+		var bottomButtonMenyHeight: CGFloat {
+			switch Advertisement.manager.advertisementBannerStatus {
+				case .active:
+					return AppDimensions.BottomButton.bottomBarDefaultHeight - 20
+				case .hiden:
+					return AppDimensions.BottomButton.bottomBarDefaultHeight
+			}
+		}
 		
 		switch contentType {
 			case .allContacts:
@@ -325,6 +352,10 @@ extension ContactsViewController {
 				self.tableView.contentInset.bottom = self.selectedItems() != 0 ? heigt : 34
 			}
 		}
+	}
+	
+	@objc func advertisementDidChange() {
+		self.handleBottomButtonChangeAppearence(disableAnimation: true)
 	}
 }
 
@@ -829,7 +860,14 @@ extension ContactsViewController: SelectDropDownMenuDelegate {
 			case .edit:
 				self.didTapSelectEditingMode()
 			case .export:
-				self.didTapExportAllContacts()
+				self.subscriptionManager.purchasePremiumHandler { status in
+					switch status {
+						case .lifetime, .purchasedPremium:
+							self.didTapExportAllContacts()
+						case .nonPurchased:
+							self.subscriptionManager.limitVersionActionHandler(of: .exportAllContacts, at: self)
+					}
+				}
 			default:
 				return
 		}
@@ -853,6 +891,7 @@ extension ContactsViewController {
 }
 
 extension ContactsViewController: ContactDataSourceDelegate {
+		
 	func viewContact(at indexPath: IndexPath) {
 		
 		if self.contentType == .allContacts {
@@ -872,6 +911,14 @@ extension ContactsViewController: ContactDataSourceDelegate {
 	
 	func deleteContact(at indexPath: IndexPath) {
 		self.deleteSingleContact(at: indexPath)
+	}
+	
+	func showContacsLimitSelectExceededStatus() {
+		self.subscriptionManager.limitVersionActionHandler(of: .selectContact, at: self)
+	}
+	
+	func showEmptyContactsLimitSelectExceededStatus() {
+		self.subscriptionManager.limitVersionActionHandler(of: .selectContact, at: self)
 	}
 }
 
@@ -1039,6 +1086,7 @@ extension ContactsViewController: Themeble {
 		U.notificationCenter.addObserver(self, selector: #selector(didSelectDeselectContact), name: .selectedContactsCountDidChange, object: nil)
 		U.notificationCenter.addObserver(self, selector: #selector(searchBarResignFirstResponder), name: .searchBarShouldResign, object: nil)
 		U.notificationCenter.addObserver(self, selector: #selector(searchBarClearButtonClicked), name: .searchBarClearButtonClicked, object: nil)
+		U.notificationCenter.addObserver(self, selector: #selector(advertisementDidChange), name: .bannerStatusDidChanged, object: nil)
 	}
 
     private func setupShowExportContactController(segue: UIStoryboardSegue) {
