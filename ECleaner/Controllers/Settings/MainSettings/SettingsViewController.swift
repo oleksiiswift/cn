@@ -199,7 +199,7 @@ extension SettingsViewController: SettingActionsDelegate {
 						case .purchasedPremium:
 							self.changeCurrentSubscription()
 						case .nonPurchased:
-							self.showPermissionController()
+							self.showPremiumController()
 					}
 				}
 			case .largeVideos:

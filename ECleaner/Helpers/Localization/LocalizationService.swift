@@ -574,11 +574,11 @@ extension LocalizationService {
 				case .selectPhotos:
 					return Localization.Subscription.LimitMessage.photoSelectExceeded
 				case .selectVideo:
-					return return Localization.Subscription.LimitMessage.videoSelectExceeded
+					return Localization.Subscription.LimitMessage.videoSelectExceeded
 				case .selectContact:
-					return return Localization.Subscription.LimitMessage.contactsSelectExceeded
+					return Localization.Subscription.LimitMessage.contactsSelectExceeded
 				case .selectContactGroup:
-					return return Localization.Subscription.LimitMessage.contactsGroupSelectExceeded
+					return Localization.Subscription.LimitMessage.contactsGroupSelectExceeded
 				default:
 					return L.empty
 			}
