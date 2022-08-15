@@ -6,5 +6,6 @@
 #define ECleaner_Bridging_Header_h
 
 #import "StepSlider.h"
+#import "iRate.h"
 
 #endif

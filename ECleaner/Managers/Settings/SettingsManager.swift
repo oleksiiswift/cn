@@ -204,6 +204,38 @@ class SettingsManager {
 	}
 }
 
+extension SettingsManager {
+	
+	struct promt {
+		
+		static public var promtRateDelay: Double? {
+			get {
+				return U.userDefaults.double(forKey: C.key.settings.promt.promtDelay)
+			} set {
+				U.userDefaults.set(newValue, forKey: C.key.settings.promt.promtDelay)
+			}
+		}
+		
+		static public var sixHoursDelay: Double? {
+			get {
+				return U.userDefaults.double(forKey: C.key.settings.promt.sixHoursDelay)
+			} set {
+				U.userDefaults.set(newValue, forKey: C.key.settings.promt.sixHoursDelay)
+			}
+		}
+		
+		static public var firstTimePromtShow: Bool {
+			get {
+				return U.userDefaults.bool(forKey: C.key.settings.promt.firstTimePromtShow)
+			} set {
+				U.userDefaults.set(newValue, forKey: C.key.settings.promt.firstTimePromtShow)
+			}
+		}
+	}
+}
+
+
+
 //  MARK: file sizez String values
     /// `phassetPhotoFilesSizes` -> disk space for all photos assets
     /// `phassetVideoFilesSizes` -> disk space for all videos assets

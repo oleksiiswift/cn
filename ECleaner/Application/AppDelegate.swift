@@ -8,6 +8,7 @@
 import UIKit
 import Contacts
 import GoogleMobileAds
+import SwiftRater
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -40,8 +41,10 @@ extension AppDelegate {
 		Network.start()
 		self.initializeSubscriptions()
 		self.cleanTempCache()
+		self.firtTimeApplicationStart()
 		PermissionManager.shared.checkForStartingPemissions()
 		UserNotificationService.sharedInstance.registerRemoteNotification()
+		RateManager.instance.initialize(rate: .objc)
     }
 }
 
@@ -73,6 +76,19 @@ extension AppDelegate {
 		}
     }
 	
+	private func firtTimeApplicationStart() {
+		
+		if !SettingsManager.application.firstTimeApplicationStart {
+			SettingsManager.promt.promtRateDelay = Date.getCurrentDate()
+			SettingsManager.promt.sixHoursDelay = Date.getCurrentDate()
+		} else if SettingsManager.application.firstTimeApplicationStart {
+			if SettingsManager.promt.sixHoursDelay == nil {
+				SettingsManager.promt.promtRateDelay = Date.getCurrentDate()
+				SettingsManager.promt.sixHoursDelay = Date.getCurrentDate()
+			}
+		}
+	}
+		
 	private func cleanTempCache() {
 		
 		let fileManager = ECFileManager()

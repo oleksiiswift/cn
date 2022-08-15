@@ -353,6 +353,10 @@
 		97B8CFEF283CC5D000F3E4E6 /* SubscriptionErrorHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B8CFEE283CC5D000F3E4E6 /* SubscriptionErrorHandler.swift */; };
 		97B8CFF3283CE05600F3E4E6 /* SubscriptionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B8CFF2283CE05600F3E4E6 /* SubscriptionService.swift */; };
 		97B8CFF5283CF0A400F3E4E6 /* Subscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B8CFF4283CF0A400F3E4E6 /* Subscription.swift */; };
+		97BC4BB528AA40C600A3EEC7 /* SwiftRater in Frameworks */ = {isa = PBXBuildFile; productRef = 97BC4BB428AA40C600A3EEC7 /* SwiftRater */; };
+		97BC4BBA28AA69DE00A3EEC7 /* iRate.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 97BC4BB728AA69DD00A3EEC7 /* iRate.bundle */; };
+		97BC4BBB28AA69DE00A3EEC7 /* iRate.m in Sources */ = {isa = PBXBuildFile; fileRef = 97BC4BB828AA69DD00A3EEC7 /* iRate.m */; };
+		97BC4BBD28AA6D2300A3EEC7 /* RateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97BC4BBC28AA6D2300A3EEC7 /* RateManager.swift */; };
 		97BE98CA2874A68B00419C6A /* UIButton+Unerline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97BE98C92874A68B00419C6A /* UIButton+Unerline.swift */; };
 		97C1C71427F5A95800E262FA /* GradientSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97C1C71327F5A95800E262FA /* GradientSlider.swift */; };
 		97C44FBB274EF93B001B61AB /* ContactasCleaningType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97C44FBA274EF93B001B61AB /* ContactasCleaningType.swift */; };
@@ -823,6 +827,10 @@
 		97B8CFEE283CC5D000F3E4E6 /* SubscriptionErrorHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionErrorHandler.swift; sourceTree = "<group>"; };
 		97B8CFF2283CE05600F3E4E6 /* SubscriptionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionService.swift; sourceTree = "<group>"; };
 		97B8CFF4283CF0A400F3E4E6 /* Subscription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Subscription.swift; sourceTree = "<group>"; };
+		97BC4BB728AA69DD00A3EEC7 /* iRate.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = iRate.bundle; sourceTree = "<group>"; };
+		97BC4BB828AA69DD00A3EEC7 /* iRate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = iRate.m; sourceTree = "<group>"; };
+		97BC4BB928AA69DD00A3EEC7 /* iRate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iRate.h; sourceTree = "<group>"; };
+		97BC4BBC28AA6D2300A3EEC7 /* RateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RateManager.swift; sourceTree = "<group>"; };
 		97BE98C92874A68B00419C6A /* UIButton+Unerline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton+Unerline.swift"; sourceTree = "<group>"; };
 		97C1C71327F5A95800E262FA /* GradientSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientSlider.swift; sourceTree = "<group>"; };
 		97C44FBA274EF93B001B61AB /* ContactasCleaningType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactasCleaningType.swift; sourceTree = "<group>"; };
@@ -932,6 +940,7 @@
 				97EBE75B28927A9A000B3CD3 /* Lottie in Frameworks */,
 				97EBE76A28927B0C000B3CD3 /* Connectivity in Frameworks */,
 				97EBE75E28927AAE000B3CD3 /* CocoaImageHashing in Frameworks */,
+				97BC4BB528AA40C600A3EEC7 /* SwiftRater in Frameworks */,
 				97EBE76728927AF8000B3CD3 /* SwiftMessages in Frameworks */,
 				97DE8A4128A262A100E3954E /* GoogleMobileAds in Frameworks */,
 			);
@@ -1358,6 +1367,7 @@
 		04E5835E267A3E7D00EDC3A3 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				97BC4BB628AA69DD00A3EEC7 /* iRate */,
 				97A17F512836369300591409 /* FontManager */,
 				4F56072327205ADC00CA19E9 /* CustomCircular */,
 				0447A68C26B2A9170074919B /* Operation */,
@@ -1394,6 +1404,7 @@
 				97B65886284423AC000AB92B /* RemoteLaunchService */,
 				979A0F322879D69500ACC724 /* Network */,
 				97CEA0C0289EB7DF00140F03 /* MapKit */,
+				97BC4BBC28AA6D2300A3EEC7 /* RateManager.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -2507,6 +2518,16 @@
 			path = Timer;
 			sourceTree = "<group>";
 		};
+		97BC4BB628AA69DD00A3EEC7 /* iRate */ = {
+			isa = PBXGroup;
+			children = (
+				97BC4BB728AA69DD00A3EEC7 /* iRate.bundle */,
+				97BC4BB828AA69DD00A3EEC7 /* iRate.m */,
+				97BC4BB928AA69DD00A3EEC7 /* iRate.h */,
+			);
+			path = iRate;
+			sourceTree = "<group>";
+		};
 		97BE98C8287442E700419C6A /* SubscriptionSegmentControll */ = {
 			isa = PBXGroup;
 			children = (
@@ -2962,6 +2983,7 @@
 				97EBE76628927AF8000B3CD3 /* SwiftMessages */,
 				97EBE76928927B0C000B3CD3 /* Connectivity */,
 				97DE8A4028A262A100E3954E /* GoogleMobileAds */,
+				97BC4BB428AA40C600A3EEC7 /* SwiftRater */,
 			);
 			productName = ECleaner;
 			productReference = 04E0946C267A06B500A69956 /* ECleaner.app */;
@@ -2999,6 +3021,7 @@
 				97EBE76528927AF8000B3CD3 /* XCRemoteSwiftPackageReference "SwiftMessages" */,
 				97EBE76828927B0C000B3CD3 /* XCRemoteSwiftPackageReference "Connectivity" */,
 				97DE8A3F28A262A100E3954E /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */,
+				97BC4BB328AA40C600A3EEC7 /* XCRemoteSwiftPackageReference "SwiftRater" */,
 			);
 			productRefGroup = 04E0946D267A06B500A69956 /* Products */;
 			projectDirPath = "";
@@ -3067,6 +3090,7 @@
 				97C4D72627F3825000C476FE /* PhotoPreviewCollectionViewCell.xib in Resources */,
 				97879B16286A411F0040A8F7 /* video.json in Resources */,
 				97420C03283EC76400B0E134 /* PermissionBannerTableViewCell.xib in Resources */,
+				97BC4BBA28AA69DE00A3EEC7 /* iRate.bundle in Resources */,
 				9785ED8E288ADC090026EFFD /* ContactInfoTableViewCell.xib in Resources */,
 				97EC82E92868EC3E00A32A21 /* Onboarding.storyboard in Resources */,
 				97420BFF283EC71200B0E134 /* PermissionTableViewCell.xib in Resources */,
@@ -3134,6 +3158,7 @@
 				97DC39AA273BE9C800D487BE /* GroupedContactsHeaderView.swift in Sources */,
 				97B01A59274582F900DDE03C /* BottomDoubleButtonBarView.swift in Sources */,
 				97D4273C287031B5006772A2 /* FontManager+Subscription.swift in Sources */,
+				97BC4BBD28AA6D2300A3EEC7 /* RateManager.swift in Sources */,
 				97A39FDC27649DF4007CB482 /* SegmentDatePicker.swift in Sources */,
 				04467CE4270DA3A000DBBB39 /* DateSelectebleView.swift in Sources */,
 				4F56073B27205AF300CA19E9 /* Property.swift in Sources */,
@@ -3309,6 +3334,7 @@
 				97458D1A287F3AB3004446E2 /* Utils+Levenshtein.swift in Sources */,
 				97A57476280C7C9B00B76BD0 /* ProgressBar.swift in Sources */,
 				975AF4372728279900744E3B /* String+Numeric.swift in Sources */,
+				97BC4BBB28AA69DE00A3EEC7 /* iRate.m in Sources */,
 				970B208D27F604D300B5AF7D /* String+Secionds.swift in Sources */,
 				976465D42727055200F8CDA6 /* String+Alphabetical+Range.swift in Sources */,
 				04CFFFF22684B1ED000CA850 /* String+Extension.swift in Sources */,
@@ -3677,6 +3703,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		97BC4BB328AA40C600A3EEC7 /* XCRemoteSwiftPackageReference "SwiftRater" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/takecian/SwiftRater";
+			requirement = {
+				kind = upToNextMinorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
 		97DE8A3F28A262A100E3954E /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/googleads/swift-package-manager-google-mobile-ads.git";
@@ -3736,6 +3770,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		97BC4BB428AA40C600A3EEC7 /* SwiftRater */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 97BC4BB328AA40C600A3EEC7 /* XCRemoteSwiftPackageReference "SwiftRater" */;
+			productName = SwiftRater;
+		};
 		97DE8A4028A262A100E3954E /* GoogleMobileAds */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 97DE8A3F28A262A100E3954E /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */;
