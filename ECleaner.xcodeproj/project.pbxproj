@@ -1404,7 +1404,7 @@
 				97B65886284423AC000AB92B /* RemoteLaunchService */,
 				979A0F322879D69500ACC724 /* Network */,
 				97CEA0C0289EB7DF00140F03 /* MapKit */,
-				97BC4BBC28AA6D2300A3EEC7 /* RateManager.swift */,
+				97E6A0DB28AB8344003362BE /* RateManager */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -2822,6 +2822,14 @@
 				97CC2F3D268743A80072EF8C /* SegueManager.swift */,
 			);
 			name = SegueManager;
+			sourceTree = "<group>";
+		};
+		97E6A0DB28AB8344003362BE /* RateManager */ = {
+			isa = PBXGroup;
+			children = (
+				97BC4BBC28AA6D2300A3EEC7 /* RateManager.swift */,
+			);
+			path = RateManager;
 			sourceTree = "<group>";
 		};
 		97E7E8E5289C3612005DAE7E /* LocationInfo */ = {

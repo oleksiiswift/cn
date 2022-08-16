@@ -60,9 +60,7 @@ class RateManager: NSObject {
 			case .objc:
 				iRate.sharedInstance().promptForRating()
 			case .swift:
-				guard let topController = getTheMostTopController() else { return }
-				
-				SwiftRater.check(host: topController)
+				SwiftRater.check(host: topController())
 		}
 	}
 }
@@ -78,8 +76,17 @@ extension RateManager {
 		SwiftRater.showLog = true
 		SwiftRater.appID = Constants.project.appID
 		/// `debuging - in app store set to false`
-		SwiftRater.debugMode = true
+		SwiftRater.debugMode = false
 		SwiftRater.appLaunched()
+	}
+	
+	private func swiftPromtEventHandler() {
+		
+		
+	}
+	
+	private func swiftFirstPromtEvent() {
+		
 	}
 }
 
