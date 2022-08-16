@@ -35,7 +35,7 @@ class Constants {
 		static let gadRewardedIntProductionKey = ""
 		static let gadRewardedProductionKey = ""
         
-        static let gadTestAppIdentifier = "ca-app-pub-3940256099942544~1458002511"
+        static let GADTestAppIdentifier = "ca-app-pub-3940256099942544~1458002511"
         static let gadTestKey = "ca-app-pub-3940256099942544/2934735716"
 		static let gadInterstitialTestKey = "ca-app-pub-3940256099942544/4411468910"
 		static let gadRewardedTestKey = "ca-app-pub-3940256099942544/1712485313"
@@ -214,6 +214,7 @@ class Constants {
 			
 			/// `compression notification`
 			static let compressionDidStart = "CompressionVideoFileDidStartNotification"
+			static let compressionProgress = "CompressionVideoProgressNotification"
 			
 			struct name {
 				static let photoClean = "didSendCleanPhotoContentNotification"
@@ -383,6 +384,8 @@ class Constants {
 				
 				static let photoProcessingIndex = "photoProcessingIndex"
 				static let videoProcessingIndex = "videoProcessingIndex"
+				
+				static let videoProcessingFrame = "videoProcessingFrame"
             }
             
                 /// `TOTAL COUNT`
@@ -409,6 +412,8 @@ class Constants {
 				
 				static let photoProcessingCount = "photoProcessingCount"
 				static let videoProcessingCount = "videoProcessingCount"
+				
+				static let videoProcessingFramesCount = "videoProcessingFramesCount"
             }
 				/// `STATE`
 			struct state {

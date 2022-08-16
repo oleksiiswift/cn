@@ -48,6 +48,7 @@ class VideoCompressingViewController: UIViewController {
 		setupNavigation()
 		updateColors()
 		delegateSetup()
+		setupObservers()
 	}
 	
 	override func viewWillAppear(_ animated: Bool) {
@@ -113,6 +114,7 @@ extension VideoCompressingViewController {
 			self.compressingManager.compressVideo(from: url, with: configuration) { result in
 				
 				self.progressAlert.closeProgressAnimatedController()
+				
 				U.delay(1) {
 					switch result {
 						case .success(let compressedVideoURL):
@@ -138,7 +140,7 @@ extension VideoCompressingViewController {
 				self.compressingManager.compressVideo(from: url, quality: compressingModel) { result in
 					
 					self.progressAlert.closeProgressAnimatedController()
-					U.delay(1) {
+					U.delay(0.4) {
 						switch result {
 							case .success(let compressedVideoURL):
 								self.compressVideoResultCompleted(with: compressedVideoURL)
@@ -192,10 +194,36 @@ extension VideoCompressingViewController {
 	}
 }
 
-extension VideoCompressingViewController: AnimatedProgressDelegate {
+extension VideoCompressingViewController: ProgressAlertControllerDelegate {
 	
-	func didProgressSetCanceled() {
+	func didTapCancelOperation() {
 		compressingManager.stopWritingReading()
+	}
+	
+	func didAutoCloseController() {
+		
+	}
+		
+	private func didUpdateAlert(with progress: CGFloat) {
+		Utils.UI {
+			let type: ProgressAlertType = .compressing
+			let readbleProgress = "\(type.progressTitle): \(Int(progress * 100))%"
+			let attributed: [NSAttributedString.Key: Any] = [.font: UIFont.systemFont(ofSize: 17, weight: .semibold).monospacedDigitFont]
+			debugPrint(progress)
+			let attributedString = NSMutableAttributedString(string: readbleProgress, attributes: attributed)
+			let messageString = NSMutableAttributedString(string: L.AlertController.AlertMessage.closePreventMessage )
+			self.progressAlert.updateProgressAndMessages(progress, title: attributedString, message: messageString)
+		}
+	}
+	
+	@objc func handleCompressionProgress(_ notification: Notification) {
+		
+		guard let userInfo = notification.userInfo,
+			  let currentIndex = userInfo[Constants.key.notificationDictionary.index.videoProcessingFrame] as? Int,
+			  let totalProcessingFrames = userInfo[Constants.key.notificationDictionary.count.videoProcessingFramesCount] as? Int else { return }
+		
+		let progress = CGFloat(currentIndex) / CGFloat(totalProcessingFrames)
+		self.didUpdateAlert(with: progress)
 	}
 }
 
@@ -361,6 +389,11 @@ extension VideoCompressingViewController: Themeble {
 		navigationBarView.delegate = self
 		bottomButtonBarView.delegate = self
 		compressionSettingsDataSource.delegate = self
+	}
+	
+	private func setupObservers() {
+		
+		Utils.notificationCenter.addObserver(self, selector: #selector(self.handleCompressionProgress(_:)), name: .compressionVideoProgress, object: nil)
 	}
 
 	func updateColors() {

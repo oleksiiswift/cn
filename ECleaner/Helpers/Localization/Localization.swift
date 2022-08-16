@@ -464,6 +464,7 @@ struct Localization {
 			static var stopSearchingProcess = "This will be stop searching process!".localized()
 			static var stopDeepCleanDeleteProcess = "This will be stop deleting process and reset all searching data!".localized()
 			static var resetResults = "By quiting all search results will be lose!".localized()
+			static var closePreventMessage = "Please do not leave the App or lock the screen!".localized()
 		}
 	}
 	
@@ -507,7 +508,7 @@ struct Localization {
 			static var savedError = "Can't save compressed video file.".localized()
 			static var noVideoFile = "No video file.".localized()
 			static var audioError = "Can't remove audio component from vide file.".localized()
-			static var isCanceled = "Compression operation is canceled".localized()
+			static var isCanceled = "Compression operation is canceled!".localized()
 		}
 		
 		struct DeepCleanError {

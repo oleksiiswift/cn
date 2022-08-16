@@ -39,6 +39,7 @@ extension AppDelegate {
     private func configureApplication(with launchOptions: [UIApplication.LaunchOptionsKey: Any]?) {
         
 		Network.start()
+		self.developmentEnviroment()
 		self.initializeSubscriptions()
 		self.cleanTempCache()
 		self.firtTimeApplicationStart()
@@ -54,7 +55,9 @@ extension AppDelegate {
 		
 		Network.theyLive { status in
 			guard status == .connedcted else { return }
-			SubscriptionManager.instance.initialize()
+			U.delay(0) {
+				SubscriptionManager.instance.initialize()				
+			}
 		}
 	}
 
@@ -113,6 +116,12 @@ extension AppDelegate {
 	
 	@objc func networkingStatusDidChange() {
 		self.initializeSubscriptions()
+	}
+	
+	private func developmentEnviroment() {
+		
+			/// `handle subscription simulated status`
+		SubscriptionManager.instance.setAplicationDevelopmentSubscription(status: .production)
 	}
 }
 

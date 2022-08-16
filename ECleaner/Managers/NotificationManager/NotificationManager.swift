@@ -14,7 +14,7 @@ extension Notification.Name {
         /// `premium`
     static let premiumDidChange = 			Notification.Name("premiumDidChange")
 		/// `permission`
-	static let permisionDidChange = 		Notification.Name(C.key.notification.permissionDidChange)
+	static let permisionDidChange = 		 Notification.Name(C.key.notification.permissionDidChange)
 		/// `ìncoming processing recieved`
 	static let incomingRemoteActionRecived = Notification.Name(C.key.notification.forceStopProcessing)
 	
@@ -86,7 +86,8 @@ extension Notification.Name {
 	
 	static let avPlayerDidPlayEndTime = NSNotification.Name.AVPlayerItemDidPlayToEndTime
 	
-	static let compressionVideoDidStart = NSNotification.Name(C.key.notification.compressionDidStart)
+	static let compressionVideoDidStart = Notification.Name(C.key.notification.compressionDidStart)
+	static let compressionVideoProgress = Notification.Name(C.key.notification.compressionProgress)
 	
 	static let shortCutsItemsNavigationItemsNotification = NSNotification.Name("shortCutsItemsNavigationItemsNotification")
 	

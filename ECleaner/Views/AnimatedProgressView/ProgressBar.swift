@@ -23,7 +23,7 @@ class ProgressAlertBar: UIView {
 		}
 	}
 	
-	var progressCorner: CGFloat = 6 {
+	var progressCorner: CGFloat = 4 {
 		didSet {
 			setNeedsDisplay()
 		}

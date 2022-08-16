@@ -74,8 +74,6 @@ extension SceneDelegate {
 extension SceneDelegate {
 	
 	private func devopmentEnviroment() {
-		/// `handle subscription simulated status`
-		SubscriptionManager.instance.setAplicationDevelopmentSubscription(status: .production)
 		
 		/// `handle staring from onboarding`
 //		coordinator?.currentState = .onboarding

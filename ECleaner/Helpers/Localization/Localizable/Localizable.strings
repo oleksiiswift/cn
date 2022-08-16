@@ -363,6 +363,7 @@
 "This will be stop searching process!" = "This will be stop searching process!";
 "This will be stop deleting process and reset all searching data!" = "This will be stop deleting process and reset all searching data!";
 "By quiting all search results will be lose!" = "By quiting all search results will be lose!";
+"Please do not leave the App or lock the screen!" = "Please do not leave the App or lock the screen!";
 
 	//		MARK: - error handler -
 	// MARK: title
@@ -398,7 +399,7 @@
 "Can't save compressed video file." = "Can't save compressed video file.";
 "No video file." = "No video file.";
 "Can't remove audio component from vide file." = "Can't remove audio component from vide file.";
-"Compression operation is canceled" = "Compression operation is canceled";
+"Compression operation is canceled!" = "Compression operation is canceled!";
 	// MARK: DeepCleanError
 "Deep Clean processing complete with error!" = "Deep Clean processing complete with error!";
 	// MARK: DeleteError

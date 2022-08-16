@@ -220,11 +220,18 @@ extension VideoCompressionManager {
 //		MARK: - output -
 extension VideoCompressionManager {
 	
-	private func getOutputVideoData(videoInput: AVAssetWriterInput, videoOutput: AVAssetReaderTrackOutput, completionHandler: @escaping (() -> Void)) {
+	private func getOutputVideoData(videoInput: AVAssetWriterInput, videoOutput: AVAssetReaderTrackOutput, bufferFramesCount: Int, completionHandler: @escaping (() -> Void)) {
+		
+		var index = 0
 		
 		videoInput.requestMediaDataWhenReady(on: self.videoCompressionQueue) {
+			
 			while videoInput.isReadyForMoreMediaData {
+				
 				if let videoBuffer = videoOutput.copyNextSampleBuffer(), CMSampleBufferDataIsReady(videoBuffer) {
+					index += 1
+					debugPrint(index)
+					ProgressSearchNotificationManager.instance.sendCompressProgressNotification(with: index, randomFramesCount: bufferFramesCount)
 					videoInput.append(videoBuffer)
 				} else {
 					videoInput.markAsFinished()
@@ -247,12 +254,14 @@ extension VideoCompressionManager {
 				
 				if let buffer = videoOuput.copyNextSampleBuffer() {
 					if index < randeomFrames.count {
+						
 						let frameIndex = randeomFrames[index]
 						if counter == frameIndex {
 							index += 1
+							debugPrint(index)
 							let timingInfo = UnsafeMutablePointer<CMSampleTimingInfo>.allocate(capacity: 1)
 							let newSample = UnsafeMutablePointer<CMSampleBuffer?>.allocate(capacity: 1)
-							debugPrint(index)
+							ProgressSearchNotificationManager.instance.sendCompressProgressNotification(with: index, randomFramesCount: randeomFrames.count)
 							CMSampleBufferGetSampleTimingInfo(buffer, at: 0, timingInfoOut: timingInfo)
 							timingInfo.pointee.duration = CMTimeMultiplyByFloat64(timingInfo.pointee.duration, multiplier: Float64(originFPS/targetFPS))
 							CMSampleBufferCreateCopyWithNewTiming(allocator: nil, sampleBuffer: buffer, sampleTimingEntryCount: 1, sampleTimingArray: timingInfo, sampleBufferOut: newSample)
@@ -346,8 +355,11 @@ extension VideoCompressionManager {
 					self.group.leave()
 				}
 			} else {
+				let calculatedDuration = Float(videoTrack.asset!.duration.seconds)
+				let framesCount = self.getFrameIndexes(with: videoTrack.nominalFrameRate, targetFPS: videoTrack.nominalFrameRate, duration:  calculatedDuration)
+				
 				self.getOutputVideoData(videoInput: videoInput,
-										videoOutput: videoOutput) {
+										videoOutput: videoOutput, bufferFramesCount: framesCount.count) {
 					self.group.leave()
 				}
 			}
@@ -362,7 +374,6 @@ extension VideoCompressionManager {
 						} else {
 							realAudioInput.markAsFinished()
 							self.group.leave()
-							break
 						}
 					}
 				}
@@ -377,11 +388,11 @@ extension VideoCompressionManager {
 							}
 						}
 					default:
-						debugPrint(writer.error!)
-						completionHandler(.failure(.compressedFailed(writer.error!)))
+						if let writerError = writer.error {
+							completionHandler(.failure(.compressedFailed(writerError)))
+						}
 				}
 			}
-			
 		} catch {
 			completionHandler(.failure(.compressedFailed(error)))
 		}

@@ -15,6 +15,8 @@ class AdvertisementViewController: UIViewController {
     @IBOutlet weak var advertisementBottomConstraint: NSLayoutConstraint!
     @IBOutlet weak var containerViewBottomConstraint: NSLayoutConstraint!
 	
+	private var subscriptionManager = SubscriptionManager.instance
+	
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -36,12 +38,17 @@ extension AdvertisementViewController: SubscriptionObserver {
 	
 	private func handleAdvertisementSetup() {
 		
-		if SubscriptionManager.instance.getPurchasePremium() {
-			self.advertisementHandler(status: .hiden)
-		} else {
-			self.setupAdvertisemenetBanner()
-			self.advertisementHandler(status: .active)
+		switch subscriptionManager.applicationDevelopmentSubscriptionStatus {
+			case .production:
+				self.productionSetup()
+			case .premiumSimulated, .lifeTimeSimulated:
+				self.advertisementHandler(status: .hiden)
+			case .limitedSimulated:
+				self.advertisementHandler(status: .active)
 		}
+	}
+	
+	private func productionSetup() {
 		
 		Network.theyLive { status in
 			switch status {

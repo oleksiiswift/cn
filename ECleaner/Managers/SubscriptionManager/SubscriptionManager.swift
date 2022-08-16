@@ -45,7 +45,7 @@ class SubscriptionManager: NSObject {
 		}
 	}
 	
-	private var applicationDevelopmentSubscriptionStatus: ApplicationSubscriptionStatus {
+	public var applicationDevelopmentSubscriptionStatus: ApplicationSubscriptionStatus {
 		get {
 			let statusValue: Int = U.userDefaults.integer(forKey: C.key.application.subscriptionDevelopmentStatus)
 			return ApplicationSubscriptionStatus(rawValue: statusValue)!
@@ -287,10 +287,19 @@ extension SubscriptionManager {
 extension SubscriptionManager {
 	
 	public func setAplicationDevelopmentSubscription(status: ApplicationSubscriptionStatus) {
+		
+		switch status {
+			case .premiumSimulated, .lifeTimeSimulated:
+				self.setPurchasePremium(true)
+			case .limitedSimulated:
+				self.setPurchasePremium(false)
+			default:
+				debugPrint("use basic production version")
+		}
+		
 		self.applicationDevelopmentSubscriptionStatus = status
 	}
 }
-
 
 extension SubscriptionManager {
 	

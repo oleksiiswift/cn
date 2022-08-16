@@ -49,7 +49,7 @@ class ProgressAlertController: Themeble {
     func updateColors() {
         
         alertController.view.tintColor = theme.titleTextColor
-		self.progressBar.borderColor = theme.bordersColor//theme.separatorMainColor//theme.alertProgressBorderColor
+		self.progressBar.borderColor = progressBarTintColor//theme.bordersColor//theme.separatorMainColor//theme.alertProgressBorderColor
 		self.progressBar.mainBackgroundColor = theme.cellBackGroundColor//theme.alertProgressBackgroundColor
         self.progressBar.progressColor = progressBarTintColor
         self.progressBar.updateColors()
@@ -59,19 +59,19 @@ class ProgressAlertController: Themeble {
 		
 		guard !controllerPresented else { return}
 		
-        contentProgressType = .userContacts
+        contentProgressType = controllerType
         alertController = UIAlertController(title: title, message: " ", preferredStyle: .alert)
-        
+	
 		let cancelAction = UIAlertAction(title: LocalizationService.Buttons.getButtonTitle(of: .cancel), style: .cancel) { _ in
 			self.controllerPresented = false
             self.delegate?.didTapCancelOperation()
         }
-    
+		
         alertController.addAction(cancelAction)
         
         let margin: CGFloat = 16.0
-        let topMargin: CGFloat = 66.0
-        let rect = CGRect(x: margin, y: topMargin, width: self.alertController.view.frame.width -  margin * 2.0, height: 10.0)
+        let bottomMargin: CGFloat = 48.0
+        let rect = CGRect(x: margin, y: bottomMargin, width: self.alertController.view.frame.width -  margin * 2.0, height: 10.0)
         self.progressBar.frame = rect
         self.updateColors()
         self.alertController.view.addSubview(progressBar)
@@ -80,7 +80,7 @@ class ProgressAlertController: Themeble {
         
         progressBar.leadingAnchor.constraint(equalTo: self.alertController.view.leadingAnchor, constant: margin).isActive = true
         progressBar.trailingAnchor.constraint(equalTo: self.alertController.view.trailingAnchor, constant: -margin).isActive = true
-        progressBar.topAnchor.constraint(equalTo: self.alertController.view.topAnchor, constant: topMargin).isActive = true
+		progressBar.bottomAnchor.constraint(equalTo: self.alertController.view.bottomAnchor, constant: -bottomMargin).isActive = true
 		progressBar.heightAnchor.constraint(equalToConstant: 8.0).isActive = true
     
         if let topController = topController() {
@@ -107,7 +107,7 @@ class ProgressAlertController: Themeble {
 		let rect = CGRect(x: margin, y: 46, width: self.alertController.view.frame.width - margin * 2.0, height: 10.0)
 		self.animatedProgressBar.frame = rect
 		
-		self.animatedProgressBar.setBorder(radius: 6, color: theme.bordersColor, width: 2)
+		self.animatedProgressBar.setBorder(radius: 4, color: theme.bordersColor, width: 2)
 		
 		self.animatedProgressBar.leadingAnchor.constraint(equalTo: self.alertController.view.leadingAnchor, constant: margin).isActive = true
 		self.animatedProgressBar.trailingAnchor.constraint(equalTo: self.alertController.view.trailingAnchor, constant: -margin).isActive = true
@@ -130,6 +130,15 @@ class ProgressAlertController: Themeble {
             self.closeAlertController()
         }
     }
+	
+	public func updateProgressAndMessages(_ progress: CGFloat, title: NSMutableAttributedString, message: NSMutableAttributedString) {
+		alertController.setValue(title, forKey: "attributedTitle")
+		alertController.setValue(message, forKey: "attributedMessage")
+		progressBar.progress = progress
+		if progress == 1 {
+			self.closeAlertController()
+		}
+	}
 	
 	public func updateChangedProgress(_ progress: CGFloat, processingTitle: String) {
 		alertController.message = processingTitle
@@ -183,9 +192,12 @@ extension ProgressAlertController {
 		setProgress(controllerType: .userContacts, title: type.progressTitle)
 	}
 	
-	public func showCompressingProgressAlertController(from viewController: UIViewController, delegate: AnimatedProgressDelegate?)  {
+	public func showCompressingProgressAlertController(from viewController: UIViewController, delegate: ProgressAlertControllerDelegate?)  {
 		let progress: ProgressAlertType = .compressing
-		presentAnimatedProgress(title: progress.progressTitle, progressDelegate: delegate, from: viewController, barColor: UIColor().colorFromHexString("3C82C8"), animatedColor: theme.videosTintColor )
+		self.delegate = delegate
+		Utils.UI {
+			self.setProgress(controllerType: .userVideo, title: progress.progressTitle)
+		}
 	}
 	
 	public func showVideoSortingAnimateProgress(from viewConstroller: UIViewController) {
@@ -202,5 +214,4 @@ extension ProgressAlertController {
 		presentAnimatedProgress(title: type.progressTitle, progressDelegate: delegate, from: viewController, barColor: .white, animatedColor: type.accentColor, withCancel: type.withCancel)
 	}
 }
-
 
