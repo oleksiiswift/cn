@@ -13,10 +13,10 @@ class Constants {
 	
 	struct project {
 		static let appleID = ""
-		static let appID = ""
+		static let appID = "1599497267"
 		static let appStoreName = ""
 		static let storeSecretKey = "57832c2c61d74286a1f4e65063a5cdba"
-		static let appBundle = ""
+		static let appBundle = "com.phone.clean.cache"
 		static let mail = ""
 		static let telegram = ""
 		static let facebookURL = ""
@@ -118,6 +118,13 @@ class Constants {
             static let photoSpace = "photoDiskSpace"
             static let videoSpace = "videoDiskSpace"
             static let allMediaSpace = "wholeAssetsDiskSpace"
+			
+			struct promt {
+				static let promtDelay = "promtDelay"
+				static let promtTriger = "promtTriger"
+				static let sixHoursDelay = "sixHoursPromtDelay"
+				static let firstTimePromtShow = "firstTimePromtShow"
+			}
         }
 		
 		struct compressionSettings {

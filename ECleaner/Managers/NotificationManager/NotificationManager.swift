@@ -89,5 +89,8 @@ extension Notification.Name {
 	static let compressionVideoDidStart = NSNotification.Name(C.key.notification.compressionDidStart)
 	
 	static let shortCutsItemsNavigationItemsNotification = NSNotification.Name("shortCutsItemsNavigationItemsNotification")
+	
+	static let didCancelPromtRequest = Notification.Name.init("iRateUserDidRequestReminderToRateApp")
+	static let promtReisgnFromBackground = Notification.Name.init("iRateStatusCheckWheneReisgnFromBackground")
 }
 

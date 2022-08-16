@@ -100,6 +100,15 @@
       }
     },
     {
+      "identity" : "swiftrater",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/takecian/SwiftRater",
+      "state" : {
+        "revision" : "8ffadad3709783c9195d358db0c73be4ee9fbc2a",
+        "version" : "2.0.0"
+      }
+    },
+    {
       "identity" : "swiftystorekit",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/bizz84/SwiftyStoreKit",

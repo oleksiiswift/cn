@@ -85,6 +85,9 @@ class SubscriptionManager: NSObject {
 	public func setPurchasePremium(_ purchased: Bool) {
 		self.purchasedPremium = purchased
 	}
+	public func getPurchasePremium() -> Bool {
+		return self.purchasedPremium
+	}
 	/// `CHECK FOR PREMIUM STATUS COMPLETION`   /// *check only here*
 	public func purchasePremiumHandler(_ completionHandler: (_ status: StatusSubscription) -> Void) {
 		switch self.applicationDevelopmentSubscriptionStatus {

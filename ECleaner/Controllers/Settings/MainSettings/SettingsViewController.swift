@@ -7,6 +7,7 @@
 
 import UIKit
 import SwiftMessages
+import SwiftRater
 
 class SettingsViewController: UIViewController, Storyboarded {
 	
@@ -296,7 +297,7 @@ extension SettingsViewController: SettingActionsDelegate {
 	}
 	
 	private func showRateUSAction() {
-		debugPrint("showRateUSAction")
+		RateManager.instance.promtForRate(type: .objc)
 	}
 	
 	private func showPrivacyPolicyAction() {
