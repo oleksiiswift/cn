@@ -91,5 +91,6 @@ extension Notification.Name {
 	static let shortCutsItemsNavigationItemsNotification = NSNotification.Name("shortCutsItemsNavigationItemsNotification")
 	
 	static let didCancelPromtRequest = Notification.Name.init("iRateUserDidRequestReminderToRateApp")
+	static let promtReisgnFromBackground = Notification.Name.init("iRateStatusCheckWheneReisgnFromBackground")
 }
 

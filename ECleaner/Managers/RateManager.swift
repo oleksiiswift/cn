@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftRater
 
 enum Rate {
 	case objc
@@ -50,9 +51,38 @@ class RateManager: NSObject {
 	}
 	
 	private func swiftRateInitialize() {
+		self.configureSwiftPromt()
+	}
+	
+	public func promtForRate(type: Rate) {
 		
+		switch type {
+			case .objc:
+				iRate.sharedInstance().promptForRating()
+			case .swift:
+				guard let topController = getTheMostTopController() else { return }
+				
+				SwiftRater.check(host: topController)
+		}
 	}
 }
+
+extension RateManager {
+	
+	private func configureSwiftPromt() {
+		
+		SwiftRater.daysUntilPrompt = 0
+		SwiftRater.usesUntilPrompt = 1
+		SwiftRater.daysBeforeReminding = 1
+		SwiftRater.showLaterButton = true
+		SwiftRater.showLog = true
+		SwiftRater.appID = Constants.project.appID
+		/// `debuging - in app store set to false`
+		SwiftRater.debugMode = true
+		SwiftRater.appLaunched()
+	}
+}
+
 
 extension RateManager {
 	

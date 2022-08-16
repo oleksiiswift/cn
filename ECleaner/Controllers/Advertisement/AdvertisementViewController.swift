@@ -36,6 +36,13 @@ extension AdvertisementViewController: SubscriptionObserver {
 	
 	private func handleAdvertisementSetup() {
 		
+		if SubscriptionManager.instance.getPurchasePremium() {
+			self.advertisementHandler(status: .hiden)
+		} else {
+			self.setupAdvertisemenetBanner()
+			self.advertisementHandler(status: .active)
+		}
+		
 		Network.theyLive { status in
 			switch status {
 				case .connedcted:
@@ -43,10 +50,14 @@ extension AdvertisementViewController: SubscriptionObserver {
 						Utils.UI {
 							switch status {
 								case .lifetime, .purchasedPremium:
-									self.advertisementHandler(status: .hiden)
+									if Advertisement.manager.advertisementBannerStatus != .hiden {
+										self.advertisementHandler(status: .hiden)
+									}
 								case .nonPurchased:
-									self.setupAdvertisemenetBanner()
-									self.advertisementHandler(status: .active)
+									if Advertisement.manager.advertisementBannerStatus != .active {
+										self.setupAdvertisemenetBanner()
+										self.advertisementHandler(status: .active)
+									}
 							}
 						}
 					}

@@ -297,7 +297,7 @@ extension SettingsViewController: SettingActionsDelegate {
 	}
 	
 	private func showRateUSAction() {
-		SwiftRater.rateApp(host: self)
+		RateManager.instance.promtForRate(type: .objc)
 	}
 	
 	private func showPrivacyPolicyAction() {
