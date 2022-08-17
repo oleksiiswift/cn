@@ -49,7 +49,12 @@ extension AdvertisementViewController: SubscriptionObserver {
 	}
 	
 	private func productionSetup() {
+			/// fast load
+		let status: AdvertisementStatus = subscriptionManager.getPurchasePremium() ? .hiden : .active
+		status == .active ? self.setupAdvertisemenetBanner() : ()
+		self.advertisementHandler(status: status)
 		
+			/// check for network and subscription after ttime
 		Network.theyLive { status in
 			switch status {
 				case .connedcted:
