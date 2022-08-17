@@ -9,7 +9,7 @@ import UIKit
 
 class DropDownMenuViewController: UIViewController {
     
-    var menuSectionItems = [DropDownOptionsMenuItem]() {
+    var menuSectionItems = [MenuItem]() {
         didSet {
             self.calculateMenuContentSize()
         }
@@ -53,7 +53,7 @@ extension DropDownMenuViewController {
         self.tableView?.separatorStyle = .none
         self.tableView?.isScrollEnabled = false
         self.tableView?.backgroundColor = theme.dropDownMenuBackgroundColor
-        self.tableView?.contentInset = UIEdgeInsets(top: 15, left: 0, bottom: 0, right: 0)
+        self.tableView?.contentInset = UIEdgeInsets(top: 3, left: 0, bottom: 0, right: 0)
         self.tableView?.register(UINib(nibName: C.identifiers.xibs.dropDownCell, bundle: nil), forCellReuseIdentifier: C.identifiers.cells.dropDownCell)
         
         if let optionTableView = self.tableView {
@@ -71,8 +71,8 @@ extension DropDownMenuViewController {
     
     private func calculateMenuContentSize() {
 		let itemsCount = CGFloat(menuSectionItems.compactMap({$0}).count)
-		var viewWidth: CGFloat = U.UIHelper.AppDimensions.DropDounMenu.menuWidth
-        let viewHeight: CGFloat = itemsCount * 39
+		var viewWidth: CGFloat = AppDimensions.DropDounMenu.menuWidth
+        let viewHeight: CGFloat = itemsCount * 36
 		let flatItems = menuSectionItems.compactMap({$0})
         for item in flatItems {
             if item.sizeForFutureText().width + 90 > viewWidth {
@@ -100,9 +100,8 @@ extension DropDownMenuViewController: UITableViewDataSource, UITableViewDelegate
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-		let selectedItem = menuSectionItems[indexPath.row]
         self.dismiss(animated: true) {
-            self.delegate?.selectedItemListViewController(self, didSelectItem: selectedItem.menuItem)
+			self.delegate?.handleDropDownMenu(self.menuSectionItems[indexPath.row].type)
         }
     }
     

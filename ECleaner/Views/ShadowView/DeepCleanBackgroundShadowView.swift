@@ -25,8 +25,8 @@ class DeepCleanBackgroundShadowView: UIView {
         topShadowView.frame = self.bounds
         self.insertSubview(topShadowView, at: 0)
         
-		layer.applySketchShadow(color: theme.bottomShadowColor, alpha: 1.0, x: 3, y: 3, blur: 10, spread: 0)
+		layer.applyShadow(color: theme.bottomShadowColor, alpha: 1.0, x: 3, y: 3, blur: 10, spread: 0)
         
-        topShadowView.layer.applySketchShadow(color: theme.primaryButtonTopShadowColor, alpha: 1.0, x: -3, y: -3, blur: 15, spread: 0)
+        topShadowView.layer.applyShadow(color: theme.primaryButtonTopShadowColor, alpha: 1.0, x: -3, y: -3, blur: 15, spread: 0)
     }
 }

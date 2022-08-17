@@ -11,6 +11,9 @@ import Contacts
 protocol ContactDataSourceDelegate {
 	func shareContact(at indexPath: IndexPath)
 	func deleteContact(at indexPath: IndexPath)
+	func viewContact(at indexPath: IndexPath)
+	func showContacsLimitSelectExceededStatus()
+	func showEmptyContactsLimitSelectExceededStatus()
 }
 
 class ContactListDataSource: NSObject {
@@ -18,7 +21,7 @@ class ContactListDataSource: NSObject {
     public var contactListViewModel: ContactListViewModel
     
     public var isContactAvailable: ((Bool) -> (Void)) = {_ in}
-    public var didSelectContact: ((ContactListViewModel) -> Void) = {_ in}
+	public var didSelectViewContactInfo: ((_ contact: CNContact,_ indexPath: IndexPath) -> Void) = {_,_ in}
 	public var delegate: ContactDataSourceDelegate?
 
     public var contactContentIsEditing: Bool = false
@@ -52,6 +55,13 @@ extension ContactListDataSource {
     private func didSelectDeselectContact() {
         U.notificationCenter.post(name: .selectedContactsCountDidChange, object: nil)
     }
+	
+	private func didSelectViewContactInfo(at indexPath: IndexPath) {
+		
+		if let contact = contactListViewModel.getContactOnRow(at: indexPath) {
+			didSelectViewContactInfo(contact, indexPath)
+		}
+	}
 }
 
 extension ContactListDataSource: UITableViewDelegate, UITableViewDataSource {
@@ -94,34 +104,44 @@ extension ContactListDataSource: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-		return U.UIHelper.AppDimensions.Contacts.Collection.headerHeight
+		return AppDimensions.ContactsController.Collection.headerHeight
     }
 	
 	func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-		return U.UIHelper.AppDimensions.Contacts.Collection.contactsCellHeight
+		return AppDimensions.ContactsController.Collection.contactsCellHeight
 	}
     
+	func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+		if contactContentIsEditing {
+			if SubscriptionManager.instance.purchasePremiumStatus() == .nonPurchased {
+				if tableView.indexPathsForSelectedRows?.count == LimitAccessType.selectAllContacts.selectAllLimit {
+					self.delegate?.showContacsLimitSelectExceededStatus()
+					return nil
+				} else {
+					return indexPath
+				}
+			} else {
+				return indexPath
+			}
+		} else {
+			self.didSelectViewContactInfo(at: indexPath)
+			return nil
+		}
+	}
+	
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if contactContentIsEditing != false {
             tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
             self.didSelectDeselectContact()
         } else if searchBarIsFirstResponder {
             U.notificationCenter.post(name: .searchBarShouldResign, object: nil, userInfo: nil)
-        }
+		}
     }
     
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: false)
         self.didSelectDeselectContact()
     }
-	
-	func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
-		if contactContentIsEditing {
-			return indexPath
-		} else {
-			return nil
-		}
-	}
 	
 	func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
 				
@@ -139,19 +159,19 @@ extension ContactListDataSource: UITableViewDelegate, UITableViewDataSource {
 	func tableView(_ tableView: UITableView, willDisplayContextMenu configuration: UIContextMenuConfiguration, animator: UIContextMenuInteractionAnimating?) {
 		DispatchQueue.main.async {
 			if let window = U.application.windows.first {
-				if let view = U.UIHelper.Manager.viewByClassName(view: window, className: "_UICutoutShadowView") {
+				if let view = Utils.Manager.viewByClassName(view: window, className: "_UICutoutShadowView") {
 					view.isHidden = true
 				}
-				if let view = U.UIHelper.Manager.viewByClassName(view: window, className: "_UIPortalView") {
+				if let view = Utils.Manager.viewByClassName(view: window, className: "_UIPortalView") {
 					view.rounded()
 				}
-				if let view = U.UIHelper.Manager.viewByClassName(view: window, className: "_UIPlatterTransformView") {
+				if let view = Utils.Manager.viewByClassName(view: window, className: "_UIPlatterTransformView") {
 					view.rounded()
 				}
-				if let view = U.UIHelper.Manager.viewByClassName(view: window, className: "_UIPlatterClippingView") {
+				if let view = Utils.Manager.viewByClassName(view: window, className: "_UIPlatterClippingView") {
 					view.rounded()
 				}
-				if let view = U.UIHelper.Manager.viewByClassName(view: window, className: "_UIPlatterTransformView") {
+				if let view = Utils.Manager.viewByClassName(view: window, className: "_UIPlatterTransformView") {
 					view.rounded()
 				}
 			}
@@ -210,18 +230,23 @@ extension ContactListDataSource {
 	}
 
 	private func createCellContextMenu(for contactac: CNContact, at indexPath: IndexPath) -> UIMenu {
-		
+		let viewActionImage = I.systemElementsItems.person
 		let shareActionImage = I.systemElementsItems.share
 		let deleteActionImage = I.systemElementsItems.trashBtn
-		let shareAction = UIAction(title: "Share", image: shareActionImage) { _ in
+		
+		let viewAction = UIAction(title: LocalizationService.Buttons.getButtonTitle(of: .view), image: viewActionImage) { _ in
+			self.delegate?.viewContact(at: indexPath)
+		}
+		
+		let shareAction = UIAction(title: LocalizationService.Buttons.getButtonTitle(of: .share), image: shareActionImage) { _ in
 			self.delegate?.shareContact(at: indexPath)
 		}
 		
-		let deleteAction = UIAction(title: "Delete", image: deleteActionImage, attributes: .destructive) {_ in
+		let deleteAction = UIAction(title: LocalizationService.Buttons.getButtonTitle(of: .delete), image: deleteActionImage, attributes: .destructive) {_ in
 			self.delegate?.deleteContact(at: indexPath)
 		}
 		
-		return UIMenu(title: "", children: [shareAction, deleteAction])
+		return UIMenu(title: "", children: [viewAction, shareAction, deleteAction])
 	}
 }
 

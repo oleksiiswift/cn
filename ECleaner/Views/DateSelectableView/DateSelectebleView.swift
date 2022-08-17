@@ -87,7 +87,7 @@ class DateSelectebleView: UIView {
         dateSelectContainerView.clipsToBounds = true
         dateSelectContainerView.layer.cornerRadius = 14
         
-        dateSelectContainerView.layer.applySketchShadow(color: UIColor().colorFromHexString("D8DFEB"), alpha: 1.0, x: 6, y: 6, blur: 10, spread: 0)
+        dateSelectContainerView.layer.applyShadow(color: UIColor().colorFromHexString("D8DFEB"), alpha: 1.0, x: 6, y: 6, blur: 10, spread: 0)
         
         addBottomShadow()
         
@@ -121,9 +121,9 @@ class DateSelectebleView: UIView {
     
     private func addContainerShadow() {
     
-		let halfSize = U.UIHelper.AppDimensions.dateSelectableHeight / 2
+		let halfSize = AppDimensions.DateSelectController.dateSelectableHeight / 2
 		
-		helperView.frame = CGRect(x: 0, y: 0, width: U.screenWidth, height: U.UIHelper.AppDimensions.dateSelectableHeight)
+		helperView.frame = CGRect(x: 0, y: 0, width: U.screenWidth, height: AppDimensions.DateSelectController.dateSelectableHeight)
 		
         self.insertSubview(helperView, at: 0)
         
@@ -141,8 +141,8 @@ class DateSelectebleView: UIView {
     
     private func setupUI() {
         
-		startingDateTitileTextLabel.text = "From:"
-		endingDateTitleTextLabel.text = "To:"
+		startingDateTitileTextLabel.text = Localization.Main.Subtitles.from
+		endingDateTitleTextLabel.text = Localization.Main.Subtitles.to
 				
 		switch Screen.size {
 			case .small:

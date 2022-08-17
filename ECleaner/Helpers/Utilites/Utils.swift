@@ -14,41 +14,28 @@ class Utils {
 //    MARK: - DEFAULT VALUES -
     
     static let appName: String = Bundle.main.appName
-    
     static let userDefaults: UserDefaults = .standard
-    
     static let application: UIApplication = .shared
-    
     static let topLevel: UIWindow.Level = .statusBar
-    
     static let device: UIDevice = .current
-    
     static let appDelegate: AppDelegate = application.delegate as! AppDelegate
-    
+	static let scene = UIApplication.shared.connectedScenes.first
+	static let sceneDelegate: SceneDelegate = scene!.delegate as! SceneDelegate
     static let locale: Locale = .current
-    
     static let mainBundle: Bundle = .main
-    
     static let bundleIdentifier = mainBundle.bundleIdentifier
     
 //     MARK: - UI VALUES -
     
     static let mainScreen: UIScreen = .main
-    
     static let screenBounds: CGRect = mainScreen.bounds
-    
     static let screenHeight: CGFloat = screenBounds.height
-    
     static let screenWidth: CGFloat = screenBounds.width
-    
     static let ratio: CGFloat = U.screenWidth / U.screenHeight
-    
     static let window = U.application.windows.filter { $0.isKeyWindow}.first
-    
     static let windowScene = UIApplication.shared.connectedScenes
                     .filter { $0.activationState == .foregroundActive }
         .compactMap { $0 as? UIWindowScene }
-    
     static let keyWindow = UIApplication.shared.connectedScenes
             .filter({$0.activationState == .foregroundActive})
             .map({$0 as? UIWindowScene})
@@ -59,31 +46,38 @@ class Utils {
 //    MARK: - HELPERS -
     
     static let notificationCenter: NotificationCenter = .default
-    
     static let pasteboard = UIPasteboard.general
-    
     static let appSettings = UIApplication.openSettingsURLString
     
 //    MARK: - DEVICES -
-    
+	
+	static let statusBarHeight: CGFloat = UIApplication.shared.windows.first?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0
+	static let topSafeAreaInset: CGFloat = U.screenHeight < 600 ? 5 : 10
+	static let largeTitleTopSafeAreaInset: CGFloat = U.screenHeight < 600 ? 100 : 120
+	static let navigationBarHeight: CGFloat = 44.0 + topSafeAreaInset
+	static let statusAndNavigationBarsHeight: CGFloat = statusBarHeight + navigationBarHeight
+	static let advertisementHeight: CGFloat = 50
+	static let actualScreen: CGRect = {
+		var rect = mainScreen.bounds
+		rect.size.height -= statusAndNavigationBarsHeight
+		return rect
+	}()
+	
+	static let tabBarHeight: CGFloat = 49.0
+	static let toolBarHeight: CGFloat = 44.0
     static let isIpad: Bool = UIDevice.current.userInterfaceIdiom == .pad
-    
     static let isSmallDevice: Bool = mainScreen.bounds.size.height <= 667
-    
     static let isLandscapeOrientation = device.orientation.isLandscape
-    
     static public var hasTopNotch: Bool {
         return UIApplication.shared.windows.first?.safeAreaInsets.top ?? 0 > 20
     }
-    
     static public var bottomSafeAreaHeight: CGFloat {
         return UIApplication.shared.windows.first?.safeAreaInsets.bottom ?? 0
     }
-	
 	static public var topSafeAreaHeight: CGFloat {
 		return UIApplication.shared.windows.first?.safeAreaInsets.top ?? 0
 	}
-    
+
     static let isSimulator = UIDevice.isSimulator
     
 //    MARK: - DATE and TIME
@@ -125,7 +119,7 @@ extension Utils {
             completion()
         }
     }
-
+	
     /// main
     static func UI(_ block: @escaping () -> Void) {
         DispatchQueue.main.async(execute: block)
@@ -186,7 +180,11 @@ func getTheMostTopController(controller: UIViewController? = UIApplication.share
         while let presentedViewController = rootController.presentedViewController {
             return presentedViewController
         }
-    }
+	} else if let keyWindowContreoller = U.keyWindow?.rootViewController {
+		while let presentedViewController =  keyWindowContreoller.presentedViewController {
+			return presentedViewController
+		}
+	}
     return controller!
 }
 

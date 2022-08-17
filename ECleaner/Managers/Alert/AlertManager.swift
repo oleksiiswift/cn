@@ -12,264 +12,228 @@ enum ElementhCount {
     case one
     case many
     case other
+	
+	static func getRaw(from int: Int) -> ElementhCount {
+		return int == 1 ? .one : .many
+	}
 }
 
 typealias A = AlertManager
-class AlertManager: NSObject {
-    
-    private static func showAlert(type: AlertType, actions: [UIAlertAction], cancelCompletion: (() -> Void)? = nil) {
-        
-		showAlert(type.alertTitle, message: type.alertMessage, actions: actions, withCancel: type.withCancel, style: type.alertStyle) {
-            cancelCompletion?()
-        }
-    }
-    
-    /// default alert
-	static func showAlert(_ title: String? = nil, message: String? = nil, actions: [UIAlertAction] = [], withCancel: Bool = true, style: UIAlertController.Style, completion: (() -> Void)? = nil) {
-	
-		let alert = UIAlertController(title: title, message: message, preferredStyle: style)
-        
-		let cancelAction = UIAlertAction(title: AlertHandler.AlertActionsButtons.cancel.title, style: .cancel) { action in
-            completion?()
-        }
-        
-        if actions.isEmpty {
-			let alertAction = UIAlertAction(title: AlertHandler.AlertActionsButtons.ok.title, style: .default) { _ in
-                completion?()
-            }
-            alert.addAction(alertAction)
-        } else {
-            actions.forEach { (action) in
-                alert.addAction(action)
-            }
-        }
-        
-        if withCancel {
-            alert.addAction(cancelAction)
-        }
-		U.UI {
-			topController()?.present(alert, animated: true, completion: nil)			
-		}
-    }
-    
-    private static func showPermissionAlert(alerttype: AlertType, actions: [UIAlertAction], cancelAction: @escaping (_ isDennyAccess: Bool) -> Void) {
-        
-        let alertController = UIAlertController(title: alerttype.alertTitle, message: alerttype.alertMessage, preferredStyle: alerttype.alertStyle)
-        
-		let cancelAction = UIAlertAction(title: AlertHandler.AlertActionsButtons.cancel.title, style: .default) { (_) in
-            
-            cancelAction(false)
-        }
-        alertController.addAction(cancelAction)
-        actions.forEach { (action) in
-            alertController.addAction(action)
-        }
-        
-        U.UI {
-            topController()?.present(alertController, animated: true)
-        }
-    }
-}
+class AlertManager: NSObject {}
 
-//	MARK: - ACCESS ARTS, PERMISSION, SETTINGS, RESTRICTED -
+//		MARK: handle delete alert
 extension AlertManager {
 	
-	static func showResrictedAlert(by type: AlertType, completionHandler: @escaping () -> Void) {
+	public static func showDeleteAlert(with media: MediaContentType, of elementsCount: ElementhCount, completionHandler: @escaping () -> Void) {
 		
-		let settingsAction = UIAlertAction(title: AlertHandler.AlertActionsButtons.settings.title, style: .default) { _ in
-			U.openSettings()
-		}
-		
-		self.showAlert(type: type, actions: [settingsAction]) {
-			completionHandler()
-		}
-	}
-	
-    
-    static func showOpenSettingsAlert(_ alertType: AlertType) {
-        
-		let settingsAction = UIAlertAction(title: AlertHandler.AlertActionsButtons.settings.title, style: .default, handler: openSetting(action:))
-        
-        showPermissionAlert(alerttype: alertType, actions: [settingsAction]) { isCancel in
-            debugPrint(isCancel)
-        }
-    }
-    
-    private static func openSetting(action: UIAlertAction) {
-        if let url = URL(string: UIApplication.openSettingsURLString) {
-            UIApplication.shared.open(url, options: [:], completionHandler: nil)
-        }
-    }
-}
-
-//    MARK: - PHASSET ALERTS -
-extension AlertManager {
-	
-	static func deletePHAssets(of type: MediaContentType, of elementsCount: ElementhCount, completionHandler: @escaping () -> Void) {
-		
-		switch type {
+		switch media {
 			case .userPhoto:
-				if elementsCount == .many {
-					self.showDeletePHAssetAlert(of: .allowDeleteSelectedPhotos) {
-						completionHandler()
-					}
-				} else {
-					self.showDeletePHAssetAlert(of: .allowDeleteSelectedPhoto) {
-						completionHandler()
-					}
+				switch elementsCount {
+					case .one:
+						self.presentDeleteAlert(of: .deletePhoto) {
+							completionHandler()
+						}
+					case .many:
+						self.presentDeleteAlert(of: .deletePhotos) {
+							completionHandler()
+						}
+					case .other:
+						return
 				}
 			case .userVideo:
-				if elementsCount == .many {
-					self.showDeletePHAssetAlert(of: .allowDeleteSelectedVideos) {
-						completionHandler()
-					}
-				} else {
-					self.showDeletePHAssetAlert(of: .allowDeleteSelectedVideo) {
-						completionHandler()
-					}
+				switch elementsCount {
+					case .one:
+						self.presentDeleteAlert(of: .deleteVideo) {
+							completionHandler()
+						}
+					case .many:
+						self.presentDeleteAlert(of: .deleteVideos) {
+							completionHandler()
+						}
+					case .other:
+						return
+				}
+			case .userContacts:
+				switch elementsCount {
+					case .one:
+						self.presentDeleteAlert(of: .deleteContact) {
+							completionHandler()
+						}
+					case .many:
+						self.presentDeleteAlert(of: .deleteContacts) {
+							completionHandler()
+						}
+					case .other:
+						return
 				}
 			default:
 				return
 		}
 	}
 	
-	private static func showDeletePHAssetAlert(of alertType: AlertType, completionHandler: @escaping () -> Void) {
+	public static func showDeleteLocationsAlert(_ completionHandler: @escaping () -> Void) {
+		self.presentDeleteAlert(of: .deleteLocations) {
+			completionHandler()
+		}
+	}
+	
+	private static func presentDeleteAlert(of alertType: AlertType, completionHandler: @escaping () -> Void) {
 		
-		let confirmDeleteAction = UIAlertAction(title: alertType.alertConfrimButtonTitle, style: .default) { _ in
+		let description = alertType.deleteAlertDesctiprtion
+		let confirmAction = UIAlertAction(title: description.action, style: .default) { _ in
+			completionHandler()
+		}
+		self.presentDefaultAlert(title: description.title, message: description.description, actions: [confirmAction], style: alertType.alertStyle, withCancel: alertType.withCancel)
+	}
+}
+
+extension AlertManager {
+	
+	public static func showDeepCleanProcessing(with state: DeepCleanCompleteStateHandler, completionHandler: (() -> Void)? = nil) {
+		let description = state.description
+		let action = UIAlertAction(title: description.action, style: .default) { _ in
+			completionHandler?()
+		}
+		self.presentDefaultAlert(title: description.title, message: description.description, actions: [action], style: .alert, withCancel: true)
+	}
+}
+
+extension AlertManager {
+	
+	public static func showOperationProcessing(with state: SearchOperationStateHandler, completionHandler: @escaping () -> Void) {
+		let description = state.description
+		
+		let action = UIAlertAction(title: description.action, style: .default) { _ in
 			completionHandler()
 		}
 		
-		showAlert(type: alertType, actions: [confirmDeleteAction])
+		self.presentDefaultAlert(title: description.title, message: description.description, actions: [action], style: .alert, withCancel: true)
 	}
 }
 
-//      MARK: - CONTACTS ALERT -
-extension AlertManager {
- 
-    /// `delete section`
-    static func showSuxxessfullDeleted(for contacts: ElementhCount, completion: (() -> Void)? = nil) {
-        
-        let alertType: AlertType = contacts == .many ? .suxxessDeleteContacts : .suxxessDeleteContact
-        showAlert(type: alertType, actions: []) {
-            completion?()
-        }
-    }
-    
-    static func showDeleteContactsAlerts(for contacts: ElementhCount, completion: @escaping () -> Void) {
-    
-        let alertType: AlertType = contacts == .one ? .deleteContact : .deleteContacts
-        
-		let allowDeleteAction = UIAlertAction(title: AlertHandler.AlertActionsButtons.delete.title, style: .default) { _ in
-            completion()
-        }
-        
-        showAlert(type: alertType, actions: [allowDeleteAction])
-    }
-    
-    /// `merge section`
-    static func showSuxxessFullMerged(for section: ElementhCount, completion: (() -> Void)? = nil) {
-        let alertType: AlertType = section == .many ? .suxxessMergedContacts : .suxxessMergedContact
-        showAlert(type: alertType, actions: []) {
-            completion?()
-        }
-    }
-    
-    static func showMergeContactsAlert(for sections: ElementhCount, comletion: @escaping () -> Void) {
-        
-        let alertType: AlertType = sections == .one ? .mergeContact : .mergeContacts
-        
-		let allowMergeContacts = UIAlertAction(title: AlertHandler.AlertActionsButtons.merge.title, style: .default) { _ in
-            comletion()
-        }
-        
-        showAlert(type: alertType, actions: [allowMergeContacts])
-    }
-    
-    static func showEmptyContactsToPresent(of type: AlertType, completion: @escaping () -> Void) {
-        
-		ErrorHandler.shared.showEmptySearchResultsFor(type) {
-			completion()
-		}
-    }
-}
-
-//		MARK: - stop search alerts -
-extension AlertManager {
-	
-	static func showStopDeepCleanSearchProcess(_ completion: @escaping () -> Void) {
-		
-		let stopDeepCleanAlertAction = UIAlertAction(title: AlertHandler.AlertActionsButtons.stop.title, style: .default) { _ in
-			completion()
-		}
-		
-		showAlert(type: .setBreakDeepCleanSearch, actions: [stopDeepCleanAlertAction], cancelCompletion: nil)
-	}
-	
-	static func showStopSingleSearchProcess(_ completion: @escaping () -> Void) {
-		
-		let stopSingleCleanAlertAction = UIAlertAction(title: AlertHandler.AlertActionsButtons.stop.title, style: .default) { _ in
-			completion()
-		}
-		showAlert(type: .setBreakSingleCleanSearch, actions: [stopSingleCleanAlertAction], cancelCompletion: nil)
-	}
-	
-	static func showStopSmartSingleSearchProcess(_ completion: @escaping () -> Void) {
-		let stopSmartSingleCleanAlertAction = UIAlertAction(title: AlertHandler.AlertActionsButtons.stop.title, style: .default) { _ in
-			completion()
-		}
-		
-		showAlert(type: .setBreakSmartSingleCleanSearch, actions: [stopSmartSingleCleanAlertAction], cancelCompletion: nil)
-	}
-	
-	static func showStopDeepCleanProcessing(_ completion: @escaping () -> Void) {
-		
-		let stopDeepCleanAlertAction = UIAlertAction(title: AlertHandler.AlertActionsButtons.stop.title, style: .default) { _ in
-			completion()
-		}
-		showAlert(type: .setBreakDeepCleanDelete, actions: [stopDeepCleanAlertAction], cancelCompletion: nil)
-	}
-	
-	static func showQuiteDeepCleanResults(_ completion: @escaping () -> Void) {
-	
-		let quiteDeepCleanAlertAction = UIAlertAction(title: AlertHandler.AlertActionsButtons.exit.title, style: .default) { _ in
-			completion()
-		}
-		
-		showAlert(type: .resetDeepCleanResults, actions: [quiteDeepCleanAlertAction], cancelCompletion: nil)
-	}
-}
 
 extension AlertManager {
 	
-	public static func showSelectAllStarterAlert(for type: PhotoMediaType, completionHandler: @escaping () -> Void) {
-		
-		let alertAction = UIAlertAction(title: AlertHandler.AlertActionsButtons.selectAll.title, style: .default) { _ in
+	public static func showAlert(for alertType: AlertType, completionHandler: @escaping () -> Void) {
+		let description = alertType.alertDescription
+		let confirmAction = UIAlertAction(title: description.action, style: .default) { _ in
 			completionHandler()
 		}
-		
-		let alertMessage = AlertHandler.getSelectableAutimaticAletMessage(for: type)
-		
-		
-		showAlert("Select Items?", message: alertMessage, actions: [alertAction], withCancel: true, style: .alert, completion: nil)
+		self.presentDefaultAlert(title: description.title, message: description.description, actions: [confirmAction], style: alertType.alertStyle, withCancel: alertType.withCancel)
 	}
 }
 
+
+	//		MARK: handle error results, error for data
+extension AlertManager {
+	
+	public static func presentErrorAlert(with description: ErrorDescription, completionHandler: (() -> Void)? = nil) {
+		
+		let alertController = UIAlertController(title: description.title, message: description.message, preferredStyle: .alert)
+		let alertAction = UIAlertAction(title: description.buttonTitle, style: .default) { _ in
+			completionHandler?()
+		}
+		alertController.addAction(alertAction)
+		
+		DispatchQueue.main.async {
+			if let topController = getTheMostTopController() {
+				topController.present(alertController, animated: true)
+			}
+		}
+	}
+}
+
+//		MARK: compression action sheet
 extension AlertManager {
 	
 	public static func showCompressionVideoFileComplete(fileSize: String, shareCompletionHandler: @escaping () -> Void, savedInPhotoLibraryCompletionHandler: @escaping () -> Void) {
-		
-		let shareAction = UIAlertAction(title: AlertHandler.AlertActionsButtons.share.title,
-										style: .default) { _ in
+		let alertType: AlertType = .compressionvideoFileComplete
+		let title = alertType.alertTitle
+		let message = alertType.alertMessage + fileSize
+		let shareAction = UIAlertAction(title: LocalizationService.Buttons.getButtonTitle(of: .share), style: .default) { _ in
 			shareCompletionHandler()
 		}
-		let saveAction = UIAlertAction(title: AlertHandler.AlertActionsButtons.save.title,
-									   style: .default) { _ in
+		let saveAction = UIAlertAction(title: LocalizationService.Buttons.getButtonTitle(of: .save), style: .default) { _ in
 			savedInPhotoLibraryCompletionHandler()
 		}
+		self.presentDefaultAlert(title: title, message: message, actions: [shareAction, saveAction], style: alertType.alertStyle, withCancel: true)
+	}
+}
+
+extension AlertManager {
 	
-		let type: AlertType = .compressionvideoFileComplete
-		let message = type.alertMessage! + fileSize
+	private static func presentDefaultAlert(title: String, message: String, actions: [UIAlertAction], style: UIAlertController.Style, withCancel: Bool) {
+		let alertController = UIAlertController(title: title, message: message, preferredStyle: style)
+		actions.forEach { action in
+			alertController.addAction(action)
+		}
+		let cancelAction = UIAlertAction(title: LocalizationService.Buttons.getButtonTitle(of: .cancel), style: .cancel)
+		withCancel ? alertController.addAction(cancelAction) : ()
+		U.UI {
+			if let topController = getTheMostTopController() {
+				topController.present(alertController, animated: true, completion: nil)
+			}
+		}
+	}
+}
+
+
+extension AlertManager {
+	
+	public static func showPurchaseAlert(of errorType: ErrorHandler.SubscriptionError, at viewController: UIViewController, expireDate: String? = nil) {
 		
-		showAlert(type.alertTitle, message: message, actions: [shareAction, saveAction], withCancel: type.withCancel, style: type.alertStyle) {}
+		let alertDescription = errorType.alertDescription
+		let confirmAction = UIAlertAction(title: alertDescription.action, style: .default) { _ in }
+		
+		var message: String {
+			if let expireDate = expireDate {
+				return Localization.Subscription.Premium.expireSubscription + " " + expireDate
+			} else {
+				return alertDescription.description
+			}
+		}
+		
+		let alertController = UIAlertController(title: alertDescription.title, message: message, preferredStyle: .alert)
+		alertController.addAction(confirmAction)
+		DispatchQueue.main.async {
+			viewController.present(alertController, animated: true)
+		}
+	}
+}
+
+extension AlertManager {
+	
+	public static func showNetworkError(with description: AlertDescription, at viewController: UIViewController) {
+		let alertController = UIAlertController(title: description.title, message: description.description, preferredStyle: .alert)
+		let action = UIAlertAction(title: description.action, style: .default) { _ in }
+		alertController.addAction(action)
+		DispatchQueue.main.async {
+			viewController.present(alertController, animated: true)
+		}
+	}
+}
+
+extension AlertManager {
+	
+	public static func showLimitAccessAlert(with description: AlertDescription, at viewController: UIViewController, completionHandler: @escaping () -> Void) {
+		
+		let title = !description.title.isEmpty ? description.title : nil
+		
+		let alertController = UIAlertController(title: title,
+												message: description.description,
+												preferredStyle: .alert)
+		let action = UIAlertAction(title: description.action, style: .default) { _ in
+			completionHandler()
+		}
+		alertController.addAction(action)
+		
+		if !description.cancel.isEmpty {
+			let cancel = UIAlertAction(title: description.cancel, style: .cancel) { _ in }
+			alertController.addAction(cancel)
+		}
+		
+		DispatchQueue.main.async {
+			viewController.present(alertController, animated: true)
+		}
 	}
 }

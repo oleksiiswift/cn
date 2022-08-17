@@ -34,54 +34,6 @@ class ContactsManager {
 		CNContactImageDataAvailableKey as CNKeyDescriptor,
 		CNContactImageDataKey as CNKeyDescriptor
 	]
-	
-//    MARK: - contacts store auth status -
-		/// auth for contacts data
-	private func checkContactStoreAuthStatus(completion: @escaping(_ grantAccess: Bool) -> Void) {
-		completion(CNContactStore.authorizationStatus(for: .contacts) == .authorized)
-	}
-	
-		/// request access for user contacts
-	private func requestAccesss(_ requestGranted: @escaping(Bool, Error?) -> ()) {
-		CNContactStore().requestAccess(for: .contacts) { grandted, error in
-			requestGranted(grandted, error)
-		}
-	}
-	
-		/// `public external status check metods
-		/// check status and if restricted returned to settings or ask for permision
-	public func checkStatus(completionHandler: @escaping ([String: [CNContact]]) -> ()) {
-		
-		switch CNContactStore.authorizationStatus(for: .contacts) {
-			case .denied, .restricted:
-				A.showResrictedAlert(by: .contactsRestricted) {}
-			case .notDetermined:
-				self.requestAccesss { [unowned self] granted, error in
-					self.checkStatus(completionHandler: completionHandler)
-				}
-			case .authorized:
-				self.contactsProcessingStore()
-			@unknown default:
-				A.showResrictedAlert(by: .contactsRestricted) {}
-		}
-	}
-	
-	private var isStoreOpen: Bool {
-		
-		switch CNContactStore.authorizationStatus(for: .contacts) {
-				
-			case .denied, .restricted:
-				return false
-			case .notDetermined:
-				self.requestAccesss { granted, error in }
-				return false
-			case .authorized:
-				return true
-			@unknown default:
-				A.showResrictedAlert(by: .contactsRestricted) {}
-		}
-		return false
-	}
 }
 
 //		MARK: - fetching contacts -
@@ -102,20 +54,6 @@ extension ContactsManager {
 			debugPrint(error.localizedDescription)
 			completionHandler(.failure(error))
 		}
-	}
-	
-		/// `all containers`
-	private func getContactsContainers() -> [CNContainer] {
-		
-		let contactStore = CNContactStore()
-		var contactsContainers: [CNContainer] = []
-		
-		do {
-			contactsContainers = try contactStore.containers(matching: nil)
-		} catch {
-			self.checkStatus { _ in }
-		}
-		return contactsContainers
 	}
 	
 		/// `sort contacts` by alphabetical results (helper private function)
@@ -175,7 +113,7 @@ extension ContactsManager {
 		/// fetch all contacts
 	public func getAllContacts(_ completionHandler: @escaping ([CNContact]) -> Void) {
 		
-		guard isStoreOpen else { return }
+		 guard ContactsPermissions().authorized else { return }
 		
 		U.BG {
 			self.fetchContacts(keys: self.fetchingKeys) { result in
@@ -196,22 +134,20 @@ extension ContactsManager {
 		let predicate = CNContact.predicateForContacts(withIdentifiers: identifiers)
 		var contacts: [CNContact] = []
 		
-		if isStoreOpen {
-			let contactStore: CNContactStore = CNContactStore()
-			
-			do {
-				contacts = try contactStore.unifiedContacts(matching: predicate, keysToFetch: self.fetchingKeys)
-				if !contacts.isEmpty {
-					complationHandler(contacts)
-				}
-			} catch {
-				complationHandler([])
+		guard ContactsPermissions().authorized else { return }
+		let contactStore: CNContactStore = CNContactStore()
+		
+		do {
+			contacts = try contactStore.unifiedContacts(matching: predicate, keysToFetch: self.fetchingKeys)
+			if !contacts.isEmpty {
+				complationHandler(contacts)
 			}
+		} catch {
+			complationHandler([])
 		}
 	}
 	
-	
-	private func contactsProcessingStore() {
+	public func contactsProcessingStore() {
 		
 		self.getAllContacts { contacts in
 			U.UI {
@@ -330,7 +266,7 @@ extension ContactsManager {
 														   duplicatedEmailGrops: @escaping ([ContactsGroup]) -> Void) {
 		
 		self.getAllContacts { contacts in
-			var numbersOfOperations = 4
+			var numbersOfOperations = 0
 				/// returned contacts all containers
 			allContacts(contacts)
 			
@@ -530,7 +466,7 @@ extension ContactsManager {
 				completionHandler([], operation.isCancelled)
 				return
 			}
-			
+		
 			let deleyInterval: Double = cleanProcessingType == .background ? 0 : 1
 			let sleepInterval: UInt32 = cleanProcessingType == .background ? 0 : 1
 			
@@ -540,11 +476,18 @@ extension ContactsManager {
 			var contactsGroup: [ContactsGroup] = []
 			let emptyIdentifier = ContactsCountryIdentifier(region: "", countryCode: "")
 			
+//			///`try handle telegram` - handle telegram contacts
+//			let onlyTelegramContacts = contacts.filter({$0.urlAddresses.contains(where: {$0.label == C.key.keyDescriptor.telegram})})
+//			let onlyTelegramContactsName =  ContactasCleaningType.telegram.rawValue
+//			let onlyTelegramGroup = ContactsGroup(name: onlyTelegramContactsName, contacts: onlyTelegramContacts, groupType: .telegram, countryIdentifier: emptyIdentifier)
+//			onlyTelegramContacts.count != 0 ? contactsGroup.append(onlyTelegramGroup) : ()
+			
 				/// `only name` group
-			let onlyNameContacts = contacts.filter({ $0.phoneNumbers.count == 0 && $0.emailAddresses.count == 0})
+			let onlyNameContacts = contacts.filter({ $0.phoneNumbers.count == 0 && $0.emailAddresses.count == 0 && !$0.urlAddresses.contains(where: {$0.label == C.key.keyDescriptor.telegram})})
 			let onlyNameGroupName = ContactasCleaningType.onlyName.rawValue
 			let onlyNameGroup = ContactsGroup(name: onlyNameGroupName, contacts: onlyNameContacts, groupType: .onlyName, countryIdentifier: emptyIdentifier)
-			
+			debugPrint("cont \(contactsGroup)")
+			debugPrint("onlyNameGroup -> \(onlyNameGroup) \(onlyNameGroup.contacts.count)")
 			onlyNameContacts.count != 0 ? contactsGroup.append(onlyNameGroup) : ()
 		
 				/// `incomplete name` group
@@ -553,6 +496,8 @@ extension ContactsManager {
 			let incompleteNameContacts = emptyNameContacts.filter({$0.phoneNumbers.count != 0 && $0.emailAddresses.count != 0} )
 			
 			let emptyNameGroup = ContactsGroup(name: emptyNameGroupName, contacts: incompleteNameContacts, groupType: .emptyName, countryIdentifier: emptyIdentifier)
+			debugPrint("cont \(contactsGroup)")
+			debugPrint("emptyNameGroup -> \(emptyNameGroup) \(emptyNameGroup.contacts.count)")
 			
 			emptyNameContacts.count != 0 ? contactsGroup.append(emptyNameGroup) : ()
 			
@@ -560,6 +505,9 @@ extension ContactsManager {
 			let onlyEmailsContacts = emptyNameContacts.filter({$0.phoneNumbers.count == 0 && $0.emailAddresses.count != 0})
 			let onlyEmailGroupName = ContactasCleaningType.onlyEmail.rawValue
 			let onlyEmailGroup = ContactsGroup(name: onlyEmailGroupName, contacts: onlyEmailsContacts, groupType: .onlyEmail, countryIdentifier: emptyIdentifier)
+			debugPrint("cont \(contactsGroup)")
+			debugPrint("onlyEmailGroup -> \(onlyEmailGroup) \(onlyEmailGroup.contacts.count)")
+			
 			
 			onlyEmailsContacts.count != 0 ? contactsGroup.append(onlyEmailGroup) : ()
 			
@@ -567,6 +515,8 @@ extension ContactsManager {
 			let onlyPhoneNumbersContacts = emptyNameContacts.filter({$0.phoneNumbers.count != 0 && $0.emailAddresses.count == 0})
 			let onlyPhoneNumbersGroupName = ContactasCleaningType.onlyPhone.rawValue
 			let onlyPhoneNumbersGroup = ContactsGroup(name: onlyPhoneNumbersGroupName, contacts: onlyPhoneNumbersContacts, groupType: .onlyPhone, countryIdentifier: emptyIdentifier)
+			debugPrint("cont \(contactsGroup)")
+			debugPrint("onlyPhoneNumbersGroup -> \(onlyPhoneNumbersGroup) \(onlyPhoneNumbersGroup.contacts.count)")
 			
 			onlyPhoneNumbersContacts.count != 0 ? contactsGroup.append(onlyPhoneNumbersGroup) : ()
 			
@@ -574,6 +524,8 @@ extension ContactsManager {
 			let wholeEmptyContacts = emptyNameContacts.filter({$0.phoneNumbers.count == 0 && $0.emailAddresses.count == 0})
 			let wholeEmptyContactsName = ContactasCleaningType.wholeEmpty.rawValue
 			let wholeEmptyGroup = ContactsGroup(name: wholeEmptyContactsName, contacts: wholeEmptyContacts, groupType: .wholeEmpty, countryIdentifier: emptyIdentifier)
+			debugPrint("cont \(contactsGroup)")
+			debugPrint("wholeEmptyGroup -> \(wholeEmptyGroup) \(wholeEmptyGroup.contacts.count)")
 			
 			wholeEmptyContacts.count != 0 ? contactsGroup.append(wholeEmptyGroup) : ()
 			
@@ -584,13 +536,23 @@ extension ContactsManager {
 			}
 			
 			sleep(sleepInterval)
+			
+			let dispatchGroup = DispatchGroup()
+			let dispatchQueue = DispatchQueue(label: "fake loop")
+			
 			for i in 0...contacts.count - 1 {
+				dispatchGroup.enter()
 				self.sendNotification(processing: cleanProcessingType, deepCleanType: .emptyContacts, singleCleanType: .emptyContacts, status: .progress, totalItems: contacts.count, currentIndex: i)
+				dispatchGroup.leave()
 			}
 			
-			self.sendNotification(processing: cleanProcessingType, deepCleanType: .emptyContacts, singleCleanType: .emptyContacts, status: .result, totalItems: contacts.count, currentIndex: contacts.count)
-			U.delay(deleyInterval) {
-				completionHandler(contactsGroup, operation.isCancelled)
+			dispatchGroup.notify(queue: dispatchQueue) {
+				U.delay(1) {
+					self.sendNotification(processing: cleanProcessingType, deepCleanType: .emptyContacts, singleCleanType: .emptyContacts, status: .result, totalItems: contacts.count, currentIndex: contacts.count)
+					U.delay(deleyInterval) {
+						completionHandler(contactsGroup, operation.isCancelled)
+					}
+				}
 			}
 		}
 		emptyContactsOperation.name = COT.emptyContactOperation.rawValue
@@ -825,12 +787,12 @@ extension ContactsManager {
 			var indexesForUpdate: [Int] = []
 			
 			let dispatchGroup = DispatchGroup()
-			let dispatchQuoue = DispatchQueue(label: C.key.dispatch.mergeContactsQueue)
+			let dispatchQueue = DispatchQueue(label: C.key.dispatch.mergeContactsQueue)
 			let dispatchSemaphore = DispatchSemaphore(value: 0)
 			
 			var currentMergeProcessingIndex = 0
 			
-			dispatchQuoue.async {
+			dispatchQueue.async {
 				for index in indexes {
 					dispatchGroup.enter()
 					self.contactsMerge(in: groups[index]) { mutableContactID, removebleContacts in
@@ -850,7 +812,7 @@ extension ContactsManager {
 				}
 			}
 			
-			dispatchGroup.notify(queue: dispatchQuoue) {
+			dispatchGroup.notify(queue: dispatchQueue) {
 				U.delay(0.3) {
 					let contacts = Array(Set(deletingContacts))
 					currentCompletionIndex(.deleteContacts, 0, contacts.count)
@@ -943,7 +905,51 @@ extension ContactsManager {
 				mutableContact.jobTitle = jobTitle.bestElement ?? ""
 				mutableContact.departmentName = departmentName.bestElement ?? ""
 				
-				phoneNumbers.forEach { mutableContact.phoneNumbers.append($0) }
+				var uniqPhoneNumbers = phoneNumbers.unique(map: {$0.value.stringValue})
+				
+				if uniqPhoneNumbers.count > 1 {
+					
+					for (lhs,rhs) in zip(uniqPhoneNumbers, uniqPhoneNumbers.dropFirst()) {
+						let left = lhs.value.stringValue
+						let right = rhs.value.stringValue
+						
+						if !left.removeNonNumeric().isEmpty && !right.removeNonNumeric().isEmpty {
+							
+							let distance = Utils.levenshtein(aStr: lhs.value.stringValue.removeNonNumeric(), bStr: rhs.value.stringValue.removeNonNumeric())
+							
+							if distance == 0 {
+								if left.count > right.count {
+									if let index = uniqPhoneNumbers.firstIndex(of: rhs) {
+										uniqPhoneNumbers.remove(at: index)
+									}
+								} else {
+									if let index = uniqPhoneNumbers.firstIndex(of: lhs) {
+										uniqPhoneNumbers.remove(at: index)
+									}
+								}
+							} else if left.count > right.count && distance < 4 {
+								if let index = uniqPhoneNumbers.firstIndex(of: rhs) {
+									uniqPhoneNumbers.remove(at: index)
+								}
+							} else if left.count < right.count && distance < 4 {
+								if let index = uniqPhoneNumbers.firstIndex(of: lhs) {
+									uniqPhoneNumbers.remove(at: index)
+								}
+							}
+						} else if left.removeNonNumeric().isEmpty {
+							if let index = uniqPhoneNumbers.firstIndex(of: lhs) {
+								uniqPhoneNumbers.remove(at: index)
+							}
+						} else if right.removeNonNumeric().isEmpty {
+							if let index = uniqPhoneNumbers.firstIndex(of: rhs) {
+								uniqPhoneNumbers.remove(at: index)
+							}
+						}
+					}
+				}
+			
+				mutableContact.phoneNumbers = uniqPhoneNumbers.map({ CNLabeledValue(label: $0.label, value: $0.value )})
+
 				emailAddresses.forEach { mutableContact.emailAddresses.append($0) }
 				postalAddresses.forEach { mutableContact.postalAddresses.append($0) }
 				urlAddresses.forEach { mutableContact.urlAddresses.append($0) }
@@ -1123,7 +1129,7 @@ extension ContactsManager {
 			for contact in contacts {
 				dispatchGroup.enter()
 				self.deleteContact(contact) { success in
-					
+					debugPrint(CNContactFormatter.string(from: contact, style: .fullName) ?? "no contact name")
 					if deleteContactsOperation.isCancelled {
 						completionHandler(errorsCount)
 						return
@@ -1180,12 +1186,12 @@ extension ContactsManager {
 	public func deleteAllContatsFromStore() {
 		self.getAllContacts { contacts in
 			var cont = 0
-			for contact in contacts {
-				self.deleteContact(contact) { success in
-					cont += 1
-					debugPrint("deleting is \(success)")
-					debugPrint("deleted \(cont) contacts")
-				}
+			self.deleteAsyncContacts(contacts) { currentDeletingContactIndex in
+				cont += 1
+				debugPrint("")
+				debugPrint("deleting is success, deleted \(cont) contacts")
+			} completionHandler: { errorsCount in
+				debugPrint(errorsCount)
 			}
 		}
 	}
@@ -1331,7 +1337,7 @@ extension ContactsManager {
 
 extension ContactsManager {
 	
-	private func sendNotification(processing: CleanProcessingPresentType, deepCleanType: DeepCleanNotificationType = .none, singleCleanType: SingleContentSearchNotificationType = .none, status: ProcessingProgressOperationState, totalItems: Int, currentIndex: Int) {
+	public func sendNotification(processing: CleanProcessingPresentType, deepCleanType: DeepCleanNotificationType = .none, singleCleanType: SingleContentSearchNotificationType = .none, status: ProcessingProgressOperationState, totalItems: Int, currentIndex: Int) {
 		
 		switch processing {
 			case .deepCleen:
@@ -1374,3 +1380,4 @@ extension ContactsManager {
 		self.progressSearchNotificationManager.sendSingleSearchProgressNotification(notificationtype: type, status: state, totalProgressItems: 0, currentProgressItem: 0)
 	}
 }
+

@@ -10,6 +10,7 @@ import PhotosUI
 import Photos
 import CocoaImageHashing
 import AVKit
+import MapKit
 
 enum AssetsGroupType {
 	case photo
@@ -86,62 +87,7 @@ class PhotoManager {
 
 	private var activePHAssetRequests: [String: PHImageRequestID] = [:]
 	private var activeAVAssetRequests: [String: PHImageRequestID] = [:]
-	
-//		    MARK: - authentification -
-	private func photoLibraryRequestAuth(completion: @escaping (_ status: Bool) -> Void ) {
-		if #available(iOS 14, *) {
-			PHPhotoLibrary.requestAuthorization(for: .readWrite) { status in
-				switch status {
-					case .notDetermined:
-						debugPrint("notDetermined")
-						completion(false)
-					case .restricted:
-						debugPrint("restricted")
-						completion(false)
-					case .denied:
-						debugPrint("denied")
-						completion(false)
-					case .authorized:
-						debugPrint("authorized")
-						completion(true)
-					case .limited:
-						debugPrint("limited")
-						completion(true)
-					@unknown default:
-						debugPrint("default")
-				}
-			}
-		} else {
-			if PHPhotoLibrary.authorizationStatus() == PHAuthorizationStatus.authorized {
-				completion(true)
-			} else {
-				PHPhotoLibrary.requestAuthorization { status in
-					if status == PHAuthorizationStatus.authorized {
-						completion(true)
-					} else {
-						completion(false)
-					}
-				}
-			}
-		}
-	}
-	
-	public func checkPhotoLibraryAccess() {
-		self.photoLibraryRequestAuth { accessGranted in
-			if accessGranted {
-				self.getPhotoLibraryContentAndCalculateSpace()
-			} else {
-				A.showResrictedAlert(by: .photoLibraryRestricted) {}
-			}
-		}
-	}
-	
-	public func requestPhotoLibraryAccess(_ completion: @escaping () -> Void) {
-		self.photoLibraryRequestAuth { accessGranted in
-			accessGranted ? completion() : A.showResrictedAlert(by: .photoLibraryRestricted) {}
-		}
-	}
-	
+		
 	public func saveVideoAsset(from url: URL, completionHandler: @escaping (_ identifier: String? ,_ isSaved: Bool) -> Void) {
 		self.fetchManager.saveAVAsset(with: url) { identifier, completed, error in
 			completionHandler(identifier, completed)
@@ -245,7 +191,7 @@ extension PhotoManager {
 	public func getPhotoLibraryPHAssetsEstimatedSizeOperation(estimatedComplitionHandler: @escaping (_ photosEstimatedSize: Int64,_ currentIndex: Int,_ totalFilesCount: Int) -> Void, completionHandler: @escaping (_ photosCollectionSize: Int64) -> Void) -> ConcurrentProcessOperation {
 		
 		let photolibraryOperation = ConcurrentProcessOperation { operation in
-			let timer = ParkBenchTimer()
+			let timer = BenchTimer()
 			var photoLibrararyPhotosSize: Int64 = 0
 			var currentProcessingIndex = 0
 			
@@ -284,16 +230,16 @@ extension PhotoManager {
 //										estimatedComplitionHandler(photoLibrararyPhotosSize, index, result.count)
 //									} else {
 										let fileSize = object.imageSize
-									debugPrint(fileSize, index)
+//									debugPrint(fileSize, index)
 										photoLibrararyPhotosSize += fileSize
 										estimatedComplitionHandler(photoLibrararyPhotosSize, index, result.count)
 //									}
 									currentProcessingIndex += 1
 									if currentProcessingIndex == result.count {
-										debugPrint("time -> \(timer.stop()), totalPhotoSize: \(U.getSpaceFromInt(photoLibrararyPhotosSize))")
+//										debugPrint("time -> \(timer.stop()), totalPhotoSize: \(U.getSpaceFromInt(photoLibrararyPhotosSize))")
 										completionHandler(photoLibrararyPhotosSize)
 									} else if index == result.count {
-										debugPrint("time -> \(timer.stop()), totalPhotoSize: \(U.getSpaceFromInt(photoLibrararyPhotosSize))")
+//										debugPrint("time -> \(timer.stop()), totalPhotoSize: \(U.getSpaceFromInt(photoLibrararyPhotosSize))")
 										completionHandler(photoLibrararyPhotosSize)
 									}
 								}
@@ -321,7 +267,7 @@ extension PhotoManager {
 															  completionHandler: @escaping (_ videosCollectionSize: Int64) -> Void) -> ConcurrentProcessOperation {
 		let photoLibraryOperation = ConcurrentProcessOperation { operation in
 			
-			let timer = ParkBenchTimer()
+			let timer = BenchTimer()
 			var photoLibrararyVideosSize: Int64 = 0
 			var currentProcessingIndex = 0
 			
@@ -366,7 +312,7 @@ extension PhotoManager {
 //									}
 //								} else {
 									let filetSize = object.imageSize
-									debugPrint(filetSize, index)
+//									debugPrint(filetSize, index)
 									photoLibrararyVideosSize += filetSize
 									estimatedComplition(photoLibrararyVideosSize, index, result.count)
 //								}
@@ -374,10 +320,10 @@ extension PhotoManager {
 								currentProcessingIndex += 1
 								
 								if currentProcessingIndex == result.count {
-									debugPrint("timer -> \(timer.stop()), totalVideoSize: \(U.getSpaceFromInt(photoLibrararyVideosSize))")
+//									debugPrint("timer -> \(timer.stop()), totalVideoSize: \(U.getSpaceFromInt(photoLibrararyVideosSize))")
 									completionHandler(photoLibrararyVideosSize)
 								} else if index == result.count {
-									debugPrint("timer -> \(timer.stop()), totalVideoSize: \(U.getSpaceFromInt(photoLibrararyVideosSize))")
+//									debugPrint("timer -> \(timer.stop()), totalVideoSize: \(U.getSpaceFromInt(photoLibrararyVideosSize))")
 									completionHandler(photoLibrararyVideosSize)
 								}
 //							}
@@ -438,9 +384,6 @@ extension PhotoManager {
 		self.clearPHAssetRequests()
 	}
 
-	
-	
-	
 	public func getPHAssetFileSizeFromData(_ asset: PHAsset, completionHandler: @escaping (_ fileSize: Int64) -> Void) {
 		
 		let options = PHImageRequestOptions()
@@ -739,7 +682,10 @@ extension PhotoManager {
 							})
 							
 							if groupAssets.count >= 2 {
-								duplicateVideoGroups.append(PhassetGroup(name: "", assets: groupAssets, creationDate: groupAssets.first?.creationDate))
+								let assets = Array(Set(groupAssets))
+								if assets.count >= 2 {
+									duplicateVideoGroups.append(PhassetGroup(name: "", assets: assets, creationDate: assets.first?.creationDate))
+								}
 							}
 							
 							self.sendNotification(processing: cleanProcessingType, deepCleanType: .duplicateVideo, singleCleanType: .duplicatedVideo, status: .compare, totalItems: duplicateVideoIDasTuples.count, currentIndex: duplicateVideoIDasTuples.count)
@@ -1495,6 +1441,63 @@ extension PhotoManager {
 			completionHandler(videoPHAssets)
 		}
 	}
+	
+	public func getVideoCollection(with key: SortingDesriptionKey, completionHandler: @escaping (_ phassets: [PHAsset]) -> Void) {
+		
+		switch key {
+			case .creationDate, .modificationDate, .duration:
+				self.fetchManager.fetchVideo(with: key) { videoPhassets in
+					completionHandler(videoPhassets)
+				}
+			case .pixelDimension:
+				self.fetchManager.fetchVideo(with: [.pixelWidth, .pixelHeight]) { videoPhasset in
+					completionHandler(videoPhasset)
+				}
+			case .fileSize:
+				self.fetchManager.fetchSortedVideoByFilesSize { videoPhasset in
+					DispatchQueue.main.async {
+						completionHandler(videoPhasset)
+					}
+				}
+			default:
+				return
+		}
+	}
+	
+	public func getPHAssetCollectionWithLocation(_ completionHandler: @escaping (_ phassets: [PHAsset],_ annotations: [MKAnnotation]) -> Void) {
+		self.fetchManager.fetchLocationsPhassets { phassets in
+			
+			var annotations = [MKAnnotation]()
+			let dispatchGroup = DispatchGroup()
+			let dispatchQueue = DispatchQueue(label: C.key.dispatch.parsingLocations)
+			let dispatchSemephore = DispatchSemaphore(value: 0)
+			
+			dispatchQueue.async {
+			
+				for asset in phassets {
+					dispatchGroup.enter()
+					autoreleasepool {
+						if let location = asset.location?.coordinate {
+							let annotation = Annotation()
+							annotation.phasset = asset
+							annotation.annotationID = asset.localIdentifier
+							annotation.image = asset.thumbnail
+							annotation.coordinate = location
+							annotations.append(annotation)
+							dispatchSemephore.signal()
+							dispatchGroup.leave()
+						}
+					}
+				}
+			}
+			
+			dispatchGroup.notify(queue: dispatchQueue) {
+				DispatchQueue.main.async {
+					completionHandler(phassets, annotations)
+				}
+			}
+		}
+	}
 }
 
 	/// `notification sections`
@@ -1576,6 +1579,28 @@ extension PhotoManager {
 		
 		deletePhassetsOperation.name = C.key.operation.name.deletePhassetsOperation
 		return deletePhassetsOperation
+	}
+	
+	public func removeSelectedPhassetLocation(assets: [PHAsset], completionHandler: @escaping ((Bool) -> Void)) -> ConcurrentProcessOperation {
+		
+		let removePhassetsLocationOperation = ConcurrentProcessOperation { operation in
+			
+			PHPhotoLibrary.shared().performChanges {
+				if operation.isCancelled {
+					return
+				}
+				
+				assets.forEach {
+					let request = PHAssetChangeRequest(for: $0)
+					request.location = nil
+				}
+			} completionHandler: { success, error in
+				print("Finished updating asset. " + (success ? "Success." : error!.localizedDescription))
+				completionHandler(success)
+			}
+		}
+		
+		return removePhassetsLocationOperation
 	}
 }
 
@@ -1737,9 +1762,9 @@ extension PhotoManager {
     
     public func sizeForAsset(_ asset: PHAsset, scale: CGFloat = 1) -> CGSize {
         
-        let assetPropotion = CGFloat(asset.pixelWidth) / CGFloat(asset.pixelHeight)
+        let assetProportion = CGFloat(asset.pixelWidth) / CGFloat(asset.pixelHeight)
         let imageHeight: CGFloat = 400
-        let imageWidth = floor(assetPropotion * imageHeight)
+        let imageWidth = floor(assetProportion * imageHeight)
         
         return CGSize(width: imageWidth * scale, height: imageHeight * scale)
     }

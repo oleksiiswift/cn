@@ -25,6 +25,7 @@ class SimpleAssetsListViewController: UIViewController {
 	var scrollView = UIScrollView()
 	
 	var selectedAssetsDelegate: DeepCleanSelectableAssetsDelegate?
+	private var subscriptionManager = SubscriptionManager.instance
 	private var photoManager = PhotoManager.shared
 	private var prefetchCacheImageManager = PhotoManager.shared.prefetchManager
 	private var progrssAlertController = ProgressAlertController.shared
@@ -82,8 +83,8 @@ extension SimpleAssetsListViewController {
 		
 		guard let selectedPHAssets = self.collectionView.indexPathsForSelectedItems else { return }
 		
-		A.deletePHAssets(of: self.contentType, of: selectedPHAssets.count > 1 ? .many : .one) {
-			let progress: ProgressAlertType = self.contentType == .userPhoto ? .deletePhotos : .deleteVideos
+		AlertManager.showDeleteAlert(with: self.contentType, of: .getRaw(from: selectedPHAssets.count)) {
+			let progress: ProgressAlertType = .progressDeleteAlertType(self.contentType)
 			self.progrssAlertController.showSimpleProgressAlerControllerBar(of: progress, from: self)
 			U.delay(1) {
 				self.deleteSelectedAssets()
@@ -154,11 +155,11 @@ extension SimpleAssetsListViewController {
 
     private func createCellContextMenu(for asset: PHAsset, at indexPath: IndexPath) -> UIMenu {
         
-		let fullScreenPreviewAction = UIAction(title: "full screen preview", image: I.systemItems.defaultItems.arrowUP) { _ in
+		let fullScreenPreviewAction = UIAction(title: LocalizationService.Buttons.getButtonTitle(of: .fullPreview), image: I.systemItems.defaultItems.arrowUP) { _ in
 			self.showFullScreenAssetPreviewAndFocus(at: indexPath)
         }
         
-		let deleteAssetAction = UIAction(title: "delete", image: I.systemItems.defaultItems.trashBin, attributes: .destructive) { _ in
+		let deleteAssetAction = UIAction(title: LocalizationService.Buttons.getButtonTitle(of: .delete), image: I.systemItems.defaultItems.trashBin, attributes: .destructive) { _ in
 			self.deleteSinglePhasset(at: indexPath)
         }
         
@@ -274,22 +275,13 @@ extension SimpleAssetsListViewController {
 		}
 		self.handleActionButtons()
 	}
-	
-	private func didSelectAll() {
-		
-		guard isDeepCleaningSelectableFlow else { return }
-		
-		A.showSelectAllStarterAlert(for: mediaType) {
-			self.setCollection(selected: true)
-		}
-	}
 }
 
 //		MARK: - handle select ui elements (bottom buttons, navigation)
 extension SimpleAssetsListViewController {
 	
 	private func handleSelectAllButtonState() {
-		let rightButtonTitle = isSelectedAllPhassets ? "deselect all" : "select all"
+		let rightButtonTitle = LocalizationService.Buttons.getButtonTitle(of: isSelectedAllPhassets ? .deselectAll : .selectAll)
 		self.navigationBar.changeHotRightTitle(newTitle: rightButtonTitle)
 	}
 	
@@ -313,21 +305,35 @@ extension SimpleAssetsListViewController {
 		guard !isDeepCleaningSelectableFlow else { return }
 		
 		if let selectedItems = collectionView.indexPathsForSelectedItems {
-			bottomMenuHeightConstraint.constant = selectedItems.count > 0 ? U.UIHelper.AppDimensions.bottomBarDefaultHeight : 0
+			
+			var bottomBarDefaultHeight: CGFloat {
+				switch Advertisement.manager.advertisementBannerStatus {
+					case .active:
+						return AppDimensions.BottomButton.bottomBarDefaultHeight - 20
+					case .hiden:
+						return AppDimensions.BottomButton.bottomBarDefaultHeight
+				}
+			}
+			
+			bottomMenuHeightConstraint.constant = selectedItems.count > 0 ? bottomBarDefaultHeight : 0
 			
 			switch mediaType {
 				case .singleRecentlyDeletedPhotos, .singleRecentlyDeletedVideos:
 					bottomButtonView.title("recover selected (\(selectedItems.count)")
 				default:
-					bottomButtonView.title("delete selected (\(selectedItems.count))")
+					bottomButtonView.title("\(LocalizationService.Buttons.getButtonTitle(of: .deleteSelected)) (\(selectedItems.count))")
 			}
 			
 			U.animate(0.35) {
-				self.collectionView.contentInset.bottom = selectedItems.count > 0 ? U.UIHelper.AppDimensions.bottomBarDefaultHeight + 10 + U.bottomSafeAreaHeight : 5
+				self.collectionView.contentInset.bottom = selectedItems.count > 0 ? bottomBarDefaultHeight + 10 + U.bottomSafeAreaHeight : 5
 				self.collectionView.layoutIfNeeded()
 				self.view.layoutIfNeeded()
 			}
 		}
+	}
+	
+	@objc func advertisementDidChange() {
+		self.handleBottomButtonMenu()
 	}
 	
 	private func handleForEmptyCollection() {
@@ -353,8 +359,29 @@ extension SimpleAssetsListViewController: PhotoCollectionViewCellDelegate {
 			self.collectionView.deselectItem(at: indexPath, animated: true)
 			self.collectionView.delegate?.collectionView?(self.collectionView, didDeselectItemAt: indexPath)
 		} else {
-			self.collectionView.selectItem(at: indexPath, animated: true, scrollPosition: [])
-			self.collectionView.delegate?.collectionView?(self.collectionView, didSelectItemAt: indexPath)
+			self.subscriptionManager.purchasePremiumHandler { status in
+				switch status {
+					case .lifetime, .purchasedPremium:
+						self.collectionView.selectItem(at: indexPath, animated: true, scrollPosition: [])
+						self.collectionView.delegate?.collectionView?(self.collectionView, didSelectItemAt: indexPath)
+					case .nonPurchased:
+						var limitType: LimitAccessType {
+							switch self.contentType {
+								case .userPhoto:
+									return .selectPhotos
+								default:
+									return .selectVideo
+							}
+						}
+						
+						if self.collectionView.indexPathsForSelectedItems?.count == LimitAccessType.selectAllPhotos.selectAllLimit {
+							self.subscriptionManager.limitVersionActionHandler(of: limitType, at: self)
+						} else {
+							self.collectionView.selectItem(at: indexPath, animated: true, scrollPosition: [])
+							self.collectionView.delegate?.collectionView?(self.collectionView, didSelectItemAt: indexPath)
+						}
+				}
+			}
 		}
 		self.handleActionButtons()
 	}
@@ -421,7 +448,7 @@ extension SimpleAssetsListViewController {
 	func setupUI() {
 		
 		bottomMenuHeightConstraint.constant = 0
-		navigationBarHeightConstraint.constant = U.UIHelper.AppDimensions.NavigationBar.navigationBarHeight
+		navigationBarHeightConstraint.constant = AppDimensions.NavigationBar.navigationBarHeight
 		
 		switch mediaType {
 			case .singleRecentlyDeletedPhotos, .singleRecentlyDeletedVideos:
@@ -438,7 +465,7 @@ extension SimpleAssetsListViewController {
 									  rightBarButtonImage: nil,
 									  contentType: contentType,
 									  leftButtonTitle: nil,
-									  rightButtonTitle: isSelectedAllPhassets ? "deselect all" : "select all")
+									  rightButtonTitle: LocalizationService.Buttons.getButtonTitle(of: isSelectedAllPhassets ? .deselectAll : .selectAll))
 	}
 	
 	private func setupDelegate() {
@@ -449,6 +476,8 @@ extension SimpleAssetsListViewController {
 	
 	private func setupObservers() {
 		UpdatingChangesInOpenedScreensMediator.instance.setListener(listener: self)
+		
+		U.notificationCenter.addObserver(self, selector: #selector(advertisementDidChange), name: .bannerStatusDidChanged, object: nil)
 	}
 }
 
@@ -462,11 +491,11 @@ extension SimpleAssetsListViewController: UICollectionViewDelegate, UICollection
 				flowLayout.isSquare = true
 				flowLayout.cellsPerRow = 2
 			case .singleScreenRecordings:
-				flowLayout.itemHieght = U.UIHelper.AppDimensions.CollectionItemSize.singleCollectionScreenRecordingItemSize
+				flowLayout.itemHieght = AppDimensions.CollectionItemSize.singleCollectionScreenRecordingItemSize
 			case .singleScreenShots:
-				flowLayout.itemHieght = U.UIHelper.AppDimensions.CollectionItemSize.singleCollectionScreenShotsItemSize
+				flowLayout.itemHieght = AppDimensions.CollectionItemSize.singleCollectionScreenShotsItemSize
 			case .singleLivePhotos:
-				flowLayout.itemHieght = U.UIHelper.AppDimensions.CollectionItemSize.singleCollectionLivePhotoItemSize
+				flowLayout.itemHieght = AppDimensions.CollectionItemSize.singleCollectionLivePhotoItemSize
 			default:
 				flowLayout.itemHieght = ((U.screenWidth - 30) / 3) / U.ratio
 		}
@@ -557,20 +586,66 @@ extension SimpleAssetsListViewController: UICollectionViewDelegate, UICollection
 	
 	func collectionView(_ collectionView: UICollectionView, previewForHighlightingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview? {
 		
-		guard let indexPath = configuration.identifier as? IndexPath,  let cell = collectionView.cellForItem(at: indexPath) else { return nil}
+		guard let indexPath = configuration.identifier as? IndexPath,  let cell = collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell else { return nil}
 		
-		let targetPreview = UITargetedPreview(view: cell)
+		let targetPreview = UITargetedPreview(view: cell.photoThumbnailImageView)
 		targetPreview.parameters.backgroundColor = .clear
-		
+		targetPreview.view.backgroundColor = .clear
 		return targetPreview
 	}
 	
 	func collectionView(_ collectionView: UICollectionView, previewForDismissingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview? {
-		guard let indexPath = configuration.identifier as? IndexPath, let cell = collectionView.cellForItem(at: indexPath) else { return nil}
+		guard let indexPath = configuration.identifier as? IndexPath, let cell = collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell else { return nil}
 		
-		let targetPreview = UITargetedPreview(view: cell)
+		let targetPreview = UITargetedPreview(view: cell.photoThumbnailImageView)
 		targetPreview.parameters.backgroundColor = .clear
+		targetPreview.view.backgroundColor = .clear
 		return targetPreview
+	}
+	
+	func collectionView(_ collectionView: UICollectionView, willDisplayContextMenu configuration: UIContextMenuConfiguration, animator: UIContextMenuInteractionAnimating?) {
+		DispatchQueue.main.async {
+			if let window = U.application.windows.first {
+				if let view = Utils.Manager.viewByClassName(view: window, className: "_UICutoutShadowView") {
+					view.isHidden = true
+				}
+				if let view = Utils.Manager.viewByClassName(view: window, className: "_UIPortalView") {
+					view.backgroundColor = .clear
+				}
+				if let view = Utils.Manager.viewByClassName(view: window, className: "_UIPlatterTransformView") {
+					view.backgroundColor = .clear
+				}
+				if let view = Utils.Manager.viewByClassName(view: window, className: "_UIPlatterClippingView") {
+					view.backgroundColor = .clear
+				}
+				if let view = Utils.Manager.viewByClassName(view: window, className: "_UIPlatterTransformView") {
+					view.backgroundColor = .clear
+				}
+			}
+		}
+	}
+	
+	func collectionView(_ collectionView: UICollectionView, willEndContextMenuInteraction configuration: UIContextMenuConfiguration, animator: UIContextMenuInteractionAnimating?) {
+		
+		DispatchQueue.main.async {
+			if let window = U.application.windows.first {
+				if let view = Utils.Manager.viewByClassName(view: window, className: "_UICutoutShadowView") {
+					view.isHidden = true
+				}
+				if let view = Utils.Manager.viewByClassName(view: window, className: "_UIPortalView") {
+					view.backgroundColor = .clear
+				}
+				if let view = Utils.Manager.viewByClassName(view: window, className: "_UIPlatterTransformView") {
+					view.backgroundColor = .clear
+				}
+				if let view = Utils.Manager.viewByClassName(view: window, className: "_UIPlatterClippingView") {
+					view.backgroundColor = .clear
+				}
+				if let view = Utils.Manager.viewByClassName(view: window, className: "_UIPlatterTransformView") {
+					view.backgroundColor = .clear
+				}
+			}
+		}
 	}
 }
 
@@ -586,7 +661,7 @@ extension SimpleAssetsListViewController {
 		let delta = abs(preheatRect.midY - previousPreheatRect.midY)
 		guard delta > view.bounds.height / 3 else { return }
 		
-		let (addedRects, removedRects) = differencesBetweenRects(previousPreheatRect, preheatRect)
+		let (addedRects, removedRects) = Utils.LayoutManager.differencesBetweenRects(previousPreheatRect, preheatRect)
 		let addedAssets = addedRects
 			.flatMap { rect in collectionView!.indexPathsForElements(in: rect) }
 			.compactMap { indexPath in self.assetCollection[indexPath.row] }
@@ -603,34 +678,7 @@ extension SimpleAssetsListViewController {
 		prefetchCacheImageManager.stopCachingImagesForAllAssets()
 		previousPreheatRect = .zero
 	}
-	
-	 private func differencesBetweenRects(_ old: CGRect, _ new: CGRect) -> (added: [CGRect], removed: [CGRect]) {
-		if old.intersects(new) {
-			var added = [CGRect]()
-			if new.maxY > old.maxY {
-				added += [CGRect(x: new.origin.x, y: old.maxY,
-								 width: new.width, height: new.maxY - old.maxY)]
-			}
-			if old.minY > new.minY {
-				added += [CGRect(x: new.origin.x, y: new.minY,
-								 width: new.width, height: old.minY - new.minY)]
-			}
-			var removed = [CGRect]()
-			if new.maxY < old.maxY {
-				removed += [CGRect(x: new.origin.x, y: new.maxY,
-								   width: new.width, height: old.maxY - new.maxY)]
-			}
-			if old.minY < new.minY {
-				removed += [CGRect(x: new.origin.x, y: old.minY,
-								   width: new.width, height: new.minY - old.minY)]
-			}
-			return (added, removed)
-		} else {
-			return ([new], [old])
-		}
-	}
 }
-
 
 //      MARK: - setup UI -
 extension SimpleAssetsListViewController: Themeble {
@@ -662,14 +710,33 @@ extension SimpleAssetsListViewController: NavigationBarDelegate {
 	}
 
 	func didTapRightBarButton(_ sender: UIButton) {
-		self.setCollection(selected: !isSelectedAllPhassets)
+		
+		self.subscriptionManager.purchasePremiumHandler { status in
+			switch status {
+				case .lifetime, .purchasedPremium:
+					self.setCollection(selected: !isSelectedAllPhassets)
+				case .nonPurchased:
+					var limitContentType: LimitAccessType {
+						switch self.contentType {
+							case .userPhoto:
+								return .selectAllPhotos
+							default:
+								return .selectAllVideos
+						}
+					}
+					if self.assetCollection.count < limitContentType.selectAllLimit {
+						self.setCollection(selected: !isSelectedAllPhassets)
+					} else {
+						self.subscriptionManager.limitVersionActionHandler(of: limitContentType, at: self)
+					}
+			}
+		}
 	}
 }
 
 extension SimpleAssetsListViewController: BottomActionButtonDelegate {
 	
 	func didTapActionButton() {
-		
 		showDeleteSelectedAssetsAlert()
 	}
 }

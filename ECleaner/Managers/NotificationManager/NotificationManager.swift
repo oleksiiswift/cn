@@ -10,9 +10,17 @@ import Foundation
 extension Notification.Name {
 
         /// `colors asets`
-    static let colorDidChange = Notification.Name("colorDidChange")
+    static let colorDidChange = 			Notification.Name("colorDidChange")
         /// `premium`
-    static let premiumDidChange = Notification.Name("premiumDidChange")
+    static let premiumDidChange = 			Notification.Name("premiumDidChange")
+		/// `permission`
+	static let permisionDidChange = 		 Notification.Name(C.key.notification.permissionDidChange)
+		/// `ìncoming processing recieved`
+	static let incomingRemoteActionRecived = Notification.Name(C.key.notification.forceStopProcessing)
+	
+	static let networkingChanged 		   = Notification.Name(C.key.notification.networking)
+	
+	static let bannerStatusDidChanged 	   = Notification.Name(C.key.notification.bannerStatus)
     
         /// `disk space`
     static let photoSpaceDidChange =         Notification.Name(C.key.notification.photoSpaceNotificationName)
@@ -77,8 +85,13 @@ extension Notification.Name {
 	static let progressDeepCleanDidChangeProgress = 			Notification.Name("progressDeepCleanDidChangeProgress")
 	
 	static let avPlayerDidPlayEndTime = NSNotification.Name.AVPlayerItemDidPlayToEndTime
-//	Notification.Name.AVPlayerItemDidPlayToEndTime
 	
-	static let compressionVideoDidStart = NSNotification.Name(C.key.notification.compressionDidStart)
+	static let compressionVideoDidStart = Notification.Name(C.key.notification.compressionDidStart)
+	static let compressionVideoProgress = Notification.Name(C.key.notification.compressionProgress)
+	
+	static let shortCutsItemsNavigationItemsNotification = NSNotification.Name("shortCutsItemsNavigationItemsNotification")
+	
+	static let didCancelPromtRequest = Notification.Name.init("iRateUserDidRequestReminderToRateApp")
+	static let promtReisgnFromBackground = Notification.Name.init("iRateStatusCheckWheneReisgnFromBackground")
 }
 

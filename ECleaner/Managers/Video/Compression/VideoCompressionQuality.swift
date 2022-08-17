@@ -35,15 +35,15 @@ enum VideoCompressionQuality: Equatable {
 	var compressionTitle: String {
 		switch self {
 			case .videoPreview:
-				return "video preview"
+				return Localization.Main.HeaderTitle.videoPreview
 			case .low:
-				return "low quality"
+				return Localization.Main.HeaderTitle.lowQuality
 			case .medium:
-				return "medium quality"
+				return Localization.Main.HeaderTitle.mediumQuality
 			case .high:
-				return "hight quality"
+				return Localization.Main.HeaderTitle.highQuality
 			case .custom(_, _, _):
-				return "custom settings"
+				return Localization.Main.HeaderTitle.customSettings
 		}
 	}
 	
@@ -67,7 +67,7 @@ enum VideoCompressionQuality: Equatable {
 			case .videoPreview:
 				return UITableView.automaticDimension
 			default:
-				return U.UIHelper.AppDimensions.ContenTypeCells.heightOfRowOfMediaContentType
+				return AppDimensions.ContenTypeCells.heightOfRowOfMediaContentType
 		}
 	}
 	
@@ -76,7 +76,7 @@ enum VideoCompressionQuality: Equatable {
 			case .videoPreview:
 				return UITableView.automaticDimension
 			default:
-				return U.UIHelper.AppDimensions.ContenTypeCells.heightOfRowOfMediaContentType
+				return AppDimensions.ContenTypeCells.heightOfRowOfMediaContentType
 		}
 	}
 	

@@ -14,6 +14,10 @@ extension Date {
 		return Calendar.current.component(.hour, from: self)
 	}
 	
+	func getSeconds() -> Int {
+		return Calendar.current.component(.second, from: self)
+	}
+	
 	func getMinute() -> Int {
 		return Calendar.current.component(.minute, from: self)
 	}

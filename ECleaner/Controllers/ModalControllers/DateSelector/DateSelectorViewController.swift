@@ -253,9 +253,9 @@ extension DateSelectorViewController: Themeble {
 		var containerHeight: CGFloat {
 			switch dateSelectedType {
 				case .lowerDateSelectable:
-					return U.UIHelper.AppDimensions.DateSelectController.datePickerContainerHeightLower
+					return AppDimensions.DateSelectController.datePickerContainerHeightLower
 				case .upperDateSelectable:
-					return U.UIHelper.AppDimensions.DateSelectController.datePickerContainerHeightUper
+					return AppDimensions.DateSelectController.datePickerContainerHeightUper
 				default:
 					return .zero
 			}
@@ -265,31 +265,31 @@ extension DateSelectorViewController: Themeble {
 			case .lowerDateSelectable:
 				autoDatePickView.isHidden = false
 				bottomButtonsTopConstraint.constant = 0
-				bottomButtonsHeghtConstraint.constant = U.UIHelper.AppDimensions.DateSelectController.fullDatePickerContainerHeight
+				bottomButtonsHeghtConstraint.constant = AppDimensions.DateSelectController.fullDatePickerContainerHeight
 			case .upperDateSelectable:
-				bottomButtonsTopConstraint.constant = U.UIHelper.AppDimensions.DateSelectController.bottomContainerSpacerHeight
-				bottomButtonsHeghtConstraint.constant = U.UIHelper.AppDimensions.DateSelectController.cutDatePickerContainerHeight
+				bottomButtonsTopConstraint.constant = AppDimensions.DateSelectController.bottomContainerSpacerHeight
+				bottomButtonsHeghtConstraint.constant = AppDimensions.DateSelectController.cutDatePickerContainerHeight
 				autoDatePickView.isHidden = true
 			default:
 				return
 		}
-		customNavigationBarHeightConstraint.constant = U.UIHelper.AppDimensions.NavigationBar.navigationBarHeight
+		customNavigationBarHeightConstraint.constant = AppDimensions.NavigationBar.navigationBarHeight
 		
 		self.view.frame = CGRect(x: 0, y: 0, width: U.screenWidth, height: containerHeight)
 		mainContainerView.cornerSelectRadiusView(corners: [.topLeft, .topRight], radius: 20)
         mainContainerViewHeightConstraint.constant = containerHeight
 	
-		let autoDateSelectSize = U.UIHelper.AppDimensions.NavigationBar.startingNavigationBarButtonSize - 10
+		let autoDateSelectSize = AppDimensions.NavigationBar.startingNavigationBarButtonSize - 10
 		autoDatePickerButtonWidthConstraint.constant = autoDateSelectSize
 	
-		bottomButtonView.title("SUBMIT".localized())
-        autoDatePickTextLabel.text = "SINCE_THE_LAST_CLEANING".localized()
+		bottomButtonView.title(LocalizationService.Buttons.getButtonTitle(of: .submit))
+		autoDatePickTextLabel.text = Localization.Main.HeaderTitle.sinceLastClean
 		autoDatePickTextLabel.font = FontManager.pickerFont(of: .subtitle)
 		
 		let checkMarkImage = I.systemItems.selectItems.checkBox.renderScalePreservingAspectRatio(from: CGSize(width: autoDateSelectSize / 2, height: autoDateSelectSize / 2))
         autoDatePickImageView.image = checkMarkImage
 		autoDatePickImageView.isHidden = true
-		autoDatePickBackgroundImageView.layer.applySketchShadow(color: UIColor().colorFromHexString("D8DFEB"), alpha: 1.0, x: 6, y: 6, blur: 10, spread: 0)
+		autoDatePickBackgroundImageView.layer.applyShadow(color: UIColor().colorFromHexString("D8DFEB"), alpha: 1.0, x: 6, y: 6, blur: 10, spread: 0)
     }
 	
 	private func setupDatePickers(with date: Date) {
@@ -369,15 +369,15 @@ extension DateSelectorViewController: Themeble {
 		var navigationText: String {
 			switch self.dateSelectedType {
 				case .lowerDateSelectable:
-					return "select lower date"
+					return Localization.Main.HeaderTitle.selectLower
 				case .upperDateSelectable:
-					return "select upper date"
+					return Localization.Main.HeaderTitle.selectUpper
 				default:
 					return ""
 			}
 		}
 		
-		customNavBar.setUpNavigation(title: navigationText.uppercased(), rightImage: I.systemItems.navigationBarItems.dissmiss, targetImageScaleFactor: 0.4)
+		customNavBar.setUpNavigation(title: navigationText, rightImage: I.systemItems.navigationBarItems.dissmiss, targetImageScaleFactor: 0.4)
 		customNavBar.topShevronEnable = true
 	}
 	

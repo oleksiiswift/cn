@@ -50,4 +50,12 @@ class ProgressSearchNotificationManager {
 							  notificationtype.dictioanartyIndexName: currentIndex] as [String : Any]
 		NotificationCenter.default.post(name: notificationtype.notificationName, object: nil, userInfo: infoDictionary)
 	}
+	
+	public func sendCompressProgressNotification(with currentFrame: Int, randomFramesCount: Int) {
+		let indexKey = Constants.key.notificationDictionary.index.videoProcessingFrame
+		let countKey = Constants.key.notificationDictionary.count.videoProcessingFramesCount
+		let infoDictionaty = [indexKey: currentFrame,
+							  countKey: randomFramesCount] as [String: Any]
+		NotificationCenter.default.post(name: .compressionVideoProgress, object: nil, userInfo: infoDictionaty)
+	}
 }

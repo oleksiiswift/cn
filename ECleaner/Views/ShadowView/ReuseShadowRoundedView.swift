@@ -12,7 +12,7 @@ class ReuseShadowRoundedView: UIView {
     private let topLayer = CALayer()
     private let bottomLayer = CALayer()
     public let imageView = UIImageView()
-	private let helperImageView = UIImageView()
+	public let helperImageView = UIImageView()
     
     public var topShadowColor: UIColor = .red
     public var bottomShadowColor: UIColor = .black
@@ -75,7 +75,7 @@ class ReuseShadowRoundedView: UIView {
         imageView.tintColor = tintColor
     }
 	
-	public func setImageWithCustomBackground(image: UIImage, tineColor: UIColor, size: CGSize, colors: [UIColor]) {
+	public func setImageWithCustomBackground(image: UIImage, tineColor: UIColor, size: CGSize, colors: [UIColor], startPoint: CAGradientPoint = .topLeft, endPoint: CAGradientPoint = .bottomRight) {
 		
 		helperImageView.image = image
 		helperImageView.tintColor = tineColor
@@ -91,7 +91,7 @@ class ReuseShadowRoundedView: UIView {
 		let gradientBaseView = UIView(frame: CGRect(x: 0, y: 0, width: self.frame.size.width, height: self.frame.size.height))
 		gradientBaseView.rounded()
 		self.insertSubview(gradientBaseView, belowSubview: helperImageView)
-		gradientBaseView.layerGradient(startPoint: .topLeft, endPoint: .bottomRight, colors: gradientColors , type: .axial)
+		gradientBaseView.layerGradient(startPoint: startPoint, endPoint: endPoint, colors: gradientColors , type: .axial)
 	}
 	
     private func setupImageView() {

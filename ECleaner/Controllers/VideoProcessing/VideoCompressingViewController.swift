@@ -36,7 +36,7 @@ class VideoCompressingViewController: UIViewController {
 
 	private var popGesture: UIGestureRecognizer?
 	
-	public var updateCollectionWithNewCompressionPHAssets: ((_ updatedPHAssets: [PHAsset]) -> Void)?
+	public var updateCollectionWithNewCompressionPHAssets: (() -> Void) = {}
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -48,6 +48,7 @@ class VideoCompressingViewController: UIViewController {
 		setupNavigation()
 		updateColors()
 		delegateSetup()
+		setupObservers()
 	}
 	
 	override func viewWillAppear(_ animated: Bool) {
@@ -113,6 +114,7 @@ extension VideoCompressingViewController {
 			self.compressingManager.compressVideo(from: url, with: configuration) { result in
 				
 				self.progressAlert.closeProgressAnimatedController()
+				
 				U.delay(1) {
 					switch result {
 						case .success(let compressedVideoURL):
@@ -138,7 +140,7 @@ extension VideoCompressingViewController {
 				self.compressingManager.compressVideo(from: url, quality: compressingModel) { result in
 					
 					self.progressAlert.closeProgressAnimatedController()
-					U.delay(1) {
+					U.delay(0.4) {
 						switch result {
 							case .success(let compressedVideoURL):
 								self.compressVideoResultCompleted(with: compressedVideoURL)
@@ -150,7 +152,7 @@ extension VideoCompressingViewController {
 					}
 				}
 			} else {
-				ErrorHandler.shared.showCompressionErrorFor(.cantLoadFile) {}
+				ErrorHandler.shared.showCompressionError(.cantLoadFile)
 			}
 		}
 	}
@@ -181,30 +183,47 @@ extension VideoCompressingViewController {
 				S.lastSavedLocalIdenifier = identifier
 				self.showPHAssetCollectionController()
 			} else {
-				ErrorHandler.shared.showCompressionErrorFor(.errorSavedFile, completion: {})
+				ErrorHandler.shared.showCompressionError(.errorSavedFile)
 			}
 		}
 	}
 	
 	private func showPHAssetCollectionController() {
-		self.photoManager.getVideoCollection { phassets in
-			if !phassets.isEmpty {
-				self.updateCollectionWithNewCompressionPHAssets?(phassets)
-				self.navigationController?.popViewController(animated: true, completion: {
-				})
-			} else {
-				ErrorHandler.shared.showEmptySearchResultsFor(.photoLibraryIsEmpty) {
-					self.navigationController?.popViewController(animated: true)
-				}
-			}
-		}
+		self.updateCollectionWithNewCompressionPHAssets()
+		self.navigationController?.popViewController(animated: true)
 	}
 }
 
-extension VideoCompressingViewController: AnimatedProgressDelegate {
+extension VideoCompressingViewController: ProgressAlertControllerDelegate {
 	
-	func didProgressSetCanceled() {
+	func didTapCancelOperation() {
 		compressingManager.stopWritingReading()
+	}
+	
+	func didAutoCloseController() {
+		
+	}
+		
+	private func didUpdateAlert(with progress: CGFloat) {
+		Utils.UI {
+			let type: ProgressAlertType = .compressing
+			let readbleProgress = "\(type.progressTitle): \(Int(progress * 100))%"
+			let attributed: [NSAttributedString.Key: Any] = [.font: UIFont.systemFont(ofSize: 17, weight: .semibold).monospacedDigitFont]
+			debugPrint(progress)
+			let attributedString = NSMutableAttributedString(string: readbleProgress, attributes: attributed)
+			let messageString = NSMutableAttributedString(string: L.AlertController.AlertMessage.closePreventMessage )
+			self.progressAlert.updateProgressAndMessages(progress, title: attributedString, message: messageString)
+		}
+	}
+	
+	@objc func handleCompressionProgress(_ notification: Notification) {
+		
+		guard let userInfo = notification.userInfo,
+			  let currentIndex = userInfo[Constants.key.notificationDictionary.index.videoProcessingFrame] as? Int,
+			  let totalProcessingFrames = userInfo[Constants.key.notificationDictionary.count.videoProcessingFramesCount] as? Int else { return }
+		
+		let progress = CGFloat(currentIndex) / CGFloat(totalProcessingFrames)
+		self.didUpdateAlert(with: progress)
 	}
 }
 
@@ -222,7 +241,7 @@ extension VideoCompressingViewController {
 	private func setupViewModel() {
 		
 		guard let phasset = self.processingPHAsset else {
-			ErrorHandler.shared.showCompressionErrorFor(.cantLoadFile) {
+			ErrorHandler.shared.showCompressionError(.cantLoadFile) {
 				self.navigationController?.popViewController(animated: false)
 			}
 			return
@@ -234,7 +253,7 @@ extension VideoCompressingViewController {
 															  .high,
 															  .custom(fps: self.customFPS,
 																	  bitrate: self.customBitrate, scale: self.customScale)],
-													  headerTitle: "compression settings",
+													  headerTitle: Localization.Main.HeaderTitle.compressionSettings,
 													  headerHeight: 15)
 		
 		let sections: [CompressingSection] = [previewSectionCell, settingsSectionsCell]
@@ -264,7 +283,7 @@ extension VideoCompressingViewController {
 		self.tableView.allowsMultipleSelection = false
 		
 		self.tableView.contentInset.top = 10
-		self.tableView.contentInset.bottom = U.UIHelper.AppDimensions.bottomBarDefaultHeight //+ (Device.isSafeAreaDevice ? 0 : 10)
+		self.tableView.contentInset.bottom = AppDimensions.BottomButton.bottomBarDefaultHeight 
 		if #available(iOS 15.0, *) {
 			tableView.sectionHeaderTopPadding = 0
 		}
@@ -351,16 +370,16 @@ extension VideoCompressingViewController: Themeble {
 	
 	private func setupUI() {
 		
-		bottomButtonBarView.title("compress")
+		bottomButtonBarView.title(LocalizationService.Buttons.getButtonTitle(of: .compres))
 		bottomButtonBarView.setImage(I.systemItems.defaultItems.compress, with: CGSize(width: 24, height: 22))
 		
-		navigationBarHeightConstraint.constant = U.UIHelper.AppDimensions.NavigationBar.navigationBarHeight
-		self.bottomButtonViewHeightConstraint.constant = U.UIHelper.AppDimensions.bottomBarDefaultHeight
+		navigationBarHeightConstraint.constant = AppDimensions.NavigationBar.navigationBarHeight
+		self.bottomButtonViewHeightConstraint.constant = AppDimensions.BottomButton.bottomBarDefaultHeight
 	}
 	
 	private func setupNavigation() {
 		
-		navigationBarView.setupNavigation(title: "compressing video",
+		navigationBarView.setupNavigation(title: LocalizationService.Main.getNavigationTitle(for: .videoCompression),
 										  leftBarButtonImage: I.systemItems.navigationBarItems.back,
 										  rightBarButtonImage: nil, contentType: .none, leftButtonTitle: nil, rightButtonTitle: nil)
 	}
@@ -370,6 +389,11 @@ extension VideoCompressingViewController: Themeble {
 		navigationBarView.delegate = self
 		bottomButtonBarView.delegate = self
 		compressionSettingsDataSource.delegate = self
+	}
+	
+	private func setupObservers() {
+		
+		Utils.notificationCenter.addObserver(self, selector: #selector(self.handleCompressionProgress(_:)), name: .compressionVideoProgress, object: nil)
 	}
 
 	func updateColors() {

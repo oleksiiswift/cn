@@ -189,10 +189,10 @@
                 <outlet property="videoAssetDurationTextLabel" destination="NkM-6d-qED" id="QgV-NN-Dhb"/>
                 <outlet property="videoAssetDurationView" destination="t63-kq-mOP" id="uoZ-OH-TCT"/>
                 <outlet property="videoDurationViewWidthConstraint" destination="m9b-Mw-ImL" id="ISI-cY-aEi"/>
-                <outletCollection property="thumnailViewOffsetConstraint" destination="XHf-Ld-F8r" collectionClass="NSMutableArray" id="D7G-vI-uCm"/>
-                <outletCollection property="thumnailViewOffsetConstraint" destination="aoq-It-rVb" collectionClass="NSMutableArray" id="u2b-9P-YC8"/>
-                <outletCollection property="thumnailViewOffsetConstraint" destination="iJs-M1-6oA" collectionClass="NSMutableArray" id="oEh-zM-k1S"/>
-                <outletCollection property="thumnailViewOffsetConstraint" destination="wcp-6W-D1M" collectionClass="NSMutableArray" id="oed-PU-WmH"/>
+                <outletCollection property="thumbnailViewOffsetConstraint" destination="XHf-Ld-F8r" collectionClass="NSMutableArray" id="D7G-vI-uCm"/>
+                <outletCollection property="thumbnailViewOffsetConstraint" destination="aoq-It-rVb" collectionClass="NSMutableArray" id="u2b-9P-YC8"/>
+                <outletCollection property="thumbnailViewOffsetConstraint" destination="iJs-M1-6oA" collectionClass="NSMutableArray" id="oEh-zM-k1S"/>
+                <outletCollection property="thumbnailViewOffsetConstraint" destination="wcp-6W-D1M" collectionClass="NSMutableArray" id="oed-PU-WmH"/>
             </connections>
             <point key="canvasLocation" x="121.73913043478262" y="169.75446428571428"/>
         </collectionViewCell>

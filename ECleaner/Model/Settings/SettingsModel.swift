@@ -15,6 +15,7 @@ enum SettingsModel {
 	case dataStorage
 	case permissions
 	case restore
+	case lifetime
 	case support
 	case share
 	case rate
@@ -25,68 +26,40 @@ enum SettingsModel {
 	var settingsTitle: String {
 		switch self {
 			case .premium:
-				return "premium"
+				return L.Settings.Title.premium
 			case .largeVideos:
-				return "large video"
+				return L.Settings.Title.largeVideo
 			case .dataStorage:
-				return "storage"
+				return L.Settings.Title.storage
 			case .permissions:
-				return "permission"
+				return L.Settings.Title.permission
 			case .restore:
-				return "restore purchase"
+				return L.Settings.Title.restore
+			case .lifetime:
+				return L.Settings.Title.lifeTime
 			case .support:
-				return "support"
+				return L.Settings.Title.support
 			case .share:
-				return "share app"
+				return L.Settings.Title.share
 			case .rate:
-				return "rate us"
+				return L.Settings.Title.rateUS
 			case .privacypolicy:
-				return "privacy policy"
+				return L.Settings.Title.privacy
 			case .termsOfUse:
-				return "terms of use"
+				return L.Settings.Title.terms
 			case .videoCompress:
-				return "compress video"
+				return L.Settings.Title.videoCompression
 		}
 	}
 	
 	var settingsImages: UIImage {
-		switch self {
-			case .premium:
-				return I.setting.premiumBanner
-			case .largeVideos:
-				return I.setting.largeVideo
-			case .dataStorage:
-				return I.setting.storage
-			case .permissions:
-				return I.setting.permission
-			case .restore:
-				return I.setting.restore
-			case .support:
-				return I.setting.support
-			case .share:
-				return I.setting.share
-			case .rate:
-				return I.setting.rate
-			case .privacypolicy:
-				return I.setting.privacy
-			case .termsOfUse:
-				return I.setting.terms
-			default:
-				return UIImage()
-		}
+		return Images().getSettingsImages(for: self)
 	}
 	
-	var optionalBannerImage: UIImage {
-		switch self {
-			case .premium:
-				return I.setting.premiumBanner
-			case .videoCompress:
-				return I.setting.premiumBanner
-			default:
-				return UIImage()
-		}
+	var gradientColorsForSettings: [UIColor] {
+		return ThemeManager.theme.getColorsGradient(for: self)
 	}
-	
+		
 	var heightForRow: CGFloat {
 		switch self {
 			case .premium:

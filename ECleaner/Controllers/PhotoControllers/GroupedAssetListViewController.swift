@@ -34,6 +34,7 @@ class GroupedAssetListViewController: UIViewController {
 	private var prefetchCacheImageManager = PhotoManager.shared.prefetchManager
 	private var photoManager = PhotoManager.shared
 	private var progressAlertController = ProgressAlertController.shared
+	private var subscriptionManagger = SubscriptionManager.instance
 		/// `assets`
 	public var assetGroups: [PhassetGroup] = []
 	public var mediaType: PhotoMediaType = .none
@@ -96,18 +97,50 @@ extension GroupedAssetListViewController {
 	//      MARK: - Popup viewController drop down menu setup -
 extension GroupedAssetListViewController {
 	
-	func openBurgerMenu() {
-
-		let deleteButtonIsSelected: Bool = !self.selectedAssets.isEmpty
+	@available(iOS 14.0, *)
+	func dropDownSetup() {
+		let menuItems = getDropDownItems()
+		let menu = performMenu(from: menuItems)
+		navigationBar.rightBarButtonItem.menu = menu
+		navigationBar.rightBarButtonItem.showsMenuAsPrimaryAction = true
 		
-		let selectAllOptionItem = DropDownOptionsMenuItem(titleMenu: "select all", itemThumbnail: I.systemElementsItems.circleCheckBox!, isSelected: true, menuItem: .selectAll)
-		let deselectAllOptionItem = DropDownOptionsMenuItem(titleMenu: "deselect all", itemThumbnail: I.systemElementsItems.circleBox!, isSelected: true, menuItem: .deselectAll)
-		let deleteOptionItem = DropDownOptionsMenuItem(titleMenu: "delete", itemThumbnail: I.systemItems.defaultItems.trashBin, isSelected: deleteButtonIsSelected, menuItem: .delete)
-		let firstRowMenuItem = isSelectAllAssetsMode ? deselectAllOptionItem : selectAllOptionItem
-		presentDropDonwMenu(with: [firstRowMenuItem, deleteOptionItem], from:  navigationBar.rightBarButtonItem)
+		navigationBar.rightBarButtonItem.onMenuActionTriggered { menu in
+			let updatedItems = self.getDropDownItems()
+			self.navigationBar.rightBarButtonItem.menu = self.performMenu(from: updatedItems)
+			return menu
+		}
 	}
 	
-	private func presentDropDonwMenu(with items: [DropDownOptionsMenuItem], from navigationButton: UIButton) {
+	func openBurgerMenu() {
+	
+		if #available(iOS 14.0, *) {} else {
+			let menuItems = getDropDownItems()
+			presentDropDonwMenu(with: menuItems, from: navigationBar.rightBarButtonItem)
+		}
+	}
+	
+	private func getDropDownItems() -> [MenuItem] {
+		let selectAllItem: MenuItem = .init(type: .select, selected: true)
+		let deselctAllItem: MenuItem = .init(type: .deselect, selected: true)
+		let delete: MenuItem = .init(type: .delete, selected: !self.selectedAssets.isEmpty)
+		return [isSelectAllAssetsMode ? deselctAllItem : selectAllItem, delete]
+	}
+	
+	private func performMenu(from items: [MenuItem]) -> UIMenu {
+		var actions: [UIAction] = []
+		
+		items.forEach { item in
+			let attributes: UIMenuElement.Attributes = item.selected ? item.type == .delete ? .destructive : [] : .disabled
+			
+			let action = UIAction(title: item.title, image: item.thumbnail, attributes: attributes) { _ in
+				self.handleDropDownMenu(item.type)
+			}
+			actions.append(action)
+		}
+		return UIMenu(children: actions)
+	}
+	
+	private func presentDropDonwMenu(with items: [MenuItem], from navigationButton: UIButton) {
 		let dropDownViewController = DropDownMenuViewController()
 		dropDownViewController.menuSectionItems = items
 		dropDownViewController.delegate = self
@@ -116,9 +149,44 @@ extension GroupedAssetListViewController {
 		
 		popoverPresentationController.delegate = self
 		popoverPresentationController.sourceView = navigationButton
-		popoverPresentationController.sourceRect = CGRect(x: navigationButton.bounds.midX, y: navigationButton.bounds.maxY - 13, width: 0, height: 0)
-		popoverPresentationController.permittedArrowDirections = .up
+		popoverPresentationController.sourceRect = CGRect(x: navigationButton.bounds.midX, y: navigationButton.bounds.maxY + 34, width: 0, height: 0)
+		popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirection(rawValue: 0)
 		self.present(dropDownViewController, animated: true, completion: nil)
+	}
+}
+
+extension GroupedAssetListViewController: SelectDropDownMenuDelegate {
+	
+	func handleDropDownMenu(_ item: MenuItemType) {
+		switch item {
+			case .select, .deselect:
+				self.handleSelectAll(of: item)
+			case .delete:
+				self.deleteSelectedAssets()
+			default:
+				return
+		}
+	}
+	
+	private func handleSelectAll(of type: MenuItemType) {
+		
+		self.subscriptionManagger.purchasePremiumHandler { status in
+			switch status {
+				case .lifetime, .purchasedPremium:
+					self.shouldSelectAllAssetsInSections(type != .select)
+				case .nonPurchased:
+					var limitType: LimitAccessType {
+						return self.contentType == .userPhoto ? .selectAllPhotos : .selectAllVideos
+					}
+					let asssetsCount = self.assetGroups.map({$0.assets}).joined().count - self.assetGroups.count
+					
+					if asssetsCount < limitType.selectAllLimit {
+						self.shouldSelectAllAssetsInSections(type != .select)
+					} else {
+						self.subscriptionManagger.limitVersionActionHandler(of: limitType, at: self)
+					}
+			}
+		}
 	}
 }
 
@@ -217,6 +285,7 @@ extension GroupedAssetListViewController {
 	private func didSelectAllAssets(at indexPath: IndexPath, in sectionHeader: GroupedAssetsReusableHeaderView) {
 		
 		var addingSection: Bool = false
+		let indexesOfSection = self.collectionView.getAllIndexPathsInSection(section: indexPath.section)
 		
 			/// work with assets
 		if selectedSection.contains(indexPath.section) {
@@ -224,11 +293,47 @@ extension GroupedAssetListViewController {
 				self.selectedAssets.removeAll(asset)
 			}
 		} else {
-			for asset in self.assetGroups[indexPath.section].assets {
-				let index = self.assetGroups[indexPath.section].assets.indexes(of: asset)
-				if index != [0] {
-					self.selectedAssets.append(asset)
-					addingSection = true
+			if self.subscriptionManagger.purchasePremiumStatus() != .nonPurchased {
+				for asset in self.assetGroups[indexPath.section].assets {
+					let index = self.assetGroups[indexPath.section].assets.indexes(of: asset)
+					if index != [0] {
+						self.selectedAssets.append(asset)
+						addingSection = true
+					}
+				}
+			} else {
+				
+				var selectedLimit: Int {
+					switch self.contentType {
+						case .userPhoto:
+							return LimitAccessType.selectAllPhotos.selectAllLimit
+						default:
+							return LimitAccessType.selectAllVideos.selectAllLimit
+					}
+				}
+				
+				var accesstype: LimitAccessType {
+					switch self.contentType {
+						case .userPhoto:
+							return .selectAllPhotos
+						default:
+							return .selectAllVideos
+					}
+				}
+				
+				let count = self.collectionView.indexPathsForSelectedItems?.count
+				
+				if ((indexesOfSection.count - 1) + count!) <= selectedLimit {
+					for asset in self.assetGroups[indexPath.section].assets {
+						let index = self.assetGroups[indexPath.section].assets.indexes(of: asset)
+						if index != [0] {
+							self.selectedAssets.append(asset)
+							addingSection = true
+						}
+					}
+				} else {
+					subscriptionManagger.limitVersionActionHandler(of: accesstype, at: self)
+					return
 				}
 			}
 		}
@@ -242,7 +347,7 @@ extension GroupedAssetListViewController {
 			self.collectionView.deselectAllItems(in: indexPath.section, first: 0, animated: true)
 		}
 		
-		let indexesOfSection = self.collectionView.getAllIndexPathsInSection(section: indexPath.section)
+		
 		indexesOfSection.forEach { indexPath in
 			if let cell = self.collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell {
 				cell.checkIsSelected()
@@ -339,10 +444,43 @@ extension GroupedAssetListViewController: PhotoCollectionViewCellDelegate {
 				self.selectedAssets = self.selectedAssets.filter({$0 != phasset})
 			}
 		} else {
-			self.collectionView.selectItem(at: indexPath, animated: true, scrollPosition: [])
-			self.collectionView.delegate?.collectionView?(self.collectionView, didSelectItemAt: indexPath)
-			if !self.selectedAssets.contains(phasset) {
-				self.selectedAssets.append(phasset)
+			self.subscriptionManagger.purchasePremiumHandler { status in
+				switch status {
+					case .lifetime, .purchasedPremium:
+						self.collectionView.selectItem(at: indexPath, animated: true, scrollPosition: [])
+						self.collectionView.delegate?.collectionView?(self.collectionView, didSelectItemAt: indexPath)
+						if !self.selectedAssets.contains(phasset) {
+							self.selectedAssets.append(phasset)
+						}
+					case .nonPurchased:
+						var limitCount: Int {
+							switch self.contentType {
+								case .userPhoto:
+									return LimitAccessType.selectAllPhotos.selectAllLimit
+								default:
+									return LimitAccessType.selectAllVideos.selectAllLimit
+							}
+						}
+						
+						var accesstype: LimitAccessType {
+							switch self.contentType {
+								case .userPhoto:
+									return .selectPhotos
+								default:
+									return .selectVideo
+							}
+						}
+						
+						if self.collectionView.indexPathsForSelectedItems?.count == limitCount {
+							self.subscriptionManagger.limitVersionActionHandler(of: accesstype, at: self)
+						} else {
+							self.collectionView.selectItem(at: indexPath, animated: true, scrollPosition: [])
+							self.collectionView.delegate?.collectionView?(self.collectionView, didSelectItemAt: indexPath)
+							if !self.selectedAssets.contains(phasset) {
+								self.selectedAssets.append(phasset)
+							}
+						}
+				}
 			}
 		}
 		self.handleActionButtons(indexPath: indexPath)
@@ -464,6 +602,7 @@ extension GroupedAssetListViewController {
 				self.didSelectAllAssets(at: indexPath, in: sectionHeader)
 			}
 		}
+		self.handleDeleteAssetsButton()
 	}
 	
 	private func checkForEmptyCollection() {
@@ -701,11 +840,66 @@ extension GroupedAssetListViewController: UICollectionViewDelegate, UICollection
 	
 	func collectionView(_ collectionView: UICollectionView, previewForHighlightingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview? {
 		
-		guard let indexPath = configuration.identifier as? IndexPath,  let cell = collectionView.cellForItem(at: indexPath) else { return nil}
+		guard let indexPath = configuration.identifier as? IndexPath,  let cell = collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell else { return nil}
 		
-		let targetPreview = UITargetedPreview(view: cell)
-		targetPreview.parameters.backgroundColor = theme.backgroundColor
-		targetPreview.view.backgroundColor = theme.backgroundColor
+		let targetPreview = UITargetedPreview(view: cell.photoThumbnailImageView)
+		targetPreview.parameters.backgroundColor = .clear
+		targetPreview.view.backgroundColor = .clear
+		return targetPreview
+	}
+	
+	func collectionView(_ collectionView: UICollectionView, willDisplayContextMenu configuration: UIContextMenuConfiguration, animator: UIContextMenuInteractionAnimating?) {
+		DispatchQueue.main.async {
+			if let window = U.application.windows.first {
+				if let view = Utils.Manager.viewByClassName(view: window, className: "_UICutoutShadowView") {
+					view.isHidden = true
+				}
+				if let view = Utils.Manager.viewByClassName(view: window, className: "_UIPortalView") {
+					view.backgroundColor = .clear
+				}
+				if let view = Utils.Manager.viewByClassName(view: window, className: "_UIPlatterTransformView") {
+					view.backgroundColor = .clear
+				}
+				if let view = Utils.Manager.viewByClassName(view: window, className: "_UIPlatterClippingView") {
+					view.backgroundColor = .clear
+				}
+				if let view = Utils.Manager.viewByClassName(view: window, className: "_UIPlatterTransformView") {
+					view.backgroundColor = .clear
+				}
+			}
+		}
+	}
+	
+	func collectionView(_ collectionView: UICollectionView, willEndContextMenuInteraction configuration: UIContextMenuConfiguration, animator: UIContextMenuInteractionAnimating?) {
+		
+		DispatchQueue.main.async {
+			if let window = U.application.windows.first {
+				if let view = Utils.Manager.viewByClassName(view: window, className: "_UICutoutShadowView") {
+					view.isHidden = true
+				}
+				if let view = Utils.Manager.viewByClassName(view: window, className: "_UIPortalView") {
+					view.backgroundColor = .clear
+				}
+				if let view = Utils.Manager.viewByClassName(view: window, className: "_UIPlatterTransformView") {
+					view.backgroundColor = .clear
+				}
+				if let view = Utils.Manager.viewByClassName(view: window, className: "_UIPlatterClippingView") {
+					view.backgroundColor = .clear
+				}
+				if let view = Utils.Manager.viewByClassName(view: window, className: "_UIPlatterTransformView") {
+					view.backgroundColor = .clear
+				}
+			}
+		}
+	}
+	
+	func collectionView(_ collectionView: UICollectionView, previewForDismissingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview? {
+		
+		guard let indexPath = configuration.identifier as? IndexPath,  let cell = collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell else { return nil}
+		
+		let targetPreview = UITargetedPreview(view: cell.photoThumbnailImageView)
+		targetPreview.parameters.backgroundColor = .clear
+		targetPreview.view.backgroundColor = .clear
 		
 		return targetPreview
 	}
@@ -742,15 +936,15 @@ extension GroupedAssetListViewController {
 	
 	private func showDeleteConfirmAlert() {
 		
-		A.deletePHAssets(of: self.contentType, of: selectedAssets.count > 1 ? .many : .one) {
+		AlertManager.showDeleteAlert(with: self.contentType, of: .getRaw(from: selectedAssets.count)) {
 			self.deleteSelectedAssets()
 		}
 	}
 	
 	private func showDelecteConfirmAlert(for assets: [PHAsset], completionHandler: @escaping (Bool) -> Void) {
 		
-		let deletePhassetOperation = photoManager.deleteSelectedOperation(assets: assets) { suxxess in
-			if !suxxess {
+		let deletePhassetOperation = photoManager.deleteSelectedOperation(assets: assets) { success in
+			if !success {
 				U.delay(1) {
 					self.progressAlertController.closeProgressAnimatedController()
 					U.delay(1) {
@@ -758,11 +952,10 @@ extension GroupedAssetListViewController {
 					}
 				}
 			}
-			completionHandler(suxxess)
+			completionHandler(success)
 		}
-		
-		A.deletePHAssets(of: self.contentType, of: assets.count > 1 ? .many : .one) {
-			let type: ProgressAlertType = self.contentType == .userPhoto ? .deletePhotos : .deleteVideos
+		AlertManager.showDeleteAlert(with: self.contentType, of: .getRaw(from: assets.count)) {
+			let type: ProgressAlertType = .progressDeleteAlertType(self.contentType)
 			self.progressAlertController.showSimpleProgressAlerControllerBar(of: type, from: self)
 			U.delay(1) {
 				self.photoManager.phassetProcessingOperationQueuer.addOperation(deletePhassetOperation)
@@ -830,9 +1023,9 @@ extension GroupedAssetListViewController {
 		
 		let phasset = self.assetGroups[indexPath.section].assets[indexPath.row]
 		
-		self.showDelecteConfirmAlert(for: [phasset]) { suxxess in
+		self.showDelecteConfirmAlert(for: [phasset]) { success in
 			U.UI {
-				if suxxess {
+				if success {
 					self.selectedAssets.removeAll(phasset)
 				
 					self.assetGroups[indexPath.section].assets.remove(at: indexPath.item)
@@ -840,6 +1033,9 @@ extension GroupedAssetListViewController {
 					let oldGropsValue = self.assetGroups.count
 					let newGroupsValue = self.assetGroups.filter({$0.assets.count != 1})
 					if oldGropsValue != newGroupsValue.count {
+						for asset in self.assetGroups[indexPath.section].assets {
+							self.selectedAssets.removeAll(asset)
+						}
 						self.collectionView.performBatchUpdates {
 							self.collectionView.deleteSections(IndexSet(integer: indexPath.section))
 							self.assetGroups.remove(at: indexPath.section)
@@ -860,6 +1056,9 @@ extension GroupedAssetListViewController {
 								self.progressAlertController.closeProgressAnimatedController()
 							}
 						}
+					}
+					if indexPath.row == 0 {
+						self.collectionView.reloadDataWithotAnimationKeepSelect(at: [IndexPath(row: 0, section: indexPath.section)])
 					}
 				}
 			}
@@ -883,9 +1082,9 @@ extension GroupedAssetListViewController {
 			let phassets = selectedIndixes.map({changedGroupsPHAssets[$0]})
 			
 			if !phassets.isEmpty {
-				self.showDelecteConfirmAlert(for: phassets) { suxxess in
+				self.showDelecteConfirmAlert(for: phassets) { success in
 					
-					guard suxxess else {return }
+					guard success else {return }
 					
 					self.selectedAssets = self.selectedAssets.filter({!phassets.contains($0)})
 					
@@ -896,12 +1095,9 @@ extension GroupedAssetListViewController {
 								self.collectionView.deleteSections(IndexSet(integer: indexPath.section))
 							} completion: { _ in
 								U.delay(1) {
-									
-								
-								self.handleSelectAllButtonSection(indexPath)
-								self.checkForSelectedSection()
-								self.handleActionButtons()
-								
+									self.handleSelectAllButtonSection(indexPath)
+									self.checkForSelectedSection()
+									self.handleActionButtons()
 									self.progressAlertController.closeProgressAnimatedController()
 								}
 							}
@@ -933,23 +1129,27 @@ extension GroupedAssetListViewController {
 		let setAsBestActionImage =         I.systemItems.defaultItems.star.withTintColor(theme.titleTextColor).withRenderingMode(.alwaysTemplate)
 		let deleteActionImage =            I.systemItems.defaultItems.trashBin.withTintColor(theme.actionTintColor).withRenderingMode(.alwaysTemplate)
 		
-		let fullScreenPreviewAction = UIAction(title: "full screen preview", image: fullScreenPreviewActionImage) { _ in
+		let fullScreenPreviewAction = UIAction(title: LocalizationService.Buttons.getButtonTitle(of: .fullPreview), image: fullScreenPreviewActionImage) { _ in
 			self.showFullScreenAssetPreviewAndFocus(at: indexPath)
 		}
 		
-		let setAsBestAction = UIAction(title: "set as best", image: setAsBestActionImage) { _ in
+		let setAsBestAction = UIAction(title: LocalizationService.Buttons.getButtonTitle(of: .setAsBest), image: setAsBestActionImage) { _ in
 			self.setAsBest(asset: asset, at: indexPath)
 		}
 		
-		let deleteAssetAction = UIAction(title: "delete", image: deleteActionImage, attributes: .destructive) { _ in
+		let deleteAssetAction = UIAction(title: LocalizationService.Buttons.getButtonTitle(of: .delete), image: deleteActionImage, attributes: .destructive) { _ in
 			self.deleteAsset(at: indexPath)
 		}
 		
-		if indexPath.row == 0 {
-			return UIMenu(title: "", children: [fullScreenPreviewAction])
-		} else {
-			return UIMenu(title: "", children: [fullScreenPreviewAction, setAsBestAction, deleteAssetAction])
+		var menu: UIMenu {
+			switch indexPath.row {
+				case 0:
+					return UIMenu(title: "", children: [fullScreenPreviewAction, deleteAssetAction])
+				default:
+					return UIMenu(title: "", children: [fullScreenPreviewAction, setAsBestAction, deleteAssetAction])
+			}
 		}
+		return menu
 	}
 }
 
@@ -963,18 +1163,31 @@ extension GroupedAssetListViewController {
 				return
 			}
 			
-				/// `bottom menu`
-			bottomMenuHeightConstraint.constant = !selectedAssets.isEmpty ? U.UIHelper.AppDimensions.bottomBarDefaultHeight  : 0
+			var bottomBarDefaultHeight: CGFloat {
+				switch Advertisement.manager.advertisementBannerStatus {
+					case .active:
+						return AppDimensions.BottomButton.bottomBarDefaultHeight - 20
+					case .hiden:
+						return AppDimensions.BottomButton.bottomBarDefaultHeight
+				}
+			}
 			
-			bottomButtonBarView.title("delete selected (\(selectedAssets.count))")
+				/// `bottom menu`
+			bottomMenuHeightConstraint.constant = !selectedAssets.isEmpty ? bottomBarDefaultHeight  : 0
+			
+			bottomButtonBarView.title("\(LocalizationService.Buttons.getButtonTitle(of: .deleteSelected)) (\(selectedAssets.count))")
 			
 			U.animate(0.5) {
-				self.collectionView.contentInset.bottom = !self.selectedAssets.isEmpty ? U.UIHelper.AppDimensions.bottomBarDefaultHeight + 10 + U.bottomSafeAreaHeight : 5
+				self.collectionView.contentInset.bottom = !self.selectedAssets.isEmpty ? bottomBarDefaultHeight + 10 + U.bottomSafeAreaHeight : 5
 			
 				self.photoContentContainerView.layoutIfNeeded()
 				self.view.layoutIfNeeded()
 			}
 		}
+	}
+	
+	@objc func advertisementDidChange() {
+		self.handleDeleteAssetsButton()
 	}
 }
 
@@ -987,7 +1200,7 @@ extension GroupedAssetListViewController {
 		let bestPHAssetIndexPath = IndexPath(row: 0, section: indexPath.section)
 		
 		cell.isSelected ? cell.delegate?.didSelect(cell: cell) : ()
-			
+		
 		assetGroups[indexPath.section].assets.move(at: indexPath.row, to: 0)
 		collectionView.performBatchUpdates {
 			collectionView.moveItem(at: indexPath, to: bestPHAssetIndexPath)
@@ -996,24 +1209,9 @@ extension GroupedAssetListViewController {
 			self.handleActionButtons(indexPath: indexPath)
 		}
 	}
- }
-
-extension GroupedAssetListViewController: SelectDropDownMenuDelegate {
-	
-	func selectedItemListViewController(_ controller: DropDownMenuViewController, didSelectItem: DropDownMenuItems) {
-		
-		switch didSelectItem {
-			case .deselectAll:
-				self.shouldSelectAllAssetsInSections(true)
-			case .selectAll:
-				self.shouldSelectAllAssetsInSections(false)
-			case .delete:
-				self.deleteSelectedAssets()
-			default:
-				return
-		}
-	}
 }
+
+
 
 extension GroupedAssetListViewController {
 	
@@ -1027,7 +1225,7 @@ extension GroupedAssetListViewController {
 		let delta = abs(preheatRect.midY - previousPreheatRect.midY)
 		guard delta > view.bounds.height / 3 else { return }
 		
-		let (addedRects, removedRects) = differencesBetweenRects(previousPreheatRect, preheatRect)
+		let (addedRects, removedRects) = Utils.LayoutManager.differencesBetweenRects(previousPreheatRect, preheatRect)
 		let addedAssets = addedRects
 			.flatMap { rect in collectionView!.indexPathsForElements(in: rect) }
 			.compactMap { indexPath in self.assetGroups[indexPath.section].assets[indexPath.item] }
@@ -1047,32 +1245,6 @@ extension GroupedAssetListViewController {
 	private func resetCachedAssets() {
 		prefetchCacheImageManager.stopCachingImagesForAllAssets()
 		previousPreheatRect = .zero
-	}
-	
-	 private func differencesBetweenRects(_ old: CGRect, _ new: CGRect) -> (added: [CGRect], removed: [CGRect]) {
-		if old.intersects(new) {
-			var added = [CGRect]()
-			if new.maxY > old.maxY {
-				added += [CGRect(x: new.origin.x, y: old.maxY,
-								 width: new.width, height: new.maxY - old.maxY)]
-			}
-			if old.minY > new.minY {
-				added += [CGRect(x: new.origin.x, y: new.minY,
-								 width: new.width, height: old.minY - new.minY)]
-			}
-			var removed = [CGRect]()
-			if new.maxY < old.maxY {
-				removed += [CGRect(x: new.origin.x, y: new.maxY,
-								   width: new.width, height: old.maxY - new.maxY)]
-			}
-			if old.minY < new.minY {
-				removed += [CGRect(x: new.origin.x, y: old.minY,
-								   width: new.width, height: new.minY - old.minY)]
-			}
-			return (added, removed)
-		} else {
-			return ([new], [old])
-		}
 	}
 }
 
@@ -1147,8 +1319,10 @@ extension GroupedAssetListViewController {
 	
 	private func setupNavigation() {
 		
-		navigationBarHeightConstraint.constant = U.UIHelper.AppDimensions.NavigationBar.navigationBarHeight
-		
+		navigationBarHeightConstraint.constant = AppDimensions.NavigationBar.navigationBarHeight
+		if #available(iOS 14.0, *) {
+			dropDownSetup()
+		}
 		navigationBar.setupNavigation(title: self.mediaType.mediaTypeName,
 									  leftBarButtonImage: I.systemItems.navigationBarItems.back,
 									  rightBarButtonImage: I.systemItems.navigationBarItems.burgerDots,
@@ -1157,7 +1331,9 @@ extension GroupedAssetListViewController {
 									  rightButtonTitle: nil)
 	}
 	
-	private func setupObservers() {}
+	private func setupObservers() {
+		U.notificationCenter.addObserver(self, selector: #selector(advertisementDidChange), name: .bannerStatusDidChanged, object: nil)
+	}
 	
 	private func setupDelegate() {
 		

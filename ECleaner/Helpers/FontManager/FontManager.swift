@@ -141,4 +141,63 @@ class FontManager {
 				return ExportModal.buttonTitle
 		}
 	}
+	
+	static func permissionFont(of type: PermissionFontType) -> UIFont {
+		switch type {
+			case .mainTitle:
+				return PermissionFont.mainTitleFont
+			case .mainSubtitle:
+				return PermissionFont.mainSubtitleFont
+			case .title:
+				return PermissionFont.titleFont
+			case .subtitle:
+				return PermissionFont.subtitleFont
+			case .permissionButton:
+				return PermissionFont.permissionButton
+			case .desctiption:
+				return PermissionFont.descriptioFont
+		}
+	}
+	
+	static func onboardingFont(of type: OnboardingFontType) -> UIFont {
+		switch type {
+			case .title:
+				return OnboardingFontSize.titleFont
+			case .subtitle:
+				return OnboardingFontSize.subtitleFont
+		}
+	}
+	
+	static func subscriptionFont(of type: SubscriptionFontType) -> UIFont {
+		switch type {
+			case .premiumFeature:
+				return SubscriptionFontSize.premiumFeature
+			case .title:
+				return SubscriptionFontSize.title
+			case .helperText:
+				return SubscriptionFontSize.helperText
+			case .links:
+				return SubscriptionFontSize.links
+			case .buttonTitle:
+				return SubscriptionFontSize.buttonTitle
+			case .buttonPrice:
+				return SubscriptionFontSize.buttonPrice
+			case .lifeTimeTitle:
+				return SubscriptionFontSize.lifeTimeTitle
+			case .buttonDescription:
+				return SubscriptionFontSize.buttonDescription
+			case .premimBannerTitle:
+				return SubscriptionFontSize.premiumBannerTitle
+			case .permiumBannerSubtitle:
+				return SubscriptionFontSize.permiumBannerSubtitle
+			case .premiumBannerDateSubtitle:
+				return SubscriptionFontSize.premiumBannerDateSubtitle
+			case .premiumFeatureBannerTitle:
+				return SubscriptionFontSize.premiumFeatureBannerTitle
+			case .premiumFeatureBannerSubtitle:
+				return SubscriptionFontSize.premiumFeatureBannerSubtitle
+			case .premiumFeatureBannerSubtitleTitle:
+				return SubscriptionFontSize.premiumFeatureBannerSubtitleTitle
+		}
+	}
 }

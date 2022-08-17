@@ -8,8 +8,6 @@
 import UIKit
 import Photos
 
-
-
 protocol PhotoCollectionViewCellDelegate {
 	func didShowFullScreenPHasset(at cell: PhotoCollectionViewCell)
 	func didSelect(cell: PhotoCollectionViewCell)
@@ -42,9 +40,9 @@ class PhotoCollectionViewCell: UICollectionViewCell {
 	@IBOutlet weak var reuseBottomConstraint: NSLayoutConstraint!
 	@IBOutlet weak var videoDurationViewWidthConstraint: NSLayoutConstraint!
 
-	@IBOutlet var thumnailViewOffsetConstraint: [NSLayoutConstraint]!
+	@IBOutlet var thumbnailViewOffsetConstraint: [NSLayoutConstraint]!
 	
-	private var selectButtonSize = U.UIHelper.AppDimensions.CollectionItemSize.cellSelectRectangleSize
+	private var selectButtonSize = AppDimensions.CollectionItemSize.cellSelectRectangleSize
 	public var collectionType: CollectionType = .none
     public var indexPath: IndexPath?
     public var cellMediaType: PhotoMediaType = .none
@@ -76,7 +74,6 @@ class PhotoCollectionViewCell: UICollectionViewCell {
 	
     override func awakeFromNib() {
         super.awakeFromNib()
-
     }
 		
 	@IBAction func didTapShowPHassetActionButton(_ sender: Any) {
@@ -135,6 +132,8 @@ extension PhotoCollectionViewCell: Themeble {
 				baseView.layoutIfNeeded()
 				reuseShadowView.layoutIfNeeded()
 				reuseShadowView.layoutSubviews()
+			case .locationPhoto:
+				buttonView.isHidden = true
 			default:
 				debugPrint("")
 		}
@@ -172,7 +171,7 @@ extension PhotoCollectionViewCell: Themeble {
 	
 	private func setThumnailViewOffcet(_ offset: CGFloat) {
 		
-		self.thumnailViewOffsetConstraint.forEach {
+		self.thumbnailViewOffsetConstraint.forEach {
 			$0.constant = offset
 		}
 	}
@@ -299,12 +298,12 @@ extension PhotoCollectionViewCell: Themeble {
 	}
 	
 	public func setBestView(availible: Bool = false) {
-		bestLabel.text = "best".uppercased()
+		bestLabel.text = Localization.Main.Subtitles.best.uppercased()
 		bestView.isHidden = !availible
 	}
 	
 	private func setBestViewForNewPHasset(availible: Bool = false) {
-		bestLabel.text = "new".uppercased()
+		bestLabel.text = Localization.Main.Subtitles.new.uppercased()
 		availible ? setupBestView() : ()
 		bestView.isHidden = !availible
 	}

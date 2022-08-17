@@ -116,6 +116,7 @@
                 <outlet property="descriptionSubtitleTextLabel" destination="PKH-4q-EVF" id="OTH-e9-dGf"/>
                 <outlet property="descriptionTitleTextLabel" destination="I62-te-Rq2" id="8aS-8l-a7T"/>
                 <outlet property="helperImageView" destination="N5b-vx-1OS" id="BCf-fW-UyW"/>
+                <outlet property="helperImageViewBottomConstraint" destination="8Bj-96-ghH" id="Tni-ZK-rUb"/>
                 <outlet property="helperImageViewHeightConstraint" destination="qLy-Ke-Cyq" id="erp-IS-yiw"/>
                 <outlet property="helperImageViewTrailingConstraint" destination="Prx-fz-rOl" id="GBd-h4-nbK"/>
                 <outlet property="helperImageViewWidthConstraint" destination="YDz-8x-bFk" id="TRW-cg-aZ1"/>

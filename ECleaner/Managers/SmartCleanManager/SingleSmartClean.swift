@@ -7,9 +7,11 @@
 
 import UIKit
 import Photos
+import Contacts
 
 class SmartCleanManager {
 	
+	private var contacManager = ContactsManager.shared
 	private var photoManager = PhotoManager.shared
 	private var fetchManager = PHAssetFetchManager.shared
 	private var progressNotificationManager = ProgressSearchNotificationManager.instance
@@ -140,5 +142,71 @@ class SmartCleanManager {
 	
 	public func setCanceProcessingSmartCleaning() {
 		smarCleanOperationQueue.cancelAll()
+	}
+}
+
+extension SmartCleanManager {
+	
+	public func startSmartContactCleanFetch(handler: @escaping () -> Void,
+											fetchAllContacts: @escaping (_ contacts: [CNContact]) -> Void,
+											emptyContacts: @escaping (_ emptyContacts: [ContactsGroup]) -> Void,
+											duplicatedNames: @escaping (_ duplicatedNames: [ContactsGroup]) -> Void,
+											duplicatedPhoneNumbers: @escaping (_ duplicatedPhoneNumbers: [ContactsGroup]) -> Void,
+											duplicatedEmail: @escaping (_ duplicatedEmails: [ContactsGroup]) -> Void,
+											completionHandler: @escaping (_ isCanceled: Bool) -> Void) {
+		var totalResultsCount = 0
+		
+		self.contacManager.getAllContacts { contacts in
+			fetchAllContacts(contacts)
+			
+			totalResultsCount += 1
+			
+			if totalResultsCount == 5 {
+				completionHandler(false)
+			}
+		}
+		
+		self.contacManager.getSingleDuplicatedCleaningContacts(of: .emptyContacts, cleanProcessingType: .singleSearch) { contactsGroup, isCancelled in
+			emptyContacts(contactsGroup)
+			
+			totalResultsCount += 1
+			
+			if totalResultsCount == 5 {
+				completionHandler(isCancelled)
+			}
+		}
+		
+		self.contacManager.getSingleDuplicatedCleaningContacts(of: .duplicatedContactName, cleanProcessingType: .singleSearch) { contactsGroup, isCancelled in
+
+			duplicatedNames(contactsGroup)
+			
+			totalResultsCount += 1
+			
+			if totalResultsCount == 5 {
+				completionHandler(isCancelled)
+			}
+		}
+		
+		self.contacManager.getSingleDuplicatedCleaningContacts(of: .duplicatedPhoneNumnber, cleanProcessingType: .singleSearch) { contactsGroup, isCancelled in
+			
+			duplicatedPhoneNumbers(contactsGroup)
+			
+			totalResultsCount += 1
+			
+			if totalResultsCount == 5 {
+				completionHandler(isCancelled)
+			}
+		}
+		
+		self.contacManager.getSingleDuplicatedCleaningContacts(of: .duplicatedEmail, cleanProcessingType: .singleSearch) { contactsGroup, isCancelled in
+			
+			duplicatedEmail(contactsGroup)
+			
+			totalResultsCount += 1
+			
+			if totalResultsCount == 5 {
+				completionHandler(isCancelled)
+			}
+		}
 	}
 }

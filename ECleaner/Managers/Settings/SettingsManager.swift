@@ -16,19 +16,110 @@ class SettingsManager {
         return self.shared
     }
 	
-	struct premium {
+	struct application {
 		
-		 static var allowAdvertisementBanner: Bool {
+		static var lastApplicationUsage: Date {
 			get {
-				U.userDefaults.bool(forKey: C.key.advertisement.bannerIsShow)
+				if let date = U.userDefaults.getDate(forKey: C.key.application.applicationLastUsage) {
+					return date
+				} else {
+					return Date()
+				}
 			} set {
-				U.userDefaults.set(newValue, forKey: C.key.advertisement.bannerIsShow)
+				U.userDefaults.set(date: newValue, forKey: C.key.application.applicationLastUsage)
+			}
+		}
+		
+		static var firstTimeApplicationStart: Bool {
+			get {
+				U.userDefaults.bool(forKey: C.key.application.applicationFirstTimeStart)
+			} set {
+				U.userDefaults.set(newValue, forKey: C.key.application.applicationFirstTimeStart)
 			}
 		}
 	}
 	
-
-    
+	struct subscripton {
+		
+		static var currentSubscriptionID: String {
+			get {
+				U.userDefaults.string(forKey: C.key.subscription.subscriptionID) ?? ""
+			} set {
+				U.userDefaults.set(newValue, forKey: C.key.subscription.subscriptionID)
+			}
+		}
+		
+		static var currentExprireSubscriptionDate: String {
+			get {
+				U.userDefaults.string(forKey: C.key.subscription.subscriptionExpireDate) ?? ""
+			} set {
+				U.userDefaults.set(newValue, forKey: C.key.subscription.subscriptionExpireDate)
+			}
+		}
+		
+		static var isVerificationPassed: Bool {
+			get {
+				return U.userDefaults.bool(forKey: C.key.subscription.verificationPassed)
+			} set {
+				U.userDefaults.set(newValue, forKey: C.key.subscription.verificationPassed)
+			}
+		}
+		
+		static var expiredSubscription: Bool {
+			get {
+				return U.userDefaults.bool(forKey: C.key.subscription.expiredSubscription)
+			} set {
+				U.userDefaults.setValue(newValue, forKey: C.key.subscription.expiredSubscription)
+			}
+		}
+	}
+	
+	struct permissions {
+		
+		static var photoPermissionSavedValue: Bool {
+			get {
+				return U.userDefaults.bool(forKey: C.key.permissions.settingsPhotoPermission)
+			} set {
+				if photoPermissionSavedValue != newValue {
+					let userInfo = [C.key.notificationDictionary.permission.photoPermission: PhotoLibraryPermissions().permissionRawValue]
+					U.userDefaults.set(newValue, forKey: C.key.permissions.settingsPhotoPermission)
+					do {
+						U.notificationCenter.post(name: .permisionDidChange, object: nil, userInfo: userInfo)
+					}
+				}
+			}
+		}
+		
+		static var contactsPermissionSavedValue: Bool {
+			get {
+				return U.userDefaults.bool(forKey: C.key.permissions.settingsContactsPermission)
+			} set {
+				if contactsPermissionSavedValue != newValue {
+					let userInfo = [C.key.notificationDictionary.permission.contactsPermission: ContactsPermissions().permissionRawValue]
+					U.userDefaults.set(newValue, forKey: C.key.permissions.settingsContactsPermission)
+					do {
+						U.notificationCenter.post(name: .permisionDidChange, object: nil, userInfo: userInfo)
+					}
+				}
+			}
+		}
+	}
+	
+	struct notification {
+		
+		static var localUserNotificationRawValue: Int {
+			get {
+				return U.userDefaults.integer(forKey: C.key.localUserNotification.localNotificationRawValue)
+			} set {
+				U.userDefaults.set(newValue, forKey: C.key.localUserNotification.localNotificationRawValue)
+			}
+		}
+		
+		static func setNewRemoteNotificationVaule(value: Int) {
+			self.localUserNotificationRawValue = self.localUserNotificationRawValue == 5 ? 1 : value
+		}
+	}
+	
     public var isDarkMode: Bool {
         get {
             U.userDefaults.bool(forKey: C.key.settings.isDarkModeOn)
@@ -113,6 +204,38 @@ class SettingsManager {
 	}
 }
 
+extension SettingsManager {
+	
+	struct promt {
+		
+		static public var promtRateDelay: Double? {
+			get {
+				return U.userDefaults.double(forKey: C.key.settings.promt.promtDelay)
+			} set {
+				U.userDefaults.set(newValue, forKey: C.key.settings.promt.promtDelay)
+			}
+		}
+		
+		static public var sixHoursDelay: Double? {
+			get {
+				return U.userDefaults.double(forKey: C.key.settings.promt.sixHoursDelay)
+			} set {
+				U.userDefaults.set(newValue, forKey: C.key.settings.promt.sixHoursDelay)
+			}
+		}
+		
+		static public var firstTimePromtShow: Bool {
+			get {
+				return U.userDefaults.bool(forKey: C.key.settings.promt.firstTimePromtShow)
+			} set {
+				U.userDefaults.set(newValue, forKey: C.key.settings.promt.firstTimePromtShow)
+			}
+		}
+	}
+}
+
+
+
 //  MARK: file sizez String values
     /// `phassetPhotoFilesSizes` -> disk space for all photos assets
     /// `phassetVideoFilesSizes` -> disk space for all videos assets
@@ -183,3 +306,35 @@ extension SettingsManager {
     }
 }
 
+extension SettingsManager {
+	
+	public var changePremiumBunner: String {
+		get {
+			if let value = U.userDefaults.string(forKey: "changePremiumBunner") {
+				return value
+			} else {
+				self.changePremiumBunner = "premiumFeaturesSubcription"
+				return self.changePremiumBunner
+			}
+		} set {
+			U.userDefaults.set(newValue, forKey: "changePremiumBunner")
+		}
+	}
+}
+
+enum PremiumAdvBunnerType {
+	case stack
+	case horizontal
+	case alreadyPremium
+	
+	var rowValue: String {
+		switch self {
+			case .stack:
+				return "premiumFeaturesSubcription"
+			case .horizontal:
+				return "featuresSubscription"
+			case .alreadyPremium:
+				return "currentSubscription"
+		}
+	}
+}

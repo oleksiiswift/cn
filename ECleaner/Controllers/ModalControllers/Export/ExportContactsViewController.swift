@@ -44,6 +44,15 @@ class ExportContactsViewController: UIViewController {
         
         mainContainerView.cornerSelectRadiusView(corners: [.topLeft, .topRight], radius: 20)
     }
+	
+	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+		switch segue.identifier {
+			case C.identifiers.segue.backupContacts:
+				self.setupShowContactsBackupController(segue: segue)
+			default:
+				break
+		}
+	}
     
     @IBAction func didTapLeftActionButton(_ sender: Any) {
         self.dismiss(animated: true) {
@@ -62,16 +71,16 @@ extension ExportContactsViewController: Themeble {
     
     private func setupUI() {
         
-		let containerHeight: CGFloat = U.UIHelper.AppDimensions.Contacts.ExportModalController.controllerHeight
+		let containerHeight: CGFloat = AppDimensions.ContactsController.ExportModalController.controllerHeight
         self.view.frame = CGRect(x: 0, y: 0, width: U.screenWidth, height: containerHeight)
         mainContainerHeightConstraint.constant = containerHeight
-		bottomButtonMenuHeightConstraint.constant = U.UIHelper.AppDimensions.Contacts.ExportModalController.bottomButtonViewHeight
-		bottomButtonView.setButtonHeight(U.UIHelper.AppDimensions.bottomBarButtonDefaultHeight)
+		bottomButtonMenuHeightConstraint.constant = AppDimensions.ContactsController.ExportModalController.bottomButtonViewHeight
+		bottomButtonView.setButtonHeight(AppDimensions.BottomButton.bottomBarButtonDefaultHeight)
 		
         mainContainerView.cornerSelectRadiusView(corners: [.topLeft, .topRight], radius: 20)
         topShevronView.setCorner(3)
         
-        controllerTitleTextLabel.text = "select format of file"
+		controllerTitleTextLabel.text = Localization.Main.HeaderTitle.selectFileFormat
 		controllerTitleTextLabel.font = FontManager.exportModalFont(of: .title)
     
         leftButton.setTitleColor(theme.titleTextColor, for: .normal)
@@ -82,9 +91,9 @@ extension ExportContactsViewController: Themeble {
         leftButton.setTitle(leftExportFileFormat.formatRowValue, for: .normal)
         rightButton.setTitle(rightExportFileFormat.formatRowValue, for: .normal)
         
-        bottomButtonView.title("google contacts".uppercased())
+		bottomButtonView.title(Localization.Main.MediaContentTitle.backup.uppercased())
         
-		let image = I.systemItems.defaultItems.refresh
+		let image = I.systemElementsItems.persons
 		let size = CGSize(width: 25, height: 25)
 		let instricticSize = image.getPreservingAspectRationScaleImageSize(from: size)
 		bottomButtonView.actionButton.imageSize = instricticSize
@@ -126,8 +135,38 @@ extension ExportContactsViewController: Themeble {
 extension ExportContactsViewController: BottomActionButtonDelegate {
     
     func didTapActionButton() {
-        selectExtraOptionalOption?()
+		SubscriptionManager.instance.purchasePremiumHandler { status in
+			switch status {
+				case .lifetime, .purchasedPremium:
+					self.performSegue(withIdentifier: C.identifiers.segue.backupContacts, sender: self)
+				case .nonPurchased:
+					UIPresenter.showViewController(of: .subscription)
+			}
+		}
     }
+	
+	private func setupShowContactsBackupController(segue: UIStoryboardSegue) {
+		
+		guard let segue = segue as? SwiftMessagesSegue else { return }
+		
+		segue.configure(layout: .bottomMessage)
+		segue.dimMode = .color(color: .clear, interactive: false)
+		segue.interactiveHide = true
+		segue.messageView.setupForShadow(shadowColor: theme.bottomShadowColor, cornerRadius: 14, shadowOffcet: CGSize(width: 6, height: 6), shadowOpacity: 10, shadowRadius: 14)
+		segue.messageView.configureNoDropShadow()
+		
+		if let backupViewController = segue.destination as? BackupContactsViewController {
+			backupViewController.didSeceltCloseController = {
+				self.closeControllerWithCompletion()
+			}
+		}
+	}
+	
+	private func closeControllerWithCompletion() {
+		self.dismiss(animated: true) {
+			self.selectExtraOptionalOption?()
+		}
+	}
 }
 
 extension ExportContactsViewController: UIGestureRecognizerDelegate {

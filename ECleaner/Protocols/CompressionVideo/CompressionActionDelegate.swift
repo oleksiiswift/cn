@@ -9,5 +9,4 @@ import Foundation
 
 protocol CompressionSettingsActionsDelegate {
 	func setCompressionSettingsForValue(with model: ComprssionModel)
-	 
 }

@@ -9,15 +9,13 @@ import UIKit
 import Contacts
 
 protocol GroupContactSelectableDelegate: AnyObject {
-    
-    func didSelecMeregeSection(at index: Int)
+	func didSelecMeregeSection(at index: Int, completionHandler: @escaping (_ isSeletable: Bool) -> Void)
 }
 
 class GroupContactTableViewCell: UITableViewCell {
     
     @IBOutlet weak var sectionShadowView: SectionShadowView!
     @IBOutlet weak var shadowRoundedReuseView: ReuseShadowRoundedView!
-    
     @IBOutlet weak var baseView: UIView!
     @IBOutlet weak var contactTitleTextLabel: UILabel!
     @IBOutlet weak var contactSubtitleTextLabel: UILabel!
@@ -61,9 +59,10 @@ class GroupContactTableViewCell: UITableViewCell {
     }
     
     @IBAction func didTapSelectSection(_ sender: Any) {
-    
-        delegate?.didSelecMeregeSection(at: tag)
-        checkSelecttion()
+		delegate?.didSelecMeregeSection(at: tag, completionHandler: { isSeletable in
+			guard isSeletable else { return }
+			self.checkSelecttion()
+		})
     }
 }
 
@@ -135,8 +134,8 @@ extension GroupContactTableViewCell: Themeble {
         selectionStyle = .none
 		contactTitleTextLabel.font = FontManager.contactsFont(of: .cellTitle)
 		contactSubtitleTextLabel.font = FontManager.contactsFont(of: .cellSubtitle)
-		shadowRoundedViewHeightConstraint.constant = U.UIHelper.AppDimensions.Contacts.Collection.helperImageViewWidth
-		selectableContactImageViewWidthConstraint.constant = U.UIHelper.AppDimensions.Contacts.Collection.selectableGoupAssetViewWidth
+		shadowRoundedViewHeightConstraint.constant = AppDimensions.ContactsController.Collection.helperImageViewWidth
+		selectableContactImageViewWidthConstraint.constant = AppDimensions.ContactsController.Collection.selectableGoupAssetViewWidth
     }
     
     func updateColors() {

@@ -14,3 +14,11 @@ enum DeepCleaningState {
 	case willAvailibleDelete
 	case canclel
 }
+
+
+enum DeepCleanButtonState {
+	case startDeepClen
+	case startAnalyzing
+	case stopAnalyzing
+	case startCleaning
+}

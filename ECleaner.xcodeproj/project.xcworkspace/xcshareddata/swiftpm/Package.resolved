@@ -1,0 +1,122 @@
+{
+  "pins" : [
+    {
+      "identity" : "cocoaimagehashing",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ameingast/cocoaimagehashing",
+      "state" : {
+        "revision" : "ad01eee3c3f91bd181f7f4eba7f48f7cb211b51c",
+        "version" : "1.9.0"
+      }
+    },
+    {
+      "identity" : "connectivity",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/rwbutler/Connectivity",
+      "state" : {
+        "revision" : "c701ac40a6954e898683ef1c0c4ba6610e8199a9",
+        "version" : "5.3.0"
+      }
+    },
+    {
+      "identity" : "googleappmeasurement",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/google/GoogleAppMeasurement.git",
+      "state" : {
+        "revision" : "f54f60d0164d887e1174fa51ab2efe48a8e9d178",
+        "version" : "9.3.0"
+      }
+    },
+    {
+      "identity" : "googleutilities",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/google/GoogleUtilities.git",
+      "state" : {
+        "revision" : "f4abe56ce62a779e64b525eb133c8fc2a84bbc1f",
+        "version" : "7.7.1"
+      }
+    },
+    {
+      "identity" : "lottie-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/airbnb/lottie-ios",
+      "state" : {
+        "revision" : "b04b773957e3e359730590c2e7c16d8c3874ec50",
+        "version" : "3.4.1"
+      }
+    },
+    {
+      "identity" : "nanopb",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/firebase/nanopb.git",
+      "state" : {
+        "revision" : "819d0a2173aff699fb8c364b6fb906f7cdb1a692",
+        "version" : "2.30909.0"
+      }
+    },
+    {
+      "identity" : "phonenumberkit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/marmelroy/PhoneNumberKit",
+      "state" : {
+        "revision" : "e58be4e8efcd468bd6236791080ec75a330a8f2a",
+        "version" : "3.4.4"
+      }
+    },
+    {
+      "identity" : "promises",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/google/promises.git",
+      "state" : {
+        "revision" : "3e4e743631e86c8c70dbc6efdc7beaa6e90fd3bb",
+        "version" : "2.1.1"
+      }
+    },
+    {
+      "identity" : "swift-package-manager-google-mobile-ads",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/googleads/swift-package-manager-google-mobile-ads.git",
+      "state" : {
+        "revision" : "43e3cee3bdffe35a1b536fdda01988a3e04bdcec",
+        "version" : "9.8.0"
+      }
+    },
+    {
+      "identity" : "swift-package-manager-google-user-messaging-platform",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/googleads/swift-package-manager-google-user-messaging-platform.git",
+      "state" : {
+        "revision" : "3b924ce3313a5fd2fc6a8dc889a8c38f76890fe3",
+        "version" : "2.0.0"
+      }
+    },
+    {
+      "identity" : "swiftmessages",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/SwiftKickMobile/SwiftMessages",
+      "state" : {
+        "revision" : "b29dd21090b708aa0ae9ecbaf6e2d0487028dc3f",
+        "version" : "9.0.6"
+      }
+    },
+    {
+      "identity" : "swiftrater",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/takecian/SwiftRater",
+      "state" : {
+        "revision" : "8ffadad3709783c9195d358db0c73be4ee9fbc2a",
+        "version" : "2.0.0"
+      }
+    },
+    {
+      "identity" : "swiftystorekit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/bizz84/SwiftyStoreKit",
+      "state" : {
+        "revision" : "9ce911639680113dac9b554d6243e406a9758ebe",
+        "version" : "0.16.4"
+      }
+    }
+  ],
+  "version" : 2
+}

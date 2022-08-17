@@ -46,7 +46,7 @@ extension GroupedAssetsReusableHeaderView: Themeble {
     
     public func setupUI() {
 		
-		let deletedText = "delete selected".uppercased()
+		let deletedText = LocalizationService.Buttons.getButtonTitle(of: .deleteSelected).uppercased()
 		let image = I.systemItems.defaultItems.trashBin
 		deleteSelectedButton.contentType = mediaContentType
 		selectAllButton.contentType = mediaContentType
