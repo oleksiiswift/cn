@@ -16,10 +16,10 @@ enum StatusSubscription {
 
 enum Subscriptions: String, CaseIterable {
 
-	case month = 	"month_cleaner"
-	case year = 	"year_cleaner"
-	case week = 	"week_cleaner"
-	case lifeTime = "lifetime_cleaner"
+	case month = 	"com.cleaner.month"
+	case year = 	"com.cleaner.year"
+	case week = 	"com.cleaner.week"
+	case lifeTime = "com.cleaner.lifetime"
 }
 
 @available(iOS 15.0, *)

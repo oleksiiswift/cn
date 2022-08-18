@@ -152,19 +152,24 @@ extension SubscriptionViewController {
 		
 		self.segmentControll.setSegment(status: .willLoading)
 		
-		Network.theyLive { status in
-			Utils.UI {
-				switch status {
-					case .connedcted:
-						self.tryLoadingProducts { status in
-							self.statusSegmentLoaded = status
-							self.segmentControll.setSegment(status: status)
-							self.subscribeContainerView.setLockButtonAnimate(state: .active)
-						}
-					case .unreachable:
-						self.segmentControll.setSegment(status: .disable)
-						self.subscribeContainerView.setLockButtonAnimate(state: .disabled)
-						self.statusSegmentLoaded = .disable
+		let deley = self.statusSegmentLoaded == .empty ? 3 : 0.0
+		
+		Utils.delay(deley) {
+		
+			Network.theyLive { status in
+				Utils.UI {
+					switch status {
+						case .connedcted:
+							self.tryLoadingProducts { status in
+								self.statusSegmentLoaded = status
+								self.segmentControll.setSegment(status: status)
+								self.subscribeContainerView.setLockButtonAnimate(state: .active)
+							}
+						case .unreachable:
+							self.segmentControll.setSegment(status: .disable)
+							self.subscribeContainerView.setLockButtonAnimate(state: .disabled)
+							self.statusSegmentLoaded = .disable
+					}
 				}
 			}
 		}
@@ -185,7 +190,7 @@ extension SubscriptionViewController {
 			
 			if model.isEmpty {
 				completionHandler(.empty)
-				Utils.delay(1) {
+				Utils.delay(4) {
 					self.loadSubscriptionProducts()
 				}
 			} else {

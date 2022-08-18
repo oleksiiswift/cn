@@ -35,6 +35,7 @@ class Subscription {
 					debugPrint("****")
 				}
 			} catch {
+				self.manager.setPurchasePremium(false)
 				debugPrint("error load keys and subcription")
 			}
 		}
