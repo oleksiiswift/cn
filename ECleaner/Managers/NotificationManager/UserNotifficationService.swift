@@ -200,7 +200,7 @@ extension UserNotificationService {
 	
 		SettingsManager.notification.setNewRemoteNotificationVaule(value: rawValue + 1)
 		
-		debugPrint("register new notification from \(trigger.dateComponents) of type \(type)")
+		debugPrint("register new notification from \(trigger) of type \(type)")
 		
 		self.sendCleanNotification(of: type, with: trigger)
 	}
