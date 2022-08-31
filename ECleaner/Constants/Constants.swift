@@ -29,11 +29,11 @@ class Constants {
          - parameter gadProductionKey use when app in production
         */
         
-        static let GADApplicationIdentifier = ""
-        static let gadProductionKey = ""
+        static let GADApplicationIdentifier = "ca-app-pub-7972352523738799~8564484489"
+        static let gadProductionKey = "ca-app-pub-7972352523738799/6144783829"
 		static let gadInterstitialProductionKey = ""
 		static let gadRewardedIntProductionKey = ""
-		static let gadRewardedProductionKey = ""
+		static let gadRewardedProductionKey = "" 
         
         static let GADTestAppIdentifier = "ca-app-pub-3940256099942544~1458002511"
         static let gadTestKey = "ca-app-pub-3940256099942544/2934735716"

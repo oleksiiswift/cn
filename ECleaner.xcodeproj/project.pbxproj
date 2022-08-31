@@ -347,6 +347,7 @@
 		97B65881284355FF000AB92B /* NotificationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B65880284355FF000AB92B /* NotificationType.swift */; };
 		97B658852844010C000AB92B /* RemoteLaunchService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B658842844010C000AB92B /* RemoteLaunchService.swift */; };
 		97B7D6252821DF25002039ED /* Gradient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B7D6242821DF25002039ED /* Gradient.swift */; };
+		97B887CA28BF90F900677028 /* SwiftyStoreKit in Frameworks */ = {isa = PBXBuildFile; productRef = 97B887C928BF90F900677028 /* SwiftyStoreKit */; };
 		97B8CFE4283C283B00F3E4E6 /* InAppSubscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B8CFE3283C283A00F3E4E6 /* InAppSubscription.swift */; };
 		97B8CFEB283CC4DE00F3E4E6 /* SubscriptionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B8CFEA283CC4DE00F3E4E6 /* SubscriptionManager.swift */; };
 		97B8CFED283CC54D00F3E4E6 /* Subscriptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B8CFEC283CC54D00F3E4E6 /* Subscriptions.swift */; };
@@ -439,7 +440,6 @@
 		97EBE75B28927A9A000B3CD3 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 97EBE75A28927A9A000B3CD3 /* Lottie */; };
 		97EBE75E28927AAE000B3CD3 /* CocoaImageHashing in Frameworks */ = {isa = PBXBuildFile; productRef = 97EBE75D28927AAE000B3CD3 /* CocoaImageHashing */; };
 		97EBE76128927AC7000B3CD3 /* PhoneNumberKit in Frameworks */ = {isa = PBXBuildFile; productRef = 97EBE76028927AC7000B3CD3 /* PhoneNumberKit */; };
-		97EBE76428927ADF000B3CD3 /* SwiftyStoreKit in Frameworks */ = {isa = PBXBuildFile; productRef = 97EBE76328927ADF000B3CD3 /* SwiftyStoreKit */; };
 		97EBE76728927AF8000B3CD3 /* SwiftMessages in Frameworks */ = {isa = PBXBuildFile; productRef = 97EBE76628927AF8000B3CD3 /* SwiftMessages */; };
 		97EBE76A28927B0C000B3CD3 /* Connectivity in Frameworks */ = {isa = PBXBuildFile; productRef = 97EBE76928927B0C000B3CD3 /* Connectivity */; };
 		97EC0FD92897C04B0096F780 /* Location.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97EC0FD82897C04B0096F780 /* Location.storyboard */; };
@@ -936,7 +936,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				97EBE76128927AC7000B3CD3 /* PhoneNumberKit in Frameworks */,
-				97EBE76428927ADF000B3CD3 /* SwiftyStoreKit in Frameworks */,
+				97B887CA28BF90F900677028 /* SwiftyStoreKit in Frameworks */,
 				97EBE75B28927A9A000B3CD3 /* Lottie in Frameworks */,
 				97EBE76A28927B0C000B3CD3 /* Connectivity in Frameworks */,
 				97EBE75E28927AAE000B3CD3 /* CocoaImageHashing in Frameworks */,
@@ -2987,11 +2987,11 @@
 				97EBE75A28927A9A000B3CD3 /* Lottie */,
 				97EBE75D28927AAE000B3CD3 /* CocoaImageHashing */,
 				97EBE76028927AC7000B3CD3 /* PhoneNumberKit */,
-				97EBE76328927ADF000B3CD3 /* SwiftyStoreKit */,
 				97EBE76628927AF8000B3CD3 /* SwiftMessages */,
 				97EBE76928927B0C000B3CD3 /* Connectivity */,
 				97DE8A4028A262A100E3954E /* GoogleMobileAds */,
 				97BC4BB428AA40C600A3EEC7 /* SwiftRater */,
+				97B887C928BF90F900677028 /* SwiftyStoreKit */,
 			);
 			productName = ECleaner;
 			productReference = 04E0946C267A06B500A69956 /* ECleaner.app */;
@@ -3022,7 +3022,6 @@
 			);
 			mainGroup = 04E09463267A06B500A69956;
 			packageReferences = (
-				97EBE74E28927366000B3CD3 /* XCRemoteSwiftPackageReference "SwiftyStoreKit" */,
 				97EBE751289273AD000B3CD3 /* XCRemoteSwiftPackageReference "PhoneNumberKit" */,
 				97EBE7582892792F000B3CD3 /* XCRemoteSwiftPackageReference "cocoaimagehashing" */,
 				97EBE75928927A9A000B3CD3 /* XCRemoteSwiftPackageReference "lottie-ios" */,
@@ -3030,6 +3029,7 @@
 				97EBE76828927B0C000B3CD3 /* XCRemoteSwiftPackageReference "Connectivity" */,
 				97DE8A3F28A262A100E3954E /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */,
 				97BC4BB328AA40C600A3EEC7 /* XCRemoteSwiftPackageReference "SwiftRater" */,
+				97B887C828BF90F900677028 /* XCRemoteSwiftPackageReference "SwiftyStoreKit" */,
 			);
 			productRefGroup = 04E0946D267A06B500A69956 /* Products */;
 			projectDirPath = "";
@@ -3711,6 +3711,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		97B887C828BF90F900677028 /* XCRemoteSwiftPackageReference "SwiftyStoreKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/bizz84/SwiftyStoreKit";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.9.3;
+			};
+		};
 		97BC4BB328AA40C600A3EEC7 /* XCRemoteSwiftPackageReference "SwiftRater" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/takecian/SwiftRater";
@@ -3725,14 +3733,6 @@
 			requirement = {
 				kind = upToNextMinorVersion;
 				minimumVersion = 9.8.0;
-			};
-		};
-		97EBE74E28927366000B3CD3 /* XCRemoteSwiftPackageReference "SwiftyStoreKit" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/bizz84/SwiftyStoreKit";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.9.3;
 			};
 		};
 		97EBE751289273AD000B3CD3 /* XCRemoteSwiftPackageReference "PhoneNumberKit" */ = {
@@ -3778,6 +3778,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		97B887C928BF90F900677028 /* SwiftyStoreKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 97B887C828BF90F900677028 /* XCRemoteSwiftPackageReference "SwiftyStoreKit" */;
+			productName = SwiftyStoreKit;
+		};
 		97BC4BB428AA40C600A3EEC7 /* SwiftRater */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 97BC4BB328AA40C600A3EEC7 /* XCRemoteSwiftPackageReference "SwiftRater" */;
@@ -3802,11 +3807,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 97EBE751289273AD000B3CD3 /* XCRemoteSwiftPackageReference "PhoneNumberKit" */;
 			productName = PhoneNumberKit;
-		};
-		97EBE76328927ADF000B3CD3 /* SwiftyStoreKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 97EBE74E28927366000B3CD3 /* XCRemoteSwiftPackageReference "SwiftyStoreKit" */;
-			productName = SwiftyStoreKit;
 		};
 		97EBE76628927AF8000B3CD3 /* SwiftMessages */ = {
 			isa = XCSwiftPackageProductDependency;
