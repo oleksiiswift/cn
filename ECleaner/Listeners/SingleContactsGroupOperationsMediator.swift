@@ -32,6 +32,6 @@ class SingleContactsGroupOperationMediator {
     }
     
     func didRefactorContactsGroup(in section: Int, with indexPath: IndexPath) {
-        didRefactorContactsGroup(in: section, with: indexPath)
+		listener?.didRefactorContactsGroup(in: section, with: indexPath)
     }
 }
