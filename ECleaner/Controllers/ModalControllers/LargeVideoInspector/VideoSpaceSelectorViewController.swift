@@ -57,6 +57,7 @@ class VideoSpaceSelectorViewController: UIViewController {
 	@IBOutlet weak var bottomButtonView: BottomButtonBarView!
 	@IBOutlet weak var mainContainerViewHeightConstraint: NSLayoutConstraint!
 	@IBOutlet weak var sliderContainerView: UIView!
+	@IBOutlet weak var descriptionTitleTextLabel: UITextView!
 	
 	lazy var sizeControll = StepSlider()
 	private var largeVideoSize: LargeVideoSize?
@@ -175,6 +176,13 @@ extension VideoSpaceSelectorViewController {
 		mainContainerViewHeightConstraint.constant = containerHeight
 		
 		bottomButtonView.title(LocalizationService.Buttons.getButtonTitle(of: .submit))
+		
+		descriptionTitleTextLabel.font = FontManager.permissionFont(of: .subtitle)
+		descriptionTitleTextLabel.textAlignment = .center
+		descriptionTitleTextLabel.isEditable = false
+		descriptionTitleTextLabel.text = Localization.Settings.Subtitle.largeDescription
+		descriptionTitleTextLabel.sizeToFit()
+		descriptionTitleTextLabel.isUserInteractionEnabled = false
 	}
 	
 	private func stepSliderSetup() {
@@ -233,6 +241,8 @@ extension VideoSpaceSelectorViewController: Themeble {
 		sizeControll.backgroundColor = .clear
 		sizeControll.sliderCircleColor = theme.sliderCircleBackroundColor
 		sizeControll.labelColor = theme.subTitleTextColor
+		
+		descriptionTitleTextLabel.textColor = theme.subTitleTextColor
 	}
 }
 
