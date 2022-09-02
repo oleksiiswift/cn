@@ -1181,7 +1181,6 @@
 				97BE98CF2874AC3A00419C6A /* CarouselCell */,
 				97BE98CD2874AC1A00419C6A /* DeepClean */,
 				97BE98CB2874ABD800419C6A /* PremiumFeatures */,
-				9760159028702C9E006965BB /* Subscription */,
 				97420C09283EC80A00B0E134 /* Permissions */,
 			);
 			path = Cells;
@@ -2050,13 +2049,6 @@
 				97601587286FAB5A006965BB /* PremiumFeutureDataSource.swift */,
 			);
 			path = PremiumFeatures;
-			sourceTree = "<group>";
-		};
-		9760159028702C9E006965BB /* Subscription */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Subscription;
 			sourceTree = "<group>";
 		};
 		9763F4902847F506004122A9 /* Localizable */ = {

@@ -437,7 +437,12 @@ extension MediaViewController  {
 		var collectionViewHeight: CGFloat {
 			switch Advertisement.manager.advertisementBannerStatus {
 				case .active:
-					return (U.screenHeight - heightOffset)
+					switch Screen.size {
+						case .small:
+							return (U.screenHeight - heightOffset - 50)
+						default:
+							return (U.screenHeight - heightOffset)							
+					}
 				case .hiden:
 					return U.screenHeight - heightOffset
 			}
@@ -739,6 +744,7 @@ extension MediaViewController {
 						to.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: false)
 					}
 				} completion: { finished in
+					self.handleActivePlayerIndexPath()
 					self.shouldTrackScrolling = finished
 				}
 			}
@@ -756,9 +762,10 @@ extension MediaViewController {
 		
 		guard self.contentType == .userVideo else { return }
 		
-		let visibleCellsIndexPaths = self.previewCollectionView.indexPathsForVisibleItems
-		
-		guard let currentPlayIndexPath = self.currentActivePlayIndexPath, !visibleCellsIndexPaths.contains(currentPlayIndexPath) else { return }
+		let centerPoint = CGPoint(x: previewCollectionView.contentOffset.x + (previewCollectionView.frame.width / 2), y: previewCollectionView.frame.height / 2)
+		let centerIndexPath = self.previewCollectionView.indexPathForItem(at: centerPoint)
+
+		guard let currentPlayIndexPath = self.currentActivePlayIndexPath, currentPlayIndexPath == centerIndexPath else { return }
 		
 		if let cell = self.previewCollectionView.cellForItem(at: currentPlayIndexPath) as? PhotoPreviewCollectionViewCell {
 			if cell.isPlaying {
@@ -789,11 +796,7 @@ extension MediaViewController: PreviewCollectionCellDelegate {
 	//		MARK: - scroll view carousel delegate -
 extension MediaViewController: UIScrollViewDelegate {
 	
-	public func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-			//		if let indexPath = visibleCellIndex, !decelerate {
-			//			handleDecelerateScrollCollection(at: indexPath)
-			//		}
-	}
+	public func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {}
 	
 	public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {}
 	
