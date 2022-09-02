@@ -144,6 +144,7 @@
 "Facebook" = "Facebook";
 "Telegram" = "Telegram";
 "Email" = "Email";
+"Set a threshold value to identify large videos." = "Set a threshold value to identify large videos.";
 "latitude" = "latitude";
 "longitude" = "longitude";
 "altitude" = "altitude";

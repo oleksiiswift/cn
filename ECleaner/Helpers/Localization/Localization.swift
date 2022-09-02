@@ -195,6 +195,7 @@ struct Localization {
 			static let facebook = "Facebook".localized()
 			static let telegram = "Telegram".localized()
 			static let email = "Email".localized()
+			static let largeDescription = "Set a threshold value to identify large videos.".localized()
 		}
 	}
 	
