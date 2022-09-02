@@ -45,7 +45,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func sceneWillResignActive(_ scene: UIScene) {
 		RemoteLaunchServiceMediator.sharedInstance.handlerRemoteShortcuts()
-		
     }
 
     func sceneWillEnterForeground(_ scene: UIScene) {}

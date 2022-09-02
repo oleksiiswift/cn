@@ -630,7 +630,9 @@ extension MediaContentViewController {
 						self.photoManager.getPHAssetCollectionWithLocation { phassets, annotations in
 							self.progrssAlertController.closeProgressAnimatedController()
 							if !phassets.isEmpty {
-								self.showLocationViewController(with: phassets, annotationCollection: annotations)
+								Utils.delay(1) {
+									self.showLocationViewController(with: phassets, annotationCollection: annotations)									
+								}
 							} else {
 								ErrorHandler.shared.showEmptySearchResultsFor(.photoWithLocationIsEmpty)
 							}
