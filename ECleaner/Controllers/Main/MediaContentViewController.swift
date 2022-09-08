@@ -79,6 +79,7 @@ class MediaContentViewController: UIViewController {
         super.viewWillAppear(animated)
         
 		self.resetAllProgressVisual()
+		self.testDocumentsScan()
     }
 	
 	override func viewDidDisappear(_ animated: Bool) {
@@ -408,6 +409,21 @@ extension MediaContentViewController {
 		}
 		getScreenShotsAssetsOperation.name = self.currentlyScanningProcess.rawValue
 		phassetProcessingOperationQueuer.addOperation(getScreenShotsAssetsOperation)
+	}
+	
+	private func testDocumentsScan() {
+		
+		let stringDate = "2000-01-01 00:00:00"
+		guard let date = Date().getDateFromString(stringDate: stringDate, format: Constants.dateFormat.fullDateFormat) else { return }
+		
+		let findDocumentsOperation = photoManager.detectDotcuments(from: date, to: upperBoundDate, cleanProcessingType: .singleSearch) { assets, isCancelled in
+			Utils.delay(0.5) {
+				if !assets.isEmpty {
+					self.showAssetViewController(collection: assets, photoContent: .singleScreenShots, media: .userPhoto)
+				}
+			}
+		}
+		phassetProcessingOperationQueuer.addOperation(findDocumentsOperation)
 	}
 	
 	private func showSimilarSelfies() {

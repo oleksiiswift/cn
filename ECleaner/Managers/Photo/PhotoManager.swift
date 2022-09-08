@@ -11,6 +11,9 @@ import Photos
 import CocoaImageHashing
 import AVKit
 import MapKit
+import Vision
+
+
 
 enum AssetsGroupType {
 	case photo
@@ -852,6 +855,84 @@ extension PhotoManager {
 		}
 		similarSelfiesProcessingOperation.name = CommonOperationSearchType.similarSelfiesAssetsOperation.rawValue
 		return similarSelfiesProcessingOperation
+	}
+	
+	public func detectDotcuments(from lowerDate: Date = lowerDateValue, to upperDate: Date = upperDateValue, cleanProcessingType: CleanProcessingPresentType, completionHandler: @escaping ((_ assets: [PHAsset],_ isCancelled: Bool) -> Void)) -> ConcurrentProcessOperation {
+		
+		let getScreenShotsOperation = ConcurrentProcessOperation { operation in
+			
+			self.fetchManager.fetchFromGallery(from: lowerDate, to: upperDate, collectiontype: .smartAlbumUserLibrary, by: PHAssetMediaType.image.rawValue) { result in
+				
+				var documents: [PHAsset] = []
+				
+				let benchTimer = BenchTimer()
+				
+				
+//				self.sendNotification(processing: cleanProcessingType, deepCleanType: .screenshots, singleCleanType: .screenShots, status: .prepare, totalItems: 0, currentIndex: 0)
+				
+				sleep(1)
+				
+				result.enumerateObjects { phasset, index, stopped in
+					
+					autoreleasepool {
+						if let image = phasset.thumbnail?.cgImage {
+						
+							if #available(iOS 15.0, *) {
+								debugPrint("enter \(index)")
+								let request = VNDetectDocumentSegmentationRequest { request, error in
+//									debugPrint(index, "of total", result.count, documents.count)
+									if self.handleDetectedRectangle(request: request, error: error) {
+										documents.append(phasset)
+									}
+									
+									if index == result.count - 1 {
+										debugPrint("time -> \(benchTimer.stop()), totalPhotoSize: \(documents.count))")
+										completionHandler(documents, false)
+									}
+								}
+								request.preferBackgroundProcessing = true
+								request.usesCPUOnly = false
+	//							let request = VNDetectRectanglesRequest { request, error in
+	//
+	//
+	//							}
+//								request.minimumAspectRatio = 0.0
+//								request.maximumAspectRatio = 1.0
+//								request.maximumObservations = 1
+								
+								let imageRequestHandler = VNImageRequestHandler(cgImage: image, orientation: .up)
+								
+								do {
+									try imageRequestHandler.perform([request])
+								} catch let error {
+									print("Error: \(error)")
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		return getScreenShotsOperation
+	}
+	
+	private func performRequestor(phasset: PHAsset) {
+		
+	
+	}
+	
+	
+	
+	private func handleDetectedRectangle(request: VNRequest?, error: Error?) -> Bool {
+		if let results = request?.results {
+			if let observation = results.first as? VNRectangleObservation {
+				debugPrint(observation.confidence)
+				if observation.confidence > 0.988 {
+					return true
+				}
+			}
+		}
+		return false
 	}
 		
 		/// `load screenshots` from gallery
