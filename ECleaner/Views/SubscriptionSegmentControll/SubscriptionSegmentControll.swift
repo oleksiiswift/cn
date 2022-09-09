@@ -14,6 +14,11 @@ enum SubscriptionSegmentStatus {
 	case empty
 }
 
+enum SubscriptionSegmentType {
+	case bordered
+	case masked
+}
+
 protocol SubscriptionSegmentControllDelegate: AnyObject {
 	func didChange(to subscription: Subscriptions)
 }
@@ -27,8 +32,12 @@ class SubscriptionSegmentControll: UIView {
 	public private(set) var selectedIndex: Int = 0
 	
 	public var subscriptions: [ProductStoreDesriptionModel]!
-	
+	public var segmentControlType: SubscriptionSegmentType = .bordered
+	public var performWithAnimation: Bool = false
+
 	private var stackView = UIStackView()
+	private var maskedStackView = UIStackView()
+	
 	private var selectedView = UIView()
 	private var selectedViewLeadingConstraint = NSLayoutConstraint()
 	private var disabledView = UIView()
@@ -37,12 +46,20 @@ class SubscriptionSegmentControll: UIView {
 	private var loadMessageTextLabel = UILabel()
 	
 	private var subscriptionButtons: [SegmentSubscriptionButton]!
+	private var maskedSubscriptionButtons: [SegmentSubscriptionButton]!
+
+	public var premiumMaskedBackgroundColor: UIColor = .red {
+		didSet {
+			self.setMaskedColor()
+		}
+	}
 	
 	private var viewSelectorInset: UIEdgeInsets = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
-	public var isAnimationEnabled: Bool = false
+	private var selectedLayer: CAShapeLayer!
+	private var maskLayer: CALayer!
 		
 	weak var delegate: SubscriptionSegmentControllDelegate?
-
+	
 	override init(frame: CGRect) {
 		super.init(frame: frame)
 		
@@ -82,8 +99,10 @@ extension SubscriptionSegmentControll {
 		switch status {
 			case .didLoad:
 				self.stackView.isHidden = false
+				self.maskedStackView.isHidden = self.segmentControlType == .masked ? false : true
 			default:
 				self.stackView.isHidden = true
+				self.maskedStackView.isHidden = self.segmentControlType == .masked ? true : true
 		}
 	}
 	
@@ -217,20 +236,40 @@ extension SubscriptionSegmentControll {
 	}
 	
 	private func setupStackView() {
-		
+	
 		self.stackView.isHidden = true
 		self.stackView.frame = self.bounds
 		self.stackView.axis = .horizontal
 		self.stackView.alignment = .fill
 		self.stackView.distribution = .fillEqually
 		
-		self.addSubview(stackView)
+		addSubview(stackView)
 		self.stackView.translatesAutoresizingMaskIntoConstraints = false
 		
-		self.stackView.topAnchor.constraint(equalTo: self.topAnchor, constant: 0).isActive = true
-		self.stackView.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
+		self.stackView.topAnchor.constraint(equalTo: self.topAnchor, constant: 5).isActive = true
+		self.stackView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -5).isActive = true
 		self.stackView.leadingAnchor.constraint(equalTo: self.leadingAnchor).isActive = true
 		self.stackView.trailingAnchor.constraint(equalTo: self.trailingAnchor).isActive = true
+		self.stackView.layoutIfNeeded()
+		
+		if segmentControlType == .masked {
+			
+			self.maskedStackView.isHidden = true
+			self.maskedStackView.frame = self.bounds
+			self.maskedStackView.axis = .horizontal
+			self.maskedStackView.alignment = .fill
+			self.maskedStackView.distribution = .fillEqually
+			self.maskedStackView.backgroundColor = theme.backgroundColor
+			
+			self.addSubview(maskedStackView)
+			self.maskedStackView.translatesAutoresizingMaskIntoConstraints = false
+			
+			self.maskedStackView.topAnchor.constraint(equalTo: self.topAnchor, constant: 5).isActive = true
+			self.maskedStackView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -5).isActive = true
+			self.maskedStackView.leadingAnchor.constraint(equalTo: self.leadingAnchor).isActive = true
+			self.maskedStackView.trailingAnchor.constraint(equalTo: self.trailingAnchor).isActive = true
+			self.maskedStackView.layoutIfNeeded()
+		}
 	}
 	
 	private func setupMessage() {
@@ -253,10 +292,18 @@ extension SubscriptionSegmentControll {
 extension SubscriptionSegmentControll: SegmentSubscriptionButtonDelegate {
 	
 	func setupDefaultIndex(index: Int) {
+		
 		self.selectedIndex = index
 		let selectorPosition = (frame.width) / CGFloat(subscriptions.count) * CGFloat(index) + viewSelectorInset.left
-		selectedViewLeadingConstraint.constant = selectorPosition
-		self.selectedView.layoutIfNeeded()
+		
+		switch segmentControlType {
+			case .bordered:
+				self.selectedViewLeadingConstraint.constant = selectorPosition
+				self.selectedView.layoutIfNeeded()
+			case .masked:
+				self.moveMaskedPath(to: selectorPosition, performWithAnimation: false)
+				self.transformButton(at: index, animated: false)
+		}
 	}
 	
 	func indexSelect(index: Int) {
@@ -271,18 +318,41 @@ extension SubscriptionSegmentControll: SegmentSubscriptionButtonDelegate {
 				delegate?.didChange(to: product)
 			}
 			
-			self.selectedViewLeadingConstraint.constant = selectorPosition
-			self.setNeedsLayout()
-			UIView.animate(withDuration: 0.3) {
-				self.layoutIfNeeded()
-				if self.isAnimationEnabled {
-					self.selectedView.transform = CGAffineTransform(scaleX: 0.95, y: 0.95)
-				}
-			} completion: { _ in
-				if self.isAnimationEnabled {
-					UIView.animate(withDuration: 0.1) {
-						self.selectedView.transform = .identity
+			switch segmentControlType {
+				case .bordered:
+					
+					self.selectedViewLeadingConstraint.constant = selectorPosition
+					self.setNeedsLayout()
+					
+					UIView.animate(withDuration: 0.3) {
+						self.layoutIfNeeded()
+						if self.performWithAnimation {
+							self.selectedView.transform = CGAffineTransform(scaleX: 0.95, y: 0.95)
+						}
+					} completion: { _ in
+						if self.performWithAnimation {
+							UIView.animate(withDuration: 0.1) {
+								self.selectedView.transform = .identity
+							}
+						}
 					}
+				case .masked:
+					self.moveMaskedPath(to: selectorPosition, performWithAnimation: self.performWithAnimation)
+					self.transformButton(at: index, animated: true)
+			}
+		}
+	}
+	
+	private func transformButton(at index: Int, animated: Bool) {
+	
+		let duration = animated ? 0.2 : 0
+		
+		UIView.animate(withDuration: duration, delay: 0, options: .curveLinear) {
+			self.maskedSubscriptionButtons[index].shadowView.transform = CGAffineTransform(scaleX: 1.0, y: 1.09)
+		} completion: { _ in
+			for (btnIndex, button) in self.maskedSubscriptionButtons.enumerated() {
+				if btnIndex != index {
+					button.shadowView.transform = .identity
 				}
 			}
 		}
@@ -297,7 +367,7 @@ extension SubscriptionSegmentControll: SegmentSubscriptionButtonDelegate {
 		guard !self.subviews.contains(where: {$0.tag == 666}) else { return }
 		
 		self.layoutIfNeeded()
-		
+	
 		let sectionCount = CGFloat(self.subscriptions.count)
 		let widthInsets = (self.viewSelectorInset.left + self.viewSelectorInset.right)
 		let heithtInsets = (self.viewSelectorInset.top + self.viewSelectorInset.bottom)
@@ -306,15 +376,70 @@ extension SubscriptionSegmentControll: SegmentSubscriptionButtonDelegate {
 		self.selectedView = UIView(frame: CGRect(x: self.viewSelectorInset.left, y: self.viewSelectorInset.top, width: selectorWidth, height: frame.height - heithtInsets))
 		self.selectedView.tag = 666
 		self.selectedView.backgroundColor = .clear
-		addSubview(self.selectedView)
-		self.selectedView.translatesAutoresizingMaskIntoConstraints = false
-		self.selectedView.topAnchor.constraint(equalTo: self.topAnchor, constant: self.viewSelectorInset.top).isActive = true
-		self.selectedView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -self.viewSelectorInset.bottom).isActive = true
-		self.selectedView.widthAnchor.constraint(equalToConstant: (self.frame.width / sectionCount) - self.viewSelectorInset.left - self.viewSelectorInset.right).isActive = true
 		
-		selectedViewLeadingConstraint = self.selectedView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: self.viewSelectorInset.left)
-		selectedViewLeadingConstraint.isActive = true
-		selectedView.layoutIfNeeded()
+		addSubview(self.selectedView)
+		
+		switch segmentControlType {
+			case .bordered:
+				self.selectedView.translatesAutoresizingMaskIntoConstraints = false
+				self.selectedView.topAnchor.constraint(equalTo: self.topAnchor, constant: self.viewSelectorInset.top).isActive = true
+				self.selectedView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -self.viewSelectorInset.bottom).isActive = true
+				self.selectedView.widthAnchor.constraint(equalToConstant: (self.frame.width / sectionCount) - self.viewSelectorInset.left - self.viewSelectorInset.right).isActive = true
+				
+				selectedViewLeadingConstraint = self.selectedView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: self.viewSelectorInset.left)
+				selectedViewLeadingConstraint.isActive = true
+				selectedView.layoutIfNeeded()
+			case .masked:
+				self.selectedView.frame = .zero
+				self.selectedView.isHidden = true
+				let position = self.getLeadingPosition(from: self.selectedIndex)
+				
+				self.setMAsk(with: position)
+		}
+	}
+	
+	private func setMAsk(with position: CGFloat) {
+		
+		maskLayer = CALayer()
+		maskLayer.frame = self.bounds
+		selectedLayer = CAShapeLayer()
+		selectedLayer.frame = CGRect(x: 0, y: 0, width: maskLayer.frame.width, height: maskLayer.frame.height)
+		
+		let finalPath = self.getFinalPath()
+		let path = self.getMaskPath(with: position)
+		
+		finalPath.append(path.reversing())
+		selectedLayer.path = finalPath.cgPath
+		maskLayer.addSublayer(selectedLayer)
+		maskedStackView.layer.mask = nil
+		maskedStackView.layer.mask = maskLayer
+	}
+	
+	private func moveMaskedPath(to position: CGFloat, performWithAnimation: Bool) {
+		
+		let finalPath = self.getFinalPath()
+		let path = self.getMaskPath(with: position)
+		
+		finalPath.append(path.reversing())
+		
+		let anim = CABasicAnimation(keyPath: "path")
+		anim.fromValue = selectedLayer.path
+		anim.toValue = path.cgPath
+		anim.duration = 0.3
+		anim.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.linear)
+		performWithAnimation ? selectedLayer.add(anim, forKey: nil) : ()
+		CATransaction.begin()
+		CATransaction.setDisableActions(true)
+		selectedLayer.path = path.cgPath
+		CATransaction.commit()
+	}
+	
+	private func getFinalPath() -> UIBezierPath {
+		return UIBezierPath(roundedRect: CGRect(x: 0 , y: 0, width: self.frame.size.width, height: self.frame.size.height), cornerRadius: 0)
+	}
+	
+	private func getMaskPath(with position: CGFloat) -> UIBezierPath {
+		return UIBezierPath(roundedRect: CGRect(x: position - self.viewSelectorInset.left, y: 0, width: self.frame.width / CGFloat(maskedSubscriptionButtons.count), height: self.frame.size.height), byRoundingCorners: .allCorners, cornerRadii: CGSize(width: 0, height: 0))
 	}
 	
 	public func configureSelectableGradient(width: CGFloat, colors: [UIColor], startPoint: CoordinateSide, endPoint: CoordinateSide, cornerRadius: CGFloat) {
@@ -346,6 +471,30 @@ extension SubscriptionSegmentControll: SegmentSubscriptionButtonDelegate {
 			subscriptionButton.delegate = self
 			subscriptionButtons.append(subscriptionButton)
 		}
+		
+		if segmentControlType == .masked {
+			
+			maskedSubscriptionButtons = [SegmentSubscriptionButton]()
+			maskedSubscriptionButtons.removeAll()
+		
+			for (index, subscriptionModel) in subscriptions.enumerated() {
+				let subscriptionButton = SegmentSubscriptionButton()
+				subscriptionButton.shadowView.cellBackgroundColor = theme.premiumColor
+				subscriptionButton.shadowViewInset = self.viewSelectorInset
+				subscriptionButton.configure(model: subscriptionModel, index: index)
+				subscriptionButton.delegate = self
+				maskedSubscriptionButtons.append(subscriptionButton)
+			}
+		}
+	}
+	
+	private func setMaskedColor() {
+		
+		guard !maskedSubscriptionButtons.isEmpty else { return }
+		
+		maskedSubscriptionButtons.forEach {
+			$0.shadowView.cellBackgroundColor = self.premiumMaskedBackgroundColor
+		}
 	}
 	
 	private func configureStackView() {
@@ -353,9 +502,20 @@ extension SubscriptionSegmentControll: SegmentSubscriptionButtonDelegate {
 		self.stackView.arrangedSubviews
 			.filter({$0 is SegmentSubscriptionButton})
 			.forEach({$0.removeFromSuperview()})
-		
+
 		self.subscriptionButtons.forEach {
 			self.stackView.addArrangedSubview($0)
+		}
+		
+		if segmentControlType == .masked {
+			
+			self.maskedStackView.arrangedSubviews
+				.filter({$0 is SegmentSubscriptionButton})
+				.forEach({$0.removeFromSuperview()})
+			
+			self.maskedSubscriptionButtons.forEach {
+				self.maskedStackView.addArrangedSubview($0)
+			}
 		}
 	}
 }
@@ -368,6 +528,15 @@ extension SubscriptionSegmentControll {
 			$0.setupTitleFont(font: title)
 			$0.setupPriceFont(font: price)
 			$0.setupDescription(font: description)
+		}
+		
+		if segmentControlType == .masked {
+			
+			maskedSubscriptionButtons.forEach {
+				$0.setupTitleFont(font: title)
+				$0.setupPriceFont(font: price)
+				$0.setupDescription(font: description)
+			}
 		}
 	}
 	
@@ -382,6 +551,10 @@ extension SubscriptionSegmentControll {
 			$0.setupPriceColor(color: color)
 		}
 	}
+}
+
+// MARK: - appearance for bordered type -
+extension SubscriptionSegmentControll {
 	
 	public func setTextColorForTitle(_ color: UIColor) {
 		subscriptionButtons.forEach {
@@ -392,6 +565,42 @@ extension SubscriptionSegmentControll {
 	public func setTextColorForSubtitle(_ color: UIColor) {
 		subscriptionButtons.forEach {
 			$0.setupDescriptionColor(color: color)
+		}
+
+	}
+}
+
+// MARK: - appearance for masked type -
+extension SubscriptionSegmentControll {
+	
+	public func setTextColorForTitle(color: UIColor, maskedColor: UIColor) {
+		subscriptionButtons.forEach {
+			$0.setupTitleColor(color: color)
+		}
+		
+		maskedSubscriptionButtons.forEach {
+			$0.setupTitleColor(color: maskedColor)
+		}
+	}
+	
+	public func setTextColorForSubtitle(color: UIColor, maskedColor: UIColor) {
+		subscriptionButtons.forEach {
+			$0.setupDescriptionColor(color: color)
+		}
+		
+		maskedSubscriptionButtons.forEach {
+			$0.setupDescriptionColor(color: maskedColor)
+		}
+	}
+	
+	
+	public func setTexColorsforPrice(color: UIColor, maskedColor: UIColor) {
+		subscriptionButtons.forEach {
+			$0.setupPriceColor(color: color)
+		}
+		
+		maskedSubscriptionButtons.forEach {
+			$0.setupPriceColor(color: maskedColor)
 		}
 	}
 }

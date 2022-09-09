@@ -18,6 +18,7 @@ class ReuseShadowView: UIView {
     public var topShadowOffsetOriginY: CGFloat = -9
     public var topBlurValue: CGFloat = 19
     public var topAlpha: Float = 0.9
+	public var bottomAlpha: Float = 1.0
     public var shadowBlurValue: CGFloat = 10
 	public var cornerRadius: CGFloat = 14
 	
@@ -37,7 +38,7 @@ class ReuseShadowView: UIView {
 	
         self.layer.setShadowAndCustomCorners(backgroundColor: cellBackgroundColor,
 											 shadow: cellShadowColor,
-											 alpha: 1, x: viewShadowOffsetOriginX,
+											 alpha: bottomAlpha, x: viewShadowOffsetOriginX,
 											 y: viewShadowOffsetOriginY,
 											 blur: shadowBlurValue,
 											 corners: [.allCorners],

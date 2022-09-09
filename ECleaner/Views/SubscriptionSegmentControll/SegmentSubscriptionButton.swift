@@ -9,12 +9,14 @@ import UIKit
 
 class SegmentSubscriptionButton: UIView {
 	
-	private var shadowView = ReuseShadowView()
+	public var shadowView = ReuseShadowView()
 	private var segmentButton = UIButton()
 	
 	private var titleTextLabel = UILabel()
 	private var priceTextLabel = TitleLabel()
 	private var descriptionTextLabel = TitleLabel()
+	
+	public var isRed = false
 	
 	private var gradeintColors: [UIColor] = []
 	
@@ -37,6 +39,10 @@ class SegmentSubscriptionButton: UIView {
 	}
 
 	private func setupView() {
+		
+		shadowView.viewShadowOffsetOriginX = 3
+		shadowView.viewShadowOffsetOriginY = 3
+		shadowView.bottomAlpha = 0.5
 		
 		segmentButton.addTarget(self, action: #selector(segmentDidSelect), for: .touchUpInside)
 		titleTextLabel.textAlignment = .center
