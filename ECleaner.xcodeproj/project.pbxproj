@@ -323,6 +323,7 @@
 		97A39FEB2764E8CB007CB482 /* UILabel+Margin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A39FEA2764E8CB007CB482 /* UILabel+Margin.swift */; };
 		97A57476280C7C9B00B76BD0 /* ProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A57475280C7C9B00B76BD0 /* ProgressBar.swift */; };
 		97A57478280C7CF100B76BD0 /* AnimatedProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A57477280C7CF100B76BD0 /* AnimatedProgressBar.swift */; };
+		97A7446628E1AC75005E4B35 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 97A7446528E1AC75005E4B35 /* Lottie */; };
 		97A867AE27E9546700891297 /* PrimaryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A867AD27E9546700891297 /* PrimaryButton.swift */; };
 		97AB3B29281E888F00187617 /* UIFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AB3B28281E888F00187617 /* UIFont.swift */; };
 		97AB3B2B281F166B00187617 /* UpdateMediaStoreSizeDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AB3B2A281F166B00187617 /* UpdateMediaStoreSizeDelegate.swift */; };
@@ -412,6 +413,7 @@
 		97D38C0527FDDB12007A80E8 /* SingleSmartClean.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97D38C0427FDDB12007A80E8 /* SingleSmartClean.swift */; };
 		97D4273C287031B5006772A2 /* FontManager+Subscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97D4273B287031B5006772A2 /* FontManager+Subscription.swift */; };
 		97D4273E2870378F006772A2 /* GradientShadowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97D4273D2870378F006772A2 /* GradientShadowView.swift */; };
+		97D4448528CCC29B004A9CE9 /* GradientShadowedImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97D4448428CCC29B004A9CE9 /* GradientShadowedImageView.swift */; };
 		97DA18F12797502B00427587 /* Thread+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97DA18F02797502B00427587 /* Thread+Extension.swift */; };
 		97DAB62E272C164A00F05CEA /* GroupContactTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97DAB62C272C164A00F05CEA /* GroupContactTableViewCell.swift */; };
 		97DAB62F272C164A00F05CEA /* GroupContactTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 97DAB62D272C164A00F05CEA /* GroupContactTableViewCell.xib */; };
@@ -437,7 +439,6 @@
 		97EB665127B1A4AE00B21EF5 /* CGSize+pixel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97EB665027B1A4AE00B21EF5 /* CGSize+pixel.swift */; };
 		97EB665327B1BC1F00B21EF5 /* UICollectionView+NextItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97EB665227B1BC1F00B21EF5 /* UICollectionView+NextItem.swift */; };
 		97EBB0242888913E00C1A0C9 /* CheckmarkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97EBB0232888913E00C1A0C9 /* CheckmarkView.swift */; };
-		97EBE75B28927A9A000B3CD3 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 97EBE75A28927A9A000B3CD3 /* Lottie */; };
 		97EBE75E28927AAE000B3CD3 /* CocoaImageHashing in Frameworks */ = {isa = PBXBuildFile; productRef = 97EBE75D28927AAE000B3CD3 /* CocoaImageHashing */; };
 		97EBE76128927AC7000B3CD3 /* PhoneNumberKit in Frameworks */ = {isa = PBXBuildFile; productRef = 97EBE76028927AC7000B3CD3 /* PhoneNumberKit */; };
 		97EBE76728927AF8000B3CD3 /* SwiftMessages in Frameworks */ = {isa = PBXBuildFile; productRef = 97EBE76628927AF8000B3CD3 /* SwiftMessages */; };
@@ -453,6 +454,7 @@
 		97EF1447286F148600564065 /* PremiumNavigationBar.xib in Resources */ = {isa = PBXBuildFile; fileRef = 97EF1446286F148600564065 /* PremiumNavigationBar.xib */; };
 		97F50C2C27B8107E00FBDA0C /* DeepCleaningState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F50C2B27B8107E00FBDA0C /* DeepCleaningState.swift */; };
 		97F50C2E27B8426500FBDA0C /* SingleCleanStateModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F50C2D27B8426500FBDA0C /* SingleCleanStateModel.swift */; };
+		97F628A328D9B75B007E16F5 /* UIImageEffects.m in Sources */ = {isa = PBXBuildFile; fileRef = 97F628A228D9B75B007E16F5 /* UIImageEffects.m */; };
 		97FC789226888120000D7F26 /* Date+CurrentDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97FC789126888120000D7F26 /* Date+CurrentDate.swift */; };
 		97FC7894268882C9000D7F26 /* Date+DateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97FC7893268882C9000D7F26 /* Date+DateFormatter.swift */; };
 		97FC789626889541000D7F26 /* TimeIInterval.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97FC789526889541000D7F26 /* TimeIInterval.swift */; };
@@ -885,6 +887,7 @@
 		97D38C0427FDDB12007A80E8 /* SingleSmartClean.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleSmartClean.swift; sourceTree = "<group>"; };
 		97D4273B287031B5006772A2 /* FontManager+Subscription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FontManager+Subscription.swift"; sourceTree = "<group>"; };
 		97D4273D2870378F006772A2 /* GradientShadowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientShadowView.swift; sourceTree = "<group>"; };
+		97D4448428CCC29B004A9CE9 /* GradientShadowedImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientShadowedImageView.swift; sourceTree = "<group>"; };
 		97DA18F02797502B00427587 /* Thread+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Thread+Extension.swift"; sourceTree = "<group>"; };
 		97DAB62C272C164A00F05CEA /* GroupContactTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupContactTableViewCell.swift; sourceTree = "<group>"; };
 		97DAB62D272C164A00F05CEA /* GroupContactTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GroupContactTableViewCell.xib; sourceTree = "<group>"; };
@@ -920,6 +923,8 @@
 		97EF1446286F148600564065 /* PremiumNavigationBar.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PremiumNavigationBar.xib; sourceTree = "<group>"; };
 		97F50C2B27B8107E00FBDA0C /* DeepCleaningState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepCleaningState.swift; sourceTree = "<group>"; };
 		97F50C2D27B8426500FBDA0C /* SingleCleanStateModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleCleanStateModel.swift; sourceTree = "<group>"; };
+		97F628A128D9B75B007E16F5 /* UIImageEffects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIImageEffects.h; sourceTree = "<group>"; };
+		97F628A228D9B75B007E16F5 /* UIImageEffects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIImageEffects.m; sourceTree = "<group>"; };
 		97FC789126888120000D7F26 /* Date+CurrentDate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+CurrentDate.swift"; sourceTree = "<group>"; };
 		97FC7893268882C9000D7F26 /* Date+DateFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+DateFormatter.swift"; sourceTree = "<group>"; };
 		97FC789526889541000D7F26 /* TimeIInterval.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeIInterval.swift; sourceTree = "<group>"; };
@@ -937,12 +942,12 @@
 			files = (
 				97EBE76128927AC7000B3CD3 /* PhoneNumberKit in Frameworks */,
 				97B887CA28BF90F900677028 /* SwiftyStoreKit in Frameworks */,
-				97EBE75B28927A9A000B3CD3 /* Lottie in Frameworks */,
 				97EBE76A28927B0C000B3CD3 /* Connectivity in Frameworks */,
 				97EBE75E28927AAE000B3CD3 /* CocoaImageHashing in Frameworks */,
 				97BC4BB528AA40C600A3EEC7 /* SwiftRater in Frameworks */,
 				97EBE76728927AF8000B3CD3 /* SwiftMessages in Frameworks */,
 				97DE8A4128A262A100E3954E /* GoogleMobileAds in Frameworks */,
+				97A7446628E1AC75005E4B35 /* Lottie in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1366,6 +1371,7 @@
 		04E5835E267A3E7D00EDC3A3 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				97F628A428D9B81F007E16F5 /* ImageEffects */,
 				97BC4BB628AA69DD00A3EEC7 /* iRate */,
 				97A17F512836369300591409 /* FontManager */,
 				4F56072327205ADC00CA19E9 /* CustomCircular */,
@@ -2137,6 +2143,7 @@
 				975617D7273BC32A00E07A62 /* ReuseShadowRoundedView.swift */,
 				97FDA09B27FB5A0A002BC233 /* SliderShadowView.swift */,
 				97D4273D2870378F006772A2 /* GradientShadowView.swift */,
+				97D4448428CCC29B004A9CE9 /* GradientShadowedImageView.swift */,
 			);
 			path = ShadowView;
 			sourceTree = "<group>";
@@ -2936,6 +2943,15 @@
 			path = Main;
 			sourceTree = "<group>";
 		};
+		97F628A428D9B81F007E16F5 /* ImageEffects */ = {
+			isa = PBXGroup;
+			children = (
+				97F628A128D9B75B007E16F5 /* UIImageEffects.h */,
+				97F628A228D9B75B007E16F5 /* UIImageEffects.m */,
+			);
+			path = ImageEffects;
+			sourceTree = "<group>";
+		};
 		97F8E64D2787047F00B01D6B /* DeepCleanManager */ = {
 			isa = PBXGroup;
 			children = (
@@ -2976,7 +2992,6 @@
 			);
 			name = ECleaner;
 			packageProductDependencies = (
-				97EBE75A28927A9A000B3CD3 /* Lottie */,
 				97EBE75D28927AAE000B3CD3 /* CocoaImageHashing */,
 				97EBE76028927AC7000B3CD3 /* PhoneNumberKit */,
 				97EBE76628927AF8000B3CD3 /* SwiftMessages */,
@@ -2984,6 +2999,7 @@
 				97DE8A4028A262A100E3954E /* GoogleMobileAds */,
 				97BC4BB428AA40C600A3EEC7 /* SwiftRater */,
 				97B887C928BF90F900677028 /* SwiftyStoreKit */,
+				97A7446528E1AC75005E4B35 /* Lottie */,
 			);
 			productName = ECleaner;
 			productReference = 04E0946C267A06B500A69956 /* ECleaner.app */;
@@ -3016,12 +3032,12 @@
 			packageReferences = (
 				97EBE751289273AD000B3CD3 /* XCRemoteSwiftPackageReference "PhoneNumberKit" */,
 				97EBE7582892792F000B3CD3 /* XCRemoteSwiftPackageReference "cocoaimagehashing" */,
-				97EBE75928927A9A000B3CD3 /* XCRemoteSwiftPackageReference "lottie-ios" */,
 				97EBE76528927AF8000B3CD3 /* XCRemoteSwiftPackageReference "SwiftMessages" */,
 				97EBE76828927B0C000B3CD3 /* XCRemoteSwiftPackageReference "Connectivity" */,
 				97DE8A3F28A262A100E3954E /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */,
 				97BC4BB328AA40C600A3EEC7 /* XCRemoteSwiftPackageReference "SwiftRater" */,
 				97B887C828BF90F900677028 /* XCRemoteSwiftPackageReference "SwiftyStoreKit" */,
+				97A7446428E1AC75005E4B35 /* XCRemoteSwiftPackageReference "lottie-ios" */,
 			);
 			productRefGroup = 04E0946D267A06B500A69956 /* Products */;
 			projectDirPath = "";
@@ -3219,6 +3235,7 @@
 				9793300E2815E09F00DCFECD /* CustomSegmentControll.swift in Sources */,
 				04CFFFFD2685E571000CA850 /* UIView+Borders.swift in Sources */,
 				049CC2372683730A0002F988 /* BaseCollectionFlowLayout.swift in Sources */,
+				97F628A328D9B75B007E16F5 /* UIImageEffects.m in Sources */,
 				978FEF14274BC21A00ADE1D9 /* ProgressAlertController.swift in Sources */,
 				97A39FEB2764E8CB007CB482 /* UILabel+Margin.swift in Sources */,
 				97CA77612875E2B8007E9D50 /* SubscriptionObserveDelegate.swift in Sources */,
@@ -3466,6 +3483,7 @@
 				97B8CFEB283CC4DE00F3E4E6 /* SubscriptionManager.swift in Sources */,
 				976D8BB52878A33700761830 /* UIImage+Rotate.swift in Sources */,
 				4F56074A27205AF300CA19E9 /* ColorUtil.swift in Sources */,
+				97D4448528CCC29B004A9CE9 /* GradientShadowedImageView.swift in Sources */,
 				04CFFFEF268479CE000CA850 /* CircleProgressView.swift in Sources */,
 				4F56074627205AF300CA19E9 /* BlueIndicatorStyle.swift in Sources */,
 				97A2E97C28A3CA9300AED237 /* LimitAccessType.swift in Sources */,
@@ -3703,6 +3721,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		97A7446428E1AC75005E4B35 /* XCRemoteSwiftPackageReference "lottie-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/airbnb/lottie-ios";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.0.0;
+			};
+		};
 		97B887C828BF90F900677028 /* XCRemoteSwiftPackageReference "SwiftyStoreKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/bizz84/SwiftyStoreKit";
@@ -3743,14 +3769,6 @@
 				minimumVersion = 1.9.0;
 			};
 		};
-		97EBE75928927A9A000B3CD3 /* XCRemoteSwiftPackageReference "lottie-ios" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/airbnb/lottie-ios";
-			requirement = {
-				kind = upToNextMinorVersion;
-				minimumVersion = 3.4.0;
-			};
-		};
 		97EBE76528927AF8000B3CD3 /* XCRemoteSwiftPackageReference "SwiftMessages" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SwiftKickMobile/SwiftMessages";
@@ -3770,6 +3788,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		97A7446528E1AC75005E4B35 /* Lottie */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 97A7446428E1AC75005E4B35 /* XCRemoteSwiftPackageReference "lottie-ios" */;
+			productName = Lottie;
+		};
 		97B887C928BF90F900677028 /* SwiftyStoreKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 97B887C828BF90F900677028 /* XCRemoteSwiftPackageReference "SwiftyStoreKit" */;
@@ -3784,11 +3807,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 97DE8A3F28A262A100E3954E /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */;
 			productName = GoogleMobileAds;
-		};
-		97EBE75A28927A9A000B3CD3 /* Lottie */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 97EBE75928927A9A000B3CD3 /* XCRemoteSwiftPackageReference "lottie-ios" */;
-			productName = Lottie;
 		};
 		97EBE75D28927AAE000B3CD3 /* CocoaImageHashing */ = {
 			isa = XCSwiftPackageProductDependency;

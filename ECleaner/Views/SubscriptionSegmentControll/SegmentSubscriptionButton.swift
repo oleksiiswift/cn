@@ -141,7 +141,7 @@ class SegmentSubscriptionButton: UIView {
 		self.addSubview(shadowView)
 		
 		shadowView.translatesAutoresizingMaskIntoConstraints = false
-		shadowView.topAnchor.constraint(equalTo: self.topAnchor, constant: shadowViewInset.top).isActive = true
+		shadowView.topAnchor.constraint(equalTo: self.topAnchor, constant: shadowViewInset.top + 1).isActive = true
 		shadowView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -shadowViewInset.bottom).isActive = true
 		shadowView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: shadowViewInset.left).isActive = true
 		shadowView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant:  -shadowViewInset.right).isActive = true

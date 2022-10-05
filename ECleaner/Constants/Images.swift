@@ -169,13 +169,13 @@ struct Images {
 		public static func getFeaturesImages(for type: PremiumFeature) -> UIImage {
 			switch type {
 				case .deepClean:
-					return UIImage(systemName: "viewfinder.circle.fill")!
+					return UIImage(named: "deepCleanFeature")!
 				case .multiselect:
-					return UIImage(systemName: "checkmark.circle.fill")!
+					return UIImage(named: "multiselectFeature")!
 				case .compression:
-					return UIImage(systemName: "archivebox.fill")!
+					return UIImage(named: "videoFeature")!
 				case .location:
-					return UIImage(systemName: "photo.fill")!
+					return UIImage(named: "locationFeature")!
 			}
 		}
 	}

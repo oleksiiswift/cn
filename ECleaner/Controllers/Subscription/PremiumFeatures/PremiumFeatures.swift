@@ -24,4 +24,17 @@ enum PremiumFeature: CaseIterable {
 	var thumbnailColors: [UIColor] {
 		return Theme.getSubscriptionFeatureColorGradient(for: self)
 	}
+	
+	var helperBackroundNeeded: Bool {
+		switch self {
+			case .deepClean:
+				return false
+			case .multiselect:
+				return true
+			case .compression:
+				return true
+			case .location:
+				return false
+		}
+	}
 }

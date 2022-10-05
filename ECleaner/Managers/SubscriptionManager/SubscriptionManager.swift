@@ -15,6 +15,7 @@ enum ApplicationSubscriptionStatus: Int {
 	case limitedSimulated
 }
 
+
 class SubscriptionManager: NSObject {
 	
 	static var instance: SubscriptionManager {
@@ -23,9 +24,15 @@ class SubscriptionManager: NSObject {
 		}
 		return Static.instance
 	}
-		
+	
+	
 	@available(iOS 15.0, *)
-	private lazy var subscription = Subscription.shared
+	private var subscription: Subscription {
+		get {
+			return Subscription.shared
+		}
+	}
+	
 	private var iapSubscription = InAppSubscription.shared
 	
 	private var purchasedPremium: Bool {
@@ -324,4 +331,9 @@ extension SubscriptionManager {
 				UIPresenter.showMessage(with: message, type: type)
 		}
 	}
+}
+
+@available(iOS 16.0, *)
+class ImageAnalyzer {
+	
 }

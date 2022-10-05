@@ -32,7 +32,7 @@ class SubscriptionSegmentControll: UIView {
 	public private(set) var selectedIndex: Int = 0
 	
 	public var subscriptions: [ProductStoreDesriptionModel]!
-	public var segmentControlType: SubscriptionSegmentType = .bordered
+	public var segmentControlType: SubscriptionSegmentType = .masked
 	public var performWithAnimation: Bool = false
 
 	private var stackView = UIStackView()
@@ -347,7 +347,7 @@ extension SubscriptionSegmentControll: SegmentSubscriptionButtonDelegate {
 	
 		let duration = animated ? 0.2 : 0
 		
-		UIView.animate(withDuration: duration, delay: 0, options: .curveLinear) {
+		UIView.animate(withDuration: duration, delay: 0, options: .curveEaseInOut) {
 			self.maskedSubscriptionButtons[index].shadowView.transform = CGAffineTransform(scaleX: 1.0, y: 1.09)
 		} completion: { _ in
 			for (btnIndex, button) in self.maskedSubscriptionButtons.enumerated() {
@@ -382,8 +382,8 @@ extension SubscriptionSegmentControll: SegmentSubscriptionButtonDelegate {
 		switch segmentControlType {
 			case .bordered:
 				self.selectedView.translatesAutoresizingMaskIntoConstraints = false
-				self.selectedView.topAnchor.constraint(equalTo: self.topAnchor, constant: self.viewSelectorInset.top).isActive = true
-				self.selectedView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -self.viewSelectorInset.bottom).isActive = true
+				self.selectedView.topAnchor.constraint(equalTo: self.topAnchor, constant: self.viewSelectorInset.top + 3).isActive = true
+				self.selectedView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -self.viewSelectorInset.bottom - 3).isActive = true
 				self.selectedView.widthAnchor.constraint(equalToConstant: (self.frame.width / sectionCount) - self.viewSelectorInset.left - self.viewSelectorInset.right).isActive = true
 				
 				selectedViewLeadingConstraint = self.selectedView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: self.viewSelectorInset.left)
@@ -425,8 +425,8 @@ extension SubscriptionSegmentControll: SegmentSubscriptionButtonDelegate {
 		let anim = CABasicAnimation(keyPath: "path")
 		anim.fromValue = selectedLayer.path
 		anim.toValue = path.cgPath
-		anim.duration = 0.3
-		anim.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.linear)
+		anim.duration = 0.2
+		anim.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
 		performWithAnimation ? selectedLayer.add(anim, forKey: nil) : ()
 		CATransaction.begin()
 		CATransaction.setDisableActions(true)

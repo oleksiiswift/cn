@@ -7,5 +7,6 @@
 
 #import "StepSlider.h"
 #import "iRate.h"
+#import "UIImageEffects.h"
 
 #endif

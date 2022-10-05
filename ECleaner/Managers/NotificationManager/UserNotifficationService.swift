@@ -14,6 +14,21 @@ enum NotificationRepeatPattern {
 	case weekly
 	case monthly
 	case none
+	
+	var interval: TimeInterval {
+		switch self {
+			case .seconds:
+				return .random(in: 60...150)
+			case .daily:
+				return 86400
+			case .weekly:
+				return 604800
+			case .monthly:
+				return 2592000
+			case .none:
+				return 1
+		}
+	}
 }
 
 class UserNotificationService: NSObject {
@@ -41,6 +56,8 @@ extension UserNotificationService: UNUserNotificationCenterDelegate {
 		let lastUsageDay = SettingsManager.application.lastApplicationUsage.getDay()
 		let today = Date().getDay()
 		self.registerRemoteNotification()
+		return UNNotificationPresentationOptions(arrayLiteral: [.alert, .sound, .badge])
+		
 		if lastUsageDay != today {
 			return UNNotificationPresentationOptions(arrayLiteral: [.alert, .sound, .badge])
 		} else {
@@ -171,7 +188,7 @@ extension UserNotificationService {
 		}
 	}
 	
-	private func sendCleanNotification(of type: UserNotificationType, with triger: UNCalendarNotificationTrigger) {
+	private func sendCleanNotification(of type: UserNotificationType, with triger: UNTimeIntervalNotificationTrigger) {
 		
 		self.center.removeAllPendingNotificationRequests()
 		
@@ -190,6 +207,9 @@ extension UserNotificationService {
 														trigger: triger)
 		self.center.setNotificationCategories(categories)
 		self.center.add(notificationRequest)
+		self.center.add(notificationRequest) { error in
+			debugPrint(error ?? "error nil")
+		}
 	}
 
 	public func registerNotificationTriger(with rawValue: Int) {
@@ -213,30 +233,26 @@ extension UserNotificationService {
 		self.registerNotificationTriger(with: lastRegisteredNotificationRawValue)
 	}
 	
-	public func getRepeatedTrigger(of type: NotificationRepeatPattern) -> UNCalendarNotificationTrigger {
+	public func getRepeatedTrigger(of type: NotificationRepeatPattern) -> UNTimeIntervalNotificationTrigger {
 		
 		switch type {
-			case .seconds:
-				let date = Date().addingTimeInterval(10)
-				return UNCalendarNotificationTrigger(dateMatching: Calendar.current.dateComponents([.second], from: date), repeats: true)
-			case .daily:
-				var dayComponent = DateComponents()
-				dayComponent.day = 1
-				let nexDay = Calendar.current.date(byAdding: dayComponent, to: Date())
-				var triggerDay = Calendar.current.dateComponents(in: .current, from: nexDay!)
-				triggerDay.hour = .random(in: 10...20)
-				triggerDay.minute = .random(in: 1...50)
-				return UNCalendarNotificationTrigger(dateMatching: triggerDay, repeats: true)
-			case .weekly:
-				let triggerDate = Date() - 5 * 60
-				return UNCalendarNotificationTrigger(dateMatching: Calendar.current.dateComponents([.timeZone, .weekday, .hour, .minute, .second], from: triggerDate), repeats: true)
-			case .monthly:
-				let triggerDate = Date() - 5 * 60
-				return UNCalendarNotificationTrigger(dateMatching: Calendar.current.dateComponents([.timeZone, .weekOfMonth, .weekday, .hour, .minute, .second], from: triggerDate), repeats: true)
-			case .none:
-				let triggerDate = Date() - 5 * 60
-				return UNCalendarNotificationTrigger(dateMatching: Calendar.current.dateComponents([.timeZone, .year, .month, .day, .hour, .minute], from: triggerDate), repeats: true)
+			case .seconds, .none:
+				return UNTimeIntervalNotificationTrigger(timeInterval: type.interval, repeats:  false)
+			case .daily, .weekly, .monthly:
+				let date = Date().addingTimeInterval(type.interval).localTimeFromUTCConvert()
+				let timeInterval = getNotificationTimeAdjustment(from: date)
+				return UNTimeIntervalNotificationTrigger(timeInterval:  timeInterval, repeats: false)
 		}
 	}
+	
+	private func getNotificationTimeAdjustment(from date: Date) -> TimeInterval {
+		let calendar = Calendar.current
+		var components = calendar.dateComponents([.year,.month, .day, .hour, .minute, .second], from: date)
+		components.hour = .random(in: 10...20)
+		components.minute = .random(in: 1...50)
+		let triggerDate = calendar.date(from: components)?.localTimeFromUTCConvert()
+		let triggeredInterval = triggerDate!.timeIntervalSince1970 - Date().localTimeFromUTCConvert().timeIntervalSince1970
+		debugPrint(triggerDate ?? "", triggeredInterval, triggeredInterval / 60)
+		return triggeredInterval
+	}
 }
-
