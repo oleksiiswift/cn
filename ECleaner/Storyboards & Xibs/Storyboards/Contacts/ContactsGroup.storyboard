@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="KT3-sL-QUl">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Contacts Group View Controller-->
+        <scene sceneID="H8l-tM-Ecq">
+            <objects>
+                <viewController storyboardIdentifier="ContactsGroupViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="eSz-JA-9Jw" customClass="ContactsGroupViewController" customModule="ECleaner" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="LDX-1Q-pJq">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" estimatedSectionHeaderHeight="-1" sectionFooterHeight="18" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="pV1-1m-SKW">
+                                <rect key="frame" x="0.0" y="104" width="414" height="792"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            </tableView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="oOR-XK-bvK" customClass="NavigationBar" customModule="ECleaner" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="44" width="414" height="60"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="60" id="8Dg-4N-uh5"/>
+                                </constraints>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7H5-5o-oid" customClass="BottomButtonBarView" customModule="ECleaner" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="802" width="414" height="94"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="94" id="CR9-dB-vZl"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="agK-c9-lmr"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="agK-c9-lmr" firstAttribute="trailing" secondItem="oOR-XK-bvK" secondAttribute="trailing" id="8VK-IL-bQv"/>
+                            <constraint firstItem="pV1-1m-SKW" firstAttribute="top" secondItem="oOR-XK-bvK" secondAttribute="bottom" id="E7a-8o-BL1"/>
+                            <constraint firstItem="7H5-5o-oid" firstAttribute="leading" secondItem="agK-c9-lmr" secondAttribute="leading" id="G3C-Zc-Rzm"/>
+                            <constraint firstItem="oOR-XK-bvK" firstAttribute="leading" secondItem="agK-c9-lmr" secondAttribute="leading" id="GRj-o2-YEK"/>
+                            <constraint firstAttribute="bottom" secondItem="7H5-5o-oid" secondAttribute="bottom" id="GxU-Da-Pbr"/>
+                            <constraint firstItem="pV1-1m-SKW" firstAttribute="leading" secondItem="agK-c9-lmr" secondAttribute="leading" id="HCa-oE-pf8"/>
+                            <constraint firstItem="agK-c9-lmr" firstAttribute="trailing" secondItem="pV1-1m-SKW" secondAttribute="trailing" id="Kiw-GV-ZSx"/>
+                            <constraint firstItem="oOR-XK-bvK" firstAttribute="top" secondItem="agK-c9-lmr" secondAttribute="top" id="OMp-oA-Mx7"/>
+                            <constraint firstItem="agK-c9-lmr" firstAttribute="trailing" secondItem="7H5-5o-oid" secondAttribute="trailing" id="R3w-fR-gzT"/>
+                            <constraint firstAttribute="bottom" secondItem="pV1-1m-SKW" secondAttribute="bottom" id="YWm-cO-EYb"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="zOc-j3-A8e"/>
+                    <connections>
+                        <outlet property="bottomButtonBarView" destination="7H5-5o-oid" id="zwl-Zn-i8x"/>
+                        <outlet property="bottomButtonHeightConstraint" destination="CR9-dB-vZl" id="5K1-2a-ums"/>
+                        <outlet property="navigationBar" destination="oOR-XK-bvK" id="gJe-83-qSo"/>
+                        <outlet property="tableView" destination="pV1-1m-SKW" id="590-N6-Vs0"/>
+                        <segue destination="SVP-7e-iUi" kind="show" identifier="ShowExportContactsViewControllerSegue" customClass="ShowExportContactsViewControllerSegue" customModule="ECleaner" customModuleProvider="target" id="X0K-ah-Ozz"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="pZR-QF-9TC" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2881.1594202898555" y="116.51785714285714"/>
+        </scene>
+        <!--ExportContact-->
+        <scene sceneID="2jw-Z8-SaO">
+            <objects>
+                <viewControllerPlaceholder storyboardName="ExportContact" id="SVP-7e-iUi" sceneMemberID="viewController">
+                    <navigationItem key="navigationItem" id="bRk-S6-TBk"/>
+                </viewControllerPlaceholder>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="hMo-H7-hiI" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3626" y="272"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="WT8-ME-Ixv">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" navigationBarHidden="YES" id="KT3-sL-QUl" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <nil key="simulatedTopBarMetrics"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="C4i-t6-rMD">
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="eSz-JA-9Jw" kind="relationship" relationship="rootViewController" id="kjM-JN-yE4"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="pKZ-c0-D0E" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1971.0144927536232" y="116.51785714285714"/>
+        </scene>
+    </scenes>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

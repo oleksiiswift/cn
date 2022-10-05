@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="GroupedContactsHeaderView" customModule="ECleaner" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="414" height="40"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="IqL-K2-tVR">
+                    <rect key="frame" x="0.0" y="0.0" width="414" height="40"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zkg-LE-TtI">
+                            <rect key="frame" x="20" y="9.5" width="218" height="21"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <nil key="textColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8xW-ur-5iS" customClass="PrimaryShadowButton" customModule="ECleaner" customModuleProvider="target">
+                            <rect key="frame" x="248" y="5" width="30" height="30"/>
+                            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="30" id="A1F-PB-wPh"/>
+                                <constraint firstAttribute="height" constant="30" id="Uqr-My-ExS"/>
+                            </constraints>
+                        </view>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lnR-h5-IRN" customClass="PrimaryShadowImageWithTextButton" customModule="ECleaner" customModuleProvider="target">
+                            <rect key="frame" x="298" y="5" width="96" height="30"/>
+                            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="30" id="gxN-Ui-Rk8"/>
+                                <constraint firstAttribute="width" constant="96" id="hcl-mo-Hr8"/>
+                            </constraints>
+                        </view>
+                    </subviews>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <constraints>
+                        <constraint firstAttribute="trailing" secondItem="lnR-h5-IRN" secondAttribute="trailing" constant="20" id="2PF-W9-F4m"/>
+                        <constraint firstItem="8xW-ur-5iS" firstAttribute="leading" secondItem="zkg-LE-TtI" secondAttribute="trailing" constant="10" id="MIv-1j-Dq9"/>
+                        <constraint firstItem="lnR-h5-IRN" firstAttribute="centerY" secondItem="IqL-K2-tVR" secondAttribute="centerY" id="Ort-XU-SF4"/>
+                        <constraint firstItem="zkg-LE-TtI" firstAttribute="centerY" secondItem="IqL-K2-tVR" secondAttribute="centerY" id="R5c-uA-nm1"/>
+                        <constraint firstItem="8xW-ur-5iS" firstAttribute="centerY" secondItem="lnR-h5-IRN" secondAttribute="centerY" id="UOH-8l-NB0"/>
+                        <constraint firstItem="lnR-h5-IRN" firstAttribute="leading" secondItem="8xW-ur-5iS" secondAttribute="trailing" constant="20" id="hLZ-KM-wtp"/>
+                        <constraint firstItem="zkg-LE-TtI" firstAttribute="leading" secondItem="IqL-K2-tVR" secondAttribute="leading" constant="20" id="vxC-Gs-1kp"/>
+                    </constraints>
+                </view>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <constraints>
+                <constraint firstAttribute="bottom" secondItem="IqL-K2-tVR" secondAttribute="bottom" id="9GI-VQ-KkE"/>
+                <constraint firstItem="IqL-K2-tVR" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="OfA-qL-9rR"/>
+                <constraint firstItem="IqL-K2-tVR" firstAttribute="trailing" secondItem="vUN-kp-3ea" secondAttribute="trailing" id="Soa-XA-TuG"/>
+                <constraint firstItem="IqL-K2-tVR" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="ZEH-F5-9vh"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <connections>
+                <outlet property="deleteButton" destination="8xW-ur-5iS" id="PPy-q9-pZL"/>
+                <outlet property="headerTitleTextLabel" destination="zkg-LE-TtI" id="bf3-Xi-2G4"/>
+                <outlet property="mergeButton" destination="lnR-h5-IRN" id="XOa-aV-Elk"/>
+            </connections>
+            <point key="canvasLocation" x="-7.2463768115942031" y="152.67857142857142"/>
+        </view>
+    </objects>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

@@ -1,0 +1,468 @@
+/* 
+ Localizable.strings
+ ECleaner
+ 
+ Created by alexey sorochan on 17.06.2022.
+ 
+ */
+
+	//		MARK: - service -
+
+	//		MARK: - permission -
+
+	// MARK: title
+"Permission" = "Permission";
+"Permission Request" = "Permission Request";
+	// MARK: subtitle
+"denied!" = "denied!";
+	// MARK: name
+"Notification" = "Notification";
+"Photo Library" = "Photo Library";
+"Contacts" = "Contacts";
+"Tracking" = "Tracking";
+"Photo Library & Contacts" = "Photo Library & Contacts";
+	// MARK: description
+"Allow application recieve notification." = "Allow application recieve notification.";
+"Access for search duplicated, simmilar photos and video in your gallery." = "Access for search duplicated, simmilar photos and video in your gallery.";
+"Access for your Contacts and phones, delete, merge and clean Contacts." = "Access for your Contacts and phones, delete, merge and clean Contacts.";
+"Allow to access app related data." = "Allow to access app related data.";
+"Allow access to Contacts and Photo Library." = "Allow access to Contacts and Photo Library.";
+	// MARK: alert service
+	// MARK: title
+"Permission Denied!" = "Permission Denied!";
+"Permission Alowed!" = "Permission Alowed!";
+"Allow App to Request to Track!" = "Allow App to Request to Track!";
+"Allow Permission!" = "Allow Permission!";
+	// MARK: description
+"Please, go to Settings for allow/denied permission." = "Please, go to Settings for allow/denied permission.";
+"%@ does not have acces to Photo Library and Contacts. Please, allow the application access to your data for use Deep Clean Feature." = "%@ does not have acces to Photo Library and Contacts. Please, allow the application access to your data for use Deep Clean Feature.";
+"Allow app to ask tot track your activity accross other companies apps and websites." = "Allow app to ask tot track your activity accross other companies apps and websites.";
+"Please allow at least one permission (Photo Library or Contacts) to use app." = "Please allow at least one permission (Photo Library or Contacts) to use app.";
+	// MARK: restricted
+"%@ does not have access to contacts. Please, allow the application to access to your contacts." = "%@ does not have access to contacts. Please, allow the application to access to your contacts.";
+"%@ does not have access to Photo Library. Please, allow the application to access to your Photo Library." = "%@ does not have access to Photo Library. Please, allow the application to access to your Photo Library.";
+	//		MARK: - purchase -
+	// MARK: title
+"Restore failed" = "Restore failed";
+"Nothing to restore" = "Nothing to restore";
+"Restore completed." = "Restore completed.";
+"Congratulation!" = "Congratulation!";
+	// MARK: message
+"Restore completed." = "Restore completed.";
+"Please try restore later or contact support" = "Please try restore later or contact support";
+"Product is expired since" = "Product is expired since";
+"No previous purchases were found" = "No previous purchases were found";
+"Purchases can't restored. Product is expired since" = "Purchases can't restored. Product is expired since";
+"Error. No receipt data. Try again." = "Error. No receipt data. Try again.";
+"Network error while verifying receipt" = "Network error while verifying receipt";
+"Error. Receipt verification failed. Try again." = "Error. Receipt verification failed. Try again.";
+"Nothing to restore. No previous purchases were found." = "Nothing to restore. No previous purchases were found.";
+
+	// MARK: subtitle
+"Will end on" = "Will end on";
+"Expired" = "Expired";
+	//		MARK: - notification -
+	// MARK: title
+"Clean up your contacts 🤷🏻‍♂️" = "Clean up your contacts 🤷🏻‍♂️";
+"Clean Up your Photos 📷" = "Clean Up your Photos 📷";
+"Clean Up Your Videos 🎥" = "Clean Up Your Videos 🎥";
+"Free Up Storage With Deep Clean 🧹" = "Free Up Storage With Deep Clean 🧹";
+"Clean Up Storage ☁️" = "Clean Up Storage ☁️";
+	// MARK: subtitle
+	// MARK: body
+"Analize and delete empty and duplicated contacts" = "Analize and delete empty and duplicated contacts";
+"Analize photo data for similar and duplicateds" = "Analize photo data for similar and duplicateds";
+"Analize video data for similar and duplicateds" = "Analize video data for similar and duplicateds";
+"Analize your photo and video, contacts" = "Analize your photo and video, contacts";
+"Delete Your duplicated and similar photos and videos. Clean contacts" = "Delete Your duplicated and similar photos and videos. Clean contacts";
+	//		MARK: - standart -
+	// MARK: buttons
+"Allowed" = "Allowed";
+"Continue" = "Continue";
+"Denied" = "Denied";
+"OK" = "OK";
+"Cancel" = "Cancel";
+"Settings" = "Settings";
+"Delete" = "Delete";
+"Stop" = "Stop";
+"Exit" = "Exit";
+"Share" = "Share";
+"Save" = "Save";
+"Select All" = "Select All";
+"Deselect All" = "Deselect All";
+"Select" = "Select";
+"Deselect" = "Deselect";
+"Merge" = "Merge";
+"Change Layout" = "Change Layout";
+"Edit" = "Edit";
+"Export" = "Export";
+"Full Screen Preview" = "Full Screen Preview";
+"Delete Selected" = "Delete Selected";
+"Set as Best" = "Set as Best";
+"Merge Selected:" = "Merge Selected:";
+"Compress:" = "Compress:";
+"Submit" = "Submit";
+"Reset to Default" = "Reset to Default";
+"Remove Audio" = "Remove Audio";
+"origin" = "origin";
+"manual" = "manual";
+"Skip" = "Skip";
+"Next" = "Next";
+"Restore" = "Restore";
+"Activate" = "Activate";
+"Change Plan" = "Change Plan";
+"Start Backup" = "Start Backup";
+"View" = "View";
+"Remove Location" = "Remove Location";
+"Learn More" = "Learn More";
+"Analize" = "Analize";
+"Export All" = "Export All";
+	// MARK: - Menu Items -
+"Sort by Creation Date" = "Sort by Creation Date";
+"Sort by File Size" = "Sort by File Size";
+"Sort by Video Dimension" = "Sort by Video Dimension";
+"Sort by Last Edit" = "Sort by Last Edit";
+"Sort by Duration" = "Sort by Duration";
+
+	//		MARK: - settings -
+	// MARK: title
+"Premium" = "Premium";
+"Restore Purchase" = "Restore Purchase";
+"Lifetime" = "Lifetime";
+"Subscription" = "Subscription";
+"Large Video Size" = "Large Video Size";
+"Storage" = "Storage";
+"Permission" = "Permission";
+"Support" = "Support";
+"Share App" = "Share App";
+"Rate Us" = "Rate Us";
+"Privacy Policy" = "Privacy Policy";
+"Terms Of Use" = "Terms Of Use";
+"Video Compresion" = "Video Compresion";
+	// MARK: subtitle
+"Share %@ with your friends" = "Share %@ with your friends";
+"Facebook" = "Facebook";
+"Telegram" = "Telegram";
+"Email" = "Email";
+"Set a threshold value to identify large videos." = "Set a threshold value to identify large videos.";
+"latitude" = "latitude";
+"longitude" = "longitude";
+"altitude" = "altitude";
+"location" = "location";
+
+	// MARK: Backup
+"Current contact:" = "Current contact:";
+"Archived processing..." = "Archived processing...";
+"Backup created:" = "Backup created:";
+"Backup Error" = "Backup Error";
+
+	//		MARK: - main -
+	// MARK: title
+"Settings" = "Settings";
+"Permissions" = "Permissions";
+"Photo" = "Photo";
+"Video" = "Video";
+"Contacts" = "Contacts";
+"Deep Clean" = "Deep Clean";
+"Subscription" = "Subscription";
+"Onboarding" = "Onboarding";
+"Main" = "Main";
+"Video Compression" = "Video Compression";
+"Location" = "Location";
+	// MARK: MediaContentTitle
+"Similar Photo" = "Similar Photo";
+"Duplicate Photo" = "Duplicate Photo";
+"Screenshots" = "Screenshots";
+"Live Photo" = "Live Photo";
+"Similar Live Photo" = "Similar Live Photo";
+"Similar Selfies" = "Similar Selfies";
+"Large Video" = "Large Video";
+"Duplicated Video" = "Duplicated Video";
+"Similar Video" = "Similar Video";
+"Screen Recordings" = "Screen Recordings";
+"Video Compression" = "Video Compression";
+"All Contacts" = "All Contacts";
+"Empty Contacts" = "Empty Contacts";
+"Duplicated Contacts" = "Duplicated Contacts";
+"Duplicated Numbers" = "Duplicated Numbers";
+"Duplicated Emails" = "Duplicated Emails";
+"Contacts Backup" = "Contacts Backup";
+	// MARK: Subtitles
+"Categories:" = "Categories:";
+"of" = "of";
+"  search contacts here..." = "  search contacts here...";
+"From:" = "From:";
+"To:" = "To:";
+"best" = "best";
+"new" = "new";
+"All Data Analyzed" = "All Data Analyzed";
+"files" = "files";
+"memmory" = "memmory";
+"keep origin resolution" = "keep origin resolution";
+"origin resolution" = "origin resolution";
+"Phone Number" = "Phone Number";
+"Url" = "Url";
+	// MARK: HeaderTitle
+"Compression Settings" = "Compression Settings";
+"Select Compression Settings" = "Select Compression Settings";
+"Select Format of File" = "Select Format of File";
+"Since the Last Cleaning" = "Since the Last Cleaning";
+"Select Lower Date" = "Select Lower Date";
+"Select Upper Date" = "Select Upper Date";
+"Select Large Video Size" = "Select Large Video Size";
+"Permission Request" = "Permission Request";
+
+"Resolution" = "Resolution";
+"Video Bitrate" = "Video Bitrate";
+"Interval Between Keyframe" = "Interval Between Keyframe";
+"Audio Bitrate" = "Audio Bitrate";
+
+"Video Preview" = "Video Preview";
+"Low Quality" = "Low Quality";
+"Medium Quality" = "Medium Quality";
+"Hight Quality" = "Hight Quality";
+"Custom Settings" = "Custom Settings";
+
+"Missing Contact Data" = "Missing Contact Data";
+"Only Phone Number" = "Only Phone Number";
+"Only Email" = "Only Email";
+"Missing Name" = "Missing Name";
+"Missing All Contact Info" = "Missing All Contact Info";
+
+"Terms & Support" = "Terms & Support";
+"System" = "System";
+"Links" = "Links";
+"Contact Name" = "Contact Name";
+"Phone Numbers" = "Phone Numbers";
+"Emails" = "Emails";
+
+	// MARK: Descriptions
+"These are the permissions the app requires to work properly. Please see description for each permission." = "These are the permissions the app requires to work properly. Please see description for each permission.";
+"Permissions are necessary for the application to work and perform correctly." = "Permissions are necessary for the application to work and perform correctly.";
+"if set to a lower value, the picture will be more pixelated and the file size will be smaller" = "if set to a lower value, the picture will be more pixelated and the file size will be smaller";
+"a lower framerate means the video will be less smooth and the file size will be significantly smaller" = "a lower framerate means the video will be less smooth and the file size will be significantly smaller";
+"if set to a lower value, it will reduce video quality and considerably decrease file size" = "if set to a lower value, it will reduce video quality and considerably decrease file size";
+"if set to a higher value, video quality and size will decrease, it is recommended to choose higher values if your video has no dynamic scenes" = "if set to a higher value, video quality and size will decrease, it is recommended to choose higher values if your video has no dynamic scenes";
+"if set to a lower value, the audio quality will deteriorate and the file size will be insignificantly reduced" = "if set to a lower value, the audio quality will deteriorate and the file size will be insignificantly reduced";
+"high-quality" = "high-quality";
+"medium quality" = "medium quality";
+"mid-range quality" = "mid-range quality";
+"low-quality" = "low-quality";
+	// MARK: ProcessingState
+"Prepare for scanning" = "Prepare for scanning";
+"Analyzing, please wait" = "Analyzing, please wait";
+"Compare results" = "Compare results";
+"analyzing" = "analyzing";
+"Searching complete!" = "Searching complete!";
+"Archiving" = "Archiving";
+"Processing" = "Processing";
+"Tap to scan" = "Tap to scan";
+"Please, wait..." = "Please, wait...";
+
+	// MARK: ByGrouping
+"similar groups" = "similar groups";
+"duplicated groups" = "duplicated groups";
+"duplicated contacts groups" = "duplicated contacts groups";
+
+"files" = "files";
+"contacts" = "contacts";
+
+"selected photos" = "selected photos";
+"selected videos" = "selected videos";
+"selected contacts" = "selected contacts";
+	// MARK: ByEmptyState
+"no similiar photos" = "no similiar photos";
+"no duplicated photos" = "no duplicated photos";
+"no screen shots" = "no screen shots";
+"no live photos" = "no live photos";
+"no similar live photos" = "no similar live photos";
+"no similar selfies" = "no similar selfies";
+"no large videos" = "no large videos";
+"no duplicated videos" = "no duplicated videos";
+"no similar videos" = "no similar videos";
+"no screen recordings" = "no screen recordings";
+"no contacts" = "no contacts";
+"no contacts to clean" = "no contacts to clean";
+"no content" = "no content";
+"missing number" = "missing number";
+"missing name" = "missing name";
+"all data missing" = "all data missing";
+	// MARK: DeepCleanProcessingTitle
+"deleting photo (video):" = "deleting photo (video):";
+"removing empty contacts:" = "removing empty contacts:";
+"merge selecting contacts:" = "merge selecting contacts:";
+"deleting selected contacts:" = "deleting selected contacts:";
+"prepare cleaning" = "prepare cleaning";
+	// MARK: DeepCleanButtonState
+"start deep clean" = "start deep clean";
+"start analyzing" = "start analyzing";
+"stop analyzing" = "stop analyzing";
+"start cleaning" = "start cleaning";
+	// MARK: BannerHelpers
+	// MARK: Title
+"Compress Videos" = "Compress Videos";
+"Sync Contacts" = "Sync Contacts";
+"Clean GPS Coordinates" = "Clean GPS Coordinates";
+	// MARK: Subtitle
+"Optimaze your IPhone data" = "Optimaze your IPhone data";
+"Batch clean multiply locations" = "Batch clean multiply locations";
+	// MARK: Description
+"Compression Level" = "Compression Level";
+"Ultra" = "Ultra";
+
+"Save Your Contacts" = "Save Your Contacts";
+"With" = "With";
+"Back-Up" = "Back-Up";
+"Data" = "Data";
+
+	// MARK: Onboarding
+	// MARK: Onboarding title
+"Clear Similar Photos" = "Clear Similar Photos";
+"Optimize Large Video" = "Optimize Large Video";
+"Merge Same Contacts" = "Merge Same Contacts";
+
+	// MARK: Onboarding description
+"Autosearch and delete similar photos to obtain more space on iPhone." = "Autosearch and delete similar photos to obtain more space on iPhone.";
+"Compress or delete large videos to clear your iPhone data" = "Compress or delete large videos to clear your iPhone data";
+"Organize your Contact Library using merge and clean empty contacts" = "Organize your Contact Library using merge and clean empty contacts";
+
+	// MARK: AlertController
+	// MARK: AlertTitle
+"Deep Clean processing" = "Deep Clean processing";
+"Compression Complete!" = "Compression Complete!";
+"Merging Contacts" = "Merging Contacts";
+"Compressing" = "Compressing";
+"Updating Contacts" = "Updating Contacts";
+"Selecting Contacts, wait" = "Selecting Contacts, wait";
+"Selecting Videos, wait" = "Selecting Videos, wait";
+"Selecting Photos, wait" = "Selecting Photos, wait";
+"Prepare Searching, wait" = "Prepare Searching, wait";
+"Sort by File Size, wait" = "Sort by File Size, wait";
+"Parsing Locations, wait" = "Parsing Locations, wait";
+"Search complete!" = "Search complete!";
+"Deleting Contacts" = "Deleting Contacts";
+"Deleting Videos" = "Deleting Videos";
+"Deletting Photos" = "Deletting Photos";
+"Remove Locations?" = "Remove Locations?";
+"Merge Contacts" = "Merge Contacts";
+"Merge Completed!" = "Merge Completed!";
+"Delete Completed!" = "Delete Completed!";
+"Complete Successfully!" = "Complete Successfully!";
+"Operation is Canceling!" = "Operation is Canceling!";
+"Stop search process?" = "Stop search process?";
+"Notice!" = "Notice!";
+"Error! No network connection!" =  "Error! No Network Connection!";
+	// MARK: AlertMessage
+"Video compression is successfully completed! filesize: " = "Video compression is successfully completed! filesize: ";
+"Remove Locations at selected section?" = "Remove Locations at selected section?";
+"These contacts will be merged. After the merging process is completed, unnecessary contacts will be automatically deleted." = "These contacts will be merged. After the merging process is completed, unnecessary contacts will be automatically deleted.";
+"Merge contacts successfully completed!" = "Merge contacts successfully completed!";
+"Delete successfully completed!" = "Delete successfully completed!";
+"Deep Clean processing complete successfully!" = "Deep Clean processing complete successfully!";
+"Deep Clean Processing is Canceled!" = "Deep Clean Processing is Canceled!";
+"This will be reset all searching process!" = "This will be reset all searching process!";
+"This will be stop searching process!" = "This will be stop searching process!";
+"This will be stop deleting process and reset all searching data!" = "This will be stop deleting process and reset all searching data!";
+"By quiting all search results will be lose!" = "By quiting all search results will be lose!";
+"Please do not leave the App or lock the screen!" = "Please do not leave the App or lock the screen!";
+
+	//		MARK: - error handler -
+	// MARK: title
+"Sorry, no content)" = "Sorry, no content)";
+"Error!" = "Sorry, no content)";
+"Fatal Error!" = "Fatal Error!";
+"Atention!" = "Atention!";
+"Notice!" = "Notice!";
+	// MARK: EmptyResultsError
+"Photo Library is empty." = "Photo Library is empty.";
+"Video Library is empty." = "Video Library is empty.";
+"No similar photo." = "No similar photo.";
+"No duplicated photo." = "No duplicated photo.";
+"No screenshots." = "No screenshots.";
+"No similar selfies." = "No similar selfies.";
+"No live photo." = "No live photo.";
+"No similar live photo." = "No similar live photo.";
+"No photo with locations data." = "No photo with locations data.";
+"No large video." = "No large video.";
+"No duplucated video." = "No duplucated video.";
+"No similar video." = "No similar video.";
+"No screen recording." = "No screen recording.";
+"No Contacts found." = "No Contacts found.";
+"No empty contacts." = "No empty contacts.";
+"No duplicated contacts." = "No duplicated contacts.";
+"No duplicated phone numbers found." = "No duplicated phone numbers found.";
+"No duplicated email found." = "No duplicated email found.";
+"Deep Clean search complete with with no similar or duplicated data found." = "Deep Clean search complete with with no similar or duplicated data found.";
+	// MARK: CompressionError
+"Can't load video file." = "Can't load video file.";
+"Video file compression failed." = "Video file compression failed.";
+"Resolution saved in settings are bigger the origin video file resolution." = "Resolution saved in settings are bigger the origin video file resolution.";
+"Can't save compressed video file." = "Can't save compressed video file.";
+"No video file." = "No video file.";
+"Can't remove audio component from vide file." = "Can't remove audio component from vide file.";
+"Compression operation is canceled!" = "Compression operation is canceled!";
+	// MARK: DeepCleanError
+"Deep Clean processing complete with error!" = "Deep Clean processing complete with error!";
+	// MARK: DeleteError
+"There is an error deleting contact(s)." = "There is an error deleting contact(s).";
+"There is an error deleting photo(s)." = "There is an error deleting photo(s).";
+"There is and error deleting video(s)." = "There is and error deleting video(s).";
+	// MARK: MergeError
+"Error merge contacts." = "Error merge contacts.";
+"Contacts merge with errors!" = "Contacts merge with errors!";
+	// MARK: Errors
+"Cannot set a maximum date that is equal or less than the minimum date." = "Cannot set a maximum date that is equal or less than the minimum date.";
+"Error loading contacts!" = "Error loading contacts!";
+"Can't create export file!" = "Can't create export file!";
+	// MARK: PurchaseError
+"Purchase Error!" = "Purchase Error!";
+"Purchase is canceled!" = "Purchase is canceled!";
+"Refaund is canceled!" = "Refaund is canceled!";
+"Purchase is pending!" = "Purchase is pending!";
+"Verification error!" = "Verification error!";
+"App Store purchase error!" = "App Store purchase error!";
+"The products is not available on the store" = "The products is not available on the store";
+"A network error occurred when communicating with the App Store" = "A network error occurred when communicating with the App Store";
+"Failure due to an unknown, unrecoverable error." = "Failure due to an unknown, unrecoverable error.";
+"The action failed because purchse did not complete some necessary interaction." = "The action failed because purchse did not complete some necessary interaction.";
+"The product is not available in the current storefront." = "The product is not available in the current storefront.";
+"Error, trying again at a later time will work." = "Error, trying again at a later time will work.";
+"Restore purchase failed" = "Restore purchase failed";
+//	MARK: Subscription
+//	MARK: MAIN
+"Get Premium" = "Get Premium";
+"With Premium" = "With Premium";
+"Unlock All Features" = "Unlock All Features";
+//	MARK: PremiumFeatures
+"Deep Clean" = "Deep Clean";
+"Multiselect Elements" = "Multiselect Elements";
+"Video Compression" = "Video Compression";
+"Clean GPS Location" = "Clean GPS Location";
+//	MARK: Description
+"per day" = "per day";
+"per week" = "per week";
+"per month" = "per month";
+"per year" = "per year";
+
+"day" = "day";
+"week" = "week";
+"month" = "month";
+"year" = "year";
+// MARK: Premium
+"Subscription Expire on:" = "Subscription Expire on:";
+"Already Premium" = "Already Premium";
+"Current Subscription Status:" = "Current Subscription Status:";
+// MARK: LimitAlertMessage
+"selectAllPhotosMessage" = "You can only select up to %20 photos in the free version. Select all contacts, remove ads, and premium features with the Pro version.";
+"selectAllVideoMessage" = "You can only select up to %20 videos in the free version. Select all contacts, remove ads, and premium features with the Pro version.";
+"selectAllContactsMessage" = "You can only select up to %20 contacts in the free version. Select all contacts, remove ads, and premium features with the Pro version.";
+"selectAllContactsGroupsMessage" = "You can only select up to %20 contacts groups in the free version. Select all contacts, remove ads, and premium features with the Pro version.";
+"selectDeepCleanMessage" = "To use Deep Clean, Location Remover, Ads Free and other premium features use the Pro version ";
+//	MARK: LimitMessage
+"Unlock Pro!" = "Unlock Pro!";
+"photoSelectExceeded" = "Select photos limit is exceeded. You can either purchase a premium plan.";
+"videoSelectExceeded" = "Select videos limit is exceeded. You can either purchase a premium plan.";
+"contactsSelectExceeded" = "Select contacts limit is exceeded. You can either purchase a premium plan.";
+"contactsGroupSelectExceeded" = "Select contacts groups limit is exceeded. You can either purchase a premium plan.";
+
+

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionReusableView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="GroupedAssetsReusableHeaderView" id="U6b-Vx-4bR" customClass="GroupedAssetsReusableHeaderView" customModule="ECleaner" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="40"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hd9-J1-7lF">
+                    <rect key="frame" x="0.0" y="0.0" width="320" height="40"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jrr-KK-pak">
+                            <rect key="frame" x="16" y="9.5" width="41.5" height="21"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="21" id="ix5-mR-SyB"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <nil key="textColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Icc-cC-G3T" customClass="ShadowButton" customModule="ECleaner" customModuleProvider="target">
+                            <rect key="frame" x="280" y="5" width="30" height="30"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="30" id="1ma-hF-2ho"/>
+                                <constraint firstAttribute="width" constant="30" id="Snk-N9-zSW"/>
+                            </constraints>
+                            <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                            <connections>
+                                <action selector="didTapSelectAllActionButton:" destination="U6b-Vx-4bR" eventType="touchUpInside" id="0W5-zB-VQp"/>
+                            </connections>
+                        </button>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="stk-he-diH">
+                            <rect key="frame" x="240" y="0.0" width="30" height="40"/>
+                            <subviews>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="R0A-aR-Yw1" customClass="ShadowButtonWithImage" customModule="ECleaner" customModuleProvider="target">
+                                    <rect key="frame" x="0.0" y="5" width="30" height="30"/>
+                                    <constraints>
+                                        <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="20" id="ZDJ-6i-V7P"/>
+                                        <constraint firstAttribute="height" constant="30" id="cbJ-3A-8dP"/>
+                                    </constraints>
+                                    <connections>
+                                        <action selector="didTapDeleteSelectedAssetsActionButton:" destination="U6b-Vx-4bR" eventType="touchUpInside" id="WPt-5I-7Ds"/>
+                                    </connections>
+                                </button>
+                            </subviews>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <constraints>
+                                <constraint firstItem="R0A-aR-Yw1" firstAttribute="leading" secondItem="stk-he-diH" secondAttribute="leading" id="bQC-NJ-AA5"/>
+                                <constraint firstItem="R0A-aR-Yw1" firstAttribute="centerY" secondItem="stk-he-diH" secondAttribute="centerY" id="exu-m1-QpI"/>
+                                <constraint firstAttribute="trailing" secondItem="R0A-aR-Yw1" secondAttribute="trailing" id="zXs-Pr-H5o"/>
+                            </constraints>
+                        </view>
+                    </subviews>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <constraints>
+                        <constraint firstItem="Icc-cC-G3T" firstAttribute="leading" secondItem="stk-he-diH" secondAttribute="trailing" constant="10" id="Hy5-rD-un0"/>
+                        <constraint firstItem="jrr-KK-pak" firstAttribute="leading" secondItem="hd9-J1-7lF" secondAttribute="leading" constant="16" id="Kt2-Wx-UAZ"/>
+                        <constraint firstAttribute="height" constant="40" id="Ld9-xf-vHW"/>
+                        <constraint firstItem="stk-he-diH" firstAttribute="centerY" secondItem="hd9-J1-7lF" secondAttribute="centerY" id="MmN-yZ-Tn0"/>
+                        <constraint firstAttribute="bottom" secondItem="stk-he-diH" secondAttribute="bottom" id="S6V-Nw-Jzc"/>
+                        <constraint firstAttribute="trailing" secondItem="Icc-cC-G3T" secondAttribute="trailing" constant="10" id="b2i-DB-qfi"/>
+                        <constraint firstItem="jrr-KK-pak" firstAttribute="centerY" secondItem="hd9-J1-7lF" secondAttribute="centerY" id="tdS-92-vMQ"/>
+                        <constraint firstItem="stk-he-diH" firstAttribute="top" secondItem="hd9-J1-7lF" secondAttribute="top" id="xgO-7a-Icy"/>
+                        <constraint firstItem="Icc-cC-G3T" firstAttribute="centerY" secondItem="hd9-J1-7lF" secondAttribute="centerY" id="y0u-2a-yXY"/>
+                    </constraints>
+                </view>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="VXr-Tz-HHm"/>
+            <constraints>
+                <constraint firstItem="hd9-J1-7lF" firstAttribute="top" secondItem="U6b-Vx-4bR" secondAttribute="top" id="7KY-48-Xj9"/>
+                <constraint firstAttribute="bottom" secondItem="hd9-J1-7lF" secondAttribute="bottom" id="gYk-MV-YwB"/>
+                <constraint firstItem="hd9-J1-7lF" firstAttribute="leading" secondItem="VXr-Tz-HHm" secondAttribute="leading" id="h2y-lk-0F7"/>
+                <constraint firstItem="VXr-Tz-HHm" firstAttribute="trailing" secondItem="hd9-J1-7lF" secondAttribute="trailing" id="oUk-la-c4B"/>
+            </constraints>
+            <connections>
+                <outlet property="baseView" destination="hd9-J1-7lF" id="wUt-gs-qzM"/>
+                <outlet property="currentAssetsDate" destination="jrr-KK-pak" id="7cO-Uf-2jK"/>
+                <outlet property="deleteSelectedButton" destination="R0A-aR-Yw1" id="aPd-zn-ACV"/>
+                <outlet property="selectAllButton" destination="Icc-cC-G3T" id="tEx-sN-NRf"/>
+            </connections>
+            <point key="canvasLocation" x="-23.188405797101453" y="87.723214285714278"/>
+        </collectionReusableView>
+    </objects>
+</document>
