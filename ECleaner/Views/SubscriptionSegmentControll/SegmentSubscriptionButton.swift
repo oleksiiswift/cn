@@ -9,12 +9,14 @@ import UIKit
 
 class SegmentSubscriptionButton: UIView {
 	
-	private var shadowView = ReuseShadowView()
+	public var shadowView = ReuseShadowView()
 	private var segmentButton = UIButton()
 	
 	private var titleTextLabel = UILabel()
 	private var priceTextLabel = TitleLabel()
 	private var descriptionTextLabel = TitleLabel()
+	
+	public var isRed = false
 	
 	private var gradeintColors: [UIColor] = []
 	
@@ -37,6 +39,10 @@ class SegmentSubscriptionButton: UIView {
 	}
 
 	private func setupView() {
+		
+		shadowView.viewShadowOffsetOriginX = 3
+		shadowView.viewShadowOffsetOriginY = 3
+		shadowView.bottomAlpha = 0.5
 		
 		segmentButton.addTarget(self, action: #selector(segmentDidSelect), for: .touchUpInside)
 		titleTextLabel.textAlignment = .center
@@ -135,7 +141,7 @@ class SegmentSubscriptionButton: UIView {
 		self.addSubview(shadowView)
 		
 		shadowView.translatesAutoresizingMaskIntoConstraints = false
-		shadowView.topAnchor.constraint(equalTo: self.topAnchor, constant: shadowViewInset.top).isActive = true
+		shadowView.topAnchor.constraint(equalTo: self.topAnchor, constant: shadowViewInset.top + 1).isActive = true
 		shadowView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -shadowViewInset.bottom).isActive = true
 		shadowView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: shadowViewInset.left).isActive = true
 		shadowView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant:  -shadowViewInset.right).isActive = true

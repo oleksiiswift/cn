@@ -25,3 +25,18 @@ extension Date {
 	}
 }
 
+extension Date {
+	
+	func globalTimeFromUTCConver() -> Date {
+		let timezone = TimeZone.current
+		let seconds = -TimeInterval(timezone.secondsFromGMT(for: self))
+		return Date(timeInterval: seconds, since: self)
+	}
+	
+	func localTimeFromUTCConvert() -> Date {
+		let timezoneOffset = TimeZone.current.secondsFromGMT()
+		let epochDate = self.timeIntervalSince1970
+		let timezoneEpochOffset = (epochDate + Double(timezoneOffset))
+		return Date(timeIntervalSince1970: timezoneEpochOffset)
+	}
+}

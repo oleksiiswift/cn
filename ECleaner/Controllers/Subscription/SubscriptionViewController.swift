@@ -281,13 +281,26 @@ extension SubscriptionViewController {
 	
 	private func setupSubscriptionSegment() {
 		
-   		segmentControll.configureSelectableGradient(width: 3, colors: theme.subscribeGradientColors, startPoint: .top, endPoint: .bottom, cornerRadius: 12)
-		segmentControll.setFont(title: FontManager.subscriptionFont(of: .buttonTitle),
-								price: nil,
-								description: FontManager.subscriptionFont(of: .buttonDescription))
-		segmentControll.setTextColorForTitle(theme.subscribeTitleTextColor)
-		segmentControll.setTextGradientColorsforPrice(theme.subscribeGradientColors, font: FontManager.subscriptionFont(of: .buttonPrice))
-		segmentControll.setTextColorForSubtitle(theme.subscribeDescriptionTextColor)
+		segmentControll.performWithAnimation = false
+		
+		switch segmentControll.segmentControlType {
+			case .bordered:
+				segmentControll.configureSelectableGradient(width: 3, colors: theme.subscribeGradientColors, startPoint: .top, endPoint: .bottom, cornerRadius: 12)
+				segmentControll.setFont(title: FontManager.subscriptionFont(of: .buttonTitle),
+										price: nil,
+										description: FontManager.subscriptionFont(of: .buttonDescription))
+				
+				segmentControll.setTextColorForTitle(theme.subscribeTitleTextColor)
+				segmentControll.setTextGradientColorsforPrice(theme.subscribeGradientColors, font: FontManager.subscriptionFont(of: .buttonPrice))
+				segmentControll.setTextColorForSubtitle(theme.subscribeDescriptionTextColor)
+			case .masked:
+				segmentControll.setFont(title: FontManager.subscriptionFont(of: .buttonTitle),
+										price: FontManager.subscriptionFont(of: .buttonPrice),
+										description: FontManager.subscriptionFont(of: .buttonDescription))
+				segmentControll.setTextColorForTitle(color: theme.subscribeTitleTextColor, maskedColor: theme.activeTitleTextColor)
+				segmentControll.setTexColorsforPrice(color: theme.subscribeTitleTextColor.withAlphaComponent(0.7), maskedColor: theme.activeTitleTextColor.withAlphaComponent(0.8))
+				segmentControll.setTextColorForSubtitle(color: theme.subscribeTitleTextColor, maskedColor: theme.activeTitleTextColor)
+		}
 	}
 	
 	private func setupTitle() {
@@ -369,6 +382,7 @@ extension SubscriptionViewController: Themeble {
 		subscribeContainerView.delegate = self
 		subscribeContainerView.setButtonSideOffset(25)
 		subscribeContainerView.title(LocalizationService.Buttons.getButtonTitle(of: .activate).uppercased())
+		
 		termsOfUseButton.setTitle(Localization.Subscription.Helper.termsOfUse, for: .normal)
 		termsOfUseButton.titleLabel?.font = FontManager.subscriptionFont(of: .links)
 		policyButton.setTitle(Localization.Subscription.Helper.privicy, for: .normal)

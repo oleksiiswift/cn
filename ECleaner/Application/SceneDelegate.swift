@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import SwiftUI
 
 var currentScene: UIScene?
 
@@ -75,7 +74,7 @@ extension SceneDelegate {
 	private func devopmentEnviroment() {
 		
 		/// `handle staring from onboarding`
-//		coordinator?.currentState = .onboarding
+//		coordinator?.currentState = .subscription
 		
 		/// `handle print all notification`
 //		printAllNotifications()

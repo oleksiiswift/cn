@@ -909,21 +909,23 @@ extension Theme {
 		
 		switch type {
 			case .deepClean:
-				let startColor = UIColor().colorFromHexString("FF7890")
-				let endColor = UIColor ().colorFromHexString("FF822F")
+				let startColor = UIColor().colorFromHexString("FF5A53")
+				let endColor = UIColor ().colorFromHexString("FF5A53")
 				return [startColor, endColor]
 			case .multiselect:
-				let startColor = UIColor().colorFromHexString("5F92FB")
-				let endColor = UIColor ().colorFromHexString("2BACEE")
+				let startColor: UIColor = UIColor().colorFromHexString("#2CBD6B")
+				let endColor: UIColor = UIColor ().colorFromHexString("#35D07C")
 				return [startColor, endColor]
 			case .compression:
-				let startColor = UIColor().colorFromHexString("16C08A")
-				let endColor = UIColor ().colorFromHexString("1BC0AE")
+				let startColor = UIColor().colorFromHexString("#21ADFC")
+				let endColor = UIColor ().colorFromHexString("#0D54FB")
 				return [startColor, endColor]
 			case .location:
-				let startColor = UIColor().colorFromHexString("B578FF")
-				let endColor = UIColor ().colorFromHexString("FF2F2F")
+				let startColor = UIColor().colorFromHexString("#E60E4D")
+				let endColor = UIColor ().colorFromHexString("#9D17CC")
 				return [startColor, endColor]
 		}
 	}
 }
+
+

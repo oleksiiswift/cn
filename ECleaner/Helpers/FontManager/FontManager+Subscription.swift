@@ -113,19 +113,19 @@ extension FontManager {
 		static var buttonTitle: UIFont {
 			switch screenSize {
 				case .small:
-					return .systemFont(ofSize: 11, weight: .bold)
+					return .systemFont(ofSize: 11, weight: .black)
 				case .medium:
-					return .systemFont(ofSize: 12, weight: .bold)
+					return .systemFont(ofSize: 12, weight: .black)
 				case .plus:
-					return .systemFont(ofSize: 13, weight: .bold)
+					return .systemFont(ofSize: 13, weight: .black)
 				case .large:
-					return .systemFont(ofSize: 13, weight: .bold)
+					return .systemFont(ofSize: 13, weight: .black)
 				case .modern:
-					return .systemFont(ofSize: 14, weight: .bold)
+					return .systemFont(ofSize: 14, weight: .black)
 				case .max:
-					return .systemFont(ofSize: 14, weight: .bold)
+					return .systemFont(ofSize: 14, weight: .black)
 				case .madMax:
-					return .systemFont(ofSize: 14, weight: .bold)
+					return .systemFont(ofSize: 14, weight: .black)
 			}
 		}
 		
@@ -151,19 +151,19 @@ extension FontManager {
 		static var buttonDescription: UIFont {
 			switch screenSize {
 				case .small:
-					return .systemFont(ofSize: 9, weight: .medium)
+					return .systemFont(ofSize: 9, weight: .bold)
 				case .medium:
-					return .systemFont(ofSize: 10, weight: .medium)
+					return .systemFont(ofSize: 10, weight: .bold)
 				case .plus:
-					return .systemFont(ofSize: 11, weight: .medium)
+					return .systemFont(ofSize: 11, weight: .bold)
 				case .large:
-					return .systemFont(ofSize: 11, weight: .medium)
+					return .systemFont(ofSize: 11, weight: .bold)
 				case .modern:
-					return .systemFont(ofSize: 12, weight: .medium)
+					return .systemFont(ofSize: 12, weight: .bold)
 				case .max:
-					return .systemFont(ofSize: 12, weight: .medium)
+					return .systemFont(ofSize: 12, weight: .bold)
 				case .madMax:
-					return .systemFont(ofSize: 12, weight: .medium)
+					return .systemFont(ofSize: 12, weight: .bold)
 			}
 		}
 		
