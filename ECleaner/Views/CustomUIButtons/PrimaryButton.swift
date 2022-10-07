@@ -22,19 +22,29 @@ class PrimaryButton: UIButton {
 	
 	private func configureShadow() {
 		
-		guard primaryShadowsIsActive else { return }
-		
-		primaryLayer.backgroundColor = theme.primaryButtonBackgroundColor.cgColor
-		primaryLayer.cornerRadius = 10
-		[primaryLayer, secondaryLayer].forEach {
-			$0.masksToBounds = false
-			$0.frame = layer.bounds
-			layer.insertSublayer($0, at: 0)
+		switch theme {
+			case .dark:
+				layer.masksToBounds = false
+				layer.backgroundColor = theme.primaryButtonBackgroundColor.cgColor
+				layer.borderWidth = 0.5
+				layer.borderColor = theme.bordersColor.cgColor
+				layer.cornerRadius = frame.width / 2
+			case .light:
+				
+				guard primaryShadowsIsActive else { return}
+				
+				[primaryLayer, secondaryLayer].forEach {
+					$0.masksToBounds = false
+					$0.frame = layer.bounds
+					layer.insertSublayer($0, at: 0)
+				}
+				
+				primaryLayer.backgroundColor = theme.primaryButtonBackgroundColor.cgColor
+				primaryLayer.cornerRadius = 10
+				primaryLayer.applyShadow(color: theme.primaryButtonBottomShadowColor, alpha: 1.0, x: 6, y: 6, blur: 10, spread: 0)
+				secondaryLayer.applyShadow(color: theme.primaryButtonTopShadowColor, alpha: 1.0, x: -2, y: -5, blur: 19, spread: -1)
+				
 		}
-		
-		primaryLayer.applyShadow(color: theme.primaryButtonBottomShadowColor, alpha: 1.0, x: 6, y: 6, blur: 10, spread: 0)
-		
-		secondaryLayer.applyShadow(color: theme.primaryButtonTopShadowColor, alpha: 1.0, x: -2, y: -5, blur: 19, spread: -1)
 	}
 }
 

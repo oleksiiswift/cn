@@ -66,6 +66,8 @@ extension SceneDelegate {
 		coordinator = ApplicationCoordinator(navigationController: navController)
 		devopmentEnviroment()
 		coordinator?.start()
+		
+		ThemeManager.applyTheme(.dark)
 	}
 }
 

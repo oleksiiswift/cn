@@ -124,7 +124,7 @@ class StartingNavigationBar: UIView {
         }
         
         if let rightImage = rightImage {
-			rightShadowView.isHidden = false
+			rightShadowView.isHidden = theme == .light ? false : true
             rightBarButton.isHidden = false
 			rightBarButton.addCenterImage(image: rightImage, imageWidth: rightImageSzie.width, imageHeight: rightImageSzie.height)
         } else {
@@ -133,7 +133,7 @@ class StartingNavigationBar: UIView {
         }
         
         if let leftImage = leftImage {
-			leftShadowView.isHidden = false
+			leftShadowView.isHidden = theme == .light ? false : true
             leftBarButton.isHidden = false
 			leftBarButton.addCenterImage(image: leftImage, imageWidth: leftImageSize.width, imageHeight: leftImageSize.height)
         } else {
@@ -162,7 +162,6 @@ class StartingNavigationBar: UIView {
 		self.rightBarButton.animateButtonTransform()
         delegate?.didTapRightBarButton(_sender: sender)
     }
-    
 }
 
 

@@ -57,6 +57,8 @@ extension MediaTypeCollectionViewCell: Themeble {
         loadingActivityIndicatorView.color = .red
         loadingActivityIndicatorView.tag = 666
         mainView.setCorner(12)
+		
+		diskSpaceImageView.image = theme == .light ? Images.systemItems.defaultItems.diskSpace : Images.systemItems.defaultItems.diskSpaceDark
     }
     
 	public func configureCell(mediaType: MediaContentType, contentCount: Int?, diskSpace: Int64?) {

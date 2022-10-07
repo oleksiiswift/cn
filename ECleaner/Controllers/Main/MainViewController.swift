@@ -593,8 +593,26 @@ extension MainViewController: UpdateColorsDelegate {
                 
         scrollView.alwaysBounceVertical = true
 		bottomButtonBarView.title(LocalizationService.DeepClean.getButtonTitle(by: .startDeepClen))
-        bottomButtonBarView.actionButton.imageSize = CGSize(width: 25, height: 25)
-        bottomButtonBarView.setImage(I.mainStaticItems.clean)
+        
+		var bottomImageSize: CGSize {
+			switch theme {
+				case .light:
+					return .init(width: 25, height: 25)
+				case .dark:
+					return .init(width: 22, height: 18)
+			}
+		}
+	
+		var bottombuttonImage: UIImage {
+			switch theme {
+				case .light:
+					return Images.mainStaticItems.clean
+				case .dark:
+					return Images.mainStaticItems.cleanDark
+			}
+		}
+		
+		bottomButtonBarView.setImage(bottombuttonImage, with: bottomImageSize)
 		
 		sectionHeaderTextLabel.text = Localization.Main.Subtitles.categories
 		switch Screen.size {
@@ -614,11 +632,16 @@ extension MainViewController: UpdateColorsDelegate {
         
         self.view.backgroundColor = theme.backgroundColor
 		sectionHeaderTextLabel.textColor = theme.subTitleTextColor
-        bottomButtonBarView.buttonColor = theme.cellBackGroundColor
+        
         bottomButtonBarView.buttonTintColor = theme.secondaryTintColor
         bottomButtonBarView.buttonTitleColor = theme.activeLinkTitleTextColor
-        bottomButtonBarView.configureShadow = true
-        bottomButtonBarView.addButtonShadow()
+		bottomButtonBarView.buttonColor = theme.cellBackGroundColor
+		
+		if theme == .light {
+			bottomButtonBarView.configureShadow = true
+			bottomButtonBarView.addButtonShadow()
+		}
+		
         bottomButtonBarView.updateColorsSettings()
     }
     
@@ -805,7 +828,7 @@ extension MainViewController: UpdateColorsDelegate {
 		circleTotalSpaceView.titleLabelTextAligement = Screen.size == .medium || Screen.size == .small ? .center : .right
 		circleTotalSpaceView.orientation = .bottom
 		circleTotalSpaceView.titleLabelsPercentPosition = .centeredRightAlign
-		circleTotalSpaceView.backgroundShadowColor = theme.bottomShadowColor
+		circleTotalSpaceView.backgroundShadowColor = theme == .light ? theme.bottomShadowColor : .clear
 		circleTotalSpaceView.lineCap = .round
 		circleTotalSpaceView.spaceDegree = 12.0
 		circleTotalSpaceView.progressShapeStart = 0.0

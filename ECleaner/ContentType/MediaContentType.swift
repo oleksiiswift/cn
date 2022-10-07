@@ -8,11 +8,16 @@
 import UIKit
 
 enum MediaContentType {
-    
+	
     case userPhoto
     case userVideo
     case userContacts
     case none
+	
+	private var theme: Theme {
+		return ThemeManager.theme
+	}
+	
     
     var navigationTitle: String {
 		return self.mediaContentTypeName
@@ -32,15 +37,29 @@ enum MediaContentType {
 	}
 	
 	var mediaContenTypeImage: UIImage {
-		switch self {
-			case .userPhoto:
-				return I.mainStaticItems.photo
-			case .userVideo:
-				return I.mainStaticItems.video
-			case .userContacts:
-				return I.mainStaticItems.contacts
-			case .none:
-				return UIImage()
+		switch theme {
+			case .light:
+				switch self {
+					case .userPhoto:
+						return I.mainStaticItems.photo
+					case .userVideo:
+						return I.mainStaticItems.video
+					case .userContacts:
+						return I.mainStaticItems.contacts
+					case .none:
+						return UIImage()
+				}
+			case .dark:
+				switch self {
+					case .userPhoto:
+						return I.mainStaticItems.photoDark
+					case .userVideo:
+						return I.mainStaticItems.videoDark
+					case .userContacts:
+						return I.mainStaticItems.contactsDark
+					case .none:
+						return UIImage()
+				}
 		}
 	}
     

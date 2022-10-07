@@ -17,6 +17,11 @@ struct Images {
         static let photo = UIImage(named: "photo")!
         static let video =  UIImage(named: "video")!
         static let contacts = UIImage(named: "contact")!
+		
+		static let cleanDark = UIImage(systemName: "paintbrush.fill")!
+		static let photoDark = UIImage(named: "photoDark")!
+		static let videoDark = UIImage(named: "videoDark")!
+		static let contactsDark = UIImage(named: "contactsDark")!
     }
     
     struct systemItems {
@@ -58,6 +63,10 @@ struct Images {
 			static let circleArrow = UIImage(named: "circleRoundedThin")!
 			static let save = UIImage(systemName: "tray.and.arrow.up")!
 			static let xmark = UIImage(systemName: "xmark")!
+			
+			static let diskSpace = UIImage(named: "pathClean")
+			static let diskSpaceDark = UIImage(named: "pie-graphDark")
+			
         }
 		
 		struct helpersItems {

@@ -27,7 +27,7 @@ enum Theme: Int {
             case .light:
                 return UIColor().colorFromHexString("E3E8F1")
             case .dark:
-                return UIColor().colorFromHexString("E3E8F1")
+                return UIColor().colorFromHexString("#0E1011")
         }
     }
     
@@ -45,7 +45,7 @@ enum Theme: Int {
             case .light:
                 return UIColor().colorFromHexString("ECF0F6")
             case .dark :
-                return UIColor().colorFromHexString("ECF0F6")
+                return UIColor().colorFromHexString("#181B1D")
         }
     }
 	
@@ -90,7 +90,7 @@ enum Theme: Int {
             case .light:
                 return UIColor().colorFromHexString("E9EFF2")
             case .dark :
-                return UIColor().colorFromHexString("E9EFF2")
+                return UIColor().colorFromHexString("#181818")
         }
     }
 	
@@ -377,7 +377,7 @@ enum Theme: Int {
             case .light:
                 return UIColor().colorFromHexString("374058")
             case .dark:
-                return UIColor().colorFromHexString("374058")
+                return UIColor().colorFromHexString("#FFFFFF")
         }
     }
 	
@@ -386,7 +386,7 @@ enum Theme: Int {
 			case .light:
 				return UIColor().colorFromHexString("374058").withAlphaComponent(0.5)
 			case .dark:
-				return UIColor().colorFromHexString("374058").withAlphaComponent(0.5)
+				return UIColor().colorFromHexString("777777")
 		}
 	}
 	
@@ -759,7 +759,7 @@ enum Theme: Int {
 			case .light:
 				return UIColor().colorFromHexString("DCDEE0")
 			case .dark:
-				return UIColor().colorFromHexString("DCDEE0")
+				return UIColor().colorFromHexString("FFFFFF").withAlphaComponent(0.2)
 		}
 	}
 }
