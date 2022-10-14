@@ -28,6 +28,8 @@ class MainViewController: UIViewController {
 	weak var coordinator: ApplicationCoordinator?
 	
     private let baseCarouselLayout = BaseCarouselFlowLayout()
+	
+	private let gridCollectionLayout = SimpleColumnFlowLayout(cellsPerRow: 2, minimumInterSpacing: 0, minimumLineSpacing: 0, inset: .init(top: 10, left: 10, bottom: 10, right: 10))
     
 	private var subscriptionManager = SubscriptionManager.instance
 	private var permissionManager = PermissionManager.shared
@@ -470,7 +472,8 @@ extension MainViewController {
         
         mediaCollectionView.delegate = self
         mediaCollectionView.dataSource = self
-        mediaCollectionView.collectionViewLayout = baseCarouselLayout
+
+		mediaCollectionView.collectionViewLayout = theme == .light ? baseCarouselLayout : gridCollectionLayout
         mediaCollectionView.register(UINib(nibName: C.identifiers.xibs.mediaTypeCell, bundle: nil), forCellWithReuseIdentifier: C.identifiers.cells.mediaTypeCell)
         mediaCollectionView.showsVerticalScrollIndicator = false
         mediaCollectionView.showsHorizontalScrollIndicator = false
@@ -521,9 +524,9 @@ extension MainViewController: SubscriptionObserver {
 			self.subscriptionManager.purchasePremiumHandler { status in
 				switch status {
 					case .lifetime, .purchasedPremium:
-						self.navigationBar.setUpNavigation(title: nil, leftImage: nil, rightImage: I.systemItems.navigationBarItems.settings)
+						self.navigationBar.setUpNavigation(title: nil, leftImage: nil, rightImage: I.systemItems.navigationBarItems.settings, imageTintColor: .clear)
 					case .nonPurchased:
-						self.navigationBar.setUpNavigation(title: nil, leftImage: I.systemItems.navigationBarItems.premium, rightImage: I.systemItems.navigationBarItems.settings)
+						self.navigationBar.setUpNavigation(title: nil, leftImage: I.systemItems.navigationBarItems.premium, rightImage: I.systemItems.navigationBarItems.settings, imageTintColor: .clear)
 				}
 			}
 		}
@@ -647,6 +650,11 @@ extension MainViewController: UpdateColorsDelegate {
     
 	private func setupProgressAndCollectionSize() {
 
+		let collectionViewNumberOfRows: CGFloat = theme == .light ? 1 : 2
+		gridCollectionLayout.cellsPerRow = 2
+		
+		self.mediaCollectionView.layoutIfNeeded()
+		
 		switch Screen.size {
 			case .small:
 				
@@ -658,18 +666,23 @@ extension MainViewController: UpdateColorsDelegate {
 						
 						circleProgressTopConstraint.constant = -25
 						circleProgressBottomConstraint.constant = 10
-						collectionViewHeightConstraint.constant = 180
+						collectionViewHeightConstraint.constant = 180 * collectionViewNumberOfRows
 						bottomButtonHeightConstraint.constant = 70
-						baseCarouselLayout.itemSize = CGSize(width: 160, height: 180)
+						
+						let itemSize = CGSize(width: 160, height: 180)
+						gridCollectionLayout.itemSize = itemSize
+						baseCarouselLayout.itemSize = itemSize
 					case .hiden:
 						circleTotalSpaceView.percentLabel.font = .systemFont(ofSize: 30, weight: .black)
 						circleTotalSpaceView.titleLabel.font = .systemFont(ofSize: 8, weight: .bold)
 						circleTotalSpaceView.lineWidth = 32
 						circleProgressTopConstraint.constant = -10
 						circleProgressBottomConstraint.constant = 20
-						collectionViewHeightConstraint.constant = 190
+						collectionViewHeightConstraint.constant =  190 * collectionViewNumberOfRows
 						bottomButtonHeightConstraint.constant = 75
-						baseCarouselLayout.itemSize = CGSize(width: 160, height: 190)
+						let itemSize = CGSize(width: 160, height: 190)
+						gridCollectionLayout.itemHieght = itemSize.height
+						baseCarouselLayout.itemSize = itemSize
 				}
 	
 				circleTotalSpaceView.percentTitleLabelSpaceOffset = -5
@@ -684,18 +697,22 @@ extension MainViewController: UpdateColorsDelegate {
 						circleTotalSpaceView.lineWidth = 34
 						circleProgressTopConstraint.constant = -10
 						circleProgressBottomConstraint.constant = 10
-						collectionViewHeightConstraint.constant = 230
+						collectionViewHeightConstraint.constant = 230 * collectionViewNumberOfRows
 						bottomButtonHeightConstraint.constant = 75
-						baseCarouselLayout.itemSize = CGSize(width: 190, height: 230)
+						let itemSize = CGSize(width: 190, height: 230)
+						gridCollectionLayout.itemHieght = itemSize.height
+						baseCarouselLayout.itemSize = itemSize
 					case .hiden:
 						circleTotalSpaceView.percentLabel.font = .systemFont(ofSize: 44, weight: .black)
 						circleTotalSpaceView.titleLabel.font = .systemFont(ofSize: 11, weight: .bold)
 						circleTotalSpaceView.lineWidth = 36
 						circleProgressTopConstraint.constant = -5
 						circleProgressBottomConstraint.constant = 20
-						collectionViewHeightConstraint.constant = 240
+						collectionViewHeightConstraint.constant = 240 * collectionViewNumberOfRows
 						bottomButtonHeightConstraint.constant = 85
-						baseCarouselLayout.itemSize = CGSize(width: 190, height: 235)
+						let itemSize = CGSize(width: 190, height: 235)
+						gridCollectionLayout.itemHieght = itemSize.height
+						baseCarouselLayout.itemSize = itemSize
 				}
 				
 				circleTotalSpaceView.percentTitleLabelSpaceOffset = 8
@@ -709,17 +726,21 @@ extension MainViewController: UpdateColorsDelegate {
 						circleTotalSpaceView.titleLabel.font = .systemFont(ofSize: 11, weight: .bold)
 						circleTotalSpaceView.lineWidth = 36
 						circleProgressBottomConstraint.constant = 20
-						collectionViewHeightConstraint.constant = 240
+						collectionViewHeightConstraint.constant = 240 * collectionViewNumberOfRows
 						bottomButtonHeightConstraint.constant = 80
-						baseCarouselLayout.itemSize = CGSize(width: 200, height: 240)
+						let itemSize = CGSize(width: 200, height: 240)
+						gridCollectionLayout.itemHieght = itemSize.height
+						baseCarouselLayout.itemSize = itemSize
 					case .hiden:
 						circleTotalSpaceView.percentLabel.font = .systemFont(ofSize: 46, weight: .black)
 						circleTotalSpaceView.titleLabel.font = .systemFont(ofSize: 12, weight: .bold)
 						circleTotalSpaceView.lineWidth = 40
 						circleProgressBottomConstraint.constant = 35
-						collectionViewHeightConstraint.constant = 250
+						collectionViewHeightConstraint.constant = 250 * collectionViewNumberOfRows
 						bottomButtonHeightConstraint.constant = 90
-						baseCarouselLayout.itemSize = CGSize(width: 200, height: 250)
+						let itemSize = CGSize(width: 200, height: 250)
+						gridCollectionLayout.itemHieght = itemSize.height
+						baseCarouselLayout.itemSize = itemSize
 				}
 
 				circleTotalSpaceView.percentTitleLabelSpaceOffset = 13
@@ -734,9 +755,11 @@ extension MainViewController: UpdateColorsDelegate {
 						circleTotalSpaceView.lineWidth = 38
 						circleProgressTopConstraint.constant = -10
 						circleProgressBottomConstraint.constant = 25
-						collectionViewHeightConstraint.constant = 260
+						collectionViewHeightConstraint.constant = 260 * collectionViewNumberOfRows
 						bottomButtonHeightConstraint.constant = 80
-						baseCarouselLayout.itemSize = CGSize(width: 200, height: 250)
+						let itemSize = CGSize(width: 200, height: 250)
+						gridCollectionLayout.itemHieght = itemSize.height
+						baseCarouselLayout.itemSize = itemSize
 					case .hiden:
 						circleTotalSpaceView.percentLabel.font = .systemFont(ofSize: 46, weight: .black)
 						circleTotalSpaceView.titleLabel.font = .systemFont(ofSize: 13, weight: .bold)
@@ -744,7 +767,9 @@ extension MainViewController: UpdateColorsDelegate {
 						circleProgressBottomConstraint.constant = 40
 						collectionViewHeightConstraint.constant = 270
 						bottomButtonHeightConstraint.constant = 110
-						baseCarouselLayout.itemSize = CGSize(width: 200, height: 260)
+						let itemSize = CGSize(width: 200, height: 260)
+						gridCollectionLayout.itemHieght = itemSize.height
+						baseCarouselLayout.itemSize = itemSize
 				}
 				circleTotalSpaceView.percentTitleLabelSpaceOffset = 15
 				baseCarouselLayout.spacing = -35
@@ -759,15 +784,17 @@ extension MainViewController: UpdateColorsDelegate {
 						circleTotalSpaceView.lineWidth = 40
 						circleProgressTopConstraint.constant = -10
 						circleProgressBottomConstraint.constant = 30
-						collectionViewHeightConstraint.constant = 270
+						collectionViewHeightConstraint.constant = 270 * collectionViewNumberOfRows
 						bottomButtonHeightConstraint.constant = 80
 					case .hiden:
 						circleTotalSpaceView.lineWidth = 44
 						circleProgressBottomConstraint.constant = 50
-						collectionViewHeightConstraint.constant = 280
+						collectionViewHeightConstraint.constant = 280 * collectionViewNumberOfRows
 						bottomButtonHeightConstraint.constant = 110
 				}
-				baseCarouselLayout.itemSize = CGSize(width: 200, height: 270)
+				let itemSize = CGSize(width: 200, height: 270)
+				gridCollectionLayout.itemHieght = itemSize.height
+				baseCarouselLayout.itemSize = itemSize
 				circleTotalSpaceView.percentTitleLabelSpaceOffset = 16
 				baseCarouselLayout.spacing = -35
 				baseCarouselLayout.focusedSpacing = -35
@@ -781,14 +808,16 @@ extension MainViewController: UpdateColorsDelegate {
 						circleTotalSpaceView.lineWidth = 46
 						bottomButtonHeightConstraint.constant = 90
 						circleProgressBottomConstraint.constant = 35
-						collectionViewHeightConstraint.constant = 275
+						collectionViewHeightConstraint.constant = 275 * collectionViewNumberOfRows
 					case .hiden:
 						circleTotalSpaceView.lineWidth = 48
 						bottomButtonHeightConstraint.constant = 120
 						circleProgressBottomConstraint.constant = 60
-						collectionViewHeightConstraint.constant = 290
+						collectionViewHeightConstraint.constant = 290 * collectionViewNumberOfRows
 				}
-				baseCarouselLayout.itemSize = CGSize(width: 210, height: 280)
+				let itemSize = CGSize(width: 210, height: 280)
+				gridCollectionLayout.itemHieght = itemSize.height
+				baseCarouselLayout.itemSize = itemSize
 				circleTotalSpaceView.percentTitleLabelSpaceOffset = 20
 				baseCarouselLayout.spacing = -35
 				baseCarouselLayout.focusedSpacing = -35
@@ -801,15 +830,17 @@ extension MainViewController: UpdateColorsDelegate {
 				switch Advertisement.manager.advertisementBannerStatus {
 					case .active:
 						circleProgressBottomConstraint.constant = 40
-						collectionViewHeightConstraint.constant = 280
+						collectionViewHeightConstraint.constant = 280 * collectionViewNumberOfRows
 						bottomButtonHeightConstraint.constant = 90
 					case .hiden:
 						circleProgressBottomConstraint.constant = 80
-						collectionViewHeightConstraint.constant = 300
+						collectionViewHeightConstraint.constant = 300 * collectionViewNumberOfRows
 						bottomButtonHeightConstraint.constant = 120
 				}
 				circleTotalSpaceView.percentTitleLabelSpaceOffset = 20
-				baseCarouselLayout.itemSize = CGSize(width: 210, height: 280)
+				let itemSize = CGSize(width: 210, height: 280)
+				gridCollectionLayout.itemHieght = itemSize.height
+				baseCarouselLayout.itemSize = itemSize
 				baseCarouselLayout.spacing = -30
 				baseCarouselLayout.focusedSpacing = -30
 		}

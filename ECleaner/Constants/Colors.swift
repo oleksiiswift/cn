@@ -27,7 +27,7 @@ enum Theme: Int {
             case .light:
                 return UIColor().colorFromHexString("E3E8F1")
             case .dark:
-                return UIColor().colorFromHexString("#0E1011")
+                return UIColor().colorFromHexString("#0A0A0A")
         }
     }
     
@@ -45,7 +45,7 @@ enum Theme: Int {
             case .light:
                 return UIColor().colorFromHexString("ECF0F6")
             case .dark :
-                return UIColor().colorFromHexString("#181B1D")
+                return UIColor().colorFromHexString("#202020")
         }
     }
 	

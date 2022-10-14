@@ -125,27 +125,30 @@ extension AdvertisementViewController {
 		
 		Advertisement.manager.advertisementBannerStatus = status
 		
-		var advertisemntContaineHeight: CGFloat {
-			switch status {
-				case .active:
-					return 45 + U.bottomSafeAreaHeight
-				case .hiden:
-					return 0
+		Utils.UI {
+			
+			var advertisemntContaineHeight: CGFloat {
+				switch status {
+					case .active:
+						return 45 + U.bottomSafeAreaHeight
+					case .hiden:
+						return 0
+				}
 			}
-		}
-		
-		self.advertisementHightConstraint.constant = advertisemntContaineHeight
-		
-		if status == .hiden {
-			if let view = self.advertisementView.viewWithTag(Advertisement.manager.advertimentBannerTag) {
-				view.removeFromSuperview()
+			
+			self.advertisementHightConstraint.constant = advertisemntContaineHeight
+			
+			if status == .hiden {
+				if let view = self.advertisementView.viewWithTag(Advertisement.manager.advertimentBannerTag) {
+					view.removeFromSuperview()
+				}
 			}
+			
+			UIView.animate(withDuration: 0.3) {
+					//			self.view.layoutIfNeeded()
+				self.advertisementView.layoutIfNeeded()
+			} completion: { _ in }
 		}
-		
-		UIView.animate(withDuration: 0.3) {
-//			self.view.layoutIfNeeded()
-			self.advertisementView.layoutIfNeeded()
-		} completion: { _ in }
 	}
 }
 

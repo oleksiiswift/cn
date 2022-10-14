@@ -19,6 +19,8 @@ class MediaTypeCollectionViewCell: UICollectionViewCell {
 	@IBOutlet weak var mainStackView: UIStackView!
     @IBOutlet weak var contentViewHeightConstraint: NSLayoutConstraint!
 	
+	@IBOutlet var containerInsetConstraintsCollection: [NSLayoutConstraint]!
+	
 	private lazy var loadingActivityIndicatorView = UIActivityIndicatorView()
 	private lazy var circleprogress = CircleProgressView()
 	
@@ -53,7 +55,11 @@ class MediaTypeCollectionViewCell: UICollectionViewCell {
 extension MediaTypeCollectionViewCell: Themeble {
     
     private func setupUI() {
-        
+		
+		containerInsetConstraintsCollection.forEach {
+			$0.constant = theme == .dark ? 10 : 30
+		}
+		
         loadingActivityIndicatorView.color = .red
         loadingActivityIndicatorView.tag = 666
         mainView.setCorner(12)

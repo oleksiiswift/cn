@@ -96,7 +96,7 @@ class StartingNavigationBar: UIView {
 		topShevronView.backgroundColor = theme.topShevronBackgroundColor
 	}
     
-	public func setUpNavigation(title: String?, leftImage: UIImage? = nil, rightImage: UIImage? = nil, targetImageScaleFactor: CGFloat = 0.5) {
+	public func setUpNavigation(title: String?, leftImage: UIImage? = nil, rightImage: UIImage? = nil, targetImageScaleFactor: CGFloat = 0.5, imageTintColor: UIColor) {
 		
 		let targetSize: CGSize = CGSize(width: buttonSize * targetImageScaleFactor, height: buttonSize * targetImageScaleFactor)
 		
@@ -126,7 +126,7 @@ class StartingNavigationBar: UIView {
         if let rightImage = rightImage {
 			rightShadowView.isHidden = theme == .light ? false : true
             rightBarButton.isHidden = false
-			rightBarButton.addCenterImage(image: rightImage, imageWidth: rightImageSzie.width, imageHeight: rightImageSzie.height)
+			rightBarButton.addCenterImage(image: rightImage, imageWidth: rightImageSzie.width, imageHeight: rightImageSzie.height, tintColor: imageTintColor)
         } else {
             rightBarButton.isHidden = true
 			rightShadowView.isHidden = true
@@ -135,7 +135,7 @@ class StartingNavigationBar: UIView {
         if let leftImage = leftImage {
 			leftShadowView.isHidden = theme == .light ? false : true
             leftBarButton.isHidden = false
-			leftBarButton.addCenterImage(image: leftImage, imageWidth: leftImageSize.width, imageHeight: leftImageSize.height)
+			leftBarButton.addCenterImage(image: leftImage, imageWidth: leftImageSize.width, imageHeight: leftImageSize.height, tintColor: imageTintColor)
         } else {
             leftBarButton.isHidden = true
 			leftShadowView.isHidden = true

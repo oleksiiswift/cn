@@ -38,6 +38,7 @@ extension AppDelegate {
     
     private func configureApplication(with launchOptions: [UIApplication.LaunchOptionsKey: Any]?) {
         
+		ThemeManager.applyTheme(.dark)
 		Network.start()
 		self.developmentEnviroment()
 		self.initializeSubscriptions()
@@ -121,7 +122,7 @@ extension AppDelegate {
 	private func developmentEnviroment() {
 		
 			/// `handle subscription simulated status`
-		SubscriptionManager.instance.setAplicationDevelopmentSubscription(status: .production)
+		SubscriptionManager.instance.setAplicationDevelopmentSubscription(status: .lifeTimeSimulated)
 	}
 }
 

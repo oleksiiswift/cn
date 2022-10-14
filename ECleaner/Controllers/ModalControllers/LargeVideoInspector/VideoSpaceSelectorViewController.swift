@@ -165,7 +165,7 @@ extension VideoSpaceSelectorViewController {
 	private func setupNavigation() {
 		
 		let navigationTitle = Localization.Main.HeaderTitle.selectLargeVideo
-		navigationBar.setUpNavigation(title: navigationTitle, leftImage: nil, rightImage: I.systemItems.navigationBarItems.dissmiss)
+		navigationBar.setUpNavigation(title: navigationTitle, leftImage: nil, rightImage: I.systemItems.navigationBarItems.dissmiss, imageTintColor: .clear)
 	}
 	
 	private func setupUI() {

@@ -184,7 +184,7 @@ extension LocationInfoViewController: Themeble {
 	
 	func setupNavigation() {
 		
-		navigationBar.setUpNavigation(title: self.title, rightImage: I.systemItems.navigationBarItems.dissmiss, targetImageScaleFactor: 0.4)
+		navigationBar.setUpNavigation(title: self.title, rightImage: I.systemItems.navigationBarItems.dissmiss, targetImageScaleFactor: 0.4, imageTintColor: .clear)
 		navigationBar.topShevronEnable = true
 		navigationBar.delegate = self
 	}
