@@ -63,6 +63,12 @@ class RootViewModel {
 		return 0
 	}
 	
+	public func setDiskSpace(of model: MediaContentType, value: Int64) {
+		if let indexPath = self.indexPath(of: model) {
+			self.sections[indexPath.section].diskSpace[model] = value
+		}
+	}
+	
 	public func setContentCount(model: MediaContentType, itemsCount: Int) {
 		
 		guard let indexPath = self.indexPath(of: model) else { return }

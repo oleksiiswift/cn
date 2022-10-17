@@ -184,8 +184,8 @@ extension MainViewController {
 	
 	private func setProgressSize(for type: MediaContentType, progress: CGFloat) {
 		U.UI {
-			if let cell = self.mediaCollectionView.cellForItem(at: type.mainScreenIndexPath) as? MediaTypeCollectionViewCell {
-				cell.setProgress(progress)
+			if let _ = self.mediaCollectionView.cellForItem(at: type.mainScreenIndexPath) as? MediaTypeCollectionViewCell {
+//				cell.setProgress(progress)
 			}
 		}
 	}

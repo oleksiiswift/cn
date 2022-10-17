@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21225" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_0" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21207"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="TotalSpacePageViewController" customModule="ECleaner" customModuleProvider="target">
+            <connections>
+                <outlet property="circleProgressView" destination="ZqX-Nh-F5u" id="eUX-v3-eHu"/>
+                <outlet property="photoInfoSpaceView" destination="c5g-Td-goa" id="K4t-UI-dgj"/>
+                <outlet property="videoInfoSpaceView" destination="rHc-pc-cw8" id="rLU-VZ-dIp"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="390" height="300"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="euS-BX-FZa">
+                    <rect key="frame" x="0.0" y="0.0" width="390" height="200"/>
+                    <subviews>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZqX-Nh-F5u" customClass="CircleProgressView" customModule="ECleaner" customModuleProvider="target">
+                            <rect key="frame" x="95" y="0.0" width="200" height="200"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <constraints>
+                                <constraint firstAttribute="width" secondItem="ZqX-Nh-F5u" secondAttribute="height" multiplier="1:1" id="ebA-UW-88f"/>
+                            </constraints>
+                        </view>
+                    </subviews>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <constraints>
+                        <constraint firstItem="ZqX-Nh-F5u" firstAttribute="centerX" secondItem="euS-BX-FZa" secondAttribute="centerX" id="9pv-Yt-k6m"/>
+                        <constraint firstAttribute="bottom" secondItem="ZqX-Nh-F5u" secondAttribute="bottom" id="Niu-CF-Ovf"/>
+                        <constraint firstItem="ZqX-Nh-F5u" firstAttribute="top" secondItem="euS-BX-FZa" secondAttribute="top" id="XLe-TU-BMK"/>
+                        <constraint firstAttribute="height" constant="200" id="g18-5e-68u"/>
+                    </constraints>
+                </view>
+                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="xh1-Mg-OE0">
+                    <rect key="frame" x="0.0" y="200" width="390" height="100"/>
+                    <subviews>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="c5g-Td-goa" customClass="InfoSpaceView" customModule="ECleaner" customModuleProvider="target">
+                            <rect key="frame" x="0.0" y="0.0" width="390" height="50"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        </view>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rHc-pc-cw8" customClass="InfoSpaceView" customModule="ECleaner" customModuleProvider="target">
+                            <rect key="frame" x="0.0" y="50" width="390" height="50"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        </view>
+                    </subviews>
+                </stackView>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <constraints>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="xh1-Mg-OE0" secondAttribute="trailing" id="Hd1-GE-xtq"/>
+                <constraint firstItem="xh1-Mg-OE0" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="Pwf-LJ-ZgZ"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="xh1-Mg-OE0" secondAttribute="bottom" id="VFy-s0-EAH"/>
+                <constraint firstItem="xh1-Mg-OE0" firstAttribute="top" secondItem="euS-BX-FZa" secondAttribute="bottom" id="csJ-it-NEC"/>
+                <constraint firstItem="euS-BX-FZa" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="exd-AP-mbx"/>
+                <constraint firstItem="euS-BX-FZa" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="jIG-ic-P6y"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="euS-BX-FZa" secondAttribute="trailing" id="xcG-Nu-cMT"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <point key="canvasLocation" x="76.92307692307692" y="-33.412322274881518"/>
+        </view>
+    </objects>
+</document>

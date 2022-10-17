@@ -22,8 +22,12 @@ class RootViewController: UIViewController {
 	@IBOutlet weak var collectionView: UICollectionView!
 	@IBOutlet weak var collectionContainerView: UIView!
 	@IBOutlet weak var collectionContainerHeightConstraint: NSLayoutConstraint!
-	
+
 	var collectionContainerBottomHelperView = UIView()
+	
+	private var totalSpacePageViewController = TotalSpacePageViewController()
+	private var deepClenaPageViewController = DeepCleanPageViewController()
+	private var contactBackupPageViewController = ContactBackUpPageViewController()
 	
 	weak var coordinator: ApplicationCoordinator?
 	
@@ -37,7 +41,6 @@ class RootViewController: UIViewController {
 	
 	
 	private var itemHeight: CGFloat?
-	private var diskSpaceForStartingScreen: [MediaContentType : Int64] = [:]
 
 	private var flowLayout = SimpleColumnFlowLayout(cellsPerRow: 2, minimumInterSpacing: 0, minimumLineSpacing: 0)
 
@@ -55,6 +58,7 @@ class RootViewController: UIViewController {
 
 //		setupCircleProgressView()
 		
+		setupPageController()
 		subscriptionDidChange()
 		addSubscriptionChangeObserver()
     }
@@ -64,20 +68,20 @@ class RootViewController: UIViewController {
 		
 		self.coordinator = Utils.sceneDelegate.coordinator
 		
-		self.addSizeCalcuateObeserver()
-		self.setupNavigation()
-		self.updateContactsCount()
-		self.updateInformation(.userPhoto)
-		self.updateInformation(.userVideo)
-		self.updateDeepCleanState()
-		self.handleShortcutItem()
+		addSizeCalcuateObeserver()
+		setupNavigation()
+		updateContactsCount()
+		updateInformation(.userPhoto)
+		updateInformation(.userVideo)
+		updateDeepCleanState()
+		handleShortcutItem()
+		checkProgressStatus()
 	}
 	
 	override func viewWillDisappear(_ animated: Bool) {
 		super.viewWillDisappear(animated)
 		
 		self.removeSizeCalculateObserver()
-		self.checkProgressStatus()
 	}
 	
 	override func viewDidLayoutSubviews() {
@@ -105,6 +109,27 @@ class RootViewController: UIViewController {
 		objects[.duplicatedPhoneNumbers] = SingleCleanStateModel(type: .duplicatedPhoneNumbers)
 		objects[.duplicatedEmails] = SingleCleanStateModel(type: .duplicatedEmails)
 		self.singleCleanModel = SingleCleanModel(objects: objects)
+	}
+	
+	private func setupPageController() {
+		
+		let pages: [UIViewController] = setupHeaderPages()
+	
+		struct Configuration: AutoSlideConfiguration {
+			var timeInterval: TimeInterval = 30.0
+			var interPageSpacing: Float = 40
+			var transitionStyle: UIPageViewController.TransitionStyle = .scroll
+		}
+
+		let pageViewController = DLAutoSlidePageViewController(pages: pages, configuration: Configuration())
+		addChild(pageViewController)
+		
+		headerContainerView.addSubview(pageViewController.view)
+		pageViewController.view.frame = headerContainerView.bounds
+	}
+	
+	private func setupHeaderPages() -> [UIViewController] {
+		return [totalSpacePageViewController, deepClenaPageViewController, contactBackupPageViewController]
 	}
 	
 	private func setupViewModel() {
@@ -150,13 +175,8 @@ extension RootViewController {
 	
 	private func checkProgressStatus() {
 		
-		if diskSpaceForStartingScreen[.userPhoto] == nil {
-			self.setProgressSize(for: .userPhoto, progress: 0)
-		}
-		
-		if diskSpaceForStartingScreen[.userVideo] == nil {
-			self.setProgressSize(for: .userVideo, progress: 0)
-		}
+		self.setProgressSize(for: .userPhoto, progress: 0)
+		self.setProgressSize(for: .userVideo, progress: 0)
 	}
 	
 	private func updateInformation(_ contentType: MediaContentType) {
@@ -217,14 +237,8 @@ extension RootViewController {
 	}
 	
 	private func setProgressSize(for type: MediaContentType, progress: CGFloat) {
-		
-		guard let indexPath = self.rootViewModel.indexPath(of: type) else { return }
-		
 		Utils.UI {
-			
-			guard let cell = self.collectionView.cellForItem(at: indexPath) as? MediaTypeCollectionViewCell else { return }
-			
-			cell.setProgress(progress)
+			self.totalSpacePageViewController.setProgress(of: type, progress: progress)
 		}
 	}
 }
@@ -237,13 +251,21 @@ extension RootViewController: UpdateContentDataBaseListener {
 			self.rootViewModel.setContentCount(model: mediaType, itemsCount: itemsCount)
 			
 			if let calculatedSpace = calculatedSpace {
-				self.diskSpaceForStartingScreen[mediaType] = calculatedSpace
+				self.rootViewModel.setDiskSpace(of: mediaType, value: calculatedSpace)
+			}
+			
+			switch mediaType {
+				case .userPhoto:
+					debugPrint(self.rootViewModel.getDiskSpace(of: .userPhoto))
+				case .userVideo:
+					debugPrint(self.rootViewModel.getDiskSpace(of: .userVideo))
+				default:
+					return
 			}
 			
 			guard let indexPath = self.rootViewModel.indexPath(of: mediaType), let cell = self.collectionView.cellForItem(at: indexPath) as? MediaTypeCollectionViewCell else { return }
 			
 				cell.configureCell(mediaType: mediaType, contentCount: itemsCount, diskSpace: calculatedSpace)
-			
 		}
 	}
 	
@@ -590,15 +612,11 @@ extension RootViewController: UpdateColorsDelegate {
 		scrollView.delegate = self
 		
 		self.view.insertSubview(collectionContainerBottomHelperView, at: 0)
-		
 		collectionContainerBottomHelperView.translatesAutoresizingMaskIntoConstraints = false
-		
 		collectionContainerBottomHelperView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
 		collectionContainerBottomHelperView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor).isActive = true
 		collectionContainerBottomHelperView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor).isActive = true
 		collectionContainerBottomHelperView.heightAnchor.constraint(equalToConstant: 150).isActive = true
-		
-		headerContainerView.backgroundColor = .red
 	}
 	
 	private func setupCollectionSize() {
@@ -650,6 +668,7 @@ extension RootViewController: UpdateColorsDelegate {
 		self.collectionView.backgroundColor = .clear
 		self.collectionContainerView.backgroundColor = theme.primaryButtonBackgroundColor
 		self.collectionContainerBottomHelperView.backgroundColor = theme.primaryButtonBackgroundColor
+		self.headerContainerView.backgroundColor = .clear
 	}
 }
 
@@ -697,13 +716,19 @@ extension RootViewController: UIScrollViewDelegate {
 
 	func scrollViewDidScroll(_ scrollView: UIScrollView) {
 		
-		debugPrint(scrollView.contentOffset.y)
-		
+		let contentOffset = scrollView.contentOffset.y
 		
 		if let constraint = self.collectionContainerBottomHelperView.constraints.filter({$0.firstAttribute == .height}).first {
-			constraint.constant = 150 + scrollView.contentOffset.y
+			constraint.constant = 150 + contentOffset
 		}
-
+		 
+		if contentOffset > 0 {
+			headerContainerView.alpha = 1 - contentOffset / 250
+			headerContainerView.transform = .identity
+		} else {
+			let value = 1 - contentOffset / 300
+			headerContainerView.transform = CGAffineTransform(scaleX: value, y: value)
+		}
 	}
 	
 	func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {

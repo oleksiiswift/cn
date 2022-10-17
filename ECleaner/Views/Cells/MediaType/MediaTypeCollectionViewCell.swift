@@ -39,7 +39,7 @@ class MediaTypeCollectionViewCell: UICollectionViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         
-        hideActivityIndicatorAndAddSpace()
+//        hideActivityIndicatorAndAddSpace()
     }
     
     override func awakeFromNib() {
@@ -65,6 +65,7 @@ extension MediaTypeCollectionViewCell: Themeble {
         mainView.setCorner(12)
 		
 		diskSpaceImageView.image = theme == .light ? Images.systemItems.defaultItems.diskSpace : Images.systemItems.defaultItems.diskSpaceDark
+		self.circleprogress.isHidden = true
     }
     
 	public func configureCell(mediaType: MediaContentType, contentCount: Int?, diskSpace: Int64?) {
@@ -154,8 +155,9 @@ extension MediaTypeCollectionViewCell: Themeble {
 			mediaSpaceTitleTextLabel.text = String("\(U.getSpaceFromInt(space ?? 0))")
 		}
 	}
-	
-	public func setProgress(_ progress: CGFloat) {
+
+	public func rogress(_ progress: CGFloat) {
+		
 		U.animate(1) {
 			self.circleprogress.isHidden = !(0.01...0.99).contains(progress)
 		}

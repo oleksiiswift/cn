@@ -482,6 +482,7 @@ class Constants {
 			static let onboarding = "Onboarding"
 			static let subscription = "Subscription"
 			static let location = "Location"
+			
         }
         
         struct viewControllers {
@@ -511,6 +512,10 @@ class Constants {
 			static let location = "LocationViewController"
 			static let locationGrid = "LocationGridViewController"
 			static let locationInfo = "LocationInfoViewController"
+			
+			static let totalSpacePage = "TotalSpacePageViewController"
+			static let deepCleanPage = "DeepCleanPageViewController"
+			static let contactsBackUpPage = "ContactBackUpPageViewController"
         }
         
         struct cells {
@@ -574,6 +579,8 @@ class Constants {
 			static let contactInfo = "ContactInfoTableViewCell"
 			static let contactThumbnail = "ContactThumbnailTableViewCell"
 			static let actionCell = "ActionTableViewCell"
+			static let infoSpaceView = "InfoSpaceView"
+			
             /// `views`
             static let groupHeader = "GroupedAssetsReusableHeaderView"
             static let groupFooter = "GroupedAssetsReusableFooterView"
@@ -592,6 +599,10 @@ class Constants {
             
             /// controllers
 			static let location = "LocationGridViewController"
+			
+			static let totalSpacePage = "TotalSpacePageViewController"
+			static let deepCleanPage = "DeepCleanPageViewController"
+			static let contactsBackUpPage = "ContactBackUpPageViewController"
         }
 		
 		struct mapAnnotation {
