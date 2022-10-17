@@ -23,6 +23,12 @@ class Constants {
 		static let facebookID = ""
 	}
 	
+	struct web {
+		static let policy = "https://www.axelium.org/privacy-policy"
+		static let terms = "https://www.axelium.org/terms-of-use"
+		static let shareApp = URL(string: "https://www.hackingwithswift.com/articles/175/advanced-coordinator-pattern-tutorial-ios")!
+	}
+	
     struct gadAdvertisementKey {
         /**
          - parameter GADApplicationIdentifier use in info.plist file
@@ -482,6 +488,7 @@ class Constants {
 			static let onboarding = "Onboarding"
 			static let subscription = "Subscription"
 			static let location = "Location"
+			static let web = "Web"
         }
         
         struct viewControllers {
@@ -511,6 +518,7 @@ class Constants {
 			static let location = "LocationViewController"
 			static let locationGrid = "LocationGridViewController"
 			static let locationInfo = "LocationInfoViewController"
+			static let web = "WebViewController"
         }
         
         struct cells {

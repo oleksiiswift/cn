@@ -153,10 +153,10 @@ extension VideoSpaceSelectorViewController: BottomActionButtonDelegate {
 
 extension VideoSpaceSelectorViewController: StartingNavigationBarDelegate {
 	
-	func didTapLeftBarButton(_sender: UIButton) {}
+	func didTapLeftBarButtonItem(_ sender: UIButton) {}
 	
-	func didTapRightBarButton(_sender: UIButton) {
-		self.dismiss(animated: true, completion: nil)
+	func didTapRightBarButtonItem(_ sender: UIButton) {
+		self.dismiss(animated: true)
 	}
 }
 

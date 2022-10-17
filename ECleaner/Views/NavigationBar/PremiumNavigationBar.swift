@@ -213,12 +213,12 @@ class PremiumNavigationBar: UIView {
 	
 	@objc func didTapLeftBarButton(sender: UIButton) {
 		self.leftBarButton.animateButtonTransform()
-		delegate?.didTapLeftBarButton(_sender: sender)
+		delegate?.didTapLeftBarButton(sender)
 	}
 	
 	@objc func didTapRightBarButton(sender: UIButton) {
 		self.rightBarButton.animateButtonTransform()
-		delegate?.didTapRightBarButton(_sender: sender)
+		delegate?.didTapRightBarButton(sender)
 	}
 }
 

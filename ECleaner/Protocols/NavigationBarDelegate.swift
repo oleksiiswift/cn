@@ -10,8 +10,8 @@ import UIKit
 
 protocol StartingNavigationBarDelegate: AnyObject {
     
-    func didTapLeftBarButton(_sender: UIButton)
-    func didTapRightBarButton(_sender: UIButton)
+    func didTapLeftBarButtonItem(_ sender: UIButton)
+    func didTapRightBarButtonItem(_ sender: UIButton)
 }
 
 protocol NavigationBarDelegate: AnyObject {
@@ -23,6 +23,6 @@ protocol NavigationBarDelegate: AnyObject {
 
 protocol PremiumNavigationBarDelegate: AnyObject {
 	
-	func didTapLeftBarButton(_sender: UIButton)
-	func didTapRightBarButton(_sender: UIButton)
+	func didTapLeftBarButton(_ sender: UIButton)
+	func didTapRightBarButton(_ sender: UIButton)
 }

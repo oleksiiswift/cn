@@ -158,9 +158,9 @@ extension LocationInfoViewController: BottomActionButtonDelegate {
 
 extension LocationInfoViewController: StartingNavigationBarDelegate {
 	
-	func didTapLeftBarButton(_sender: UIButton) {}
+	func didTapLeftBarButtonItem(_ sender: UIButton) {}
 	
-	func didTapRightBarButton(_sender: UIButton) {
+	func didTapRightBarButtonItem(_ sender: UIButton) {
 		self.dismiss(animated: true)
 	}
 }

@@ -29,6 +29,12 @@ class StartingNavigationBar: UIView {
 		}
 	}
 	
+	var dropShadow: Bool = false {
+		didSet {
+			self.setDropShadow()
+		}
+	}
+	
 	public var buttonSize = AppDimensions.NavigationBar.startingNavigationBarButtonSize {
 		didSet {
 			self.setButtonsSize(buttonSize)
@@ -95,6 +101,13 @@ class StartingNavigationBar: UIView {
 		topShevronView.setCorner(3)
 		topShevronView.backgroundColor = theme.topShevronBackgroundColor
 	}
+	
+	public func setDropShadow() {
+		
+		guard dropShadow else { return }
+		
+		layer.setShadow(color: theme.bottomShadowColor, alpha: 1, x: 3, y: 0, blur: 10, spread: 0)
+	}
     
 	public func setUpNavigation(title: String?, leftImage: UIImage? = nil, rightImage: UIImage? = nil, targetImageScaleFactor: CGFloat = 0.5) {
 		
@@ -155,14 +168,13 @@ class StartingNavigationBar: UIView {
     
     @objc func didTapLeftBarButton(sender: UIButton) {
 		self.leftBarButton.animateButtonTransform()
-        delegate?.didTapLeftBarButton(_sender: sender)
+		delegate?.didTapLeftBarButtonItem(sender)
     }
     
     @objc func didTapRightBarButton(sender: UIButton) {
 		self.rightBarButton.animateButtonTransform()
-        delegate?.didTapRightBarButton(_sender: sender)
+		delegate?.didTapRightBarButtonItem(sender)
     }
-    
 }
 
 

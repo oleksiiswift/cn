@@ -85,11 +85,11 @@ class SubscriptionViewController: UIViewController, Storyboarded {
 	}
 	
 	@IBAction func didTapShowPrivacyActionButton(_ sender: Any) {
-		
+		self.coordinator?.showWebLink(of: .privacy, from: self, navigationController: nil, presentedtype: .present)
 	}
 	
 	@IBAction func didTapShowTermsActionButton(_ sender: Any) {
-		
+		self.coordinator?.showWebLink(of: .terms, from: self, navigationController: nil, presentedtype: .present)
 	}
 }
 
@@ -255,7 +255,7 @@ extension SubscriptionViewController {
 
 extension SubscriptionViewController: PremiumNavigationBarDelegate {
 	
-	func didTapLeftBarButton(_sender: UIButton) {
+	func didTapLeftBarButton(_ sender: UIButton) {
 		
 		self.setLeftButtonAnimateButton(status: .start)
 		self.restoreProcessingHandler(for: .processing)
@@ -272,7 +272,7 @@ extension SubscriptionViewController: PremiumNavigationBarDelegate {
 		}
 	}
 	
-	func didTapRightBarButton(_sender: UIButton) {
+	func didTapRightBarButton(_ sender: UIButton) {
 		self.closeSubscriptionController()
 	}
 }

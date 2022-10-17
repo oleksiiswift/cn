@@ -436,6 +436,9 @@
 		97E678462750F68A004E340B /* UsageDataNotificationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97E678452750F68A004E340B /* UsageDataNotificationType.swift */; };
 		97E7E8E4289BC634005DAE7E /* String+subsctrict.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97E7E8E3289BC634005DAE7E /* String+subsctrict.swift */; };
 		97E7E8E7289C3636005DAE7E /* LocationInfoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97E7E8E6289C3636005DAE7E /* LocationInfoViewModel.swift */; };
+		97EADCF528FD6DC200BF2FC9 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97EADCF428FD6DC200BF2FC9 /* WebViewController.swift */; };
+		97EADCF728FD728E00BF2FC9 /* Web.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97EADCF628FD728E00BF2FC9 /* Web.storyboard */; };
+		97EADCF928FDA9D800BF2FC9 /* ApplicationStartupState+Web.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97EADCF828FDA9D800BF2FC9 /* ApplicationStartupState+Web.swift */; };
 		97EB665127B1A4AE00B21EF5 /* CGSize+pixel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97EB665027B1A4AE00B21EF5 /* CGSize+pixel.swift */; };
 		97EB665327B1BC1F00B21EF5 /* UICollectionView+NextItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97EB665227B1BC1F00B21EF5 /* UICollectionView+NextItem.swift */; };
 		97EBB0242888913E00C1A0C9 /* CheckmarkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97EBB0232888913E00C1A0C9 /* CheckmarkView.swift */; };
@@ -909,6 +912,9 @@
 		97E678452750F68A004E340B /* UsageDataNotificationType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsageDataNotificationType.swift; sourceTree = "<group>"; };
 		97E7E8E3289BC634005DAE7E /* String+subsctrict.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+subsctrict.swift"; sourceTree = "<group>"; };
 		97E7E8E6289C3636005DAE7E /* LocationInfoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationInfoViewModel.swift; sourceTree = "<group>"; };
+		97EADCF428FD6DC200BF2FC9 /* WebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
+		97EADCF628FD728E00BF2FC9 /* Web.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Web.storyboard; sourceTree = "<group>"; };
+		97EADCF828FDA9D800BF2FC9 /* ApplicationStartupState+Web.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ApplicationStartupState+Web.swift"; sourceTree = "<group>"; };
 		97EB665027B1A4AE00B21EF5 /* CGSize+pixel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGSize+pixel.swift"; sourceTree = "<group>"; };
 		97EB665227B1BC1F00B21EF5 /* UICollectionView+NextItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UICollectionView+NextItem.swift"; sourceTree = "<group>"; };
 		97EBB0232888913E00C1A0C9 /* CheckmarkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckmarkView.swift; sourceTree = "<group>"; };
@@ -1326,6 +1332,7 @@
 				9742C3C92864752E00ADCE1A /* Subscription */,
 				9742C3C82864751D00ADCE1A /* Onbording */,
 				97EC0FDD2897DA990096F780 /* Location */,
+				97EADCFA28FDAA5100BF2FC9 /* Web */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -1437,6 +1444,7 @@
 			children = (
 				04E5836B267A414C00EDC3A3 /* Xibs */,
 				04E5836A267A412D00EDC3A3 /* Storyboards */,
+				97EADCFB28FDD7ED00BF2FC9 /* Web */,
 			);
 			path = "Storyboards & Xibs";
 			sourceTree = "<group>";
@@ -2839,6 +2847,22 @@
 			path = LocationInfo;
 			sourceTree = "<group>";
 		};
+		97EADCFA28FDAA5100BF2FC9 /* Web */ = {
+			isa = PBXGroup;
+			children = (
+				97EADCF428FD6DC200BF2FC9 /* WebViewController.swift */,
+			);
+			path = Web;
+			sourceTree = "<group>";
+		};
+		97EADCFB28FDD7ED00BF2FC9 /* Web */ = {
+			isa = PBXGroup;
+			children = (
+				97EADCF628FD728E00BF2FC9 /* Web.storyboard */,
+			);
+			path = Web;
+			sourceTree = "<group>";
+		};
 		97EBB0252888914500C1A0C9 /* CheckmarkView */ = {
 			isa = PBXGroup;
 			children = (
@@ -2872,6 +2896,7 @@
 			isa = PBXGroup;
 			children = (
 				97EC82E428685A4A00A32A21 /* ApplicationStartupStateCoordinator.swift */,
+				97EADCF828FDA9D800BF2FC9 /* ApplicationStartupState+Web.swift */,
 			);
 			path = Scene;
 			sourceTree = "<group>";
@@ -3053,6 +3078,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				97EADCF728FD728E00BF2FC9 /* Web.storyboard in Resources */,
 				97B01A5B2745830500DDE03C /* BottomDoubleButtonBarView.xib in Resources */,
 				9701D26E27BD36250078E39F /* HelperBannerTableViewCell.xib in Resources */,
 				9763F4862847EEFA004122A9 /* Main.storyboard in Resources */,
@@ -3412,6 +3438,7 @@
 				9763F46F2847E7ED004122A9 /* DeepCleanCompleteStateHandler.swift in Sources */,
 				97420BDF283E5A2200B0E134 /* PresentedControllerModelType.swift in Sources */,
 				97FC78982688CC06000D7F26 /* SimpleAssetsListViewController.swift in Sources */,
+				97EADCF928FDA9D800BF2FC9 /* ApplicationStartupState+Web.swift in Sources */,
 				9789D18827F48C400035539C /* PreviewCollectionShadowView.swift in Sources */,
 				97A05B742743D4B600968459 /* SearchBarView.swift in Sources */,
 				97DAB62E272C164A00F05CEA /* GroupContactTableViewCell.swift in Sources */,
@@ -3430,6 +3457,7 @@
 				975AF43B2728306C00744E3B /* ContactListDataSource.swift in Sources */,
 				9787576F281C768E00CE27A9 /* AVUrlAsset.swift in Sources */,
 				972C80662871FA6200691271 /* UIView+GradientBorder.swift in Sources */,
+				97EADCF528FD6DC200BF2FC9 /* WebViewController.swift in Sources */,
 				977B7EE82899316A00735433 /* PHAssetLocationViewModel.swift in Sources */,
 				97A39FDE27649F0C007CB482 /* UIView+RecurciveSearch.swift in Sources */,
 				970A0F332814826F0071FCD9 /* CompressingInfoViewController.swift in Sources */,
@@ -3666,6 +3694,9 @@
 				MARKETING_VERSION = 0.01;
 				PRODUCT_BUNDLE_IDENTIFIER = com.cleaner.pro;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_OBJC_BRIDGING_HEADER = "ECleaner/ECleaner-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -3691,6 +3722,9 @@
 				MARKETING_VERSION = 0.01;
 				PRODUCT_BUNDLE_IDENTIFIER = com.cleaner.pro;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_OBJC_BRIDGING_HEADER = "ECleaner/ECleaner-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;

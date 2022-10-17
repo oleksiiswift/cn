@@ -63,7 +63,7 @@ extension AppDelegate {
 
     private func setDefaults() {
 		
-		U.delay(10) {
+		U.delay(1) {
 			SettingsManager.application.lastApplicationUsage = Date()
 		}
 	

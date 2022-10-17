@@ -499,15 +499,15 @@ extension MainViewController {
 }
 
 extension MainViewController: BottomActionButtonDelegate, StartingNavigationBarDelegate {
-    
-    func didTapLeftBarButton(_sender: UIButton) {
-        self.openSubscriptionController()
-    }
-    
-    func didTapRightBarButton(_sender: UIButton) {
-        self.openSettingsController()
-    }
-    
+	
+	func didTapLeftBarButtonItem(_ sender: UIButton) {
+		self.openSubscriptionController()
+	}
+	
+	func didTapRightBarButtonItem(_ sender: UIButton) {
+		self.openSettingsController()
+	}
+	
     func didTapActionButton() {
 		self.prepareDeepCleanController()
     }

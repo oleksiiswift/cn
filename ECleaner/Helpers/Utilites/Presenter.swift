@@ -23,6 +23,11 @@ class UIPresenter {
 		completionHandler?(navigationController)
 	}
 	
+	public static func showWebController(of type: PresentedControllerType, web: WebLink) {
+
+		
+	}
+	
 	public static func closePresentedWindow() {
 		guard let _ = currentScene as? UIWindowScene else { return }
 		Utils.sceneDelegate.presentedWindow?.frame = .zero

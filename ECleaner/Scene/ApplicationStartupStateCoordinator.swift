@@ -7,6 +7,12 @@
 
 import Foundation
 
+enum PresentedType {
+	case push
+	case present
+	case window
+}
+
 protocol Coordinator {
 	
 	var navigationController: UINavigationController { get set }
@@ -135,5 +141,3 @@ class ApplicationCoordinator: Coordinator {
 		UIPresenter.closePresentedWindow()
 	}
 }
-
-

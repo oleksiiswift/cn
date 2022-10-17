@@ -301,11 +301,11 @@ extension SettingsViewController: SettingActionsDelegate {
 	}
 	
 	private func showPrivacyPolicyAction() {
-		debugPrint("showPrivacyPolicyAction")
+		coordinator?.showWebLink(of: .privacy, from: self, navigationController: self.navigationController, presentedtype: .push)
 	}
 	
 	private func showTermsOfUseAction() {
-		debugPrint("showTermsOfUseAction")
+		coordinator?.showWebLink(of: .terms, from: self, navigationController: self.navigationController, presentedtype: .push)
 	}
 }
 

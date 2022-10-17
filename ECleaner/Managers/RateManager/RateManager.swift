@@ -115,7 +115,7 @@ extension RateManager {
 	}
 	
 	@objc func shoulPromtForRequest() {
-		Utils.delay(90) {
+		Utils.delay(180) {
 			iRate.sharedInstance().promptForRating()
 		}
 	}

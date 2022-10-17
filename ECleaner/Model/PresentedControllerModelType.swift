@@ -13,6 +13,7 @@ enum PresentedControllerType {
 	case onboarding
 	case subscription
 	case settings
+	case web
 	
 	var storyboardName: String {
 		switch self {
@@ -24,6 +25,8 @@ enum PresentedControllerType {
 				return C.identifiers.storyboards.subscription
 			case .settings:
 				return C.identifiers.storyboards.settings
+			case .web:
+				return C.identifiers.storyboards.web
 		}
 	}
 	
@@ -37,6 +40,8 @@ enum PresentedControllerType {
 				return C.identifiers.viewControllers.subscription
 			case .settings:
 				return C.identifiers.viewControllers.settings
+			case .web:
+				return C.identifiers.viewControllers.web
 		}
 	}
 	
@@ -65,6 +70,10 @@ enum PresentedControllerType {
 				return viewController
 			case .settings:
 				let viewController = SettingsViewController.instantiate(type: type)
+				return viewController
+			case .web:
+				let viewController = WebViewController.instantiate(type: type)
+				viewController.coordinator = coordinator
 				return viewController
 		}
 	}
