@@ -12,8 +12,8 @@ typealias C = Constants
 class Constants {
 	
 	struct project {
-		static let appleID = ""
-		static let appID = "1640022123"
+		static let appleID = "id1549505180"
+		static let appID = "1549505180"
 		static let appStoreName = ""
 		static let storeSecretKey = "57832c2c61d74286a1f4e65063a5cdba"
 		static let appBundle = "com.cleaner.pro"
@@ -26,7 +26,7 @@ class Constants {
 	struct web {
 		static let policy = "https://www.axelium.org/privacy-policy"
 		static let terms = "https://www.axelium.org/terms-of-use"
-		static let shareApp = URL(string: "https://www.hackingwithswift.com/articles/175/advanced-coordinator-pattern-tutorial-ios")!
+		static let shareApp = URL(string: "https://apps.apple.com/us/app")!
 	}
 	
     struct gadAdvertisementKey {

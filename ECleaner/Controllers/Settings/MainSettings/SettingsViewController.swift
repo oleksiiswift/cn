@@ -8,6 +8,7 @@
 import UIKit
 import SwiftMessages
 import SwiftRater
+import LinkPresentation
 
 class SettingsViewController: UIViewController, Storyboarded {
 	
@@ -19,6 +20,10 @@ class SettingsViewController: UIViewController, Storyboarded {
 	
 	private var settingsViewModel: SettingsViewModel!
 	private var settingsDataSource: SettingsDataSource!
+	
+	private var applicationShareURL: URL {
+		return Constants.web.shareApp.appendingPathComponent(Constants.project.appleID)
+	}
 	
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -293,7 +298,7 @@ extension SettingsViewController: SettingActionsDelegate {
 	}
 	
 	private func showShareAppAction() {
-		debugPrint("showShareAppAction")
+		self.shareApplication()
 	}
 	
 	private func showRateUSAction() {
@@ -309,9 +314,32 @@ extension SettingsViewController: SettingActionsDelegate {
 	}
 }
 
-extension SettingsViewController {
+extension SettingsViewController: UIActivityItemSource {
 	
-	private func showWebView(with url: URL) {}
+	private func shareApplication() {
+		let activityViewController = UIActivityViewController(activityItems: [self], applicationActivities: nil)
+		self.present(activityViewController, animated: true)
+	}
+	
+	func activityViewControllerPlaceholderItem(_ activityViewController: UIActivityViewController) -> Any {
+		return Images.applicationIcoon!
+	}
+	
+	func activityViewController(_ activityViewController: UIActivityViewController, itemForActivityType activityType: UIActivity.ActivityType?) -> Any? {
+		
+		return self.applicationShareURL
+	}
+	
+	func activityViewControllerLinkMetadata(_ activityViewController: UIActivityViewController) -> LPLinkMetadata? {
+		let metadata = LPLinkMetadata()
+		
+		metadata.title = Localization.Settings.Title.share
+		metadata.originalURL = self.applicationShareURL
+		metadata.url = metadata.originalURL
+		metadata.imageProvider = NSItemProvider(object: Images.applicationIcoon!)
+		metadata.iconProvider =  NSItemProvider(object: Images.applicationIcoon!)
+		return metadata
+	}
 }
 
 
