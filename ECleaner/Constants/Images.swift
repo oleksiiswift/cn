@@ -11,6 +11,7 @@ typealias I = Images
 struct Images {
 
     static let blank = UIImage(named: "")
+	static let applicationIcoon = UIImage(named: "appShareIcon")
     
     struct mainStaticItems {
         static let clean = UIImage(named: "clean")!
