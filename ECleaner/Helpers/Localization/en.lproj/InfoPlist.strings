@@ -1,0 +1,11 @@
+/* 
+  InfoPlist.strings
+  ECleaner
+
+  Created by alexey sorochan on 19.10.2022.
+  
+*/
+
+"CFBundleDisplayName" = "Phone Cleaner";
+
+"CFBundleName" = "Phone Cleaner";

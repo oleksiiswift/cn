@@ -12,21 +12,22 @@ typealias C = Constants
 class Constants {
 	
 	struct project {
-		static let appleID = "id1549505180"
-		static let appID = "1549505180"
-		static let appStoreName = ""
-		static let storeSecretKey = "57832c2c61d74286a1f4e65063a5cdba"
-		static let appBundle = "com.cleaner.pro"
-		static let mail = ""
+		static let appleID = "id6443879376"
+		static let appID = "6443879376"
+		static let appStoreName = "Phone Cleaner"
+		static let storeSecretKey = "08bc4dbd91944988a99313dd1d96e81c"
+		static let appBundle = "clean.your.iphone"
+		static let mail = "support@magicuniverse.org"
 		static let telegram = ""
 		static let facebookURL = ""
 		static let facebookID = ""
 	}
 	
 	struct web {
-		static let policy = "https://www.axelium.org/privacy-policy"
-		static let terms = "https://www.axelium.org/terms-of-use"
+		static let policy = "https://magic-universe.webflow.io/privacy-policy"
+		static let terms = "https://magic-universe.webflow.io/terms-of-use"
 		static let shareApp = URL(string: "https://apps.apple.com/us/app")!
+		static let contact = "https://magic-universe.webflow.io/contact"
 	}
 	
     struct gadAdvertisementKey {

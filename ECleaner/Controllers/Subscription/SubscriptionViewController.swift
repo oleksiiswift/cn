@@ -72,6 +72,7 @@ class SubscriptionViewController: UIViewController, Storyboarded {
 		setupNavigation()
 		setupTitle()
 		setupPremiumFeautiresViewModel()
+		setupTermsPrivacyDescription()
 		setupTableView()
 		updateColors()
 		setupObserver()
@@ -85,11 +86,12 @@ class SubscriptionViewController: UIViewController, Storyboarded {
 	}
 	
 	@IBAction func didTapShowPrivacyActionButton(_ sender: Any) {
-		self.coordinator?.showWebLink(of: .privacy, from: self, navigationController: nil, presentedtype: .present)
+		self.didTapShowPolicy()
+
 	}
 	
 	@IBAction func didTapShowTermsActionButton(_ sender: Any) {
-		self.coordinator?.showWebLink(of: .terms, from: self, navigationController: nil, presentedtype: .present)
+		self.didTapShowTerms()
 	}
 }
 
@@ -225,6 +227,14 @@ extension SubscriptionViewController {
 	@objc func networkStatusDidChange() {
 		loadSubscriptionProducts()
 	}
+	
+	private func didTapShowTerms() {
+		self.coordinator?.showWebLink(of: .terms, from: self, navigationController: nil, presentedtype: .present)
+	}
+	
+	private func didTapShowPolicy() {
+		self.coordinator?.showWebLink(of: .privacy, from: self, navigationController: nil, presentedtype: .present)
+	}
 }
 
 extension SubscriptionViewController {
@@ -334,6 +344,59 @@ extension SubscriptionViewController {
 		self.tableView.dataSource = self.premiumFeaturesDataSource
 		self.tableView.delegate = self.premiumFeaturesDataSource
 	}
+	
+	private func setupTermsPrivacyDescription() {
+		
+		let mainDescriptionFont = FontManager.subscriptionFont(of: .helperText)
+		let linksDescriptionFont = FontManager.subscriptionFont(of: .helperTextBold)
+		
+		let mainDescriptionAttributtedStringFont = [NSAttributedString.Key.font: mainDescriptionFont]
+		let linksDescriptionAttributtedStringFont = [NSAttributedString.Key.font: linksDescriptionFont]
+		
+		let descriptionPrefixText = Localization.Main.Descriptions.shortDescriptionTermPolicyPrefix
+		let whiteSpace = Localization.whitespace
+		let and = Localization.and
+		let dot = Localization.dotWhiteSpace
+		
+		let termsOfUseText = Localization.Settings.Title.terms
+		let privacyPolicyText = Localization.Settings.Title.privacy
+		
+		let descriptionFullText = Localization.Main.Descriptions.shortDescriptionTermsPolicy
+		
+		
+		let description = NSMutableAttributedString(string: descriptionPrefixText + whiteSpace, attributes: mainDescriptionAttributtedStringFont)
+		let descriptionTermsOfUse = NSMutableAttributedString(string: termsOfUseText + whiteSpace, attributes: linksDescriptionAttributtedStringFont)
+		let helperAndString = NSMutableAttributedString(string: and + whiteSpace, attributes: mainDescriptionAttributtedStringFont)
+		let descriptionPolicy = NSMutableAttributedString(string: privacyPolicyText + whiteSpace, attributes: linksDescriptionAttributtedStringFont)
+		
+		let mainDescriptiionText = NSMutableAttributedString(string: dot + descriptionFullText , attributes: mainDescriptionAttributtedStringFont)
+		
+		description.append(descriptionTermsOfUse)
+		description.append(helperAndString)
+		description.append(descriptionPolicy)
+		description.append(mainDescriptiionText)
+		
+		termsTitleTextLabel.attributedText = description
+		
+		let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTapOnDescriptionLabel(_:)))
+		termsTitleTextLabel.isUserInteractionEnabled = true
+		termsTitleTextLabel.addGestureRecognizer(gestureRecognizer)
+	}
+	
+	@objc func handleTapOnDescriptionLabel(_ gestureRecognizer: UITapGestureRecognizer) {
+		
+		guard let descriiptionText = termsTitleTextLabel.attributedText?.string else { return }
+		
+		let terms = Localization.Settings.Title.terms
+		let policy = Localization.Settings.Title.privacy
+		
+		if let range = descriiptionText.range(of: terms), gestureRecognizer.didTapAttributedTextInLabel(label: termsTitleTextLabel, inRange: NSRange(range, in: descriiptionText)) {
+			self.didTapShowTerms()
+			
+		} else if let range = descriiptionText.range(of: policy), gestureRecognizer.didTapAttributedTextInLabel(label: termsTitleTextLabel, inRange: NSRange(range, in: descriiptionText)) {
+			self.didTapShowPolicy()
+		}
+	}
 }
 
 extension SubscriptionViewController: SubscriptionSegmentControllDelegate {
@@ -392,7 +455,7 @@ extension SubscriptionViewController: Themeble {
 			case .small:
 				termsTitleTextLabel.contentInsets = .init(top: 0, left: 5, bottom: 0, right: 5)
 			default:
-				termsTitleTextLabel.contentInsets = .init(top: -10, left: 5, bottom: 0, right: 5)
+				termsTitleTextLabel.contentInsets = .init(top: 0, left: 5, bottom: 0, right: 5)
 		}
 	}
 	
@@ -407,7 +470,6 @@ extension SubscriptionViewController: Themeble {
 		subscribeContainerView.buttonTintColor = theme.activeTitleTextColor
 		subscribeContainerView.updateColorsSettings()
 		termsTitleTextLabel.textColor = theme.featureTitleTextColor
-		termsTitleTextLabel.font = FontManager.subscriptionFont(of: .helperText)
 		
 		termsOfUseButton.setTitleColor(theme.subTitleTextColor, for: .normal)
 		policyButton.setTitleColor(theme.subTitleTextColor, for: .normal)

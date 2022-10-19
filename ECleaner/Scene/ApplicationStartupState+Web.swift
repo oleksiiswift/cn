@@ -10,6 +10,7 @@ import Foundation
 enum WebLink {
 	case privacy
 	case terms
+	case contact
 	
 	var url: URL {
 		switch self {
@@ -17,6 +18,8 @@ enum WebLink {
 				return URL(string: Constants.web.policy)!
 			case .terms:
 				return URL(string: Constants.web.terms)!
+			case .contact:
+				return URL(string: Constants.web.contact)!
 		}
 	}
 	
@@ -26,6 +29,8 @@ enum WebLink {
 				return Localization.Settings.Title.privacy
 			case .terms:
 				return Localization.Settings.Title.terms
+			case .contact:
+				return Localization.Settings.Title.support
 		}
 	}
 }

@@ -224,6 +224,8 @@
 		976D8E4128046E9B005004F4 /* VideoCompressionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976D8E4028046E9B005004F4 /* VideoCompressionManager.swift */; };
 		976D8E4328046EDF005004F4 /* VideoCompressionErrorHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976D8E4228046EDF005004F4 /* VideoCompressionErrorHandler.swift */; };
 		976D8E45280497CC005004F4 /* AVFileType+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976D8E44280497CC005004F4 /* AVFileType+Extension.swift */; };
+		976E9155290080E20081EF5E /* UITapGestureRecognizer+AttributedString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976E9154290080E20081EF5E /* UITapGestureRecognizer+AttributedString.swift */; };
+		976E9167290092B20081EF5E /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 976E9169290092B20081EF5E /* InfoPlist.strings */; };
 		97708662276A283A003D0416 /* CommonOperationSearchType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97708661276A283A003D0416 /* CommonOperationSearchType.swift */; };
 		9770C805274D183F0046EF84 /* ErrorHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9770C804274D183F0046EF84 /* ErrorHandler.swift */; };
 		9770C808274D34A90046EF84 /* FileFormats.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9770C807274D34A90046EF84 /* FileFormats.swift */; };
@@ -549,7 +551,6 @@
 		04E0946F267A06B500A69956 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		04E09471267A06B500A69956 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		04E09478267A06B900A69956 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		04E0947D267A06B900A69956 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		04E5836E267A47FB00EDC3A3 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		04E58370267A4A0A00EDC3A3 /* UIDevice+Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIDevice+Model.swift"; sourceTree = "<group>"; };
 		04E58372267A4A2000EDC3A3 /* UIDevice+Enviroment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIDevice+Enviroment.swift"; sourceTree = "<group>"; };
@@ -703,6 +704,9 @@
 		976D8E4028046E9B005004F4 /* VideoCompressionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoCompressionManager.swift; sourceTree = "<group>"; };
 		976D8E4228046EDF005004F4 /* VideoCompressionErrorHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoCompressionErrorHandler.swift; sourceTree = "<group>"; };
 		976D8E44280497CC005004F4 /* AVFileType+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AVFileType+Extension.swift"; sourceTree = "<group>"; };
+		976E9154290080E20081EF5E /* UITapGestureRecognizer+AttributedString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITapGestureRecognizer+AttributedString.swift"; sourceTree = "<group>"; };
+		976E91632900912B0081EF5E /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		976E9168290092B20081EF5E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		97708661276A283A003D0416 /* CommonOperationSearchType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonOperationSearchType.swift; sourceTree = "<group>"; };
 		9770C804274D183F0046EF84 /* ErrorHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorHandler.swift; sourceTree = "<group>"; };
 		9770C807274D34A90046EF84 /* FileFormats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileFormats.swift; sourceTree = "<group>"; };
@@ -1310,7 +1314,7 @@
 				04E58361267A3ED000EDC3A3 /* Protocols */,
 				04E58367267A3F8F00EDC3A3 /* Assets */,
 				9701D27527BE56DA0078E39F /* ECleaner-Bridging-Header.h */,
-				04E0947D267A06B900A69956 /* Info.plist */,
+				976E91632900912B0081EF5E /* Info.plist */,
 				9781313B28192E93001478D3 /* TempFolder */,
 			);
 			path = ECleaner;
@@ -1371,6 +1375,7 @@
 				972C80692871FA9F00691271 /* CGPoint */,
 				977B7F00289AC5D300735433 /* CLLocationCoordinate2D */,
 				97CF82D928A0F0CD00F01744 /* OperationQueue */,
+				976E9156290080EB0081EF5E /* UITapGestureRecognizer */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -2113,6 +2118,14 @@
 			path = AVFileType;
 			sourceTree = "<group>";
 		};
+		976E9156290080EB0081EF5E /* UITapGestureRecognizer */ = {
+			isa = PBXGroup;
+			children = (
+				976E9154290080E20081EF5E /* UITapGestureRecognizer+AttributedString.swift */,
+			);
+			path = UITapGestureRecognizer;
+			sourceTree = "<group>";
+		};
 		9770C806274D18420046EF84 /* ErrorHandler */ = {
 			isa = PBXGroup;
 			children = (
@@ -2274,6 +2287,7 @@
 				979732852846207700034E49 /* LocalizationService.swift */,
 				97973287284627FB00034E49 /* LocalizationTypeStrings.swift */,
 				9763F4902847F506004122A9 /* Localizable */,
+				976E9169290092B20081EF5E /* InfoPlist.strings */,
 			);
 			path = Localization;
 			sourceTree = "<group>";
@@ -3120,6 +3134,7 @@
 				044282022693034600B6B47C /* DropDownMenuTableViewCell.xib in Resources */,
 				97DC39AC273BE9D300D487BE /* GroupedContactsHeaderView.xib in Resources */,
 				04649B32268C507F00336FE4 /* GroupedAssetsReusableHeaderView.xib in Resources */,
+				976E9167290092B20081EF5E /* InfoPlist.strings in Resources */,
 				979A0F2F2879954C00ACC724 /* FeaturesSubscriptionTableViewCell.xib in Resources */,
 				97420C07283EC7A500B0E134 /* PermissionContinueTableViewCell.xib in Resources */,
 				9797C2B0285CF4F4008457A5 /* Localizable.strings in Resources */,
@@ -3301,6 +3316,7 @@
 				9770C808274D34A90046EF84 /* FileFormats.swift in Sources */,
 				972C806B28733A8400691271 /* ProductStoreDesriptionModel.swift in Sources */,
 				97AC5DBD276790C700C20F73 /* UserDefaults+Date.swift in Sources */,
+				976E9155290080E20081EF5E /* UITapGestureRecognizer+AttributedString.swift in Sources */,
 				044A6FB9270F1B1000CF0D17 /* CircleProgressBar.swift in Sources */,
 				979732862846207700034E49 /* LocalizationService.swift in Sources */,
 				972C80682871FA9100691271 /* CGPoint+Coordinate.swift in Sources */,
@@ -3553,6 +3569,14 @@
 			name = Localizable.stringsdict;
 			sourceTree = "<group>";
 		};
+		976E9169290092B20081EF5E /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				976E9168290092B20081EF5E /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
@@ -3684,15 +3708,16 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = H7AS53LS8J;
+				DEVELOPMENT_TEAM = NX38J46Q53;
 				INFOPLIST_FILE = ECleaner/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Phone Cleaner";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 0.01;
-				PRODUCT_BUNDLE_IDENTIFIER = com.cleaner.pro;
+				PRODUCT_BUNDLE_IDENTIFIER = clean.your.iphone;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -3712,15 +3737,16 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = H7AS53LS8J;
+				DEVELOPMENT_TEAM = NX38J46Q53;
 				INFOPLIST_FILE = ECleaner/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Phone Cleaner";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 0.01;
-				PRODUCT_BUNDLE_IDENTIFIER = com.cleaner.pro;
+				PRODUCT_BUNDLE_IDENTIFIER = clean.your.iphone;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;

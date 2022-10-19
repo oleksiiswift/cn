@@ -13,7 +13,9 @@ struct Localization {
 	static var empty = ""
 	static var dash = "-"
 	static var whitespace = " "
+	static var dotWhiteSpace = ". "
 	static var none = "none"
+	static var and = "and"
 	static var replacingString = "%@"
 	
 	struct Service {
@@ -196,6 +198,7 @@ struct Localization {
 			static let telegram = "Telegram".localized()
 			static let email = "Email".localized()
 			static let largeDescription = "Set a threshold value to identify large videos.".localized()
+			static let bugReporting = "Report about a bug!".localized()
 		}
 	}
 	
@@ -314,6 +317,9 @@ struct Localization {
 			static let shortAudioDescriptionMedium = "medium quality".localized()
 			static let shortAudioDescriptionMid = "mid-range quality".localized()
 			static let shortAudioDescriptionLow = "low-quality".localized()
+			
+			static let shortDescriptionTermPolicyPrefix = "By activating a subscription, you agree to".localized()
+			static let shortDescriptionTermsPolicy = "The premium subscription payment for %@ will be deducted from your account at the time of purchase. Your subscription will automatically renew weekly, monthly, or annually. Your subscription fee will be deducted from your account 24 hours before the end of the current period. You can disable your subscription renewal in your account settings on your device. By clicking \"Activate Subscription\", you acknowledge that you have read the Terms of Use and Privacy Policy and agree to abide by their terms.".localized().replacingOccurrences(of: Localization.replacingString, with: Service.appName)
 		}
 		
 		struct ProcessingState {

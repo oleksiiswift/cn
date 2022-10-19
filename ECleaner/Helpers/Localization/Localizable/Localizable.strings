@@ -144,6 +144,7 @@
 "Facebook" = "Facebook";
 "Telegram" = "Telegram";
 "Email" = "Email";
+"Report about a bug!" = "Report about a bug!";
 "Set a threshold value to identify large videos." = "Set a threshold value to identify large videos.";
 "latitude" = "latitude";
 "longitude" = "longitude";
@@ -248,6 +249,9 @@
 "medium quality" = "medium quality";
 "mid-range quality" = "mid-range quality";
 "low-quality" = "low-quality";
+"By activating a subscription, you agree to" = "By activating a subscription, you agree to";
+"The premium subscription payment for %@ will be deducted from your account at the time of purchase. Your subscription will automatically renew weekly, monthly, or annually. Your subscription fee will be deducted from your account 24 hours before the end of the current period. You can disable your subscription renewal in your account settings on your device. By clicking \"Activate Subscription\", you acknowledge that you have read the Terms of Use and Privacy Policy and agree to abide by their terms." = "The premium subscription payment for %@ will be deducted from your account at the time of purchase. Your subscription will automatically renew weekly, monthly, or annually. Your subscription fee will be deducted from your account 24 hours before the end of the current period. You can disable your subscription renewal in your account settings on your device. By clicking \"Activate Subscription\", you acknowledge that you have read the Terms of Use and Privacy Policy and agree to abide by their terms.";
+
 	// MARK: ProcessingState
 "Prepare for scanning" = "Prepare for scanning";
 "Analyzing, please wait" = "Analyzing, please wait";

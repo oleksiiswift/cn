@@ -63,7 +63,7 @@ class SubscriptionManager: NSObject {
 		}
 	}
 	
-	private var currentSubscription: Subscriptions? {
+	public var currentSubscription: Subscriptions? {
 		get {
 			let subscriptionID = U.userDefaults.string(forKey: C.key.subscription.subscriptionID)
 			if let subcription = Subscriptions.allCases.first(where: {$0.rawValue == subscriptionID}) {

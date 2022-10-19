@@ -176,6 +176,8 @@ class FontManager {
 				return SubscriptionFontSize.title
 			case .helperText:
 				return SubscriptionFontSize.helperText
+			case .helperTextBold:
+				return SubscriptionFontSize.helperTextBold
 			case .links:
 				return SubscriptionFontSize.links
 			case .buttonTitle:

@@ -9,6 +9,7 @@ import UIKit
 import SwiftMessages
 import SwiftRater
 import LinkPresentation
+import MessageUI
 
 class SettingsViewController: UIViewController, Storyboarded {
 	
@@ -294,7 +295,7 @@ extension SettingsViewController: SettingActionsDelegate {
 	}
 	
 	private func showSupportAction() {
-		debugPrint("showSupportAction")
+		coordinator?.showWebLink(of: .contact, from: self, navigationController: self.navigationController, presentedtype: .push)
 	}
 	
 	private func showShareAppAction() {
@@ -342,5 +343,44 @@ extension SettingsViewController: UIActivityItemSource {
 	}
 }
 
-
+extension SettingsViewController: MFMailComposeViewControllerDelegate {
+	
+	private func showEmailSupportController() {
+		
+		let mailController = MFMailComposeViewController()
+		mailController.setToRecipients([Constants.project.mail])
+		mailController.setSubject(Localization.Settings.Subtitle.bugReporting)
+		
+		let appVersion = U.mainBundle.infoDictionary?["CFBundleShortVersionString"] as? String ?? "6.6.6"
+		let deviceInfo = UIDevice.modelName
+		let systemVersion = Utils.device.systemName + " " + Utils.device.systemVersion
+		
+		var currenSubscription: String {
+			switch subscriptionManager.currentSubscription {
+				case .month:
+					return "Monthly"
+				case .year:
+					return "Year"
+				case .week:
+					return "Weekly"
+				case .lifeTime:
+					return "Lifetime"
+				default:
+					return "Free"
+			}
+		}
+		
+		let messageBody = "<br/><br/><br/><br/><br/><p>---<br/>Please, don't remove following technical info: <br/> Application version - \(appVersion) <br/> Device information - \(deviceInfo) <br/>\(systemVersion)<br/><br/>current subscriptiion plan: \(currenSubscription) <br/><p/>"
+		
+		mailController.setMessageBody(messageBody, isHTML: true)
+		mailController.mailComposeDelegate = self
+		
+		let topController = getTheMostTopController()
+		topController?.present(mailController, animated: true)
+	}
+	
+	func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+	  controller.dismiss(animated: true)
+	}
+}
 

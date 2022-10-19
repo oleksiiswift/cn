@@ -12,6 +12,7 @@ enum SubscriptionFontType {
 	case premiumFeature
 	case title
 	case helperText
+	case helperTextBold
 	case links
 	case buttonTitle
 	case buttonPrice
@@ -89,6 +90,10 @@ extension FontManager {
 		
 		static var helperText: UIFont {
 			return .systemFont(ofSize: 12, weight: .regular)
+		}
+		
+		static var helperTextBold: UIFont {
+			return .systemFont(ofSize: 12, weight: .bold)
 		}
 		
 		static var links: UIFont {
