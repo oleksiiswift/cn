@@ -84,7 +84,7 @@ extension AdvertisementViewController: SubscriptionObserver {
 		let size = GADAdSizeFullWidthPortraitWithHeight(50)
 		var advertisementBannerView: GADBannerView!
 		advertisementBannerView = GADBannerView(adSize: size)
-		advertisementBannerView.adUnitID = Advertisement.manager.getUnitID(for: .testing)
+		advertisementBannerView.adUnitID = Advertisement.manager.getUnitID(for: .production)
 		advertisementBannerView.tag = Advertisement.manager.advertimentBannerTag
 		advertisementBannerView.delegate = self
 		advertisementBannerView.rootViewController = self
