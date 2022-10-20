@@ -22,7 +22,7 @@ extension FontManager {
 					return .systemFont(ofSize: 14, weight: .bold).monospacedDigitFont
 				case .medium, .plus, .large:
 					return .systemFont(ofSize: 16, weight: .bold).monospacedDigitFont
-				case .modern, .max, .madMax:
+				case .modern, .pro, .max, .madMax, .proMax:
 					return .systemFont(ofSize: 18, weight: .bold).monospacedDigitFont
 			}
 		}
@@ -33,7 +33,7 @@ extension FontManager {
 					return .systemFont(ofSize: 12, weight: .medium).monospacedDigitFont
 				case .medium, .plus, .large:
 					return .systemFont(ofSize: 13, weight: .medium).monospacedDigitFont
-				case .modern, .max, .madMax:
+				case .modern, .pro, .max, .madMax, .proMax:
 					return .systemFont(ofSize: 14, weight: .medium).monospacedDigitFont
 			}
 		}

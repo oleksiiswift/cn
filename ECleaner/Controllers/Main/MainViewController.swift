@@ -530,15 +530,16 @@ extension MainViewController: SubscriptionObserver {
 	}
 	
 	@objc func advertisementDidChange() {
-		
-		UIView.animate(withDuration: 0.5) {
-			self.circleTotalSpaceView.isHidden = true
+		DispatchQueue.main.async {
 			UIView.animate(withDuration: 0.5) {
-				self.setupProgressAndCollectionSize()
-				self.setupCircleProgressView()
-			} completion: { _ in
+				self.circleTotalSpaceView.isHidden = true
 				UIView.animate(withDuration: 0.5) {
-					self.circleTotalSpaceView.isHidden = false
+					self.setupProgressAndCollectionSize()
+					self.setupCircleProgressView()
+				} completion: { _ in
+					UIView.animate(withDuration: 0.5) {
+						self.circleTotalSpaceView.isHidden = false
+					}
 				}
 			}
 		}
@@ -624,12 +625,14 @@ extension MainViewController: UpdateColorsDelegate {
     
 	private func setupProgressAndCollectionSize() {
 
+		circleTotalSpaceView.percentLabel.adjustsFontSizeToFitWidth = true
+		
 		switch Screen.size {
 			case .small:
 				
 				switch Advertisement.manager.advertisementBannerStatus {
 					case .active:
-						circleTotalSpaceView.percentLabel.font = .systemFont(ofSize: 30, weight: .black)
+						circleTotalSpaceView.percentLabel.font = .systemFont(ofSize: 28, weight: .black)
 						circleTotalSpaceView.titleLabel.font = .systemFont(ofSize: 8, weight: .bold)
 						circleTotalSpaceView.lineWidth = 28
 						
@@ -639,7 +642,7 @@ extension MainViewController: UpdateColorsDelegate {
 						bottomButtonHeightConstraint.constant = 70
 						baseCarouselLayout.itemSize = CGSize(width: 160, height: 180)
 					case .hiden:
-						circleTotalSpaceView.percentLabel.font = .systemFont(ofSize: 30, weight: .black)
+						circleTotalSpaceView.percentLabel.font = .systemFont(ofSize: 28, weight: .black)
 						circleTotalSpaceView.titleLabel.font = .systemFont(ofSize: 8, weight: .bold)
 						circleTotalSpaceView.lineWidth = 32
 						circleProgressTopConstraint.constant = -10
@@ -656,7 +659,7 @@ extension MainViewController: UpdateColorsDelegate {
 				
 				switch Advertisement.manager.advertisementBannerStatus {
 					case .active:
-						circleTotalSpaceView.percentLabel.font = .systemFont(ofSize: 40, weight: .black)
+						circleTotalSpaceView.percentLabel.font = .systemFont(ofSize: 38, weight: .black)
 						circleTotalSpaceView.titleLabel.font = .systemFont(ofSize: 11, weight: .bold)
 						circleTotalSpaceView.lineWidth = 34
 						circleProgressTopConstraint.constant = -10
@@ -665,7 +668,7 @@ extension MainViewController: UpdateColorsDelegate {
 						bottomButtonHeightConstraint.constant = 75
 						baseCarouselLayout.itemSize = CGSize(width: 190, height: 230)
 					case .hiden:
-						circleTotalSpaceView.percentLabel.font = .systemFont(ofSize: 44, weight: .black)
+						circleTotalSpaceView.percentLabel.font = .systemFont(ofSize: 42, weight: .black)
 						circleTotalSpaceView.titleLabel.font = .systemFont(ofSize: 11, weight: .bold)
 						circleTotalSpaceView.lineWidth = 36
 						circleProgressTopConstraint.constant = -5
@@ -682,7 +685,7 @@ extension MainViewController: UpdateColorsDelegate {
 				
 				switch Advertisement.manager.advertisementBannerStatus {
 					case .active:
-						circleTotalSpaceView.percentLabel.font = .systemFont(ofSize: 44, weight: .black)
+						circleTotalSpaceView.percentLabel.font = .systemFont(ofSize: 42, weight: .black)
 						circleTotalSpaceView.titleLabel.font = .systemFont(ofSize: 11, weight: .bold)
 						circleTotalSpaceView.lineWidth = 36
 						circleProgressBottomConstraint.constant = 20
@@ -690,7 +693,7 @@ extension MainViewController: UpdateColorsDelegate {
 						bottomButtonHeightConstraint.constant = 80
 						baseCarouselLayout.itemSize = CGSize(width: 200, height: 240)
 					case .hiden:
-						circleTotalSpaceView.percentLabel.font = .systemFont(ofSize: 46, weight: .black)
+						circleTotalSpaceView.percentLabel.font = .systemFont(ofSize: 44, weight: .black)
 						circleTotalSpaceView.titleLabel.font = .systemFont(ofSize: 12, weight: .bold)
 						circleTotalSpaceView.lineWidth = 40
 						circleProgressBottomConstraint.constant = 35
@@ -706,7 +709,7 @@ extension MainViewController: UpdateColorsDelegate {
 				
 				switch Advertisement.manager.advertisementBannerStatus {
 					case .active:
-						circleTotalSpaceView.percentLabel.font = .systemFont(ofSize: 46, weight: .black)
+						circleTotalSpaceView.percentLabel.font = .systemFont(ofSize: 44, weight: .black)
 						circleTotalSpaceView.titleLabel.font = .systemFont(ofSize: 12, weight: .bold)
 						circleTotalSpaceView.lineWidth = 38
 						circleProgressTopConstraint.constant = -10
@@ -715,7 +718,7 @@ extension MainViewController: UpdateColorsDelegate {
 						bottomButtonHeightConstraint.constant = 80
 						baseCarouselLayout.itemSize = CGSize(width: 200, height: 250)
 					case .hiden:
-						circleTotalSpaceView.percentLabel.font = .systemFont(ofSize: 46, weight: .black)
+						circleTotalSpaceView.percentLabel.font = .systemFont(ofSize: 44, weight: .black)
 						circleTotalSpaceView.titleLabel.font = .systemFont(ofSize: 13, weight: .bold)
 						circleTotalSpaceView.lineWidth = 40
 						circleProgressBottomConstraint.constant = 40
@@ -728,7 +731,7 @@ extension MainViewController: UpdateColorsDelegate {
 				baseCarouselLayout.focusedSpacing = -35
 			case .modern:
 				
-				circleTotalSpaceView.percentLabel.font = .systemFont(ofSize: 48, weight: .black)
+				circleTotalSpaceView.percentLabel.font = .systemFont(ofSize: 46, weight: .black)
 				circleTotalSpaceView.titleLabel.font = .systemFont(ofSize: 13, weight: .bold)
 				
 				switch Advertisement.manager.advertisementBannerStatus {
@@ -748,9 +751,33 @@ extension MainViewController: UpdateColorsDelegate {
 				circleTotalSpaceView.percentTitleLabelSpaceOffset = 16
 				baseCarouselLayout.spacing = -35
 				baseCarouselLayout.focusedSpacing = -35
+				
+			case .pro:
+				
+				circleTotalSpaceView.percentLabel.font = .systemFont(ofSize: 46, weight: .black)
+				circleTotalSpaceView.titleLabel.font = .systemFont(ofSize: 13, weight: .bold)
+				
+				switch Advertisement.manager.advertisementBannerStatus {
+					case .active:
+						circleTotalSpaceView.lineWidth = 40
+						circleProgressTopConstraint.constant = -10
+						circleProgressBottomConstraint.constant = 30
+						collectionViewHeightConstraint.constant = 270
+						bottomButtonHeightConstraint.constant = 80
+					case .hiden:
+						circleTotalSpaceView.lineWidth = 44
+						circleProgressBottomConstraint.constant = 50
+						collectionViewHeightConstraint.constant = 280
+						bottomButtonHeightConstraint.constant = 110
+				}
+				baseCarouselLayout.itemSize = CGSize(width: 200, height: 270)
+				circleTotalSpaceView.percentTitleLabelSpaceOffset = 16
+				baseCarouselLayout.spacing = -35
+				baseCarouselLayout.focusedSpacing = -35
+				
 			case .max:
 				
-				circleTotalSpaceView.percentLabel.font = .systemFont(ofSize: 50, weight: .black)
+				circleTotalSpaceView.percentLabel.font = .systemFont(ofSize: 48, weight: .black)
 				circleTotalSpaceView.titleLabel.font = .systemFont(ofSize: 14, weight: .bold)
 				
 				switch Advertisement.manager.advertisementBannerStatus {
@@ -772,7 +799,27 @@ extension MainViewController: UpdateColorsDelegate {
 			case .madMax:
 				
 				circleTotalSpaceView.lineWidth = 50
-				circleTotalSpaceView.percentLabel.font = .systemFont(ofSize: 50, weight: .black)
+				circleTotalSpaceView.percentLabel.font = .systemFont(ofSize: 48, weight: .black)
+				circleTotalSpaceView.titleLabel.font = .systemFont(ofSize: 14, weight: .bold)
+				
+				switch Advertisement.manager.advertisementBannerStatus {
+					case .active:
+						circleProgressBottomConstraint.constant = 40
+						collectionViewHeightConstraint.constant = 280
+						bottomButtonHeightConstraint.constant = 90
+					case .hiden:
+						circleProgressBottomConstraint.constant = 80
+						collectionViewHeightConstraint.constant = 300
+						bottomButtonHeightConstraint.constant = 120
+				}
+				circleTotalSpaceView.percentTitleLabelSpaceOffset = 20
+				baseCarouselLayout.itemSize = CGSize(width: 210, height: 280)
+				baseCarouselLayout.spacing = -30
+				baseCarouselLayout.focusedSpacing = -30
+			case .proMax:
+				
+				circleTotalSpaceView.lineWidth = 50
+				circleTotalSpaceView.percentLabel.font = .systemFont(ofSize: 48, weight: .black)
 				circleTotalSpaceView.titleLabel.font = .systemFont(ofSize: 14, weight: .bold)
 				
 				switch Advertisement.manager.advertisementBannerStatus {
@@ -793,14 +840,14 @@ extension MainViewController: UpdateColorsDelegate {
 	}
     
 		/// `base progress settings`
-    private func setupCircleProgressView() {
-        
-        let calculatePercentage: Double = Double(Device.usedDiskSpaceInBytes) / Double(Device.totalDiskSpaceInBytes)
+	private func setupCircleProgressView() {
+		
+		let calculatePercentage: Double = Double(Device.usedDiskSpaceInBytes) / Double(Device.totalDiskSpaceInBytes)
 		circleTotalSpaceView.setProgress(progress: CGFloat(calculatePercentage), animated: true)
-        circleTotalSpaceView.progressShapeColor = theme.tintColor
-        circleTotalSpaceView.backgroundShapeColor = theme.topShadowColor.withAlphaComponent(0.2)
-        circleTotalSpaceView.titleColor = theme.subTitleTextColor
-        circleTotalSpaceView.percentColor = theme.titleTextColor
+		circleTotalSpaceView.progressShapeColor = theme.tintColor
+		circleTotalSpaceView.backgroundShapeColor = theme.topShadowColor.withAlphaComponent(0.2)
+		circleTotalSpaceView.titleColor = theme.subTitleTextColor
+		circleTotalSpaceView.percentColor = theme.titleTextColor
 		
 		circleTotalSpaceView.titleLabelTextAligement = Screen.size == .medium || Screen.size == .small ? .center : .right
 		circleTotalSpaceView.orientation = .bottom
@@ -815,12 +862,13 @@ extension MainViewController: UpdateColorsDelegate {
 		let endPoint = CGPoint(x: 0.5, y: 1.0)
 		circleTotalSpaceView.gradientSetup(startPoint: startPoint, endPoint: endPoint, gradientType: .conic)
 		
-        circleTotalSpaceView.clockwise = true
+		circleTotalSpaceView.clockwise = true
 		circleTotalSpaceView.startColor = theme.circleProgresStartingGradient
 		circleTotalSpaceView.endColor = theme.circleProgresEndingGradient
 		circleTotalSpaceView.title = "\(Device.usedDiskSpaceInGB) \n \(Localization.Main.Subtitles.of) \(Device.totalDiskSpaceInGB)"
-        circleTotalSpaceView.percentLabelFormat = "%.f%%"
-    }
+		circleTotalSpaceView.percentLabelFormat = "%.f%%"
+		
+	}
 }
 
 extension MainViewController {

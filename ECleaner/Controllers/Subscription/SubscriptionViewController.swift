@@ -343,6 +343,7 @@ extension SubscriptionViewController {
 		self.premiumFeaturesDataSource = PremiumFeutureDataSource(premiumFeaturesViewModel: self.premiumFeaturesViewModel)
 		self.tableView.dataSource = self.premiumFeaturesDataSource
 		self.tableView.delegate = self.premiumFeaturesDataSource
+		self.tableView.isScrollEnabled = false
 	}
 	
 	private func setupTermsPrivacyDescription() {
@@ -524,6 +525,12 @@ extension SubscriptionViewController {
 				
 				backgroundImageViewTopConstraint.constant = -190
 				backgroundImageViewLeadingConstraint.constant = -90
+			case .pro:
+				dimmerVewHeightConstraint.constant = 145
+				
+				backgroundImageViewTopConstraint.constant = -193
+				backgroundImageViewLeadingConstraint.constant = -95
+				
 			case .max:
 				dimmerVewHeightConstraint.constant = 153
 				
@@ -535,6 +542,11 @@ extension SubscriptionViewController {
 				
 				backgroundImageViewTopConstraint.constant = -200
 				backgroundImageViewLeadingConstraint.constant = -100
+			case .proMax:
+				dimmerVewHeightConstraint.constant = 160
+				
+				backgroundImageViewTopConstraint.constant = -210
+				backgroundImageViewLeadingConstraint.constant = -110
 		}
 	}
 }

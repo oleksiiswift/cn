@@ -24,7 +24,7 @@ class PreviewAVController: AVPlayerViewController {
 					let screenRect = CGRect(x: 0, y: 0, width: U.screenWidth, height: U.screenHeight - 250)
 					let preViewSize = AVMakeRect(aspectRatio: originSize, insideRect: screenRect).size
 					preferredContentSize = preViewSize
-				case .modern, .max, .madMax:
+				case .modern, .pro, .max, .madMax, .proMax:
 					preferredContentSize = CGSize(width: asset.pixelWidth, height: asset.pixelHeight)
 			}
 		} else {

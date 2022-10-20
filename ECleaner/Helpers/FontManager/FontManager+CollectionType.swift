@@ -23,7 +23,7 @@ extension FontManager {
 					return .systemFont(ofSize: 10, weight: .bold)
 				case .medium, .plus, .large:
 					return .systemFont(ofSize: 12, weight: .bold)
-				case .modern, .max, .madMax:
+				case .modern, .pro, .max, .madMax, .proMax:
 					return .systemFont(ofSize: 14, weight: .bold)
 			}
 		}

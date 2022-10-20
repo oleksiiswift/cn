@@ -30,9 +30,13 @@ extension FontManager {
 					return .systemFont(ofSize: 13, weight: .bold)
 				case .modern:
 					return .systemFont(ofSize: 14, weight: .bold)
+				case .pro:
+					return .systemFont(ofSize: 14, weight: .bold)
 				case .max:
 					return .systemFont(ofSize: 15, weight: .bold)
 				case .madMax:
+					return .systemFont(ofSize: 15, weight: .bold)
+				case .proMax:
 					return .systemFont(ofSize: 15, weight: .bold)
 			}
 		}
@@ -49,10 +53,14 @@ extension FontManager {
 					return .systemFont(ofSize: 15, weight: .bold)
 				case .modern:
 					return .systemFont(ofSize: 16, weight: .bold)
+				case .pro:
+					return .systemFont(ofSize: 16, weight: .bold)
 				case .max:
 					return .systemFont(ofSize: 17, weight: .bold)
 				case .madMax:
 					return .systemFont(ofSize: 18, weight: .bold)
+				case .proMax:
+					return .systemFont(ofSize: 19, weight: .bold)
 			}
 		}
 		
@@ -68,9 +76,13 @@ extension FontManager {
 					return .systemFont(ofSize: 14, weight: .medium)
 				case .modern:
 					return .systemFont(ofSize: 14, weight: .medium)
+				case .pro:
+					return .systemFont(ofSize: 14, weight: .medium)
 				case .max:
 					return .systemFont(ofSize: 14, weight: .medium)
 				case .madMax:
+					return .systemFont(ofSize: 15, weight: .medium)
+				case .proMax:
 					return .systemFont(ofSize: 15, weight: .medium)
 			}
 		}
@@ -83,7 +95,7 @@ extension FontManager {
 					return .systemFont(ofSize: 14, weight: .bold)
 				case .plus:
 					return .systemFont(ofSize: 15, weight: .bold)
-				case .large, .modern, .max, .madMax:
+				case .large, .modern, .pro, .max, .madMax, .proMax:
 					return .systemFont(ofSize: 16, weight: .bold)
 			}
 		}

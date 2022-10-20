@@ -73,8 +73,21 @@ class LifeTimeSubscriptionViewController: UIViewController {
 		super.viewDidLayoutSubviews()
 		
 		mainContainerView.cornerSelectRadiusView(corners: [.topLeft, .topRight], radius: 20)
-		actionButtonContainerViewWidthConstraint.constant = U.screenWidth - 80
-		lostConnectionViewWidthConstraint.constant = U.screenWidth - 80
+		
+		var buttonWidth: CGFloat {
+			switch Screen.size {
+				case .proMax:
+					return Utils.screenWidth - 100
+				default:
+					return Utils.screenWidth - 80
+			}
+		}
+		
+		actionButtonContainerViewWidthConstraint.constant = buttonWidth
+		lostConnectionViewWidthConstraint.constant = buttonWidth
+		
+		actionButtonContainerView.layoutIfNeeded()
+		actionButtonContainerStackView.layoutIfNeeded()
 	}
 	
 	@IBAction func didTapPurchaseLifeTimeActionButton(_ sender: Any) {
@@ -172,7 +185,17 @@ extension LifeTimeSubscriptionViewController {
 						Utils.UI {
 							if let model = model {
 								self.handledContainer(for: .didLoad)
-								self.subscribeTitleTextLabel.text = model.productName
+								
+								var name: String {
+									if model.productName.isEmpty {
+										return "Life Time"
+									} else {
+										return model.productName
+									}
+								}
+								
+								self.subscribeTitleTextLabel.text =  name
+								
 								self.subscribePriceTextLabel.text = model.productPrice
 							} else {
 								self.handledContainer(for: .empty)
@@ -397,8 +420,11 @@ extension LifeTimeSubscriptionViewController: Themeble {
 		topShevronView.backgroundColor = theme.subTitleTextColor
 		titleTextLabel.textColor = theme.titleTextColor
 		
+//		actionButtonContainerView.layoutIfNeeded()
+//
 		let colors = theme.onboardingButtonColors.compactMap({$0.cgColor})
 		actionButtonContainerView.layerGradient(startPoint: .topLeft, endPoint: .bottomRight, colors: colors, type: .axial)
+	
 		
 		self.bottomContainerView.insertSubview(buttonShadow, at: 0)
 		buttonShadow.translatesAutoresizingMaskIntoConstraints = false

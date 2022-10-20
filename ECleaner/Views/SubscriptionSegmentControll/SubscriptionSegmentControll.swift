@@ -32,7 +32,15 @@ class SubscriptionSegmentControll: UIView {
 	public private(set) var selectedIndex: Int = 0
 	
 	public var subscriptions: [ProductStoreDesriptionModel]!
-	public var segmentControlType: SubscriptionSegmentType = .masked
+	public var segmentControlType: SubscriptionSegmentType {
+		switch Screen.size {
+			case .small:
+				return .bordered
+			default:
+				return .masked
+		}
+	}
+
 	public var performWithAnimation: Bool = false
 
 	private var stackView = UIStackView()

@@ -137,15 +137,20 @@ extension AdvertisementViewController {
 		self.advertisementHightConstraint.constant = advertisemntContaineHeight
 		
 		if status == .hiden {
-			if let view = self.advertisementView.viewWithTag(Advertisement.manager.advertimentBannerTag) {
-				view.removeFromSuperview()
+			DispatchQueue.main.async {
+				if let view = self.advertisementView.viewWithTag(Advertisement.manager.advertimentBannerTag) {
+					view.removeFromSuperview()
+				}
 			}
 		}
 		
-		UIView.animate(withDuration: 0.3) {
-//			self.view.layoutIfNeeded()
-			self.advertisementView.layoutIfNeeded()
-		} completion: { _ in }
+		DispatchQueue.main.async {
+
+			UIView.animate(withDuration: 0.3) {
+					//			self.view.layoutIfNeeded()
+				self.advertisementView.layoutIfNeeded()
+			} completion: { _ in }
+		}
 	}
 }
 

@@ -26,11 +26,11 @@ class DeepCleanInfoTableViewCell: UITableViewCell {
 				return 20
 			case .medium, .plus, .large:
 				return 35
-			case .modern:
+			case .modern, .pro:
 				return 40
 			case .max:
 				return 40
-			case .madMax:
+			case .madMax, .proMax:
 				return 40
 		}
 	}

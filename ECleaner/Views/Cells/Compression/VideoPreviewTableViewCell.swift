@@ -28,7 +28,7 @@ class VideoPreviewTableViewCell: UITableViewCell {
 				return 15
 			case .plus, .large:
 				return 25
-			case .modern, .max, .madMax:
+			case .modern, .pro, .max, .madMax, .proMax:
 				return 30
 		}
 	}

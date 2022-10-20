@@ -156,7 +156,7 @@ class DateSelectebleView: UIView {
 				startingDateTitileTextLabel.font = .systemFont(ofSize: 13, weight: .bold)
 				endingDateTitleTextLabel.font = .systemFont(ofSize: 13, weight: .bold)
 		
-			case .large, .modern, .max, .madMax:
+			case .large, .modern, .pro, .max, .madMax, .proMax:
 				startingDateTextLabel.font = .systemFont(ofSize: 16, weight: .medium)
 				endingDateTextLabel.font = .systemFont(ofSize: 16, weight: .medium)
 				startingDateTitileTextLabel.font = .systemFont(ofSize: 14, weight: .bold)

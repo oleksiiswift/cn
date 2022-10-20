@@ -26,7 +26,7 @@ extension FontManager {
 					return .systemFont(ofSize: 35, weight: .heavy)
 				case .medium, .plus, .large:
 					return .systemFont(ofSize: 38, weight: .heavy)
-				case .modern, .max, .madMax:
+				case .modern, .pro, .max, .madMax, .proMax:
 					return .systemFont(ofSize: 40, weight: .heavy)
 			}
 		}

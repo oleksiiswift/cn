@@ -95,13 +95,22 @@ extension WebViewController: UpdateColorsDelegate {
 	private func addHelperNavigationViews() {
 		
 		let helperView = UIView()
+		
+		var topHeight: CGFloat {
+			if Utils.topSafeAreaHeight > 47 {
+				return 60
+			} else {
+				return 40
+			}
+		}
+		
 		helperView.backgroundColor = theme.navigationBarBackgroundColor
 		self.navigationBar.addSubview(helperView)
 		helperView.translatesAutoresizingMaskIntoConstraints = false
 		
 		helperView.leadingAnchor.constraint(equalTo: self.navigationBar.leadingAnchor).isActive = true
 		helperView.trailingAnchor.constraint(equalTo: self.navigationBar.trailingAnchor).isActive = true
-		helperView.topAnchor.constraint(equalTo: self.navigationBar.topAnchor, constant: -40).isActive = true
+		helperView.topAnchor.constraint(equalTo: self.navigationBar.topAnchor, constant: -topHeight).isActive = true
 		helperView.bottomAnchor.constraint(equalTo: self.navigationBar.topAnchor, constant: margin).isActive = true
 		
 		navigationBar.dropShadow = true

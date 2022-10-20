@@ -249,10 +249,14 @@ extension MediaTypeCollectionViewCell: Themeble {
 				mainStackView.spacing = 14
 			case .modern:
 				mainStackView.spacing = 16
+			case .pro:
+				mainStackView.spacing = 17
 			case .max:
 				mainStackView.spacing = 18
 			case .madMax:
 				mainStackView.spacing = 20
+			case .proMax:
+				mainStackView.spacing = 22
 		}
 		
 		switch Screen.size {

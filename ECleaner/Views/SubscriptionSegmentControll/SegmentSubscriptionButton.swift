@@ -64,9 +64,13 @@ class SegmentSubscriptionButton: UIView {
 				descriptionTextLabel.contentInsets = UIEdgeInsets(top: 0, left: 25, bottom: 10, right: 25)
 			case .modern:
 				descriptionTextLabel.contentInsets = UIEdgeInsets(top: 0, left: 25, bottom: 10, right: 25)
+			case .pro:
+				descriptionTextLabel.contentInsets = UIEdgeInsets(top: 0, left: 25, bottom: 10, right: 25)
 			case .max:
 				descriptionTextLabel.contentInsets = UIEdgeInsets(top: 0, left: 25, bottom: 10, right: 25)
 			case .madMax:
+				descriptionTextLabel.contentInsets = UIEdgeInsets(top: 0, left: 25, bottom: 10, right: 25)
+			case .proMax:
 				descriptionTextLabel.contentInsets = UIEdgeInsets(top: 0, left: 25, bottom: 10, right: 25)
 		}
 	}

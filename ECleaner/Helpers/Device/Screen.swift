@@ -11,22 +11,36 @@ import UIKit
 
 enum ScreenSize {
     case small
-    //iPhone 4-inch //iPhone 5, iPhone 5S, iPhone 5C, iPhone SE //320 x 568 points
+//	5.5" (414 x 736 points @3x)
+//	iPhone 8 Plus, iPhone 7 Plus, iPhone 6S Plus
     case medium
-    //iPhone 4.7-inch //iPhone 6, iPhone 6S, iPhone 7, iPhone 8, iPhone SE2 //375 x 667 points
+//	4.7" (375 x 667 points @2x)
+//	iPhone SE (3rd & 2nd Gen), iPhone 8, iPhone 7, iPhone 6S
     case plus
-    //iPhone 6 Plus, iPhone 6S Plus, iPhone 7 Plus, iPhone 8 Plus //414 x 736 points
-    //iPhone 5.5-inch //iPhone 6 Plus, iPhone 6S Plus, iPhone 7 Plus, iPhone 8 Plus //414 x 736 points
+//	5.5" (414 x 736 points @3x)
+//	iPhone 8 Plus, iPhone 7 Plus, iPhone 6S Plus
     case large
-    //iPhone 5.8-inch //iPhone X, iPhone XS, iPhone 11 Pro //375 x 812 points//
-    //iPhone 5.4-inch //iPhone 12 Mini //375 x 812 points
+//	5.8" (375 x 812 points @3x)
+//	iPhone 11 Pro, iPhone XS, iPhone X
+//	5.4" (375 x 812 points @3x)
+//	iPhone 13 mini, iPhone 12 mini
     case modern
-    //iPhone 6.1-inch //iPhone 12, iPhone 12 Pro //390 x 844 points
+//	6.1" (390 x 844 points @3x)
+//	iPhone 14, iPhone 13 Pro, iPhone 13, iPhone 12 Pro, iPhone 12
+	case pro
+//	6.1" (393 x 852 points @3x)
+//	iPhone 14 Pro
     case max
-    //iPhone 6.1-inch //iPhone XR, iPhone 11 //414 x 896 points
-    //iPhone 6.5-inch //iPhone XS Max, iPhone 11 Pro Max //414 x 896 points
+//	6.5" (414 x 896 points @3x)
+//	iPhone 11 Pro Max, iPhone XS Max
+//	6.1" (414 x 896 points @2x)
+//	iPhone 11, iPhone XR
     case madMax
-    //iPhone 6.7-inch //iPhone 12 Pro Max //428 x 926 points
+//	6.7" (428 x 926 points @3x)
+//	iPhone 14 Plus, iPhone 13 Pro Max, iPhone 12 Pro Max
+	case proMax
+//	6.7" (430 x 932 points @3x)
+//	iPhone 14 Pro Max
 }
 
 struct Screen {
@@ -34,7 +48,7 @@ struct Screen {
     static public var size: ScreenSize {
         
         let screenSize: CGFloat = UIScreen.main.bounds.height
-            /// 568 . 667 . 736 .812 . 844 . 896 . 926
+            /// 568 . 667 . 736 .812 . 844 .852 .896 . 926 .932
         switch screenSize {
             case 568:
                 return .small
@@ -46,10 +60,14 @@ struct Screen {
                 return .large
             case 844:
                 return .modern
+			case 852:
+				return .pro
             case 896:
                 return .max
             case 926:
                 return .madMax
+			case 932:
+				return .proMax
             default:
                 return .medium
         }

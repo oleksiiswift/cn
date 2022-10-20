@@ -34,7 +34,7 @@ extension AppDimensions {
 					return 170
 				case .medium, .plus:
 					return 170
-				case .large, .modern, .max, .madMax:
+				case .large, .modern, .pro, .max, .madMax, .proMax:
 					return 170
 			}
 		}
@@ -45,7 +45,7 @@ extension AppDimensions {
 					return 85
 				case .medium, .plus:
 					return 90
-				case .large, .modern, .max, .madMax:
+				case .large, .modern, .pro, .max, .madMax, .proMax:
 					return 100
 			}
 		}
@@ -56,7 +56,7 @@ extension AppDimensions {
 					return 30
 				case .medium, .plus, .large:
 					return 50
-				case .modern, .max, .madMax:
+				case .modern, .pro, .max, .madMax, .proMax:
 					return 50
 			}
 		}
@@ -67,7 +67,7 @@ extension AppDimensions {
 					return 60
 				case .medium, .plus, .large:
 					return 80
-				case .modern, .max, .madMax:
+				case .modern, .pro, .max, .madMax, .proMax:
 					return 80
 			}
 		}
@@ -85,7 +85,7 @@ extension AppDimensions {
 					return 85
 				case .medium, .plus:
 					return 90
-				case .large, .modern, .max, .madMax:
+				case .large, .modern, .pro, .max, .madMax, .proMax:
 					return 100
 			}
 		}
@@ -96,7 +96,7 @@ extension AppDimensions {
 					return 85
 				case .medium, .plus, .large:
 					return 90
-				case .modern, .max, .madMax:
+				case .modern, .pro, .max, .madMax, .proMax:
 					return 100
 			}
 		}
@@ -119,7 +119,7 @@ extension AppDimensions {
 					return 160
 				case .large:
 					return 170
-				case .modern, .max, .madMax:
+				case .modern, .pro, .max, .madMax, .proMax:
 					return 180
 			}
 		}
@@ -143,7 +143,7 @@ extension AppDimensions {
 					return 30
 				case .plus:
 					return 50
-				case .large, .modern, .max, .madMax:
+				case .large, .modern, .pro, .max, .madMax, .proMax:
 					return 40
 			}
 		}
@@ -156,9 +156,13 @@ extension AppDimensions {
 					return 20
 				case .modern:
 					return 20
+				case .pro:
+					return 20
 				case .max:
 					return 20
 				case .madMax:
+					return 20
+				case .proMax:
 					return 20
 			}
 		}
@@ -173,7 +177,7 @@ extension AppDimensions {
 					return 20
 				case .medium, .plus:
 					return 25
-				case .large, .modern, .max, .madMax:
+				case .large, .pro, .modern, .max, .madMax, .proMax:
 					return 33
 			}
 		}
@@ -184,7 +188,7 @@ extension AppDimensions {
 					return 28
 				case .medium, .plus, .large:
 					return 30
-				case .modern, .max, .madMax:
+				case .modern, .pro, .max, .madMax, .proMax:
 					return 33
 			}
 		}
@@ -323,9 +327,9 @@ extension AppDimensions {
 					return 460
 				case .plus:
 					return 470
-				case .large, .modern, .max:
+				case .large, .modern, .pro, .max:
 					return 485
-				case .madMax:
+				case .madMax, .proMax:
 					return 485
 			}
 		}
@@ -338,9 +342,11 @@ extension AppDimensions {
 					return 400
 				case .plus:
 					return 410
-				case .large, .modern, .max:
+				case .large, .modern, .pro, .max:
 					return 423
 				case .madMax:
+					return 423
+				case .proMax:
 					return 423
 			}
 		}
@@ -351,7 +357,7 @@ extension AppDimensions {
 					return 150
 				case .medium:
 					return 160
-				case .plus, .large, .modern, .max, .madMax:
+				case .plus, .large, .modern, .pro, .max, .madMax, .proMax:
 					return 170
 			}
 		}
@@ -377,10 +383,15 @@ extension AppDimensions {
 					return 20
 				case .modern:
 					return 20
+				case .pro:
+					return 20
 				case .max:
 					return 20
 				case .madMax:
 					return 20
+				case .proMax:
+					return 20
+					
 			}
 		}
 		
@@ -427,7 +438,7 @@ extension AppDimensions {
 						return 28
 					case .medium, .plus, .large:
 						return 30
-					case .modern, .max, .madMax:
+					case .modern, .pro, .max, .madMax, .proMax:
 						return 33
 				}
 			}
@@ -438,7 +449,7 @@ extension AppDimensions {
 						return 20
 					case .medium, .plus, .large:
 						return 25
-					case .modern, .max, .madMax:
+					case .modern, .pro, .max, .madMax, .proMax:
 						return 28
 				}
 			}
@@ -449,7 +460,7 @@ extension AppDimensions {
 						return 18
 					case .medium, .plus, .large:
 						return 23
-					case .modern, .max, .madMax:
+					case .modern, .pro, .max, .madMax, .proMax:
 						return 25
 				}
 			}
@@ -467,7 +478,7 @@ extension AppDimensions {
 						return 70
 					case .medium:
 						return 70
-					case .plus, .large, .modern, .max, .madMax:
+					case .plus, .large, .modern, .pro, .max, .madMax, .proMax:
 						return 90
 				}
 			}
@@ -557,10 +568,14 @@ extension AppDimensions {
 					return U.screenHeight - (U.topSafeAreaHeight + 120)
 				case .modern:
 					return U.screenHeight - (U.topSafeAreaHeight + 150)
+				case .pro:
+					return U.screenHeight - (U.topSafeAreaHeight + 160)
 				case .max:
 					return U.screenHeight - (U.topSafeAreaHeight + 180)
 				case .madMax:
 					return U.screenHeight - (U.topSafeAreaHeight + 200)
+				case .proMax:
+					return U.screenHeight - (U.topSafeAreaHeight + 220)
 			}
 		}
 		
@@ -574,9 +589,13 @@ extension AppDimensions {
 					return 5
 				case .modern:
 					return 5
+				case .pro:
+					return 5
 				case .max:
 					return 5
 				case .madMax:
+					return 5
+				case .proMax:
 					return 5
 			}
 		}
@@ -640,7 +659,7 @@ extension AppDimensions {
 					return 55
 				case .medium:
 					return 60
-				case .large, .plus, .modern:
+				case .large, .plus, .modern, .pro:
 					return 65
 				default:
 					return 70
@@ -653,7 +672,7 @@ extension AppDimensions {
 					return 60
 				case .medium:
 					return 70
-				case .large, .plus, .modern:
+				case .large, .plus, .pro, .modern:
 					return 75
 				default:
 					return 80
@@ -672,9 +691,13 @@ extension AppDimensions {
 					return 45
 				case .modern:
 					return 50
+				case .pro:
+					return 50
 				case .max:
 					return 50
 				case .madMax:
+					return 50
+				case .proMax:
 					return 50
 			}
 		}
@@ -711,9 +734,13 @@ extension AppDimensions {
 					return 75
 				case .modern:
 					return 85
+				case  .pro:
+					return 85
 				case .max:
 					return 85
 				case .madMax:
+					return 85
+				case .proMax:
 					return 85
 			}
 		}
@@ -726,9 +753,13 @@ extension AppDimensions {
 					return 12
 				case .modern:
 					return 14
+				case .pro:
+					return 14
 				case .max:
 					return 14
 				case .madMax:
+					return 14
+				case .proMax:
 					return 14
 			}
 		}
@@ -846,9 +877,13 @@ extension AppDimensions {
 						return 38
 					case .modern:
 						return 40
+					case .pro:
+						return 40
 					case .max:
 						return 40
 					case .madMax:
+						return 40
+					case .proMax:
 						return 40
 				}
 			}
@@ -874,9 +909,13 @@ extension AppDimensions {
 						return 26
 					case .modern:
 						return 27
+					case .pro:
+						return 27
 					case .max:
 						return 30
 					case .madMax:
+						return 30
+					case .proMax:
 						return 30
 				}
 			}
@@ -893,9 +932,13 @@ extension AppDimensions {
 						return 26
 					case .modern:
 						return 27
+					case .pro:
+						return 27
 					case .max:
 						return 27
 					case .madMax:
+						return 27
+					case .proMax:
 						return 27
 				}
 			}
@@ -908,9 +951,11 @@ extension AppDimensions {
 						return 460
 					case .plus:
 						return 470
-					case .large, .modern, .max:
+					case .large, .modern, .pro, .max:
 						return 485
 					case .madMax:
+						return 485
+					case .proMax:
 						return 485
 				}
 			}

@@ -26,7 +26,7 @@ extension FontManager {
 					return .systemFont(ofSize: 22, weight: .black).monospacedDigitFont
 				case .medium, .plus, .large:
 					return .systemFont(ofSize: 26, weight: .black).monospacedDigitFont
-				case .modern, .max, .madMax:
+				case .modern, .pro, .max, .madMax, .proMax:
 					return .systemFont(ofSize: 28, weight: .black).monospacedDigitFont
 			}
 		}
@@ -37,7 +37,7 @@ extension FontManager {
 					return .systemFont(ofSize: 14, weight: .bold).monospacedDigitFont
 				case .medium, .plus, .large:
 					return .systemFont(ofSize: 15, weight: .bold).monospacedDigitFont
-				case .modern, .max, .madMax:
+				case .modern, .pro, .max, .madMax, .proMax:
 					return .systemFont(ofSize: 16, weight: .bold).monospacedDigitFont
 			}
 		}
@@ -48,7 +48,7 @@ extension FontManager {
 					return .systemFont(ofSize: 14, weight: .bold).monospacedDigitFont
 				case .medium, .plus, .large:
 					return .systemFont(ofSize: 16, weight: .bold).monospacedDigitFont
-				case .modern, .max, .madMax:
+				case .modern, .pro, .max, .madMax, .proMax:
 					return .systemFont(ofSize: 18, weight: .bold).monospacedDigitFont
 			}
 		}
@@ -59,7 +59,7 @@ extension FontManager {
 					return .systemFont(ofSize: 10, weight: .medium).monospacedDigitFont
 				case .medium, .plus, .large:
 					return .systemFont(ofSize: 11, weight: .medium).monospacedDigitFont
-				case .modern, .max, .madMax:
+				case .modern, .pro, .max, .madMax, .proMax:
 					return .systemFont(ofSize: 12, weight: .medium).monospacedDigitFont
 			}
 		}
@@ -70,7 +70,7 @@ extension FontManager {
 					return .systemFont(ofSize: 10, weight: .bold).monospacedDigitFont
 				case .medium, .plus, .large:
 					return .systemFont(ofSize: 13, weight: .bold).monospacedDigitFont
-				case .modern, .max, .madMax:
+				case .modern, .pro, .max, .madMax, .proMax:
 					return .systemFont(ofSize: 14, weight: .bold).monospacedDigitFont
 			}
 		}
@@ -81,7 +81,7 @@ extension FontManager {
 					return .systemFont(ofSize: 13, weight: .bold)
 				case .medium, .plus, .large:
 					return .systemFont(ofSize: 13, weight: .bold)
-				case .modern, .max, .madMax:
+				case .modern, .pro, .max, .madMax, .proMax:
 					return .systemFont(ofSize: 13, weight: .bold)
 			}
 		}

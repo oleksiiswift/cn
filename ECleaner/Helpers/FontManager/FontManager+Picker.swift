@@ -28,9 +28,13 @@ extension FontManager {
 					return .systemFont(ofSize: 26, weight: .black)
 				case .modern:
 					return .systemFont(ofSize: 26, weight: .black)
+				case .pro:
+					return .systemFont(ofSize: 26, weight: .black)
 				case .max:
 					return .systemFont(ofSize: 26, weight: .black)
 				case .madMax:
+					return .systemFont(ofSize: 26, weight: .black)
+				case .proMax:
 					return .systemFont(ofSize: 26, weight: .black)
 			}
 		}

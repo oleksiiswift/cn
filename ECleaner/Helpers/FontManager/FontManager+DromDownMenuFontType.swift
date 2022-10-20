@@ -22,7 +22,7 @@ extension FontManager {
 					return .systemFont(ofSize: 14, weight: .regular)
 				case .medium:
 					return .systemFont(ofSize: 14, weight: .regular)
-				case .plus, .large, .modern, .max, .madMax:
+				case .plus, .large, .modern, .pro, .max, .madMax, .proMax:
 					return .systemFont(ofSize: 14, weight: .regular)
 			}
 		}
@@ -33,7 +33,7 @@ extension FontManager {
 					return .systemFont(ofSize: 8, weight: .regular)
 				case .medium:
 					return .systemFont(ofSize: 10, weight: .regular)
-				case .plus, .large, .modern, .max, .madMax:
+				case .plus, .large, .modern, .pro, .max, .madMax, .proMax:
 					return .systemFont(ofSize: 12, weight: .regular)
 			}
 		}
